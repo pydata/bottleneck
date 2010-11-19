@@ -8,24 +8,37 @@ cdef double NAN = <double> np.nan
 
 __all__ = ['nansum']
 
+i32 = np.dtype(np.int32)
 i64 = np.dtype(np.int64)
 f64 = np.dtype(np.float64)
 N = None
 select = {# Dim Type axis
+
+            (1, i32, 0):   nansum_1d_int32_axis0,
+            (1, i32, N):   nansum_1d_int32_axis0,
+            (2, i32, 0):   nansum_2d_int32_axis0,
+            (2, i32, 1):   nansum_2d_int32_axis1,
+            (2, i32, N):   nansum_2d_int32_axisNone,
+            (3, i32, 0):   nansum_3d_int32_axis0,
+            (3, i32, 1):   nansum_3d_int32_axis1,
+            (3, i32, 2):   nansum_3d_int32_axis2,
+            (3, i32, N):   nansum_3d_int32_axisNone,
+            
             (1, i64, 0):   nansum_1d_int64_axis0,
             (1, i64, N):   nansum_1d_int64_axis0,
-            (1, f64, 0):   nansum_1d_float64_axis0,
-            (1, f64, N):   nansum_1d_float64_axis0,
             (2, i64, 0):   nansum_2d_int64_axis0,
             (2, i64, 1):   nansum_2d_int64_axis1,
             (2, i64, N):   nansum_2d_int64_axisNone,
-            (2, f64, 0):   nansum_2d_float64_axis0,
-            (2, f64, 1):   nansum_2d_float64_axis1,
-            (2, f64, N):   nansum_2d_float64_axisNone,
             (3, i64, 0):   nansum_3d_int64_axis0,
             (3, i64, 1):   nansum_3d_int64_axis1,
             (3, i64, 2):   nansum_3d_int64_axis2,
             (3, i64, N):   nansum_3d_int64_axisNone,
+            
+            (1, f64, 0):   nansum_1d_float64_axis0,
+            (1, f64, N):   nansum_1d_float64_axis0,
+            (2, f64, 0):   nansum_2d_float64_axis0,
+            (2, f64, 1):   nansum_2d_float64_axis1,
+            (2, f64, N):   nansum_2d_float64_axisNone,
             (3, f64, 0):   nansum_3d_float64_axis0,
             (3, f64, 1):   nansum_3d_float64_axis1,
             (3, f64, 2):   nansum_3d_float64_axis2,
@@ -108,10 +121,22 @@ def nansum(arr, axis=None):
     try:
         func = select[(ndim, dtype, axis)]
     except KeyError:
-        raise TypeError, "Unsupported ndim/dtype."
+        tup = (str(ndim), str(dtype))
+        raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
     return func(arr)
 
 # One dimensional -----------------------------------------------------------
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nansum_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a):
+    "nansum of 1d numpy array with dtype=np.int32 along axis=0."
+    cdef Py_ssize_t i
+    cdef int alen = a.shape[0]
+    cdef np.int64_t asum = 0
+    for i in range(alen):
+        asum += a[i]
+    return np.int64(asum)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -142,6 +167,48 @@ def nansum_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a):
         return NAN
 
 # Two dimensional -----------------------------------------------------------
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nansum_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a):
+    "nansum of 2d numpy array with dtype=np.int32 along axis=0."
+    cdef Py_ssize_t i, j
+    cdef int arow = a.shape[0], acol = a.shape[1]
+    cdef np.int64_t asum = 0   
+    cdef np.ndarray[np.int64_t, ndim=1] y = np.empty(acol, dtype=np.int64)
+    for j in range(acol):
+        asum = 0
+        for i in range(arow):
+            asum += a[i,j]
+        y[j] = asum    
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nansum_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a):
+    "nansum of 2d numpy array with dtype=np.int32 along axis=1"
+    cdef Py_ssize_t i, j
+    cdef int arow = a.shape[0], acol = a.shape[1]
+    cdef np.int64_t asum = 0   
+    cdef np.ndarray[np.int64_t, ndim=1] y = np.empty(arow, dtype=np.int64)
+    for j in range(arow):
+        asum = 0
+        for i in range(acol):
+            asum += a[j,i]
+        y[j] = asum    
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nansum_2d_int32_axisNone(np.ndarray[np.int32_t, ndim=2] a):
+    "nansum of 2d numpy array with dtype=np.int32 along axis=None."
+    cdef Py_ssize_t i, j
+    cdef int arow = a.shape[0], acol = a.shape[1]
+    cdef np.int64_t asum = 0
+    for j in range(acol):
+        for i in range(arow):
+            asum += a[i,j]
+    return np.int64(asum) 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -248,6 +315,67 @@ def nansum_2d_float64_axisNone(np.ndarray[np.float64_t, ndim=2] a):
         return NAN
 
 # Three dimensional ---------------------------------------------------------
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nansum_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a):
+    "nansum of 3d numpy array with dtype=np.int32 along axis=0."
+    cdef Py_ssize_t i, j, k
+    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
+    cdef np.int64_t asum = 0   
+    cdef np.ndarray[np.int64_t, ndim=2] y = np.empty((n1, n2), dtype=np.int64)
+    for j in range(n1):
+        for k in range(n2):
+            asum = 0
+            for i in range(n0):
+                asum += a[i,j,k]
+            y[j, k] = asum    
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nansum_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a):
+    "nansum of 3d numpy array with dtype=np.int32 along axis=1"
+    cdef Py_ssize_t i, j, k
+    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
+    cdef np.int64_t asum = 0   
+    cdef np.ndarray[np.int64_t, ndim=2] y = np.empty((n0, n2), dtype=np.int64)
+    for i in range(n0):
+        for k in range(n2):
+            asum = 0
+            for j in range(n1):
+                asum += a[i,j,k]
+            y[i, k] = asum 
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nansum_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a):
+    "nansum of 3d numpy array with dtype=np.int32 along axis=2"
+    cdef Py_ssize_t i, j, k
+    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
+    cdef np.int64_t asum = 0   
+    cdef np.ndarray[np.int64_t, ndim=2] y = np.empty((n0, n1), dtype=np.int64)
+    for i in range(n0):
+        for j in range(n1):
+            asum = 0
+            for k in range(n2):
+                asum += a[i,j,k]
+            y[i, j] = asum 
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nansum_3d_int32_axisNone(np.ndarray[np.int32_t, ndim=3] a):
+    "nansum of 3d numpy array with dtype=np.int32 along axis=None."
+    cdef Py_ssize_t i, j, k
+    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
+    cdef np.int64_t asum = 0
+    for i in range(n0):
+        for j in range(n1):
+            for k in range(n2):
+                asum += a[i,j,k]
+    return np.int64(asum) 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)

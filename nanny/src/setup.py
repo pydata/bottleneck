@@ -1,15 +1,15 @@
 """
-Use to convert cflabel.pyx to a C file.
+Use to convert nansu,.pyx to a C file.
 
-This setup.py is NOT used to install the la package. The la setup.py file is
-la/setup.py
+This setup.py is NOT used to install the Nanny package. The Nanny setup.py
+file is nanny/setup.py
 
-The C files are distributed with larry, so this file is only useful if you
-modify cflabel.pyx.
+The C files are distributed with Nanny, so this file is only useful if you
+modify nansum.pyx.
 
 To convert from cython to C:
 
-$ cd la/src
+$ cd nany/src
 $ python setup.py build_ext --inplace
 
 """
