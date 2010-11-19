@@ -1,5 +1,5 @@
 
-from nansum import *
+from func import nansum, nanmax 
 from nanny.version import __version__
 
 try:

@@ -26,7 +26,7 @@ Let's not forget to add some NaNs::
 
 Nanny uses a separate Cython function for each combination of ndim, dtype, and
 axis. You can get rid of a lot of overhead (useful in an inner loop, e.g.) by
-directly importing the function that matched your problem::
+directly importing the function that matches your problem::
               
     >> arr = np.random.rand(10, 10)
     >> from nansum import nansum_2d_float64_axis1

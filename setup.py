@@ -66,7 +66,7 @@ setup(name=NAME,
       version=VERSION,
       packages=PACKAGES,
       requires=REQUIRES,
-      ext_modules = [Extension("nanny.nansum",
-                               sources=["nanny/src/nansum.c"],
+      ext_modules = [Extension("nanny.func",
+                               sources=["nanny/src/func.c"],
                                include_dirs=[numpy.get_include()])]
      )

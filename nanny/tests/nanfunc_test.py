@@ -11,11 +11,11 @@ def mov_unit_maker(func, func0):
     a0 = np.array([1, 2, 3, 4, 5, 6, nan, nan, 7, 8, 9])
     a1 = np.arange(10)
     a2 = np.array([[9.0, 3.0, nan, nan, 9.0, nan],
-                      [1.0, 1.0, 1.0, nan, nan, nan],
-                      [2.0, 2.0, 0.1, nan, 1.0, nan],
-                      [3.0, 9.0, 2.0, nan, nan, nan],
-                      [4.0, 4.0, 3.0, 9.0, 2.0, nan],
-                      [5.0, 5.0, 4.0, 4.0, nan, nan]])
+                   [1.0, 1.0, 1.0, nan, nan, nan],
+                   [2.0, 2.0, 0.1, nan, 1.0, nan],
+                   [3.0, 9.0, 2.0, nan, nan, nan],
+                   [4.0, 4.0, 3.0, 9.0, 2.0, nan],
+                   [5.0, 5.0, 4.0, 4.0, nan, nan]])
     a3 = np.arange(12).reshape(3,4)
     a4 = np.random.rand(3,4)
     a5 = np.arange(60).reshape(3, 4, 5)
