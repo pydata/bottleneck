@@ -26,21 +26,20 @@ Let's not forget to add some NaNs::
 
 Nanny uses a separate Cython function for each combination of ndim, dtype, and
 axis. You can get rid of a lot of overhead (useful in an inner loop, e.g.) by
-directly importing the function that matches your problem::
+using the function that matches your problem::
               
     >> arr = np.random.rand(10, 10)
-    >> from nansum import nansum_2d_float64_axis1
 
     >> timeit np.nansum(arr, axis=1)
     10000 loops, best of 3: 25.5 us per loop
     >> timeit ny.nansum(arr, axis=1)
     100000 loops, best of 3: 5.15 us per loop
-    >> timeit nansum_2d_float64_axis1(arr)
+    >> timeit ny.func.nansum_2d_float64_axis1(arr)
     1000000 loops, best of 3: 1.75 us per loop
 
 I put together Nanny as a way to learn Cython. It currently only supports:
 
-- functions: nansum
+- functions: nansum, nanmax
 - Operating systems: 64-bit (accumulator for int32 is hard coded to int64)
 - dtype: int32, int64, float64
 - ndim: 1, 2, and 3

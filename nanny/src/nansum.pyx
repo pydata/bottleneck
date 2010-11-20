@@ -109,7 +109,6 @@ def nansum(arr, axis=None):
             raise ValueError, "axis(=%d) out of bounds" % axis
     try:
         func = select_nansum[(ndim, dtype, axis)]
-        print func.__name__
     except KeyError:
         tup = (str(ndim), str(dtype))
         raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
