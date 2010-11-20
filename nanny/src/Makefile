@@ -2,10 +2,13 @@
 # extensions.
 
 help:
-	@echo "Numpy/Cython tasks.  Available tasks:"
-	@echo "cython  -> build the Cython extension module."
-	@echo "clean -> remove all the build files for a freah start."
-	@echo "all  -> clean, build, test."
+	@echo "Available tasks:"
+	@echo "help  --> This help page"
+	@echo "build --> Build the Cython extension module"
+	@echo "clean --> Remove all the build files for a freah start"
+	@echo "test  --> Run unit tests"
+	@echo "all   --> clean, build, test"
+	@echo "bench --> Run performance benchmark"
 
 
 all: clean build test
@@ -16,6 +19,9 @@ build:
 
 test:
 	python -c "import nanny; nanny.test()"
+
+bench:
+	python -c "import nanny; nanny.benchit()"
 
 # Phony targets for cleanup and similar uses
 

@@ -64,6 +64,36 @@ Remember, Nanny quickly protects your precious data from the corrupting
 influence of Mr. Nan.
 
 
+Performance benchmark
+=====================
+
+Nanny comes with a benchmark suite. To run it::
+
+    >> ny.benchit(verbose=False)
+    Nanny performance benchmark
+        Nanny 0.0.1dev
+        Numpy 1.4.1
+        Speed is numpy time divided by nanny time
+        NaN means all NaNs
+       Speed   Test                Shape        dtype    NaN?
+       6.6770  nansum(a, axis=-1)  (500,500)    int64  
+       4.6612  nansum(a, axis=-1)  (10000,)     float64  
+       9.0351  nansum(a, axis=-1)  (500,500)    int32  
+       3.0746  nansum(a, axis=-1)  (500,500)    float64  
+      11.5740  nansum(a, axis=-1)  (10000,)     int32  
+       6.4484  nansum(a, axis=-1)  (10000,)     int64  
+      51.3917  nansum(a, axis=-1)  (500,500)    float64  NaN
+      13.8692  nansum(a, axis=-1)  (10000,)     float64  NaN
+       6.5327  nanmax(a, axis=-1)  (500,500)    int64  
+       8.8222  nanmax(a, axis=-1)  (10000,)     float64  
+       0.2059  nanmax(a, axis=-1)  (500,500)    int32  
+       6.9262  nanmax(a, axis=-1)  (500,500)    float64  
+       5.0688  nanmax(a, axis=-1)  (10000,)     int32  
+       6.5605  nanmax(a, axis=-1)  (10000,)     int64  
+      48.4850  nanmax(a, axis=-1)  (500,500)    float64  NaN
+      14.6289  nanmax(a, axis=-1)  (10000,)     float64  NaN
+
+
 License
 =======
 

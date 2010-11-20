@@ -177,7 +177,7 @@ def nanmax_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a):
     "nanmax of 2d numpy array with dtype=np.int32 along axis=1"
     cdef Py_ssize_t i, j
     cdef int n0 = a.shape[0], n1 = a.shape[1]
-    cdef np.int32_t amax = MININT32 
+    cdef np.int32_t amax 
     cdef np.ndarray[np.int32_t, ndim=1] y = np.empty(n0, dtype=np.int32)
     for i in range(n0):
         amax = MININT32
