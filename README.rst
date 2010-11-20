@@ -30,12 +30,18 @@ using the function that matches your problem::
               
     >> arr = np.random.rand(10, 10)
 
-    >> timeit np.nansum(arr, axis=1)
-    10000 loops, best of 3: 25.5 us per loop
-    >> timeit ny.nansum(arr, axis=1)
-    100000 loops, best of 3: 5.15 us per loop
-    >> timeit ny.func.nansum_2d_float64_axis1(arr)
-    1000000 loops, best of 3: 1.75 us per loop
+    >> timeit np.nanmax(arr, axis=1)
+    10000 loops, best of 3: 26.5 us per loop
+    >> timeit ny.nanmax(arr, axis=1)
+    100000 loops, best of 3: 5.82 us per loop
+    >> timeit ny.func.nanmax_2d_float64_axis1(arr)
+    100000 loops, best of 3: 2.56 us per loop
+
+Note that nanmax_2d_float64_axis1 is faster than the Numpy's non-nan version
+of max::
+
+    >> timeit np.max(arr, axis=1)
+    100000 loops, best of 3: 3.7 us per loop
 
 I put together Nanny as a way to learn Cython. It currently only supports:
 
@@ -104,6 +110,6 @@ After you have installed Nanny, run the suite of unit tests::
     >>> import nanny
     >>> nanny.test()
     <snip>
-    Ran 1 tests in 0.008s
+    Ran 2 tests in 0.640s
     OK
-    <nose.result.TextTestResult run=1 errors=0 failures=0> 
+    <nose.result.TextTestResult run=2 errors=0 failures=0> 

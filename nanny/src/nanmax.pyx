@@ -118,7 +118,7 @@ def nanmax_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a):
     cdef np.int32_t amax = MININT32, ai
     for i in range(n0):
         ai = a[i]
-        if ai > amax:
+        if ai >= amax:
             amax = ai
     return np.int32(amax)
 
@@ -131,7 +131,7 @@ def nanmax_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a):
     cdef np.int64_t amax = MININT64, ai
     for i in range(n0):
         ai = a[i]
-        if ai > amax:
+        if ai >= amax:
             amax = ai
     return np.int64(amax)
 
@@ -141,10 +141,10 @@ def nanmax_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a):
     "nanmax of 1d numpy array with dtype=np.float64 along axis=0."
     cdef Py_ssize_t i
     cdef int n0 = a.shape[0], allnan = 1
-    cdef np.float64_t amax = -np.inf, ai
+    cdef np.float64_t amax = np.NINF, ai
     for i in range(n0):
         ai = a[i]
-        if ai > amax:
+        if ai >= amax:
             amax = ai
             allnan = 0
     if allnan == 0:
@@ -166,7 +166,7 @@ def nanmax_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a):
         amax = MININT32
         for i in range(n0):
             ai = a[i,j]
-            if ai > amax:
+            if ai >= amax:
                 amax = ai
         y[j] = amax    
     return y
@@ -183,7 +183,7 @@ def nanmax_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a):
         amax = MININT32
         for j in range(n1):
             ai = a[i,j]
-            if ai > amax:
+            if ai >= amax:
                 amax = ai
         y[i] = amax    
     return y
@@ -198,7 +198,7 @@ def nanmax_2d_int32_axisNone(np.ndarray[np.int32_t, ndim=2] a):
     for i in range(n0):
         for j in range(n1):
             ai = a[i,j]
-            if ai > amax:
+            if ai >= amax:
                 amax = ai
     return np.int32(amax) 
 
@@ -214,7 +214,7 @@ def nanmax_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a):
         amax = MININT64
         for i in range(n0):
             ai = a[i,j]
-            if ai > amax:
+            if ai >= amax:
                 amax = ai
         y[j] = amax    
     return y
@@ -231,7 +231,7 @@ def nanmax_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a):
         amax = MININT64
         for j in range(n1):
             ai = a[i,j]
-            if ai > amax:
+            if ai >= amax:
                 amax = ai
         y[i] = amax    
     return y
@@ -246,7 +246,7 @@ def nanmax_2d_int64_axisNone(np.ndarray[np.int64_t, ndim=2] a):
     for i in range(n0):
         for j in range(n1):
             ai = a[i,j]
-            if ai > amax:
+            if ai >= amax:
                 amax = ai
     return np.int64(amax) 
 
@@ -259,11 +259,11 @@ def nanmax_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a):
     cdef np.float64_t amax, ai 
     cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(n1, dtype=np.float64)
     for j in range(n1):
-        amax = MININT64
+        amax = np.NINF
         allnan = 1
         for i in range(n0):
             ai = a[i,j]
-            if ai > amax :
+            if ai >= amax :
                 amax = ai
                 allnan = 0
         if allnan == 0:       
@@ -281,11 +281,11 @@ def nanmax_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a):
     cdef np.float64_t amax, ai  
     cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(n0, dtype=np.float64)
     for j in range(n0):
-        amax = MININT64
+        amax = np.NINF
         allnan = 1
         for i in range(n1):
             ai = a[j,i]
-            if ai > amax:
+            if ai >= amax:
                 amax = ai
                 allnan = 0
         if allnan == 0:       
@@ -300,11 +300,11 @@ def nanmax_2d_float64_axisNone(np.ndarray[np.float64_t, ndim=2] a):
     "nanmax of 2d numpy array with dtype=np.float64 along axis=None."
     cdef Py_ssize_t i, j
     cdef int n0 = a.shape[0], n1 = a.shape[1], allnan = 1
-    cdef np.float64_t amax = MININT64, ai
+    cdef np.float64_t amax = np.NINF, ai
     for i in range(n0):
         for j in range(n1):
             ai = a[i,j]
-            if ai > amax:
+            if ai >= amax:
                 amax = ai
                 allnan = 0
     if allnan == 0:
@@ -327,7 +327,7 @@ def nanmax_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a):
             amax = MININT32
             for i in range(n0):
                 ai = a[i,j,k]
-                if ai > amax:
+                if ai >= amax:
                     amax = ai
             y[j, k] = amax    
     return y
@@ -345,7 +345,7 @@ def nanmax_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a):
             amax = MININT32
             for j in range(n1):
                 ai = a[i,j,k]
-                if ai > amax:
+                if ai >= amax:
                     amax = ai
             y[i, k] = amax 
     return y
@@ -363,7 +363,7 @@ def nanmax_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a):
             amax = MININT32
             for k in range(n2):
                 ai = a[i,j,k]
-                if ai > amax:
+                if ai >= amax:
                     amax = ai
             y[i, j] = amax 
     return y
@@ -380,7 +380,7 @@ def nanmax_3d_int32_axisNone(np.ndarray[np.int32_t, ndim=3] a):
             amax = MININT32
             for k in range(n2):
                 ai = a[i,j,k]
-                if ai > amax:
+                if ai >= amax:
                     amax = ai
     return np.int32(amax) 
 
@@ -397,7 +397,7 @@ def nanmax_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a):
             amax = MININT64
             for i in range(n0):
                 ai = a[i,j,k]
-                if ai > amax:
+                if ai >= amax:
                     amax = ai
             y[j, k] = amax    
     return y
@@ -415,7 +415,7 @@ def nanmax_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a):
             amax = MININT64
             for j in range(n1):
                 ai = a[i,j,k]
-                if ai > amax:
+                if ai >= amax:
                     amax = ai
             y[i, k] = amax 
     return y
@@ -433,7 +433,7 @@ def nanmax_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a):
             amax = MININT64
             for k in range(n2):
                 ai = a[i,j,k]
-                if ai > amax:
+                if ai >= amax:
                     amax = ai
             y[i, j] = amax 
     return y
@@ -449,7 +449,7 @@ def nanmax_3d_int64_axisNone(np.ndarray[np.int64_t, ndim=3] a):
         for j in range(n1):
             for k in range(n2):
                 ai = a[i,j,k]
-                if ai > amax:
+                if ai >= amax:
                     amax = ai
     return np.int64(amax) 
 
@@ -459,16 +459,16 @@ def nanmax_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a):
     "nanmax of 3d numpy array with dtype=np.float64 along axis=0."
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], allnan
-    cdef np.float64_t amax = -np.inf, ai
+    cdef np.float64_t amax, ai
     cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n1, n2),
                                                        dtype=np.float64)
     for j in range(n1):
         for k in range(n2):
-            amax = -np.inf
+            amax = np.NINF
             allnan = 1
             for i in range(n0):
                 ai = a[i,j,k]
-                if ai > amax:
+                if ai >= amax:
                     amax = ai
                     allnan = 0
             if allnan == 0:   
@@ -483,16 +483,16 @@ def nanmax_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a):
     "nanmax of 3d numpy array with dtype=np.float64 along axis=1."
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], allnan
-    cdef np.float64_t amax = -np.inf, ai
+    cdef np.float64_t amax, ai
     cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n0, n2),
                                                        dtype=np.float64)
     for i in range(n0):
         for k in range(n2):
-            amax = -np.inf
+            amax = np.NINF
             allnan = 1
             for j in range(n1):
                 ai = a[i,j,k]
-                if ai > amax:
+                if ai >= amax:
                     amax = ai
                     allnan = 0
             if allnan == 0:   
@@ -507,16 +507,16 @@ def nanmax_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a):
     "nanmax of 3d numpy array with dtype=np.float64 along axis=2."
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], allnan
-    cdef np.float64_t amax = -np.inf, ai
+    cdef np.float64_t amax, ai
     cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n0, n1),
                                                        dtype=np.float64)
     for i in range(n0):
         for j in range(n1):
-            amax = -np.inf
+            amax = np.NINF
             allnan = 1
             for k in range(n2):
                 ai = a[i,j,k]
-                if ai > amax:
+                if ai >= amax:
                     amax = ai
                     allnan = 0
             if allnan == 0:   
@@ -531,12 +531,12 @@ def nanmax_3d_float64_axisNone(np.ndarray[np.float64_t, ndim=3] a):
     "nanmax of 3d numpy array with dtype=np.float64 along axis=None."
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], allnan = 1
-    cdef np.float64_t amax = -np.inf, ai
+    cdef np.float64_t amax = np.NINF, ai
     for i in range(n0):
         for j in range(n1):
             for k in range(n2):
                 ai = a[i,j,k]
-                if ai > amax:
+                if ai >= amax:
                     amax = ai
                     allnan = 0
     if allnan == 0:                

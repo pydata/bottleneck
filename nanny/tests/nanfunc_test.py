@@ -6,33 +6,42 @@ nan = np.nan
 from nanny import nansum, nanmax
 
 
+def arrays(dtypes=['int32', 'int64', 'float64']):
+    "Iterator that yield arrays to use for unit testing."
+    ss = {}
+    ss[1] = {'size':  4, 'shapes': [(4,)]}
+    ss[2] = {'size':  6, 'shapes': [(1,6), (2,3), (6,1)]}
+    ss[3] = {'size': 24, 'shapes': [(1,1,24), (24,1,1), (1,24,1), (2,3,4)]}
+    for ndim in ss:
+        size = ss[ndim]['size']
+        shapes = ss[ndim]['shapes']
+        for dtype in dtypes:
+            a = np.arange(size, dtype=dtype)
+            for shape in shapes:
+                a = a.reshape(shape)
+                yield a
+            if issubclass(a.dtype.type, np.inexact):        
+                for i in range(a.size):
+                    a.flat[i] = np.nan
+                    yield a
+                for i in range(a.size):
+                    a.flat[i] = np.inf
+                    yield a
+                a[:] = np.nan    
+                for i in range(a.size):
+                    a.flat[i] = -np.inf
+                    yield a
+
 def unit_maker(func, func0):
     "Test that ny.nanxxx gives the same output as np.."
-    a0 = np.array([1, 2, 3, 4, 5, 6, nan, nan, 7, 8, 9])
-    a1 = np.arange(10)
-    a2 = np.array([[9.0, 3.0, nan, nan, 9.0, nan],
-                   [1.0, 1.0, 1.0, nan, nan, nan],
-                   [2.0, 2.0, 0.1, nan, 1.0, nan],
-                   [3.0, 9.0, 2.0, nan, nan, nan],
-                   [4.0, 4.0, 3.0, 9.0, 2.0, nan],
-                   [5.0, 5.0, 4.0, 4.0, nan, nan]])
-    a3 = np.arange(12).reshape(3,4)
-    a4 = np.random.rand(3,4)
-    a5 = np.arange(60).reshape(3, 4, 5)
-    a6 = np.random.rand(3, 4, 5)
-    a7 = np.array([nan, nan, nan])
-    a8 = np.array([1, np.nan, np.inf, np.NINF])
-    a9 = np.arange(5, dtype=np.int32)
-    a10 = np.arange(10, dtype=np.int32).reshape(2, 5)
-    a11 = np.arange(24, dtype=np.int32).reshape(2, 3, 4)
-    arrs = [a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11]
     msg = '\nfunc %s | input %s (%s) | shape %s | axis %s\n'
-    for i, arr in enumerate(arrs):
+    msg += '\nInput array:\n%s\n'
+    for i, arr in enumerate(arrays()):
         for axis in range(-arr.ndim, arr.ndim) + [None]:
             actual = func(arr, axis=axis)
             desired = func0(arr, axis=axis)
             tup = (func.__name__, 'a'+str(i), str(arr.dtype), str(arr.shape),
-                   str(axis))
+                   str(axis), arr)
             err_msg = msg % tup
             assert_array_equal(actual, desired, err_msg)
             err_msg += '\n dtype mismatch %s %s'
