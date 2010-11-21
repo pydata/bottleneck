@@ -20,17 +20,16 @@ def arrays(dtypes=['int32', 'int64', 'float64']):
             for shape in shapes:
                 a = a.reshape(shape)
                 yield a
+                yield -a
             if issubclass(a.dtype.type, np.inexact):        
                 for i in range(a.size):
                     a.flat[i] = np.nan
                     yield a
+                    yield -a
                 for i in range(a.size):
                     a.flat[i] = np.inf
                     yield a
-                a[:] = np.nan    
-                for i in range(a.size):
-                    a.flat[i] = -np.inf
-                    yield a
+                    yield -a
 
 def unit_maker(func, func0):
     "Test that ny.nanxxx gives the same output as np.."
@@ -58,10 +57,15 @@ def test_nanmax():
     "Test nanmax."
     yield unit_maker, ny.nanmax, np.nanmax
 
+def test_nanmin():
+    "Test nanmin."
+    yield unit_maker, ny.nanmin, np.nanmin
+
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
 
 def test_nanmax_size_zero():
+    "Test nanmax for size zero input arrays."
     dtypes = ['int32', 'int64', 'float64']
     shapes = [(0,), (2,0), (1,2,0)]
     for shape in shapes:
@@ -70,5 +74,14 @@ def test_nanmax_size_zero():
             assert_raises(ValueError, ny.nanmax, a)
             assert_raises(ValueError, np.nanmax, a)
             
+def test_nanmin_size_zero():
+    "Test nanmin for size zero input arrays."
+    dtypes = ['int32', 'int64', 'float64']
+    shapes = [(0,), (2,0), (1,2,0)]
+    for shape in shapes:
+        for dtype in dtypes:
+            a = np.zeros(shape, dtype=dtype)
+            assert_raises(ValueError, ny.nanmin, a)
+            assert_raises(ValueError, np.nanmin, a)
 
             

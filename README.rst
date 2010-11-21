@@ -94,10 +94,10 @@ Functions
 
 Nanny is in the prototype stage. (Feedback welcomed!)
 
-It currently contains the following functions: nanmax, nansum.
+It currently contains the following functions: nanmax, nanmin, nansum.
 
-Functions that will appear in later releases of Nanny: nanmin, nanmax,
-nanmean, nanmedian (using a partial sort), nanstd.
+Functions that will appear in later releases of Nanny: nanmean, nanstd,
+nanmedian (using a partial sort).
 
 It may also be useful to add functions that do not currently appear in NumPy
 or SciPy: nancumsum, nanprod, etc. And perhaps functions like anynan, which
@@ -148,6 +148,6 @@ After you have installed Nanny, run the suite of unit tests::
     >>> import nanny
     >>> nanny.test()
     <snip>
-    Ran 3 tests in 0.640s
+    Ran 5 tests in 1.390s
     OK
-    <nose.result.TextTestResult run=3 errors=0 failures=0> 
+    <nose.result.TextTestResult run=5 errors=0 failures=0> 
