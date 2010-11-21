@@ -140,6 +140,6 @@ After you have installed Nanny, run the suite of unit tests::
     >>> import nanny
     >>> nanny.test()
     <snip>
-    Ran 2 tests in 0.640s
+    Ran 3 tests in 0.640s
     OK
-    <nose.result.TextTestResult run=2 errors=0 failures=0> 
+    <nose.result.TextTestResult run=3 errors=0 failures=0> 

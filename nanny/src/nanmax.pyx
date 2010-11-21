@@ -95,6 +95,10 @@ def nanmax(arr, axis=None):
     arr = np.asarray(arr)
     ndim = arr.ndim
     dtype = arr.dtype
+    size = arr.size
+    if size == 0:
+        msg = "numpy.nanmax() raises on size=0 input; so nanny does too." 
+        raise ValueError, msg
     if axis != None:
         if axis < 0:
             axis += ndim

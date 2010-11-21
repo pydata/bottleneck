@@ -1,9 +1,9 @@
 "Test nan functions."
 
 import numpy as np
-from numpy.testing import assert_equal, assert_array_equal
+from numpy.testing import assert_equal, assert_array_equal, assert_raises
 nan = np.nan
-from nanny import nansum, nanmax
+import nanny as ny
 
 
 def arrays(dtypes=['int32', 'int64', 'float64']):
@@ -52,9 +52,23 @@ def unit_maker(func, func0):
 
 def test_nansum():
     "Test nansum."
-    yield unit_maker, nansum, np.nansum
+    yield unit_maker, ny.nansum, np.nansum
 
 def test_nanmax():
     "Test nanmax."
-    yield unit_maker, nanmax, np.nanmax
-    
+    yield unit_maker, ny.nanmax, np.nanmax
+
+# ---------------------------------------------------------------------------
+# Check that exceptions are raised
+
+def test_nanmax_size_zero():
+    dtypes = ['int32', 'int64', 'float64']
+    shapes = [(0,), (2,0), (1,2,0)]
+    for shape in shapes:
+        for dtype in dtypes:
+            a = np.zeros(shape, dtype=dtype)
+            assert_raises(ValueError, ny.nanmax, a)
+            assert_raises(ValueError, np.nanmax, a)
+            
+
+            
