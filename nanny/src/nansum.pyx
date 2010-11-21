@@ -1,37 +1,37 @@
 "nansum"
 
-select_nansum = {}
+cdef dict nansum_dict = {}
 
 #     Dim dtype axis
-select_nansum[(1, f64, 0)] = nansum_1d_float64_axis0
-select_nansum[(1, f64, N)] = nansum_1d_float64_axis0
-select_nansum[(2, f64, 0)] = nansum_2d_float64_axis0
-select_nansum[(2, f64, 1)] = nansum_2d_float64_axis1
-select_nansum[(2, f64, N)] = nansum_2d_float64_axisNone
-select_nansum[(3, f64, 0)] = nansum_3d_float64_axis0
-select_nansum[(3, f64, 1)] = nansum_3d_float64_axis1
-select_nansum[(3, f64, 2)] = nansum_3d_float64_axis2
-select_nansum[(3, f64, N)] = nansum_3d_float64_axisNone
+nansum_dict[(1, f64, 0)] = nansum_1d_float64_axis0
+nansum_dict[(1, f64, N)] = nansum_1d_float64_axis0
+nansum_dict[(2, f64, 0)] = nansum_2d_float64_axis0
+nansum_dict[(2, f64, 1)] = nansum_2d_float64_axis1
+nansum_dict[(2, f64, N)] = nansum_2d_float64_axisNone
+nansum_dict[(3, f64, 0)] = nansum_3d_float64_axis0
+nansum_dict[(3, f64, 1)] = nansum_3d_float64_axis1
+nansum_dict[(3, f64, 2)] = nansum_3d_float64_axis2
+nansum_dict[(3, f64, N)] = nansum_3d_float64_axisNone
 
-select_nansum[(1, i32, 0)] = nansum_1d_int32_axis0
-select_nansum[(1, i32, N)] = nansum_1d_int32_axis0
-select_nansum[(2, i32, 0)] = nansum_2d_int32_axis0
-select_nansum[(2, i32, 1)] = nansum_2d_int32_axis1
-select_nansum[(2, i32, N)] = nansum_2d_int32_axisNone
-select_nansum[(3, i32, 0)] = nansum_3d_int32_axis0
-select_nansum[(3, i32, 1)] = nansum_3d_int32_axis1
-select_nansum[(3, i32, 2)] = nansum_3d_int32_axis2
-select_nansum[(3, i32, N)] = nansum_3d_int32_axisNone
+nansum_dict[(1, i32, 0)] = nansum_1d_int32_axis0
+nansum_dict[(1, i32, N)] = nansum_1d_int32_axis0
+nansum_dict[(2, i32, 0)] = nansum_2d_int32_axis0
+nansum_dict[(2, i32, 1)] = nansum_2d_int32_axis1
+nansum_dict[(2, i32, N)] = nansum_2d_int32_axisNone
+nansum_dict[(3, i32, 0)] = nansum_3d_int32_axis0
+nansum_dict[(3, i32, 1)] = nansum_3d_int32_axis1
+nansum_dict[(3, i32, 2)] = nansum_3d_int32_axis2
+nansum_dict[(3, i32, N)] = nansum_3d_int32_axisNone
 
-select_nansum[(1, i64, 0)] = nansum_1d_int64_axis0
-select_nansum[(1, i64, N)] = nansum_1d_int64_axis0
-select_nansum[(2, i64, 0)] = nansum_2d_int64_axis0
-select_nansum[(2, i64, 1)] = nansum_2d_int64_axis1
-select_nansum[(2, i64, N)] = nansum_2d_int64_axisNone
-select_nansum[(3, i64, 0)] = nansum_3d_int64_axis0
-select_nansum[(3, i64, 1)] = nansum_3d_int64_axis1
-select_nansum[(3, i64, 2)] = nansum_3d_int64_axis2
-select_nansum[(3, i64, N)] = nansum_3d_int64_axisNone
+nansum_dict[(1, i64, 0)] = nansum_1d_int64_axis0
+nansum_dict[(1, i64, N)] = nansum_1d_int64_axis0
+nansum_dict[(2, i64, 0)] = nansum_2d_int64_axis0
+nansum_dict[(2, i64, 1)] = nansum_2d_int64_axis1
+nansum_dict[(2, i64, N)] = nansum_2d_int64_axisNone
+nansum_dict[(3, i64, 0)] = nansum_3d_int64_axis0
+nansum_dict[(3, i64, 1)] = nansum_3d_int64_axis1
+nansum_dict[(3, i64, 2)] = nansum_3d_int64_axis2
+nansum_dict[(3, i64, N)] = nansum_3d_int64_axisNone
 
 
 def nansum(arr, axis=None):
@@ -99,20 +99,27 @@ def nansum(arr, axis=None):
     nan
     
     """
-    arr = np.asarray(arr)
-    ndim = arr.ndim
-    dtype = arr.dtype
+    func, arr = nansum_selector(arr, axis)
+    return func(arr)
+
+def nansum_selector(arr, axis):
+    "Return nansum function that matches `arr` and `axis` and return `arr`."
+    cdef np.ndarray a = np.array(arr, copy=False)
+    cdef int ndim = a.ndim
+    cdef np.dtype dtype = a.dtype
+    cdef int size = a.size
     if axis != None:
         if axis < 0:
             axis += ndim
         if (axis < 0) or (axis >= ndim):
             raise ValueError, "axis(=%d) out of bounds" % axis
+    cdef tuple key = (ndim, dtype, axis)
     try:
-        func = select_nansum[(ndim, dtype, axis)]
+        func = nansum_dict[key]
     except KeyError:
         tup = (str(ndim), str(dtype))
         raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
-    return func(arr)
+    return func, a
 
 # One dimensional -----------------------------------------------------------
 

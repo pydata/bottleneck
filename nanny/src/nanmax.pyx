@@ -2,38 +2,38 @@
 cdef np.int32_t MININT32 = np.iinfo(np.int32).min
 cdef np.int64_t MININT64 = np.iinfo(np.int64).min
 
-select_nanmax = {}
+cdef dict nanmax_dict = {}
 
 #     Dim dtype axis
-select_nanmax[(1, f64, 0)] = nanmax_1d_float64_axis0
-select_nanmax[(1, f64, N)] = nanmax_1d_float64_axis0
-select_nanmax[(2, f64, 0)] = nanmax_2d_float64_axis0
-select_nanmax[(2, f64, 1)] = nanmax_2d_float64_axis1
-select_nanmax[(2, f64, N)] = nanmax_2d_float64_axisNone
-select_nanmax[(3, f64, 0)] = nanmax_3d_float64_axis0
-select_nanmax[(3, f64, 1)] = nanmax_3d_float64_axis1
-select_nanmax[(3, f64, 2)] = nanmax_3d_float64_axis2
-select_nanmax[(3, f64, N)] = nanmax_3d_float64_axisNone
+nanmax_dict[(1, f64, 0)] = nanmax_1d_float64_axis0
+nanmax_dict[(1, f64, N)] = nanmax_1d_float64_axis0
+nanmax_dict[(2, f64, 0)] = nanmax_2d_float64_axis0
+nanmax_dict[(2, f64, 1)] = nanmax_2d_float64_axis1
+nanmax_dict[(2, f64, N)] = nanmax_2d_float64_axisNone
+nanmax_dict[(3, f64, 0)] = nanmax_3d_float64_axis0
+nanmax_dict[(3, f64, 1)] = nanmax_3d_float64_axis1
+nanmax_dict[(3, f64, 2)] = nanmax_3d_float64_axis2
+nanmax_dict[(3, f64, N)] = nanmax_3d_float64_axisNone
 
-select_nanmax[(1, i32, 0)] = nanmax_1d_int32_axis0
-select_nanmax[(1, i32, N)] = nanmax_1d_int32_axis0
-select_nanmax[(2, i32, 0)] = nanmax_2d_int32_axis0
-select_nanmax[(2, i32, 1)] = nanmax_2d_int32_axis1
-select_nanmax[(2, i32, N)] = nanmax_2d_int32_axisNone
-select_nanmax[(3, i32, 0)] = nanmax_3d_int32_axis0
-select_nanmax[(3, i32, 1)] = nanmax_3d_int32_axis1
-select_nanmax[(3, i32, 2)] = nanmax_3d_int32_axis2
-select_nanmax[(3, i32, N)] = nanmax_3d_int32_axisNone
+nanmax_dict[(1, i32, 0)] = nanmax_1d_int32_axis0
+nanmax_dict[(1, i32, N)] = nanmax_1d_int32_axis0
+nanmax_dict[(2, i32, 0)] = nanmax_2d_int32_axis0
+nanmax_dict[(2, i32, 1)] = nanmax_2d_int32_axis1
+nanmax_dict[(2, i32, N)] = nanmax_2d_int32_axisNone
+nanmax_dict[(3, i32, 0)] = nanmax_3d_int32_axis0
+nanmax_dict[(3, i32, 1)] = nanmax_3d_int32_axis1
+nanmax_dict[(3, i32, 2)] = nanmax_3d_int32_axis2
+nanmax_dict[(3, i32, N)] = nanmax_3d_int32_axisNone
 
-select_nanmax[(1, i64, 0)] = nanmax_1d_int64_axis0
-select_nanmax[(1, i64, N)] = nanmax_1d_int64_axis0
-select_nanmax[(2, i64, 0)] = nanmax_2d_int64_axis0
-select_nanmax[(2, i64, 1)] = nanmax_2d_int64_axis1
-select_nanmax[(2, i64, N)] = nanmax_2d_int64_axisNone
-select_nanmax[(3, i64, 0)] = nanmax_3d_int64_axis0
-select_nanmax[(3, i64, 1)] = nanmax_3d_int64_axis1
-select_nanmax[(3, i64, 2)] = nanmax_3d_int64_axis2
-select_nanmax[(3, i64, N)] = nanmax_3d_int64_axisNone
+nanmax_dict[(1, i64, 0)] = nanmax_1d_int64_axis0
+nanmax_dict[(1, i64, N)] = nanmax_1d_int64_axis0
+nanmax_dict[(2, i64, 0)] = nanmax_2d_int64_axis0
+nanmax_dict[(2, i64, 1)] = nanmax_2d_int64_axis1
+nanmax_dict[(2, i64, N)] = nanmax_2d_int64_axisNone
+nanmax_dict[(3, i64, 0)] = nanmax_3d_int64_axis0
+nanmax_dict[(3, i64, 1)] = nanmax_3d_int64_axis1
+nanmax_dict[(3, i64, 2)] = nanmax_3d_int64_axis2
+nanmax_dict[(3, i64, N)] = nanmax_3d_int64_axisNone
 
 
 def nanmax(arr, axis=None):
@@ -92,10 +92,15 @@ def nanmax(arr, axis=None):
     inf
     
     """
-    arr = np.asarray(arr)
-    ndim = arr.ndim
-    dtype = arr.dtype
-    size = arr.size
+    func, arr = nanmax_selector(arr, axis)
+    return func(arr)
+
+def nanmax_selector(arr, axis):
+    "Return nanmax function that matches `arr` and `axis` and return `arr`."
+    cdef np.ndarray a = np.array(arr, copy=False)
+    cdef int ndim = a.ndim
+    cdef np.dtype dtype = a.dtype
+    cdef int size = a.size
     if size == 0:
         msg = "numpy.nanmax() raises on size=0 input; so nanny does too." 
         raise ValueError, msg
@@ -104,12 +109,13 @@ def nanmax(arr, axis=None):
             axis += ndim
         if (axis < 0) or (axis >= ndim):
             raise ValueError, "axis(=%d) out of bounds" % axis
+    cdef tuple key = (ndim, dtype, axis)
     try:
-        func = select_nanmax[(ndim, dtype, axis)]
+        func = nanmax_dict[key]
     except KeyError:
         tup = (str(ndim), str(dtype))
         raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
-    return func(arr)
+    return func, a
 
 # One dimensional -----------------------------------------------------------
 
