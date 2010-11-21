@@ -36,32 +36,49 @@ Nanny comes with a benchmark suite. To run it::
     Nanny performance benchmark
         Nanny 0.0.1dev
         Numpy 1.4.1
-        Speed is numpy time divided by nanny time
+        Scipy 0.7.2
+        Speed is numpy (or scipy) time divided by nanny time
         NaN means all NaNs
-       Speed   Test                Shape        dtype    NaN?
-       6.6884  nansum(a, axis=-1)  (500,500)    int64  
-       4.7998  nansum(a, axis=-1)  (10000,)     float64  
-      13.1576  nansum(a, axis=-1)  (500,500)    int32  
-       3.0553  nansum(a, axis=-1)  (500,500)    float64  
-      12.2908  nansum(a, axis=-1)  (10000,)     int32  
-       6.7347  nansum(a, axis=-1)  (10000,)     int64  
-      51.9741  nansum(a, axis=-1)  (500,500)    float64  NaN
-      14.2142  nansum(a, axis=-1)  (10000,)     float64  NaN
-       6.5308  nanmax(a, axis=-1)  (500,500)    int64  
-       9.0980  nanmax(a, axis=-1)  (10000,)     float64  
-       0.2057  nanmax(a, axis=-1)  (500,500)    int32  
-       6.9793  nanmax(a, axis=-1)  (500,500)    float64  
-       5.1443  nanmax(a, axis=-1)  (10000,)     int32  
-       6.7844  nanmax(a, axis=-1)  (10000,)     int64  
-      49.7016  nanmax(a, axis=-1)  (500,500)    float64  NaN
-      14.9575  nanmax(a, axis=-1)  (10000,)     float64  NaN
+       Speed   Test                  Shape        dtype    NaN?
+       6.6993  nansum(a, axis=-1)    (500,500)    int64  
+       4.7808  nansum(a, axis=-1)    (10000,)     float64  
+       9.0643  nansum(a, axis=-1)    (500,500)    int32  
+       3.0613  nansum(a, axis=-1)    (500,500)    float64  
+      12.2880  nansum(a, axis=-1)    (10000,)     int32  
+       6.5898  nansum(a, axis=-1)    (10000,)     int64  
+      51.8468  nansum(a, axis=-1)    (500,500)    float64  NaN
+      14.2356  nansum(a, axis=-1)    (10000,)     float64  NaN
+       6.5372  nanmax(a, axis=-1)    (500,500)    int64  
+       9.0228  nanmax(a, axis=-1)    (10000,)     float64  
+       0.2057  nanmax(a, axis=-1)    (500,500)    int32  
+       6.9709  nanmax(a, axis=-1)    (500,500)    float64  
+       5.3256  nanmax(a, axis=-1)    (10000,)     int32  
+       6.6707  nanmax(a, axis=-1)    (10000,)     int64  
+      49.2855  nanmax(a, axis=-1)    (500,500)    float64  NaN
+      15.0949  nanmax(a, axis=-1)    (10000,)     float64  NaN
+       6.5437  nanmin(a, axis=-1)    (500,500)    int64  
+       6.6848  nanmin(a, axis=-1)    (10000,)     float64  
+       0.2055  nanmin(a, axis=-1)    (500,500)    int32  
+       4.4637  nanmin(a, axis=-1)    (500,500)    float64  
+       5.2699  nanmin(a, axis=-1)    (10000,)     int32  
+       6.6840  nanmin(a, axis=-1)    (10000,)     int64  
+      48.7196  nanmin(a, axis=-1)    (500,500)    float64  NaN
+      14.9203  nanmin(a, axis=-1)    (10000,)     float64  NaN
+      15.0894  nanmean(a, axis=-1)   (500,500)    int64  
+       9.8500  nanmean(a, axis=-1)   (10000,)     float64  
+      14.1432  nanmean(a, axis=-1)   (500,500)    int32  
+       8.4550  nanmean(a, axis=-1)   (500,500)    float64  
+      15.3149  nanmean(a, axis=-1)   (10000,)     int32  
+      15.8668  nanmean(a, axis=-1)   (10000,)     int64  
+      38.8327  nanmean(a, axis=-1)   (500,500)    float64  NaN
+      18.9413  nanmean(a, axis=-1)   (10000,)     float64  NaN
 
 Faster
 ======
 
 Under the hood Nanny uses a separate Cython function for each combination of
 ndim, dtype, and axis. A lot of the overhead in ny.nanmax, for example, is
-in checking the your axis is within range, converting non-array data to an
+in checking that your axis is within range, converting non-array data to an
 array, and selecting the function to use to calculate nanmax.
 
 You can get rid of the overhead by doing all this before you, say, enter
@@ -94,10 +111,11 @@ Functions
 
 Nanny is in the prototype stage. (Feedback welcomed!)
 
-It currently contains the following functions: nanmax, nanmin, nansum.
+It currently contains the following functions: nanmax, nanmin, nanmean,
+nansum.
 
-Functions that will appear in later releases of Nanny: nanmean, nanstd,
-nanmedian (using a partial sort).
+Functions that will appear in later releases of Nanny: nanstd, nanmedian
+(using a partial sort).
 
 It may also be useful to add functions that do not currently appear in NumPy
 or SciPy: nancumsum, nanprod, etc. And perhaps functions like anynan, which
@@ -148,6 +166,6 @@ After you have installed Nanny, run the suite of unit tests::
     >>> import nanny
     >>> nanny.test()
     <snip>
-    Ran 5 tests in 1.390s
+    Ran 6 tests in 2.040s
     OK
-    <nose.result.TextTestResult run=5 errors=0 failures=0> 
+    <nose.result.TextTestResult run=6 errors=0 failures=0> 

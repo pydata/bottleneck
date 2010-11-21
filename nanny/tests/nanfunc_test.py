@@ -1,7 +1,9 @@
 "Test nan functions."
 
 import numpy as np
-from numpy.testing import assert_equal, assert_array_equal, assert_raises
+import scipy.stats as sp
+from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
+                           assert_array_almost_equal)
 nan = np.nan
 import nanny as ny
 
@@ -31,7 +33,7 @@ def arrays(dtypes=['int32', 'int64', 'float64']):
                     yield a
                     yield -a
 
-def unit_maker(func, func0):
+def unit_maker(func, func0, decimal=np.inf):
     "Test that ny.nanxxx gives the same output as np.."
     msg = '\nfunc %s | input %s (%s) | shape %s | axis %s\n'
     msg += '\nInput array:\n%s\n'
@@ -42,7 +44,10 @@ def unit_maker(func, func0):
             tup = (func.__name__, 'a'+str(i), str(arr.dtype), str(arr.shape),
                    str(axis), arr)
             err_msg = msg % tup
-            assert_array_equal(actual, desired, err_msg)
+            if (decimal < np.inf) and (np.isfinite(arr).sum() > 0):
+                assert_array_almost_equal(actual, desired, decimal, err_msg)
+            else:
+                assert_array_equal(actual, desired, err_msg)
             err_msg += '\n dtype mismatch %s %s'
             if hasattr(actual, 'dtype') or hasattr(desired, 'dtype'):
                 da = actual.dtype
@@ -60,6 +65,10 @@ def test_nanmax():
 def test_nanmin():
     "Test nanmin."
     yield unit_maker, ny.nanmin, np.nanmin
+
+def test_nanmean():
+    "Test nanmean."
+    yield unit_maker, ny.nanmean, sp.nanmean, 13
 
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
@@ -83,5 +92,3 @@ def test_nanmin_size_zero():
             a = np.zeros(shape, dtype=dtype)
             assert_raises(ValueError, ny.nanmin, a)
             assert_raises(ValueError, np.nanmin, a)
-
-            
