@@ -168,7 +168,8 @@ quantile*    move_quantile*   group_quantile*
 count*       move_count*      group_count*
 =========    ==============   ===============
 
-Currently only 1d, 2d, and 3d NumPy arrays with dtype int32, int64, and float64 are supported.
+Currently only 1d, 2d, and 3d NumPy arrays with dtype int32, int64, and
+float64 are supported.
 
 License
 =======
