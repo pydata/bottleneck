@@ -2,6 +2,9 @@
 DSNA
 ====
 
+Introduction
+============
+
 DSNA uses the magic of Cython to give you fast, NaN-aware descriptive
 statistics of NumPy arrays.
 
@@ -43,21 +46,21 @@ Fast
 
 DNSA is fast::
 
-    >> import dsna as ds
-    >> import numpy as np
-    >> arr = np.random.rand(100, 100)
+    >>> import dsna as ds
+    >>> import numpy as np
+    >>> arr = np.random.rand(100, 100)
     
-    >> timeit np.nansum(arr)
+    >>> timeit np.nansum(arr)
     10000 loops, best of 3: 68.4 us per loop
-    >> timeit ds.sum(arr)
+    >>> timeit ds.sum(arr)
     100000 loops, best of 3: 17.7 us per loop
 
 Let's not forget to add some NaNs::
 
-    >> arr[arr > 0.5] = np.nan
-    >> timeit np.nansum(arr)
+    >>> arr[arr > 0.5] = np.nan
+    >>> timeit np.nansum(arr)
     1000 loops, best of 3: 417 us per loop
-    >> timeit ds.sum(arr)
+    >>> timeit ds.sum(arr)
     10000 loops, best of 3: 64.8 us per loop
 
 DSNA comes with a benchmark suite that compares the performance of the dsna
@@ -178,7 +181,7 @@ which is distributed with dsna, for details.
 Install
 =======
 
-You can grab dsna at http://github.com/kwgoodman/dsna
+You can grab dsna from http://github.com/kwgoodman/dsna
 
 **GNU/Linux, Mac OS X, et al.**
 

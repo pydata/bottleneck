@@ -27,4 +27,4 @@ bench:
 
 .PHONY: clean
 clean:
-	rm -rf *~ *.so *.c *.o *.html build ../*.so
+	rm -rf *~ *.so *.c *.o *.html build ../*.so func/*.c

@@ -2,8 +2,8 @@
 License
 =======
 
-DSNA is distributed under a Simplified BSD license. Parts of NumPy and SciPy
-are included in dsna.
+DSNA is distributed under a Simplified BSD license. Parts of NumPy, SciPy and
+and numpydoc, which all have BSD licenses, are included in dsna.
 
 DSNA license
 ============
@@ -37,7 +37,8 @@ POSSIBILITY OF SUCH DAMAGE.
 Other licenses
 ==============
 
-DSNA contains doc strings from NumPy and SciPy.
+DSNA contains doc strings from NumPy and SciPy and Sphinx extensions from
+numpydoc.
 
 
 NumPy license
@@ -109,3 +110,9 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
 LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
+
+
+numpydoc license
+----------------
+
+The numpydoc license is in dsna/doc/sphinxext/LICENSE.txt 
