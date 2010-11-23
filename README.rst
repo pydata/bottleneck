@@ -5,7 +5,43 @@ DSNA
 DSNA uses the magic of Cython to give you fast, NaN-aware descriptive
 statistics of NumPy arrays.
 
-For example::
+The functions in dsna fall into three categories:
+
+===============  ===============================
+ General          sum(arr, axis=None)
+ Moving window    move_sum(arr, window, axis=0)
+ Group by         group_sum(arr, label, axis=0)
+===============  ===============================
+
+For example, create a NumPy array::
+    
+    >>> import numpy as np
+    >>> arr = np.array([1, 2, np.nan, 4, 5])
+
+Then find the sum::
+
+    >>> import dsna as ds
+    >>> ds.sum(arr)
+    12.0
+
+Moving window sum::
+
+    >>> ds.move_sum(arr, window=2)
+    array([ nan,   3.,   2.,   4.,   9.])
+
+Group sum::   
+
+    >>> label = ['a', 'a', 'b', 'b', 'a']
+    >>> a, lab = ds.group_sum(arr, label)
+    >>> a
+    array([ 8.,  4.])
+    >>> lab
+    ['a', 'b']
+
+Fast
+====
+
+DNSA is fast::
 
     >> import dsna as ds
     >> import numpy as np
@@ -24,13 +60,8 @@ Let's not forget to add some NaNs::
     >> timeit ds.sum(arr)
     10000 loops, best of 3: 64.8 us per loop
 
-Remember, dsna quickly protects your precious data from the corrupting
-influence of Mr. Nan.
-
-Fast
-====
-
-DSNA comes with a benchmark suite. To run it::
+DSNA comes with a benchmark suite that compares the performance of the dsna
+functions that have a NumPy/SciPy equivalent. To run the benchmark::
     
     >>> ds.benchit(verbose=False)
     DSNA performance benchmark
@@ -87,7 +118,7 @@ Faster
 Under the hood dsna uses a separate Cython function for each combination of
 ndim, dtype, and axis. A lot of the overhead in ds.max, for example, is
 in checking that your axis is within range, converting non-array data to an
-array, and selecting the function to use to calculate max.
+array, and selecting the function to use to calculate tha maximum.
 
 You can get rid of the overhead by doing all this before you, say, enter
 an inner loop::
@@ -117,19 +148,25 @@ So adding NaN protection to your inner loops has a negative cost!
 Functions
 =========
 
-DSNA is in the prototype stage. (Feedback welcomed!)
+DSNA is in the prototype stage.
 
-DSNA currently contains the following functions: max, min, mean,
-std, var, sum.
+DSNA contains the following functions (an asterisk means not yet complete): 
 
-Functions that will appear in later releases of dsna: median (using a
-partial sort).
+=========    ==============   ===============
+sum*         move_sum*        group_sum*
+mean         move_mean*       group_mean*
+var          move_var*        group_var*
+std          move_std*        group_std*
+min          move_min*        group_min*
+max          move_max*        group_max*
+median*      move_median*     group_median*
+zscore*      move_zscore*     group_zscore*
+ranking*     move_ranking*    group_ranking*
+quantile*    move_quantile*   group_quantile*
+count*       move_count*      group_count*
+=========    ==============   ===============
 
-It may also be useful to add functions that do not currently appear in NumPy
-or SciPy: cumsum, prod, etc. And perhaps functions like anynan, which
-could short-circuit once a NaN is found.
-
-Currently only 1d, 2d, and 3d arrays with NumPy dtype int32, int64, and float64 are supported.
+Currently only 1d, 2d, and 3d NumPy arrays with dtype int32, int64, and float64 are supported.
 
 License
 =======
@@ -142,8 +179,6 @@ Install
 =======
 
 You can grab dsna at http://github.com/kwgoodman/dsna
-
-nansum of ints is only supported by 64-bit operating systems at the moment. 
 
 **GNU/Linux, Mac OS X, et al.**
 
