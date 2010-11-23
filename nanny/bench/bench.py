@@ -46,12 +46,14 @@ def suite():
 
     # Nanny
     s = ['ny.nansum(a, axis=-1)', 'ny.nanmax(a, axis=-1)',
-         'ny.nanmin(a, axis=-1)', 'ny.nanmean(a, axis=-1)']
+         'ny.nanmin(a, axis=-1)', 'ny.nanmean(a, axis=-1)',
+         'ny.nanstd(a, axis=-1)']
     statements['nanny'] = s
     
     # Numpy
     s = ['np.nansum(a, axis=-1)', 'np.nanmax(a, axis=-1)',
-         'np.nanmin(a, axis=-1)', 'sp.nanmean(a, axis=-1)' ]
+         'np.nanmin(a, axis=-1)', 'sp.nanmean(a, axis=-1)',
+         'sp.nanstd(a, axis=-1)']
     statements['numpy/scipy'] = s
     
     return statements, setups

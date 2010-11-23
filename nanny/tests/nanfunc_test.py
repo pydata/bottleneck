@@ -74,6 +74,10 @@ def test_nanstd():
     "Test nanmin."
     yield unit_maker, ny.nanstd, scipy_nanstd
 
+def test_nanvar():
+    "Test nanmin."
+    yield unit_maker, ny.nanvar, scipy_nanstd_squared, 13
+
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
 
@@ -103,3 +107,9 @@ def test_nanmin_size_zero():
 def scipy_nanstd(a, axis, bias=True):
     "For bias to True for scipy.stats.nanstd"
     return sp.nanstd(a, axis, bias=True)
+
+def scipy_nanstd_squared(a, axis, bias=True):
+    "For bias to True for scipy.stats.nanstd"
+    x = sp.nanstd(a, axis, bias=True)
+    return x * x
+
