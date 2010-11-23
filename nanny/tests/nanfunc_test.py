@@ -70,6 +70,10 @@ def test_nanmean():
     "Test nanmean."
     yield unit_maker, ny.nanmean, sp.nanmean, 13
 
+def test_nanstd():
+    "Test nanmin."
+    yield unit_maker, ny.nanstd, scipy_nanstd
+
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
 
@@ -92,3 +96,10 @@ def test_nanmin_size_zero():
             a = np.zeros(shape, dtype=dtype)
             assert_raises(ValueError, ny.nanmin, a)
             assert_raises(ValueError, np.nanmin, a)
+
+# ---------------------------------------------------------------------------
+# Unit test utility functions
+
+def scipy_nanstd(a, axis, bias=True):
+    "For bias to True for scipy.stats.nanstd"
+    return sp.nanstd(a, axis, bias=True)

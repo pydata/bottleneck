@@ -112,14 +112,16 @@ Functions
 Nanny is in the prototype stage. (Feedback welcomed!)
 
 It currently contains the following functions: nanmax, nanmin, nanmean,
-nansum.
+nanstd, nansum.
 
-Functions that will appear in later releases of Nanny: nanstd, nanmedian
-(using a partial sort).
+Functions that will appear in later releases of Nanny: nanmedian (using a
+partial sort).
 
 It may also be useful to add functions that do not currently appear in NumPy
 or SciPy: nancumsum, nanprod, etc. And perhaps functions like anynan, which
 could short-circuit once a NaN is found.
+
+Currently only 1d, 2d, and 3d arrays with NumPy dtype int32, int64, and float64 are supported.
 
 License
 =======
@@ -166,6 +168,6 @@ After you have installed Nanny, run the suite of unit tests::
     >>> import nanny
     >>> nanny.test()
     <snip>
-    Ran 6 tests in 2.040s
+    Ran 7 tests in 2.040s
     OK
-    <nose.result.TextTestResult run=6 errors=0 failures=0> 
+    <nose.result.TextTestResult run=7 errors=0 failures=0> 
