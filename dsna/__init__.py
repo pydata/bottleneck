@@ -8,4 +8,4 @@ try:
     test = Tester().test
     del Tester
 except (ImportError, ValueError):
-    print "No Nanny unit testing available."
+    print "No dsna unit testing available."

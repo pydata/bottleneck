@@ -14,8 +14,8 @@ help:
 all: clean build test
 
 build:
-	python setup.py build_ext --inplace
-	cp func.so ../func.so
+	python func/setup.py build_ext --inplace
+	mv func.so ../func.so
 
 test:
 	python -c "import dsna; dsna.test()"
