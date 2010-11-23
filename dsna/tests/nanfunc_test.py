@@ -5,7 +5,7 @@ import scipy.stats as sp
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
                            assert_array_almost_equal)
 nan = np.nan
-import nanny as ny
+import dsna as ds
 
 
 def arrays(dtypes=['int32', 'int64', 'float64']):
@@ -34,7 +34,7 @@ def arrays(dtypes=['int32', 'int64', 'float64']):
                     yield -a
 
 def unit_maker(func, func0, decimal=np.inf):
-    "Test that ny.nanxxx gives the same output as np.."
+    "Test that ds.nanxxx gives the same output as np.."
     msg = '\nfunc %s | input %s (%s) | shape %s | axis %s\n'
     msg += '\nInput array:\n%s\n'
     for i, arr in enumerate(arrays()):
@@ -56,27 +56,27 @@ def unit_maker(func, func0, decimal=np.inf):
 
 def test_nansum():
     "Test nansum."
-    yield unit_maker, ny.nansum, np.nansum
+    yield unit_maker, ds.nansum, np.nansum
 
 def test_nanmax():
     "Test nanmax."
-    yield unit_maker, ny.nanmax, np.nanmax
+    yield unit_maker, ds.nanmax, np.nanmax
 
 def test_nanmin():
     "Test nanmin."
-    yield unit_maker, ny.nanmin, np.nanmin
+    yield unit_maker, ds.nanmin, np.nanmin
 
 def test_nanmean():
     "Test nanmean."
-    yield unit_maker, ny.nanmean, sp.nanmean, 13
+    yield unit_maker, ds.nanmean, sp.nanmean, 13
 
 def test_nanstd():
     "Test nanmin."
-    yield unit_maker, ny.nanstd, scipy_nanstd
+    yield unit_maker, ds.nanstd, scipy_nanstd
 
 def test_nanvar():
     "Test nanmin."
-    yield unit_maker, ny.nanvar, scipy_nanstd_squared, 13
+    yield unit_maker, ds.nanvar, scipy_nanstd_squared, 13
 
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
@@ -88,7 +88,7 @@ def test_nanmax_size_zero():
     for shape in shapes:
         for dtype in dtypes:
             a = np.zeros(shape, dtype=dtype)
-            assert_raises(ValueError, ny.nanmax, a)
+            assert_raises(ValueError, ds.nanmax, a)
             assert_raises(ValueError, np.nanmax, a)
             
 def test_nanmin_size_zero():
@@ -98,7 +98,7 @@ def test_nanmin_size_zero():
     for shape in shapes:
         for dtype in dtypes:
             a = np.zeros(shape, dtype=dtype)
-            assert_raises(ValueError, ny.nanmin, a)
+            assert_raises(ValueError, ds.nanmin, a)
             assert_raises(ValueError, np.nanmin, a)
 
 # ---------------------------------------------------------------------------

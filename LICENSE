@@ -2,11 +2,11 @@
 License
 =======
 
-Nanny is distributed under a Simplified BSD license. Parts of NumPy and SciPy
-are included in Nanny.
+DSNA is distributed under a Simplified BSD license. Parts of NumPy and SciPy
+are included in dsna.
 
-Nanny license
-=============
+DSNA license
+============
 
 Copyright (c) 2010, Archipel Asset Management AB.
 All rights reserved.
@@ -37,7 +37,7 @@ POSSIBILITY OF SUCH DAMAGE.
 Other licenses
 ==============
 
-Nanny contains doc strings from NumPy and SciPy.
+DSNA contains doc strings from NumPy and SciPy.
 
 
 NumPy license

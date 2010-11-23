@@ -18,10 +18,10 @@ build:
 	cp func.so ../func.so
 
 test:
-	python -c "import nanny; nanny.test()"
+	python -c "import dsna; dsna.test()"
 
 bench:
-	python -c "import nanny; nanny.benchit()"
+	python -c "import dsna; dsna.benchit()"
 
 # Phony targets for cleanup and similar uses
 

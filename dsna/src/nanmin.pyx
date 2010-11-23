@@ -77,18 +77,18 @@ def nanmin(arr, axis=None):
     Examples
     --------
     >>> a = np.array([[1, 2], [3, np.nan]])
-    >>> ny.nanmin(a)
+    >>> ds.nanmin(a)
     3.0
-    >>> ny.nanmin(a, axis=0)
+    >>> ds.nanmin(a, axis=0)
     array([ 3.,  2.])
-    >>> ny.nanmin(a, axis=1)
+    >>> ds.nanmin(a, axis=1)
     array([ 2.,  3.])
 
     When positive infinity and negative infinity are present:
 
-    >>> ny.nanmin([1, 2, np.nan, np.NINF])
+    >>> ds.nanmin([1, 2, np.nan, np.NINF])
     2.0
-    >>> ny.nanmin([1, 2, np.nan, np.inf])
+    >>> ds.nanmin([1, 2, np.nan, np.inf])
     inf
     
     """
@@ -102,7 +102,7 @@ def nanmin_selector(arr, axis):
     cdef np.dtype dtype = a.dtype
     cdef int size = a.size
     if size == 0:
-        msg = "numpy.nanmin() raises on size=0 input; so nanny does too." 
+        msg = "numpy.nanmin() raises on size=0 input; sdsnaa does too." 
         raise ValueError, msg
     if axis != None:
         if axis < 0:

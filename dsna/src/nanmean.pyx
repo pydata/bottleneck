@@ -77,25 +77,25 @@ def nanmean(arr, axis=None):
     
     Examples
     --------
-    >>> ny.nansum(1)
+    >>> ds.nansum(1)
     1
-    >>> ny.nansum([1])
+    >>> ds.nansum([1])
     1
-    >>> ny.nansum([1, np.nan])
+    >>> ds.nansum([1, np.nan])
     1.0
     >>> a = np.array([[1, 1], [1, np.nan]])
-    >>> ny.nansum(a)
+    >>> ds.nansum(a)
     3.0
-    >>> ny.nansum(a, axis=0)
+    >>> ds.nansum(a, axis=0)
     array([ 2.,  1.])
 
     When positive infinity and negative infinity are present
 
-    >>> ny.nansum([1, np.nan, np.inf])
+    >>> ds.nansum([1, np.nan, np.inf])
     inf
-    >>> ny.nansum([1, np.nan, np.NINF])
+    >>> ds.nansum([1, np.nan, np.NINF])
     -inf
-    >>> ny.nansum([1, np.nan, np.inf, np.NINF])
+    >>> ds.nansum([1, np.nan, np.inf, np.NINF])
     nan
     
     """

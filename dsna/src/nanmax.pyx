@@ -77,18 +77,18 @@ def nanmax(arr, axis=None):
     Examples
     --------
     >>> a = np.array([[1, 2], [3, np.nan]])
-    >>> ny.nanmax(a)
+    >>> ds.nanmax(a)
     3.0
-    >>> ny.nanmax(a, axis=0)
+    >>> ds.nanmax(a, axis=0)
     array([ 3.,  2.])
-    >>> ny.nanmax(a, axis=1)
+    >>> ds.nanmax(a, axis=1)
     array([ 2.,  3.])
 
     When positive infinity and negative infinity are present:
 
-    >>> ny.nanmax([1, 2, np.nan, np.NINF])
+    >>> ds.nanmax([1, 2, np.nan, np.NINF])
     2.0
-    >>> ny.nanmax([1, 2, np.nan, np.inf])
+    >>> ds.nanmax([1, 2, np.nan, np.inf])
     inf
     
     """
@@ -102,7 +102,7 @@ def nanmax_selector(arr, axis):
     cdef np.dtype dtype = a.dtype
     cdef int size = a.size
     if size == 0:
-        msg = "numpy.nanmax() raises on size=0 input; so nanny does too." 
+        msg = "numpy.nanmax() raises on size=0 input; so dsna does too." 
         raise ValueError, msg
     if axis != None:
         if axis < 0:

@@ -1,7 +1,7 @@
 
 import numpy as np
 import scipy
-import nanny as ny
+import dsna as ds
 from autotimeit import autotimeit
 
 __all__ = ['benchit']
@@ -35,20 +35,20 @@ def suite():
     statements = {}
     setups = {}
     
-    setups['(10000,) float64'] = "import numpy as np; import scipy.stats as sp; import nanny as ny; from nanny.bench.bench import geta; N=10000; a = geta((N,), 'float64')"
-    setups['(500,500) float64'] = "import numpy as np; import scipy.stats as sp; import nanny as ny; from nanny.bench.bench import geta; N=500; a = geta((N, N), 'float64')"
-    setups['(10000,) float64 NaN'] = "import numpy as np; import scipy.stats as sp; import nanny as ny; from nanny.bench.bench import geta; N=10000; a = geta((N,), 'float64', True)"
-    setups['(500,500) float64 NaN'] = "import numpy as np; import scipy.stats as sp; import nanny as ny; from nanny.bench.bench import geta; N=500; a = geta((N, N), 'float64', True)"
-    setups['(10000,) int32'] = "import numpy as np; import scipy.stats as sp; import nanny as ny; from nanny.bench.bench import geta; N=10000; a = geta((N,), 'int32')"
-    setups['(500,500) int32'] = "import numpy as np; import scipy.stats as sp; import nanny as ny; from nanny.bench.bench import geta; N=500; a = geta((N, N), 'int32')"
-    setups['(10000,) int64'] = "import numpy as np; import scipy.stats as sp; import nanny as ny; from nanny.bench.bench import geta; N=10000; a = geta((N,), 'int64')"
-    setups['(500,500) int64'] = "import numpy as np; import scipy.stats as sp; import nanny as ny; from nanny.bench.bench import geta; N=500; a = geta((N, N), 'int64')"
+    setups['(10000,) float64'] = "import numpy as np; import scipy.stats as sp; import dsna as ds; from dsna.bench.bench import geta; N=10000; a = geta((N,), 'float64')"
+    setups['(500,500) float64'] = "import numpy as np; import scipy.stats as sp; import dsna as ds; from dsna.bench.bench import geta; N=500; a = geta((N, N), 'float64')"
+    setups['(10000,) float64 NaN'] = "import numpy as np; import scipy.stats as sp; import dsna as ds; from dsna.bench.bench import geta; N=10000; a = geta((N,), 'float64', True)"
+    setups['(500,500) float64 NaN'] = "import numpy as np; import scipy.stats as sp; import dsna as ds; from dsna.bench.bench import geta; N=500; a = geta((N, N), 'float64', True)"
+    setups['(10000,) int32'] = "import numpy as np; import scipy.stats as sp; import dsna as ds; from dsna.bench.bench import geta; N=10000; a = geta((N,), 'int32')"
+    setups['(500,500) int32'] = "import numpy as np; import scipy.stats as sp; import dsna as ds; from dsna.bench.bench import geta; N=500; a = geta((N, N), 'int32')"
+    setups['(10000,) int64'] = "import numpy as np; import scipy.stats as sp; import dsna as ds; from dsna.bench.bench import geta; N=10000; a = geta((N,), 'int64')"
+    setups['(500,500) int64'] = "import numpy as np; import scipy.stats as sp; import dsna as ds; from dsna.bench.bench import geta; N=500; a = geta((N, N), 'int64')"
 
-    # Nanny
-    s = ['ny.nansum(a, axis=-1)', 'ny.nanmax(a, axis=-1)',
-         'ny.nanmin(a, axis=-1)', 'ny.nanmean(a, axis=-1)',
-         'ny.nanstd(a, axis=-1)']
-    statements['nanny'] = s
+    # DSNA
+    s = ['ds.nansum(a, axis=-1)', 'ds.nanmax(a, axis=-1)',
+         'ds.nanmin(a, axis=-1)', 'ds.nanmean(a, axis=-1)',
+         'ds.nanstd(a, axis=-1)']
+    statements['DSNA'] = s
     
     # Numpy
     s = ['np.nansum(a, axis=-1)', 'np.nanmax(a, axis=-1)',
@@ -60,14 +60,14 @@ def suite():
 
 def display(results):
     results = list(results)
-    na = [i for i in results if i[0].startswith('ny.')]
+    na = [i for i in results if i[0].startswith('ds.')]
     nu = [i for i in results if i[0].startswith('np.') or
                                                     i[0].startswith('sp.')]
-    print 'Nanny performance benchmark'
-    print "\tNanny %s" % ny.__version__
+    print 'DSNA performance benchmark'
+    print "\tDSNA  %s" % ds.__version__
     print "\tNumpy %s" % np.__version__
     print "\tScipy %s" % scipy.__version__
-    print "\tSpeed is numpy (or scipy) time divided by nanny time"
+    print "\tSpeed is numpy (or scipy) time divided by dsna time"
     print "\tNaN means all NaNs"
     print "   Speed   Test                  Shape        dtype    NaN?"
     for nai in na:

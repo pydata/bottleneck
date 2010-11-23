@@ -15,13 +15,13 @@ CLASSIFIERS = ["Development Status :: 2 - Pre-Alpha",
                "Programming Language :: Python",
                "Topic :: Scientific/Engineering"]
 
-description = "Faster, drop-in replacement for NumPy and SciPy NaN functions."
+description = "Fast, NaN-aware descriptive statistics of NumPy arrays."
 long_description = """
 No long description yet.
 """
 
 # Get la version
-ver_file = os.path.join('nanny', 'version.py')
+ver_file = os.path.join('dsna', 'version.py')
 fid = file(ver_file, 'r')
 VER = fid.read()
 fid.close()
@@ -30,7 +30,7 @@ VER = VER[1].strip()
 VER = VER.strip("\"")
 VER = VER.split('.')
 
-NAME                = 'nanny'
+NAME                = 'dsna'
 MAINTAINER          = "Keith Goodman"
 MAINTAINER_EMAIL    = ""
 DESCRIPTION         = description
@@ -47,7 +47,7 @@ MINOR               = VER[1]
 MICRO               = VER[2]
 ISRELEASED          = False
 VERSION             = '%s.%s.%s' % (MAJOR, MINOR, MICRO)
-PACKAGES            = ["nanny", "nanny/src", "nanny/tests"]
+PACKAGES            = ["dsna", "dsna/src", "dsna/tests", "dsna/bench"]
 REQUIRES            = ["numpy"]
 
 
@@ -66,7 +66,7 @@ setup(name=NAME,
       version=VERSION,
       packages=PACKAGES,
       requires=REQUIRES,
-      ext_modules = [Extension("nanny.func",
-                               sources=["nanny/src/func.c"],
+      ext_modules = [Extension("dsna.func",
+                               sources=["dsna/src/func.c"],
                                include_dirs=[numpy.get_include()])]
      )

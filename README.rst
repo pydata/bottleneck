@@ -1,19 +1,19 @@
-=====
-Nanny
-=====
+====
+DSNA
+====
 
-Nanny uses the magic of Cython to give you a faster, drop-in replacement for
-the NaN functions in NumPy and SciPy.
+DSNA uses the magic of Cython to give you fast, NaN-aware descriptive
+statistics of NumPy arrays.
 
 For example::
 
-    >> import nanny as ny
+    >> import dsna as ds
     >> import numpy as np
     >> arr = np.random.rand(100, 100)
     
     >> timeit np.nansum(arr)
     10000 loops, best of 3: 68.4 us per loop
-    >> timeit ny.nansum(arr)
+    >> timeit ds.nansum(arr)
     100000 loops, best of 3: 17.7 us per loop
 
 Let's not forget to add some NaNs::
@@ -21,23 +21,23 @@ Let's not forget to add some NaNs::
     >> arr[arr > 0.5] = np.nan
     >> timeit np.nansum(arr)
     1000 loops, best of 3: 417 us per loop
-    >> timeit ny.nansum(arr)
+    >> timeit ds.nansum(arr)
     10000 loops, best of 3: 64.8 us per loop
 
-Remember, Nanny quickly protects your precious data from the corrupting
+Remember, dsna quickly protects your precious data from the corrupting
 influence of Mr. Nan.
 
 Fast
 ====
 
-Nanny comes with a benchmark suite. To run it::
+DSNA comes with a benchmark suite. To run it::
     
-    >>> ny.benchit(verbose=False)
-    Nanny performance benchmark
-        Nanny 0.0.1dev
+    >>> ds.benchit(verbose=False)
+    DSNA performance benchmark
+        DSNA  0.0.1dev
         Numpy 1.5.1
         Scipy 0.8.0
-        Speed is numpy (or scipy) time divided by nanny time
+        Speed is numpy (or scipy) time divided by dsna time
         NaN means all NaNs
        Speed   Test                  Shape        dtype    NaN?
        4.8103  nansum(a, axis=-1)    (500,500)    int64  
@@ -84,8 +84,8 @@ Nanny comes with a benchmark suite. To run it::
 Faster
 ======
 
-Under the hood Nanny uses a separate Cython function for each combination of
-ndim, dtype, and axis. A lot of the overhead in ny.nanmax, for example, is
+Under the hood dsna uses a separate Cython function for each combination of
+ndim, dtype, and axis. A lot of the overhead in ds.nanmax, for example, is
 in checking that your axis is within range, converting non-array data to an
 array, and selecting the function to use to calculate nanmax.
 
@@ -94,7 +94,7 @@ an inner loop::
 
     >>> arr = np.random.rand(10,10)
     >>> axis = 0
-    >>> func, a = ny.func.nanmax_selector(arr, axis)
+    >>> func, a = ds.func.nanmax_selector(arr, axis)
     >>> func.__name__
     'nanmax_2d_float64_axis0'
 
@@ -102,7 +102,7 @@ Let's see how much faster than runs::
     
     >> timeit np.nanmax(arr, axis=0)
     10000 loops, best of 3: 25.7 us per loop
-    >> timeit ny.nanmax(arr, axis=0)
+    >> timeit ds.nanmax(arr, axis=0)
     100000 loops, best of 3: 5.25 us per loop
     >> timeit func(a)
     100000 loops, best of 3: 2.5 us per loop
@@ -117,12 +117,12 @@ So adding NaN protection to your inner loops has a negative cost!
 Functions
 =========
 
-Nanny is in the prototype stage. (Feedback welcomed!)
+DSNA is in the prototype stage. (Feedback welcomed!)
 
-Nanny currently contains the following functions: nanmax, nanmin, nanmean,
+DSNA currently contains the following functions: nanmax, nanmin, nanmean,
 nanstd, nanvar, nansum.
 
-Functions that will appear in later releases of Nanny: nanmedian (using a
+Functions that will appear in later releases of dsna: nanmedian (using a
 partial sort).
 
 It may also be useful to add functions that do not currently appear in NumPy
@@ -134,25 +134,25 @@ Currently only 1d, 2d, and 3d arrays with NumPy dtype int32, int64, and float64 
 License
 =======
 
-Nanny is distributed under a Simplified BSD license. Parts of NumPy and Scipy,
-which both have BSD licenses, are included in Nanny. See the LICENSE file,
-which is distributed with Nanny, for details.
+DSNA is distributed under a Simplified BSD license. Parts of NumPy and Scipy,
+which both have BSD licenses, are included in dsna. See the LICENSE file,
+which is distributed with dsna, for details.
 
 Install
 =======
 
-You can grab Nanny at http://github.com/kwgoodman/nanny.
+You can grab dsna at http://github.com/kwgoodman/dsna
 
 nansum of ints is only supported by 64-bit operating systems at the moment. 
 
 **GNU/Linux, Mac OS X, et al.**
 
-To install Nanny::
+To install dsna::
 
     $ python setup.py build
     $ sudo python setup.py install
     
-Or, if you wish to specify where Nanny is installed, for example inside
+Or, if you wish to specify where dsna is installed, for example inside
 ``/usr/local``::
 
     $ python setup.py build
@@ -160,10 +160,10 @@ Or, if you wish to specify where Nanny is installed, for example inside
 
 **Windows**
 
-In order to compile the C code in Nanny you need a Windows version of the gcc
-compiler. MinGW (Minimalist GNU for Windows) contains gcc and has been used to successfully compile Nanny on Windows.
+In order to compile the C code in dsna you need a Windows version of the gcc
+compiler. MinGW (Minimalist GNU for Windows) contains gcc and has been used to successfully compile dsna on Windows.
 
-Install MinGW and add it to your system path. Then install Nanny with the
+Install MinGW and add it to your system path. Then install dsna with the
 commands::
 
     python setup.py build --compiler=mingw32
@@ -171,11 +171,11 @@ commands::
 
 **Post install**
 
-After you have installed Nanny, run the suite of unit tests::
+After you have installed dsna, run the suite of unit tests::
 
-    >>> import nanny
-    >>> nanny.test()
+    >>> import dsna
+    >>> dsna.test()
     <snip>
-    Ran 8 tests in 2.040s
+    Ran 8 tests in 4.692s
     OK
     <nose.result.TextTestResult run=8 errors=0 failures=0> 

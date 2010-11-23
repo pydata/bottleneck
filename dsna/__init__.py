@@ -1,7 +1,7 @@
 
 from func import nansum, nanmax, nanmin, nanmean, nanstd, nanvar
-from nanny.version import __version__
-from nanny.bench.bench import *
+from dsna.version import __version__
+from dsna.bench.bench import *
 
 try:
     from numpy.testing import Tester
