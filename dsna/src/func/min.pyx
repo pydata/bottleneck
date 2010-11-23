@@ -38,65 +38,90 @@ min_dict[(3, i64, N)] = min_3d_int64_axisNone
 
 def min(arr, axis=None):
     """
-    Return the minimum of array elements over the given axis ignoring any NaNs.
+    Minimum along the specified axis, ignoring NaNs.
 
     Parameters
     ----------
-    a : array_like
-        Array containing numbers whose minimum is desired. If `a` is not
-        an array, a conversion is attempted.
-    axis : int, optional
-        Axis along which the minimum is computed.The default is to compute
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the minimum is computed. The default is to compute
         the minimum of the flattened array.
 
     Returns
     -------
     y : ndarray
-        An array with the same shape as `a`, with the specified axis removed.
-        If `a` is a 0-d array, or if axis is None, a scalar is returned. The
-        the same dtype as `a` is returned.
-
-    See Also
-    --------
-    numpy.amin : Maximum across array including any Not a Numbers.
-    numpy.nanmin : Minimum across array ignoring any Not a Numbers.
-    isnan : Shows which elements are Not a Number (NaN).
-    isfinite: Shows which elements are not: Not a Number, positive and
-             negative infinity
-
-    Notes
-    -----
-    Numpy uses the IEEE Standard for Binary Floating-Point for Arithmetic
-    (IEEE 754). This means that Not a Number is not equivalent to infinity.
-    Positive infinity is treated as a very large number and negative infinity
-    is treated as a very small (i.e. negative) number.
-
-    If the input has a integer type, an integer type is returned unless
-    the input contains NaNs and infinity.
-
+        An array with the same shape as `arr`, with the specified axis removed.
+        If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+    
     Examples
     --------
-    >>> a = np.array([[1, 2], [3, np.nan]])
+    >>> ds.min(1)
+    1
+    >>> ds.min([1])
+    1
+    >>> ds.min([1, np.nan])
+    1.0
+    >>> a = np.array([[1, 4], [1, np.nan]])
     >>> ds.min(a)
-    3.0
+    1.0
     >>> ds.min(a, axis=0)
-    array([ 3.,  2.])
-    >>> ds.min(a, axis=1)
-    array([ 2.,  3.])
-
-    When positive infinity and negative infinity are present:
-
-    >>> ds.min([1, 2, np.nan, np.NINF])
-    2.0
-    >>> ds.min([1, 2, np.nan, np.inf])
-    inf
+    array([ 1.,  4.])
     
     """
     func, arr = min_selector(arr, axis)
     return func(arr)
 
 def min_selector(arr, axis):
-    "Return min function that matches `arr` and `axis` and return `arr`."
+    """
+    Return minimum function and array that matches `arr` and `axis`.
+    
+    Under the hood dsna uses a separate Cython function for each combination
+    of ndim, dtype, and axis. A lot of the overhead in ds.min() is in
+    checking that `axis` is within range, converting `arr` into an array (if
+    it is not already an array), and selecting the function to use to
+    calculate the minimum.
+
+    You can get rid of the overhead by doing all this before you, for example,
+    enter an inner loop, by using the this function.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the minimum is to be computed. The default
+        (axis=None) is to compute the minimum of the flattened array.
+    
+    Returns
+    -------
+    func : function
+        The minimum function that matches the number of dimensions and
+        dtype of the input array and the axis along which you wish to find
+        the minimum.
+    a : ndarray
+        If the input array `arr` is not a ndarray, then `a` will contain the
+        result of converting `arr` into a ndarray.
+
+    Examples
+    --------
+    Create a numpy array:
+
+    >>> arr = np.array([1.0, 2.0, 3.0])
+    
+    Obtain the function needed to determine the minimum of `arr` along
+    axis=0:
+
+    >>> func, a = ds.func.min_selector(arr, axis=0)
+    >>> func
+    <built-in function min_1d_float64_axis0> 
+    
+    Use the returned function and array to determine the minimum:
+    
+    >>> func(a)
+    1.0
+
+    """
     cdef np.ndarray a = np.array(arr, copy=False)
     cdef int ndim = a.ndim
     cdef np.dtype dtype = a.dtype

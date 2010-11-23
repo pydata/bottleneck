@@ -121,16 +121,15 @@ Faster
 Under the hood dsna uses a separate Cython function for each combination of
 ndim, dtype, and axis. A lot of the overhead in ds.max, for example, is
 in checking that your axis is within range, converting non-array data to an
-array, and selecting the function to use to calculate tha maximum.
+array, and selecting the function to use to calculate the maximum.
 
 You can get rid of the overhead by doing all this before you, say, enter
 an inner loop::
 
     >>> arr = np.random.rand(10,10)
-    >>> axis = 0
-    >>> func, a = ds.func.max_selector(arr, axis)
-    >>> func.__name__
-    'max_2d_float64_axis0'
+    >>> func, a = ds.func.max_selector(arr, axis=0)
+    >>> func
+    <built-in function max_2d_float64_axis0> 
 
 Let's see how much faster than runs::    
     

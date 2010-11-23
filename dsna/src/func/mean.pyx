@@ -36,66 +36,56 @@ mean_dict[(3, i64, N)] = mean_3d_int64_axisNone
 
 def mean(arr, axis=None):
     """
-    Return the sum of array elements over a given axis treating
-    Not a Numbers (NaNs) as zero.
+    Mean of array elements along given axis ignoring NaNs.
+
+    `float64` intermediate and return values are used for integer inputs.
 
     Parameters
     ----------
-    a : array_like
-        Array containing numbers whose sum is desired. If `a` is not an
+    arr : array_like
+        Array containing numbers whose mean is desired. If `arr` is not an
         array, a conversion is attempted.
-    axis : int, optional
-        Axis along which the sum is computed. The default is to compute
-        the sum of the flattened array.
+    axis : {int, None}, optional
+        Axis along which the mean is computed. The default is to compute the
+        mean of the flattened array.
 
     Returns
     -------
     y : ndarray
-        An array with the same shape as a, with the specified axis removed.
-        If a is a 0-d array, or if axis is None, a scalar is returned with
-        the same dtype as `a`.
-
-    See Also
-    --------
-    numpy.sum : Sum across array including Not a Numbers.
-    isnan : Shows which elements are Not a Number (NaN).
-    isfinite: Shows which elements are not: Not a Number, positive and
-             negative infinity
-
+        An array with the same shape as `arr`, with the specified axis removed.
+        If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+        `float64` intermediate and return values are used for integer inputs. 
+    
     Notes
     -----
-    Numpy uses the IEEE Standard for Binary Floating-Point for Arithmetic
-    (IEEE 754). This means that Not a Number is not equivalent to infinity.
+    No error is raised on overflow. (The sum is computed and then the result
+    is divided by the number of non-NaN elements.)
+
     If positive or negative infinity are present the result is positive or
     negative infinity. But if both positive and negative infinity are present,
     the result is Not A Number (NaN).
 
-    Arithmetic is modular when using integer types (all elements of `a` must
-    be finite i.e. no elements that are NaNs, positive infinity and negative
-    infinity because NaNs are floating point types), and no error is raised
-    on overflow.
-    
     Examples
     --------
-    >>> ds.sum(1)
-    1
-    >>> ds.sum([1])
-    1
-    >>> ds.sum([1, np.nan])
+    >>> ds.mean(1)
     1.0
-    >>> a = np.array([[1, 1], [1, np.nan]])
-    >>> ds.sum(a)
-    3.0
-    >>> ds.sum(a, axis=0)
-    array([ 2.,  1.])
+    >>> ds.mean([1])
+    1.0
+    >>> ds.mean([1, np.nan])
+    1.0
+    >>> a = np.array([[1, 4], [1, np.nan]])
+    >>> ds.mean(a)
+    2.0
+    >>> ds.mean(a, axis=0)
+    array([ 1.,  4.])
 
-    When positive infinity and negative infinity are present
+    When positive infinity and negative infinity are present:
 
-    >>> ds.sum([1, np.nan, np.inf])
+    >>> ds.mean([1, np.nan, np.inf])
     inf
-    >>> ds.sum([1, np.nan, np.NINF])
+    >>> ds.mean([1, np.nan, np.NINF])
     -inf
-    >>> ds.sum([1, np.nan, np.inf, np.NINF])
+    >>> ds.mean([1, np.nan, np.inf, np.NINF])
     nan
     
     """
@@ -103,7 +93,53 @@ def mean(arr, axis=None):
     return func(arr)
 
 def mean_selector(arr, axis):
-    "Return mean function that matches `arr` and `axis` and return `arr`."
+    """
+    Return mean function and array that matches `arr` and `axis`.
+    
+    Under the hood dsna uses a separate Cython function for each combination
+    of ndim, dtype, and axis. A lot of the overhead in ds.mean() is in
+    checking that `axis` is within range, converting `arr` into an array (if
+    it is not already an array), and selecting the function to use to
+    calculate the mean.
+
+    You can get rid of the overhead by doing all this before you, for example,
+    enter an inner loop, by using the this function.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the mean is to be computed. The default (axis=None)
+        is to compute the mean of the flattened array.
+    
+    Returns
+    -------
+    func : function
+        The mean function that matches the number of dimensions and dtype of
+        the input array and the axis along which you wish to find the mean.
+    a : ndarray
+        If the input array `arr` is not a ndarray, then `a` will contain the
+        result of converting `arr` into a ndarray.
+
+    Examples
+    --------
+    Create a numpy array:
+
+    >>> arr = np.array([1.0, 2.0, 3.0])
+    
+    Obtain the function needed to determine the mean of `arr` along axis=0:
+
+    >>> func, a = ds.func.mean_selector(arr, axis=0)
+    >>> func
+    <built-in function mean_1d_float64_axis0> 
+    
+    Use the returned function and array to determine the mean:
+
+    >>> func(a)
+    2.0
+
+    """
     cdef np.ndarray a = np.array(arr, copy=False)
     cdef int ndim = a.ndim
     cdef np.dtype dtype = a.dtype

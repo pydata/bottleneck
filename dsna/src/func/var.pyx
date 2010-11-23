@@ -37,13 +37,104 @@ var_dict[(3, i64, N)] = var_3d_int64_axisNone
 def var(arr, axis=None, int ddof=0):
     """
     Variance along the specified axis, ignoring NaNs.
+
+    `float64` intermediate and return values are used for integer inputs.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the variance is computed. The default is to compute
+        the variance of the flattened array.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape as `arr`, with the specified axis removed.
+        If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+        `float64` intermediate and return values are used for integer inputs. 
+    
+    Notes
+    -----
+    No error is raised on overflow.
+
+    If positive or negative infinity are present the result is Not A Number
+    (NaN).
+
+    Examples
+    --------
+    >>> ds.var(1)
+    0.0
+    >>> ds.var([1])
+    0.0
+    >>> ds.var([1, np.nan])
+    0.0
+    >>> a = np.array([[1, 4], [1, np.nan]])
+    >>> ds.var(a)
+    2.0
+    >>> ds.var(a, axis=0)
+    array([ 0.,  0.])
+
+    When positive infinity or negative infinity are present NaN is returned:
+
+    >>> ds.var([1, np.nan, np.inf])
+    nan
     
     """
     func, arr = var_selector(arr, axis)
     return func(arr, ddof)
 
 def var_selector(arr, axis):
-    "Return var function that matches `arr` and `axis` and return `arr`."
+    """
+    Return variance function and array that matches `arr` and `axis`.
+    
+    Under the hood dsna uses a separate Cython function for each combination
+    of ndim, dtype, and axis. A lot of the overhead in ds.var() is in
+    checking that `axis` is within range, converting `arr` into an array (if
+    it is not already an array), and selecting the function to use to
+    calculate the variance.
+
+    You can get rid of the overhead by doing all this before you, for example,
+    enter an inner loop, by using the this function.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the variance is to be computed. The default
+        (axis=None) is to compute the variance of the flattened array.
+    
+    Returns
+    -------
+    func : function
+        The variance function that matches the number of dimensions and
+        dtype of the input array and the axis along which you wish to find
+        the variance.
+    a : ndarray
+        If the input array `arr` is not a ndarray, then `a` will contain the
+        result of converting `arr` into a ndarray.
+
+    Examples
+    --------
+    Create a numpy array:
+
+    >>> arr = np.array([1.0, 2.0, 3.0])
+    
+    Obtain the function needed to determine the variance of `arr` along
+    axis=0:
+
+    >>> func, a = ds.func.var_selector(arr, axis=0)
+    >>> func
+    <built-in function var_1d_float64_axis0> 
+    
+    Use the returned function and array to determine the variance:
+    
+    >>> func(a)
+    0.66666666666666663
+
+    """
     cdef np.ndarray a = np.array(arr, copy=False)
     cdef int ndim = a.ndim
     cdef np.dtype dtype = a.dtype

@@ -37,13 +37,105 @@ std_dict[(3, i64, N)] = std_3d_int64_axisNone
 def std(arr, axis=None, int ddof=0):
     """
     Standard deviation along the specified axis, ignoring NaNs.
+
+    `float64` intermediate and return values are used for integer inputs.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the standard deviation is computed. The default is
+        to compute the variance of the flattened array.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape as `arr`, with the specified axis removed.
+        If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+        `float64` intermediate and return values are used for integer inputs. 
+    
+    Notes
+    -----
+    No error is raised on overflow.
+
+    If positive or negative infinity are present the result is Not A Number
+    (NaN).
+
+    Examples
+    --------
+    >>> ds.std(1)
+    0.0
+    >>> ds.std([1])
+    0.0
+    >>> ds.std([1, np.nan])
+    0.0
+    >>> a = np.array([[1, 4], [1, np.nan]])
+    >>> ds.std(a)
+    1.4142135623730951
+    >>> ds.std(a, axis=0)
+    array([ 0.,  0.])
+
+    When positive infinity or negative infinity are present NaN is returned:
+
+    >>> ds.std([1, np.nan, np.inf])
+    nan
     
     """
     func, arr = std_selector(arr, axis)
     return func(arr, ddof)
 
 def std_selector(arr, axis):
-    "Return std function that matches `arr` and `axis` and return `arr`."
+    """
+    Return std function and array that matches `arr` and `axis`.
+    
+    Under the hood dsna uses a separate Cython function for each combination
+    of ndim, dtype, and axis. A lot of the overhead in ds.std() is in
+    checking that `axis` is within range, converting `arr` into an array (if
+    it is not already an array), and selecting the function to use to
+    calculate the standard deviation.
+
+    You can get rid of the overhead by doing all this before you, for example,
+    enter an inner loop, by using the this function.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the standard deviation is to be computed. The
+        default (axis=None) is to compute the standard deviation of the
+        flattened array.
+    
+    Returns
+    -------
+    func : function
+        The standard deviation function that matches the number of dimensions
+        and dtype of the input array and the axis along which you wish to
+        find the standard deviation.
+    a : ndarray
+        If the input array `arr` is not a ndarray, then `a` will contain the
+        result of converting `arr` into a ndarray.
+
+    Examples
+    --------
+    Create a numpy array:
+
+    >>> arr = np.array([1.0, 2.0, 3.0])
+    
+    Obtain the function needed to determine the standard deviation of `arr`
+    along axis=0:
+
+    >>> func, a = ds.func.std_selector(arr, axis=0)
+    >>> func
+    <built-in function std_1d_float64_axis0> 
+    
+    Use the returned function and array to determine the standard deviation:
+    
+    >>> func(a)
+    0.81649658092772603
+
+    """
     cdef np.ndarray a = np.array(arr, copy=False)
     cdef int ndim = a.ndim
     cdef np.dtype dtype = a.dtype
