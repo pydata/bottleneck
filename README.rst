@@ -13,7 +13,7 @@ For example::
     
     >> timeit np.nansum(arr)
     10000 loops, best of 3: 68.4 us per loop
-    >> timeit ds.nansum(arr)
+    >> timeit ds.sum(arr)
     100000 loops, best of 3: 17.7 us per loop
 
 Let's not forget to add some NaNs::
@@ -21,7 +21,7 @@ Let's not forget to add some NaNs::
     >> arr[arr > 0.5] = np.nan
     >> timeit np.nansum(arr)
     1000 loops, best of 3: 417 us per loop
-    >> timeit ds.nansum(arr)
+    >> timeit ds.sum(arr)
     10000 loops, best of 3: 64.8 us per loop
 
 Remember, dsna quickly protects your precious data from the corrupting
@@ -85,24 +85,24 @@ Faster
 ======
 
 Under the hood dsna uses a separate Cython function for each combination of
-ndim, dtype, and axis. A lot of the overhead in ds.nanmax, for example, is
+ndim, dtype, and axis. A lot of the overhead in ds.max, for example, is
 in checking that your axis is within range, converting non-array data to an
-array, and selecting the function to use to calculate nanmax.
+array, and selecting the function to use to calculate max.
 
 You can get rid of the overhead by doing all this before you, say, enter
 an inner loop::
 
     >>> arr = np.random.rand(10,10)
     >>> axis = 0
-    >>> func, a = ds.func.nanmax_selector(arr, axis)
+    >>> func, a = ds.func.max_selector(arr, axis)
     >>> func.__name__
-    'nanmax_2d_float64_axis0'
+    'max_2d_float64_axis0'
 
 Let's see how much faster than runs::    
     
     >> timeit np.nanmax(arr, axis=0)
     10000 loops, best of 3: 25.7 us per loop
-    >> timeit ds.nanmax(arr, axis=0)
+    >> timeit ds.max(arr, axis=0)
     100000 loops, best of 3: 5.25 us per loop
     >> timeit func(a)
     100000 loops, best of 3: 2.5 us per loop
@@ -119,14 +119,14 @@ Functions
 
 DSNA is in the prototype stage. (Feedback welcomed!)
 
-DSNA currently contains the following functions: nanmax, nanmin, nanmean,
-nanstd, nanvar, nansum.
+DSNA currently contains the following functions: max, min, mean,
+std, var, sum.
 
-Functions that will appear in later releases of dsna: nanmedian (using a
+Functions that will appear in later releases of dsna: median (using a
 partial sort).
 
 It may also be useful to add functions that do not currently appear in NumPy
-or SciPy: nancumsum, nanprod, etc. And perhaps functions like anynan, which
+or SciPy: cumsum, prod, etc. And perhaps functions like anynan, which
 could short-circuit once a NaN is found.
 
 Currently only 1d, 2d, and 3d arrays with NumPy dtype int32, int64, and float64 are supported.

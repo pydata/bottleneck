@@ -45,10 +45,10 @@ def suite():
     setups['(500,500) int64'] = "import numpy as np; import scipy.stats as sp; import dsna as ds; from dsna.bench.bench import geta; N=500; a = geta((N, N), 'int64')"
 
     # DSNA
-    s = ['ds.nansum(a, axis=-1)', 'ds.nanmax(a, axis=-1)',
-         'ds.nanmin(a, axis=-1)', 'ds.nanmean(a, axis=-1)',
-         'ds.nanstd(a, axis=-1)']
-    statements['DSNA'] = s
+    s = ['ds.sum(a, axis=-1)', 'ds.max(a, axis=-1)',
+         'ds.min(a, axis=-1)', 'ds.mean(a, axis=-1)',
+         'ds.std(a, axis=-1)']
+    statements['dsna'] = s
     
     # Numpy
     s = ['np.nansum(a, axis=-1)', 'np.nanmax(a, axis=-1)',
@@ -71,12 +71,12 @@ def display(results):
     print "\tNaN means all NaNs"
     print "   Speed   Test                  Shape        dtype    NaN?"
     for nai in na:
-        nui = [i for i in nu if i[0][3:]==nai[0][3:] and i[1]==nai[1]]
+        nui = [i for i in nu if i[0][6:]==nai[0][3:] and i[1]==nai[1]]
         if len(nui) != 1:
             raise RuntimeError, "Cannot parse benchmark results."
         nui = nui[0]
         des = nai[1].split(' ')
-        tup = [nui[2]/nai[2], nai[0][3:].ljust(20), des[0].ljust(13), des[1]]
+        tup = [nui[2]/nai[2], nui[0][3:].ljust(20), des[0].ljust(13), des[1]]
         if len(des) ==  3:
             tup += [des[2]]
         else:

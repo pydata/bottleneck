@@ -1,5 +1,5 @@
 
-from func import nansum, nanmax, nanmin, nanmean, nanstd, nanvar
+from func import sum, max, min, mean, std, var
 from dsna.version import __version__
 from dsna.bench.bench import *
 

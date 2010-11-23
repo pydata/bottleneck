@@ -1,4 +1,4 @@
-"Test nan functions."
+"Test functions."
 
 import numpy as np
 import scipy.stats as sp
@@ -34,7 +34,7 @@ def arrays(dtypes=['int32', 'int64', 'float64']):
                     yield -a
 
 def unit_maker(func, func0, decimal=np.inf):
-    "Test that ds.nanxxx gives the same output as np.."
+    "Test that ds.xxx gives the same output as np.."
     msg = '\nfunc %s | input %s (%s) | shape %s | axis %s\n'
     msg += '\nInput array:\n%s\n'
     for i, arr in enumerate(arrays()):
@@ -54,51 +54,51 @@ def unit_maker(func, func0, decimal=np.inf):
                 dd = desired.dtype
                 assert_equal(da, dd, err_msg % (da, dd))
 
-def test_nansum():
-    "Test nansum."
-    yield unit_maker, ds.nansum, np.nansum
+def test_sum():
+    "Test sum."
+    yield unit_maker, ds.sum, np.nansum
 
-def test_nanmax():
-    "Test nanmax."
-    yield unit_maker, ds.nanmax, np.nanmax
+def test_max():
+    "Test max."
+    yield unit_maker, ds.max, np.nanmax
 
-def test_nanmin():
-    "Test nanmin."
-    yield unit_maker, ds.nanmin, np.nanmin
+def test_min():
+    "Test min."
+    yield unit_maker, ds.min, np.nanmin
 
-def test_nanmean():
-    "Test nanmean."
-    yield unit_maker, ds.nanmean, sp.nanmean, 13
+def test_mean():
+    "Test mean."
+    yield unit_maker, ds.mean, sp.nanmean, 13
 
-def test_nanstd():
-    "Test nanmin."
-    yield unit_maker, ds.nanstd, scipy_nanstd
+def test_std():
+    "Test min."
+    yield unit_maker, ds.std, scipy_nanstd
 
-def test_nanvar():
-    "Test nanmin."
-    yield unit_maker, ds.nanvar, scipy_nanstd_squared, 13
+def test_var():
+    "Test min."
+    yield unit_maker, ds.var, scipy_nanstd_squared, 13
 
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
 
-def test_nanmax_size_zero():
-    "Test nanmax for size zero input arrays."
+def test_max_size_zero():
+    "Test max for size zero input arrays."
     dtypes = ['int32', 'int64', 'float64']
     shapes = [(0,), (2,0), (1,2,0)]
     for shape in shapes:
         for dtype in dtypes:
             a = np.zeros(shape, dtype=dtype)
-            assert_raises(ValueError, ds.nanmax, a)
+            assert_raises(ValueError, ds.max, a)
             assert_raises(ValueError, np.nanmax, a)
             
-def test_nanmin_size_zero():
-    "Test nanmin for size zero input arrays."
+def test_min_size_zero():
+    "Test min for size zero input arrays."
     dtypes = ['int32', 'int64', 'float64']
     shapes = [(0,), (2,0), (1,2,0)]
     for shape in shapes:
         for dtype in dtypes:
             a = np.zeros(shape, dtype=dtype)
-            assert_raises(ValueError, ds.nanmin, a)
+            assert_raises(ValueError, ds.min, a)
             assert_raises(ValueError, np.nanmin, a)
 
 # ---------------------------------------------------------------------------
