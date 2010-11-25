@@ -7,19 +7,14 @@ categories: functions, moving window functions, and group-by functions.
 
 DSNA provides the following functions (an asterisk means not yet complete):
 
-==========================  ==============   ===============
-:meth:`sum <dsna.sum>`      move_sum*        group_sum*
-:meth:`mean <dsna.mean>`    move_mean*       group_mean*
-:meth:`var <dsna.var>`      move_var*        group_var*
-:meth:`std <dsna.std>`      move_std*        group_std*
-:meth:`min <dsna.min>`      move_min*        group_min*
-:meth:`max <dsna.max>`      move_max*        group_max*
-median*                     move_median*     group_median*
-zscore*                     move_zscore*     group_zscore*
-ranking*                    move_ranking*    group_ranking*
-quantile*                   move_quantile*   group_quantile*
-count*                      move_count*      group_count*
-==========================  ==============   ===============
+==========================  ================================= ===============
+:meth:`sum <dsna.sum>`      :meth:`move_sum <dsna.move_sum>`  group_sum*
+:meth:`mean <dsna.mean>`    move_mean*                        group_mean*
+:meth:`var <dsna.var>`      move_var*                         group_var*
+:meth:`std <dsna.std>`      move_std*                         group_std*
+:meth:`min <dsna.min>`      move_min*                         group_min*
+:meth:`max <dsna.max>`      move_max*                         group_max*
+==========================  ================================= ===============
 
 
 Functions
@@ -53,6 +48,10 @@ Functions
 
 Moving window functions
 -----------------------
+
+------------
+
+.. autofunction:: dsna.move_sum
 
 
 Group functions

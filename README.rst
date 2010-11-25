@@ -214,6 +214,6 @@ After you have installed dsna, run the suite of unit tests::
     >>> import dsna
     >>> dsna.test()
     <snip>
-    Ran 8 tests in 4.692s
+    Ran 9 tests in 5.572s
     OK
-    <nose.result.TextTestResult run=8 errors=0 failures=0> 
+    <nose.result.TextTestResult run=9 errors=0 failures=0> 

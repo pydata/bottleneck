@@ -1,5 +1,6 @@
 
 from func import sum, max, min, mean, std, var
+from move import move_sum
 from dsna.version import __version__
 from dsna.bench.bench import *
 
