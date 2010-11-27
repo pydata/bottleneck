@@ -5,16 +5,16 @@ Reference
 Most of the functionality of the ``dsna`` package falls into three broad
 categories: functions, moving window functions, and group-by functions.
 
-DSNA provides the following functions (an asterisk means not yet complete):
+DSNA provides the following functions:
 
-==========================  ================================= ===============
-:meth:`sum <dsna.sum>`      :meth:`move_sum <dsna.move_sum>`  group_sum*
-:meth:`mean <dsna.mean>`    move_mean*                        group_mean*
-:meth:`var <dsna.var>`      move_var*                         group_var*
-:meth:`std <dsna.std>`      move_std*                         group_std*
-:meth:`min <dsna.min>`      move_min*                         group_min*
-:meth:`max <dsna.max>`      move_max*                         group_max*
-==========================  ================================= ===============
+==========================  ================================= =====================================
+:meth:`sum <dsna.sum>`      :meth:`move_sum <dsna.move_sum>`  
+:meth:`mean <dsna.mean>`                                      :meth:`group_mean <dsna.group_mean>`
+:meth:`var <dsna.var>`                               
+:meth:`std <dsna.std>`                               
+:meth:`min <dsna.min>`                               
+:meth:`max <dsna.max>`                               
+==========================  ================================= =====================================
 
 
 Functions
@@ -57,5 +57,6 @@ Moving window functions
 Group functions
 ---------------
 
+------------
 
-
+.. autofunction:: dsna.group_mean

@@ -13,17 +13,22 @@ help:
 
 all: clean build test
 
-build: function moving
+build: funcs moves groups
 	
-function:
+funcs:
 	rm -rf func/func.c ../func.so
 	python func/setup.py build_ext --inplace
 	mv func.so ../func.so
 	
-moving:
-	rm -rf move.move.c ../move.so
+moves:
+	rm -rf move/move.c ../move.so
 	python move/setup.py build_ext --inplace
 	mv move.so ../move.so
+
+groups:
+	rm -rf group/group.c ../group.so
+	python group/setup.py build_ext --inplace
+	mv group.so ../group.so
 
 test:
 	python -c "import dsna; dsna.test()"

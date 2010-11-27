@@ -32,14 +32,15 @@ Moving window sum::
     >>> ds.move_sum(arr, window=2)
     array([ nan,   3.,   2.,   4.,   9.])
 
-Group sum::   
+Group mean::   
 
     >>> label = ['a', 'a', 'b', 'b', 'a']
-    >>> a, lab = ds.group_sum(arr, label)
-    >>> a
-    array([ 8.,  4.])
-    >>> lab
-    ['a', 'b']
+    >>> ds.group_mean(arr, label)
+    (array([ 2.66666667,  4.        ]), ['a', 'b'])
+    >>> ds.group_mean(arr, label, order=['b', 'a'])
+    (array([ 4.        ,  2.66666667]), ['b', 'a'])
+    >>> ds.group_mean(arr, label, order=['b'])
+    (array([ 4.]), ['b'])
 
 Fast
 ====
@@ -214,6 +215,6 @@ After you have installed dsna, run the suite of unit tests::
     >>> import dsna
     >>> dsna.test()
     <snip>
-    Ran 9 tests in 5.572s
+    Ran 10 tests in 13.756s
     OK
-    <nose.result.TextTestResult run=9 errors=0 failures=0> 
+    <nose.result.TextTestResult run=10 errors=0 failures=0> 
