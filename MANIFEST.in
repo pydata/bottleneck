@@ -1,6 +1,6 @@
-include LICENSE README.rst RELEASE.rst dsna/LICENSE
-include dsna/src/MakeFile
-include dsna/src/func/setup.py
-recursive-include dsna/src/func *.pyx
+include LICENSE README.rst RELEASE.rst bottleneck/LICENSE
+include bottleneck/src/MakeFile
+include bottleneck/src/func/setup.py
+recursive-include bottleneck/src/func *.pyx
 recursive-include doc *
 recursive-exclude doc/build *

@@ -1,8 +1,8 @@
-====
-DSNA
-====
+==========
+Bottleneck
+==========
 
-Fast, NaN-aware descriptive statistics of NumPy arrays:
+Bottleneck is a collection of fast, NumPy array functions written in Cython.
 
 .. toctree::
    :maxdepth: 2

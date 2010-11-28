@@ -31,10 +31,10 @@ groups:
 	mv group.so ../group.so
 
 test:
-	python -c "import dsna; dsna.test()"
+	python -c "import bottleneck; bottleneck.test()"
 
 bench:
-	python -c "import dsna; dsna.benchit()"
+	python -c "import bottleneck; bottleneck.benchit()"
 
 # Phony targets for cleanup and similar uses
 

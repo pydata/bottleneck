@@ -4,8 +4,8 @@ import numpy as np
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
                            assert_array_almost_equal)
 nan = np.nan
-import dsna as ds
-from dsna.testing.move_validators import move_sum as alt_move_sum
+import bottleneck as bn
+from bottleneck.testing.move_validators import move_sum as alt_move_sum
 
 
 def arrays(dtypes=['float64']):
@@ -30,7 +30,7 @@ def arrays(dtypes=['float64']):
                     yield -a
 
 def unit_maker(func, func0, decimal=np.inf):
-    "Test that ds.xxx gives the same output as a reference function."
+    "Test that bn.xxx gives the same output as a reference function."
     msg = '\nfunc %s | window %d | input %s (%s) | shape %s | axis %s\n'
     msg += '\nInput array:\n%s\n'
     for i, arr in enumerate(arrays()):
@@ -57,4 +57,4 @@ def unit_maker(func, func0, decimal=np.inf):
 
 def test_move_sum():
     "Test move_sum."
-    yield unit_maker, ds.move_sum, alt_move_sum
+    yield unit_maker, bn.move_sum, alt_move_sum

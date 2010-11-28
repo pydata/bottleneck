@@ -1,59 +1,57 @@
-====
-DSNA
-====
+==========
+Bottleneck
+==========
 
 Introduction
 ============
 
-DSNA uses the magic of Cython to give you fast, NaN-aware descriptive
-statistics of NumPy arrays.
+Bottleneck is a collection of fast, NumPy array functions written in Cython.
 
-The functions in dsna fall into three categories:
+The three categories of Bottleneck functions:
 
-===============  ===============================
- General          sum(arr, axis=None)
- Moving window    move_sum(arr, window, axis=0)
- Group by         group_sum(arr, label, axis=0)
-===============  ===============================
+- Faster, drop-in replacement for NaN functions in NumPy and SciPy
+- Moving window functions
+- Group functions that bin calculations by like-labeled elements  
 
-For example, create a NumPy array::
+Function signatures (using mean as an example):
+
+===============  ============================================
+ NaN functions    mean(arr, axis=None)
+ Moving window    move_mean(arr, window, axis=0)
+ Group by         group_mean(arr, label, order=None, axis=0)
+===============  ============================================
+
+Let's give it a try. Create a NumPy array::
     
     >>> import numpy as np
     >>> arr = np.array([1, 2, np.nan, 4, 5])
 
-Then find the sum::
+Find the sum::
 
-    >>> import dsna as ds
-    >>> ds.sum(arr)
+    >>> import bottleneck as bn
+    >>> bn.sum(arr)
     12.0
 
 Moving window sum::
 
-    >>> ds.move_sum(arr, window=2)
+    >>> bn.move_sum(arr, window=2)
     array([ nan,   3.,   2.,   4.,   9.])
 
 Group mean::   
 
     >>> label = ['a', 'a', 'b', 'b', 'a']
-    >>> ds.group_mean(arr, label)
+    >>> bn.group_mean(arr, label)
     (array([ 2.66666667,  4.        ]), ['a', 'b'])
-    >>> ds.group_mean(arr, label, order=['b', 'a'])
-    (array([ 4.        ,  2.66666667]), ['b', 'a'])
-    >>> ds.group_mean(arr, label, order=['b'])
-    (array([ 4.]), ['b'])
 
 Fast
 ====
 
-DNSA is fast::
+Bottleneck is fast::
 
-    >>> import dsna as ds
-    >>> import numpy as np
-    >>> arr = np.random.rand(100, 100)
-    
+    >>> arr = np.random.rand(100, 100)    
     >>> timeit np.nansum(arr)
     10000 loops, best of 3: 68.4 us per loop
-    >>> timeit ds.sum(arr)
+    >>> timeit bn.sum(arr)
     100000 loops, best of 3: 17.7 us per loop
 
 Let's not forget to add some NaNs::
@@ -61,18 +59,19 @@ Let's not forget to add some NaNs::
     >>> arr[arr > 0.5] = np.nan
     >>> timeit np.nansum(arr)
     1000 loops, best of 3: 417 us per loop
-    >>> timeit ds.sum(arr)
+    >>> timeit bn.sum(arr)
     10000 loops, best of 3: 64.8 us per loop
 
-DSNA comes with a benchmark suite that compares the performance of the dsna
-functions that have a NumPy/SciPy equivalent. To run the benchmark::
+Bottleneck comes with a benchmark suite that compares the performance of the
+bottleneck functions that have a NumPy/SciPy equivalent. To run the
+benchmark::
     
-    >>> ds.benchit(verbose=False)
-    DSNA performance benchmark
-        DSNA  0.0.1dev
-        Numpy 1.5.1
-        Scipy 0.8.0
-        Speed is numpy (or scipy) time divided by dsna time
+    >>> bn.benchit(verbose=False)
+    Bottleneck performance benchmark
+        Bottleneck  0.1.0dev
+        Numpy       1.5.1
+        Scipy       0.8.0
+        Speed is numpy (or scipy) time divided by Bottleneck time
         NaN means all NaNs
        Speed   Test                  Shape        dtype    NaN?
        4.8103  nansum(a, axis=-1)    (500,500)    int64  
@@ -119,54 +118,49 @@ functions that have a NumPy/SciPy equivalent. To run the benchmark::
 Faster
 ======
 
-Under the hood dsna uses a separate Cython function for each combination of
-ndim, dtype, and axis. A lot of the overhead in ds.max, for example, is
-in checking that your axis is within range, converting non-array data to an
+Under the hood Bottleneck uses a separate Cython function for each combination
+of ndim, dtype, and axis. A lot of the overhead in bn.max(), for example, is
+in checking that the axis is within range, converting non-array data to an
 array, and selecting the function to use to calculate the maximum.
 
 You can get rid of the overhead by doing all this before you, say, enter
 an inner loop::
 
     >>> arr = np.random.rand(10,10)
-    >>> func, a = ds.func.max_selector(arr, axis=0)
+    >>> func, a = bn.func.max_selector(arr, axis=0)
     >>> func
     <built-in function max_2d_float64_axis0> 
 
-Let's see how much faster than runs::    
+Let's see how much faster than runs::
     
     >> timeit np.nanmax(arr, axis=0)
     10000 loops, best of 3: 25.7 us per loop
-    >> timeit ds.max(arr, axis=0)
+    >> timeit bn.max(arr, axis=0)
     100000 loops, best of 3: 5.25 us per loop
     >> timeit func(a)
     100000 loops, best of 3: 2.5 us per loop
 
-Note that ``func`` is faster than the Numpy's non-nan version of max::
+Note that ``func`` is faster than Numpy's non-NaN version of max::
     
     >> timeit arr.max(axis=0)
     100000 loops, best of 3: 3.28 us per loop
 
-So adding NaN protection to your inner loops has a negative cost!           
+So adding NaN protection to your inner loops comes at a negative cost!           
 
 Functions
 =========
 
-DSNA is in the prototype stage.
+Bottleneck is in the prototype stage.
 
-DSNA contains the following functions (an asterisk means not yet complete): 
+Bottleneck contains the following functions:
 
 =========    ==============   ===============
-sum*         move_sum*        group_sum*
-mean         move_mean*       group_mean*
-var          move_var*        group_var*
-std          move_std*        group_std*
-min          move_min*        group_min*
-max          move_max*        group_max*
-median*      move_median*     group_median*
-zscore*      move_zscore*     group_zscore*
-ranking*     move_ranking*    group_ranking*
-quantile*    move_quantile*   group_quantile*
-count*       move_count*      group_count*
+sum          move_sum         
+mean                          group_mean
+var                  
+std          
+min          
+max          
 =========    ==============   ===============
 
 Currently only 1d, 2d, and 3d NumPy arrays with dtype int32, int64, and
@@ -175,23 +169,24 @@ float64 are supported.
 License
 =======
 
-DSNA is distributed under a Simplified BSD license. Parts of NumPy and Scipy,
-which both have BSD licenses, are included in dsna. See the LICENSE file,
-which is distributed with dsna, for details.
+Bottleneck is distributed under a Simplified BSD license. Parts of NumPy,
+Scipy and numpydoc, all of which have BSD licenses, are included in
+Bottleneck. See the LICENSE file, which is distributed with Bottleneck, for
+details.
 
-Install
-=======
+Download and install
+====================
 
-You can grab dsna from http://github.com/kwgoodman/dsna
+You can grab Bottleneck from http://github.com/kwgoodman/bottleneck
 
 **GNU/Linux, Mac OS X, et al.**
 
-To install dsna::
+To install Bottleneck::
 
     $ python setup.py build
     $ sudo python setup.py install
     
-Or, if you wish to specify where dsna is installed, for example inside
+Or, if you wish to specify where Bottleneck is installed, for example inside
 ``/usr/local``::
 
     $ python setup.py build
@@ -210,10 +205,10 @@ commands::
 
 **Post install**
 
-After you have installed dsna, run the suite of unit tests::
+After you have installed Bottleneck, run the suite of unit tests::
 
-    >>> import dsna
-    >>> dsna.test()
+    >>> import bottleneck as bn
+    >>> bn.test()
     <snip>
     Ran 10 tests in 13.756s
     OK

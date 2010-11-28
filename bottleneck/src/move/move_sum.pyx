@@ -34,7 +34,7 @@ def move_sum(arr, int window, int axis=0):
     Examples
     --------
     >>> arr = np.array([1.0, 2.0, 3.0, 4.0])
-    >>> ds.mov_sum(arr, window=2, axis=0)
+    >>> bn.mov_sum(arr, window=2, axis=0)
     array([ NaN,   3.,   5.,   7.])
 
     """
@@ -45,11 +45,11 @@ def move_sum_selector(arr, int window, int axis):
     """
     Return move_sum function and array that matches `arr` and `axis`.
     
-    Under the hood dsna uses a separate Cython function for each combination
-    of ndim, dtype, and axis. A lot of the overhead in ds.move_sum() is in
-    checking that `axis` is within range, converting `arr` into an array (if
-    it is not already an array), and selecting the function to use to
-    calculate the moving sum.
+    Under the hood Bottleneck uses a separate Cython function for each
+    combination of ndim, dtype, and axis. A lot of the overhead in
+    bn.move_sum() is in checking that `axis` is within range, converting
+    `arr` into an array (if it is not already an array), and selecting the
+    function to use to calculate the moving sum.
 
     You can get rid of the overhead by doing all this before you, for example,
     enter an inner loop, by using the this function.
@@ -81,7 +81,7 @@ def move_sum_selector(arr, int window, int axis):
     Obtain the function needed to determine the mean of `arr` along axis=0:
     
     >>> window, axis = 2, 0
-    >>> func, a = ds.move.move_sum_selector(arr, window=2, axis=0)
+    >>> func, a = bn.move.move_sum_selector(arr, window=2, axis=0)
     <built-in function move_sum_1d_float64_axis0>    
     
     Use the returned function and array to determine the mean:

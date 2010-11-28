@@ -75,7 +75,7 @@ def group_mean(arr, label, order=None, int axis=0):
     --------
     Set up the problem:
 
-    >>> from dsna import group_mean
+    >>> from bottleneck import group_mean
     >>> arr = np.array([1, 2, 3, 9])
     >>> label = ['a', 'b', 'b', 'a']
     
@@ -96,18 +96,19 @@ def group_mean(arr, label, order=None, int axis=0):
     (array([ 5. ,  2.5]), ['a', 'b'])    
 
     """
-    func, arr, label_dict, order = group_mean_selector(arr, label, order, axis)
+    func, arr, label_dict, order = group_mean_selector(arr, label, order,
+                                                       axis)
     return func(arr, label_dict, order)
 
 def group_mean_selector(arr, label, order=None, int axis=0):
     """
     Group mean function, array, and label mapper to use for specified problem.
     
-    Under the hood dsna uses a separate Cython function for each combination
-    of ndim, dtype, and axis. A lot of the overhead in ds.group_mean() is in
-    checking that `axis` is within range, converting `arr` into an array (if
-    it is not already an array), and selecting the function to use to
-    calculate the group mean.
+    Under the hood Bottleneck uses a separate Cython function for each
+    combination of ndim, dtype, and axis. A lot of the overhead in
+    bn.group_mean() is in checking that `axis` is within range, converting
+    `arr` into an array (if it is not already an array), and selecting the
+    function to use to calculate the group mean.
 
     You can get rid of the overhead by doing all this before you, for example,
     enter an inner loop, by using the this function.
@@ -154,7 +155,7 @@ def group_mean_selector(arr, label, order=None, int axis=0):
     Create a numpy array:
 
     >>> arr = np.array([1.0, 2.0, 3.0])
-    >>> from dsna.group import group_mean_selector
+    >>> from bottleneck.group import group_mean_selector
     
     Obtain the function, etc. needed to determine the group mean of `arr`
     along axis=0:

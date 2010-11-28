@@ -67,25 +67,25 @@ def mean(arr, axis=None):
 
     Examples
     --------
-    >>> ds.mean(1)
+    >>> bn.mean(1)
     1.0
-    >>> ds.mean([1])
+    >>> bn.mean([1])
     1.0
-    >>> ds.mean([1, np.nan])
+    >>> bn.mean([1, np.nan])
     1.0
     >>> a = np.array([[1, 4], [1, np.nan]])
-    >>> ds.mean(a)
+    >>> bn.mean(a)
     2.0
-    >>> ds.mean(a, axis=0)
+    >>> bn.mean(a, axis=0)
     array([ 1.,  4.])
 
     When positive infinity and negative infinity are present:
 
-    >>> ds.mean([1, np.nan, np.inf])
+    >>> bn.mean([1, np.nan, np.inf])
     inf
-    >>> ds.mean([1, np.nan, np.NINF])
+    >>> bn.mean([1, np.nan, np.NINF])
     -inf
-    >>> ds.mean([1, np.nan, np.inf, np.NINF])
+    >>> bn.mean([1, np.nan, np.inf, np.NINF])
     nan
     
     """
@@ -96,11 +96,11 @@ def mean_selector(arr, axis):
     """
     Return mean function and array that matches `arr` and `axis`.
     
-    Under the hood dsna uses a separate Cython function for each combination
-    of ndim, dtype, and axis. A lot of the overhead in ds.mean() is in
-    checking that `axis` is within range, converting `arr` into an array (if
-    it is not already an array), and selecting the function to use to
-    calculate the mean.
+    Under the hood Bottleneck uses a separate Cython function for each
+    combination of ndim, dtype, and axis. A lot of the overhead in bn.mean()
+    is in checking that `axis` is within range, converting `arr` into an
+    array (if it is not already an array), and selecting the function to use
+    to calculate the mean.
 
     You can get rid of the overhead by doing all this before you, for example,
     enter an inner loop, by using the this function.
@@ -130,7 +130,7 @@ def mean_selector(arr, axis):
     
     Obtain the function needed to determine the mean of `arr` along axis=0:
 
-    >>> func, a = ds.func.mean_selector(arr, axis=0)
+    >>> func, a = bn.func.mean_selector(arr, axis=0)
     >>> func
     <built-in function mean_1d_float64_axis0> 
     

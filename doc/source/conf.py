@@ -38,11 +38,11 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'dsna'
+project = u'Bottleneck'
 copyright = u'2010, Archipel Asset Management AB'
 
-# Grab version from dsna/version.py
-ver_file = os.path.join('..', '..', 'dsna', 'version.py')
+# Grab version from bottleneck/version.py
+ver_file = os.path.join('..', '..', 'bottleneck', 'version.py')
 fid = file(ver_file, 'r')
 VER = fid.read()
 fid.close()
@@ -185,7 +185,7 @@ html_static_path = ['_static']
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'dsnadoc'
+htmlhelp_basename = 'bottleneckdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -199,7 +199,7 @@ htmlhelp_basename = 'dsnadoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'dsna.tex', u'DSNA Documentation',
+  ('index', 'bottleneck.tex', u'bottleneck Documentation',
    u'Keith Goodman', 'manual'),
 ]
 

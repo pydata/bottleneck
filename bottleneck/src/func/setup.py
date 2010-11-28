@@ -1,15 +1,15 @@
 """
 Use to convert func.pyx to a C file.
 
-This setup.py is NOT used to install the DSNA package. The DSNA setup.py
-file is dsna/setup.py
+This setup.py is NOT used to install the Bottleneck package. The Bottleneck
+setup.py file is bottleneck/setup.py
 
-The C files are distributed with dsna, so this file is only useful if you
-modify sum.pyx or std.pyx or ...
+The C files are distributed with Bottleneck, so this file is only useful if
+you modify sum.pyx or std.pyx or ...
 
 To convert from cython to C:
 
-$ cd dsna/dsna/src    
+$ cd bottleneck/bottleneck/src    
 $ python func/setup.py build_ext --inplace
 
 """

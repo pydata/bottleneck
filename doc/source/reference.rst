@@ -2,19 +2,19 @@
 Reference
 =========
 
-Most of the functionality of the ``dsna`` package falls into three broad
+Most of the functionality of the ``bottleneck`` package falls into three broad
 categories: functions, moving window functions, and group-by functions.
 
-DSNA provides the following functions:
+Bottleneck provides the following functions:
 
-==========================  ================================= =====================================
-:meth:`sum <dsna.sum>`      :meth:`move_sum <dsna.move_sum>`  
-:meth:`mean <dsna.mean>`                                      :meth:`group_mean <dsna.group_mean>`
-:meth:`var <dsna.var>`                               
-:meth:`std <dsna.std>`                               
-:meth:`min <dsna.min>`                               
-:meth:`max <dsna.max>`                               
-==========================  ================================= =====================================
+==============================  ====================================== ==========================================
+:meth:`sum <bottleneck.sum>`    :meth:`move_sum <bottleneck.move_sum>`  
+:meth:`mean <bottleneck.mean>`                                         :meth:`group_mean <bottleneck.group_mean>`
+:meth:`var <bottleneck.var>`                               
+:meth:`std <bottleneck.std>`                               
+:meth:`min <bottleneck.min>`                               
+:meth:`max <bottleneck.max>`                               
+==============================  ====================================== ==========================================
 
 
 Functions
@@ -22,27 +22,27 @@ Functions
 
 ------------
              
-.. autofunction:: dsna.sum
+.. autofunction:: bottleneck.sum
 
 ------------
              
-.. autofunction:: dsna.mean
+.. autofunction:: bottleneck.mean
 
 ------------
              
-.. autofunction:: dsna.var
+.. autofunction:: bottleneck.var
 
 ------------
 
-.. autofunction:: dsna.std
+.. autofunction:: bottleneck.std
 
 ------------
 
-.. autofunction:: dsna.min
+.. autofunction:: bottleneck.min
 
 ------------
 
-.. autofunction:: dsna.max
+.. autofunction:: bottleneck.max
 
 
 
@@ -51,7 +51,7 @@ Moving window functions
 
 ------------
 
-.. autofunction:: dsna.move_sum
+.. autofunction:: bottleneck.move_sum
 
 
 Group functions
@@ -59,4 +59,4 @@ Group functions
 
 ------------
 
-.. autofunction:: dsna.group_mean
+.. autofunction:: bottleneck.group_mean

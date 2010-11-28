@@ -3,13 +3,13 @@ Upload Sphinx docs to web server
 ================================
 
 Godaddy doesn't allow rsyc. So to upload Shinx docs to
-http://berkeleyanalytics.com/dsna:
+http://berkeleyanalytics.com/bottleneck:
 
-In dsna/doc:
+In bottleneck/doc:
 
 $ make clean
 $ make html
 
 Then to upload (it will ask for the password):
 
-$ scp -r doc/build/html/* username@berkeleyanalytics.com:html/dsna/
+$ scp -r doc/build/html/* username@berkeleyanalytics.com:html/bottleneck/

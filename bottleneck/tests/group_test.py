@@ -5,8 +5,8 @@ from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
                            assert_array_almost_equal)
 nan = np.nan
 from scipy.stats import nanmean
-import dsna as ds
-from dsna.testing.group_validator import group_func
+import bottleneck as bn
+from bottleneck.testing.group_validator import group_func
 
 
 def array_iter(dtypes=['float64']):
@@ -31,7 +31,7 @@ def array_iter(dtypes=['float64']):
                     yield -a
 
 def label_iter(n):
-    "Iterator that yields a variety of labels of given length"
+    "Iterator that yielbn a variety of labels of given length"
     dtypes = ['int32', 'int64', 'float64', 'str']
     for dtype in dtypes:
         label0 = np.ones(n, dtype=dtype)
@@ -54,7 +54,7 @@ def label_iter(n):
                 yield label[::-1].tolist()
 
 def unit_maker(func, func0, decimal=np.inf):
-    "Test that ds.xxx gives the same output as a reference function."
+    "Test that bn.xxx gives the same output as a reference function."
     msg = "\nfunc %s | input %s (%s) | shape %s | axis %s\n"
     msg += "\nInput array:\n%s\n"
     msg += "\nLabel (%s):\n%s\n"
@@ -85,4 +85,4 @@ def unit_maker(func, func0, decimal=np.inf):
 
 def test_group_mean():
     "Test group_mean."
-    yield unit_maker, ds.group_mean, nanmean, 13
+    yield unit_maker, bn.group_mean, nanmean, 13

@@ -2,11 +2,12 @@
 License
 =======
 
-DSNA is distributed under a Simplified BSD license. Parts of NumPy, SciPy and
-and numpydoc, which all have BSD licenses, are included in dsna.
+Bottleneck is distributed under a Simplified BSD license. Parts of NumPy,
+SciPy and and numpydoc, which all have BSD licenses, are included in
+Bottleneck.
 
-DSNA license
-============
+Bottleneck license
+==================
 
 Copyright (c) 2010, Archipel Asset Management AB.
 All rights reserved.
@@ -37,8 +38,8 @@ POSSIBILITY OF SUCH DAMAGE.
 Other licenses
 ==============
 
-DSNA contains doc strings from NumPy and SciPy and Sphinx extensions from
-numpydoc.
+Bottleneck contains doc strings from NumPy and SciPy and Sphinx extensions
+from numpydoc.
 
 
 NumPy license
@@ -115,4 +116,4 @@ DAMAGE.
 numpydoc license
 ----------------
 
-The numpydoc license is in dsna/doc/sphinxext/LICENSE.txt 
+The numpydoc license is in bottleneck/doc/sphinxext/LICENSE.txt 

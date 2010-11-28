@@ -5,7 +5,7 @@ import scipy.stats as sp
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
                            assert_array_almost_equal)
 nan = np.nan
-import dsna as ds
+import bottleneck as bn
 
 
 def arrays(dtypes=['int32', 'int64', 'float64']):
@@ -34,7 +34,7 @@ def arrays(dtypes=['int32', 'int64', 'float64']):
                     yield -a
 
 def unit_maker(func, func0, decimal=np.inf):
-    "Test that ds.xxx gives the same output as np.."
+    "Test that bn.xxx gives the same output as np.."
     msg = '\nfunc %s | input %s (%s) | shape %s | axis %s\n'
     msg += '\nInput array:\n%s\n'
     for i, arr in enumerate(arrays()):
@@ -56,27 +56,27 @@ def unit_maker(func, func0, decimal=np.inf):
 
 def test_sum():
     "Test sum."
-    yield unit_maker, ds.sum, np.nansum
+    yield unit_maker, bn.sum, np.nansum
 
 def test_max():
     "Test max."
-    yield unit_maker, ds.max, np.nanmax
+    yield unit_maker, bn.max, np.nanmax
 
 def test_min():
     "Test min."
-    yield unit_maker, ds.min, np.nanmin
+    yield unit_maker, bn.min, np.nanmin
 
 def test_mean():
     "Test mean."
-    yield unit_maker, ds.mean, sp.nanmean, 13
+    yield unit_maker, bn.mean, sp.nanmean, 13
 
 def test_std():
     "Test min."
-    yield unit_maker, ds.std, scipy_nanstd
+    yield unit_maker, bn.std, scipy_nanstd
 
 def test_var():
     "Test min."
-    yield unit_maker, ds.var, scipy_nanstd_squared, 13
+    yield unit_maker, bn.var, scipy_nanstd_squared, 13
 
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
@@ -88,7 +88,7 @@ def test_max_size_zero():
     for shape in shapes:
         for dtype in dtypes:
             a = np.zeros(shape, dtype=dtype)
-            assert_raises(ValueError, ds.max, a)
+            assert_raises(ValueError, bn.max, a)
             assert_raises(ValueError, np.nanmax, a)
             
 def test_min_size_zero():
@@ -98,7 +98,7 @@ def test_min_size_zero():
     for shape in shapes:
         for dtype in dtypes:
             a = np.zeros(shape, dtype=dtype)
-            assert_raises(ValueError, ds.min, a)
+            assert_raises(ValueError, bn.min, a)
             assert_raises(ValueError, np.nanmin, a)
 
 # ---------------------------------------------------------------------------

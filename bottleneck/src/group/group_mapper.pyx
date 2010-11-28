@@ -40,7 +40,7 @@ def group_mapper(label, order=None):
 
     Examples
     --------
-    >>> from dsna.group import group_mapper
+    >>> from bottleneck.group import group_mapper
     >>> group_mapper([1, 2, 1, 2])
     {1: [0, 2], 2: [1, 3]}
     >>> group_mapper(['1', '2', '1', '2'])
@@ -88,7 +88,7 @@ def group_mapper_selector(label):
 
     Examples
     --------
-    >>> from dsna.group import group_mapper_selector
+    >>> from bottleneck.group import group_mapper_selector
     >>> group_mapper_selector([1, 2, 1, 2])
     (<built-in function group_mapper_list>, [1, 2, 1, 2])
     >>> group_mapper_selector((1, 2, 1, 2))

@@ -66,25 +66,25 @@ def sum(arr, axis=None):
 
     Examples
     --------
-    >>> ds.sum(1)
+    >>> bn.sum(1)
     1
-    >>> ds.sum([1])
+    >>> bn.sum([1])
     1
-    >>> ds.sum([1, np.nan])
+    >>> bn.sum([1, np.nan])
     1.0
     >>> a = np.array([[1, 1], [1, np.nan]])
-    >>> ds.sum(a)
+    >>> bn.sum(a)
     3.0
-    >>> ds.sum(a, axis=0)
+    >>> bn.sum(a, axis=0)
     array([ 2.,  1.])
 
     When positive infinity and negative infinity are present:
 
-    >>> ds.sum([1, np.nan, np.inf])
+    >>> bn.sum([1, np.nan, np.inf])
     inf
-    >>> ds.sum([1, np.nan, np.NINF])
+    >>> bn.sum([1, np.nan, np.NINF])
     -inf
-    >>> ds.sum([1, np.nan, np.inf, np.NINF])
+    >>> bn.sum([1, np.nan, np.inf, np.NINF])
     nan
     
     """
@@ -95,10 +95,11 @@ def sum_selector(arr, axis=None):
     """
     Return sum function and array that matches `arr` and `axis`.
 
-    Under the hood dsna uses a separate Cython function for each combination
-    of ndim, dtype, and axis. A lot of the overhead in ds.sum() is in checking
-    that `axis` is within range, converting `arr` into an array (if it is not
-    already an array), and selecting the function to use to calculate the sum.
+    Under the hood Bottleneck uses a separate Cython function for each
+    combination of ndim, dtype, and axis. A lot of the overhead in bn.sum()
+    is in checking that `axis` is within range, converting `arr` into an
+    array (if it is not already an array), and selecting the function to use
+    to calculate the sum.
 
     You can get rid of the overhead by doing all this before you, for example,
     enter an inner loop, by using the this function.
@@ -128,7 +129,7 @@ def sum_selector(arr, axis=None):
     
     Obtain the function needed to sum `arr` along axis=0:
 
-    >>> func, a = ds.func.sum_selector(arr, axis=0)
+    >>> func, a = bn.func.sum_selector(arr, axis=0)
     >>> func
     <built-in function sum_1d_float64_axis0> 
     

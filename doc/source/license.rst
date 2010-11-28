@@ -1,1 +1,1 @@
-.. include:: ../../dsna/LICENSE
+.. include:: ../../bottleneck/LICENSE
