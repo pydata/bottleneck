@@ -2,7 +2,7 @@
 Bottleneck
 ==========
 
-Bottleneck is a collection of fast, NumPy array functions written in Cython.
+Fast, NumPy array functions written in Cython.
 
 .. toctree::
    :maxdepth: 2

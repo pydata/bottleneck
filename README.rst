@@ -15,22 +15,22 @@ The three categories of Bottleneck functions:
 
 Function signatures (using mean as an example):
 
-===============  ============================================
- NaN functions    mean(arr, axis=None)
- Moving window    move_mean(arr, window, axis=0)
- Group by         group_mean(arr, label, order=None, axis=0)
-===============  ============================================
+===============  ================================================
+ NaN functions    ``mean(arr, axis=None)``
+ Moving window    ``move_mean(arr, window, axis=0)``
+ Group by         ``group_mean(arr, label, order=None, axis=0)``
+===============  ================================================
 
 Let's give it a try. Create a NumPy array::
     
     >>> import numpy as np
     >>> arr = np.array([1, 2, np.nan, 4, 5])
 
-Find the sum::
+Find the mean::
 
     >>> import bottleneck as bn
-    >>> bn.sum(arr)
-    12.0
+    >>> bn.mean(arr)
+    3.0
 
 Moving window sum::
 
