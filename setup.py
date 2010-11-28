@@ -255,7 +255,8 @@ MICRO               = VER[2]
 ISRELEASED          = False
 VERSION             = '%s.%s.%s' % (MAJOR, MINOR, MICRO)
 PACKAGES            = ["bottleneck", "bottleneck/src", "bottleneck/src/func",
-                       "bottleneck/tests", "bottleneck/bench"]
+                       "bottleneck/tests", "bottleneck/testing",
+                       "bottleneck/bench"]
 PACKAGE_DATA        = {'bottleneck': ['LICENSE']}
 REQUIRES            = ["numpy"]
 
@@ -276,7 +277,14 @@ setup(name=NAME,
       packages=PACKAGES,
       package_data=PACKAGE_DATA,
       requires=REQUIRES,
-      ext_modules = [Extension("bottleneck.func",
-                               sources=["bottleneck/src/func/func.c"],
-                               include_dirs=[numpy.get_include()])]
-     )
+      ext_package='bottleneck',
+      ext_modules=[Extension("func",
+                             sources=["bottleneck/src/func/func.c"],
+                             include_dirs=[numpy.get_include()]),           
+                   Extension("move",
+                             sources=["bottleneck/src/move/move.c"],
+                             include_dirs=[numpy.get_include()]),
+                   Extension("group",
+                             sources=["bottleneck/src/group/group.c"],
+                             include_dirs=[numpy.get_include()])]
+     )                
