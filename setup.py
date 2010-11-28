@@ -27,22 +27,22 @@ The three categories of Bottleneck functions:
 
 Function signatures (using mean as an example):
 
-===============  ============================================
- NaN functions    mean(arr, axis=None)
- Moving window    move_mean(arr, window, axis=0)
- Group by         group_mean(arr, label, order=None, axis=0)
-===============  ============================================
+===============  ================================================
+ NaN functions    ``mean(arr, axis=None)``
+ Moving window    ``move_mean(arr, window, axis=0)``
+ Group by         ``group_mean(arr, label, order=None, axis=0)``
+===============  ================================================
 
 Let's give it a try. Create a NumPy array::
     
     >>> import numpy as np
     >>> arr = np.array([1, 2, np.nan, 4, 5])
 
-Find the sum::
+Find the mean::
 
     >>> import bottleneck as bn
-    >>> bn.sum(arr)
-    12.0
+    >>> bn.mean(arr)
+    3.0
 
 Moving window sum::
 
@@ -186,10 +186,18 @@ Scipy and numpydoc, all of which have BSD licenses, are included in
 Bottleneck. See the LICENSE file, which is distributed with Bottleneck, for
 details.
 
+URLs
+====
+
+===============   =============================================
+ download          http://pypi.python.org/pypi/bottleneck
+ docs              http://berkeleyanalytics.com/bottleneck
+ code              http://github.com/kwgoodman/bottleneck
+ mailing list      http://groups.google.com/group/bottle-neck
+===============   =============================================
+
 Install
 =======
-
-You can grab Bottleneck from http://github.com/kwgoodman/bottleneck
 
 **GNU/Linux, Mac OS X, et al.**
 
@@ -207,7 +215,8 @@ Or, if you wish to specify where Bottleneck is installed, for example inside
 **Windows**
 
 In order to compile the C code in dsna you need a Windows version of the gcc
-compiler. MinGW (Minimalist GNU for Windows) contains gcc and has been used to successfully compile dsna on Windows.
+compiler. MinGW (Minimalist GNU for Windows) contains gcc and has been used
+to successfully compile dsna on Windows.
 
 Install MinGW and add it to your system path. Then install dsna with the
 commands::
@@ -237,13 +246,13 @@ VER = VER[1].strip()
 VER = VER.strip("\"")
 VER = VER.split('.')
 
-NAME                = 'Bottleneck'
+NAME                = 'bottleneck'
 MAINTAINER          = "Keith Goodman"
-MAINTAINER_EMAIL    = ""
+MAINTAINER_EMAIL    = "bottle-neck@googlegroups.com"
 DESCRIPTION         = description
 LONG_DESCRIPTION    = long_description
-URL                 = ""
-DOWNLOAD_URL        = ""
+URL                 = "http://berkeleyanalytics.com/bottleneck"
+DOWNLOAD_URL        = "http://pypi.python.org/pypi/bottleneck"
 LICENSE             = "Simplified BSD"
 CLASSIFIERS         = CLASSIFIERS
 AUTHOR              = "Archipel Asset Management AB"

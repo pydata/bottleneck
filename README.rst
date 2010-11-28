@@ -174,10 +174,18 @@ Scipy and numpydoc, all of which have BSD licenses, are included in
 Bottleneck. See the LICENSE file, which is distributed with Bottleneck, for
 details.
 
-Download and install
-====================
+URLs
+====
 
-You can grab Bottleneck from http://github.com/kwgoodman/bottleneck
+===============   =============================================
+ download          http://pypi.python.org/pypi/bottleneck
+ docs              http://berkeleyanalytics.com/bottleneck
+ code              http://github.com/kwgoodman/bottleneck
+ mailing list      http://groups.google.com/group/bottle-neck
+===============   =============================================
+
+Install
+=======
 
 **GNU/Linux, Mac OS X, et al.**
 
@@ -195,7 +203,8 @@ Or, if you wish to specify where Bottleneck is installed, for example inside
 **Windows**
 
 In order to compile the C code in dsna you need a Windows version of the gcc
-compiler. MinGW (Minimalist GNU for Windows) contains gcc and has been used to successfully compile dsna on Windows.
+compiler. MinGW (Minimalist GNU for Windows) contains gcc and has been used
+to successfully compile dsna on Windows.
 
 Install MinGW and add it to your system path. Then install dsna with the
 commands::
