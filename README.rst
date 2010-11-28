@@ -178,7 +178,7 @@ URLs
 ====
 
 ===============   =============================================
- download          http://pypi.python.org/pypi/bottleneck
+ download          http://pypi.python.org/pypi/Bottleneck
  docs              http://berkeleyanalytics.com/bottleneck
  code              http://github.com/kwgoodman/bottleneck
  mailing list      http://groups.google.com/group/bottle-neck
