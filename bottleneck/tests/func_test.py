@@ -58,47 +58,47 @@ def test_sum():
     "Test sum."
     yield unit_maker, bn.sum, np.nansum
 
-def test_max():
-    "Test max."
-    yield unit_maker, bn.max, np.nanmax
+def test_nanmax():
+    "Test nanmax."
+    yield unit_maker, bn.nanmax, np.nanmax
 
-def test_min():
-    "Test min."
-    yield unit_maker, bn.min, np.nanmin
+def test_nanmin():
+    "Test nanmin."
+    yield unit_maker, bn.nanmin, np.nanmin
 
-def test_mean():
-    "Test mean."
-    yield unit_maker, bn.mean, sp.nanmean, 13
+def test_nanmean():
+    "Test nanmean."
+    yield unit_maker, bn.nanmean, sp.nanmean, 13
 
-def test_std():
-    "Test min."
-    yield unit_maker, bn.std, scipy_nanstd
+def test_nanstd():
+    "Test nanstd."
+    yield unit_maker, bn.nanstd, scipy_nanstd
 
-def test_var():
-    "Test min."
-    yield unit_maker, bn.var, scipy_nanstd_squared, 13
+def test_nanvar():
+    "Test nanvar."
+    yield unit_maker, bn.nanvar, scipy_nanstd_squared, 13
 
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
 
-def test_max_size_zero():
-    "Test max for size zero input arrays."
+def test_nanmax_size_zero():
+    "Test nanmax for size zero input arrays."
     dtypes = ['int32', 'int64', 'float64']
     shapes = [(0,), (2,0), (1,2,0)]
     for shape in shapes:
         for dtype in dtypes:
             a = np.zeros(shape, dtype=dtype)
-            assert_raises(ValueError, bn.max, a)
+            assert_raises(ValueError, bn.nanmax, a)
             assert_raises(ValueError, np.nanmax, a)
             
-def test_min_size_zero():
-    "Test min for size zero input arrays."
+def test_nanmin_size_zero():
+    "Test nanmin for size zero input arrays."
     dtypes = ['int32', 'int64', 'float64']
     shapes = [(0,), (2,0), (1,2,0)]
     for shape in shapes:
         for dtype in dtypes:
             a = np.zeros(shape, dtype=dtype)
-            assert_raises(ValueError, bn.min, a)
+            assert_raises(ValueError, bn.nanmin, a)
             assert_raises(ValueError, np.nanmin, a)
 
 # ---------------------------------------------------------------------------

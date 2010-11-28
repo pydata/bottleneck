@@ -1,7 +1,7 @@
 
-from func import sum, max, min, mean, std, var
+from func import sum, nanmax, nanmin, nanmean, nanstd, nanvar
 from move import move_sum
-from group import group_mean
+from group import group_nanmean
 
 from bottleneck.version import __version__
 from bottleneck.bench.bench import *

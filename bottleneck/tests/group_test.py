@@ -83,6 +83,6 @@ def unit_maker(func, func0, decimal=np.inf):
                     assert_equal(da, dd, err_msg % (da, dd))
                 assert_equal(lab1, lab0, err_msg="labels not equal")
 
-def test_group_mean():
-    "Test group_mean."
-    yield unit_maker, bn.group_mean, nanmean, 13
+def test_group_nanmean():
+    "Test group_nanmean."
+    yield unit_maker, bn.group_nanmean, nanmean, 13

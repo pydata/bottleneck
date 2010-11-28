@@ -25,7 +25,7 @@ def group_mapper(label, order=None):
         still slower than using a list.
     order : array_like, optional
         A sequence of group labels that determine the output order of the
-        group means. By default (order=None) the output is in sorted order
+        grouped values. By default (order=None) the output is in sorted order
         of the unique elements in `label`. A list `order` is faster than an
         array `order`.
 
@@ -36,7 +36,7 @@ def group_mapper(label, order=None):
         of the group members (dict values). 
     order : list
         A list of group labels that determine the output order of the
-        group means.
+        grouped values.
 
     Examples
     --------

@@ -5,7 +5,7 @@ This setup.py is NOT used to install the Bottleneck package. The Bottleneck
 setup.py file is bottleneck/setup.py
 
 The C files are distributed with Bottleneck, so this file is only useful if
-you modify sum.pyx or std.pyx or ...
+you modify nansum.pyx or nanstd.pyx or ...
 
 To convert from cython to C:
 

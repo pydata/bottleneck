@@ -7,14 +7,14 @@ categories: functions, moving window functions, and group-by functions.
 
 Bottleneck provides the following functions:
 
-==============================  ====================================== ==========================================
-:meth:`sum <bottleneck.sum>`    :meth:`move_sum <bottleneck.move_sum>`  
-:meth:`mean <bottleneck.mean>`                                         :meth:`group_mean <bottleneck.group_mean>`
-:meth:`var <bottleneck.var>`                               
-:meth:`std <bottleneck.std>`                               
-:meth:`min <bottleneck.min>`                               
-:meth:`max <bottleneck.max>`                               
-==============================  ====================================== ==========================================
+===================================== ====================================== ===================================================
+:meth:`sum <bottleneck.sum>`          :meth:`move_sum <bottleneck.move_sum>`  
+:meth:`nanmean <bottleneck.nanmean>`                                         :meth:`group_nanmean <bottleneck.group_nanmean>`
+:meth:`nanvar <bottleneck.nanvar>`                               
+:meth:`nanstd <bottleneck.nanstd>`                               
+:meth:`nanmin <bottleneck.nanmin>`                               
+:meth:`nanmax <bottleneck.nanmax>`                               
+===================================== ====================================== ===================================================
 
 
 Functions
@@ -26,23 +26,23 @@ Functions
 
 ------------
              
-.. autofunction:: bottleneck.mean
+.. autofunction:: bottleneck.nanmean
 
 ------------
              
-.. autofunction:: bottleneck.var
+.. autofunction:: bottleneck.nanvar
 
 ------------
 
-.. autofunction:: bottleneck.std
+.. autofunction:: bottleneck.nanstd
 
 ------------
 
-.. autofunction:: bottleneck.min
+.. autofunction:: bottleneck.nanmin
 
 ------------
 
-.. autofunction:: bottleneck.max
+.. autofunction:: bottleneck.nanmax
 
 
 
@@ -59,4 +59,4 @@ Group functions
 
 ------------
 
-.. autofunction:: bottleneck.group_mean
+.. autofunction:: bottleneck.group_nanmean

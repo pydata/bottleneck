@@ -45,9 +45,9 @@ def suite():
     setups['(500,500) int64'] = "import numpy as np; import scipy.stats as sp; import bottleneck as bn; from bottleneck.bench.bench import geta; N=500; a = geta((N, N), 'int64')"
 
     # Bottleneck
-    s = ['bn.sum(a, axis=-1)', 'bn.max(a, axis=-1)',
-         'bn.min(a, axis=-1)', 'bn.mean(a, axis=-1)',
-         'bn.std(a, axis=-1)']
+    s = ['bn.sum(a, axis=-1)', 'bn.nanmax(a, axis=-1)',
+         'bn.nanmin(a, axis=-1)', 'bn.nanmean(a, axis=-1)',
+         'bn.nanstd(a, axis=-1)']
     statements['bottleneck'] = s
     
     # Numpy

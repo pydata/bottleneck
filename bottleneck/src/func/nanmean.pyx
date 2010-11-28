@@ -1,40 +1,40 @@
-"mean"
+"nanmean"
 
-cdef dict mean_dict = {}
+cdef dict nanmean_dict = {}
 
 #     Dim dtype axis
-mean_dict[(1, f64, 0)] = mean_1d_float64_axis0
-mean_dict[(1, f64, N)] = mean_1d_float64_axis0
-mean_dict[(2, f64, 0)] = mean_2d_float64_axis0
-mean_dict[(2, f64, 1)] = mean_2d_float64_axis1
-mean_dict[(2, f64, N)] = mean_2d_float64_axisNone
-mean_dict[(3, f64, 0)] = mean_3d_float64_axis0
-mean_dict[(3, f64, 1)] = mean_3d_float64_axis1
-mean_dict[(3, f64, 2)] = mean_3d_float64_axis2
-mean_dict[(3, f64, N)] = mean_3d_float64_axisNone
+nanmean_dict[(1, f64, 0)] = nanmean_1d_float64_axis0
+nanmean_dict[(1, f64, N)] = nanmean_1d_float64_axis0
+nanmean_dict[(2, f64, 0)] = nanmean_2d_float64_axis0
+nanmean_dict[(2, f64, 1)] = nanmean_2d_float64_axis1
+nanmean_dict[(2, f64, N)] = nanmean_2d_float64_axisNone
+nanmean_dict[(3, f64, 0)] = nanmean_3d_float64_axis0
+nanmean_dict[(3, f64, 1)] = nanmean_3d_float64_axis1
+nanmean_dict[(3, f64, 2)] = nanmean_3d_float64_axis2
+nanmean_dict[(3, f64, N)] = nanmean_3d_float64_axisNone
 
-mean_dict[(1, i32, 0)] = mean_1d_int32_axis0
-mean_dict[(1, i32, N)] = mean_1d_int32_axis0
-mean_dict[(2, i32, 0)] = mean_2d_int32_axis0
-mean_dict[(2, i32, 1)] = mean_2d_int32_axis1
-mean_dict[(2, i32, N)] = mean_2d_int32_axisNone
-mean_dict[(3, i32, 0)] = mean_3d_int32_axis0
-mean_dict[(3, i32, 1)] = mean_3d_int32_axis1
-mean_dict[(3, i32, 2)] = mean_3d_int32_axis2
-mean_dict[(3, i32, N)] = mean_3d_int32_axisNone
+nanmean_dict[(1, i32, 0)] = nanmean_1d_int32_axis0
+nanmean_dict[(1, i32, N)] = nanmean_1d_int32_axis0
+nanmean_dict[(2, i32, 0)] = nanmean_2d_int32_axis0
+nanmean_dict[(2, i32, 1)] = nanmean_2d_int32_axis1
+nanmean_dict[(2, i32, N)] = nanmean_2d_int32_axisNone
+nanmean_dict[(3, i32, 0)] = nanmean_3d_int32_axis0
+nanmean_dict[(3, i32, 1)] = nanmean_3d_int32_axis1
+nanmean_dict[(3, i32, 2)] = nanmean_3d_int32_axis2
+nanmean_dict[(3, i32, N)] = nanmean_3d_int32_axisNone
 
-mean_dict[(1, i64, 0)] = mean_1d_int64_axis0
-mean_dict[(1, i64, N)] = mean_1d_int64_axis0
-mean_dict[(2, i64, 0)] = mean_2d_int64_axis0
-mean_dict[(2, i64, 1)] = mean_2d_int64_axis1
-mean_dict[(2, i64, N)] = mean_2d_int64_axisNone
-mean_dict[(3, i64, 0)] = mean_3d_int64_axis0
-mean_dict[(3, i64, 1)] = mean_3d_int64_axis1
-mean_dict[(3, i64, 2)] = mean_3d_int64_axis2
-mean_dict[(3, i64, N)] = mean_3d_int64_axisNone
+nanmean_dict[(1, i64, 0)] = nanmean_1d_int64_axis0
+nanmean_dict[(1, i64, N)] = nanmean_1d_int64_axis0
+nanmean_dict[(2, i64, 0)] = nanmean_2d_int64_axis0
+nanmean_dict[(2, i64, 1)] = nanmean_2d_int64_axis1
+nanmean_dict[(2, i64, N)] = nanmean_2d_int64_axisNone
+nanmean_dict[(3, i64, 0)] = nanmean_3d_int64_axis0
+nanmean_dict[(3, i64, 1)] = nanmean_3d_int64_axis1
+nanmean_dict[(3, i64, 2)] = nanmean_3d_int64_axis2
+nanmean_dict[(3, i64, N)] = nanmean_3d_int64_axisNone
 
 
-def mean(arr, axis=None):
+def nanmean(arr, axis=None):
     """
     Mean of array elements along given axis ignoring NaNs.
 
@@ -67,40 +67,40 @@ def mean(arr, axis=None):
 
     Examples
     --------
-    >>> bn.mean(1)
+    >>> bn.nanmean(1)
     1.0
-    >>> bn.mean([1])
+    >>> bn.nanmean([1])
     1.0
-    >>> bn.mean([1, np.nan])
+    >>> bn.nanmean([1, np.nan])
     1.0
     >>> a = np.array([[1, 4], [1, np.nan]])
-    >>> bn.mean(a)
+    >>> bn.nanmean(a)
     2.0
-    >>> bn.mean(a, axis=0)
+    >>> bn.nanmean(a, axis=0)
     array([ 1.,  4.])
 
     When positive infinity and negative infinity are present:
 
-    >>> bn.mean([1, np.nan, np.inf])
+    >>> bn.nanmean([1, np.nan, np.inf])
     inf
-    >>> bn.mean([1, np.nan, np.NINF])
+    >>> bn.nanmean([1, np.nan, np.NINF])
     -inf
-    >>> bn.mean([1, np.nan, np.inf, np.NINF])
+    >>> bn.nanmean([1, np.nan, np.inf, np.NINF])
     nan
     
     """
-    func, arr = mean_selector(arr, axis)
+    func, arr = nanmean_selector(arr, axis)
     return func(arr)
 
-def mean_selector(arr, axis):
+def nanmean_selector(arr, axis):
     """
-    Return mean function and array that matches `arr` and `axis`.
+    Return nanmean function and array that matches `arr` and `axis`.
     
     Under the hood Bottleneck uses a separate Cython function for each
-    combination of ndim, dtype, and axis. A lot of the overhead in bn.mean()
-    is in checking that `axis` is within range, converting `arr` into an
-    array (if it is not already an array), and selecting the function to use
-    to calculate the mean.
+    combination of ndim, dtype, and axis. A lot of the overhead in
+    bn.nanmean() is in checking that `axis` is within range, converting `arr`
+    into an array (if it is not already an array), and selecting the function
+    to use to calculate the mean.
 
     You can get rid of the overhead by doing all this before you, for example,
     enter an inner loop, by using the this function.
@@ -116,8 +116,8 @@ def mean_selector(arr, axis):
     Returns
     -------
     func : function
-        The mean function that matches the number of dimensions and dtype of
-        the input array and the axis along which you wish to find the mean.
+        The nanmean function that matches the number of dimensions and dtype
+        of the input array and the axis along which you wish to find the mean.
     a : ndarray
         If the input array `arr` is not a ndarray, then `a` will contain the
         result of converting `arr` into a ndarray.
@@ -128,11 +128,11 @@ def mean_selector(arr, axis):
 
     >>> arr = np.array([1.0, 2.0, 3.0])
     
-    Obtain the function needed to determine the mean of `arr` along axis=0:
+    Obtain the function needed to determine the nanmean of `arr` along axis=0:
 
-    >>> func, a = bn.func.mean_selector(arr, axis=0)
+    >>> func, a = bn.func.nanmean_selector(arr, axis=0)
     >>> func
-    <built-in function mean_1d_float64_axis0> 
+    <built-in function nanmean_1d_float64_axis0> 
     
     Use the returned function and array to determine the mean:
 
@@ -151,7 +151,7 @@ def mean_selector(arr, axis):
             raise ValueError, "axis(=%d) out of bounds" % axis
     cdef tuple key = (ndim, dtype, axis)
     try:
-        func = mean_dict[key]
+        func = nanmean_dict[key]
     except KeyError:
         tup = (str(ndim), str(dtype))
         raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
@@ -161,8 +161,8 @@ def mean_selector(arr, axis):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a):
-    "mean of 1d numpy array with dtype=np.int32 along axis=0."
+def nanmean_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a):
+    "nanmean of 1d numpy array with dtype=np.int32 along axis=0."
     cdef Py_ssize_t i
     cdef int a0 = a.shape[0]
     cdef np.float64_t asum = 0
@@ -172,8 +172,8 @@ def mean_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a):
-    "mean of 1d numpy array with dtype=np.int64 along axis=0."
+def nanmean_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a):
+    "nanmean of 1d numpy array with dtype=np.int64 along axis=0."
     cdef Py_ssize_t i
     cdef int a0 = a.shape[0]
     cdef np.float64_t asum = 0
@@ -183,8 +183,8 @@ def mean_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a):
-    "mean of 1d numpy array with dtype=np.float64 along axis=0."
+def nanmean_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a):
+    "nanmean of 1d numpy array with dtype=np.float64 along axis=0."
     cdef Py_ssize_t i
     cdef int a0 = a.shape[0], count = 0
     cdef np.float64_t asum = 0, ai
@@ -202,8 +202,8 @@ def mean_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a):
-    "mean of 2d numpy array with dtype=np.int32 along axis=0."
+def nanmean_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a):
+    "nanmean of 2d numpy array with dtype=np.int32 along axis=0."
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1]
     cdef np.float64_t asum = 0   
@@ -217,8 +217,8 @@ def mean_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a):
-    "mean of 2d numpy array with dtype=np.int32 along axis=1"
+def nanmean_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a):
+    "nanmean of 2d numpy array with dtype=np.int32 along axis=1"
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1]
     cdef np.float64_t asum = 0   
@@ -232,8 +232,8 @@ def mean_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_2d_int32_axisNone(np.ndarray[np.int32_t, ndim=2] a):
-    "mean of 2d numpy array with dtype=np.int32 along axis=None."
+def nanmean_2d_int32_axisNone(np.ndarray[np.int32_t, ndim=2] a):
+    "nanmean of 2d numpy array with dtype=np.int32 along axis=None."
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1], aa = a0 * a1
     cdef np.float64_t asum = 0
@@ -244,8 +244,8 @@ def mean_2d_int32_axisNone(np.ndarray[np.int32_t, ndim=2] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a):
-    "mean of 2d numpy array with dtype=np.int64 along axis=0."
+def nanmean_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a):
+    "nanmean of 2d numpy array with dtype=np.int64 along axis=0."
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1]
     cdef np.float64_t asum = 0   
@@ -259,8 +259,8 @@ def mean_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a):
-    "mean of 2d numpy array with dtype=np.int64 along axis=1"
+def nanmean_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a):
+    "nanmean of 2d numpy array with dtype=np.int64 along axis=1"
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1]
     cdef np.float64_t asum = 0   
@@ -274,8 +274,8 @@ def mean_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_2d_int64_axisNone(np.ndarray[np.int64_t, ndim=2] a):
-    "mean of 2d numpy array with dtype=np.int64 along axis=None."
+def nanmean_2d_int64_axisNone(np.ndarray[np.int64_t, ndim=2] a):
+    "nanmean of 2d numpy array with dtype=np.int64 along axis=None."
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1], aa = a0*a1
     cdef np.float64_t asum = 0
@@ -286,8 +286,8 @@ def mean_2d_int64_axisNone(np.ndarray[np.int64_t, ndim=2] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a):
-    "mean of 2d numpy array with dtype=np.float64 along axis=0."
+def nanmean_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a):
+    "nanmean of 2d numpy array with dtype=np.float64 along axis=0."
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1], count 
     cdef np.float64_t asum = 0, aij 
@@ -308,8 +308,8 @@ def mean_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a):
-    "mean of 2d numpy array with dtype=np.float64 along axis=1."
+def nanmean_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a):
+    "nanmean of 2d numpy array with dtype=np.float64 along axis=1."
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
     cdef np.float64_t asum = 0, aji  
@@ -330,8 +330,8 @@ def mean_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_2d_float64_axisNone(np.ndarray[np.float64_t, ndim=2] a):
-    "mean of 2d numpy array with dtype=np.float64 along axis=None."
+def nanmean_2d_float64_axisNone(np.ndarray[np.float64_t, ndim=2] a):
+    "nanmean of 2d numpy array with dtype=np.float64 along axis=None."
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1], count = 0
     cdef np.float64_t asum = 0, aij
@@ -350,8 +350,8 @@ def mean_2d_float64_axisNone(np.ndarray[np.float64_t, ndim=2] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a):
-    "mean of 3d numpy array with dtype=np.int32 along axis=0."
+def nanmean_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a):
+    "nanmean of 3d numpy array with dtype=np.int32 along axis=0."
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
     cdef np.float64_t asum = 0   
@@ -367,8 +367,8 @@ def mean_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a):
-    "mean of 3d numpy array with dtype=np.int32 along axis=1"
+def nanmean_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a):
+    "nanmean of 3d numpy array with dtype=np.int32 along axis=1"
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
     cdef np.float64_t asum = 0   
@@ -384,8 +384,8 @@ def mean_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a):
-    "mean of 3d numpy array with dtype=np.int32 along axis=2"
+def nanmean_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a):
+    "nanmean of 3d numpy array with dtype=np.int32 along axis=2"
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
     cdef np.float64_t asum = 0   
@@ -401,8 +401,8 @@ def mean_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_3d_int32_axisNone(np.ndarray[np.int32_t, ndim=3] a):
-    "mean of 3d numpy array with dtype=np.int32 along axis=None."
+def nanmean_3d_int32_axisNone(np.ndarray[np.int32_t, ndim=3] a):
+    "nanmean of 3d numpy array with dtype=np.int32 along axis=None."
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], nn = n0*n1*n2
     cdef np.float64_t asum = 0
@@ -414,8 +414,8 @@ def mean_3d_int32_axisNone(np.ndarray[np.int32_t, ndim=3] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a):
-    "mean of 3d numpy array with dtype=np.int64 along axis=0."
+def nanmean_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a):
+    "nanmean of 3d numpy array with dtype=np.int64 along axis=0."
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
     cdef np.float64_t asum = 0   
@@ -431,8 +431,8 @@ def mean_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a):
-    "mean of 3d numpy array with dtype=np.int64 along axis=1"
+def nanmean_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a):
+    "nanmean of 3d numpy array with dtype=np.int64 along axis=1"
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
     cdef np.float64_t asum = 0   
@@ -448,8 +448,8 @@ def mean_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a):
-    "mean of 3d numpy array with dtype=np.int64 along axis=2"
+def nanmean_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a):
+    "nanmean of 3d numpy array with dtype=np.int64 along axis=2"
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
     cdef np.float64_t asum = 0   
@@ -465,8 +465,8 @@ def mean_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_3d_int64_axisNone(np.ndarray[np.int64_t, ndim=3] a):
-    "mean of 3d numpy array with dtype=np.int64 along axis=None."
+def nanmean_3d_int64_axisNone(np.ndarray[np.int64_t, ndim=3] a):
+    "nanmean of 3d numpy array with dtype=np.int64 along axis=None."
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], nn = n0*n1*n2
     cdef np.float64_t asum = 0
@@ -478,8 +478,8 @@ def mean_3d_int64_axisNone(np.ndarray[np.int64_t, ndim=3] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a):
-    "mean of 3d numpy array with dtype=np.float64 along axis=0."
+def nanmean_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a):
+    "nanmean of 3d numpy array with dtype=np.float64 along axis=0."
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], count
     cdef np.float64_t asum = 0, ai
@@ -502,8 +502,8 @@ def mean_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a):
-    "mean of 3d numpy array with dtype=np.float64 along axis=1."
+def nanmean_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a):
+    "nanmean of 3d numpy array with dtype=np.float64 along axis=1."
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], count
     cdef np.float64_t asum = 0, ai
@@ -526,8 +526,8 @@ def mean_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a):
-    "mean of 3d numpy array with dtype=np.float64 along axis=2."
+def nanmean_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a):
+    "nanmean of 3d numpy array with dtype=np.float64 along axis=2."
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], count
     cdef np.float64_t asum = 0, ai
@@ -550,8 +550,8 @@ def mean_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def mean_3d_float64_axisNone(np.ndarray[np.float64_t, ndim=3] a):
-    "mean of 3d numpy array with dtype=np.float64 along axis=None."
+def nanmean_3d_float64_axisNone(np.ndarray[np.float64_t, ndim=3] a):
+    "nanmean of 3d numpy array with dtype=np.float64 along axis=None."
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], count = 0
     cdef np.float64_t asum = 0, ai

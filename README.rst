@@ -13,13 +13,13 @@ The three categories of Bottleneck functions:
 - Moving window functions
 - Group functions that bin calculations by like-labeled elements  
 
-Function signatures (using mean as an example):
+Function signatures (using nanmean as an example):
 
-===============  ================================================
- NaN functions    ``mean(arr, axis=None)``
+===============  ===================================================
+ Functions        ``nanmean(arr, axis=None)``
  Moving window    ``move_mean(arr, window, axis=0)``
- Group by         ``group_mean(arr, label, order=None, axis=0)``
-===============  ================================================
+ Group by         ``group_nanmean(arr, label, order=None, axis=0)``
+===============  ===================================================
 
 Let's give it a try. Create a NumPy array::
     
@@ -29,7 +29,7 @@ Let's give it a try. Create a NumPy array::
 Find the mean::
 
     >>> import bottleneck as bn
-    >>> bn.mean(arr)
+    >>> bn.nanmean(arr)
     3.0
 
 Moving window sum::
@@ -119,23 +119,23 @@ Faster
 ======
 
 Under the hood Bottleneck uses a separate Cython function for each combination
-of ndim, dtype, and axis. A lot of the overhead in bn.max(), for example, is
-in checking that the axis is within range, converting non-array data to an
+of ndim, dtype, and axis. A lot of the overhead in bn.nanmax(), for example,
+is in checking that the axis is within range, converting non-array data to an
 array, and selecting the function to use to calculate the maximum.
 
 You can get rid of the overhead by doing all this before you, say, enter
 an inner loop::
 
     >>> arr = np.random.rand(10,10)
-    >>> func, a = bn.func.max_selector(arr, axis=0)
+    >>> func, a = bn.func.nanmax_selector(arr, axis=0)
     >>> func
-    <built-in function max_2d_float64_axis0> 
+    <built-in function nanmax_2d_float64_axis0> 
 
 Let's see how much faster than runs::
     
     >> timeit np.nanmax(arr, axis=0)
     10000 loops, best of 3: 25.7 us per loop
-    >> timeit bn.max(arr, axis=0)
+    >> timeit bn.nanmax(arr, axis=0)
     100000 loops, best of 3: 5.25 us per loop
     >> timeit func(a)
     100000 loops, best of 3: 2.5 us per loop
@@ -156,11 +156,11 @@ Bottleneck contains the following functions:
 
 =========    ==============   ===============
 sum          move_sum         
-mean                          group_mean
-var                  
-std          
-min          
-max          
+nanmean                       group_nanmean
+nanvar                  
+nanstd          
+nanmin          
+nanmax          
 =========    ==============   ===============
 
 Currently only 1d, 2d, and 3d NumPy arrays with dtype int32, int64, and
@@ -186,6 +186,14 @@ URLs
 
 Install
 =======
+
+Requirements:
+
+======================== ==================================
+Bottleneck               Python, NumPy, SciPy
+Unit tests               nose
+Compile                  gcc or MinGW
+======================== ==================================
 
 **GNU/Linux, Mac OS X, et al.**
 

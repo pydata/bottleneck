@@ -1,40 +1,40 @@
-"var"
+"nanvar"
 
-cdef dict var_dict = {}
+cdef dict nanvar_dict = {}
 
 #     Dim dtype axis
-var_dict[(1, f64, 0)] = var_1d_float64_axis0
-var_dict[(1, f64, N)] = var_1d_float64_axis0
-var_dict[(2, f64, 0)] = var_2d_float64_axis0
-var_dict[(2, f64, 1)] = var_2d_float64_axis1
-var_dict[(2, f64, N)] = var_2d_float64_axisNone
-var_dict[(3, f64, 0)] = var_3d_float64_axis0
-var_dict[(3, f64, 1)] = var_3d_float64_axis1
-var_dict[(3, f64, 2)] = var_3d_float64_axis2
-var_dict[(3, f64, N)] = var_3d_float64_axisNone
+nanvar_dict[(1, f64, 0)] = nanvar_1d_float64_axis0
+nanvar_dict[(1, f64, N)] = nanvar_1d_float64_axis0
+nanvar_dict[(2, f64, 0)] = nanvar_2d_float64_axis0
+nanvar_dict[(2, f64, 1)] = nanvar_2d_float64_axis1
+nanvar_dict[(2, f64, N)] = nanvar_2d_float64_axisNone
+nanvar_dict[(3, f64, 0)] = nanvar_3d_float64_axis0
+nanvar_dict[(3, f64, 1)] = nanvar_3d_float64_axis1
+nanvar_dict[(3, f64, 2)] = nanvar_3d_float64_axis2
+nanvar_dict[(3, f64, N)] = nanvar_3d_float64_axisNone
 
-var_dict[(1, i32, 0)] = var_1d_int32_axis0
-var_dict[(1, i32, N)] = var_1d_int32_axis0
-var_dict[(2, i32, 0)] = var_2d_int32_axis0
-var_dict[(2, i32, 1)] = var_2d_int32_axis1
-var_dict[(2, i32, N)] = var_2d_int32_axisNone
-var_dict[(3, i32, 0)] = var_3d_int32_axis0
-var_dict[(3, i32, 1)] = var_3d_int32_axis1
-var_dict[(3, i32, 2)] = var_3d_int32_axis2
-var_dict[(3, i32, N)] = var_3d_int32_axisNone
+nanvar_dict[(1, i32, 0)] = nanvar_1d_int32_axis0
+nanvar_dict[(1, i32, N)] = nanvar_1d_int32_axis0
+nanvar_dict[(2, i32, 0)] = nanvar_2d_int32_axis0
+nanvar_dict[(2, i32, 1)] = nanvar_2d_int32_axis1
+nanvar_dict[(2, i32, N)] = nanvar_2d_int32_axisNone
+nanvar_dict[(3, i32, 0)] = nanvar_3d_int32_axis0
+nanvar_dict[(3, i32, 1)] = nanvar_3d_int32_axis1
+nanvar_dict[(3, i32, 2)] = nanvar_3d_int32_axis2
+nanvar_dict[(3, i32, N)] = nanvar_3d_int32_axisNone
 
-var_dict[(1, i64, 0)] = var_1d_int64_axis0
-var_dict[(1, i64, N)] = var_1d_int64_axis0
-var_dict[(2, i64, 0)] = var_2d_int64_axis0
-var_dict[(2, i64, 1)] = var_2d_int64_axis1
-var_dict[(2, i64, N)] = var_2d_int64_axisNone
-var_dict[(3, i64, 0)] = var_3d_int64_axis0
-var_dict[(3, i64, 1)] = var_3d_int64_axis1
-var_dict[(3, i64, 2)] = var_3d_int64_axis2
-var_dict[(3, i64, N)] = var_3d_int64_axisNone
+nanvar_dict[(1, i64, 0)] = nanvar_1d_int64_axis0
+nanvar_dict[(1, i64, N)] = nanvar_1d_int64_axis0
+nanvar_dict[(2, i64, 0)] = nanvar_2d_int64_axis0
+nanvar_dict[(2, i64, 1)] = nanvar_2d_int64_axis1
+nanvar_dict[(2, i64, N)] = nanvar_2d_int64_axisNone
+nanvar_dict[(3, i64, 0)] = nanvar_3d_int64_axis0
+nanvar_dict[(3, i64, 1)] = nanvar_3d_int64_axis1
+nanvar_dict[(3, i64, 2)] = nanvar_3d_int64_axis2
+nanvar_dict[(3, i64, N)] = nanvar_3d_int64_axisNone
 
 
-def var(arr, axis=None, int ddof=0):
+def nanvar(arr, axis=None, int ddof=0):
     """
     Variance along the specified axis, ignoring NaNs.
 
@@ -51,9 +51,10 @@ def var(arr, axis=None, int ddof=0):
     Returns
     -------
     y : ndarray
-        An array with the same shape as `arr`, with the specified axis removed.
-        If `arr` is a 0-d array, or if axis is None, a scalar is returned.
-        `float64` intermediate and return values are used for integer inputs. 
+        An array with the same shape as `arr`, with the specified axis
+        removed. If `arr` is a 0-d array, or if axis is None, a scalar is
+        returned. `float64` intermediate and return values are used for
+        integer inputs. 
     
     Notes
     -----
@@ -64,33 +65,33 @@ def var(arr, axis=None, int ddof=0):
 
     Examples
     --------
-    >>> bn.var(1)
+    >>> bn.nanvar(1)
     0.0
-    >>> bn.var([1])
+    >>> bn.nanvar([1])
     0.0
-    >>> bn.var([1, np.nan])
+    >>> bn.nanvar([1, np.nan])
     0.0
     >>> a = np.array([[1, 4], [1, np.nan]])
-    >>> bn.var(a)
+    >>> bn.nanvar(a)
     2.0
-    >>> bn.var(a, axis=0)
+    >>> bn.nanvar(a, axis=0)
     array([ 0.,  0.])
 
     When positive infinity or negative infinity are present NaN is returned:
 
-    >>> bn.var([1, np.nan, np.inf])
+    >>> bn.nanvar([1, np.nan, np.inf])
     nan
     
     """
-    func, arr = var_selector(arr, axis)
+    func, arr = nanvar_selector(arr, axis)
     return func(arr, ddof)
 
-def var_selector(arr, axis):
+def nanvar_selector(arr, axis):
     """
-    Return variance function and array that matches `arr` and `axis`.
+    Return nanvar function and array that matches `arr` and `axis`.
     
     Under the hood Bottleneck uses a separate Cython function for each
-    combination of ndim, dtype, and axis. A lot of the overhead in bn.var()
+    combination of ndim, dtype, and axis. A lot of the overhead in bn.nanvar()
     is in checking that `axis` is within range, converting `arr` into an array
     (if it is not already an array), and selecting the function to use to
     calculate the variance.
@@ -109,9 +110,9 @@ def var_selector(arr, axis):
     Returns
     -------
     func : function
-        The variance function that matches the number of dimensions and
-        dtype of the input array and the axis along which you wish to find
-        the variance.
+        The nanvar function that matches the number of dimensions and dtype
+        of the input array and the axis along which you wish to find the
+        variance.
     a : ndarray
         If the input array `arr` is not a ndarray, then `a` will contain the
         result of converting `arr` into a ndarray.
@@ -125,9 +126,9 @@ def var_selector(arr, axis):
     Obtain the function needed to determine the variance of `arr` along
     axis=0:
 
-    >>> func, a = ds.func.var_selector(arr, axis=0)
+    >>> func, a = ds.func.nanvar_selector(arr, axis=0)
     >>> func
-    <built-in function var_1d_float64_axis0> 
+    <built-in function nanvar_1d_float64_axis0> 
     
     Use the returned function and array to determine the variance:
     
@@ -146,7 +147,7 @@ def var_selector(arr, axis):
             raise ValueError, "axis(=%d) out of bounds" % axis
     cdef tuple key = (ndim, dtype, axis)
     try:
-        func = var_dict[key]
+        func = nanvar_dict[key]
     except KeyError:
         tup = (str(ndim), str(dtype))
         raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
@@ -156,8 +157,8 @@ def var_selector(arr, axis):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a, int ddof=0):
-    "var of 1d numpy array with dtype=np.int32 along axis=0."
+def nanvar_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a, int ddof=0):
+    "nanvar of 1d numpy array with dtype=np.int32 along axis=0."
     cdef Py_ssize_t i
     cdef int a0 = a.shape[0]
     cdef np.float64_t asum = 0, amean, ai
@@ -176,8 +177,8 @@ def var_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a, int ddof=0):
-    "var of 1d numpy array with dtype=np.int64 along axis=0."
+def nanvar_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a, int ddof=0):
+    "nanvar of 1d numpy array with dtype=np.int64 along axis=0."
     cdef Py_ssize_t i
     cdef int a0 = a.shape[0]
     cdef np.float64_t asum = 0, amean, ai
@@ -196,8 +197,8 @@ def var_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a, int ddof=0):
-    "var of 1d numpy array with dtype=np.float64 along axis=0."
+def nanvar_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a, int ddof=0):
+    "nanvar of 1d numpy array with dtype=np.float64 along axis=0."
     cdef Py_ssize_t i
     cdef int a0 = a.shape[0], count = 0
     cdef np.float64_t asum = 0, amean, ai
@@ -222,8 +223,8 @@ def var_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a, int ddof=0):
-    "var of 2d numpy array with dtype=np.int32 along axis=0."
+def nanvar_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a, int ddof=0):
+    "nanvar of 2d numpy array with dtype=np.int32 along axis=0."
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1]
     cdef np.float64_t asum, amean, ai
@@ -243,8 +244,8 @@ def var_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a, int ddof=0):
-    "var of 2d numpy array with dtype=np.int32 along axis=1."
+def nanvar_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a, int ddof=0):
+    "nanvar of 2d numpy array with dtype=np.int32 along axis=1."
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1]
     cdef np.float64_t asum, amean, ai
@@ -264,8 +265,8 @@ def var_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_2d_int32_axisNone(np.ndarray[np.int32_t, ndim=2] a, int ddof=0):
-    "var of 2d numpy array with dtype=np.int32 along axis=None."
+def nanvar_2d_int32_axisNone(np.ndarray[np.int32_t, ndim=2] a, int ddof=0):
+    "nanvar of 2d numpy array with dtype=np.int32 along axis=None."
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1], a01 = a0 * a1
     cdef np.float64_t asum = 0, amean, ai
@@ -283,8 +284,8 @@ def var_2d_int32_axisNone(np.ndarray[np.int32_t, ndim=2] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a, int ddof=0):
-    "var of 2d numpy array with dtype=np.int64 along axis=0."
+def nanvar_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a, int ddof=0):
+    "nanvar of 2d numpy array with dtype=np.int64 along axis=0."
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1]
     cdef np.float64_t asum, amean, ai
@@ -304,8 +305,8 @@ def var_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a, int ddof=0):
-    "var of 2d numpy array with dtype=np.int64 along axis=1."
+def nanvar_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a, int ddof=0):
+    "nanvar of 2d numpy array with dtype=np.int64 along axis=1."
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1]
     cdef np.float64_t asum, amean, ai
@@ -325,8 +326,8 @@ def var_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_2d_int64_axisNone(np.ndarray[np.int64_t, ndim=2] a, int ddof=0):
-    "var of 2d numpy array with dtype=np.int64 along axis=None."
+def nanvar_2d_int64_axisNone(np.ndarray[np.int64_t, ndim=2] a, int ddof=0):
+    "nanvar of 2d numpy array with dtype=np.int64 along axis=None."
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1], a01 = a0 * a1
     cdef np.float64_t asum = 0, amean, ai
@@ -344,8 +345,8 @@ def var_2d_int64_axisNone(np.ndarray[np.int64_t, ndim=2] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a, int ddof=0):
-    "var of 2d numpy array with dtype=np.float64 along axis=0."
+def nanvar_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a, int ddof=0):
+    "nanvar of 2d numpy array with dtype=np.float64 along axis=0."
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
     cdef np.float64_t asum, amean, ai
@@ -373,8 +374,8 @@ def var_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a, int ddof=0):
-    "var of 2d numpy array with dtype=np.float64 along axis=1."
+def nanvar_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a, int ddof=0):
+    "nanvar of 2d numpy array with dtype=np.float64 along axis=1."
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
     cdef np.float64_t asum, amean, ai
@@ -402,8 +403,9 @@ def var_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_2d_float64_axisNone(np.ndarray[np.float64_t, ndim=2] a, int ddof=0):
-    "var of 2d numpy array with dtype=np.float64 along axis=None."
+def nanvar_2d_float64_axisNone(np.ndarray[np.float64_t, ndim=2] a,
+                               int ddof=0):
+    "nanvar of 2d numpy array with dtype=np.float64 along axis=None."
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1], count = 0
     cdef np.float64_t asum = 0, amean, ai
@@ -430,8 +432,8 @@ def var_2d_float64_axisNone(np.ndarray[np.float64_t, ndim=2] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a, int ddof=0):
-    "var of 3d numpy array with dtype=np.int32 along axis=0."
+def nanvar_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a, int ddof=0):
+    "nanvar of 3d numpy array with dtype=np.int32 along axis=0."
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2]
     cdef np.float64_t asum, amean, ai
@@ -453,8 +455,8 @@ def var_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a, int ddof=0):
-    "var of 3d numpy array with dtype=np.int32 along axis=1"
+def nanvar_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a, int ddof=0):
+    "nanvar of 3d numpy array with dtype=np.int32 along axis=1"
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2]
     cdef np.float64_t asum, amean, ai
@@ -476,8 +478,8 @@ def var_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a, int ddof=0):
-    "var of 3d numpy array with dtype=np.int32 along axis=2"
+def nanvar_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a, int ddof=0):
+    "nanvar of 3d numpy array with dtype=np.int32 along axis=2"
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2]
     cdef np.float64_t asum, amean, ai
@@ -499,8 +501,8 @@ def var_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_3d_int32_axisNone(np.ndarray[np.int32_t, ndim=3] a, int ddof=0):
-    "var of 3d numpy array with dtype=np.int32 along axis=None."
+def nanvar_3d_int32_axisNone(np.ndarray[np.int32_t, ndim=3] a, int ddof=0):
+    "nanvar of 3d numpy array with dtype=np.int32 along axis=None."
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2]
     cdef int a012 = a0 * a1 * a2
@@ -521,8 +523,8 @@ def var_3d_int32_axisNone(np.ndarray[np.int32_t, ndim=3] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a, int ddof=0):
-    "var of 3d numpy array with dtype=np.int64 along axis=0."
+def nanvar_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a, int ddof=0):
+    "nanvar of 3d numpy array with dtype=np.int64 along axis=0."
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2]
     cdef np.float64_t asum, amean, ai
@@ -544,8 +546,8 @@ def var_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a, int ddof=0):
-    "var of 3d numpy array with dtype=np.int64 along axis=1"
+def nanvar_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a, int ddof=0):
+    "nanvar of 3d numpy array with dtype=np.int64 along axis=1"
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2]
     cdef np.float64_t asum, amean, ai
@@ -567,8 +569,8 @@ def var_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a, int ddof=0):
-    "var of 3d numpy array with dtype=np.int64 along axis=2"
+def nanvar_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a, int ddof=0):
+    "nanvar of 3d numpy array with dtype=np.int64 along axis=2"
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2]
     cdef np.float64_t asum, amean, ai
@@ -591,8 +593,8 @@ def var_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_3d_int64_axisNone(np.ndarray[np.int64_t, ndim=3] a, int ddof=0):
-    "var of 3d numpy array with dtype=np.int64 along axis=None."
+def nanvar_3d_int64_axisNone(np.ndarray[np.int64_t, ndim=3] a, int ddof=0):
+    "nanvar of 3d numpy array with dtype=np.int64 along axis=None."
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2]
     cdef int a012 = a0 * a1 * a2
@@ -613,8 +615,8 @@ def var_3d_int64_axisNone(np.ndarray[np.int64_t, ndim=3] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a, int ddof=0):
-    "var of 3d numpy array with dtype=np.float64 along axis=0."
+def nanvar_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a, int ddof=0):
+    "nanvar of 3d numpy array with dtype=np.float64 along axis=0."
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef np.float64_t asum, amean, ai
@@ -644,8 +646,8 @@ def var_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a, int ddof=0):
-    "var of 3d numpy array with dtype=np.float64 along axis=1."
+def nanvar_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a, int ddof=0):
+    "nanvar of 3d numpy array with dtype=np.float64 along axis=1."
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef np.float64_t asum, amean, ai
@@ -675,8 +677,8 @@ def var_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a, int ddof=0):
-    "var of 3d numpy array with dtype=np.float64 along axis=2."
+def nanvar_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a, int ddof=0):
+    "nanvar of 3d numpy array with dtype=np.float64 along axis=2."
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef np.float64_t asum, amean, ai
@@ -706,8 +708,9 @@ def var_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a, int ddof=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def var_3d_float64_axisNone(np.ndarray[np.float64_t, ndim=3] a, int ddof=0):
-    "var of 3d numpy array with dtype=np.float64 along axis=None."
+def nanvar_3d_float64_axisNone(np.ndarray[np.float64_t, ndim=3] a,
+                               int ddof=0):
+    "nanvar of 3d numpy array with dtype=np.float64 along axis=None."
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count = 0
     cdef np.float64_t asum = 0, amean, ai

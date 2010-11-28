@@ -1,31 +1,31 @@
-"group_mean"
+"group_nanmean"
 
 # key is (ndim, dtype, axis)
-cdef dict group_mean_dict = {}
+cdef dict group_nanmean_dict = {}
 
-group_mean_dict[(1, f64, 0)] = group_mean_1d_float64_axis0
-group_mean_dict[(2, f64, 0)] = group_mean_2d_float64_axis0
-group_mean_dict[(2, f64, 1)] = group_mean_2d_float64_axis1
-group_mean_dict[(3, f64, 0)] = group_mean_3d_float64_axis0
-group_mean_dict[(3, f64, 1)] = group_mean_3d_float64_axis1
-group_mean_dict[(3, f64, 2)] = group_mean_3d_float64_axis2
+group_nanmean_dict[(1, f64, 0)] = group_nanmean_1d_float64_axis0
+group_nanmean_dict[(2, f64, 0)] = group_nanmean_2d_float64_axis0
+group_nanmean_dict[(2, f64, 1)] = group_nanmean_2d_float64_axis1
+group_nanmean_dict[(3, f64, 0)] = group_nanmean_3d_float64_axis0
+group_nanmean_dict[(3, f64, 1)] = group_nanmean_3d_float64_axis1
+group_nanmean_dict[(3, f64, 2)] = group_nanmean_3d_float64_axis2
 
-group_mean_dict[(1, i32, 0)] = group_mean_1d_int32_axis0
-group_mean_dict[(2, i32, 0)] = group_mean_2d_int32_axis0
-group_mean_dict[(2, i32, 1)] = group_mean_2d_int32_axis1
-group_mean_dict[(3, i32, 0)] = group_mean_3d_int32_axis0
-group_mean_dict[(3, i32, 1)] = group_mean_3d_int32_axis1
-group_mean_dict[(3, i32, 2)] = group_mean_3d_int32_axis2
+group_nanmean_dict[(1, i32, 0)] = group_nanmean_1d_int32_axis0
+group_nanmean_dict[(2, i32, 0)] = group_nanmean_2d_int32_axis0
+group_nanmean_dict[(2, i32, 1)] = group_nanmean_2d_int32_axis1
+group_nanmean_dict[(3, i32, 0)] = group_nanmean_3d_int32_axis0
+group_nanmean_dict[(3, i32, 1)] = group_nanmean_3d_int32_axis1
+group_nanmean_dict[(3, i32, 2)] = group_nanmean_3d_int32_axis2
 
-group_mean_dict[(1, i64, 0)] = group_mean_1d_int64_axis0
-group_mean_dict[(2, i64, 0)] = group_mean_2d_int64_axis0
-group_mean_dict[(2, i64, 1)] = group_mean_2d_int64_axis1
-group_mean_dict[(3, i64, 0)] = group_mean_3d_int64_axis0
-group_mean_dict[(3, i64, 1)] = group_mean_3d_int64_axis1
-group_mean_dict[(3, i64, 2)] = group_mean_3d_int64_axis2
+group_nanmean_dict[(1, i64, 0)] = group_nanmean_1d_int64_axis0
+group_nanmean_dict[(2, i64, 0)] = group_nanmean_2d_int64_axis0
+group_nanmean_dict[(2, i64, 1)] = group_nanmean_2d_int64_axis1
+group_nanmean_dict[(3, i64, 0)] = group_nanmean_3d_int64_axis0
+group_nanmean_dict[(3, i64, 1)] = group_nanmean_3d_int64_axis1
+group_nanmean_dict[(3, i64, 2)] = group_nanmean_3d_int64_axis2
 
 
-def group_mean(arr, label, order=None, int axis=0):
+def group_nanmean(arr, label, order=None, int axis=0):
     """
     Group means of like-labeled array elements along given axis ignoring NaNs.
 
@@ -75,38 +75,39 @@ def group_mean(arr, label, order=None, int axis=0):
     --------
     Set up the problem:
 
-    >>> from bottleneck import group_mean
+    >>> from bottleneck import group_nanmean
     >>> arr = np.array([1, 2, 3, 9])
     >>> label = ['a', 'b', 'b', 'a']
     
-    Find group mean:
+    Find group nanmean:
 
-    >>> group_mean(arr, label)
+    >>> group_nanmean(arr, label)
     (array([ 5. ,  2.5]), ['a', 'b'])
-    >>> group_mean(arr, label, order=['b', 'a'])
+    >>> group_nanmean(arr, label, order=['b', 'a'])
     (array([ 2.5,  5. ]), ['b', 'a'])
-    >>> group_mean(arr, label, order=['b'])
+    >>> group_nanmean(arr, label, order=['b'])
     (array([ 2.5]), ['b'])
-    >>> group_mean(arr, label, order=['c'])
+    >>> group_nanmean(arr, label, order=['c'])
     KeyError: 'c'
 
     We can also change the type of the input:
 
-    >>> group_mean(arr.tolist(), np.array(label))
+    >>> group_nanmean(arr.tolist(), np.array(label))
     (array([ 5. ,  2.5]), ['a', 'b'])    
 
     """
-    func, arr, label_dict, order = group_mean_selector(arr, label, order,
+    func, arr, label_dict, order = group_nanmean_selector(arr, label, order,
                                                        axis)
     return func(arr, label_dict, order)
 
-def group_mean_selector(arr, label, order=None, int axis=0):
+def group_nanmean_selector(arr, label, order=None, int axis=0):
     """
-    Group mean function, array, and label mapper to use for specified problem.
+    Group nanmean function, array, and label mapper to use for specified
+    problem.
     
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in
-    bn.group_mean() is in checking that `axis` is within range, converting
+    bn.group_nanmean() is in checking that `axis` is within range, converting
     `arr` into an array (if it is not already an array), and selecting the
     function to use to calculate the group mean.
 
@@ -136,7 +137,7 @@ def group_mean_selector(arr, label, order=None, int axis=0):
     Returns
     -------
     func : function
-        The group mean function that matches the number of dimensions and
+        The group nanmean function that matches the number of dimensions and
         dtype of the input array and the axis along which you wish to find
         the group mean.
     a : ndarray
@@ -155,17 +156,17 @@ def group_mean_selector(arr, label, order=None, int axis=0):
     Create a numpy array:
 
     >>> arr = np.array([1.0, 2.0, 3.0])
-    >>> from bottleneck.group import group_mean_selector
+    >>> from bottleneck.group import group_nanmean_selector
     
     Obtain the function, etc. needed to determine the group mean of `arr`
     along axis=0:
 
-    >>> func, a, label_dict, order = group_mean_selector(arr, label, axis=0)
+    >>> func, a, label_dict, order = group_nanmean_selector(arr, label, axis=0)
 
     The output:
 
     >>> func
-    <built-in function group_mean_1d_int64_axis0>
+    <built-in function group_nanmean_1d_int64_axis0>
     >>> a
     array([1, 2, 3, 9])
     >>> label_dict
@@ -193,7 +194,7 @@ def group_mean_selector(arr, label, order=None, int axis=0):
         raise ValueError(msg % (nlabel, narr, axis))
     cdef tuple key = (ndim, dtype, axis)
     try:
-        func = group_mean_dict[key]
+        func = group_nanmean_dict[key]
     except KeyError:
         tup = (str(ndim), str(dtype))
         raise TypeError("Unsupported ndim/dtype (%s/%s)." % tup)
@@ -204,9 +205,9 @@ def group_mean_selector(arr, label, order=None, int axis=0):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a,
+def group_nanmean_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a,
                               dict label_dict, list order):
-    "Group mean along axis=0 of a 1d, int32 numpy array."
+    "Group nanmean along axis=0 of a 1d, int32 numpy array."
     cdef Py_ssize_t i, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], count, norder = len(order)
@@ -226,9 +227,9 @@ def group_mean_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a,
+def group_nanmean_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a,
                               dict label_dict, list order):
-    "Group mean along axis=0 of a 1d, int64 numpy array."
+    "Group nanmean along axis=0 of a 1d, int64 numpy array."
     cdef Py_ssize_t i, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], count, norder = len(order)
@@ -248,9 +249,9 @@ def group_mean_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a,
+def group_nanmean_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a,
                                 dict label_dict, list order):
-    "Group mean along axis=0 of a 1d, float64 numpy array."
+    "Group nanmean along axis=0 of a 1d, float64 numpy array."
     cdef Py_ssize_t i, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], count = 0, norder = len(order)
@@ -277,9 +278,9 @@ def group_mean_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a,
+def group_nanmean_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a,
                               dict label_dict, list order):
-    "Group mean along axis=0 of a 3d, int32 numpy array."
+    "Group nanmean along axis=0 of a 3d, int32 numpy array."
     cdef Py_ssize_t i, j, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
@@ -301,9 +302,9 @@ def group_mean_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a,
+def group_nanmean_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a,
                               dict label_dict, list order):
-    "Group mean along axis=1 of a 2d, int32 numpy array."
+    "Group nanmean along axis=1 of a 2d, int32 numpy array."
     cdef Py_ssize_t i, j, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
@@ -325,9 +326,9 @@ def group_mean_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a,
+def group_nanmean_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a,
                               dict label_dict, list order):
-    "Group mean along axis=0 of a 2d, int64 numpy array."
+    "Group nanmean along axis=0 of a 2d, int64 numpy array."
     cdef Py_ssize_t i, j, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
@@ -349,9 +350,9 @@ def group_mean_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a,
+def group_nanmean_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a,
                               dict label_dict, list order):
-    "Group mean along axis=1 of a 2d, int64 numpy array."
+    "Group nanmean along axis=1 of a 2d, int64 numpy array."
     cdef Py_ssize_t i, j, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
@@ -373,9 +374,9 @@ def group_mean_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a,
+def group_nanmean_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a,
                                 dict label_dict, list order):
-    "Group mean along axis=0 of a 2d, float64 numpy array."
+    "Group nanmean along axis=0 of a 2d, float64 numpy array."
     cdef Py_ssize_t i, j, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
@@ -402,9 +403,9 @@ def group_mean_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a,
+def group_nanmean_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a,
                               dict label_dict, list order):
-    "Group mean along axis=1 of a 2d, float64 numpy array."
+    "Group nanmean along axis=1 of a 2d, float64 numpy array."
     cdef Py_ssize_t i, j, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
@@ -433,9 +434,9 @@ def group_mean_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a,
+def group_nanmean_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a,
                               dict label_dict, list order):
-    "Group mean along axis=0 of a 3d, int32 numpy array."
+    "Group nanmean along axis=0 of a 3d, int32 numpy array."
     cdef Py_ssize_t i, j, k, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
@@ -458,9 +459,9 @@ def group_mean_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a,
+def group_nanmean_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a,
                               dict label_dict, list order):
-    "Group mean along axis=1 of a 3d, int32 numpy array."
+    "Group nanmean along axis=1 of a 3d, int32 numpy array."
     cdef Py_ssize_t i, j, k, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
@@ -483,9 +484,9 @@ def group_mean_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a,
+def group_nanmean_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a,
                               dict label_dict, list order):
-    "Group mean along axis=2 of a 3d, int32 numpy array."
+    "Group nanmean along axis=2 of a 3d, int32 numpy array."
     cdef Py_ssize_t i, j, k, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
@@ -508,9 +509,9 @@ def group_mean_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a,
+def group_nanmean_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a,
                               dict label_dict, list order):
-    "Group mean along axis=0 of a 3d, int64 numpy array."
+    "Group nanmean along axis=0 of a 3d, int64 numpy array."
     cdef Py_ssize_t i, j, k, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
@@ -533,9 +534,9 @@ def group_mean_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a,
+def group_nanmean_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a,
                               dict label_dict, list order):
-    "Group mean along axis=1 of a 3d, int64 numpy array."
+    "Group nanmean along axis=1 of a 3d, int64 numpy array."
     cdef Py_ssize_t i, j, k, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
@@ -558,9 +559,9 @@ def group_mean_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a,
+def group_nanmean_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a,
                               dict label_dict, list order):
-    "Group mean along axis=2 of a 3d, int64 numpy array."
+    "Group nanmean along axis=2 of a 3d, int64 numpy array."
     cdef Py_ssize_t i, j, k, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
@@ -583,9 +584,9 @@ def group_mean_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a,
+def group_nanmean_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a,
                                 dict label_dict, list order):
-    "Group mean along axis=0 of a 3d, float64 numpy array."
+    "Group nanmean along axis=0 of a 3d, float64 numpy array."
     cdef Py_ssize_t i, j, k, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
@@ -614,9 +615,9 @@ def group_mean_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a,
+def group_nanmean_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a,
                                 dict label_dict, list order):
-    "Group mean along axis=1 of a 3d, float64 numpy array."
+    "Group nanmean along axis=1 of a 3d, float64 numpy array."
     cdef Py_ssize_t i, j, k, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
@@ -645,9 +646,9 @@ def group_mean_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def group_mean_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a,
+def group_nanmean_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a,
                                 dict label_dict, list order):
-    "Group mean along axis=2 of a 3d, float64 numpy array."
+    "Group nanmean along axis=2 of a 3d, float64 numpy array."
     cdef Py_ssize_t i, j, k, g = -1
     cdef list idx
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count

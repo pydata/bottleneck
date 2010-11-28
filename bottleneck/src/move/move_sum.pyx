@@ -66,7 +66,7 @@ def move_sum_selector(arr, int window, int axis):
     -------
     func : function
         The moving sum function that matches the number of dimensions, dtype,
-        and the axis along which you wish to find the mean.
+        and the axis along which you wish to find the sum.
     a : ndarray
         If the input array `arr` is not a ndarray, then `a` will contain the
         result of converting `arr` into a ndarra; otherwise a view is
@@ -78,13 +78,13 @@ def move_sum_selector(arr, int window, int axis):
 
     >>> arr = np.array([1.0, 2.0, 3.0, 4.0])
     
-    Obtain the function needed to determine the mean of `arr` along axis=0:
+    Obtain the function needed to determine the sum of `arr` along axis=0:
     
     >>> window, axis = 2, 0
     >>> func, a = bn.move.move_sum_selector(arr, window=2, axis=0)
     <built-in function move_sum_1d_float64_axis0>    
     
-    Use the returned function and array to determine the mean:
+    Use the returned function and array to determine the sum:
 
     >>> func(a, window)
     array([ nan,   3.,   5.,   7])
