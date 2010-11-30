@@ -1,5 +1,4 @@
 include "header.pyx"
-include "sum.pyx"
 include "nanmax.pyx"
 include "nanmin.pyx"
 include "nanmean.pyx"

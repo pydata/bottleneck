@@ -49,18 +49,18 @@ Fast
 Bottleneck is fast::
 
     >>> arr = np.random.rand(100, 100)    
-    >>> timeit np.nansum(arr)
-    10000 loops, best of 3: 68.4 us per loop
-    >>> timeit bn.sum(arr)
-    100000 loops, best of 3: 17.7 us per loop
+    >>> timeit np.nanmax(arr)
+    10000 loops, best of 3: 99.6 us per loop
+    >>> timeit bn.nanmax(arr)
+    100000 loops, best of 3: 15.3 us per loop
 
 Let's not forget to add some NaNs::
 
     >>> arr[arr > 0.5] = np.nan
-    >>> timeit np.nansum(arr)
-    1000 loops, best of 3: 417 us per loop
-    >>> timeit bn.sum(arr)
-    10000 loops, best of 3: 64.8 us per loop
+    >>> timeit np.nanmax(arr)
+    10000 loops, best of 3: 146 us per loop
+    >>> timeit bn.nanmax(arr)
+    100000 loops, best of 3: 15.2 us per loop
 
 Bottleneck comes with a benchmark suite that compares the performance of the
 bottleneck functions that have a NumPy/SciPy equivalent. To run the
@@ -136,7 +136,7 @@ Bottleneck contains the following functions:
 
 =========    ==============   ===============
 median
-sum          move_sum         
+             move_sum         
 nanmean                       group_nanmean
 nanvar                  
 nanstd          
@@ -208,6 +208,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 11 tests in 13.756s
+    Ran 10 tests in 13.756s
     OK
-    <nose.result.TextTestResult run=11 errors=0 failures=0> 
+    <nose.result.TextTestResult run=10 errors=0 failures=0> 

@@ -55,10 +55,6 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
                 dd = desired.dtype
                 assert_equal(da, dd, err_msg % (da, dd))
 
-def test_sum():
-    "Test sum."
-    yield unit_maker, bn.sum, np.nansum
-
 def test_nanmax():
     "Test nanmax."
     yield unit_maker, bn.nanmax, np.nanmax
