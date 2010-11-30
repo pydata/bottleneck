@@ -40,8 +40,9 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
     msg += '\nInput array:\n%s\n'
     for i, arr in enumerate(arrays(nans=nans)):
         for axis in range(-arr.ndim, arr.ndim) + [None]:
-            actual = func(arr, axis=axis)
-            desired = func0(arr, axis=axis)
+            with np.errstate(invalid='ignore'):
+                actual = func(arr, axis=axis)
+                desired = func0(arr, axis=axis)
             tup = (func.__name__, 'a'+str(i), str(arr.dtype), str(arr.shape),
                    str(axis), arr)
             err_msg = msg % tup

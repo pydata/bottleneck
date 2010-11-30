@@ -15,7 +15,8 @@ def benchit(verbose=True):
             print key
         for stmt in statements[key]:
             for shortname in setups:
-                t = autotimeit(stmt, setups[shortname])
+                with np.errstate(invalid='ignore'):
+                    t = autotimeit(stmt, setups[shortname])
                 results.append((stmt, shortname, t))
                 if verbose:
                     print

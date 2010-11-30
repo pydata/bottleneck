@@ -61,8 +61,9 @@ def unit_maker(func, func0, decimal=np.inf):
     for i, arr in enumerate(array_iter()):
         for axis in range(-arr.ndim, arr.ndim):
             for label in label_iter(arr.shape[axis]):
-                a1, lab1 = func(arr, label, axis=axis)
-                a0, lab0 = group_func(func0, arr, label, axis=axis)
+                with np.errstate(invalid='ignore'):
+                    a1, lab1 = func(arr, label, axis=axis)
+                    a0, lab0 = group_func(func0, arr, label, axis=axis)
                 if type(label) == np.ndarray:
                     labeltype = 'array'
                 elif type(label) == list:

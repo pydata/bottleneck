@@ -39,8 +39,9 @@ def unit_maker(func, func0, decimal=np.inf):
             if len(windows) == 0:
                 windows = [1]
             for window in windows:
-                actual = func(arr, window, axis=axis)
-                desired = func0(arr, window, axis=axis)
+                with np.errstate(invalid='ignore'):
+                    actual = func(arr, window, axis=axis)
+                    desired = func0(arr, window, axis=axis)
                 tup = (func.__name__, window, 'a'+str(i), str(arr.dtype),
                        str(arr.shape), str(axis), arr)
                 err_msg = msg % tup
