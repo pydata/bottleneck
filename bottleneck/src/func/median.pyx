@@ -1,55 +1,64 @@
 # (C) 2009 Sturla Molden
 # SciPy license 
 #
+# From the original C function (code in public domain) in:
+#   Fast median search: an ANSI C implementation
+#   Nicolas Devillard - ndevilla AT free DOT fr
+#   July 1998
+# which, in turn, took the algorithm from
+#   Wirth, Niklaus
+#   Algorithms + data structures = programs, p. 366
+#   Englewood Cliffs: Prentice-Hall, 1976
+#
 # Adapted for Bottleneck:
 # (C) 2010 Keith Goodman
+"median"
+
+# key is (ndim, dtype, axis)
+cdef dict median_dict = {}
+median_dict[(1, f64, 0)] = median_1d_float64_axis0
+median_dict[(2, f64, 0)] = median_2d_float64_axis0
+median_dict[(2, f64, 1)] = median_2d_float64_axis1
+median_dict[(3, f64, 0)] = median_3d_float64_axis0
+median_dict[(3, f64, 1)] = median_3d_float64_axis1
+median_dict[(3, f64, 2)] = median_3d_float64_axis2
+median_dict[(1, i64, 0)] = median_1d_int64_axis0
+median_dict[(2, i64, 0)] = median_2d_int64_axis0
+median_dict[(2, i64, 1)] = median_2d_int64_axis1
+median_dict[(3, i64, 0)] = median_3d_int64_axis0
+median_dict[(3, i64, 1)] = median_3d_int64_axis1
+median_dict[(3, i64, 2)] = median_3d_int64_axis2
+median_dict[(1, i32, 0)] = median_1d_int32_axis0
+median_dict[(2, i32, 0)] = median_2d_int32_axis0
+median_dict[(2, i32, 1)] = median_2d_int32_axis1
+median_dict[(3, i32, 0)] = median_3d_int32_axis0
+median_dict[(3, i32, 1)] = median_3d_int32_axis1
+median_dict[(3, i32, 2)] = median_3d_int32_axis2
 
 
-def median(a, axis=None, out=None, overwrite_input=False):
+def median(arr, axis=None):
     """
-    Compute the median along the specified axis.
-
-    Returns the median of the array elements.
+    Median of array elements along given axis.
 
     Parameters
     ----------
-    a : array_like
-        Input array or object that can be converted to an array.
-    axis : {None, int}, optional
-        Axis along which the medians are computed. The default (axis=None)
-        is to compute the median along a flattened version of the array.
-    out : ndarray, optional
-        Alternative output array in which to place the result. It must
-        have the same shape and buffer length as the expected output,
-        but the type (of the output) will be cast if necessary.
-    overwrite_input : {False, True}, optional
-       If True, then allow use of memory of input array (a) for
-       calculations. The input array will be modified by the call to
-       median. This will save memory when you do not need to preserve
-       the contents of the input array. Treat the input as undefined,
-       but it will probably be fully or partially sorted. Default is
-       False. Note that, if `overwrite_input` is True and the input
-       is not already an ndarray, an error will be raised.
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the median is computed. The default (axis=None)is to
+        compute the median of the flattened array.
 
     Returns
     -------
-    median : ndarray
-        A new array holding the result (unless `out` is specified, in
-        which case that array is returned instead).  If the input contains
-        integers, or floats of smaller precision than 64, then the output
-        data-type is float64.  Otherwise, the output data-type is the same
-        as that of the input.
-
-    See Also
-    --------
-    mean
+    y : ndarray
+        An array with the same shape as `arr`, except that the specified axis
+        has been removed. If `arr` is a 0d array, or if axis is None, a scalar
+        is returned. `float64` return values are used for integer inputs. 
 
     Notes
     -----
-    Given a vector V of length N, the median of V is the middle value of
-    a sorted copy of V, ``V_sorted`` - i.e., ``V_sorted[(N-1)/2]``, when N is
-    odd.  When N is even, it is the average of the two middle values of
-    ``V_sorted``.
+    This function should give the same output as NumPy's median except for
+    when the input contains NaN.
 
     Examples
     --------
@@ -57,137 +66,99 @@ def median(a, axis=None, out=None, overwrite_input=False):
     >>> a
     array([[10,  7,  4],
            [ 3,  2,  1]])
-    >>> np.median(a)
+    >>> bn.median(a)
     3.5
-    >>> np.median(a, axis=0)
+    >>> bn.median(a, axis=0)
     array([ 6.5,  4.5,  2.5])
-    >>> np.median(a, axis=1)
+    >>> bn.median(a, axis=1)
     array([ 7.,  2.])
-    >>> m = np.median(a, axis=0)
-    >>> out = np.zeros_like(m)
-    >>> np.median(a, axis=0, out=m)
-    array([ 6.5,  4.5,  2.5])
-    >>> m
-    array([ 6.5,  4.5,  2.5])
-    >>> b = a.copy()
-    >>> np.median(b, axis=1, overwrite_input=True)
-    array([ 7.,  2.])
-    >>> assert not np.all(a==b)
-    >>> b = a.copy()
-    >>> np.median(b, axis=None, overwrite_input=True)
-    3.5
-    >>> assert not np.all(a==b)
+    
+    """
+    func, arr = median_selector(arr, axis)
+    return func(arr)
+
+def median_selector(arr, axis):
+    """
+    Return median function and array that matches `arr` and `axis`.
+    
+    Under the hood Bottleneck uses a separate Cython function for each
+    combination of ndim, dtype, and axis. A lot of the overhead in
+    bn.median() is in checking that `axis` is within range, converting `arr`
+    into an array (if it is not already an array), and selecting the function
+    to use to calculate the mean.
+
+    You can get rid of the overhead by doing all this before you, for example,
+    enter an inner loop, by using the this function.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the median is to be computed. The default (axis=None)
+        is to compute the mean of the flattened array.
+    
+    Returns
+    -------
+    func : function
+        The median function that matches the number of dimensions and dtype
+        of the input array and the axis along which you wish to find the
+        median.
+    a : ndarray
+        If the input array `arr` is not a ndarray, then `a` will contain the
+        result of converting `arr` into a ndarray.
+
+    Examples
+    --------
+    Create a numpy array:
+
+    >>> arr = np.array([1.0, 2.0, 3.0])
+    
+    Obtain the function needed to determine the median of `arr` along axis=0:
+
+    >>> func, a = bn.func.median_selector(arr, axis=0)
+    >>> func
+    <built-in function median_1d_float64_axis0> 
+    
+    Use the returned function and array to determine the median:
+
+    >>> func(a)
+    2.0
 
     """
-
-    if overwrite_input and not isinstance(a, np.ndarray):
-         raise ValueError, 'a must be ndarray when overwrite_input is True'
-
-    a = np.asarray(a)
-    
-    ndim = a.ndim
+    cdef np.ndarray a = np.array(arr, copy=True)
+    cdef tuple key
+    cdef int ndim = a.ndim
+    cdef np.dtype dtype = a.dtype
     if axis != None:
         if axis < 0:
             axis += ndim
         if (axis < 0) or (axis >= ndim):
             raise ValueError, "axis(=%d) out of bounds" % axis
-
-    if ndim == 1:
-        retv = _median(a, overwrite_input)
-    elif ndim == 2:
-        if axis is None:
-            retv = _median(a.ravel(), overwrite_input)
-        elif axis == 0:
-            n = a.shape[1]
-            retv = np.array([_median(a[:,i], overwrite_input) for i in xrange(n)])
-        elif axis == 1:            
-            n = a.shape[0]
-            retv = np.array([_median(a[i,:], overwrite_input) for i in xrange(n)])
-        else:            
-            raise ValueError, 'axis out of bounds'
     else:
-        if axis:
-            retv = np.apply_along_axis(_median, axis, a, overwrite_input)
-        else:
-            retv = _median(a.ravel(), overwrite_input)
-
-    if out is not None:
-        if np.isscalar(retv):
-            out[:] = [retv]
-        else:
-            out[:] = retv[:]
-    else:
-        return retv
-
-def _median(x, inplace):
-    if x.ndim != 1:
-        raise ValueError("Input must be 1d.")
-    n = x.shape[0]
-    if n > 3:
-        k = n >> 1
-        s = select(x, k, inplace=inplace)
-        if n & 1:
-            return s[k]
-        else:
-            return 0.5*(s[k]+s[:k].max())      
-    elif n == 0:
-        return np.nan
-    elif n == 2:
-        return 0.5*(x[0]+x[1])        
-    else: # n == 3
-        s = select(x, 1, inplace=inplace)
-        return s[1]
-
-# Select --------------------------------------------------------------------
-
-_jumptab = {
-    i32 : _select_int32,
-    i64 : _select_int64,
-    f64 : _select_float64,
-}
-
-def select(a, k, inplace=False):
-    '''
-    Wirth's version of Hoare's quick select
-
-    Parameters
-    ----------
-    a : array_like
-    k : integer
-    inplace : boolean
-        The partial sort is done inplace if a is a
-        contiguous ndarray and inplace=True.
-        Default: False. 
-    
-    Returns
-    -------
-    out : ndarray
-        Partially sorted a such that out[k] is
-        the k largest element. Elements smaller than
-        out[k] are unsorted in out[:k]. Elements larger
-        than out[k] are unsorted in out[k:].
-    
-    '''
-    if inplace:
-        _a = np.ascontiguousarray(a)
-    else:
-        _a = np.array(a)
+        a = a.ravel()
+        axis = 0
+        ndim = 1
+    key = (ndim, dtype, axis)
     try:
-        _select = _jumptab[_a.dtype] 
+        func = median_dict[key]
     except KeyError:
-        raise TypeError, "Unsupported dtype (%s)" % _a.dtype
-    _select(_a,k)    
-    return _a
+        tup = (str(ndim), str(dtype))
+        raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
+    return func, a
 
 # One dimensional -----------------------------------------------------------
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def _select_int32(np.ndarray[np.int32_t, ndim=1, mode="c"] a, np.npy_intp k):
-    cdef np.npy_intp i, j, l, r
-    cdef np.int32_t x, tmp
+def median_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a):
+    "Median of 1d numpy array with dtype=np.int32 along axis=0."
+    cdef np.npy_intp i, j, l, r, k, n
+    cdef np.int32_t x, tmp, amax, ai
+    n = a.shape[0]
+    k = n >> 1
     l = 0
-    r = a.shape[0] - 1 
+    r = n - 1 
     with nogil:       
         while l < r:
             x = a[k]
@@ -205,14 +176,26 @@ def _select_int32(np.ndarray[np.int32_t, ndim=1, mode="c"] a, np.npy_intp k):
                 if i > j: break
             if j < k: l = i
             if k < i: r = j
+    if n % 2 == 0:        
+        amax = MININT32
+        for i in range(k):
+            ai = a[i]
+            if ai >= amax:
+                amax = ai
+        return np.float64(0.5 * (a[k] + amax))
+    else:
+        return np.float64(a[k])         
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def _select_int64(np.ndarray[np.int64_t, ndim=1, mode="c"] a, np.npy_intp k):
-    cdef np.npy_intp i, j, l, r
-    cdef np.int64_t x, tmp
+def median_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a):
+    "Median of 1d numpy array with dtype=np.int64 along axis=0."
+    cdef np.npy_intp i, j, l, r, k, n
+    cdef np.int64_t x, tmp, amax, ai
+    n = a.shape[0]
+    k = n >> 1
     l = 0
-    r = a.shape[0] - 1 
+    r = n - 1 
     with nogil:       
         while l < r:
             x = a[k]
@@ -230,14 +213,26 @@ def _select_int64(np.ndarray[np.int64_t, ndim=1, mode="c"] a, np.npy_intp k):
                 if i > j: break
             if j < k: l = i
             if k < i: r = j
+    if n % 2 == 0:        
+        amax = MININT64
+        for i in range(k):
+            ai = a[i]
+            if ai >= amax:
+                amax = ai
+        return np.float64(0.5 * (a[k] + amax))
+    else:
+        return np.float64(a[k])         
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def _select_float64(np.ndarray[np.float64_t, ndim=1, mode="c"] a, np.npy_intp k):
-    cdef np.npy_intp i, j, l, r
-    cdef np.float64_t x, tmp
+def median_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a):
+    "Median of 1d numpy array with dtype=np.float64 along axis=0."
+    cdef np.npy_intp i, j, l, r, k, n
+    cdef np.float64_t x, tmp, amax, ai
+    n = a.shape[0]
+    k = n >> 1
     l = 0
-    r = a.shape[0] - 1 
+    r = n - 1 
     with nogil:       
         while l < r:
             x = a[k]
@@ -255,8 +250,644 @@ def _select_float64(np.ndarray[np.float64_t, ndim=1, mode="c"] a, np.npy_intp k)
                 if i > j: break
             if j < k: l = i
             if k < i: r = j
+    if n % 2 == 0:        
+        amax = np.NINF
+        for i in range(k):
+            ai = a[i]
+            if ai >= amax:
+                amax = ai
+        return np.float64((a[k] + amax) / 2)
+    else:
+        return np.float64(a[k])         
+
 
 # Two dimensional -----------------------------------------------------------
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def median_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a):
+    "Median of 2d numpy array with dtype=np.int32 along axis=0."
+    cdef np.npy_intp i, j, l, r, k, n0, n1, jj 
+    cdef np.int32_t x, tmp, amax, ai
+    n0 = a.shape[0]
+    n1 = a.shape[1]
+    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(n1, dtype=np.float64)
+    for jj in range(n1): 
+        k = n0 >> 1
+        l = 0
+        r = n0 - 1
+        while l < r:
+            x = a[k,jj]
+            i = l
+            j = r
+            while 1:
+                while a[i,jj] < x: i += 1
+                while x < a[j,jj]: j -= 1
+                if i <= j:
+                    tmp = a[i,jj]
+                    a[i,jj] = a[j,jj]
+                    a[j,jj] = tmp
+                    i += 1
+                    j -= 1
+                if i > j: break
+            if j < k: l = i
+            if k < i: r = j
+        if n0 % 2 == 0:        
+            amax = MININT32
+            for i in range(k):
+                ai = a[i,jj]
+                if ai >= amax:
+                    amax = ai
+            y[jj] = 0.5 * (a[k,jj] + amax)
+        else:
+            y[jj] = <np.float64_t> a[k,jj]         
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def median_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a):
+    "Median of 2d numpy array with dtype=np.int32 along axis=1."
+    cdef np.npy_intp i, j, l, r, k, n0, n1, ii 
+    cdef np.int64_t x, tmp, amax, ai
+    n0 = a.shape[0]
+    n1 = a.shape[1]
+    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(n0, dtype=np.float64)
+    for ii in range(n0): 
+        k = n1 >> 1
+        l = 0
+        r = n1 - 1
+        while l < r:
+            x = a[ii, k]
+            i = l
+            j = r
+            while 1:
+                while a[ii,i] < x: i += 1
+                while x < a[ii,j]: j -= 1
+                if i <= j:
+                    tmp = a[ii,i]
+                    a[ii,i] = a[ii,j]
+                    a[ii,j] = tmp
+                    i += 1
+                    j -= 1
+                if i > j: break
+            if j < k: l = i
+            if k < i: r = j
+        if n1 % 2 == 0:        
+            amax = MININT32
+            for i in range(k):
+                ai = a[ii,i]
+                if ai >= amax:
+                    amax = ai
+            y[ii] = 0.5 * (a[ii,k] + amax) 
+        else:
+            y[ii] = <np.float64_t> a[ii,k]         
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def median_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a):
+    "Median of 2d numpy array with dtype=np.int64 along axis=0."
+    cdef np.npy_intp i, j, l, r, k, n0, n1, jj 
+    cdef np.int64_t x, tmp, amax, ai
+    n0 = a.shape[0]
+    n1 = a.shape[1]
+    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(n1, dtype=np.float64)
+    for jj in range(n1): 
+        k = n0 >> 1
+        l = 0
+        r = n0 - 1
+        while l < r:
+            x = a[k,jj]
+            i = l
+            j = r
+            while 1:
+                while a[i,jj] < x: i += 1
+                while x < a[j,jj]: j -= 1
+                if i <= j:
+                    tmp = a[i,jj]
+                    a[i,jj] = a[j,jj]
+                    a[j,jj] = tmp
+                    i += 1
+                    j -= 1
+                if i > j: break
+            if j < k: l = i
+            if k < i: r = j
+        if n0 % 2 == 0:        
+            amax = MININT64
+            for i in range(k):
+                ai = a[i,jj]
+                if ai >= amax:
+                    amax = ai
+            y[jj] = 0.5 * (a[k,jj] + amax)
+        else:
+            y[jj] = <np.float64_t> a[k,jj]         
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def median_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a):
+    "Median of 2d numpy array with dtype=np.int64 along axis=1."
+    cdef np.npy_intp i, j, l, r, k, n0, n1, ii 
+    cdef np.int64_t x, tmp, amax, ai
+    n0 = a.shape[0]
+    n1 = a.shape[1]
+    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(n0, dtype=np.float64)
+    for ii in range(n0): 
+        k = n1 >> 1
+        l = 0
+        r = n1 - 1
+        while l < r:
+            x = a[ii, k]
+            i = l
+            j = r
+            while 1:
+                while a[ii,i] < x: i += 1
+                while x < a[ii,j]: j -= 1
+                if i <= j:
+                    tmp = a[ii,i]
+                    a[ii,i] = a[ii,j]
+                    a[ii,j] = tmp
+                    i += 1
+                    j -= 1
+                if i > j: break
+            if j < k: l = i
+            if k < i: r = j
+        if n1 % 2 == 0:        
+            amax = MININT64
+            for i in range(k):
+                ai = a[ii,i]
+                if ai >= amax:
+                    amax = ai
+            y[ii] = 0.5 * (a[ii,k] + amax) 
+        else:
+            y[ii] = <np.float64_t> a[ii,k]         
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def median_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a):
+    "Median of 2d numpy array with dtype=np.float64 along axis=0."
+    cdef np.npy_intp i, j, l, r, k, n0, n1, jj 
+    cdef np.float64_t x, tmp, amax, ai
+    n0 = a.shape[0]
+    n1 = a.shape[1]
+    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(n1, dtype=np.float64)
+    for jj in range(n1): 
+        k = n0 >> 1
+        l = 0
+        r = n0 - 1
+        while l < r:
+            x = a[k,jj]
+            i = l
+            j = r
+            while 1:
+                while a[i,jj] < x: i += 1
+                while x < a[j,jj]: j -= 1
+                if i <= j:
+                    tmp = a[i,jj]
+                    a[i,jj] = a[j,jj]
+                    a[j,jj] = tmp
+                    i += 1
+                    j -= 1
+                if i > j: break
+            if j < k: l = i
+            if k < i: r = j
+        if n0 % 2 == 0:        
+            amax = np.NINF
+            for i in range(k):
+                ai = a[i,jj]
+                if ai >= amax:
+                    amax = ai
+            y[jj] = (a[k,jj] + amax) / 2 
+        else:
+            y[jj] = a[k,jj]         
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def median_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a):
+    "Median of 2d numpy array with dtype=np.float64 along axis=1."
+    cdef np.npy_intp i, j, l, r, k, n0, n1, ii 
+    cdef np.float64_t x, tmp, amax, ai
+    n0 = a.shape[0]
+    n1 = a.shape[1]
+    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(n0, dtype=np.float64)
+    for ii in range(n0): 
+        k = n1 >> 1
+        l = 0
+        r = n1 - 1
+        while l < r:
+            x = a[ii, k]
+            i = l
+            j = r
+            while 1:
+                while a[ii,i] < x: i += 1
+                while x < a[ii,j]: j -= 1
+                if i <= j:
+                    tmp = a[ii,i]
+                    a[ii,i] = a[ii,j]
+                    a[ii,j] = tmp
+                    i += 1
+                    j -= 1
+                if i > j: break
+            if j < k: l = i
+            if k < i: r = j
+        if n1 % 2 == 0:        
+            amax = np.NINF
+            for i in range(k):
+                ai = a[ii,i]
+                if ai >= amax:
+                    amax = ai
+            y[ii] = (a[ii,k] + amax) / 2 
+        else:
+            y[ii] = a[ii,k]         
+    return y
+
 # Three dimensional ---------------------------------------------------------
-            
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def median_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a):
+    "Median of 3d numpy array with dtype=np.int32 along axis=0."
+    cdef np.npy_intp i, j, l, r, k, n0, n1, n2, jj, kk
+    cdef np.int32_t x, tmp, amax, ai
+    n0 = a.shape[0]
+    n1 = a.shape[1]
+    n2 = a.shape[2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n1, n2),
+                                                       dtype=np.float64)
+    for jj in range(n1):
+        for kk in range(n2):
+            k = n0 >> 1
+            l = 0
+            r = n0 - 1
+            while l < r:
+                x = a[k,jj,kk]
+                i = l
+                j = r
+                while 1:
+                    while a[i,jj,kk] < x: i += 1
+                    while x < a[j,jj,kk]: j -= 1
+                    if i <= j:
+                        tmp = a[i,jj,kk]
+                        a[i,jj,kk] = a[j,jj,kk]
+                        a[j,jj,kk] = tmp
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            if n0 % 2 == 0:        
+                amax = MININT32
+                for i in range(k):
+                    ai = a[i,jj,kk]
+                    if ai >= amax:
+                        amax = ai
+                y[jj,kk] = 0.5 * (a[k,jj,kk] + amax) 
+            else:
+                y[jj,kk] = <np.float64_t> a[k,jj,kk]       
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def median_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a):
+    "Median of 3d numpy array with dtype=np.int32 along axis=1."
+    cdef np.npy_intp i, j, l, r, k, n0, n1, n2, ii, kk
+    cdef np.int32_t x, tmp, amax, ai
+    n0 = a.shape[0]
+    n1 = a.shape[1]
+    n2 = a.shape[2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n0, n2),
+                                                       dtype=np.float64)
+    for ii in range(n0):
+        for kk in range(n2):
+            k = n1 >> 1
+            l = 0
+            r = n1 - 1
+            while l < r:
+                x = a[ii,k,kk]
+                i = l
+                j = r
+                while 1:
+                    while a[ii,i,kk] < x: i += 1
+                    while x < a[ii,j,kk]: j -= 1
+                    if i <= j:
+                        tmp = a[ii,i,kk]
+                        a[ii,i,kk] = a[ii,j,kk]
+                        a[ii,j,kk] = tmp
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            if n1 % 2 == 0:        
+                amax = MININT32
+                for i in range(k):
+                    ai = a[ii,i,kk]
+                    if ai >= amax:
+                        amax = ai
+                y[ii,kk] = 0.5 * (a[ii,k,kk] + amax) 
+            else:
+                y[ii,kk] = <np.float64_t> a[ii,k,kk]         
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def median_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a):
+    "Median of 3d numpy array with dtype=np.int32 along axis=2."
+    cdef np.npy_intp i, j, l, r, k, n0, n1, n2, ii, jj
+    cdef np.int32_t x, tmp, amax, ai
+    n0 = a.shape[0]
+    n1 = a.shape[1]
+    n2 = a.shape[2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n0, n1),
+                                                       dtype=np.float64)
+    for ii in range(n0):
+        for jj in range(n1):
+            k = n2 >> 1
+            l = 0
+            r = n2 - 1
+            while l < r:
+                x = a[ii,jj,k]
+                i = l
+                j = r
+                while 1:
+                    while a[ii,jj,i] < x: i += 1
+                    while x < a[ii,jj,j]: j -= 1
+                    if i <= j:
+                        tmp = a[ii,jj,i]
+                        a[ii,jj,i] = a[ii,jj,j]
+                        a[ii,jj,j] = tmp
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            if n2 % 2 == 0:        
+                amax = MININT32
+                for i in range(k):
+                    ai = a[ii,jj,i]
+                    if ai >= amax:
+                        amax = ai
+                y[ii,jj] = 0.5 * (a[ii,jj,k] + amax) 
+            else:
+                y[ii,jj] = <np.float64_t> a[ii,jj,k]        
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def median_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a):
+    "Median of 3d numpy array with dtype=np.int64 along axis=0."
+    cdef np.npy_intp i, j, l, r, k, n0, n1, n2, jj, kk
+    cdef np.int64_t x, tmp, amax, ai
+    n0 = a.shape[0]
+    n1 = a.shape[1]
+    n2 = a.shape[2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n1, n2),
+                                                       dtype=np.float64)
+    for jj in range(n1):
+        for kk in range(n2):
+            k = n0 >> 1
+            l = 0
+            r = n0 - 1
+            while l < r:
+                x = a[k,jj,kk]
+                i = l
+                j = r
+                while 1:
+                    while a[i,jj,kk] < x: i += 1
+                    while x < a[j,jj,kk]: j -= 1
+                    if i <= j:
+                        tmp = a[i,jj,kk]
+                        a[i,jj,kk] = a[j,jj,kk]
+                        a[j,jj,kk] = tmp
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            if n0 % 2 == 0:        
+                amax = MININT64
+                for i in range(k):
+                    ai = a[i,jj,kk]
+                    if ai >= amax:
+                        amax = ai
+                y[jj,kk] = 0.5 * (a[k,jj,kk] + amax) 
+            else:
+                y[jj,kk] = <np.float64_t> a[k,jj,kk]       
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def median_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a):
+    "Median of 3d numpy array with dtype=np.int64 along axis=1."
+    cdef np.npy_intp i, j, l, r, k, n0, n1, n2, ii, kk
+    cdef np.int64_t x, tmp, amax, ai
+    n0 = a.shape[0]
+    n1 = a.shape[1]
+    n2 = a.shape[2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n0, n2),
+                                                       dtype=np.float64)
+    for ii in range(n0):
+        for kk in range(n2):
+            k = n1 >> 1
+            l = 0
+            r = n1 - 1
+            while l < r:
+                x = a[ii,k,kk]
+                i = l
+                j = r
+                while 1:
+                    while a[ii,i,kk] < x: i += 1
+                    while x < a[ii,j,kk]: j -= 1
+                    if i <= j:
+                        tmp = a[ii,i,kk]
+                        a[ii,i,kk] = a[ii,j,kk]
+                        a[ii,j,kk] = tmp
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            if n1 % 2 == 0:        
+                amax = MININT64
+                for i in range(k):
+                    ai = a[ii,i,kk]
+                    if ai >= amax:
+                        amax = ai
+                y[ii,kk] = 0.5 * (a[ii,k,kk] + amax) 
+            else:
+                y[ii,kk] = <np.float64_t> a[ii,k,kk]         
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def median_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a):
+    "Median of 3d numpy array with dtype=np.int64 along axis=2."
+    cdef np.npy_intp i, j, l, r, k, n0, n1, n2, ii, jj
+    cdef np.int64_t x, tmp, amax, ai
+    n0 = a.shape[0]
+    n1 = a.shape[1]
+    n2 = a.shape[2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n0, n1),
+                                                       dtype=np.float64)
+    for ii in range(n0):
+        for jj in range(n1):
+            k = n2 >> 1
+            l = 0
+            r = n2 - 1
+            while l < r:
+                x = a[ii,jj,k]
+                i = l
+                j = r
+                while 1:
+                    while a[ii,jj,i] < x: i += 1
+                    while x < a[ii,jj,j]: j -= 1
+                    if i <= j:
+                        tmp = a[ii,jj,i]
+                        a[ii,jj,i] = a[ii,jj,j]
+                        a[ii,jj,j] = tmp
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            if n2 % 2 == 0:        
+                amax = MININT64
+                for i in range(k):
+                    ai = a[ii,jj,i]
+                    if ai >= amax:
+                        amax = ai
+                y[ii,jj] = 0.5 * (a[ii,jj,k] + amax) 
+            else:
+                y[ii,jj] = <np.float64_t> a[ii,jj,k]        
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def median_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a):
+    "Median of 3d numpy array with dtype=np.float64 along axis=0."
+    cdef np.npy_intp i, j, l, r, k, n0, n1, n2, jj, kk
+    cdef np.float64_t x, tmp, amax, ai
+    n0 = a.shape[0]
+    n1 = a.shape[1]
+    n2 = a.shape[2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n1, n2),
+                                                       dtype=np.float64)
+    for jj in range(n1):
+        for kk in range(n2):
+            k = n0 >> 1
+            l = 0
+            r = n0 - 1
+            while l < r:
+                x = a[k,jj,kk]
+                i = l
+                j = r
+                while 1:
+                    while a[i,jj,kk] < x: i += 1
+                    while x < a[j,jj,kk]: j -= 1
+                    if i <= j:
+                        tmp = a[i,jj,kk]
+                        a[i,jj,kk] = a[j,jj,kk]
+                        a[j,jj,kk] = tmp
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            if n0 % 2 == 0:        
+                amax = np.NINF
+                for i in range(k):
+                    ai = a[i,jj,kk]
+                    if ai >= amax:
+                        amax = ai
+                y[jj,kk] = (a[k,jj,kk] + amax) / 2 
+            else:
+                y[jj,kk] = a[k,jj,kk]         
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def median_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a):
+    "Median of 3d numpy array with dtype=np.float64 along axis=1."
+    cdef np.npy_intp i, j, l, r, k, n0, n1, n2, ii, kk
+    cdef np.float64_t x, tmp, amax, ai
+    n0 = a.shape[0]
+    n1 = a.shape[1]
+    n2 = a.shape[2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n0, n2),
+                                                       dtype=np.float64)
+    for ii in range(n0):
+        for kk in range(n2):
+            k = n1 >> 1
+            l = 0
+            r = n1 - 1
+            while l < r:
+                x = a[ii,k,kk]
+                i = l
+                j = r
+                while 1:
+                    while a[ii,i,kk] < x: i += 1
+                    while x < a[ii,j,kk]: j -= 1
+                    if i <= j:
+                        tmp = a[ii,i,kk]
+                        a[ii,i,kk] = a[ii,j,kk]
+                        a[ii,j,kk] = tmp
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            if n1 % 2 == 0:        
+                amax = np.NINF
+                for i in range(k):
+                    ai = a[ii,i,kk]
+                    if ai >= amax:
+                        amax = ai
+                y[ii,kk] = (a[ii,k,kk] + amax) / 2 
+            else:
+                y[ii,kk] = a[ii,k,kk]         
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def median_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a):
+    "Median of 3d numpy array with dtype=np.float64 along axis=2."
+    cdef np.npy_intp i, j, l, r, k, n0, n1, n2, ii, jj
+    cdef np.float64_t x, tmp, amax, ai
+    n0 = a.shape[0]
+    n1 = a.shape[1]
+    n2 = a.shape[2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n0, n1),
+                                                       dtype=np.float64)
+    for ii in range(n0):
+        for jj in range(n1):
+            k = n2 >> 1
+            l = 0
+            r = n2 - 1
+            while l < r:
+                x = a[ii,jj,k]
+                i = l
+                j = r
+                while 1:
+                    while a[ii,jj,i] < x: i += 1
+                    while x < a[ii,jj,j]: j -= 1
+                    if i <= j:
+                        tmp = a[ii,jj,i]
+                        a[ii,jj,i] = a[ii,jj,j]
+                        a[ii,jj,j] = tmp
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            if n2 % 2 == 0:        
+                amax = np.NINF
+                for i in range(k):
+                    ai = a[ii,jj,i]
+                    if ai >= amax:
+                        amax = ai
+                y[ii,jj] = (a[ii,jj,k] + amax) / 2 
+            else:
+                y[ii,jj] = a[ii,jj,k]         
+    return y

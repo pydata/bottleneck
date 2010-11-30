@@ -1,5 +1,5 @@
 
-from func import sum, nanmax, nanmin, nanmean, nanstd, nanvar
+from func import sum, nanmax, nanmin, nanmean, nanstd, nanvar, median
 from move import move_sum
 from group import group_nanmean
 

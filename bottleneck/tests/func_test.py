@@ -8,7 +8,7 @@ nan = np.nan
 import bottleneck as bn
 
 
-def arrays(dtypes=['int32', 'int64', 'float64']):
+def arrays(dtypes=['int32', 'int64', 'float64'], nans=True):
     "Iterator that yield arrays to use for unit testing."
     ss = {}
     ss[1] = {'size':  4, 'shapes': [(4,)]}
@@ -23,21 +23,22 @@ def arrays(dtypes=['int32', 'int64', 'float64']):
                 a = a.reshape(shape)
                 yield a
                 yield -a
-            if issubclass(a.dtype.type, np.inexact):        
-                for i in range(a.size):
-                    a.flat[i] = np.nan
-                    yield a
-                    yield -a
+            if issubclass(a.dtype.type, np.inexact): 
+                if nans:
+                    for i in range(a.size):
+                        a.flat[i] = np.nan
+                        yield a
+                        yield -a
                 for i in range(a.size):
                     a.flat[i] = np.inf
                     yield a
                     yield -a
 
-def unit_maker(func, func0, decimal=np.inf):
+def unit_maker(func, func0, decimal=np.inf, nans=True):
     "Test that bn.xxx gives the same output as np.."
     msg = '\nfunc %s | input %s (%s) | shape %s | axis %s\n'
     msg += '\nInput array:\n%s\n'
-    for i, arr in enumerate(arrays()):
+    for i, arr in enumerate(arrays(nans=nans)):
         for axis in range(-arr.ndim, arr.ndim) + [None]:
             actual = func(arr, axis=axis)
             desired = func0(arr, axis=axis)
@@ -77,6 +78,11 @@ def test_nanstd():
 def test_nanvar():
     "Test nanvar."
     yield unit_maker, bn.nanvar, scipy_nanstd_squared, 13
+
+def test_median():
+    "Test median."
+    yield unit_maker, bn.median, np.median, np.inf, False
+
 
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised

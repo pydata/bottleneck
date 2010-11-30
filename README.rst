@@ -9,7 +9,7 @@ Bottleneck is a collection of fast, NumPy array functions written in Cython.
 
 The three categories of Bottleneck functions:
 
-- Faster, drop-in replacement for NaN functions in NumPy and SciPy
+- Faster, drop-in replacement for functions in NumPy and SciPy
 - Moving window functions
 - Group functions that bin calculations by like-labeled elements  
 
@@ -155,6 +155,7 @@ Bottleneck is in the prototype stage.
 Bottleneck contains the following functions:
 
 =========    ==============   ===============
+median
 sum          move_sum         
 nanmean                       group_nanmean
 nanvar                  
@@ -227,6 +228,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 10 tests in 13.756s
+    Ran 11 tests in 13.756s
     OK
-    <nose.result.TextTestResult run=10 errors=0 failures=0> 
+    <nose.result.TextTestResult run=11 errors=0 failures=0> 
