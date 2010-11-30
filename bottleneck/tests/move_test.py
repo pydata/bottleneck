@@ -5,10 +5,10 @@ from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
                            assert_array_almost_equal)
 nan = np.nan
 import bottleneck as bn
-from bottleneck.testing.move_validators import move_sum as alt_move_sum
+from bottleneck.testing.move_validators import mov_nanmean as alt_move_nanmean
 
 
-def arrays(dtypes=['float64']):
+def arrays(dtypes=['int32', 'int64', 'float64']):
     "Iterator that yield arrays to use for unit testing."
     ss = {}
     ss[1] = {'size':  4, 'shapes': [(4,)]}
@@ -55,6 +55,6 @@ def unit_maker(func, func0, decimal=np.inf):
                     dd = desired.dtype
                     assert_equal(da, dd, err_msg % (da, dd))
 
-def test_move_sum():
-    "Test move_sum."
-    yield unit_maker, bn.move_sum, alt_move_sum
+def test_move_nanmean():
+    "Test move_nanmean."
+    yield unit_maker, bn.move_nanmean, alt_move_nanmean

@@ -1,6 +1,6 @@
 
 from func import nanmax, nanmin, nanmean, nanstd, nanvar, median
-from move import move_sum
+from move import move_nanmean
 from group import group_nanmean
 
 from bottleneck.version import __version__

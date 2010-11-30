@@ -7,14 +7,14 @@ categories: functions, moving window functions, and group-by functions.
 
 Bottleneck provides the following functions:
 
-===================================== ====================================== ===================================================
-:meth:`median <bottleneck.median>`    :meth:`move_sum <bottleneck.move_sum>`  
-:meth:`nanmean <bottleneck.nanmean>`                                         :meth:`group_nanmean <bottleneck.group_nanmean>`
+===================================== =============================================== ===================================================
+:meth:`median <bottleneck.median>`      
+:meth:`nanmean <bottleneck.nanmean>`  :meth:`move_nanmean <bottleneck.move_nanmean>`  :meth:`group_nanmean <bottleneck.group_nanmean>`
 :meth:`nanvar <bottleneck.nanvar>`                               
 :meth:`nanstd <bottleneck.nanstd>`                               
 :meth:`nanmin <bottleneck.nanmin>`                               
 :meth:`nanmax <bottleneck.nanmax>`                               
-===================================== ====================================== ===================================================
+===================================== =============================================== ===================================================
 
 
 Functions
@@ -49,7 +49,7 @@ Moving window functions
 
 ------------
 
-.. autofunction:: bottleneck.move_sum
+.. autofunction:: bottleneck.move_nanmean
 
 
 Group functions

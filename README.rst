@@ -26,21 +26,21 @@ Let's give it a try. Create a NumPy array::
     >>> import numpy as np
     >>> arr = np.array([1, 2, np.nan, 4, 5])
 
-Find the mean::
+Find the nanmean::
 
     >>> import bottleneck as bn
     >>> bn.nanmean(arr)
     3.0
 
-Moving window sum::
+Moving window nanmean::
 
-    >>> bn.move_sum(arr, window=2)
-    array([ nan,   3.,   2.,   4.,   9.])
+    >>> bn.move_nanmean(arr, window=2)
+    array([ nan,  1.5,  2. ,  4. ,  4.5])
 
-Group mean::   
+Group nanmean::   
 
     >>> label = ['a', 'a', 'b', 'b', 'a']
-    >>> bn.group_mean(arr, label)
+    >>> bn.group_nanmean(arr, label)
     (array([ 2.66666667,  4.        ]), ['a', 'b'])
 
 Fast
@@ -136,8 +136,7 @@ Bottleneck contains the following functions:
 
 =========    ==============   ===============
 median
-             move_sum         
-nanmean                       group_nanmean
+nanmean      move_nanmean     group_nanmean
 nanvar                  
 nanstd          
 nanmin          
