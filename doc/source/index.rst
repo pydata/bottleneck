@@ -9,6 +9,7 @@ Fast, NumPy array functions written in Cython.
    
    intro
    reference
+   development
    release
    license
 
