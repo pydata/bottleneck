@@ -203,8 +203,6 @@ def group_nanmean_selector(arr, label, order=None, int axis=0):
 
 # One dimensional -----------------------------------------------------------
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a,
                               dict label_dict, list order):
     "Group nanmean along axis=0 of a 1d, int32 numpy array."
@@ -225,8 +223,6 @@ def group_nanmean_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a,
         y[g] = asum / count
     return y, order        
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a,
                               dict label_dict, list order):
     "Group nanmean along axis=0 of a 1d, int64 numpy array."
@@ -247,8 +243,6 @@ def group_nanmean_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a,
         y[g] = asum / count
     return y, order       
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a,
                                 dict label_dict, list order):
     "Group nanmean along axis=0 of a 1d, float64 numpy array."
@@ -276,8 +270,6 @@ def group_nanmean_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a,
 
 # Two dimensional -----------------------------------------------------------
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a,
                               dict label_dict, list order):
     "Group nanmean along axis=0 of a 3d, int32 numpy array."
@@ -300,8 +292,6 @@ def group_nanmean_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a,
             y[g,j] = asum / count
     return y, order
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a,
                               dict label_dict, list order):
     "Group nanmean along axis=1 of a 2d, int32 numpy array."
@@ -324,8 +314,6 @@ def group_nanmean_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a,
             y[i,g] = asum / count
     return y, order 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a,
                               dict label_dict, list order):
     "Group nanmean along axis=0 of a 2d, int64 numpy array."
@@ -348,8 +336,6 @@ def group_nanmean_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a,
             y[g,j] = asum / count
     return y, order
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a,
                               dict label_dict, list order):
     "Group nanmean along axis=1 of a 2d, int64 numpy array."
@@ -372,8 +358,6 @@ def group_nanmean_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a,
             y[i,g] = asum / count
     return y, order
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a,
                                 dict label_dict, list order):
     "Group nanmean along axis=0 of a 2d, float64 numpy array."
@@ -401,8 +385,6 @@ def group_nanmean_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a,
                 y[g,j] = NAN
     return y, order
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a,
                               dict label_dict, list order):
     "Group nanmean along axis=1 of a 2d, float64 numpy array."
@@ -432,8 +414,6 @@ def group_nanmean_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a,
 
 # Three dimensional ---------------------------------------------------------
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a,
                               dict label_dict, list order):
     "Group nanmean along axis=0 of a 3d, int32 numpy array."
@@ -457,8 +437,6 @@ def group_nanmean_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a,
                 y[g,j,k] = asum / count
     return y, order 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a,
                               dict label_dict, list order):
     "Group nanmean along axis=1 of a 3d, int32 numpy array."
@@ -482,8 +460,6 @@ def group_nanmean_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a,
                 y[i,g,k] = asum / count
     return y, order 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a,
                               dict label_dict, list order):
     "Group nanmean along axis=2 of a 3d, int32 numpy array."
@@ -507,8 +483,6 @@ def group_nanmean_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a,
                 y[i,j,g] = asum / count
     return y, order 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a,
                               dict label_dict, list order):
     "Group nanmean along axis=0 of a 3d, int64 numpy array."
@@ -532,8 +506,6 @@ def group_nanmean_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a,
                 y[i,g] = asum / count
     return y, order
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a,
                               dict label_dict, list order):
     "Group nanmean along axis=1 of a 3d, int64 numpy array."
@@ -557,8 +529,6 @@ def group_nanmean_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a,
                 y[i,g,k] = asum / count
     return y, order 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a,
                               dict label_dict, list order):
     "Group nanmean along axis=2 of a 3d, int64 numpy array."
@@ -582,8 +552,6 @@ def group_nanmean_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a,
                 y[i,j,g] = asum / count
     return y, order 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a,
                                 dict label_dict, list order):
     "Group nanmean along axis=0 of a 3d, float64 numpy array."
@@ -613,8 +581,6 @@ def group_nanmean_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a,
 
     return y, order 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a,
                                 dict label_dict, list order):
     "Group nanmean along axis=1 of a 3d, float64 numpy array."
@@ -644,8 +610,6 @@ def group_nanmean_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a,
 
     return y, order
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def group_nanmean_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a,
                                 dict label_dict, list order):
     "Group nanmean along axis=2 of a 3d, float64 numpy array."
