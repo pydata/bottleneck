@@ -9,7 +9,7 @@ Bottleneck is a collection of fast, NumPy array functions written in Cython.
 
 The three categories of Bottleneck functions:
 
-- Faster, drop-in replacement for functions in NumPy and SciPy
+- Faster replacement for NumPy and SciPy functions
 - Moving window functions
 - Group functions that bin calculations by like-labeled elements  
 
@@ -169,11 +169,11 @@ Install
 
 Requirements:
 
-======================== ==================================
-Bottleneck               Python, NumPy, SciPy
+======================== ===================================
+Bottleneck               Python, NumPy 1.5.1+, SciPy 0.8.0+
 Unit tests               nose
 Compile                  gcc or MinGW
-======================== ==================================
+======================== ===================================
 
 **GNU/Linux, Mac OS X, et al.**
 
