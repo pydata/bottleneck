@@ -108,11 +108,20 @@ def test_nanmin_size_zero():
 # Unit test utility functions
 
 def scipy_nanstd(a, axis, bias=True):
-    "For bias to True for scipy.stats.nanstd"
+    "Set bias to True for scipy.stats.nanstd"
+    if axis != None:
+        if axis < 0:
+            axis += a.ndim
+        if (axis < 0) or (axis >= a.ndim):
+            raise ValueError, "axis(=%d) out of bounds" % axis
     return sp.nanstd(a, axis, bias=True)
 
 def scipy_nanstd_squared(a, axis, bias=True):
-    "For bias to True for scipy.stats.nanstd"
+    "Set bias to True for scipy.stats.nanstd"
+    if axis != None:
+        if axis < 0:
+            axis += a.ndim
+        if (axis < 0) or (axis >= a.ndim):
+            raise ValueError, "axis(=%d) out of bounds" % axis
     x = sp.nanstd(a, axis, bias=True)
     return x * x
-
