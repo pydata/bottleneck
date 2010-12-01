@@ -114,6 +114,9 @@ def scipy_nanstd(a, axis, bias=True):
             axis += a.ndim
         if (axis < 0) or (axis >= a.ndim):
             raise ValueError, "axis(=%d) out of bounds" % axis
+    else:
+        a = a.ravel()
+        axis = 0
     return sp.nanstd(a, axis, bias=True)
 
 def scipy_nanstd_squared(a, axis, bias=True):
@@ -123,5 +126,8 @@ def scipy_nanstd_squared(a, axis, bias=True):
             axis += a.ndim
         if (axis < 0) or (axis >= a.ndim):
             raise ValueError, "axis(=%d) out of bounds" % axis
+    else:
+        a = a.ravel()
+        axis = 0
     x = sp.nanstd(a, axis, bias=True)
     return x * x
