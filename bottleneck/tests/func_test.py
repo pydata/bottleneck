@@ -66,7 +66,7 @@ def test_nanmin():
 
 def test_nanmean():
     "Test nanmean."
-    yield unit_maker, bn.nanmean, sp.nanmean, 13
+    yield unit_maker, bn.nanmean, sp.nanmean, 11
 
 def test_nanstd():
     "Test nanstd."
@@ -74,7 +74,7 @@ def test_nanstd():
 
 def test_nanvar():
     "Test nanvar."
-    yield unit_maker, bn.nanvar, scipy_nanstd_squared, 13
+    yield unit_maker, bn.nanvar, scipy_nanstd_squared, 11
 
 def test_median():
     "Test median."
