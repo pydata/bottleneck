@@ -143,7 +143,6 @@ def nanmean_selector(arr, axis):
     cdef np.ndarray a = np.array(arr, copy=False)
     cdef int ndim = a.ndim
     cdef np.dtype dtype = a.dtype
-    cdef int size = a.size
     if axis != None:
         if axis < 0:
             axis += ndim
