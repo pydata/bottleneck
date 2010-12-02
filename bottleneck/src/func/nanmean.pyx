@@ -303,7 +303,7 @@ def nanmean_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a):
         if count > 0:       
             y[j] = asum / count
         else:
-            y[j] = np.float64(NAN)
+            y[j] = NAN
     return y
 
 @cython.boundscheck(False)
@@ -325,7 +325,7 @@ def nanmean_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a):
         if count > 0:       
             y[j] = asum / count
         else:
-            y[j] = np.float64(NAN)
+            y[j] = NAN
     return y
 
 @cython.boundscheck(False)
@@ -497,7 +497,7 @@ def nanmean_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a):
             if count > 0:   
                 y[j, k] = asum / count
             else:
-                y[j, k] = np.float64(NAN)
+                y[j, k] = NAN
     return y
 
 @cython.boundscheck(False)
@@ -521,7 +521,7 @@ def nanmean_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a):
             if count > 0:   
                 y[i, k] = asum / count
             else:
-                y[i, k] = np.float64(NAN)
+                y[i, k] = NAN
     return y
 
 @cython.boundscheck(False)
@@ -545,7 +545,7 @@ def nanmean_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a):
             if count > 0:   
                 y[i, j] = asum / count
             else:
-                y[i, j] = np.float64(NAN)
+                y[i, j] = NAN
     return y
 
 @cython.boundscheck(False)

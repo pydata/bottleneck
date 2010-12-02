@@ -16,7 +16,7 @@ CLASSIFIERS = ["Development Status :: 2 - Pre-Alpha",
                "Topic :: Scientific/Engineering"]
 
 # Description
-description = "Fast, NumPy array functions written in Cython"
+description = "Fast NumPy array functions written in Cython"
 fid = file('README.rst', 'r')
 long_description = fid.read()
 fid.close()
@@ -50,6 +50,7 @@ MICRO               = VER[2]
 ISRELEASED          = False
 VERSION             = '%s.%s.%s' % (MAJOR, MINOR, MICRO)
 PACKAGES            = ["bottleneck", "bottleneck/src", "bottleneck/src/func",
+                       "bottleneck/src/move", "bottleneck/src/group",
                        "bottleneck/tests", "bottleneck/testing",
                        "bottleneck/bench"]
 PACKAGE_DATA        = {'bottleneck': ['LICENSE']}

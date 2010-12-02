@@ -5,7 +5,7 @@ Bottleneck
 Introduction
 ============
 
-Bottleneck is a collection of fast, NumPy array functions written in Cython.
+Bottleneck is a collection of fast NumPy array functions written in Cython.
 
 The three categories of Bottleneck functions:
 
@@ -68,32 +68,32 @@ benchmark::
     
     >>> bn.benchit(verbose=False)
     Bottleneck performance benchmark
-        Bottleneck  0.1.0dev
+        Bottleneck  0.2.0dev
         Numpy       1.5.1
         Scipy       0.8.0
         Speed is numpy (or scipy) time divided by Bottleneck time
         NaN means all NaNs
        Speed   Test                  Shape        dtype    NaN?
-       2.4019  median(a, axis=-1)    (500,500)    float64  
-       2.2668  median(a, axis=-1)    (500,500)    float64  NaN
-       4.1235  median(a, axis=-1)    (10000,)     float64  
-       4.3498  median(a, axis=-1)    (10000,)     float64  NaN
-       9.8184  nanmax(a, axis=-1)    (500,500)    float64  
-       7.9157  nanmax(a, axis=-1)    (500,500)    float64  NaN
-       9.2306  nanmax(a, axis=-1)    (10000,)     float64  
-       8.1635  nanmax(a, axis=-1)    (10000,)     float64  NaN
-       6.7218  nanmin(a, axis=-1)    (500,500)    float64  
-       7.9112  nanmin(a, axis=-1)    (500,500)    float64  NaN
-       6.4950  nanmin(a, axis=-1)    (10000,)     float64  
-       8.0791  nanmin(a, axis=-1)    (10000,)     float64  NaN
-      12.3650  nanmean(a, axis=-1)   (500,500)    float64  
-      42.0738  nanmean(a, axis=-1)   (500,500)    float64  NaN
-      12.2769  nanmean(a, axis=-1)   (10000,)     float64  
-      22.1285  nanmean(a, axis=-1)   (10000,)     float64  NaN
-       9.5515  nanstd(a, axis=-1)    (500,500)    float64  
-      68.9192  nanstd(a, axis=-1)    (500,500)    float64  NaN
-       9.2174  nanstd(a, axis=-1)    (10000,)     float64  
-      26.1753  nanstd(a, axis=-1)    (10000,)     float64  NaN
+       2.5780  median(a, axis=0)     (500,500)    float64  
+       2.3277  median(a, axis=0)     (500,500)    float64  NaN
+       4.1347  median(a, axis=0)     (10000,)     float64  
+       4.7842  median(a, axis=0)     (10000,)     float64  NaN
+       6.7673  nanmax(a, axis=0)     (500,500)    float64  
+       4.7826  nanmax(a, axis=0)     (500,500)    float64  NaN
+       9.4604  nanmax(a, axis=0)     (10000,)     float64  
+       8.3246  nanmax(a, axis=0)     (10000,)     float64  NaN
+       4.0559  nanmin(a, axis=0)     (500,500)    float64  
+       4.5415  nanmin(a, axis=0)     (500,500)    float64  NaN
+       6.7648  nanmin(a, axis=0)     (10000,)     float64  
+       8.4638  nanmin(a, axis=0)     (10000,)     float64  NaN
+      11.4441  nanmean(a, axis=0)    (500,500)    float64  
+      55.3499  nanmean(a, axis=0)    (500,500)    float64  NaN
+      12.8546  nanmean(a, axis=0)    (10000,)     float64  
+      22.7069  nanmean(a, axis=0)    (10000,)     float64  NaN
+       8.5651  nanstd(a, axis=0)     (500,500)    float64  
+      62.3893  nanstd(a, axis=0)     (500,500)    float64  NaN
+       8.8121  nanstd(a, axis=0)     (10000,)     float64  
+      26.3563  nanstd(a, axis=0)     (10000,)     float64  NaN
 
 Faster
 ======
