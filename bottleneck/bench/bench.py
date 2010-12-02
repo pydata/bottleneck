@@ -50,15 +50,15 @@ def suite():
     """
 
     # Bottleneck
-    s = ['bn.median(a, axis=-1)', 'bn.nanmax(a, axis=-1)',
-         'bn.nanmin(a, axis=-1)', 'bn.nanmean(a, axis=-1)',
-         'bn.nanstd(a, axis=-1)']
+    s = ['bn.median(a, axis=range(a.ndim)[-1])', 'bn.nanmax(a, axis=range(a.ndim)[-1])',
+         'bn.nanmin(a, axis=range(a.ndim)[-1])', 'bn.nanmean(a, axis=range(a.ndim)[-1])',
+         'bn.nanstd(a, axis=range(a.ndim)[-1])']
     statements['bottleneck'] = s
     
     # Numpy
-    s = ['np.median(a, axis=-1)', 'np.nanmax(a, axis=-1)',
-         'np.nanmin(a, axis=-1)', 'sp.nanmean(a, axis=-1)',
-         'sp.nanstd(a, axis=-1)']
+    s = ['np.median(a, axis=range(a.ndim)[-1])', 'np.nanmax(a, axis=range(a.ndim)[-1])',
+         'np.nanmin(a, axis=range(a.ndim)[-1])', 'sp.nanmean(a, axis=range(a.ndim)[-1])',
+         'sp.nanstd(a, axis=range(a.ndim)[-1])']
     statements['numpy/scipy'] = s
     
     return statements, setups
