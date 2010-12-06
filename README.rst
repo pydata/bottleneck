@@ -175,6 +175,12 @@ Unit tests               nose
 Compile                  gcc or MinGW
 ======================== ===================================
 
+Directions for installing a *released* version of Bottleneck are given below.
+Cython is not required since the Cython files have already been converted to
+C source files. (If you obtained bottleneck directly from the repository, then
+you will need to generate the C source files using the included Makefile which
+requires Cython.)
+
 **GNU/Linux, Mac OS X, et al.**
 
 To install Bottleneck::
@@ -190,11 +196,11 @@ Or, if you wish to specify where Bottleneck is installed, for example inside
 
 **Windows**
 
-In order to compile the C code in dsna you need a Windows version of the gcc
-compiler. MinGW (Minimalist GNU for Windows) contains gcc and has been used
-to successfully compile dsna on Windows.
+In order to compile the C code in Bottleneck you need a Windows version of the
+gcc compiler. MinGW (Minimalist GNU for Windows) contains gcc and has been used
+to successfully compile Bottleneck on Windows.
 
-Install MinGW and add it to your system path. Then install dsna with the
+Install MinGW and add it to your system path. Then install Bottleneck with the
 commands::
 
     python setup.py build --compiler=mingw32
