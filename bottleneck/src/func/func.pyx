@@ -1,4 +1,4 @@
-include "header.pyx"
+include "func_header.pyx"
 include "nanmax.pyx"
 include "nanmin.pyx"
 include "nanmean.pyx"
