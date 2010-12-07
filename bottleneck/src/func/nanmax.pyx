@@ -196,7 +196,9 @@ def nanmax_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a):
     cdef Py_ssize_t i, j
     cdef int n0 = a.shape[0], n1 = a.shape[1]
     cdef np.int32_t amax, ai  
-    cdef np.ndarray[np.int32_t, ndim=1] y = np.empty(n1, dtype=np.int32)
+    cdef np.npy_intp *dims = [n1]
+    cdef np.ndarray[np.int32_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                          NPY_int32, 0)
     for j in range(n1):
         amax = MININT32
         for i in range(n0):
@@ -213,7 +215,9 @@ def nanmax_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a):
     cdef Py_ssize_t i, j
     cdef int n0 = a.shape[0], n1 = a.shape[1]
     cdef np.int32_t amax 
-    cdef np.ndarray[np.int32_t, ndim=1] y = np.empty(n0, dtype=np.int32)
+    cdef np.npy_intp *dims = [n0]
+    cdef np.ndarray[np.int32_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                          NPY_int32, 0)
     for i in range(n0):
         amax = MININT32
         for j in range(n1):
@@ -244,7 +248,9 @@ def nanmax_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a):
     cdef Py_ssize_t i, j
     cdef int n0 = a.shape[0], n1 = a.shape[1]
     cdef np.int64_t amax, ai  
-    cdef np.ndarray[np.int64_t, ndim=1] y = np.empty(n1, dtype=np.int64)
+    cdef np.npy_intp *dims = [n1]
+    cdef np.ndarray[np.int64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                          NPY_int64, 0)
     for j in range(n1):
         amax = MININT64
         for i in range(n0):
@@ -261,7 +267,9 @@ def nanmax_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a):
     cdef Py_ssize_t i, j
     cdef int n0 = a.shape[0], n1 = a.shape[1]
     cdef np.int64_t amax, ai 
-    cdef np.ndarray[np.int64_t, ndim=1] y = np.empty(n0, dtype=np.int64)
+    cdef np.npy_intp *dims = [n0]
+    cdef np.ndarray[np.int64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                          NPY_int64, 0)
     for i in range(n0):
         amax = MININT64
         for j in range(n1):
@@ -292,7 +300,9 @@ def nanmax_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a):
     cdef Py_ssize_t i, j
     cdef int n0 = a.shape[0], n1 = a.shape[1], allnan 
     cdef np.float64_t amax, ai 
-    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(n1, dtype=np.float64)
+    cdef np.npy_intp *dims = [n1]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                            NPY_float64, 0)
     for j in range(n1):
         amax = np.NINF
         allnan = 1
@@ -314,7 +324,9 @@ def nanmax_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a):
     cdef Py_ssize_t i, j
     cdef int n0 = a.shape[0], n1 = a.shape[1], allnan
     cdef np.float64_t amax, ai  
-    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(n0, dtype=np.float64)
+    cdef np.npy_intp *dims = [n0]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                            NPY_float64, 0)
     for j in range(n0):
         amax = np.NINF
         allnan = 1
@@ -356,7 +368,9 @@ def nanmax_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a):
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
     cdef np.int32_t amax, ai  
-    cdef np.ndarray[np.int32_t, ndim=2] y = np.empty((n1, n2), dtype=np.int32)
+    cdef np.npy_intp *dims = [n1, n2]
+    cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                          NPY_int32, 0)
     for j in range(n1):
         for k in range(n2):
             amax = MININT32
@@ -374,7 +388,9 @@ def nanmax_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a):
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
     cdef np.int64_t amax, ai   
-    cdef np.ndarray[np.int32_t, ndim=2] y = np.empty((n0, n2), dtype=np.int32)
+    cdef np.npy_intp *dims = [n0, n2]
+    cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                          NPY_int32, 0)
     for i in range(n0):
         for k in range(n2):
             amax = MININT32
@@ -392,7 +408,9 @@ def nanmax_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a):
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
     cdef np.int64_t amax, ai   
-    cdef np.ndarray[np.int32_t, ndim=2] y = np.empty((n0, n1), dtype=np.int32)
+    cdef np.npy_intp *dims = [n0, n1]
+    cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_int32, 0)
     for i in range(n0):
         for j in range(n1):
             amax = MININT32
@@ -425,7 +443,9 @@ def nanmax_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a):
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
     cdef np.int64_t amax, ai  
-    cdef np.ndarray[np.int64_t, ndim=2] y = np.empty((n1, n2), dtype=np.int64)
+    cdef np.npy_intp *dims = [n1, n2]
+    cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                          NPY_int64, 0)
     for j in range(n1):
         for k in range(n2):
             amax = MININT64
@@ -443,7 +463,9 @@ def nanmax_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a):
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
     cdef np.int64_t amax, ai 
-    cdef np.ndarray[np.int64_t, ndim=2] y = np.empty((n0, n2), dtype=np.int64)
+    cdef np.npy_intp *dims = [n0, n2]
+    cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                          NPY_int64, 0)
     for i in range(n0):
         for k in range(n2):
             amax = MININT64
@@ -461,7 +483,9 @@ def nanmax_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a):
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
     cdef np.int64_t amax, ai 
-    cdef np.ndarray[np.int64_t, ndim=2] y = np.empty((n0, n1), dtype=np.int64)
+    cdef np.npy_intp *dims = [n0, n1]
+    cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                          NPY_int64, 0)
     for i in range(n0):
         for j in range(n1):
             amax = MININT64
@@ -494,8 +518,9 @@ def nanmax_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a):
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], allnan
     cdef np.float64_t amax, ai
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n1, n2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [n1, n2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for j in range(n1):
         for k in range(n2):
             amax = np.NINF
@@ -518,8 +543,9 @@ def nanmax_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a):
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], allnan
     cdef np.float64_t amax, ai
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n0, n2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [n0, n2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for i in range(n0):
         for k in range(n2):
             amax = np.NINF
@@ -542,8 +568,9 @@ def nanmax_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a):
     cdef Py_ssize_t i, j, k
     cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], allnan
     cdef np.float64_t amax, ai
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n0, n1),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [n0, n1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for i in range(n0):
         for j in range(n1):
             amax = np.NINF

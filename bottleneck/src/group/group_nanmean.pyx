@@ -210,8 +210,9 @@ def group_nanmean_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a,
     cdef list idx
     cdef int a0 = a.shape[0], count, norder = len(order)
     cdef np.float64_t asum = 0
-    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(norder,
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [norder]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         asum = 0
@@ -230,8 +231,9 @@ def group_nanmean_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a,
     cdef list idx
     cdef int a0 = a.shape[0], count, norder = len(order)
     cdef np.float64_t asum = 0
-    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(norder,
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [norder]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         asum = 0
@@ -250,8 +252,9 @@ def group_nanmean_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a,
     cdef list idx
     cdef int a0 = a.shape[0], count = 0, norder = len(order)
     cdef np.float64_t asum = 0, ai
-    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(norder,
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [norder]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         asum = 0
@@ -278,8 +281,9 @@ def group_nanmean_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a,
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
     cdef int norder = len(order)
     cdef np.float64_t asum = 0
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((norder, a1),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [norder, a1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         idx = label_dict[label]
@@ -300,8 +304,9 @@ def group_nanmean_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a,
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
     cdef int norder = len(order)
     cdef np.float64_t asum = 0
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((a0, norder),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, norder]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         idx = label_dict[label]
@@ -322,8 +327,9 @@ def group_nanmean_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a,
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
     cdef int norder = len(order)
     cdef np.float64_t asum = 0
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((norder, a1),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [norder, a1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         idx = label_dict[label]
@@ -344,8 +350,9 @@ def group_nanmean_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a,
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
     cdef int norder = len(order)
     cdef np.float64_t asum = 0
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((a0, norder),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, norder]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         idx = label_dict[label]
@@ -366,8 +373,9 @@ def group_nanmean_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a,
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
     cdef int norder = len(order)
     cdef np.float64_t asum = 0, ai
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((norder, a1),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [norder, a1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         idx = label_dict[label]
@@ -393,8 +401,9 @@ def group_nanmean_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a,
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
     cdef int norder = len(order)
     cdef np.float64_t asum = 0, ai
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((a0, norder),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, norder]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         idx = label_dict[label]
@@ -422,8 +431,9 @@ def group_nanmean_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a,
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef int norder = len(order)
     cdef np.float64_t asum = 0
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((norder, a1, a2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [norder, a1, a2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         idx = label_dict[label]
@@ -445,8 +455,9 @@ def group_nanmean_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a,
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef int norder = len(order)
     cdef np.float64_t asum = 0
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((a0, norder, a2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, norder, a2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         idx = label_dict[label]
@@ -468,8 +479,9 @@ def group_nanmean_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a,
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef int norder = len(order)
     cdef np.float64_t asum = 0
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((a0, a1, norder),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1, norder]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         idx = label_dict[label]
@@ -491,8 +503,9 @@ def group_nanmean_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a,
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef int norder = len(order)
     cdef np.float64_t asum = 0
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((norder, a1, a2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [norder, a1, a2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         idx = label_dict[label]
@@ -514,8 +527,9 @@ def group_nanmean_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a,
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef int norder = len(order)
     cdef np.float64_t asum = 0
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((a0, norder, a2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, norder, a2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         idx = label_dict[label]
@@ -537,8 +551,9 @@ def group_nanmean_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a,
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef int norder = len(order)
     cdef np.float64_t asum = 0
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((a0, a1, norder),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1, norder]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         idx = label_dict[label]
@@ -560,8 +575,9 @@ def group_nanmean_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a,
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef int norder = len(order)
     cdef np.float64_t asum = 0, ai
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((norder, a1, a2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [norder, a1, a2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         idx = label_dict[label]
@@ -589,8 +605,9 @@ def group_nanmean_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a,
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef int norder = len(order)
     cdef np.float64_t asum = 0, ai
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((a0, norder, a2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, norder, a2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         idx = label_dict[label]
@@ -618,8 +635,9 @@ def group_nanmean_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a,
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef int norder = len(order)
     cdef np.float64_t asum = 0, ai
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((a0, a1, norder),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1, norder]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
     for label in order:
         g += 1
         idx = label_dict[label]

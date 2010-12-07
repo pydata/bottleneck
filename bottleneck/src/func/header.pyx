@@ -1,6 +1,11 @@
 import numpy as np
 cimport numpy as np
 import cython
+from numpy cimport NPY_INT32 as NPY_int32
+from numpy cimport NPY_INT64 as NPY_int64
+from numpy cimport NPY_FLOAT64 as NPY_float64
+from numpy cimport PyArray_EMPTY, import_array
+import_array()
 
 ctypedef np.float64_t DTYPE_t
 cdef double NAN = <double> np.nan

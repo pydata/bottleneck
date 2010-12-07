@@ -74,26 +74,26 @@ benchmark::
         Speed is numpy (or scipy) time divided by Bottleneck time
         NaN means all NaNs
        Speed   Test                  Shape        dtype    NaN?
-       2.5629  median(a, axis=0)     (500,500)    float64  
-       2.3360  median(a, axis=0)     (500,500)    float64  NaN
-       2.4285  median(a, axis=0)     (50,50)      float64  
-       2.1548  median(a, axis=0)     (50,50)      float64  NaN
-       6.7385  nanmax(a, axis=0)     (500,500)    float64  
-       4.6712  nanmax(a, axis=0)     (500,500)    float64  NaN
-       5.3731  nanmax(a, axis=0)     (50,50)      float64  
-       5.2679  nanmax(a, axis=0)     (50,50)      float64  NaN
-       3.9497  nanmin(a, axis=0)     (500,500)    float64  
-       4.3079  nanmin(a, axis=0)     (500,500)    float64  NaN
-       4.2222  nanmin(a, axis=0)     (50,50)      float64  
-       5.1061  nanmin(a, axis=0)     (50,50)      float64  NaN
-      11.5562  nanmean(a, axis=0)    (500,500)    float64  
-      54.2121  nanmean(a, axis=0)    (500,500)    float64  NaN
-       9.8809  nanmean(a, axis=0)    (50,50)      float64  
-      21.0776  nanmean(a, axis=0)    (50,50)      float64  NaN
-       8.4634  nanstd(a, axis=0)     (500,500)    float64  
-      61.4630  nanstd(a, axis=0)     (500,500)    float64  NaN
-       9.6489  nanstd(a, axis=0)     (50,50)      float64  
-      27.2894  nanstd(a, axis=0)     (50,50)      float64  NaN
+       2.5995  median(a, axis=0)     (500,500)    float64  
+       2.3487  median(a, axis=0)     (500,500)    float64  NaN
+       2.8795  median(a, axis=0)     (50,50)      float64  
+       2.4309  median(a, axis=0)     (50,50)      float64  NaN
+       7.0735  nanmax(a, axis=0)     (500,500)    float64  
+       4.9616  nanmax(a, axis=0)     (500,500)    float64  NaN
+       6.6608  nanmax(a, axis=0)     (50,50)      float64  
+       6.4340  nanmax(a, axis=0)     (50,50)      float64  NaN
+       4.3128  nanmin(a, axis=0)     (500,500)    float64  
+       4.6877  nanmin(a, axis=0)     (500,500)    float64  NaN
+       5.0893  nanmin(a, axis=0)     (50,50)      float64  
+       6.3899  nanmin(a, axis=0)     (50,50)      float64  NaN
+      11.6829  nanmean(a, axis=0)    (500,500)    float64  
+      55.3030  nanmean(a, axis=0)    (500,500)    float64  NaN
+      13.1311  nanmean(a, axis=0)    (50,50)      float64  
+      29.4172  nanmean(a, axis=0)    (50,50)      float64  NaN
+       8.4922  nanstd(a, axis=0)     (500,500)    float64  
+      63.2329  nanstd(a, axis=0)     (500,500)    float64  NaN
+      11.5781  nanstd(a, axis=0)     (50,50)      float64  
+      34.2063  nanstd(a, axis=0)     (50,50)      float64  NaN
 
 Faster
 ======
@@ -113,17 +113,17 @@ an inner loop::
 
 Let's see how much faster than runs::
     
-    >> timeit np.nanmax(arr, axis=0)
-    10000 loops, best of 3: 25.7 us per loop
-    >> timeit bn.nanmax(arr, axis=0)
-    100000 loops, best of 3: 5.25 us per loop
-    >> timeit func(a)
-    100000 loops, best of 3: 2.5 us per loop
+    >>> timeit np.nanmax(arr, axis=0)
+    10000 loops, best of 3: 24.9 us per loop
+    >>> timeit bn.nanmax(arr, axis=0)
+    100000 loops, best of 3: 4.97 us per loop
+    >>> timeit func(a)
+    100000 loops, best of 3: 2.13 us per loop
 
 Note that ``func`` is faster than Numpy's non-NaN version of max::
     
-    >> timeit arr.max(axis=0)
-    100000 loops, best of 3: 3.28 us per loop
+    >>> timeit arr.max(axis=0)
+    100000 loops, best of 3: 4.75 us per loop
 
 So adding NaN protection to your inner loops comes at a negative cost!           
 

@@ -271,7 +271,9 @@ def median_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a):
     cdef np.int32_t x, tmp, amax, ai
     n0 = a.shape[0]
     n1 = a.shape[1]
-    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(n1, dtype=np.float64)
+    cdef np.npy_intp *dims = [n1]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                            NPY_float64, 0)
     for jj in range(n1): 
         k = n0 >> 1
         l = 0
@@ -311,7 +313,9 @@ def median_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a):
     cdef np.int64_t x, tmp, amax, ai
     n0 = a.shape[0]
     n1 = a.shape[1]
-    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(n0, dtype=np.float64)
+    cdef np.npy_intp *dims = [n0]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                            NPY_float64, 0)
     for ii in range(n0): 
         k = n1 >> 1
         l = 0
@@ -351,7 +355,9 @@ def median_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a):
     cdef np.int64_t x, tmp, amax, ai
     n0 = a.shape[0]
     n1 = a.shape[1]
-    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(n1, dtype=np.float64)
+    cdef np.npy_intp *dims = [n1]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                            NPY_float64, 0)
     for jj in range(n1): 
         k = n0 >> 1
         l = 0
@@ -391,7 +397,9 @@ def median_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a):
     cdef np.int64_t x, tmp, amax, ai
     n0 = a.shape[0]
     n1 = a.shape[1]
-    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(n0, dtype=np.float64)
+    cdef np.npy_intp *dims = [n0]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                            NPY_float64, 0)
     for ii in range(n0): 
         k = n1 >> 1
         l = 0
@@ -431,7 +439,9 @@ def median_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a):
     cdef np.float64_t x, tmp, amax, ai
     n0 = a.shape[0]
     n1 = a.shape[1]
-    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(n1, dtype=np.float64)
+    cdef np.npy_intp *dims = [n1]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                            NPY_float64, 0)
     for jj in range(n1): 
         k = n0 >> 1
         l = 0
@@ -471,7 +481,9 @@ def median_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a):
     cdef np.float64_t x, tmp, amax, ai
     n0 = a.shape[0]
     n1 = a.shape[1]
-    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(n0, dtype=np.float64)
+    cdef np.npy_intp *dims = [n0]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                            NPY_float64, 0)
     for ii in range(n0): 
         k = n1 >> 1
         l = 0
@@ -514,8 +526,9 @@ def median_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a):
     n0 = a.shape[0]
     n1 = a.shape[1]
     n2 = a.shape[2]
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n1, n2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [n1, n2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for jj in range(n1):
         for kk in range(n2):
             k = n0 >> 1
@@ -557,8 +570,9 @@ def median_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a):
     n0 = a.shape[0]
     n1 = a.shape[1]
     n2 = a.shape[2]
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n0, n2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [n0, n2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for ii in range(n0):
         for kk in range(n2):
             k = n1 >> 1
@@ -600,8 +614,9 @@ def median_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a):
     n0 = a.shape[0]
     n1 = a.shape[1]
     n2 = a.shape[2]
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n0, n1),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [n0, n1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for ii in range(n0):
         for jj in range(n1):
             k = n2 >> 1
@@ -643,8 +658,9 @@ def median_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a):
     n0 = a.shape[0]
     n1 = a.shape[1]
     n2 = a.shape[2]
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n1, n2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [n1, n2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for jj in range(n1):
         for kk in range(n2):
             k = n0 >> 1
@@ -686,8 +702,9 @@ def median_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a):
     n0 = a.shape[0]
     n1 = a.shape[1]
     n2 = a.shape[2]
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n0, n2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [n0, n2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for ii in range(n0):
         for kk in range(n2):
             k = n1 >> 1
@@ -729,8 +746,9 @@ def median_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a):
     n0 = a.shape[0]
     n1 = a.shape[1]
     n2 = a.shape[2]
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n0, n1),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [n0, n1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for ii in range(n0):
         for jj in range(n1):
             k = n2 >> 1
@@ -772,8 +790,9 @@ def median_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a):
     n0 = a.shape[0]
     n1 = a.shape[1]
     n2 = a.shape[2]
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n1, n2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [n1, n2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for jj in range(n1):
         for kk in range(n2):
             k = n0 >> 1
@@ -815,8 +834,9 @@ def median_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a):
     n0 = a.shape[0]
     n1 = a.shape[1]
     n2 = a.shape[2]
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n0, n2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [n0, n2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for ii in range(n0):
         for kk in range(n2):
             k = n1 >> 1
@@ -858,8 +878,9 @@ def median_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a):
     n0 = a.shape[0]
     n1 = a.shape[1]
     n2 = a.shape[2]
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((n0, n1),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [n0, n1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
     for ii in range(n0):
         for jj in range(n1):
             k = n2 >> 1

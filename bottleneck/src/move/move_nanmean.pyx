@@ -128,7 +128,9 @@ def move_nanmean_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a, int window):
     cdef Py_ssize_t i
     cdef int a0 = a.shape[0], count = 0
     cdef double asum = 0, aold, ai
-    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(a0, dtype=np.float64)
+    cdef np.npy_intp *dims = [a0]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                            NPY_float64, 0)
 
     if (window < 1) or (window > a0):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a0)
@@ -172,7 +174,9 @@ def move_nanmean_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a, int window):
     cdef Py_ssize_t i
     cdef int a0 = a.shape[0], count = 0
     cdef double asum = 0, aold, ai
-    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(a0, dtype=np.float64)
+    cdef np.npy_intp *dims = [a0]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                            NPY_float64, 0)
 
     if (window < 1) or (window > a0):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a0)
@@ -217,7 +221,9 @@ def move_nanmean_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a,
     cdef Py_ssize_t i
     cdef int a0 = a.shape[0], count = 0
     cdef double asum = 0, aold, ai
-    cdef np.ndarray[np.float64_t, ndim=1] y = np.empty(a0, dtype=np.float64)
+    cdef np.npy_intp *dims = [a0]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                                            NPY_float64, 0)
 
     if (window < 1) or (window > a0):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a0)
@@ -263,8 +269,9 @@ def move_nanmean_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a, int window):
     cdef Py_ssize_t i
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
     cdef double asum = 0, aold, ai
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((a0, a1),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
 
     if (window < 1) or (window > a0):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a0)
@@ -311,8 +318,9 @@ def move_nanmean_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a, int window):
     cdef Py_ssize_t i
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
     cdef double asum = 0, aold, ai
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((a0, a1),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
 
     if (window < 1) or (window > a0):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a0)
@@ -360,8 +368,9 @@ def move_nanmean_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a,
     cdef Py_ssize_t i
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
     cdef double asum = 0, aold, ai
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((a0, a1),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
 
     if (window < 1) or (window > a0):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a0)
@@ -407,8 +416,9 @@ def move_nanmean_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a, int window):
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
     cdef double asum, ai, aold
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((a0, a1),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
 
     if (window < 1) or (window > a1):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
@@ -454,8 +464,9 @@ def move_nanmean_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a, int window):
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
     cdef double asum, ai, aold
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((a0, a1),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
 
     if (window < 1) or (window > a1):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
@@ -502,8 +513,9 @@ def move_nanmean_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a,
     cdef Py_ssize_t i, j
     cdef int a0 = a.shape[0], a1 = a.shape[1], count
     cdef double asum, ai, aold
-    cdef np.ndarray[np.float64_t, ndim=2] y = np.empty((a0, a1),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                            NPY_float64, 0)
 
     if (window < 1) or (window > a1):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
@@ -552,8 +564,9 @@ def move_nanmean_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a, int window):
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef double asum, aold, ai
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((a0, a1, a2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1, a2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
 
 
     if (window < 1) or (window > a0):
@@ -602,8 +615,9 @@ def move_nanmean_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a, int window):
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef double asum, aold, ai
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((a0, a1, a2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1, a2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
 
 
     if (window < 1) or (window > a0):
@@ -653,8 +667,9 @@ def move_nanmean_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a,
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef double asum, aold, ai
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((a0, a1, a2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1, a2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
 
 
     if (window < 1) or (window > a0):
@@ -703,8 +718,9 @@ def move_nanmean_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a, int window):
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef double asum = 0, aold, ai
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((a0, a1, a2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1, a2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
 
     if (window < 1) or (window > a1):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
@@ -752,8 +768,9 @@ def move_nanmean_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a, int window):
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef double asum = 0, aold, ai
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((a0, a1, a2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1, a2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
 
     if (window < 1) or (window > a1):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
@@ -802,8 +819,9 @@ def move_nanmean_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a,
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef double asum = 0, aold, ai
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((a0, a1, a2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1, a2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
 
     if (window < 1) or (window > a1):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
@@ -851,8 +869,9 @@ def move_nanmean_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a, int window):
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef double asum = 0, aold, ai
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((a0, a1, a2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1, a2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
 
     if (window < 1) or (window > a2):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
@@ -900,8 +919,9 @@ def move_nanmean_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a, int window):
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef double asum = 0, aold, ai
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((a0, a1, a2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1, a2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
 
     if (window < 1) or (window > a2):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
@@ -950,8 +970,9 @@ def move_nanmean_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a,
     cdef Py_ssize_t i, j, k
     cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
     cdef double asum = 0, aold, ai
-    cdef np.ndarray[np.float64_t, ndim=3] y = np.empty((a0, a1, a2),
-                                                       dtype=np.float64)
+    cdef np.npy_intp *dims = [a0, a1, a2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                            NPY_float64, 0)
 
     if (window < 1) or (window > a2):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
