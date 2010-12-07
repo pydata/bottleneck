@@ -74,26 +74,26 @@ benchmark::
         Speed is numpy (or scipy) time divided by Bottleneck time
         NaN means all NaNs
        Speed   Test                  Shape        dtype    NaN?
-       2.5780  median(a, axis=0)     (500,500)    float64  
-       2.3277  median(a, axis=0)     (500,500)    float64  NaN
-       4.1347  median(a, axis=0)     (10000,)     float64  
-       4.7842  median(a, axis=0)     (10000,)     float64  NaN
-       6.7673  nanmax(a, axis=0)     (500,500)    float64  
-       4.7826  nanmax(a, axis=0)     (500,500)    float64  NaN
-       9.4604  nanmax(a, axis=0)     (10000,)     float64  
-       8.3246  nanmax(a, axis=0)     (10000,)     float64  NaN
-       4.0559  nanmin(a, axis=0)     (500,500)    float64  
-       4.5415  nanmin(a, axis=0)     (500,500)    float64  NaN
-       6.7648  nanmin(a, axis=0)     (10000,)     float64  
-       8.4638  nanmin(a, axis=0)     (10000,)     float64  NaN
-      11.4441  nanmean(a, axis=0)    (500,500)    float64  
-      55.3499  nanmean(a, axis=0)    (500,500)    float64  NaN
-      12.8546  nanmean(a, axis=0)    (10000,)     float64  
-      22.7069  nanmean(a, axis=0)    (10000,)     float64  NaN
-       8.5651  nanstd(a, axis=0)     (500,500)    float64  
-      62.3893  nanstd(a, axis=0)     (500,500)    float64  NaN
-       8.8121  nanstd(a, axis=0)     (10000,)     float64  
-      26.3563  nanstd(a, axis=0)     (10000,)     float64  NaN
+       2.5629  median(a, axis=0)     (500,500)    float64  
+       2.3360  median(a, axis=0)     (500,500)    float64  NaN
+       2.4285  median(a, axis=0)     (50,50)      float64  
+       2.1548  median(a, axis=0)     (50,50)      float64  NaN
+       6.7385  nanmax(a, axis=0)     (500,500)    float64  
+       4.6712  nanmax(a, axis=0)     (500,500)    float64  NaN
+       5.3731  nanmax(a, axis=0)     (50,50)      float64  
+       5.2679  nanmax(a, axis=0)     (50,50)      float64  NaN
+       3.9497  nanmin(a, axis=0)     (500,500)    float64  
+       4.3079  nanmin(a, axis=0)     (500,500)    float64  NaN
+       4.2222  nanmin(a, axis=0)     (50,50)      float64  
+       5.1061  nanmin(a, axis=0)     (50,50)      float64  NaN
+      11.5562  nanmean(a, axis=0)    (500,500)    float64  
+      54.2121  nanmean(a, axis=0)    (500,500)    float64  NaN
+       9.8809  nanmean(a, axis=0)    (50,50)      float64  
+      21.0776  nanmean(a, axis=0)    (50,50)      float64  NaN
+       8.4634  nanstd(a, axis=0)     (500,500)    float64  
+      61.4630  nanstd(a, axis=0)     (500,500)    float64  NaN
+       9.6489  nanstd(a, axis=0)     (50,50)      float64  
+      27.2894  nanstd(a, axis=0)     (50,50)      float64  NaN
 
 Faster
 ======

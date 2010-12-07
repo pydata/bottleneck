@@ -36,16 +36,16 @@ def suite():
     statements = {}
     setups = {}
     
-    setups['(10000,) float64'] = "import numpy as np; import scipy.stats as sp; import bottleneck as bn; from bottleneck.bench.bench import geta; N=10000; a = geta((N,), 'float64')"
+    setups['(50,50) float64'] = "import numpy as np; import scipy.stats as sp; import bottleneck as bn; from bottleneck.bench.bench import geta; N=50; a = geta((N,N), 'float64')"
     setups['(500,500) float64'] = "import numpy as np; import scipy.stats as sp; import bottleneck as bn; from bottleneck.bench.bench import geta; N=500; a = geta((N, N), 'float64')"
-    setups['(10000,) float64 NaN'] = "import numpy as np; import scipy.stats as sp; import bottleneck as bn; from bottleneck.bench.bench import geta; N=10000; a = geta((N,), 'float64', True)"
+    setups['(50,50) float64 NaN'] = "import numpy as np; import scipy.stats as sp; import bottleneck as bn; from bottleneck.bench.bench import geta; N=50; a = geta((N,N), 'float64', True)"
     setups['(500,500) float64 NaN'] = "import numpy as np; import scipy.stats as sp; import bottleneck as bn; from bottleneck.bench.bench import geta; N=500; a = geta((N, N), 'float64', True)"
 
     # Bench report was getting too long; need options to specify what to bench
     """    
-    setups['(10000,) int32'] = "import numpy as np; import scipy.stats as sp; import bottleneck as bn; from bottleneck.bench.bench import geta; N=10000; a = geta((N,), 'int32')"
+    setups['(50,50) int32'] = "import numpy as np; import scipy.stats as sp; import bottleneck as bn; from bottleneck.bench.bench import geta; N=50; a = geta((N,N), 'int32')"
     setups['(500,500) int32'] = "import numpy as np; import scipy.stats as sp; import bottleneck as bn; from bottleneck.bench.bench import geta; N=500; a = geta((N, N), 'int32')"
-    setups['(10000,) int64'] = "import numpy as np; import scipy.stats as sp; import bottleneck as bn; from bottleneck.bench.bench import geta; N=10000; a = geta((N,), 'int64')"
+    setups['(50,50) int64'] = "import numpy as np; import scipy.stats as sp; import bottleneck as bn; from bottleneck.bench.bench import geta; N=50; a = geta((N,N), 'int64')"
     setups['(500,500) int64'] = "import numpy as np; import scipy.stats as sp; import bottleneck as bn; from bottleneck.bench.bench import geta; N=500; a = geta((N, N), 'int64')"
     """
 
