@@ -9,9 +9,7 @@ nanmin_float = {}
 nanmin_float['dtype'] = ['float64']
 nanmin_float['ndims'] = [2, 3]
 nanmin_float['axisNone'] = False
-
 nanmin_float['name'] = 'nanmin'
-
 nanmin_float['inarr'] = 'a'
 nanmin_float['outarr'] = 'y'
 
@@ -19,7 +17,7 @@ nanmin_float['top'] = """
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
-    "NAME of NDIMd numpy array with dtype=np.DTYPE along axis=AXIS."
+    "NAME of NDIMd numpy array with dtype=DTYPE along axis=AXIS."
     cdef int allnan
     cdef np.DTYPE_t amin, ai
 """
@@ -52,29 +50,22 @@ nanmin_float_None = {}
 nanmin_float_None['dtype'] = ['float64']
 nanmin_float_None['ndims'] = [1, 2, 3]
 nanmin_float_None['axisNone'] = True
-
 nanmin_float_None['name'] = nanmin_float['name']
-
-nanmin_float_None['inarr'] = 'a'
-nanmin_float_None['outarr'] = 'y'
+nanmin_float_None['inarr'] = nanmin_float['inarr']
+nanmin_float_None['outarr'] = nanmin_float['outarr']
 
 nanmin_float_None['top'] = """
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
-    "NAME of NDIMd numpy array with dtype=np.DTYPE along axis=AXIS."
+    "NAME of NDIMd numpy array with dtype=DTYPE along axis=AXIS."
     cdef int allnan
     cdef np.DTYPE_t amin = np.inf, ai
 """
 
 nanmin_float_None['init'] = None
 
-nanmin_float_None['inner'] = """
-ai = a[INDEX]
-if ai <= amin:
-    amin = ai
-    allnan = 0
-""" 
+nanmin_float_None['inner'] = nanmin_float['inner']
 
 nanmin_float_None['result'] = """
 if allnan == 0:       
@@ -92,17 +83,15 @@ nanmin_int = {}
 nanmin_int['dtype'] = ['int32', 'int64'] 
 nanmin_int['ndims'] = [2, 3]
 nanmin_int['axisNone'] = False
-
-nanmin_int['name'] = 'nanmin'
-
-nanmin_int['inarr'] = 'a'
-nanmin_int['outarr'] = 'y'
+nanmin_int['name'] = nanmin_float['name']
+nanmin_int['inarr'] = nanmin_float['inarr']
+nanmin_int['outarr'] = nanmin_float['outarr']
 
 nanmin_int['top'] = """
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
-    "NAME of NDIMd numpy array with dtype=np.DTYPE along axis=AXIS."
+    "NAME of NDIMd numpy array with dtype=DTYPE along axis=AXIS."
     cdef np.DTYPE_t amin, ai
 """
 
@@ -122,6 +111,35 @@ y[INDEX] = amin
 
 nanmin_int['returns'] = "return y"
 
+# Int dtypes (axis=None)-----------------------------------------------------
+
+nanmin_int_None = {}
+
+nanmin_int_None['dtype'] = ['int32', 'int64'] 
+nanmin_int_None['ndims'] = [1, 2, 3]
+nanmin_int_None['axisNone'] = True
+nanmin_int_None['name'] = nanmin_float['name']
+nanmin_int_None['inarr'] = nanmin_float['inarr']
+nanmin_int_None['outarr'] = nanmin_float['outarr']
+
+nanmin_int_None['top'] = """
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
+    "NAME of NDIMd numpy array with dtype=DTYPE along axis=AXIS."
+    cdef np.DTYPE_t amin = MAXDTYPE, ai
+"""
+
+nanmin_int_None['init'] = None
+
+nanmin_int_None['inner'] = nanmin_int['inner']
+
+nanmin_int_None['result'] = """
+return np.DTYPE(amin)
+"""
+
+nanmin_int_None['returns'] = None
+
 # ---------------------------------------------------------------------------
 
 nanmin = {}
@@ -129,6 +147,7 @@ nanmin['templates'] = {}
 nanmin['templates']['float'] = nanmin_float
 nanmin['templates']['float_None'] = nanmin_float_None
 nanmin['templates']['int'] = nanmin_int
+nanmin['templates']['int'] = nanmin_int_None
 nanmin['pyx_file'] = '../func/nanmin2.pyx'
 
 nanmin['main'] = """
