@@ -4,19 +4,14 @@ from copy import deepcopy
 
 __all__ = ["nanmin"]
 
-MAXDIM = 3
 FLOAT_DTYPES = ['float64']
 INT_DTYPES = ['int32', 'int64']
 
 # Float dtypes (not axis=None) ----------------------------------------------
 
 nanmin_float = {}
-
-nanmin_float['dtype'] = FLOAT_DTYPES
-nanmin_float['ndims'] = range(2, MAXDIM + 1)
+nanmin_float['dtypes'] = FLOAT_DTYPES
 nanmin_float['axisNone'] = False
-nanmin_float['inarr'] = 'a'
-nanmin_float['outarr'] = 'y'
 
 nanmin_float['top'] = """
 @cython.boundscheck(False)
@@ -27,65 +22,154 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     cdef np.DTYPE_t amin, ai
 """
 
-nanmin_float['outer_loop_init'] = None
-
-nanmin_float['inner_loop_init'] = """
-amin = np.inf
-allnan = 1
+loop = {}
+loop[2] = """\
+    for iINDEX0 in range(nINDEX0):
+        amin = np.inf
+        allnan = 1
+        for iINDEX1 in range(nINDEX1):
+            ai = a[INDEXALL]
+            if ai <= amin:
+                amin = ai
+                allnan = 0
+        if allnan == 0:       
+            y[INDEXPOP] = amin
+        else:
+            y[INDEXPOP] = NAN
+    return y
+"""
+loop[3] = """\
+    for iINDEX0 in range(nINDEX0):
+        for iINDEX1 in range(nINDEX1):
+            amin = np.inf
+            allnan = 1
+            for iINDEX2 in range(nINDEX2):
+                ai = a[INDEXALL]
+                if ai <= amin:
+                    amin = ai
+                    allnan = 0
+            if allnan == 0:       
+                y[INDEXPOP] = amin
+            else:
+                y[INDEXPOP] = NAN
+    return y
 """
 
-nanmin_float['inner'] = """
-ai = a[INDEX]
-if ai <= amin:
-    amin = ai
-    allnan = 0
-""" 
-
-nanmin_float['result'] = """
-if allnan == 0:       
-    y[INDEX] = amin
-else:
-    y[INDEX] = NAN
-"""
-
-nanmin_float['returns'] = "return y"
+nanmin_float['loop'] = loop
 
 # Float dtypes (axis=None) --------------------------------------------------
 
 nanmin_float_None = deepcopy(nanmin_float)
-nanmin_float_None['ndims'] = range(1, MAXDIM + 1)
 nanmin_float_None['axisNone'] = True
-nanmin_float_None['outer_loop_init'] = "amin = np.inf"
-nanmin_float_None['inner_loop_init'] = None
-nanmin_float_None['result'] = """
-if allnan == 0:       
-    return np.DTYPE(amin)
-else:
-    return NAN
+
+loop = {}
+loop[1] = """\
+    amin = np.inf
+    for iINDEX0 in range(nINDEX0):
+        ai = a[INDEXALL]
+        if ai <= amin:
+            amin = ai
+            allnan = 0
+    if allnan == 0:       
+        return np.DTYPE(amin)
+    else:
+        return NAN
 """
-nanmin_float_None['returns'] = None
+loop[2] = """\
+    amin = np.inf
+    for iINDEX0 in range(nINDEX0):
+        for iINDEX1 in range(nINDEX1):
+            ai = a[INDEXALL]
+            if ai <= amin:
+                amin = ai
+                allnan = 0
+    if allnan == 0:       
+        return np.DTYPE(amin)
+    else:
+        return NAN
+"""
+loop[3] = """\
+    amin = np.inf
+    for iINDEX0 in range(nINDEX0):
+        for iINDEX1 in range(nINDEX1):
+            for iINDEX2 in range(nINDEX2):
+                ai = a[INDEXALL]
+                if ai <= amin:
+                    amin = ai
+                    allnan = 0
+    if allnan == 0:       
+        return np.DTYPE(amin)
+    else:
+        return NAN
+"""
+
+nanmin_float_None['loop'] = loop
 
 # Int dtypes (not axis=None) ------------------------------------------------
 
 nanmin_int = deepcopy(nanmin_float)
-nanmin_int['dtype'] = INT_DTYPES 
-nanmin_int['inner_loop_init'] = "amin = MAXDTYPE"
-nanmin_int['inner'] = """
-ai = a[INDEX]
-if ai <= amin:
-    amin = ai
-""" 
-nanmin_int['result'] = "y[INDEX] = amin"
+nanmin_int['dtypes'] = INT_DTYPES 
+
+loop = {}
+loop[2] = """\
+    for iINDEX0 in range(nINDEX0):
+        amin = MAXDTYPE
+        for iINDEX1 in range(nINDEX1):
+            ai = a[INDEXALL]
+            if ai <= amin:
+                amin = ai
+        y[INDEXPOP] = amin
+    return y
+"""
+loop[3] = """\
+    for iINDEX0 in range(nINDEX0):
+        for iINDEX1 in range(nINDEX1):
+            amin = MAXDTYPE
+            for iINDEX2 in range(nINDEX2):
+                ai = a[INDEXALL]
+                if ai <= amin:
+                    amin = ai
+            y[INDEXPOP] = amin
+    return y
+"""
+
+nanmin_int['loop'] = loop
 
 # Int dtypes (axis=None) ----------------------------------------------------
 
 nanmin_int_None = deepcopy(nanmin_int) 
-nanmin_int_None['ndims'] = range(1, MAXDIM + 1)
 nanmin_int_None['axisNone'] = True
-nanmin_int_None['outer_loop_init'] = "amin = MAXDTYPE"
-nanmin_int_None['inner_loop_init'] = None
-nanmin_int_None['result'] = "return np.DTYPE(amin)"
-nanmin_int_None['returns'] = None
+
+loop = {}
+loop[1] = """\
+    amin = MAXDTYPE
+    for iINDEX0 in range(nINDEX0):
+        ai = a[INDEXALL]
+        if ai <= amin:
+            amin = ai
+    return np.DTYPE(amin)
+"""
+loop[2] = """\
+    amin = MAXDTYPE
+    for iINDEX0 in range(nINDEX0):
+        for iINDEX1 in range(nINDEX1):
+            ai = a[INDEXALL]
+            if ai <= amin:
+                amin = ai
+    return np.DTYPE(amin)
+"""
+loop[3] = """\
+    amin = MAXDTYPE
+    for iINDEX0 in range(nINDEX0):
+        for iINDEX1 in range(nINDEX1):
+            for iINDEX2 in range(nINDEX2):
+                ai = a[INDEXALL]
+                if ai <= amin:
+                    amin = ai
+    return np.DTYPE(amin)
+"""
+
+nanmin_int_None['loop'] = loop
 
 # Template ------------------------------------------------------------------
 
