@@ -1,15 +1,20 @@
 "nanmin template"
 
+from copy import deepcopy
+
 __all__ = ["nanmin"]
+
+MAXDIM = 3
+FLOAT_DTYPES = ['float64']
+INT_DTYPES = ['int32', 'int64']
 
 # Float dtypes (not axis=None) ----------------------------------------------
 
 nanmin_float = {}
 
-nanmin_float['dtype'] = ['float64']
-nanmin_float['ndims'] = [2, 3]
+nanmin_float['dtype'] = FLOAT_DTYPES
+nanmin_float['ndims'] = range(2, MAXDIM + 1)
 nanmin_float['axisNone'] = False
-nanmin_float['name'] = 'nanmin'
 nanmin_float['inarr'] = 'a'
 nanmin_float['outarr'] = 'y'
 
@@ -18,11 +23,13 @@ nanmin_float['top'] = """
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     "NAME of NDIMd numpy array with dtype=DTYPE along axis=AXIS."
-    cdef int allnan
+    cdef int allnan = 1
     cdef np.DTYPE_t amin, ai
 """
 
-nanmin_float['init'] = """
+nanmin_float['outer_loop_init'] = None
+
+nanmin_float['inner_loop_init'] = """
 amin = np.inf
 allnan = 1
 """
@@ -45,112 +52,54 @@ nanmin_float['returns'] = "return y"
 
 # Float dtypes (axis=None) --------------------------------------------------
 
-nanmin_float_None = {}
-
-nanmin_float_None['dtype'] = ['float64']
-nanmin_float_None['ndims'] = [1, 2, 3]
+nanmin_float_None = deepcopy(nanmin_float)
+nanmin_float_None['ndims'] = range(1, MAXDIM + 1)
 nanmin_float_None['axisNone'] = True
-nanmin_float_None['name'] = nanmin_float['name']
-nanmin_float_None['inarr'] = nanmin_float['inarr']
-nanmin_float_None['outarr'] = nanmin_float['outarr']
-
-nanmin_float_None['top'] = """
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
-    "NAME of NDIMd numpy array with dtype=DTYPE along axis=AXIS."
-    cdef int allnan
-    cdef np.DTYPE_t amin = np.inf, ai
-"""
-
-nanmin_float_None['init'] = None
-
-nanmin_float_None['inner'] = nanmin_float['inner']
-
+nanmin_float_None['outer_loop_init'] = "amin = np.inf"
+nanmin_float_None['inner_loop_init'] = None
 nanmin_float_None['result'] = """
 if allnan == 0:       
     return np.DTYPE(amin)
 else:
     return NAN
 """
-
 nanmin_float_None['returns'] = None
 
-# Int dtypes ----------------------------------------------------------------
+# Int dtypes (not axis=None) ------------------------------------------------
 
-nanmin_int = {}
-
-nanmin_int['dtype'] = ['int32', 'int64'] 
-nanmin_int['ndims'] = [2, 3]
-nanmin_int['axisNone'] = False
-nanmin_int['name'] = nanmin_float['name']
-nanmin_int['inarr'] = nanmin_float['inarr']
-nanmin_int['outarr'] = nanmin_float['outarr']
-
-nanmin_int['top'] = """
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
-    "NAME of NDIMd numpy array with dtype=DTYPE along axis=AXIS."
-    cdef np.DTYPE_t amin, ai
-"""
-
-nanmin_int['init'] = """
-amin = MAXDTYPE
-"""
-
+nanmin_int = deepcopy(nanmin_float)
+nanmin_int['dtype'] = INT_DTYPES 
+nanmin_int['inner_loop_init'] = "amin = MAXDTYPE"
 nanmin_int['inner'] = """
 ai = a[INDEX]
 if ai <= amin:
     amin = ai
 """ 
+nanmin_int['result'] = "y[INDEX] = amin"
 
-nanmin_int['result'] = """
-y[INDEX] = amin
-"""
+# Int dtypes (axis=None) ----------------------------------------------------
 
-nanmin_int['returns'] = "return y"
-
-# Int dtypes (axis=None)-----------------------------------------------------
-
-nanmin_int_None = {}
-
-nanmin_int_None['dtype'] = ['int32', 'int64'] 
-nanmin_int_None['ndims'] = [1, 2, 3]
+nanmin_int_None = deepcopy(nanmin_int) 
+nanmin_int_None['ndims'] = range(1, MAXDIM + 1)
 nanmin_int_None['axisNone'] = True
-nanmin_int_None['name'] = nanmin_float['name']
-nanmin_int_None['inarr'] = nanmin_float['inarr']
-nanmin_int_None['outarr'] = nanmin_float['outarr']
-
-nanmin_int_None['top'] = """
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
-    "NAME of NDIMd numpy array with dtype=DTYPE along axis=AXIS."
-    cdef np.DTYPE_t amin = MAXDTYPE, ai
-"""
-
-nanmin_int_None['init'] = None
-
-nanmin_int_None['inner'] = nanmin_int['inner']
-
-nanmin_int_None['result'] = """
-return np.DTYPE(amin)
-"""
-
+nanmin_int_None['outer_loop_init'] = "amin = MAXDTYPE"
+nanmin_int_None['inner_loop_init'] = None
+nanmin_int_None['result'] = "return np.DTYPE(amin)"
 nanmin_int_None['returns'] = None
 
-# ---------------------------------------------------------------------------
+# Template ------------------------------------------------------------------
 
 nanmin = {}
+nanmin['name'] = 'nanmin'
 nanmin['templates'] = {}
 nanmin['templates']['float'] = nanmin_float
 nanmin['templates']['float_None'] = nanmin_float_None
 nanmin['templates']['int'] = nanmin_int
-nanmin['templates']['int'] = nanmin_int_None
-nanmin['pyx_file'] = '../func/nanmin2.pyx'
+nanmin['templates']['int_None'] = nanmin_int_None
+nanmin['pyx_file'] = '../func/nanmin.pyx'
 
-nanmin['main'] = """
+nanmin['main'] = """"nanmin auto-generated from template"
+
 def nanmin(arr, axis=None):
     '''
     Minimum along the specified axis, ignoring NaNs.
@@ -253,7 +202,7 @@ def nanmin_selector(arr, axis):
     try:
         func = nanmin_dict[key]
     except KeyError:
-        tup = (str(ndim), str(dtype))
-        raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
+        tup = (str(ndim), str(dtype), str(axis))
+        raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 """    

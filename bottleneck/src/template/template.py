@@ -2,26 +2,30 @@
 def make(func, maxdim=3):
     codes = []
     codes.append(func['main'])
+    select = Selector(func['name'])
     for key in func['templates']:
         f = func['templates'][key]
-        for code in template(name=f['name'],
-                             top=f['top'],
-                             init=f['init'],
-                             inner=f['inner'],
-                             result=f['result'],
-                             inarr=f['inarr'],
-                             outarr=f['outarr'],
-                             returns=f['returns'],
-                             dtypes=f['dtype'],
-                             ndims=f['ndims'],
-                             axisNone=f['axisNone']):
-            codes.append(code)   
+        code = template(name=func['name'],
+                        top=f['top'],
+                        outer_loop_init=f['outer_loop_init'],
+                        inner_loop_init=f['inner_loop_init'],
+                        inner=f['inner'],
+                        result=f['result'],
+                        inarr=f['inarr'],
+                        outarr=f['outarr'],
+                        returns=f['returns'],
+                        dtypes=f['dtype'],
+                        ndims=f['ndims'],
+                        axisNone=f['axisNone'],
+                        select=select)
+        codes.append(code)
+    codes.append('\n' + select.asstring())    
     fid = open(func['pyx_file'], 'w')
     fid.write(''.join(codes))
     fid.close()
 
-def template(name, top, init, inner, result, inarr, outarr, returns, dtypes,
-             ndims, axisNone):
+def template(name, top, outer_loop_init, inner_loop_init, inner, result, inarr,
+             outarr, returns, dtypes, ndims, axisNone, select):
 
     funcs = []
     for ndim in ndims:
@@ -32,15 +36,13 @@ def template(name, top, init, inner, result, inarr, outarr, returns, dtypes,
         for dtype in dtypes:
             for axis in axes:
 
-                # Add new function to selector
-                sname = name + "_%dd_%s_axis%s" % (ndim, dtype, str(axis))
-
                 # Code template
                 func = top
                 
                 # loop
-                func += loopy(ndim, axis, dtype, init, inner, result,
-                              inarr, outarr, axisNone)
+                func += loopy(ndim, axis, dtype, outer_loop_init,
+                              inner_loop_init, inner, result, inarr, outarr,
+                              axisNone)
 
                 # name, ndim, dtype, axis
                 func = func.replace('NAME', name)
@@ -55,10 +57,12 @@ def template(name, top, init, inner, result, inarr, outarr, returns, dtypes,
                     func += '\n'
 
                 funcs.append(func)
+                select.append(ndim, dtype, axis)
     
     return ''.join(funcs)
 
-def loopy(ndim, axis, dtype, init, inner, result, inarr, outarr, axisNone):
+def loopy(ndim, axis, dtype, outer_loop_init, inner_loop_init, inner, result,
+          inarr, outarr, axisNone):
     
     # Check input
     if ndim < 1:
@@ -67,9 +71,11 @@ def loopy(ndim, axis, dtype, init, inner, result, inarr, outarr, axisNone):
         raise ValueError("`axis` must be a non-negative integer or None")
     if axis >= ndim:
         raise ValueError("`axis` must be less then `ndim`")
-
-    if init is not None:
-        init = init.strip()
+    
+    if outer_loop_init is not None:
+        outer_loop_init = outer_loop_init.strip()
+    if inner_loop_init is not None:
+        inner_loop_init = inner_loop_init.strip()
     if inner is not None:
         inner = inner.strip()
     if result is not None:    
@@ -98,13 +104,22 @@ def loopy(ndim, axis, dtype, init, inner, result, inarr, outarr, axisNone):
         y += "\n                                              NPY_%s, 0)"
         code.append(y % (tab, dtype, ndim-1, outarr, ndim-1, dtype))
     
+    # Pre loop init
+    if outer_loop_init is not None:
+        for x in outer_loop_init.split('\n'):
+            code.append(tab + x)
+    
     # Make loop
     loop = "%sfor i%d in range(n%d):"
-    for dim in range(ndim):
+    dims = range(ndim)
+    if axis is not None:
+        inner_axis = dims.pop(axis)
+        dims.append(inner_axis)
+    for dim in dims:
 
-        if dim == ndim - 1:
-            if init is not None:
-                for x in init.split('\n'):
+        if dim == dims[-1]:
+            if inner_loop_init is not None:
+                for x in inner_loop_init.split('\n'):
                     code.append(tab + x)
             code.append(loop % (tab, dim, dim))
             tab += tabspace
@@ -139,37 +154,21 @@ def loopy(ndim, axis, dtype, init, inner, result, inarr, outarr, axisNone):
     code = '\n'.join(code)
     return code
 
-def selector(name, dtypes, maxdim):
-
-    selector = [name  + "_selector = {}"]
-    select = name + "_selector[(%d,%s,%d)] = %s"
-    funcs = []
-    for ndim in range(1, maxdim + 1):
-        for dtype in dtypes:
-            for axis in range(ndim):
-
-                # Add new function to selector
-                sname = name + "_%dd_%s_axis%d" % (ndim, dtype, axis)
-                selector.append(select % (ndim, dtype, axis, sname))
-
-                # Code template
-                func = top
-                
-                # loop
-                func += loopy(ndim, axis, dtype, init, inner, result)
-
-                # name, ndim, dtype, axis
-                func = func.replace('NAME', name)
-                func = func.replace('NDIM', str(ndim))
-                func = func.replace('DTYPE', dtype)
-                func = func.replace('AXIS', str(axis))
-
-                # Returns
-                func += '\n    '
-                func += returns
-                func += '\n'
-
-                funcs.append(func)
+class Selector(object):
     
-    return ''.join(funcs), '\n'.join(selector)
+    def __init__(self, name):
+        self.name = name
+        self.src = []
+        self.src.append("cdef dict %s_dict = {}" % name)
 
+    def append(self, ndim, dtype, axis):
+        fmt = "%s_dict[(%s, %s, %s)] = %s_%sd_%s_axis%s"
+        if (ndim == 1) and (axis is None):
+            tup = (self.name, str(ndim), str(dtype), str(0),
+                   self.name, str(ndim), str(dtype), str(axis))
+            self.src.append(fmt % tup)
+        tup = 2 * (self.name, str(ndim), str(dtype), str(axis))
+        self.src.append(fmt % tup)
+    
+    def asstring(self):
+        return '\n'.join(self.src)

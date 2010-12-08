@@ -1,43 +1,7 @@
-
-cdef np.int32_t MAXINT32 = np.iinfo(np.int32).max
-cdef np.int64_t MAXINT64 = np.iinfo(np.int64).max
-
-cdef dict nanmin_dict = {}
-
-#          Dim dtype axis
-nanmin_dict[(1, f64, 0)] = nanmin_1d_float64_axis0
-nanmin_dict[(1, f64, N)] = nanmin_1d_float64_axis0
-nanmin_dict[(2, f64, 0)] = nanmin_2d_float64_axis0
-nanmin_dict[(2, f64, 1)] = nanmin_2d_float64_axis1
-nanmin_dict[(2, f64, N)] = nanmin_2d_float64_axisNone
-nanmin_dict[(3, f64, 0)] = nanmin_3d_float64_axis0
-nanmin_dict[(3, f64, 1)] = nanmin_3d_float64_axis1
-nanmin_dict[(3, f64, 2)] = nanmin_3d_float64_axis2
-nanmin_dict[(3, f64, N)] = nanmin_3d_float64_axisNone
-
-nanmin_dict[(1, i32, 0)] = nanmin_1d_int32_axis0
-nanmin_dict[(1, i32, N)] = nanmin_1d_int32_axis0
-nanmin_dict[(2, i32, 0)] = nanmin_2d_int32_axis0
-nanmin_dict[(2, i32, 1)] = nanmin_2d_int32_axis1
-nanmin_dict[(2, i32, N)] = nanmin_2d_int32_axisNone
-nanmin_dict[(3, i32, 0)] = nanmin_3d_int32_axis0
-nanmin_dict[(3, i32, 1)] = nanmin_3d_int32_axis1
-nanmin_dict[(3, i32, 2)] = nanmin_3d_int32_axis2
-nanmin_dict[(3, i32, N)] = nanmin_3d_int32_axisNone
-
-nanmin_dict[(1, i64, 0)] = nanmin_1d_int64_axis0
-nanmin_dict[(1, i64, N)] = nanmin_1d_int64_axis0
-nanmin_dict[(2, i64, 0)] = nanmin_2d_int64_axis0
-nanmin_dict[(2, i64, 1)] = nanmin_2d_int64_axis1
-nanmin_dict[(2, i64, N)] = nanmin_2d_int64_axisNone
-nanmin_dict[(3, i64, 0)] = nanmin_3d_int64_axis0
-nanmin_dict[(3, i64, 1)] = nanmin_3d_int64_axis1
-nanmin_dict[(3, i64, 2)] = nanmin_3d_int64_axis2
-nanmin_dict[(3, i64, N)] = nanmin_3d_int64_axisNone
-
+"nanmin auto-generated from template"
 
 def nanmin(arr, axis=None):
-    """
+    '''
     Minimum along the specified axis, ignoring NaNs.
 
     Parameters
@@ -68,12 +32,12 @@ def nanmin(arr, axis=None):
     >>> bn.nanmin(a, axis=0)
     array([ 1.,  4.])
     
-    """
+    '''
     func, arr = nanmin_selector(arr, axis)
     return func(arr)
 
 def nanmin_selector(arr, axis):
-    """
+    '''
     Return nanmin function and array that matches `arr` and `axis`.
     
     Under the hood Bottleneck uses a separate Cython function for each
@@ -121,7 +85,7 @@ def nanmin_selector(arr, axis):
     >>> func(a)
     1.0
 
-    """
+    '''
     cdef np.ndarray a = np.array(arr, copy=False)
     cdef int ndim = a.ndim
     cdef np.dtype dtype = a.dtype
@@ -138,469 +102,558 @@ def nanmin_selector(arr, axis):
     try:
         func = nanmin_dict[key]
     except KeyError:
-        tup = (str(ndim), str(dtype))
-        raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
+        tup = (str(ndim), str(dtype), str(axis))
+        raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
-
-# One dimensional -----------------------------------------------------------
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def nanmin_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a):
-    "nanmin of 1d numpy array with dtype=np.int32 along axis=0."
-    cdef Py_ssize_t i
+def nanmin_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a):
+    "nanmin of 2d numpy array with dtype=int32 along axis=0."
+    cdef int allnan = 1
+    cdef np.int32_t amin, ai
+    cdef Py_ssize_t i0, i1
     cdef int n0 = a.shape[0]
-    cdef np.int32_t amin = MAXINT32, ai
-    for i in range(n0):
-        ai = a[i]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n1]
+    cdef np.ndarray[np.int32_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                              NPY_int32, 0)
+    for i1 in range(n1):
+        amin = MAXint32
+        for i0 in range(n0):
+            ai = a[i0, i1]
+            if ai <= amin:
+                amin = ai
+        y[i1] = amin
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a):
+    "nanmin of 2d numpy array with dtype=int32 along axis=1."
+    cdef int allnan = 1
+    cdef np.int32_t amin, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n0]
+    cdef np.ndarray[np.int32_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                              NPY_int32, 0)
+    for i0 in range(n0):
+        amin = MAXint32
+        for i1 in range(n1):
+            ai = a[i0, i1]
+            if ai <= amin:
+                amin = ai
+        y[i0] = amin
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a):
+    "nanmin of 2d numpy array with dtype=int64 along axis=0."
+    cdef int allnan = 1
+    cdef np.int64_t amin, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n1]
+    cdef np.ndarray[np.int64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                              NPY_int64, 0)
+    for i1 in range(n1):
+        amin = MAXint64
+        for i0 in range(n0):
+            ai = a[i0, i1]
+            if ai <= amin:
+                amin = ai
+        y[i1] = amin
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a):
+    "nanmin of 2d numpy array with dtype=int64 along axis=1."
+    cdef int allnan = 1
+    cdef np.int64_t amin, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n0]
+    cdef np.ndarray[np.int64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                              NPY_int64, 0)
+    for i0 in range(n0):
+        amin = MAXint64
+        for i1 in range(n1):
+            ai = a[i0, i1]
+            if ai <= amin:
+                amin = ai
+        y[i0] = amin
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a):
+    "nanmin of 3d numpy array with dtype=int32 along axis=0."
+    cdef int allnan = 1
+    cdef np.int32_t amin, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n1, n2]
+    cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_int32, 0)
+    for i1 in range(n1):
+        for i2 in range(n2):
+            amin = MAXint32
+            for i0 in range(n0):
+                ai = a[i0, i1, i2]
+                if ai <= amin:
+                    amin = ai
+            y[i1, i2] = amin
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a):
+    "nanmin of 3d numpy array with dtype=int32 along axis=1."
+    cdef int allnan = 1
+    cdef np.int32_t amin, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n2]
+    cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_int32, 0)
+    for i0 in range(n0):
+        for i2 in range(n2):
+            amin = MAXint32
+            for i1 in range(n1):
+                ai = a[i0, i1, i2]
+                if ai <= amin:
+                    amin = ai
+            y[i0, i2] = amin
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a):
+    "nanmin of 3d numpy array with dtype=int32 along axis=2."
+    cdef int allnan = 1
+    cdef np.int32_t amin, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n1]
+    cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_int32, 0)
+    for i0 in range(n0):
+        for i1 in range(n1):
+            amin = MAXint32
+            for i2 in range(n2):
+                ai = a[i0, i1, i2]
+                if ai <= amin:
+                    amin = ai
+            y[i0, i1] = amin
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a):
+    "nanmin of 3d numpy array with dtype=int64 along axis=0."
+    cdef int allnan = 1
+    cdef np.int64_t amin, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n1, n2]
+    cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_int64, 0)
+    for i1 in range(n1):
+        for i2 in range(n2):
+            amin = MAXint64
+            for i0 in range(n0):
+                ai = a[i0, i1, i2]
+                if ai <= amin:
+                    amin = ai
+            y[i1, i2] = amin
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a):
+    "nanmin of 3d numpy array with dtype=int64 along axis=1."
+    cdef int allnan = 1
+    cdef np.int64_t amin, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n2]
+    cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_int64, 0)
+    for i0 in range(n0):
+        for i2 in range(n2):
+            amin = MAXint64
+            for i1 in range(n1):
+                ai = a[i0, i1, i2]
+                if ai <= amin:
+                    amin = ai
+            y[i0, i2] = amin
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a):
+    "nanmin of 3d numpy array with dtype=int64 along axis=2."
+    cdef int allnan = 1
+    cdef np.int64_t amin, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n1]
+    cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_int64, 0)
+    for i0 in range(n0):
+        for i1 in range(n1):
+            amin = MAXint64
+            for i2 in range(n2):
+                ai = a[i0, i1, i2]
+                if ai <= amin:
+                    amin = ai
+            y[i0, i1] = amin
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_1d_float64_axisNone(np.ndarray[np.float64_t, ndim=1] a):
+    "nanmin of 1d numpy array with dtype=float64 along axis=None."
+    cdef int allnan = 1
+    cdef np.float64_t amin, ai
+    cdef Py_ssize_t i0
+    cdef int n0 = a.shape[0]
+    amin = np.inf
+    for i0 in range(n0):
+        ai = a[i0]
+        if ai <= amin:
+            amin = ai
+            allnan = 0
+    if allnan == 0:       
+        return np.float64(amin)
+    else:
+        return NAN
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_2d_float64_axisNone(np.ndarray[np.float64_t, ndim=2] a):
+    "nanmin of 2d numpy array with dtype=float64 along axis=None."
+    cdef int allnan = 1
+    cdef np.float64_t amin, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    amin = np.inf
+    for i0 in range(n0):
+        for i1 in range(n1):
+            ai = a[i0, i1]
+            if ai <= amin:
+                amin = ai
+                allnan = 0
+    if allnan == 0:       
+        return np.float64(amin)
+    else:
+        return NAN
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_3d_float64_axisNone(np.ndarray[np.float64_t, ndim=3] a):
+    "nanmin of 3d numpy array with dtype=float64 along axis=None."
+    cdef int allnan = 1
+    cdef np.float64_t amin, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    amin = np.inf
+    for i0 in range(n0):
+        for i1 in range(n1):
+            for i2 in range(n2):
+                ai = a[i0, i1, i2]
+                if ai <= amin:
+                    amin = ai
+                    allnan = 0
+    if allnan == 0:       
+        return np.float64(amin)
+    else:
+        return NAN
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a):
+    "nanmin of 2d numpy array with dtype=float64 along axis=0."
+    cdef int allnan = 1
+    cdef np.float64_t amin, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n1]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                              NPY_float64, 0)
+    for i1 in range(n1):
+        amin = np.inf
+        allnan = 1
+        for i0 in range(n0):
+            ai = a[i0, i1]
+            if ai <= amin:
+                amin = ai
+                allnan = 0
+        if allnan == 0:       
+            y[i1] = amin
+        else:
+            y[i1] = NAN
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a):
+    "nanmin of 2d numpy array with dtype=float64 along axis=1."
+    cdef int allnan = 1
+    cdef np.float64_t amin, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n0]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                              NPY_float64, 0)
+    for i0 in range(n0):
+        amin = np.inf
+        allnan = 1
+        for i1 in range(n1):
+            ai = a[i0, i1]
+            if ai <= amin:
+                amin = ai
+                allnan = 0
+        if allnan == 0:       
+            y[i0] = amin
+        else:
+            y[i0] = NAN
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a):
+    "nanmin of 3d numpy array with dtype=float64 along axis=0."
+    cdef int allnan = 1
+    cdef np.float64_t amin, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n1, n2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_float64, 0)
+    for i1 in range(n1):
+        for i2 in range(n2):
+            amin = np.inf
+            allnan = 1
+            for i0 in range(n0):
+                ai = a[i0, i1, i2]
+                if ai <= amin:
+                    amin = ai
+                    allnan = 0
+            if allnan == 0:       
+                y[i1, i2] = amin
+            else:
+                y[i1, i2] = NAN
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a):
+    "nanmin of 3d numpy array with dtype=float64 along axis=1."
+    cdef int allnan = 1
+    cdef np.float64_t amin, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_float64, 0)
+    for i0 in range(n0):
+        for i2 in range(n2):
+            amin = np.inf
+            allnan = 1
+            for i1 in range(n1):
+                ai = a[i0, i1, i2]
+                if ai <= amin:
+                    amin = ai
+                    allnan = 0
+            if allnan == 0:       
+                y[i0, i2] = amin
+            else:
+                y[i0, i2] = NAN
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a):
+    "nanmin of 3d numpy array with dtype=float64 along axis=2."
+    cdef int allnan = 1
+    cdef np.float64_t amin, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_float64, 0)
+    for i0 in range(n0):
+        for i1 in range(n1):
+            amin = np.inf
+            allnan = 1
+            for i2 in range(n2):
+                ai = a[i0, i1, i2]
+                if ai <= amin:
+                    amin = ai
+                    allnan = 0
+            if allnan == 0:       
+                y[i0, i1] = amin
+            else:
+                y[i0, i1] = NAN
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmin_1d_int32_axisNone(np.ndarray[np.int32_t, ndim=1] a):
+    "nanmin of 1d numpy array with dtype=int32 along axis=None."
+    cdef int allnan = 1
+    cdef np.int32_t amin, ai
+    cdef Py_ssize_t i0
+    cdef int n0 = a.shape[0]
+    amin = MAXint32
+    for i0 in range(n0):
+        ai = a[i0]
         if ai <= amin:
             amin = ai
     return np.int32(amin)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def nanmin_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a):
-    "nanmin of 1d numpy array with dtype=np.int64 along axis=0."
-    cdef Py_ssize_t i
+def nanmin_1d_int64_axisNone(np.ndarray[np.int64_t, ndim=1] a):
+    "nanmin of 1d numpy array with dtype=int64 along axis=None."
+    cdef int allnan = 1
+    cdef np.int64_t amin, ai
+    cdef Py_ssize_t i0
     cdef int n0 = a.shape[0]
-    cdef np.int64_t amin = MAXINT64, ai
-    for i in range(n0):
-        ai = a[i]
+    amin = MAXint64
+    for i0 in range(n0):
+        ai = a[i0]
         if ai <= amin:
             amin = ai
     return np.int64(amin)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def nanmin_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a):
-    "nanmin of 1d numpy array with dtype=np.float64 along axis=0."
-    cdef Py_ssize_t i
-    cdef int n0 = a.shape[0], allnan = 1
-    cdef np.float64_t amin = np.inf, ai
-    for i in range(n0):
-        ai = a[i]
-        if ai <= amin:
-            amin = ai
-            allnan = 0
-    if allnan == 0:
-        return np.float64(amin)
-    else:
-        return NAN
-
-# Two dimensional -----------------------------------------------------------
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a):
-    "nanmin of 2d numpy array with dtype=np.int32 along axis=0."
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1]
-    cdef np.int32_t amin, ai  
-    cdef np.npy_intp *dims = [n1]
-    cdef np.ndarray[np.int32_t, ndim=1] y = PyArray_EMPTY(1, dims,
-                                                          NPY_int32, 0)
-    for j in range(n1):
-        amin = MAXINT32
-        for i in range(n0):
-            ai = a[i,j]
-            if ai <= amin:
-                amin = ai
-        y[j] = amin    
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a):
-    "nanmin of 2d numpy array with dtype=np.int32 along axis=1"
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1]
-    cdef np.int32_t amin 
-    cdef np.npy_intp *dims = [n0]
-    cdef np.ndarray[np.int32_t, ndim=1] y = PyArray_EMPTY(1, dims,
-                                                          NPY_int32, 0)
-    for i in range(n0):
-        amin = MAXINT32
-        for j in range(n1):
-            ai = a[i,j]
-            if ai <= amin:
-                amin = ai
-        y[i] = amin    
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def nanmin_2d_int32_axisNone(np.ndarray[np.int32_t, ndim=2] a):
-    "nanmin of 2d numpy array with dtype=np.int32 along axis=None."
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1]
-    cdef np.int32_t amin = MAXINT32, ai
-    for i in range(n0):
-        for j in range(n1):
-            ai = a[i,j]
+    "nanmin of 2d numpy array with dtype=int32 along axis=None."
+    cdef int allnan = 1
+    cdef np.int32_t amin, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    amin = MAXint32
+    for i0 in range(n0):
+        for i1 in range(n1):
+            ai = a[i0, i1]
             if ai <= amin:
                 amin = ai
-    return np.int32(amin) 
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a):
-    "nanmin of 2d numpy array with dtype=np.int64 along axis=0."
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1]
-    cdef np.int64_t amin, ai  
-    cdef np.npy_intp *dims = [n1]
-    cdef np.ndarray[np.int64_t, ndim=1] y = PyArray_EMPTY(1, dims,
-                                                          NPY_int64, 0)
-    for j in range(n1):
-        amin = MAXINT64
-        for i in range(n0):
-            ai = a[i,j]
-            if ai <= amin:
-                amin = ai
-        y[j] = amin    
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a):
-    "nanmin of 2d numpy array with dtype=np.int64 along axis=1"
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1]
-    cdef np.int64_t amin, ai 
-    cdef np.npy_intp *dims = [n0]
-    cdef np.ndarray[np.int64_t, ndim=1] y = PyArray_EMPTY(1, dims,
-                                                          NPY_int64, 0)
-    for i in range(n0):
-        amin = MAXINT64
-        for j in range(n1):
-            ai = a[i,j]
-            if ai <= amin:
-                amin = ai
-        y[i] = amin    
-    return y
+    return np.int32(amin)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def nanmin_2d_int64_axisNone(np.ndarray[np.int64_t, ndim=2] a):
-    "nanmin of 2d numpy array with dtype=np.int64 along axis=None."
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1]
-    cdef np.int64_t amin = MAXINT64, ai
-    for i in range(n0):
-        for j in range(n1):
-            ai = a[i,j]
+    "nanmin of 2d numpy array with dtype=int64 along axis=None."
+    cdef int allnan = 1
+    cdef np.int64_t amin, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    amin = MAXint64
+    for i0 in range(n0):
+        for i1 in range(n1):
+            ai = a[i0, i1]
             if ai <= amin:
                 amin = ai
-    return np.int64(amin) 
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a):
-    "nanmin of 2d numpy array with dtype=np.float64 along axis=0."
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1], allnan 
-    cdef np.float64_t amin, ai 
-    cdef np.npy_intp *dims = [n1]
-    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
-                                                            NPY_float64, 0)
-    for j in range(n1):
-        amin = np.inf
-        allnan = 1
-        for i in range(n0):
-            ai = a[i,j]
-            if ai <= amin :
-                amin = ai
-                allnan = 0
-        if allnan == 0:       
-            y[j] = amin
-        else:
-            y[j] = NAN
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a):
-    "nanmin of 2d numpy array with dtype=np.float64 along axis=1."
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1], allnan
-    cdef np.float64_t amin, ai  
-    cdef np.npy_intp *dims = [n0]
-    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
-                                                            NPY_float64, 0)
-    for j in range(n0):
-        amin = np.inf
-        allnan = 1
-        for i in range(n1):
-            ai = a[j,i]
-            if ai <= amin:
-                amin = ai
-                allnan = 0
-        if allnan == 0:       
-            y[j] = amin
-        else:
-            y[j] = NAN
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_2d_float64_axisNone(np.ndarray[np.float64_t, ndim=2] a):
-    "nanmin of 2d numpy array with dtype=np.float64 along axis=None."
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1], allnan = 1
-    cdef np.float64_t amin = np.inf, ai
-    for i in range(n0):
-        for j in range(n1):
-            ai = a[i,j]
-            if ai <= amin:
-                amin = ai
-                allnan = 0
-    if allnan == 0:
-        return np.float64(amin)
-    else:
-        return NAN
-
-# Three dimensional ---------------------------------------------------------
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a):
-    "nanmin of 3d numpy array with dtype=np.int32 along axis=0."
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
-    cdef np.int32_t amin, ai  
-    cdef np.npy_intp *dims = [n1, n2]
-    cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                          NPY_int32, 0)
-    for j in range(n1):
-        for k in range(n2):
-            amin = MAXINT32
-            for i in range(n0):
-                ai = a[i,j,k]
-                if ai <= amin:
-                    amin = ai
-            y[j, k] = amin    
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a):
-    "nanmin of 3d numpy array with dtype=np.int32 along axis=1"
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
-    cdef np.int64_t amin, ai   
-    cdef np.npy_intp *dims = [n0, n2]
-    cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                          NPY_int32, 0)
-    for i in range(n0):
-        for k in range(n2):
-            amin = MAXINT32
-            for j in range(n1):
-                ai = a[i,j,k]
-                if ai <= amin:
-                    amin = ai
-            y[i, k] = amin 
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a):
-    "nanmin of 3d numpy array with dtype=np.int32 along axis=2"
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
-    cdef np.int64_t amin, ai   
-    cdef np.npy_intp *dims = [n0, n1]
-    cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                            NPY_int32, 0)
-    for i in range(n0):
-        for j in range(n1):
-            amin = MAXINT32
-            for k in range(n2):
-                ai = a[i,j,k]
-                if ai <= amin:
-                    amin = ai
-            y[i, j] = amin 
-    return y
+    return np.int64(amin)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def nanmin_3d_int32_axisNone(np.ndarray[np.int32_t, ndim=3] a):
-    "nanmin of 3d numpy array with dtype=np.int32 along axis=None."
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
-    cdef np.int64_t amin = MAXINT32, ai
-    for i in range(n0):
-        for j in range(n1):
-            for k in range(n2):
-                ai = a[i,j,k]
+    "nanmin of 3d numpy array with dtype=int32 along axis=None."
+    cdef int allnan = 1
+    cdef np.int32_t amin, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    amin = MAXint32
+    for i0 in range(n0):
+        for i1 in range(n1):
+            for i2 in range(n2):
+                ai = a[i0, i1, i2]
                 if ai <= amin:
                     amin = ai
-    return np.int32(amin) 
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a):
-    "nanmin of 3d numpy array with dtype=np.int64 along axis=0."
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
-    cdef np.int64_t amin, ai  
-    cdef np.npy_intp *dims = [n1, n2]
-    cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                          NPY_int64, 0)
-    for j in range(n1):
-        for k in range(n2):
-            amin = MAXINT64
-            for i in range(n0):
-                ai = a[i,j,k]
-                if ai <= amin:
-                    amin = ai
-            y[j, k] = amin    
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a):
-    "nanmin of 3d numpy array with dtype=np.int64 along axis=1"
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
-    cdef np.int64_t amin, ai 
-    cdef np.npy_intp *dims = [n0, n2]
-    cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                          NPY_int64, 0)
-    for i in range(n0):
-        for k in range(n2):
-            amin = MAXINT64
-            for j in range(n1):
-                ai = a[i,j,k]
-                if ai <= amin:
-                    amin = ai
-            y[i, k] = amin 
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a):
-    "nanmin of 3d numpy array with dtype=np.int64 along axis=2"
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
-    cdef np.int64_t amin, ai 
-    cdef np.npy_intp *dims = [n0, n1]
-    cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                          NPY_int64, 0)
-    for i in range(n0):
-        for j in range(n1):
-            amin = MAXINT64
-            for k in range(n2):
-                ai = a[i,j,k]
-                if ai <= amin:
-                    amin = ai
-            y[i, j] = amin 
-    return y
+    return np.int32(amin)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def nanmin_3d_int64_axisNone(np.ndarray[np.int64_t, ndim=3] a):
-    "nanmin of 3d numpy array with dtype=np.int64 along axis=None."
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
-    cdef np.int64_t amin = MAXINT64, ai
-    for i in range(n0):
-        for j in range(n1):
-            for k in range(n2):
-                ai = a[i,j,k]
+    "nanmin of 3d numpy array with dtype=int64 along axis=None."
+    cdef int allnan = 1
+    cdef np.int64_t amin, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    amin = MAXint64
+    for i0 in range(n0):
+        for i1 in range(n1):
+            for i2 in range(n2):
+                ai = a[i0, i1, i2]
                 if ai <= amin:
                     amin = ai
-    return np.int64(amin) 
+    return np.int64(amin)
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a):
-    "nanmin of 3d numpy array with dtype=np.float64 along axis=0."
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], allnan
-    cdef np.float64_t amin, ai
-    cdef np.npy_intp *dims = [n1, n2]
-    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                            NPY_float64, 0)
-    for j in range(n1):
-        for k in range(n2):
-            amin = np.inf
-            allnan = 1
-            for i in range(n0):
-                ai = a[i,j,k]
-                if ai <= amin:
-                    amin = ai
-                    allnan = 0
-            if allnan == 0:   
-                y[j, k] = amin
-            else:
-                y[j, k] = NAN
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a):
-    "nanmin of 3d numpy array with dtype=np.float64 along axis=1."
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], allnan
-    cdef np.float64_t amin, ai
-    cdef np.npy_intp *dims = [n0, n2]
-    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                            NPY_float64, 0)
-    for i in range(n0):
-        for k in range(n2):
-            amin = np.inf
-            allnan = 1
-            for j in range(n1):
-                ai = a[i,j,k]
-                if ai <= amin:
-                    amin = ai
-                    allnan = 0
-            if allnan == 0:   
-                y[i, k] = amin
-            else:
-                y[i, k] = NAN
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a):
-    "nanmin of 3d numpy array with dtype=np.float64 along axis=2."
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], allnan
-    cdef np.float64_t amin, ai
-    cdef np.npy_intp *dims = [n0, n1]
-    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                            NPY_float64, 0)
-    for i in range(n0):
-        for j in range(n1):
-            amin = np.inf
-            allnan = 1
-            for k in range(n2):
-                ai = a[i,j,k]
-                if ai <= amin:
-                    amin = ai
-                    allnan = 0
-            if allnan == 0:   
-                y[i, j] = amin
-            else:
-                y[i, j] = NAN
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmin_3d_float64_axisNone(np.ndarray[np.float64_t, ndim=3] a):
-    "nanmin of 3d numpy array with dtype=np.float64 along axis=None."
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], allnan = 1
-    cdef np.float64_t amin = np.inf, ai
-    for i in range(n0):
-        for j in range(n1):
-            for k in range(n2):
-                ai = a[i,j,k]
-                if ai <= amin:
-                    amin = ai
-                    allnan = 0
-    if allnan == 0:                
-        return np.float64(amin)
-    else:
-        return NAN
+cdef dict nanmin_dict = {}
+nanmin_dict[(2, int32, 0)] = nanmin_2d_int32_axis0
+nanmin_dict[(2, int32, 1)] = nanmin_2d_int32_axis1
+nanmin_dict[(2, int64, 0)] = nanmin_2d_int64_axis0
+nanmin_dict[(2, int64, 1)] = nanmin_2d_int64_axis1
+nanmin_dict[(3, int32, 0)] = nanmin_3d_int32_axis0
+nanmin_dict[(3, int32, 1)] = nanmin_3d_int32_axis1
+nanmin_dict[(3, int32, 2)] = nanmin_3d_int32_axis2
+nanmin_dict[(3, int64, 0)] = nanmin_3d_int64_axis0
+nanmin_dict[(3, int64, 1)] = nanmin_3d_int64_axis1
+nanmin_dict[(3, int64, 2)] = nanmin_3d_int64_axis2
+nanmin_dict[(1, float64, 0)] = nanmin_1d_float64_axisNone
+nanmin_dict[(1, float64, None)] = nanmin_1d_float64_axisNone
+nanmin_dict[(2, float64, None)] = nanmin_2d_float64_axisNone
+nanmin_dict[(3, float64, None)] = nanmin_3d_float64_axisNone
+nanmin_dict[(2, float64, 0)] = nanmin_2d_float64_axis0
+nanmin_dict[(2, float64, 1)] = nanmin_2d_float64_axis1
+nanmin_dict[(3, float64, 0)] = nanmin_3d_float64_axis0
+nanmin_dict[(3, float64, 1)] = nanmin_3d_float64_axis1
+nanmin_dict[(3, float64, 2)] = nanmin_3d_float64_axis2
+nanmin_dict[(1, int32, 0)] = nanmin_1d_int32_axisNone
+nanmin_dict[(1, int32, None)] = nanmin_1d_int32_axisNone
+nanmin_dict[(1, int64, 0)] = nanmin_1d_int64_axisNone
+nanmin_dict[(1, int64, None)] = nanmin_1d_int64_axisNone
+nanmin_dict[(2, int32, None)] = nanmin_2d_int32_axisNone
+nanmin_dict[(2, int64, None)] = nanmin_2d_int64_axisNone
+nanmin_dict[(3, int32, None)] = nanmin_3d_int32_axisNone
+nanmin_dict[(3, int64, None)] = nanmin_3d_int64_axisNone
