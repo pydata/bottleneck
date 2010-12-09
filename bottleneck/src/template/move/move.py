@@ -1,12 +1,10 @@
 
 from bottleneck.src.template.template import make
 
-from nanmin import nanmin
-from median import median
+from move_nanmean import move_nanmean
 
 funcs = {}
-funcs['nanmin'] = nanmin
-funcs['median'] = median
+funcs['move_nanmean'] = move_nanmean
 
 def build(funcs=funcs):
     for func in funcs:

@@ -1,5 +1,5 @@
 
-def make(func, maxdim=3):
+def make(func):
     codes = []
     codes.append(func['main'])
     select = Selector(func['name'])
@@ -11,6 +11,7 @@ def make(func, maxdim=3):
                         axisNone=f['axisNone'],
                         dtypes=f['dtypes'],
                         force_output_dtype=f['force_output_dtype'],
+                        is_reducing_function=func['is_reducing_function'],
                         select=select)
         codes.append(code)
     codes.append('\n' + select.asstring())    
@@ -18,7 +19,8 @@ def make(func, maxdim=3):
     fid.write(''.join(codes))
     fid.close()
 
-def template(name, top, loop, axisNone, dtypes, force_output_dtype, select):
+def template(name, top, loop, axisNone, dtypes, force_output_dtype,
+             is_reducing_function, select):
 
     ndims = loop.keys()
     ndims.sort()
@@ -35,7 +37,8 @@ def template(name, top, loop, axisNone, dtypes, force_output_dtype, select):
                 func = top
                 
                 # loop
-                func += loop_cdef(ndim, dtype, axis, force_output_dtype)
+                func += loop_cdef(ndim, dtype, axis, force_output_dtype,
+                                  is_reducing_function)
                 func += loopy(loop[ndim], ndim, axis)
 
                 # name, ndim, dtype, axis
@@ -96,7 +99,7 @@ def loopy(loop, ndim, axis):
 
     return code
 
-def loop_cdef(ndim, dtype, axis, force_output_dtype):
+def loop_cdef(ndim, dtype, axis, force_output_dtype, is_reducing_function):
     
     if ndim < 1:
         raise ValueError("ndim(=%d) must be and integer greater than 0" % ndim)
@@ -115,18 +118,30 @@ def loop_cdef(ndim, dtype, axis, force_output_dtype):
     idx = ', '.join(['i'+str(i) for i in range(ndim)])
     cdefs.append(tab + 'cdef Py_ssize_t ' + idx)
     
-    # cdef initialize output
+    # Length along each dimension
     for dim in range(ndim):
         cdefs.append(tab + "cdef int n%d = a.shape[%d]" % (dim, dim))
-    if (ndim > 1) and (axis is not None):
+    
+    # cdef initialize output
+    if is_reducing_function:
+        if (ndim > 1) and (axis is not None):
+            idx = range(ndim)
+            del idx[axis]
+            ns = ', '.join(['n'+str(i) for i in idx])
+            cdefs.append("%scdef np.npy_intp *dims = [%s]" % (tab, ns))
+            y = "%scdef np.ndarray[np.%s_t, ndim=%d] "
+            y += "y = PyArray_EMPTY(%d, dims,"
+            y += "\n                                              NPY_%s, 0)"
+            cdefs.append(y % (tab, dtype, ndim-1, ndim-1, dtype))
+    else:
         idx = range(ndim)
-        del idx[axis]
         ns = ', '.join(['n'+str(i) for i in idx])
         cdefs.append("%scdef np.npy_intp *dims = [%s]" % (tab, ns))
-        y = "%scdef np.ndarray[np.%s_t, ndim=%d] y = PyArray_EMPTY(%d, dims,"
+        y = "%scdef np.ndarray[np.%s_t, ndim=%d] "
+        y += "y = PyArray_EMPTY(%d, dims,"
         y += "\n                                              NPY_%s, 0)"
-        cdefs.append(y % (tab, dtype, ndim-1, ndim-1, dtype))
-    
+        cdefs.append(y % (tab, dtype, ndim, ndim, dtype))
+
     return '\n'.join(cdefs) + '\n'
 
 class Selector(object):

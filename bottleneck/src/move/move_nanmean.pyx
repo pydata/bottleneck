@@ -1,29 +1,7 @@
-"move_nanmean"
-
-# key is (ndim, dtype, axis)
-cdef dict move_nanmean_dict = {}
-move_nanmean_dict[(1, f64, 0)] = move_nanmean_1d_float64_axis0
-move_nanmean_dict[(2, f64, 0)] = move_nanmean_2d_float64_axis0
-move_nanmean_dict[(2, f64, 1)] = move_nanmean_2d_float64_axis1
-move_nanmean_dict[(3, f64, 0)] = move_nanmean_3d_float64_axis0
-move_nanmean_dict[(3, f64, 1)] = move_nanmean_3d_float64_axis1
-move_nanmean_dict[(3, f64, 2)] = move_nanmean_3d_float64_axis2
-move_nanmean_dict[(1, i64, 0)] = move_nanmean_1d_int64_axis0
-move_nanmean_dict[(2, i64, 0)] = move_nanmean_2d_int64_axis0
-move_nanmean_dict[(2, i64, 1)] = move_nanmean_2d_int64_axis1
-move_nanmean_dict[(3, i64, 0)] = move_nanmean_3d_int64_axis0
-move_nanmean_dict[(3, i64, 1)] = move_nanmean_3d_int64_axis1
-move_nanmean_dict[(3, i64, 2)] = move_nanmean_3d_int64_axis2
-move_nanmean_dict[(1, i32, 0)] = move_nanmean_1d_int32_axis0
-move_nanmean_dict[(2, i32, 0)] = move_nanmean_2d_int32_axis0
-move_nanmean_dict[(2, i32, 1)] = move_nanmean_2d_int32_axis1
-move_nanmean_dict[(3, i32, 0)] = move_nanmean_3d_int32_axis0
-move_nanmean_dict[(3, i32, 1)] = move_nanmean_3d_int32_axis1
-move_nanmean_dict[(3, i32, 2)] = move_nanmean_3d_int32_axis2
-
+"move_nanmean auto-generated from template"
 
 def move_nanmean(arr, int window, int axis=0):
-    """
+    '''
     Moving window mean along the specified axis, ignoring NaNs.
     
     Parameters
@@ -49,12 +27,12 @@ def move_nanmean(arr, int window, int axis=0):
     >>> bn.move_nanmean(arr, window=2)
     array([ nan,  1.5,  2.5,  3.5])
 
-    """
+    '''
     func, arr = move_nanmean_selector(arr, window, axis)
     return func(arr, window)
 
 def move_nanmean_selector(arr, int window, int axis):
-    """
+    '''
     Return move_nanmean function and array that matches `arr` and `axis`.
     
     Under the hood Bottleneck uses a separate Cython function for each
@@ -101,7 +79,7 @@ def move_nanmean_selector(arr, int window, int axis):
     >>> func(a, window)
     array([ nan,  1.5,  2.5,  3.5])
 
-    """
+    '''
     cdef np.ndarray a = np.array(arr, copy=False)
     cdef np.dtype dtype = a.dtype
     cdef int ndim = a.ndim
@@ -118,97 +96,607 @@ def move_nanmean_selector(arr, int window, int axis):
         raise TypeError, "Unsupported ndim/axis (%s/%s)." % tup
     return func, a
 
-# One dimensional -----------------------------------------------------------
-
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_nanmean_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a, int window):
-    "Moving nanmean along a 1d numpy array of dtype=np.int32."
-
-    cdef Py_ssize_t i
-    cdef int a0 = a.shape[0], count = 0
+def move_nanmean_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a,
+                                  int window):
+    "Moving nanmean of a 1d numpy array of dtype=int32 along axis=0."
+    cdef int count = 0
     cdef double asum = 0, aold, ai
-    cdef np.npy_intp *dims = [a0]
+    cdef Py_ssize_t i0
+    cdef int n0 = a.shape[0]
+    cdef np.npy_intp *dims = [n0]
     cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
-                                                            NPY_float64, 0)
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n0):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n0)
 
-    if (window < 1) or (window > a0):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a0)
-
-    for i in range(window - 1):
-        ai = a[i]
+    for i0 in range(window - 1):
+        ai = a[i0]
         if ai == ai:
             asum += ai
             count += 1
-        y[i] = NAN
-    i = window - 1
-    ai = a[i]
+        y[i0] = NAN
+    i0 = window - 1
+    ai = a[i0]
     if ai == ai:
         asum += ai
         count += 1
     if count > 0:
-       y[i] = <np.float64_t> asum / count
+       y[i0] = <np.float64_t> asum / count
     else:
-       y[i] = NAN
-    for i in range(window, a0):
-        ai = a[i]
+       y[i0] = NAN
+    for i0 in range(window, n0):
+        ai = a[i0]
         if ai == ai:
             asum += ai
             count += 1
-        aold = a[i - window]
+        aold = a[i0 - window]
         if aold == aold:
             asum -= aold
             count -= 1
         if count > 0:
-            y[i] = <np.float64_t> asum / count
+            y[i0] = <np.float64_t> asum / count
         else:
-            y[i] = NAN
+            y[i0] = NAN
 
     return y
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_nanmean_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a, int window):
-    "Moving nanmean along a 1d numpy array of dtype=np.int64."
-
-    cdef Py_ssize_t i
-    cdef int a0 = a.shape[0], count = 0
+def move_nanmean_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a,
+                                  int window):
+    "Moving nanmean of a 1d numpy array of dtype=int64 along axis=0."
+    cdef int count = 0
     cdef double asum = 0, aold, ai
-    cdef np.npy_intp *dims = [a0]
+    cdef Py_ssize_t i0
+    cdef int n0 = a.shape[0]
+    cdef np.npy_intp *dims = [n0]
     cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
-                                                            NPY_float64, 0)
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n0):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n0)
 
-    if (window < 1) or (window > a0):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a0)
-
-    for i in range(window - 1):
-        ai = a[i]
+    for i0 in range(window - 1):
+        ai = a[i0]
         if ai == ai:
             asum += ai
             count += 1
-        y[i] = NAN
-    i = window - 1
-    ai = a[i]
+        y[i0] = NAN
+    i0 = window - 1
+    ai = a[i0]
     if ai == ai:
         asum += ai
         count += 1
     if count > 0:
-       y[i] = <np.float64_t> asum / count
+       y[i0] = <np.float64_t> asum / count
     else:
-       y[i] = NAN
-    for i in range(window, a0):
-        ai = a[i]
+       y[i0] = NAN
+    for i0 in range(window, n0):
+        ai = a[i0]
         if ai == ai:
             asum += ai
             count += 1
-        aold = a[i - window]
+        aold = a[i0 - window]
         if aold == aold:
             asum -= aold
             count -= 1
         if count > 0:
-            y[i] = <np.float64_t> asum / count
+            y[i0] = <np.float64_t> asum / count
         else:
-            y[i] = NAN
+            y[i0] = NAN
+
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def move_nanmean_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a,
+                                  int window):
+    "Moving nanmean of a 2d numpy array of dtype=int32 along axis=0."
+    cdef int count = 0
+    cdef double asum = 0, aold, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n0, n1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n0):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n0)
+
+    for i1 in range(n1):
+        asum = 0
+        count = 0
+        for i0 in range(window - 1):
+            ai = a[i0, i1]
+            if ai == ai:
+                asum += ai
+                count += 1
+            y[i0, i1] = NAN
+        i0 = window - 1
+        ai = a[i0, i1]
+        if ai == ai:
+            asum += ai
+            count += 1
+        if count > 0:
+           y[i0, i1] = <np.float64_t> asum / count
+        else:
+           y[i0, i1] = NAN
+        for i0 in range(window, n0):
+            ai = a[i0, i1]
+            if ai == ai:
+                asum += ai
+                count += 1
+            aold = a[i0 - window, i1]
+            if aold == aold:
+                asum -= aold
+                count -= 1
+            if count > 0:
+                y[i0, i1] = <np.float64_t> asum / count
+            else:
+                y[i0, i1] = NAN
+
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def move_nanmean_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a,
+                                  int window):
+    "Moving nanmean of a 2d numpy array of dtype=int32 along axis=1."
+    cdef int count = 0
+    cdef double asum = 0, aold, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n0, n1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n1):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n1)
+
+    for i0 in range(n0):
+        asum = 0
+        count = 0
+        for i1 in range(window - 1):
+            ai = a[i0, i1]
+            if ai == ai:
+                asum += ai
+                count += 1
+            y[i0, i1] = NAN
+        i1 = window - 1
+        ai = a[i0, i1]
+        if ai == ai:
+            asum += ai
+            count += 1
+        if count > 0:
+           y[i0, i1] = <np.float64_t> asum / count
+        else:
+           y[i0, i1] = NAN
+        for i1 in range(window, n1):
+            ai = a[i0, i1]
+            if ai == ai:
+                asum += ai
+                count += 1
+            aold = a[i0, i1 - window]
+            if aold == aold:
+                asum -= aold
+                count -= 1
+            if count > 0:
+                y[i0, i1] = <np.float64_t> asum / count
+            else:
+                y[i0, i1] = NAN
+
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def move_nanmean_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a,
+                                  int window):
+    "Moving nanmean of a 2d numpy array of dtype=int64 along axis=0."
+    cdef int count = 0
+    cdef double asum = 0, aold, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n0, n1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n0):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n0)
+
+    for i1 in range(n1):
+        asum = 0
+        count = 0
+        for i0 in range(window - 1):
+            ai = a[i0, i1]
+            if ai == ai:
+                asum += ai
+                count += 1
+            y[i0, i1] = NAN
+        i0 = window - 1
+        ai = a[i0, i1]
+        if ai == ai:
+            asum += ai
+            count += 1
+        if count > 0:
+           y[i0, i1] = <np.float64_t> asum / count
+        else:
+           y[i0, i1] = NAN
+        for i0 in range(window, n0):
+            ai = a[i0, i1]
+            if ai == ai:
+                asum += ai
+                count += 1
+            aold = a[i0 - window, i1]
+            if aold == aold:
+                asum -= aold
+                count -= 1
+            if count > 0:
+                y[i0, i1] = <np.float64_t> asum / count
+            else:
+                y[i0, i1] = NAN
+
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def move_nanmean_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a,
+                                  int window):
+    "Moving nanmean of a 2d numpy array of dtype=int64 along axis=1."
+    cdef int count = 0
+    cdef double asum = 0, aold, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n0, n1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n1):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n1)
+
+    for i0 in range(n0):
+        asum = 0
+        count = 0
+        for i1 in range(window - 1):
+            ai = a[i0, i1]
+            if ai == ai:
+                asum += ai
+                count += 1
+            y[i0, i1] = NAN
+        i1 = window - 1
+        ai = a[i0, i1]
+        if ai == ai:
+            asum += ai
+            count += 1
+        if count > 0:
+           y[i0, i1] = <np.float64_t> asum / count
+        else:
+           y[i0, i1] = NAN
+        for i1 in range(window, n1):
+            ai = a[i0, i1]
+            if ai == ai:
+                asum += ai
+                count += 1
+            aold = a[i0, i1 - window]
+            if aold == aold:
+                asum -= aold
+                count -= 1
+            if count > 0:
+                y[i0, i1] = <np.float64_t> asum / count
+            else:
+                y[i0, i1] = NAN
+
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def move_nanmean_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a,
+                                  int window):
+    "Moving nanmean of a 3d numpy array of dtype=int32 along axis=0."
+    cdef int count = 0
+    cdef double asum = 0, aold, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n1, n2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n0):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n0)
+
+    for i1 in range(n1):
+        for i2 in range(n2):
+            asum = 0
+            count = 0
+            for i0 in range(window - 1):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                y[i0, i1, i2] = NAN
+            i0 = window - 1
+            ai = a[i0, i1, i2]
+            if ai == ai:
+                asum += ai
+                count += 1
+            if count > 0:
+               y[i0, i1, i2] = <np.float64_t> asum / count
+            else:
+               y[i0, i1, i2] = NAN
+            for i0 in range(window, n0):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                aold = a[i0 - window, i1, i2]
+                if aold == aold:
+                    asum -= aold
+                    count -= 1
+                if count > 0:
+                    y[i0, i1, i2] = <np.float64_t> asum / count
+                else:
+                    y[i0, i1, i2] = NAN
+
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def move_nanmean_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a,
+                                  int window):
+    "Moving nanmean of a 3d numpy array of dtype=int32 along axis=1."
+    cdef int count = 0
+    cdef double asum = 0, aold, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n1, n2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n1):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n1)
+
+    for i0 in range(n0):
+        for i2 in range(n2):
+            asum = 0
+            count = 0
+            for i1 in range(window - 1):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                y[i0, i1, i2] = NAN
+            i1 = window - 1
+            ai = a[i0, i1, i2]
+            if ai == ai:
+                asum += ai
+                count += 1
+            if count > 0:
+               y[i0, i1, i2] = <np.float64_t> asum / count
+            else:
+               y[i0, i1, i2] = NAN
+            for i1 in range(window, n1):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                aold = a[i0, i1 - window, i2]
+                if aold == aold:
+                    asum -= aold
+                    count -= 1
+                if count > 0:
+                    y[i0, i1, i2] = <np.float64_t> asum / count
+                else:
+                    y[i0, i1, i2] = NAN
+
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def move_nanmean_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a,
+                                  int window):
+    "Moving nanmean of a 3d numpy array of dtype=int32 along axis=2."
+    cdef int count = 0
+    cdef double asum = 0, aold, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n1, n2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n2):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n2)
+
+    for i0 in range(n0):
+        for i1 in range(n1):
+            asum = 0
+            count = 0
+            for i2 in range(window - 1):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                y[i0, i1, i2] = NAN
+            i2 = window - 1
+            ai = a[i0, i1, i2]
+            if ai == ai:
+                asum += ai
+                count += 1
+            if count > 0:
+               y[i0, i1, i2] = <np.float64_t> asum / count
+            else:
+               y[i0, i1, i2] = NAN
+            for i2 in range(window, n2):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                aold = a[i0, i1, i2 - window]
+                if aold == aold:
+                    asum -= aold
+                    count -= 1
+                if count > 0:
+                    y[i0, i1, i2] = <np.float64_t> asum / count
+                else:
+                    y[i0, i1, i2] = NAN
+
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def move_nanmean_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a,
+                                  int window):
+    "Moving nanmean of a 3d numpy array of dtype=int64 along axis=0."
+    cdef int count = 0
+    cdef double asum = 0, aold, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n1, n2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n0):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n0)
+
+    for i1 in range(n1):
+        for i2 in range(n2):
+            asum = 0
+            count = 0
+            for i0 in range(window - 1):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                y[i0, i1, i2] = NAN
+            i0 = window - 1
+            ai = a[i0, i1, i2]
+            if ai == ai:
+                asum += ai
+                count += 1
+            if count > 0:
+               y[i0, i1, i2] = <np.float64_t> asum / count
+            else:
+               y[i0, i1, i2] = NAN
+            for i0 in range(window, n0):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                aold = a[i0 - window, i1, i2]
+                if aold == aold:
+                    asum -= aold
+                    count -= 1
+                if count > 0:
+                    y[i0, i1, i2] = <np.float64_t> asum / count
+                else:
+                    y[i0, i1, i2] = NAN
+
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def move_nanmean_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a,
+                                  int window):
+    "Moving nanmean of a 3d numpy array of dtype=int64 along axis=1."
+    cdef int count = 0
+    cdef double asum = 0, aold, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n1, n2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n1):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n1)
+
+    for i0 in range(n0):
+        for i2 in range(n2):
+            asum = 0
+            count = 0
+            for i1 in range(window - 1):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                y[i0, i1, i2] = NAN
+            i1 = window - 1
+            ai = a[i0, i1, i2]
+            if ai == ai:
+                asum += ai
+                count += 1
+            if count > 0:
+               y[i0, i1, i2] = <np.float64_t> asum / count
+            else:
+               y[i0, i1, i2] = NAN
+            for i1 in range(window, n1):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                aold = a[i0, i1 - window, i2]
+                if aold == aold:
+                    asum -= aold
+                    count -= 1
+                if count > 0:
+                    y[i0, i1, i2] = <np.float64_t> asum / count
+                else:
+                    y[i0, i1, i2] = NAN
+
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def move_nanmean_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a,
+                                  int window):
+    "Moving nanmean of a 3d numpy array of dtype=int64 along axis=2."
+    cdef int count = 0
+    cdef double asum = 0, aold, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n1, n2]
+    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n2):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n2)
+
+    for i0 in range(n0):
+        for i1 in range(n1):
+            asum = 0
+            count = 0
+            for i2 in range(window - 1):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                y[i0, i1, i2] = NAN
+            i2 = window - 1
+            ai = a[i0, i1, i2]
+            if ai == ai:
+                asum += ai
+                count += 1
+            if count > 0:
+               y[i0, i1, i2] = <np.float64_t> asum / count
+            else:
+               y[i0, i1, i2] = NAN
+            for i2 in range(window, n2):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                aold = a[i0, i1, i2 - window]
+                if aold == aold:
+                    asum -= aold
+                    count -= 1
+                if count > 0:
+                    y[i0, i1, i2] = <np.float64_t> asum / count
+                else:
+                    y[i0, i1, i2] = NAN
 
     return y
 
@@ -216,146 +704,45 @@ def move_nanmean_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a, int window):
 @cython.wraparound(False)
 def move_nanmean_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a,
                                   int window):
-    "Moving nanmean along a 1d numpy array of dtype=np.float64."
-
-    cdef Py_ssize_t i
-    cdef int a0 = a.shape[0], count = 0
+    "Moving nanmean of a 1d numpy array of dtype=float64 along axis=0."
+    cdef int count = 0
     cdef double asum = 0, aold, ai
-    cdef np.npy_intp *dims = [a0]
+    cdef Py_ssize_t i0
+    cdef int n0 = a.shape[0]
+    cdef np.npy_intp *dims = [n0]
     cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
-                                                            NPY_float64, 0)
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n0):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n0)
 
-    if (window < 1) or (window > a0):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a0)
-
-    for i in range(window - 1):
-        ai = a[i]
+    for i0 in range(window - 1):
+        ai = a[i0]
         if ai == ai:
             asum += ai
             count += 1
-        y[i] = NAN
-    i = window - 1
-    ai = a[i]
+        y[i0] = NAN
+    i0 = window - 1
+    ai = a[i0]
     if ai == ai:
         asum += ai
         count += 1
     if count > 0:
-       y[i] = asum / count
+       y[i0] = asum / count
     else:
-       y[i] = NAN
-    for i in range(window, a0):
-        ai = a[i]
+       y[i0] = NAN
+    for i0 in range(window, n0):
+        ai = a[i0]
         if ai == ai:
             asum += ai
             count += 1
-        aold = a[i - window]
+        aold = a[i0 - window]
         if aold == aold:
             asum -= aold
             count -= 1
         if count > 0:
-            y[i] = asum / count
+            y[i0] = asum / count
         else:
-            y[i] = NAN
-
-    return y
-
-# Two dimensional -----------------------------------------------------------
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def move_nanmean_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a, int window):
-    "Moving nanmean of a 2d numpy array of dtype=np.int32 along axis=0."
-    
-    cdef Py_ssize_t i
-    cdef int a0 = a.shape[0], a1 = a.shape[1], count
-    cdef double asum = 0, aold, ai
-    cdef np.npy_intp *dims = [a0, a1]
-    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                            NPY_float64, 0)
-
-    if (window < 1) or (window > a0):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a0)
-
-    for j in range(a1):
-        asum = 0
-        count = 0
-        for i in range(window - 1):
-            ai = a[i,j]
-            if ai == ai:
-                asum += ai
-                count += 1
-            y[i,j] = NAN
-        i = window - 1
-        ai = a[i,j]
-        if ai == ai:
-            asum += ai
-            count += 1
-        if count > 0:
-           y[i,j] = <np.float64_t> asum / count
-        else:
-           y[i,j] = NAN
-        for i in range(window, a0):
-            ai = a[i,j]
-            if ai == ai:
-                asum += ai
-                count += 1
-            aold = a[i - window,j]
-            if aold == aold:
-                asum -= aold
-                count -= 1
-            if count > 0:
-                y[i,j] = <np.float64_t> asum / count
-            else:
-                y[i,j] = NAN
-
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def move_nanmean_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a, int window):
-    "Moving nanmean of a 2d numpy array of dtype=np.int64 along axis=0."
-    
-    cdef Py_ssize_t i
-    cdef int a0 = a.shape[0], a1 = a.shape[1], count
-    cdef double asum = 0, aold, ai
-    cdef np.npy_intp *dims = [a0, a1]
-    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                            NPY_float64, 0)
-
-    if (window < 1) or (window > a0):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a0)
-
-    for j in range(a1):
-        asum = 0
-        count = 0
-        for i in range(window - 1):
-            ai = a[i,j]
-            if ai == ai:
-                asum += ai
-                count += 1
-            y[i,j] = NAN
-        i = window - 1
-        ai = a[i,j]
-        if ai == ai:
-            asum += ai
-            count += 1
-        if count > 0:
-           y[i,j] = <np.float64_t> asum / count
-        else:
-           y[i,j] = NAN
-        for i in range(window, a0):
-            ai = a[i,j]
-            if ai == ai:
-                asum += ai
-                count += 1
-            aold = a[i - window,j]
-            if aold == aold:
-                asum -= aold
-                count -= 1
-            if count > 0:
-                y[i,j] = <np.float64_t> asum / count
-            else:
-                y[i,j] = NAN
+            y[i0] = NAN
 
     return y
 
@@ -363,298 +750,99 @@ def move_nanmean_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a, int window):
 @cython.wraparound(False)
 def move_nanmean_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a,
                                   int window):
-    "Moving nanmean of a 2d numpy array of dtype=np.float64 along axis=0."
-    
-    cdef Py_ssize_t i
-    cdef int a0 = a.shape[0], a1 = a.shape[1], count
+    "Moving nanmean of a 2d numpy array of dtype=float64 along axis=0."
+    cdef int count = 0
     cdef double asum = 0, aold, ai
-    cdef np.npy_intp *dims = [a0, a1]
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n0, n1]
     cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                            NPY_float64, 0)
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n0):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n0)
 
-    if (window < 1) or (window > a0):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a0)
-
-    for j in range(a1):
+    for i1 in range(n1):
         asum = 0
         count = 0
-        for i in range(window - 1):
-            ai = a[i,j]
+        for i0 in range(window - 1):
+            ai = a[i0, i1]
             if ai == ai:
                 asum += ai
                 count += 1
-            y[i,j] = NAN
-        i = window - 1
-        ai = a[i,j]
+            y[i0, i1] = NAN
+        i0 = window - 1
+        ai = a[i0, i1]
         if ai == ai:
             asum += ai
             count += 1
         if count > 0:
-           y[i,j] = asum / count
+           y[i0, i1] = asum / count
         else:
-           y[i,j] = NAN
-        for i in range(window, a0):
-            ai = a[i,j]
+           y[i0, i1] = NAN
+        for i0 in range(window, n0):
+            ai = a[i0, i1]
             if ai == ai:
                 asum += ai
                 count += 1
-            aold = a[i - window,j]
+            aold = a[i0 - window, i1]
             if aold == aold:
                 asum -= aold
                 count -= 1
             if count > 0:
-                y[i,j] = asum / count
+                y[i0, i1] = asum / count
             else:
-                y[i,j] = NAN
+                y[i0, i1] = NAN
 
     return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def move_nanmean_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a, int window):
-    "Moving nanmean of a 2d numpy array of dtype=np.int32 along axis=1."
-    cdef Py_ssize_t i, j
-    cdef int a0 = a.shape[0], a1 = a.shape[1], count
-    cdef double asum, ai, aold
-    cdef np.npy_intp *dims = [a0, a1]
-    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                            NPY_float64, 0)
-
-    if (window < 1) or (window > a1):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
-    
-    for i in range(a0):
-        asum = 0
-        count = 0
-        for j in range(window - 1):
-            ai = a[i,j]
-            if ai == ai:
-                asum += ai
-                count += 1
-            y[i,j] = NAN
-        j = window - 1
-        ai = a[i,j]
-        if ai == ai:
-            asum += ai
-            count += 1
-        if count > 0:
-           y[i,j] = <np.float64_t> asum / count
-        else:
-           y[i,j] = NAN
-        for j in range(window, a1):
-            ai = a[i,j]
-            if ai == ai:
-                asum += ai
-                count += 1
-            aold = a[i, j - window]
-            if aold == aold:
-                asum -= aold
-                count -= 1
-            if count > 0:
-                y[i,j] = <np.float64_t> asum / count
-            else:
-                y[i,j] = NAN
-
-    return y                
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def move_nanmean_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a, int window):
-    "Moving nanmean of a 2d numpy array of dtype=np.int64 along axis=1."
-    cdef Py_ssize_t i, j
-    cdef int a0 = a.shape[0], a1 = a.shape[1], count
-    cdef double asum, ai, aold
-    cdef np.npy_intp *dims = [a0, a1]
-    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                            NPY_float64, 0)
-
-    if (window < 1) or (window > a1):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
-    
-    for i in range(a0):
-        asum = 0
-        count = 0
-        for j in range(window - 1):
-            ai = a[i,j]
-            if ai == ai:
-                asum += ai
-                count += 1
-            y[i,j] = NAN
-        j = window - 1
-        ai = a[i,j]
-        if ai == ai:
-            asum += ai
-            count += 1
-        if count > 0:
-           y[i,j] = <np.float64_t> asum / count
-        else:
-           y[i,j] = NAN
-        for j in range(window, a1):
-            ai = a[i,j]
-            if ai == ai:
-                asum += ai
-                count += 1
-            aold = a[i, j - window]
-            if aold == aold:
-                asum -= aold
-                count -= 1
-            if count > 0:
-                y[i,j] = <np.float64_t> asum / count
-            else:
-                y[i,j] = NAN
-
-    return y                
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def move_nanmean_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a,
                                   int window):
-    "Moving nanmean of a 2d numpy array of dtype=np.float64 along axis=1."
-    cdef Py_ssize_t i, j
-    cdef int a0 = a.shape[0], a1 = a.shape[1], count
-    cdef double asum, ai, aold
-    cdef np.npy_intp *dims = [a0, a1]
+    "Moving nanmean of a 2d numpy array of dtype=float64 along axis=1."
+    cdef int count = 0
+    cdef double asum = 0, aold, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n0, n1]
     cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                            NPY_float64, 0)
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n1):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n1)
 
-    if (window < 1) or (window > a1):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
-    
-    for i in range(a0):
+    for i0 in range(n0):
         asum = 0
         count = 0
-        for j in range(window - 1):
-            ai = a[i,j]
+        for i1 in range(window - 1):
+            ai = a[i0, i1]
             if ai == ai:
                 asum += ai
                 count += 1
-            y[i,j] = NAN
-        j = window - 1
-        ai = a[i,j]
+            y[i0, i1] = NAN
+        i1 = window - 1
+        ai = a[i0, i1]
         if ai == ai:
             asum += ai
             count += 1
         if count > 0:
-           y[i,j] = asum / count
+           y[i0, i1] = asum / count
         else:
-           y[i,j] = NAN
-        for j in range(window, a1):
-            ai = a[i,j]
+           y[i0, i1] = NAN
+        for i1 in range(window, n1):
+            ai = a[i0, i1]
             if ai == ai:
                 asum += ai
                 count += 1
-            aold = a[i, j - window]
+            aold = a[i0, i1 - window]
             if aold == aold:
                 asum -= aold
                 count -= 1
             if count > 0:
-                y[i,j] = asum / count
+                y[i0, i1] = asum / count
             else:
-                y[i,j] = NAN
-
-    return y                
-
-# Three dimensional ---------------------------------------------------------
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def move_nanmean_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a, int window):
-    "Moving nanmean of a 3d numpy array of dtype=np.int32 along axis=0."
-
-    cdef Py_ssize_t i, j, k
-    cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
-    cdef double asum, aold, ai
-    cdef np.npy_intp *dims = [a0, a1, a2]
-    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
-                                                            NPY_float64, 0)
-
-
-    if (window < 1) or (window > a0):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a0)
-
-    for j in range(a1):
-        for k in range(a2):
-            asum = 0
-            count = 0
-            for i in range(window - 1):
-                ai = a[i,j,k]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-                y[i,j,k] = NAN
-            i = window - 1
-            ai = a[i,j,k]
-            if ai == ai:
-                asum += ai
-                count += 1
-            if count > 0:
-               y[i,j,k] = <np.float64_t> asum / count
-            else:
-               y[i,j,k] = NAN
-            for i in range(window, a0):
-                ai = a[i,j,k]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-                aold = a[i - window,j,k]
-                if aold == aold:
-                    asum -= aold
-                    count -= 1
-                if count > 0:
-                    y[i,j,k] = <np.float64_t> asum / count
-                else:
-                    y[i,j,k] = NAN
-
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def move_nanmean_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a, int window):
-    "Moving nanmean of a 3d numpy array of dtype=np.int64 along axis=0."
-
-    cdef Py_ssize_t i, j, k
-    cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
-    cdef double asum, aold, ai
-    cdef np.npy_intp *dims = [a0, a1, a2]
-    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
-                                                            NPY_float64, 0)
-
-
-    if (window < 1) or (window > a0):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a0)
-
-    for j in range(a1):
-        for k in range(a2):
-            asum = 0
-            count = 0
-            for i in range(window - 1):
-                ai = a[i,j,k]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-                y[i,j,k] = NAN
-            i = window - 1
-            ai = a[i,j,k]
-            if ai == ai:
-                asum += ai
-                count += 1
-            if count > 0:
-               y[i,j,k] = <np.float64_t> asum / count
-            else:
-               y[i,j,k] = NAN
-            for i in range(window, a0):
-                ai = a[i,j,k]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-                aold = a[i - window,j,k]
-                if aold == aold:
-                    asum -= aold
-                    count -= 1
-                if count > 0:
-                    y[i,j,k] = <np.float64_t> asum / count
-                else:
-                    y[i,j,k] = NAN
+                y[i0, i1] = NAN
 
     return y
 
@@ -662,151 +850,51 @@ def move_nanmean_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a, int window):
 @cython.wraparound(False)
 def move_nanmean_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a,
                                   int window):
-    "Moving nanmean of a 3d numpy array of dtype=np.float64 along axis=0."
-
-    cdef Py_ssize_t i, j, k
-    cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
-    cdef double asum, aold, ai
-    cdef np.npy_intp *dims = [a0, a1, a2]
-    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
-                                                            NPY_float64, 0)
-
-
-    if (window < 1) or (window > a0):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a0)
-
-    for j in range(a1):
-        for k in range(a2):
-            asum = 0
-            count = 0
-            for i in range(window - 1):
-                ai = a[i,j,k]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-                y[i,j,k] = NAN
-            i = window - 1
-            ai = a[i,j,k]
-            if ai == ai:
-                asum += ai
-                count += 1
-            if count > 0:
-               y[i,j,k] = asum / count
-            else:
-               y[i,j,k] = NAN
-            for i in range(window, a0):
-                ai = a[i,j,k]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-                aold = a[i - window,j,k]
-                if aold == aold:
-                    asum -= aold
-                    count -= 1
-                if count > 0:
-                    y[i,j,k] = asum / count
-                else:
-                    y[i,j,k] = NAN
-
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def move_nanmean_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a, int window):
-    "Moving nanmean of a 3d numpy array of dtype=np.int32 along axis=1."
-
-    cdef Py_ssize_t i, j, k
-    cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
+    "Moving nanmean of a 3d numpy array of dtype=float64 along axis=0."
+    cdef int count = 0
     cdef double asum = 0, aold, ai
-    cdef np.npy_intp *dims = [a0, a1, a2]
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n1, n2]
     cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
-                                                            NPY_float64, 0)
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n0):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n0)
 
-    if (window < 1) or (window > a1):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
-    
-    for i in range(a0):
-        for k in range(a2):
+    for i1 in range(n1):
+        for i2 in range(n2):
             asum = 0
             count = 0
-            for j in range(window - 1):
-                ai = a[i,j,k]
+            for i0 in range(window - 1):
+                ai = a[i0, i1, i2]
                 if ai == ai:
                     asum += ai
                     count += 1
-                y[i,j,k] = NAN
-            j = window - 1
-            ai = a[i,j,k]
+                y[i0, i1, i2] = NAN
+            i0 = window - 1
+            ai = a[i0, i1, i2]
             if ai == ai:
                 asum += ai
                 count += 1
             if count > 0:
-               y[i,j,k] = <np.float64_t> asum / count
+               y[i0, i1, i2] = asum / count
             else:
-               y[i,j,k] = NAN
-            for j in range(window, a1):
-                ai = a[i,j,k]
+               y[i0, i1, i2] = NAN
+            for i0 in range(window, n0):
+                ai = a[i0, i1, i2]
                 if ai == ai:
                     asum += ai
                     count += 1
-                aold = a[i, j - window, k]
+                aold = a[i0 - window, i1, i2]
                 if aold == aold:
                     asum -= aold
                     count -= 1
                 if count > 0:
-                    y[i,j,k] = <np.float64_t> asum / count
+                    y[i0, i1, i2] = asum / count
                 else:
-                    y[i,j,k] = NAN
-
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def move_nanmean_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a, int window):
-    "Moving nanmean of a 3d numpy array of dtype=np.int64 along axis=1."
-
-    cdef Py_ssize_t i, j, k
-    cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
-    cdef double asum = 0, aold, ai
-    cdef np.npy_intp *dims = [a0, a1, a2]
-    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
-                                                            NPY_float64, 0)
-
-    if (window < 1) or (window > a1):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
-    
-    for i in range(a0):
-        for k in range(a2):
-            asum = 0
-            count = 0
-            for j in range(window - 1):
-                ai = a[i,j,k]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-                y[i,j,k] = NAN
-            j = window - 1
-            ai = a[i,j,k]
-            if ai == ai:
-                asum += ai
-                count += 1
-            if count > 0:
-               y[i,j,k] = <np.float64_t> asum / count
-            else:
-               y[i,j,k] = NAN
-            for j in range(window, a1):
-                ai = a[i,j,k]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-                aold = a[i, j - window, k]
-                if aold == aold:
-                    asum -= aold
-                    count -= 1
-                if count > 0:
-                    y[i,j,k] = <np.float64_t> asum / count
-                else:
-                    y[i,j,k] = NAN
+                    y[i0, i1, i2] = NAN
 
     return y
 
@@ -814,150 +902,51 @@ def move_nanmean_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a, int window):
 @cython.wraparound(False)
 def move_nanmean_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a,
                                   int window):
-    "Moving nanmean of a 3d numpy array of dtype=np.float64 along axis=1."
-
-    cdef Py_ssize_t i, j, k
-    cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
+    "Moving nanmean of a 3d numpy array of dtype=float64 along axis=1."
+    cdef int count = 0
     cdef double asum = 0, aold, ai
-    cdef np.npy_intp *dims = [a0, a1, a2]
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n1, n2]
     cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
-                                                            NPY_float64, 0)
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n1):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n1)
 
-    if (window < 1) or (window > a1):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
-    
-    for i in range(a0):
-        for k in range(a2):
+    for i0 in range(n0):
+        for i2 in range(n2):
             asum = 0
             count = 0
-            for j in range(window - 1):
-                ai = a[i,j,k]
+            for i1 in range(window - 1):
+                ai = a[i0, i1, i2]
                 if ai == ai:
                     asum += ai
                     count += 1
-                y[i,j,k] = NAN
-            j = window - 1
-            ai = a[i,j,k]
+                y[i0, i1, i2] = NAN
+            i1 = window - 1
+            ai = a[i0, i1, i2]
             if ai == ai:
                 asum += ai
                 count += 1
             if count > 0:
-               y[i,j,k] = asum / count
+               y[i0, i1, i2] = asum / count
             else:
-               y[i,j,k] = NAN
-            for j in range(window, a1):
-                ai = a[i,j,k]
+               y[i0, i1, i2] = NAN
+            for i1 in range(window, n1):
+                ai = a[i0, i1, i2]
                 if ai == ai:
                     asum += ai
                     count += 1
-                aold = a[i, j - window, k]
+                aold = a[i0, i1 - window, i2]
                 if aold == aold:
                     asum -= aold
                     count -= 1
                 if count > 0:
-                    y[i,j,k] = asum / count
+                    y[i0, i1, i2] = asum / count
                 else:
-                    y[i,j,k] = NAN
-
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def move_nanmean_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a, int window):
-    "Moving nanmean of a 3d numpy array of dtype=np.int32 along axis=2."
-
-    cdef Py_ssize_t i, j, k
-    cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
-    cdef double asum = 0, aold, ai
-    cdef np.npy_intp *dims = [a0, a1, a2]
-    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
-                                                            NPY_float64, 0)
-
-    if (window < 1) or (window > a2):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
-
-    for i in range(a0):
-        for j in range(a1):
-            asum = 0
-            count = 0
-            for k in range(window - 1):
-                ai = a[i,j,k]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-                y[i,j,k] = NAN
-            k = window - 1
-            ai = a[i,j,k]
-            if ai == ai:
-                asum += ai
-                count += 1
-            if count > 0:
-               y[i,j,k] = <np.float64_t> asum / count
-            else:
-               y[i,j,k] = NAN
-            for k in range(window, a2):
-                ai = a[i,j,k]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-                aold = a[i, j, k - window]
-                if aold == aold:
-                    asum -= aold
-                    count -= 1
-                if count > 0:
-                    y[i,j,k] = <np.float64_t> asum / count
-                else:
-                    y[i,j,k] = NAN
-
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def move_nanmean_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a, int window):
-    "Moving nanmean of a 3d numpy array of dtype=np.int64 along axis=2."
-
-    cdef Py_ssize_t i, j, k
-    cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
-    cdef double asum = 0, aold, ai
-    cdef np.npy_intp *dims = [a0, a1, a2]
-    cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
-                                                            NPY_float64, 0)
-
-    if (window < 1) or (window > a2):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
-
-    for i in range(a0):
-        for j in range(a1):
-            asum = 0
-            count = 0
-            for k in range(window - 1):
-                ai = a[i,j,k]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-                y[i,j,k] = NAN
-            k = window - 1
-            ai = a[i,j,k]
-            if ai == ai:
-                asum += ai
-                count += 1
-            if count > 0:
-               y[i,j,k] = <np.float64_t> asum / count
-            else:
-               y[i,j,k] = NAN
-            for k in range(window, a2):
-                ai = a[i,j,k]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-                aold = a[i, j, k - window]
-                if aold == aold:
-                    asum -= aold
-                    count -= 1
-                if count > 0:
-                    y[i,j,k] = <np.float64_t> asum / count
-                else:
-                    y[i,j,k] = NAN
+                    y[i0, i1, i2] = NAN
 
     return y
 
@@ -965,49 +954,70 @@ def move_nanmean_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a, int window):
 @cython.wraparound(False)
 def move_nanmean_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a,
                                   int window):
-    "Moving nanmean of a 3d numpy array of dtype=np.float64 along axis=2."
-
-    cdef Py_ssize_t i, j, k
-    cdef int a0 = a.shape[0], a1 = a.shape[1], a2 = a.shape[2], count
+    "Moving nanmean of a 3d numpy array of dtype=float64 along axis=2."
+    cdef int count = 0
     cdef double asum = 0, aold, ai
-    cdef np.npy_intp *dims = [a0, a1, a2]
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n1, n2]
     cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
-                                                            NPY_float64, 0)
+                                              NPY_float64, 0)
+    if (window < 1) or (window > n2):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, n2)
 
-    if (window < 1) or (window > a2):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, a1)
-
-    for i in range(a0):
-        for j in range(a1):
+    for i0 in range(n0):
+        for i1 in range(n1):
             asum = 0
             count = 0
-            for k in range(window - 1):
-                ai = a[i,j,k]
+            for i2 in range(window - 1):
+                ai = a[i0, i1, i2]
                 if ai == ai:
                     asum += ai
                     count += 1
-                y[i,j,k] = NAN
-            k = window - 1
-            ai = a[i,j,k]
+                y[i0, i1, i2] = NAN
+            i2 = window - 1
+            ai = a[i0, i1, i2]
             if ai == ai:
                 asum += ai
                 count += 1
             if count > 0:
-               y[i,j,k] = asum / count
+               y[i0, i1, i2] = asum / count
             else:
-               y[i,j,k] = NAN
-            for k in range(window, a2):
-                ai = a[i,j,k]
+               y[i0, i1, i2] = NAN
+            for i2 in range(window, n2):
+                ai = a[i0, i1, i2]
                 if ai == ai:
                     asum += ai
                     count += 1
-                aold = a[i, j, k - window]
+                aold = a[i0, i1, i2 - window]
                 if aold == aold:
                     asum -= aold
                     count -= 1
                 if count > 0:
-                    y[i,j,k] = asum / count
+                    y[i0, i1, i2] = asum / count
                 else:
-                    y[i,j,k] = NAN
+                    y[i0, i1, i2] = NAN
 
     return y
+
+cdef dict move_nanmean_dict = {}
+move_nanmean_dict[(1, int32, 0)] = move_nanmean_1d_int32_axis0
+move_nanmean_dict[(1, int64, 0)] = move_nanmean_1d_int64_axis0
+move_nanmean_dict[(2, int32, 0)] = move_nanmean_2d_int32_axis0
+move_nanmean_dict[(2, int32, 1)] = move_nanmean_2d_int32_axis1
+move_nanmean_dict[(2, int64, 0)] = move_nanmean_2d_int64_axis0
+move_nanmean_dict[(2, int64, 1)] = move_nanmean_2d_int64_axis1
+move_nanmean_dict[(3, int32, 0)] = move_nanmean_3d_int32_axis0
+move_nanmean_dict[(3, int32, 1)] = move_nanmean_3d_int32_axis1
+move_nanmean_dict[(3, int32, 2)] = move_nanmean_3d_int32_axis2
+move_nanmean_dict[(3, int64, 0)] = move_nanmean_3d_int64_axis0
+move_nanmean_dict[(3, int64, 1)] = move_nanmean_3d_int64_axis1
+move_nanmean_dict[(3, int64, 2)] = move_nanmean_3d_int64_axis2
+move_nanmean_dict[(1, float64, 0)] = move_nanmean_1d_float64_axis0
+move_nanmean_dict[(2, float64, 0)] = move_nanmean_2d_float64_axis0
+move_nanmean_dict[(2, float64, 1)] = move_nanmean_2d_float64_axis1
+move_nanmean_dict[(3, float64, 0)] = move_nanmean_3d_float64_axis0
+move_nanmean_dict[(3, float64, 1)] = move_nanmean_3d_float64_axis1
+move_nanmean_dict[(3, float64, 2)] = move_nanmean_3d_float64_axis2
