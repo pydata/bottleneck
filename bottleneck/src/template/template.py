@@ -10,6 +10,7 @@ def make(func, maxdim=3):
                         loop=f['loop'],
                         axisNone=f['axisNone'],
                         dtypes=f['dtypes'],
+                        force_output_dtype=f['force_output_dtype'],
                         select=select)
         codes.append(code)
     codes.append('\n' + select.asstring())    
@@ -17,7 +18,7 @@ def make(func, maxdim=3):
     fid.write(''.join(codes))
     fid.close()
 
-def template(name, top, loop, axisNone, dtypes, select):
+def template(name, top, loop, axisNone, dtypes, force_output_dtype, select):
 
     ndims = loop.keys()
     ndims.sort()
@@ -34,7 +35,7 @@ def template(name, top, loop, axisNone, dtypes, select):
                 func = top
                 
                 # loop
-                func += loop_cdef(ndim, dtype, axis)
+                func += loop_cdef(ndim, dtype, axis, force_output_dtype)
                 func += loopy(loop[ndim], ndim, axis)
 
                 # name, ndim, dtype, axis
@@ -56,16 +57,19 @@ def loopy(loop, ndim, axis):
         raise ValueError("`axis` must be a non-negative integer or None")
     if axis >= ndim:
         raise ValueError("`axis` must be less then `ndim`")
-   
+  
+    # INDEXALL
     INDEXALL = ', '.join(['i' + str(i) for i in range(ndim)])
     code = loop.replace('INDEXALL', INDEXALL)
-
+    
+    # INDEXPOP
     idx = range(ndim)
     if axis is not None:
         idx.pop(axis)
     INDEXPOP = ', '.join(['i' + str(i) for i in idx])
     code = code.replace('INDEXPOP', INDEXPOP)
 
+    # INDEXN
     idx = range(ndim)
     if axis is not None:
         idxpop = idx.pop(axis)
@@ -73,9 +77,26 @@ def loopy(loop, ndim, axis):
     for i, j in enumerate(idx):
         code = code.replace('INDEX%d' % i, '%d' % j)
 
+    # INDEXREPLACE|x|
+    mark = 'INDEXREPLACE|' 
+    nreplace = code.count(mark)
+    if (nreplace > 0) and (axis is None):
+        raise ValueError, "`INDEXREPLACE` cannot be used when axis is None."
+    while mark in code:
+        idx0 = code.index(mark) 
+        idx1 = idx0 + len(mark)
+        idx2 = idx1 + code[idx1:].index('|')
+        if (idx0 >= idx1) or (idx1 >= idx2):
+            raise RuntimeError, "Parsing error or poorly formatted input."
+        replacement = code[idx1:idx2]
+        idx = ['i' + str(i) for i in range(ndim)]
+        idx[axis] = replacement
+        idx = ', '.join(idx)
+        code = code[:idx0] + idx + code[idx2+1:] 
+
     return code
 
-def loop_cdef(ndim, dtype, axis):
+def loop_cdef(ndim, dtype, axis, force_output_dtype):
     
     if ndim < 1:
         raise ValueError("ndim(=%d) must be and integer greater than 0" % ndim)
@@ -83,6 +104,9 @@ def loop_cdef(ndim, dtype, axis):
         raise ValueError("`axis` must be a non-negative integer or None")
     if axis >= ndim:
         raise ValueError("`axis` must be less then `ndim`")
+
+    if force_output_dtype is not False:
+        dtype = force_output_dtype
    
     tab = '    '
     cdefs = []

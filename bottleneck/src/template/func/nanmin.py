@@ -12,6 +12,7 @@ INT_DTYPES = ['int32', 'int64']
 nanmin_float = {}
 nanmin_float['dtypes'] = FLOAT_DTYPES
 nanmin_float['axisNone'] = False
+nanmin_float['force_output_dtype'] = False
 
 nanmin_float['top'] = """
 @cython.boundscheck(False)
