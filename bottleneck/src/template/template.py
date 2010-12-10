@@ -1,27 +1,29 @@
+"Turn templates into Cython pyx files."
 
-def make(func):
+def template(func):
+    "Convert template dictionary `func` to a pyx file."
     codes = []
     codes.append(func['main'])
     select = Selector(func['name'])
     for key in func['templates']:
         f = func['templates'][key]
-        code = template(name=func['name'],
-                        top=f['top'],
-                        loop=f['loop'],
-                        axisNone=f['axisNone'],
-                        dtypes=f['dtypes'],
-                        force_output_dtype=f['force_output_dtype'],
-                        is_reducing_function=func['is_reducing_function'],
-                        select=select)
+        code = subtemplate(name=func['name'],
+                           top=f['top'],
+                           loop=f['loop'],
+                           axisNone=f['axisNone'],
+                           dtypes=f['dtypes'],
+                           force_output_dtype=f['force_output_dtype'],
+                           is_reducing_function=func['is_reducing_function'],
+                           select=select)
         codes.append(code)
     codes.append('\n' + select.asstring())    
     fid = open(func['pyx_file'], 'w')
     fid.write(''.join(codes))
     fid.close()
 
-def template(name, top, loop, axisNone, dtypes, force_output_dtype,
-             is_reducing_function, select):
-
+def subtemplate(name, top, loop, axisNone, dtypes, force_output_dtype,
+                is_reducing_function, select):
+    "Assemble template"
     ndims = loop.keys()
     ndims.sort()
     funcs = []
@@ -37,9 +39,12 @@ def template(name, top, loop, axisNone, dtypes, force_output_dtype,
                 func = top
                 
                 # loop
-                func += loop_cdef(ndim, dtype, axis, force_output_dtype,
-                                  is_reducing_function)
-                func += loopy(loop[ndim], ndim, axis)
+                if force_output_dtype is not False:
+                    ydtype = force_output_dtype
+                else:
+                    ydtype = dtype
+                func += loop_cdef(ndim, ydtype, axis, is_reducing_function)
+                func += looper(loop[ndim], ndim, axis)
 
                 # name, ndim, dtype, axis
                 func = func.replace('NAME', name)
@@ -52,7 +57,89 @@ def template(name, top, loop, axisNone, dtypes, force_output_dtype,
     
     return ''.join(funcs)
 
-def loopy(loop, ndim, axis):
+def looper(loop, ndim, axis):
+    """
+    Given loop template, expand index markers for given `ndim` and `axis`.
+
+    Parameters
+    ----------
+    loop : str
+        Code of loop where the following template markers will be expanded
+        (example given is for 3d input, similarly for other nd):
+
+        ================= =================================================
+        INDEXALL          Replace with i0, i1, i2
+        INDEXPOP          If axis=1, e.g., replace with i0, i2
+        INDEXN            If N=1, e.g., replace with 1
+        INDEXREPLACE|exp| If exp = 'k - window' and axis=1, e.g., replace
+                          with i0, k - window, i2
+        ================= =================================================
+    ndim : int
+        Number of dimensions in the loop.
+    axis : {int, None}
+        Axis over which the loop is evaluated.
+
+    Returns
+    -------
+    code : str
+        Code for the loop with templated index markers expanded.
+
+    Examples
+    --------
+    Make a 3d loop template:
+
+    >>> loop = '''
+    .... for iINDEX0 in range(nINDEX0):
+    ....         for iINDEX1 in range(nINDEX1):
+    ....             amin = MAXDTYPE
+    ....         for iINDEX2 in range(nINDEX2):
+    ....                 ai = a[INDEXALL]
+    ....             if ai <= amin:
+    ....                 amin = ai
+    ....         y[INDEXPOP] = amin
+    .... '''
+
+    Import the looper function:
+    
+    >>> from bottleneck.src.template.template import looper
+
+    Make a loop over axis=0:
+
+    >>> print looper(loop, ndim=3, axis=0)
+    for i1 in range(n1):
+        for i2 in range(n2):
+            amin = MAXDTYPE
+            for i0 in range(n0):
+                ai = a[i0, i1, i2]
+                if ai <= amin:
+                    amin = ai
+            y[i1, i2] = amin
+
+    Make a loop over axis=1:
+
+    >>> print looper(loop, ndim=3, axis=1)
+    for i0 in range(n0):
+        for i2 in range(n2):
+            amin = MAXDTYPE
+            for i1 in range(n1):
+                ai = a[i0, i1, i2]
+                if ai <= amin:
+                    amin = ai
+            y[i0, i2] = amin
+
+    Make a loop over axis=2:
+
+    >>> print looper(loop, ndim=3, axis=2)
+    for i0 in range(n0):
+        for i1 in range(n1):
+            amin = MAXDTYPE
+            for i2 in range(n2):
+                ai = a[i0, i1, i2]
+                if ai <= amin:
+                    amin = ai
+            y[i0, i1] = amin
+
+    """
     
     if ndim < 1:
         raise ValueError("ndim(=%d) must be and integer greater than 0" % ndim)
@@ -99,8 +186,69 @@ def loopy(loop, ndim, axis):
 
     return code
 
-def loop_cdef(ndim, dtype, axis, force_output_dtype, is_reducing_function):
+def loop_cdef(ndim, dtype, axis, is_reducing_function):
+    """
+    String of code that initializes variables needed in a for loop.
+
+    The output string contains code for: index array counters, one for each
+    dimension (cdef Py_size_t i0, i1, i2, ....); the length along each
+    dimension of the input array, `a` (cdef int n0 = a.shape[0],...); the
+    initialized, empty output array, `y`.
+
+    Parameters
+    ----------
+    ndim = int
+        Number of dimensions.
+    dtype : str
+        The data type of the output. Used for initilizing the empty output
+        array, `y`.
+    is_reducing_function : bool    
+        If True then remove the dimension given by `axis` when initializing
+        the output array, `y`.
+
+    Returns
+    -------
+    cdefs : str
+        String of code to use to initialize variables needed for loop.
+
+    Examples
+    --------
+    Define parameters:
+
+    >>> ndim = 3
+    >>> dtype = 'float64'
+    >>> axis = 1
+    >>> is_reducing_function = True
+
+    Import loop_cdef:
+
+    >>> from bottleneck.src.template.template import loop_cdef
+
+    Make loop initialization code:
+
+    >>> print loop_cdef(ndim, dtype, axis, is_reducing_function)
+        cdef Py_ssize_t i0, i1, i2
+        cdef int n0 = a.shape[0]
+        cdef int n1 = a.shape[1]
+        cdef int n2 = a.shape[2]
+        cdef np.npy_intp *dims = [n0, n2]
+        cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                                  NPY_float64, 0)
     
+    Repeat, but this time make the output non-reducing:
+
+    >>> is_reducing_function = False     
+    >>> print loop_cdef(ndim, dtype, axis, is_reducing_function)
+        cdef Py_ssize_t i0, i1, i2
+        cdef int n0 = a.shape[0]
+        cdef int n1 = a.shape[1]
+        cdef int n2 = a.shape[2]
+        cdef np.npy_intp *dims = [n0, n1, n2]
+        cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
+                                                  NPY_float64, 0)
+
+    """
+
     if ndim < 1:
         raise ValueError("ndim(=%d) must be and integer greater than 0" % ndim)
     if (axis < 0) and (axis is not None):
@@ -108,9 +256,6 @@ def loop_cdef(ndim, dtype, axis, force_output_dtype, is_reducing_function):
     if axis >= ndim:
         raise ValueError("`axis` must be less then `ndim`")
 
-    if force_output_dtype is not False:
-        dtype = force_output_dtype
-   
     tab = '    '
     cdefs = []
 
@@ -145,6 +290,7 @@ def loop_cdef(ndim, dtype, axis, force_output_dtype, is_reducing_function):
     return '\n'.join(cdefs) + '\n'
 
 class Selector(object):
+    "String of code for dictionary that maps dtype to cython function."
     
     def __init__(self, name):
         self.name = name

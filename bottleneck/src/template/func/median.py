@@ -109,12 +109,12 @@ loop[3] = """\
 
 # Float dtypes (not axis=None) ----------------------------------------------
 
-median_float = {}
-median_float['dtypes'] = FLOAT_DTYPES
-median_float['axisNone'] = False
-median_float['force_output_dtype'] = 'float64'
+floats = {}
+floats['dtypes'] = FLOAT_DTYPES
+floats['axisNone'] = False
+floats['force_output_dtype'] = 'float64'
 
-median_float['top'] = """
+floats['top'] = """
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
@@ -123,27 +123,28 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     cdef np.DTYPE_t x, tmp, amax, ai
 """
 
-median_float['loop'] = {}
-median_float['loop'][1] = loop[1]
-median_float['loop'][2] = loop[2].replace('CAST', '')
-median_float['loop'][3] = loop[3].replace('CAST', '')
+floats['loop'] = {}
+floats['loop'][1] = loop[1]
+floats['loop'][2] = loop[2].replace('CAST', '')
+floats['loop'][3] = loop[3].replace('CAST', '')
 
 # Int dtypes (not axis=None) ------------------------------------------------
 
-median_int = deepcopy(median_float)
-median_int['dtypes'] = INT_DTYPES 
-median_int['loop'] = {}
-median_int['loop'][1] = loop[1]
-median_int['loop'][2] = loop[2].replace('CAST', '<np.float64_t> ')
-median_int['loop'][3] = loop[3].replace('CAST', '<np.float64_t> ')
+ints = deepcopy(floats)
+ints['dtypes'] = INT_DTYPES 
+ints['loop'] = {}
+ints['loop'][1] = loop[1]
+ints['loop'][2] = loop[2].replace('CAST', '<np.float64_t> ')
+ints['loop'][3] = loop[3].replace('CAST', '<np.float64_t> ')
 
 # Template ------------------------------------------------------------------
 
 median = {}
 median['name'] = 'median'
+median['is_reducing_function'] = True
 median['templates'] = {}
-median['templates']['float'] = median_float
-median['templates']['int'] = median_int
+median['templates']['float'] = floats
+median['templates']['int'] = ints
 median['pyx_file'] = '../func/median.pyx'
 
 median['main'] = """"median auto-generated from template"

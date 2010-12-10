@@ -125,12 +125,12 @@ loop[3] = """\
 
 # Float dtypes (no axis=None) -----------------------------------------------
 
-move_nanmean_float = {}
-move_nanmean_float['dtypes'] = FLOAT_DTYPES
-move_nanmean_float['axisNone'] = False
-move_nanmean_float['force_output_dtype'] = 'float64'
+floats = {}
+floats['dtypes'] = FLOAT_DTYPES
+floats['axisNone'] = False
+floats['force_output_dtype'] = 'float64'
 
-move_nanmean_float['top'] = """
+floats['top'] = """
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,
@@ -140,20 +140,20 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,
     cdef double asum = 0, aold, ai
 """
 
-move_nanmean_float['loop'] = {}
-move_nanmean_float['loop'][1] = loop[1].replace('CAST', '')
-move_nanmean_float['loop'][2] = loop[2].replace('CAST', '')
-move_nanmean_float['loop'][3] = loop[3].replace('CAST', '')
+floats['loop'] = {}
+floats['loop'][1] = loop[1].replace('CAST', '')
+floats['loop'][2] = loop[2].replace('CAST', '')
+floats['loop'][3] = loop[3].replace('CAST', '')
 
 # Int dtypes (no axis=None) ------------------------------------------------
 
-move_nanmean_int = deepcopy(move_nanmean_float)
-move_nanmean_int['dtypes'] = INT_DTYPES 
+ints = deepcopy(floats)
+ints['dtypes'] = INT_DTYPES 
 
-move_nanmean_int['loop'] = {}
-move_nanmean_int['loop'][1] = loop[1].replace('CAST', '<np.float64_t> ')
-move_nanmean_int['loop'][2] = loop[2].replace('CAST', '<np.float64_t> ')
-move_nanmean_int['loop'][3] = loop[3].replace('CAST', '<np.float64_t> ')
+ints['loop'] = {}
+ints['loop'][1] = loop[1].replace('CAST', '<np.float64_t> ')
+ints['loop'][2] = loop[2].replace('CAST', '<np.float64_t> ')
+ints['loop'][3] = loop[3].replace('CAST', '<np.float64_t> ')
 
 # The loop code below for integers should be faster than using the
 # loop code for floats (which checks for NaNs). But it runs slower.
@@ -226,8 +226,8 @@ move_nanmean = {}
 move_nanmean['name'] = 'move_nanmean'
 move_nanmean['is_reducing_function'] = False
 move_nanmean['templates'] = {}
-move_nanmean['templates']['float'] = move_nanmean_float
-move_nanmean['templates']['int'] = move_nanmean_int
+move_nanmean['templates']['float'] = floats
+move_nanmean['templates']['int'] = ints
 move_nanmean['pyx_file'] = '../move/move_nanmean.pyx'
 
 move_nanmean['main'] = """"move_nanmean auto-generated from template"

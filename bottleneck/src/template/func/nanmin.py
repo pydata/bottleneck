@@ -9,12 +9,12 @@ INT_DTYPES = ['int32', 'int64']
 
 # Float dtypes (not axis=None) ----------------------------------------------
 
-nanmin_float = {}
-nanmin_float['dtypes'] = FLOAT_DTYPES
-nanmin_float['axisNone'] = False
-nanmin_float['force_output_dtype'] = False
+floats = {}
+floats['dtypes'] = FLOAT_DTYPES
+floats['axisNone'] = False
+floats['force_output_dtype'] = False
 
-nanmin_float['top'] = """
+floats['top'] = """
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
@@ -56,12 +56,12 @@ loop[3] = """\
     return y
 """
 
-nanmin_float['loop'] = loop
+floats['loop'] = loop
 
 # Float dtypes (axis=None) --------------------------------------------------
 
-nanmin_float_None = deepcopy(nanmin_float)
-nanmin_float_None['axisNone'] = True
+floats_None = deepcopy(floats)
+floats_None['axisNone'] = True
 
 loop = {}
 loop[1] = """\
@@ -104,12 +104,12 @@ loop[3] = """\
         return NAN
 """
 
-nanmin_float_None['loop'] = loop
+floats_None['loop'] = loop
 
 # Int dtypes (not axis=None) ------------------------------------------------
 
-nanmin_int = deepcopy(nanmin_float)
-nanmin_int['dtypes'] = INT_DTYPES 
+ints = deepcopy(floats)
+ints['dtypes'] = INT_DTYPES 
 
 loop = {}
 loop[2] = """\
@@ -134,12 +134,12 @@ loop[3] = """\
     return y
 """
 
-nanmin_int['loop'] = loop
+ints['loop'] = loop
 
 # Int dtypes (axis=None) ----------------------------------------------------
 
-nanmin_int_None = deepcopy(nanmin_int) 
-nanmin_int_None['axisNone'] = True
+ints_None = deepcopy(ints) 
+ints_None['axisNone'] = True
 
 loop = {}
 loop[1] = """\
@@ -170,17 +170,18 @@ loop[3] = """\
     return np.DTYPE(amin)
 """
 
-nanmin_int_None['loop'] = loop
+ints_None['loop'] = loop
 
 # Template ------------------------------------------------------------------
 
 nanmin = {}
 nanmin['name'] = 'nanmin'
+nanmin['is_reducing_function'] = True
 nanmin['templates'] = {}
-nanmin['templates']['float'] = nanmin_float
-nanmin['templates']['float_None'] = nanmin_float_None
-nanmin['templates']['int'] = nanmin_int
-nanmin['templates']['int_None'] = nanmin_int_None
+nanmin['templates']['float'] = floats
+nanmin['templates']['float_None'] = floats_None
+nanmin['templates']['int'] = ints
+nanmin['templates']['int_None'] = ints_None
 nanmin['pyx_file'] = '../func/nanmin.pyx'
 
 nanmin['main'] = """"nanmin auto-generated from template"
