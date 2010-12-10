@@ -118,7 +118,7 @@ floats['top'] = """
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
-    "NAME of NDIMd numpy array with dtype=DTYPE along axis=AXIS."
+    "Median of NDIMd array with dtype=DTYPE along axis=AXIS."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.DTYPE_t x, tmp, amax, ai
 """
@@ -147,7 +147,7 @@ median['templates']['float'] = floats
 median['templates']['int'] = ints
 median['pyx_file'] = '../func/median.pyx'
 
-median['main'] = """"median auto-generated from template"
+median['main'] = '''"median auto-generated from template"
 # (C) 2009 Sturla Molden
 # SciPy license 
 #
@@ -164,7 +164,7 @@ median['main'] = """"median auto-generated from template"
 # (C) 2010 Keith Goodman
 
 def median(arr, axis=None):
-    '''
+    """
     Median of array elements along given axis.
 
     Parameters
@@ -200,12 +200,12 @@ def median(arr, axis=None):
     >>> bn.median(a, axis=1)
     array([ 7.,  2.])
     
-    '''
+    """
     func, arr = median_selector(arr, axis)
     return func(arr)
 
 def median_selector(arr, axis):
-    '''
+    """
     Return median function and array that matches `arr` and `axis`.
     
     Under the hood Bottleneck uses a separate Cython function for each
@@ -252,7 +252,7 @@ def median_selector(arr, axis):
     >>> func(a)
     2.0
 
-    '''
+    """
     cdef np.ndarray a = np.array(arr, copy=True)
     cdef tuple key
     cdef int ndim = a.ndim
@@ -273,4 +273,4 @@ def median_selector(arr, axis):
         tup = (str(ndim), str(dtype), str(axis))
         raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
-"""    
+'''   

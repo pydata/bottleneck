@@ -135,7 +135,7 @@ floats['top'] = """
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,
                                   int window):
-    "Moving nanmean of a NDIMd numpy array of dtype=DTYPE along axis=AXIS."
+    "Moving mean of NDIMd array of dtype=DTYPE along axis=AXIS ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
 """
@@ -230,10 +230,10 @@ move_nanmean['templates']['float'] = floats
 move_nanmean['templates']['int'] = ints
 move_nanmean['pyx_file'] = '../move/move_nanmean.pyx'
 
-move_nanmean['main'] = """"move_nanmean auto-generated from template"
+move_nanmean['main'] = '''"move_nanmean auto-generated from template"
 
 def move_nanmean(arr, int window, int axis=0):
-    '''
+    """
     Moving window mean along the specified axis, ignoring NaNs.
     
     Parameters
@@ -259,12 +259,12 @@ def move_nanmean(arr, int window, int axis=0):
     >>> bn.move_nanmean(arr, window=2)
     array([ nan,  1.5,  2.5,  3.5])
 
-    '''
+    """
     func, arr = move_nanmean_selector(arr, window, axis)
     return func(arr, window)
 
 def move_nanmean_selector(arr, int window, int axis):
-    '''
+    """
     Return move_nanmean function and array that matches `arr` and `axis`.
     
     Under the hood Bottleneck uses a separate Cython function for each
@@ -311,7 +311,7 @@ def move_nanmean_selector(arr, int window, int axis):
     >>> func(a, window)
     array([ nan,  1.5,  2.5,  3.5])
 
-    '''
+    """
     cdef np.ndarray a = np.array(arr, copy=False)
     cdef np.dtype dtype = a.dtype
     cdef int ndim = a.ndim
@@ -327,4 +327,4 @@ def move_nanmean_selector(arr, int window, int axis):
         tup = (str(ndim), str(axis))
         raise TypeError, "Unsupported ndim/axis (%s/%s)." % tup
     return func, a
-"""    
+'''   

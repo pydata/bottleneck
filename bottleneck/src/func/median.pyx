@@ -15,7 +15,7 @@
 # (C) 2010 Keith Goodman
 
 def median(arr, axis=None):
-    '''
+    """
     Median of array elements along given axis.
 
     Parameters
@@ -51,12 +51,12 @@ def median(arr, axis=None):
     >>> bn.median(a, axis=1)
     array([ 7.,  2.])
     
-    '''
+    """
     func, arr = median_selector(arr, axis)
     return func(arr)
 
 def median_selector(arr, axis):
-    '''
+    """
     Return median function and array that matches `arr` and `axis`.
     
     Under the hood Bottleneck uses a separate Cython function for each
@@ -103,7 +103,7 @@ def median_selector(arr, axis):
     >>> func(a)
     2.0
 
-    '''
+    """
     cdef np.ndarray a = np.array(arr, copy=True)
     cdef tuple key
     cdef int ndim = a.ndim
@@ -128,7 +128,7 @@ def median_selector(arr, axis):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a):
-    "median of 1d numpy array with dtype=int32 along axis=0."
+    "Median of 1d array with dtype=int32 along axis=0."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.int32_t x, tmp, amax, ai
     cdef Py_ssize_t i0
@@ -166,7 +166,7 @@ def median_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a):
-    "median of 1d numpy array with dtype=int64 along axis=0."
+    "Median of 1d array with dtype=int64 along axis=0."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.int64_t x, tmp, amax, ai
     cdef Py_ssize_t i0
@@ -204,7 +204,7 @@ def median_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a):
-    "median of 2d numpy array with dtype=int32 along axis=0."
+    "Median of 2d array with dtype=int32 along axis=0."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.int32_t x, tmp, amax, ai
     cdef Py_ssize_t i0, i1
@@ -247,7 +247,7 @@ def median_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a):
-    "median of 2d numpy array with dtype=int32 along axis=1."
+    "Median of 2d array with dtype=int32 along axis=1."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.int32_t x, tmp, amax, ai
     cdef Py_ssize_t i0, i1
@@ -290,7 +290,7 @@ def median_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a):
-    "median of 2d numpy array with dtype=int64 along axis=0."
+    "Median of 2d array with dtype=int64 along axis=0."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.int64_t x, tmp, amax, ai
     cdef Py_ssize_t i0, i1
@@ -333,7 +333,7 @@ def median_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a):
-    "median of 2d numpy array with dtype=int64 along axis=1."
+    "Median of 2d array with dtype=int64 along axis=1."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.int64_t x, tmp, amax, ai
     cdef Py_ssize_t i0, i1
@@ -376,7 +376,7 @@ def median_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a):
-    "median of 3d numpy array with dtype=int32 along axis=0."
+    "Median of 3d array with dtype=int32 along axis=0."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.int32_t x, tmp, amax, ai
     cdef Py_ssize_t i0, i1, i2
@@ -421,7 +421,7 @@ def median_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a):
-    "median of 3d numpy array with dtype=int32 along axis=1."
+    "Median of 3d array with dtype=int32 along axis=1."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.int32_t x, tmp, amax, ai
     cdef Py_ssize_t i0, i1, i2
@@ -466,7 +466,7 @@ def median_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a):
-    "median of 3d numpy array with dtype=int32 along axis=2."
+    "Median of 3d array with dtype=int32 along axis=2."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.int32_t x, tmp, amax, ai
     cdef Py_ssize_t i0, i1, i2
@@ -511,7 +511,7 @@ def median_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a):
-    "median of 3d numpy array with dtype=int64 along axis=0."
+    "Median of 3d array with dtype=int64 along axis=0."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.int64_t x, tmp, amax, ai
     cdef Py_ssize_t i0, i1, i2
@@ -556,7 +556,7 @@ def median_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a):
-    "median of 3d numpy array with dtype=int64 along axis=1."
+    "Median of 3d array with dtype=int64 along axis=1."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.int64_t x, tmp, amax, ai
     cdef Py_ssize_t i0, i1, i2
@@ -601,7 +601,7 @@ def median_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a):
-    "median of 3d numpy array with dtype=int64 along axis=2."
+    "Median of 3d array with dtype=int64 along axis=2."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.int64_t x, tmp, amax, ai
     cdef Py_ssize_t i0, i1, i2
@@ -646,7 +646,7 @@ def median_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a):
-    "median of 1d numpy array with dtype=float64 along axis=0."
+    "Median of 1d array with dtype=float64 along axis=0."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.float64_t x, tmp, amax, ai
     cdef Py_ssize_t i0
@@ -684,7 +684,7 @@ def median_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a):
-    "median of 2d numpy array with dtype=float64 along axis=0."
+    "Median of 2d array with dtype=float64 along axis=0."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.float64_t x, tmp, amax, ai
     cdef Py_ssize_t i0, i1
@@ -727,7 +727,7 @@ def median_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a):
-    "median of 2d numpy array with dtype=float64 along axis=1."
+    "Median of 2d array with dtype=float64 along axis=1."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.float64_t x, tmp, amax, ai
     cdef Py_ssize_t i0, i1
@@ -770,7 +770,7 @@ def median_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a):
-    "median of 3d numpy array with dtype=float64 along axis=0."
+    "Median of 3d array with dtype=float64 along axis=0."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.float64_t x, tmp, amax, ai
     cdef Py_ssize_t i0, i1, i2
@@ -815,7 +815,7 @@ def median_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a):
-    "median of 3d numpy array with dtype=float64 along axis=1."
+    "Median of 3d array with dtype=float64 along axis=1."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.float64_t x, tmp, amax, ai
     cdef Py_ssize_t i0, i1, i2
@@ -860,7 +860,7 @@ def median_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def median_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a):
-    "median of 3d numpy array with dtype=float64 along axis=2."
+    "Median of 3d array with dtype=float64 along axis=2."
     cdef np.npy_intp i, j, l, r, k 
     cdef np.float64_t x, tmp, amax, ai
     cdef Py_ssize_t i0, i1, i2

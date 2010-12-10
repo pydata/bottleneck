@@ -1,40 +1,4 @@
-
-cdef np.int32_t MININT32 = np.iinfo(np.int32).min
-cdef np.int64_t MININT64 = np.iinfo(np.int64).min
-
-cdef dict nanmax_dict = {}
-
-#          Dim dtype axis
-nanmax_dict[(1, f64, 0)] = nanmax_1d_float64_axis0
-nanmax_dict[(1, f64, N)] = nanmax_1d_float64_axis0
-nanmax_dict[(2, f64, 0)] = nanmax_2d_float64_axis0
-nanmax_dict[(2, f64, 1)] = nanmax_2d_float64_axis1
-nanmax_dict[(2, f64, N)] = nanmax_2d_float64_axisNone
-nanmax_dict[(3, f64, 0)] = nanmax_3d_float64_axis0
-nanmax_dict[(3, f64, 1)] = nanmax_3d_float64_axis1
-nanmax_dict[(3, f64, 2)] = nanmax_3d_float64_axis2
-nanmax_dict[(3, f64, N)] = nanmax_3d_float64_axisNone
-
-nanmax_dict[(1, i32, 0)] = nanmax_1d_int32_axis0
-nanmax_dict[(1, i32, N)] = nanmax_1d_int32_axis0
-nanmax_dict[(2, i32, 0)] = nanmax_2d_int32_axis0
-nanmax_dict[(2, i32, 1)] = nanmax_2d_int32_axis1
-nanmax_dict[(2, i32, N)] = nanmax_2d_int32_axisNone
-nanmax_dict[(3, i32, 0)] = nanmax_3d_int32_axis0
-nanmax_dict[(3, i32, 1)] = nanmax_3d_int32_axis1
-nanmax_dict[(3, i32, 2)] = nanmax_3d_int32_axis2
-nanmax_dict[(3, i32, N)] = nanmax_3d_int32_axisNone
-
-nanmax_dict[(1, i64, 0)] = nanmax_1d_int64_axis0
-nanmax_dict[(1, i64, N)] = nanmax_1d_int64_axis0
-nanmax_dict[(2, i64, 0)] = nanmax_2d_int64_axis0
-nanmax_dict[(2, i64, 1)] = nanmax_2d_int64_axis1
-nanmax_dict[(2, i64, N)] = nanmax_2d_int64_axisNone
-nanmax_dict[(3, i64, 0)] = nanmax_3d_int64_axis0
-nanmax_dict[(3, i64, 1)] = nanmax_3d_int64_axis1
-nanmax_dict[(3, i64, 2)] = nanmax_3d_int64_axis2
-nanmax_dict[(3, i64, N)] = nanmax_3d_int64_axisNone
-
+"nanmax auto-generated from template"
 
 def nanmax(arr, axis=None):
     """
@@ -142,465 +106,554 @@ def nanmax_selector(arr, axis):
         raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
     return func, a
 
-# One dimensional -----------------------------------------------------------
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a):
+    "Maximum of 2d array with dtype=int32 along axis=0 ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.int32_t amax, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n1]
+    cdef np.ndarray[np.int32_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                              NPY_int32, 0)
+    for i1 in range(n1):
+        amax = MINint32
+        for i0 in range(n0):
+            ai = a[i0, i1]
+            if ai >= amax:
+                amax = ai
+        y[i1] = amax
+    return y
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def nanmax_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a):
-    "nanmax of 1d numpy array with dtype=np.int32 along axis=0."
-    cdef Py_ssize_t i
+def nanmax_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a):
+    "Maximum of 2d array with dtype=int32 along axis=1 ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.int32_t amax, ai
+    cdef Py_ssize_t i0, i1
     cdef int n0 = a.shape[0]
-    cdef np.int32_t amax = MININT32, ai
-    for i in range(n0):
-        ai = a[i]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n0]
+    cdef np.ndarray[np.int32_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                              NPY_int32, 0)
+    for i0 in range(n0):
+        amax = MINint32
+        for i1 in range(n1):
+            ai = a[i0, i1]
+            if ai >= amax:
+                amax = ai
+        y[i0] = amax
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a):
+    "Maximum of 2d array with dtype=int64 along axis=0 ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.int64_t amax, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n1]
+    cdef np.ndarray[np.int64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                              NPY_int64, 0)
+    for i1 in range(n1):
+        amax = MINint64
+        for i0 in range(n0):
+            ai = a[i0, i1]
+            if ai >= amax:
+                amax = ai
+        y[i1] = amax
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a):
+    "Maximum of 2d array with dtype=int64 along axis=1 ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.int64_t amax, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n0]
+    cdef np.ndarray[np.int64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                              NPY_int64, 0)
+    for i0 in range(n0):
+        amax = MINint64
+        for i1 in range(n1):
+            ai = a[i0, i1]
+            if ai >= amax:
+                amax = ai
+        y[i0] = amax
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a):
+    "Maximum of 3d array with dtype=int32 along axis=0 ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.int32_t amax, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n1, n2]
+    cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_int32, 0)
+    for i1 in range(n1):
+        for i2 in range(n2):
+            amax = MINint32
+            for i0 in range(n0):
+                ai = a[i0, i1, i2]
+                if ai >= amax:
+                    amax = ai
+            y[i1, i2] = amax
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a):
+    "Maximum of 3d array with dtype=int32 along axis=1 ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.int32_t amax, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n2]
+    cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_int32, 0)
+    for i0 in range(n0):
+        for i2 in range(n2):
+            amax = MINint32
+            for i1 in range(n1):
+                ai = a[i0, i1, i2]
+                if ai >= amax:
+                    amax = ai
+            y[i0, i2] = amax
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a):
+    "Maximum of 3d array with dtype=int32 along axis=2 ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.int32_t amax, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n1]
+    cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_int32, 0)
+    for i0 in range(n0):
+        for i1 in range(n1):
+            amax = MINint32
+            for i2 in range(n2):
+                ai = a[i0, i1, i2]
+                if ai >= amax:
+                    amax = ai
+            y[i0, i1] = amax
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a):
+    "Maximum of 3d array with dtype=int64 along axis=0 ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.int64_t amax, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n1, n2]
+    cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_int64, 0)
+    for i1 in range(n1):
+        for i2 in range(n2):
+            amax = MINint64
+            for i0 in range(n0):
+                ai = a[i0, i1, i2]
+                if ai >= amax:
+                    amax = ai
+            y[i1, i2] = amax
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a):
+    "Maximum of 3d array with dtype=int64 along axis=1 ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.int64_t amax, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n2]
+    cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_int64, 0)
+    for i0 in range(n0):
+        for i2 in range(n2):
+            amax = MINint64
+            for i1 in range(n1):
+                ai = a[i0, i1, i2]
+                if ai >= amax:
+                    amax = ai
+            y[i0, i2] = amax
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a):
+    "Maximum of 3d array with dtype=int64 along axis=2 ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.int64_t amax, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n1]
+    cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_int64, 0)
+    for i0 in range(n0):
+        for i1 in range(n1):
+            amax = MINint64
+            for i2 in range(n2):
+                ai = a[i0, i1, i2]
+                if ai >= amax:
+                    amax = ai
+            y[i0, i1] = amax
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_1d_float64_axisNone(np.ndarray[np.float64_t, ndim=1] a):
+    "Maximum of 1d array with dtype=float64 along axis=None ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.float64_t amax, ai
+    cdef Py_ssize_t i0
+    cdef int n0 = a.shape[0]
+    amax = MINfloat64
+    for i0 in range(n0):
+        ai = a[i0]
+        if ai >= amax:
+            amax = ai
+            allnan = 0
+    if allnan == 0:       
+        return np.float64(amax)
+    else:
+        return NAN
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_2d_float64_axisNone(np.ndarray[np.float64_t, ndim=2] a):
+    "Maximum of 2d array with dtype=float64 along axis=None ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.float64_t amax, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    amax = MINfloat64
+    for i0 in range(n0):
+        for i1 in range(n1):
+            ai = a[i0, i1]
+            if ai >= amax:
+                amax = ai
+                allnan = 0
+    if allnan == 0:       
+        return np.float64(amax)
+    else:
+        return NAN
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_3d_float64_axisNone(np.ndarray[np.float64_t, ndim=3] a):
+    "Maximum of 3d array with dtype=float64 along axis=None ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.float64_t amax, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    amax = MINfloat64
+    for i0 in range(n0):
+        for i1 in range(n1):
+            for i2 in range(n2):
+                ai = a[i0, i1, i2]
+                if ai >= amax:
+                    amax = ai
+                    allnan = 0
+    if allnan == 0:       
+        return np.float64(amax)
+    else:
+        return NAN
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a):
+    "Maximum of 2d array with dtype=float64 along axis=0 ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.float64_t amax, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n1]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                              NPY_float64, 0)
+    for i1 in range(n1):
+        amax = MINfloat64
+        allnan = 1
+        for i0 in range(n0):
+            ai = a[i0, i1]
+            if ai >= amax:
+                amax = ai
+                allnan = 0
+        if allnan == 0:       
+            y[i1] = amax
+        else:
+            y[i1] = NAN
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a):
+    "Maximum of 2d array with dtype=float64 along axis=1 ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.float64_t amax, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dims = [n0]
+    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
+                                              NPY_float64, 0)
+    for i0 in range(n0):
+        amax = MINfloat64
+        allnan = 1
+        for i1 in range(n1):
+            ai = a[i0, i1]
+            if ai >= amax:
+                amax = ai
+                allnan = 0
+        if allnan == 0:       
+            y[i0] = amax
+        else:
+            y[i0] = NAN
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a):
+    "Maximum of 3d array with dtype=float64 along axis=0 ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.float64_t amax, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n1, n2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_float64, 0)
+    for i1 in range(n1):
+        for i2 in range(n2):
+            amax = MINfloat64
+            allnan = 1
+            for i0 in range(n0):
+                ai = a[i0, i1, i2]
+                if ai >= amax:
+                    amax = ai
+                    allnan = 0
+            if allnan == 0:       
+                y[i1, i2] = amax
+            else:
+                y[i1, i2] = NAN
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a):
+    "Maximum of 3d array with dtype=float64 along axis=1 ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.float64_t amax, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n2]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_float64, 0)
+    for i0 in range(n0):
+        for i2 in range(n2):
+            amax = MINfloat64
+            allnan = 1
+            for i1 in range(n1):
+                ai = a[i0, i1, i2]
+                if ai >= amax:
+                    amax = ai
+                    allnan = 0
+            if allnan == 0:       
+                y[i0, i2] = amax
+            else:
+                y[i0, i2] = NAN
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a):
+    "Maximum of 3d array with dtype=float64 along axis=2 ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.float64_t amax, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dims = [n0, n1]
+    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
+                                              NPY_float64, 0)
+    for i0 in range(n0):
+        for i1 in range(n1):
+            amax = MINfloat64
+            allnan = 1
+            for i2 in range(n2):
+                ai = a[i0, i1, i2]
+                if ai >= amax:
+                    amax = ai
+                    allnan = 0
+            if allnan == 0:       
+                y[i0, i1] = amax
+            else:
+                y[i0, i1] = NAN
+    return y
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def nanmax_1d_int32_axisNone(np.ndarray[np.int32_t, ndim=1] a):
+    "Maximum of 1d array with dtype=int32 along axis=None ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.int32_t amax, ai
+    cdef Py_ssize_t i0
+    cdef int n0 = a.shape[0]
+    amax = MINint32
+    for i0 in range(n0):
+        ai = a[i0]
         if ai >= amax:
             amax = ai
     return np.int32(amax)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def nanmax_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a):
-    "nanmax of 1d numpy array with dtype=np.int64 along axis=0."
-    cdef Py_ssize_t i
+def nanmax_1d_int64_axisNone(np.ndarray[np.int64_t, ndim=1] a):
+    "Maximum of 1d array with dtype=int64 along axis=None ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.int64_t amax, ai
+    cdef Py_ssize_t i0
     cdef int n0 = a.shape[0]
-    cdef np.int64_t amax = MININT64, ai
-    for i in range(n0):
-        ai = a[i]
+    amax = MINint64
+    for i0 in range(n0):
+        ai = a[i0]
         if ai >= amax:
             amax = ai
     return np.int64(amax)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def nanmax_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a):
-    "nanmax of 1d numpy array with dtype=np.float64 along axis=0."
-    cdef Py_ssize_t i
-    cdef int n0 = a.shape[0], allnan = 1
-    cdef np.float64_t amax = np.NINF, ai
-    for i in range(n0):
-        ai = a[i]
-        if ai >= amax:
-            amax = ai
-            allnan = 0
-    if allnan == 0:
-        return np.float64(amax)
-    else:
-        return NAN
-
-# Two dimensional -----------------------------------------------------------
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a):
-    "nanmax of 2d numpy array with dtype=np.int32 along axis=0."
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1]
-    cdef np.int32_t amax, ai  
-    cdef np.npy_intp *dims = [n1]
-    cdef np.ndarray[np.int32_t, ndim=1] y = PyArray_EMPTY(1, dims,
-                                                          NPY_int32, 0)
-    for j in range(n1):
-        amax = MININT32
-        for i in range(n0):
-            ai = a[i,j]
-            if ai >= amax:
-                amax = ai
-        y[j] = amax    
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a):
-    "nanmax of 2d numpy array with dtype=np.int32 along axis=1"
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1]
-    cdef np.int32_t amax 
-    cdef np.npy_intp *dims = [n0]
-    cdef np.ndarray[np.int32_t, ndim=1] y = PyArray_EMPTY(1, dims,
-                                                          NPY_int32, 0)
-    for i in range(n0):
-        amax = MININT32
-        for j in range(n1):
-            ai = a[i,j]
-            if ai >= amax:
-                amax = ai
-        y[i] = amax    
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def nanmax_2d_int32_axisNone(np.ndarray[np.int32_t, ndim=2] a):
-    "nanmax of 2d numpy array with dtype=np.int32 along axis=None."
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1]
-    cdef np.int32_t amax = MININT32, ai
-    for i in range(n0):
-        for j in range(n1):
-            ai = a[i,j]
+    "Maximum of 2d array with dtype=int32 along axis=None ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.int32_t amax, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    amax = MINint32
+    for i0 in range(n0):
+        for i1 in range(n1):
+            ai = a[i0, i1]
             if ai >= amax:
                 amax = ai
-    return np.int32(amax) 
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a):
-    "nanmax of 2d numpy array with dtype=np.int64 along axis=0."
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1]
-    cdef np.int64_t amax, ai  
-    cdef np.npy_intp *dims = [n1]
-    cdef np.ndarray[np.int64_t, ndim=1] y = PyArray_EMPTY(1, dims,
-                                                          NPY_int64, 0)
-    for j in range(n1):
-        amax = MININT64
-        for i in range(n0):
-            ai = a[i,j]
-            if ai >= amax:
-                amax = ai
-        y[j] = amax    
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a):
-    "nanmax of 2d numpy array with dtype=np.int64 along axis=1"
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1]
-    cdef np.int64_t amax, ai 
-    cdef np.npy_intp *dims = [n0]
-    cdef np.ndarray[np.int64_t, ndim=1] y = PyArray_EMPTY(1, dims,
-                                                          NPY_int64, 0)
-    for i in range(n0):
-        amax = MININT64
-        for j in range(n1):
-            ai = a[i,j]
-            if ai >= amax:
-                amax = ai
-        y[i] = amax    
-    return y
+    return np.int32(amax)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def nanmax_2d_int64_axisNone(np.ndarray[np.int64_t, ndim=2] a):
-    "nanmax of 2d numpy array with dtype=np.int64 along axis=None."
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1]
-    cdef np.int64_t amax = MININT64, ai
-    for i in range(n0):
-        for j in range(n1):
-            ai = a[i,j]
+    "Maximum of 2d array with dtype=int64 along axis=None ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.int64_t amax, ai
+    cdef Py_ssize_t i0, i1
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    amax = MINint64
+    for i0 in range(n0):
+        for i1 in range(n1):
+            ai = a[i0, i1]
             if ai >= amax:
                 amax = ai
-    return np.int64(amax) 
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a):
-    "nanmax of 2d numpy array with dtype=np.float64 along axis=0."
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1], allnan 
-    cdef np.float64_t amax, ai 
-    cdef np.npy_intp *dims = [n1]
-    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
-                                                            NPY_float64, 0)
-    for j in range(n1):
-        amax = np.NINF
-        allnan = 1
-        for i in range(n0):
-            ai = a[i,j]
-            if ai >= amax :
-                amax = ai
-                allnan = 0
-        if allnan == 0:       
-            y[j] = amax
-        else:
-            y[j] = NAN
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a):
-    "nanmax of 2d numpy array with dtype=np.float64 along axis=1."
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1], allnan
-    cdef np.float64_t amax, ai  
-    cdef np.npy_intp *dims = [n0]
-    cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
-                                                            NPY_float64, 0)
-    for j in range(n0):
-        amax = np.NINF
-        allnan = 1
-        for i in range(n1):
-            ai = a[j,i]
-            if ai >= amax:
-                amax = ai
-                allnan = 0
-        if allnan == 0:       
-            y[j] = amax
-        else:
-            y[j] = NAN
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_2d_float64_axisNone(np.ndarray[np.float64_t, ndim=2] a):
-    "nanmax of 2d numpy array with dtype=np.float64 along axis=None."
-    cdef Py_ssize_t i, j
-    cdef int n0 = a.shape[0], n1 = a.shape[1], allnan = 1
-    cdef np.float64_t amax = np.NINF, ai
-    for i in range(n0):
-        for j in range(n1):
-            ai = a[i,j]
-            if ai >= amax:
-                amax = ai
-                allnan = 0
-    if allnan == 0:
-        return np.float64(amax)
-    else:
-        return NAN
-
-# Three dimensional ---------------------------------------------------------
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a):
-    "nanmax of 3d numpy array with dtype=np.int32 along axis=0."
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
-    cdef np.int32_t amax, ai  
-    cdef np.npy_intp *dims = [n1, n2]
-    cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                          NPY_int32, 0)
-    for j in range(n1):
-        for k in range(n2):
-            amax = MININT32
-            for i in range(n0):
-                ai = a[i,j,k]
-                if ai >= amax:
-                    amax = ai
-            y[j, k] = amax    
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a):
-    "nanmax of 3d numpy array with dtype=np.int32 along axis=1"
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
-    cdef np.int64_t amax, ai   
-    cdef np.npy_intp *dims = [n0, n2]
-    cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                          NPY_int32, 0)
-    for i in range(n0):
-        for k in range(n2):
-            amax = MININT32
-            for j in range(n1):
-                ai = a[i,j,k]
-                if ai >= amax:
-                    amax = ai
-            y[i, k] = amax 
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a):
-    "nanmax of 3d numpy array with dtype=np.int32 along axis=2"
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
-    cdef np.int64_t amax, ai   
-    cdef np.npy_intp *dims = [n0, n1]
-    cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                            NPY_int32, 0)
-    for i in range(n0):
-        for j in range(n1):
-            amax = MININT32
-            for k in range(n2):
-                ai = a[i,j,k]
-                if ai >= amax:
-                    amax = ai
-            y[i, j] = amax 
-    return y
+    return np.int64(amax)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def nanmax_3d_int32_axisNone(np.ndarray[np.int32_t, ndim=3] a):
-    "nanmax of 3d numpy array with dtype=np.int32 along axis=None."
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
-    cdef np.int64_t amax = MININT64, ai
-    for i in range(n0):
-        for j in range(n1):
-            for k in range(n2):
-                ai = a[i,j,k]
+    "Maximum of 3d array with dtype=int32 along axis=None ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.int32_t amax, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    amax = MINint32
+    for i0 in range(n0):
+        for i1 in range(n1):
+            for i2 in range(n2):
+                ai = a[i0, i1, i2]
                 if ai >= amax:
                     amax = ai
-    return np.int32(amax) 
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a):
-    "nanmax of 3d numpy array with dtype=np.int64 along axis=0."
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
-    cdef np.int64_t amax, ai  
-    cdef np.npy_intp *dims = [n1, n2]
-    cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                          NPY_int64, 0)
-    for j in range(n1):
-        for k in range(n2):
-            amax = MININT64
-            for i in range(n0):
-                ai = a[i,j,k]
-                if ai >= amax:
-                    amax = ai
-            y[j, k] = amax    
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a):
-    "nanmax of 3d numpy array with dtype=np.int64 along axis=1"
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
-    cdef np.int64_t amax, ai 
-    cdef np.npy_intp *dims = [n0, n2]
-    cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                          NPY_int64, 0)
-    for i in range(n0):
-        for k in range(n2):
-            amax = MININT64
-            for j in range(n1):
-                ai = a[i,j,k]
-                if ai >= amax:
-                    amax = ai
-            y[i, k] = amax 
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a):
-    "nanmax of 3d numpy array with dtype=np.int64 along axis=2"
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
-    cdef np.int64_t amax, ai 
-    cdef np.npy_intp *dims = [n0, n1]
-    cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                          NPY_int64, 0)
-    for i in range(n0):
-        for j in range(n1):
-            amax = MININT64
-            for k in range(n2):
-                ai = a[i,j,k]
-                if ai >= amax:
-                    amax = ai
-            y[i, j] = amax 
-    return y
+    return np.int32(amax)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def nanmax_3d_int64_axisNone(np.ndarray[np.int64_t, ndim=3] a):
-    "nanmax of 3d numpy array with dtype=np.int64 along axis=None."
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2]
-    cdef np.int64_t amax = MININT64, ai
-    for i in range(n0):
-        for j in range(n1):
-            for k in range(n2):
-                ai = a[i,j,k]
+    "Maximum of 3d array with dtype=int64 along axis=None ignoring NaNs."
+    cdef int allnan = 1
+    cdef np.int64_t amax, ai
+    cdef Py_ssize_t i0, i1, i2
+    cdef int n0 = a.shape[0]
+    cdef int n1 = a.shape[1]
+    cdef int n2 = a.shape[2]
+    amax = MINint64
+    for i0 in range(n0):
+        for i1 in range(n1):
+            for i2 in range(n2):
+                ai = a[i0, i1, i2]
                 if ai >= amax:
                     amax = ai
-    return np.int64(amax) 
+    return np.int64(amax)
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a):
-    "nanmax of 3d numpy array with dtype=np.float64 along axis=0."
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], allnan
-    cdef np.float64_t amax, ai
-    cdef np.npy_intp *dims = [n1, n2]
-    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                            NPY_float64, 0)
-    for j in range(n1):
-        for k in range(n2):
-            amax = np.NINF
-            allnan = 1
-            for i in range(n0):
-                ai = a[i,j,k]
-                if ai >= amax:
-                    amax = ai
-                    allnan = 0
-            if allnan == 0:   
-                y[j, k] = amax
-            else:
-                y[j, k] = NAN
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a):
-    "nanmax of 3d numpy array with dtype=np.float64 along axis=1."
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], allnan
-    cdef np.float64_t amax, ai
-    cdef np.npy_intp *dims = [n0, n2]
-    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                            NPY_float64, 0)
-    for i in range(n0):
-        for k in range(n2):
-            amax = np.NINF
-            allnan = 1
-            for j in range(n1):
-                ai = a[i,j,k]
-                if ai >= amax:
-                    amax = ai
-                    allnan = 0
-            if allnan == 0:   
-                y[i, k] = amax
-            else:
-                y[i, k] = NAN
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a):
-    "nanmax of 3d numpy array with dtype=np.float64 along axis=2."
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], allnan
-    cdef np.float64_t amax, ai
-    cdef np.npy_intp *dims = [n0, n1]
-    cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
-                                                            NPY_float64, 0)
-    for i in range(n0):
-        for j in range(n1):
-            amax = np.NINF
-            allnan = 1
-            for k in range(n2):
-                ai = a[i,j,k]
-                if ai >= amax:
-                    amax = ai
-                    allnan = 0
-            if allnan == 0:   
-                y[i, j] = amax
-            else:
-                y[i, j] = NAN
-    return y
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmax_3d_float64_axisNone(np.ndarray[np.float64_t, ndim=3] a):
-    "nanmax of 3d numpy array with dtype=np.float64 along axis=None."
-    cdef Py_ssize_t i, j, k
-    cdef int n0 = a.shape[0], n1 = a.shape[1], n2 = a.shape[2], allnan = 1
-    cdef np.float64_t amax = np.NINF, ai
-    for i in range(n0):
-        for j in range(n1):
-            for k in range(n2):
-                ai = a[i,j,k]
-                if ai >= amax:
-                    amax = ai
-                    allnan = 0
-    if allnan == 0:                
-        return np.float64(amax)
-    else:
-        return NAN
+cdef dict nanmax_dict = {}
+nanmax_dict[(2, int32, 0)] = nanmax_2d_int32_axis0
+nanmax_dict[(2, int32, 1)] = nanmax_2d_int32_axis1
+nanmax_dict[(2, int64, 0)] = nanmax_2d_int64_axis0
+nanmax_dict[(2, int64, 1)] = nanmax_2d_int64_axis1
+nanmax_dict[(3, int32, 0)] = nanmax_3d_int32_axis0
+nanmax_dict[(3, int32, 1)] = nanmax_3d_int32_axis1
+nanmax_dict[(3, int32, 2)] = nanmax_3d_int32_axis2
+nanmax_dict[(3, int64, 0)] = nanmax_3d_int64_axis0
+nanmax_dict[(3, int64, 1)] = nanmax_3d_int64_axis1
+nanmax_dict[(3, int64, 2)] = nanmax_3d_int64_axis2
+nanmax_dict[(1, float64, 0)] = nanmax_1d_float64_axisNone
+nanmax_dict[(1, float64, None)] = nanmax_1d_float64_axisNone
+nanmax_dict[(2, float64, None)] = nanmax_2d_float64_axisNone
+nanmax_dict[(3, float64, None)] = nanmax_3d_float64_axisNone
+nanmax_dict[(2, float64, 0)] = nanmax_2d_float64_axis0
+nanmax_dict[(2, float64, 1)] = nanmax_2d_float64_axis1
+nanmax_dict[(3, float64, 0)] = nanmax_3d_float64_axis0
+nanmax_dict[(3, float64, 1)] = nanmax_3d_float64_axis1
+nanmax_dict[(3, float64, 2)] = nanmax_3d_float64_axis2
+nanmax_dict[(1, int32, 0)] = nanmax_1d_int32_axisNone
+nanmax_dict[(1, int32, None)] = nanmax_1d_int32_axisNone
+nanmax_dict[(1, int64, 0)] = nanmax_1d_int64_axisNone
+nanmax_dict[(1, int64, None)] = nanmax_1d_int64_axisNone
+nanmax_dict[(2, int32, None)] = nanmax_2d_int32_axisNone
+nanmax_dict[(2, int64, None)] = nanmax_2d_int64_axisNone
+nanmax_dict[(3, int32, None)] = nanmax_3d_int32_axisNone
+nanmax_dict[(3, int64, None)] = nanmax_3d_int64_axisNone
