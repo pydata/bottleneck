@@ -177,6 +177,7 @@ ints_None['loop'] = loop
 nanmax = {}
 nanmax['name'] = 'nanmax'
 nanmax['is_reducing_function'] = True
+nanmax['cdef_output'] = True
 nanmax['templates'] = {}
 nanmax['templates']['float'] = floats
 nanmax['templates']['float_None'] = floats_None

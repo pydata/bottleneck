@@ -100,7 +100,7 @@ def move_nanmean_selector(arr, int window, int axis):
 @cython.wraparound(False)
 def move_nanmean_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a,
                                   int window):
-    "Moving nanmean of a 1d numpy array of dtype=int32 along axis=0."
+    "Moving mean of 1d array of dtype=int32 along axis=0 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0
@@ -146,7 +146,7 @@ def move_nanmean_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a,
 @cython.wraparound(False)
 def move_nanmean_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a,
                                   int window):
-    "Moving nanmean of a 1d numpy array of dtype=int64 along axis=0."
+    "Moving mean of 1d array of dtype=int64 along axis=0 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0
@@ -192,7 +192,7 @@ def move_nanmean_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a,
 @cython.wraparound(False)
 def move_nanmean_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a,
                                   int window):
-    "Moving nanmean of a 2d numpy array of dtype=int32 along axis=0."
+    "Moving mean of 2d array of dtype=int32 along axis=0 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0, i1
@@ -242,7 +242,7 @@ def move_nanmean_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a,
 @cython.wraparound(False)
 def move_nanmean_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a,
                                   int window):
-    "Moving nanmean of a 2d numpy array of dtype=int32 along axis=1."
+    "Moving mean of 2d array of dtype=int32 along axis=1 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0, i1
@@ -292,7 +292,7 @@ def move_nanmean_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a,
 @cython.wraparound(False)
 def move_nanmean_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a,
                                   int window):
-    "Moving nanmean of a 2d numpy array of dtype=int64 along axis=0."
+    "Moving mean of 2d array of dtype=int64 along axis=0 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0, i1
@@ -342,7 +342,7 @@ def move_nanmean_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a,
 @cython.wraparound(False)
 def move_nanmean_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a,
                                   int window):
-    "Moving nanmean of a 2d numpy array of dtype=int64 along axis=1."
+    "Moving mean of 2d array of dtype=int64 along axis=1 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0, i1
@@ -392,7 +392,7 @@ def move_nanmean_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a,
 @cython.wraparound(False)
 def move_nanmean_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a,
                                   int window):
-    "Moving nanmean of a 3d numpy array of dtype=int32 along axis=0."
+    "Moving mean of 3d array of dtype=int32 along axis=0 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0, i1, i2
@@ -444,7 +444,7 @@ def move_nanmean_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a,
 @cython.wraparound(False)
 def move_nanmean_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a,
                                   int window):
-    "Moving nanmean of a 3d numpy array of dtype=int32 along axis=1."
+    "Moving mean of 3d array of dtype=int32 along axis=1 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0, i1, i2
@@ -496,7 +496,7 @@ def move_nanmean_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a,
 @cython.wraparound(False)
 def move_nanmean_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a,
                                   int window):
-    "Moving nanmean of a 3d numpy array of dtype=int32 along axis=2."
+    "Moving mean of 3d array of dtype=int32 along axis=2 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0, i1, i2
@@ -548,7 +548,7 @@ def move_nanmean_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a,
 @cython.wraparound(False)
 def move_nanmean_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a,
                                   int window):
-    "Moving nanmean of a 3d numpy array of dtype=int64 along axis=0."
+    "Moving mean of 3d array of dtype=int64 along axis=0 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0, i1, i2
@@ -600,7 +600,7 @@ def move_nanmean_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a,
 @cython.wraparound(False)
 def move_nanmean_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a,
                                   int window):
-    "Moving nanmean of a 3d numpy array of dtype=int64 along axis=1."
+    "Moving mean of 3d array of dtype=int64 along axis=1 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0, i1, i2
@@ -652,7 +652,7 @@ def move_nanmean_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a,
 @cython.wraparound(False)
 def move_nanmean_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a,
                                   int window):
-    "Moving nanmean of a 3d numpy array of dtype=int64 along axis=2."
+    "Moving mean of 3d array of dtype=int64 along axis=2 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0, i1, i2
@@ -704,7 +704,7 @@ def move_nanmean_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a,
 @cython.wraparound(False)
 def move_nanmean_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a,
                                   int window):
-    "Moving nanmean of a 1d numpy array of dtype=float64 along axis=0."
+    "Moving mean of 1d array of dtype=float64 along axis=0 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0
@@ -750,7 +750,7 @@ def move_nanmean_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a,
 @cython.wraparound(False)
 def move_nanmean_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a,
                                   int window):
-    "Moving nanmean of a 2d numpy array of dtype=float64 along axis=0."
+    "Moving mean of 2d array of dtype=float64 along axis=0 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0, i1
@@ -800,7 +800,7 @@ def move_nanmean_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a,
 @cython.wraparound(False)
 def move_nanmean_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a,
                                   int window):
-    "Moving nanmean of a 2d numpy array of dtype=float64 along axis=1."
+    "Moving mean of 2d array of dtype=float64 along axis=1 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0, i1
@@ -850,7 +850,7 @@ def move_nanmean_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a,
 @cython.wraparound(False)
 def move_nanmean_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a,
                                   int window):
-    "Moving nanmean of a 3d numpy array of dtype=float64 along axis=0."
+    "Moving mean of 3d array of dtype=float64 along axis=0 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0, i1, i2
@@ -902,7 +902,7 @@ def move_nanmean_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a,
 @cython.wraparound(False)
 def move_nanmean_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a,
                                   int window):
-    "Moving nanmean of a 3d numpy array of dtype=float64 along axis=1."
+    "Moving mean of 3d array of dtype=float64 along axis=1 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0, i1, i2
@@ -954,7 +954,7 @@ def move_nanmean_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a,
 @cython.wraparound(False)
 def move_nanmean_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a,
                                   int window):
-    "Moving nanmean of a 3d numpy array of dtype=float64 along axis=2."
+    "Moving mean of 3d array of dtype=float64 along axis=2 ignoring NaNs."
     cdef int count = 0
     cdef double asum = 0, aold, ai
     cdef Py_ssize_t i0, i1, i2

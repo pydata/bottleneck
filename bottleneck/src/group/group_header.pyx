@@ -14,6 +14,9 @@ i32 = np.dtype(np.int32)
 i64 = np.dtype(np.int64)
 f64 = np.dtype(np.float64)
 N = None
+int32 = np.dtype(np.int32)
+int64 = np.dtype(np.int64)
+float64 = np.dtype(np.float64)
 
 cdef extern from "math.h":
     double sqrt(double x)

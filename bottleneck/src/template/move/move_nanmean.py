@@ -225,6 +225,7 @@ ints['loop'][3] = loop[3].replace('CAST', '<np.float64_t> ')
 move_nanmean = {}
 move_nanmean['name'] = 'move_nanmean'
 move_nanmean['is_reducing_function'] = False
+move_nanmean['cdef_output'] = True
 move_nanmean['templates'] = {}
 move_nanmean['templates']['float'] = floats
 move_nanmean['templates']['int'] = ints

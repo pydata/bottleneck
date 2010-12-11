@@ -241,6 +241,7 @@ ints_None['loop'] = loop
 nanvar = {}
 nanvar['name'] = 'nanvar'
 nanvar['is_reducing_function'] = True
+nanvar['cdef_output'] = True
 nanvar['templates'] = {}
 nanvar['templates']['float'] = floats
 nanvar['templates']['float_None'] = floats_None

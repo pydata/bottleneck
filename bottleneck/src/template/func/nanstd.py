@@ -241,6 +241,7 @@ ints_None['loop'] = loop
 nanstd = {}
 nanstd['name'] = 'nanstd'
 nanstd['is_reducing_function'] = True
+nanstd['cdef_output'] = True
 nanstd['templates'] = {}
 nanstd['templates']['float'] = floats
 nanstd['templates']['float_None'] = floats_None

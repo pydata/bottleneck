@@ -142,6 +142,7 @@ ints['loop'][3] = loop[3].replace('CAST', '<np.float64_t> ')
 median = {}
 median['name'] = 'median'
 median['is_reducing_function'] = True
+median['cdef_output'] = True
 median['templates'] = {}
 median['templates']['float'] = floats
 median['templates']['int'] = ints

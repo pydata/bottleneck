@@ -165,6 +165,7 @@ ints_None['loop'] = loop
 nanmean = {}
 nanmean['name'] = 'nanmean'
 nanmean['is_reducing_function'] = True
+nanmean['cdef_output'] = True
 nanmean['templates'] = {}
 nanmean['templates']['float'] = floats
 nanmean['templates']['float_None'] = floats_None

@@ -177,6 +177,7 @@ ints_None['loop'] = loop
 nanmin = {}
 nanmin['name'] = 'nanmin'
 nanmin['is_reducing_function'] = True
+nanmin['cdef_output'] = True
 nanmin['templates'] = {}
 nanmin['templates']['float'] = floats
 nanmin['templates']['float_None'] = floats_None

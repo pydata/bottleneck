@@ -14,6 +14,7 @@ def template(func):
                            dtypes=f['dtypes'],
                            force_output_dtype=f['force_output_dtype'],
                            is_reducing_function=func['is_reducing_function'],
+                           cdef_output=func['cdef_output'],
                            select=select)
         codes.append(code)
     codes.append('\n' + select.asstring())    
@@ -22,7 +23,7 @@ def template(func):
     fid.close()
 
 def subtemplate(name, top, loop, axisNone, dtypes, force_output_dtype,
-                is_reducing_function, select):
+                is_reducing_function, cdef_output, select):
     "Assemble template"
     ndims = loop.keys()
     ndims.sort()
@@ -43,7 +44,8 @@ def subtemplate(name, top, loop, axisNone, dtypes, force_output_dtype,
                     ydtype = force_output_dtype
                 else:
                     ydtype = dtype
-                func += loop_cdef(ndim, ydtype, axis, is_reducing_function)
+                func += loop_cdef(ndim, ydtype, axis, is_reducing_function,
+                                  cdef_output)
                 func += looper(loop[ndim], ndim, axis)
 
                 # name, ndim, dtype, axis
@@ -73,6 +75,8 @@ def looper(loop, ndim, axis):
         INDEXN            If N=1, e.g., replace with 1
         INDEXREPLACE|exp| If exp = 'k - window' and axis=1, e.g., replace
                           with i0, k - window, i2
+        NREPLACE|exp|     If exp = 'n - window' and axis=1, e.g., replace
+                          with n0, n - window, n2
         ================= =================================================
     ndim : int
         Number of dimensions in the loop.
@@ -182,11 +186,27 @@ def looper(loop, ndim, axis):
         idx = ['i' + str(i) for i in range(ndim)]
         idx[axis] = replacement
         idx = ', '.join(idx)
-        code = code[:idx0] + idx + code[idx2+1:] 
+        code = code[:idx0] + idx + code[idx2+1:]
+
+    # NREPLACE|x|
+    mark = 'NREPLACE|' 
+    nreplace = code.count(mark)
+    # TODO: reuse while loop above, only difference is 'i' --> 'n'
+    while mark in code:
+        idx0 = code.index(mark) 
+        idx1 = idx0 + len(mark)
+        idx2 = idx1 + code[idx1:].index('|')
+        if (idx0 >= idx1) or (idx1 >= idx2):
+            raise RuntimeError, "Parsing error or poorly formatted input."
+        replacement = code[idx1:idx2]
+        idx = ['n' + str(i) for i in range(ndim)]
+        idx[axis] = replacement
+        idx = ', '.join(idx)
+        code = code[:idx0] + idx + code[idx2+1:]
 
     return code
 
-def loop_cdef(ndim, dtype, axis, is_reducing_function):
+def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
     """
     String of code that initializes variables needed in a for loop.
 
@@ -205,6 +225,9 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function):
     is_reducing_function : bool    
         If True then remove the dimension given by `axis` when initializing
         the output array, `y`.
+    cdef_output : bool, optional
+        If False then only initialize indices (i) and shapes (n). If True
+        (default) then also intialized output array `y`.
 
     Returns
     -------
@@ -267,6 +290,9 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function):
     for dim in range(ndim):
         cdefs.append(tab + "cdef int n%d = a.shape[%d]" % (dim, dim))
     
+    if not cdef_output:
+        return '\n'.join(cdefs) + '\n'
+
     # cdef initialize output
     if is_reducing_function:
         if (ndim > 1) and (axis is not None):
