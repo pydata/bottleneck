@@ -1,4 +1,9 @@
 
+# Supported dtypes
+dtypes = ['int32', 'int64', 'float32', 'float64']
+
+from slow import *
+
 # If you bork the build (e.g. by messing around with the templates),
 # you still want to be able to import Bottleneck so that you can
 # rebuild using the templates. So try to import the compiled Bottleneck

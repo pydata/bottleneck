@@ -1,14 +1,13 @@
 "Test functions."
 
 import numpy as np
-import scipy.stats as sp
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
                            assert_array_almost_equal)
 nan = np.nan
 import bottleneck as bn
 
 
-def arrays(dtypes=['int32', 'int64', 'float64'], nans=True):
+def arrays(dtypes=bn.dtypes, nans=True):
     "Iterator that yield arrays to use for unit testing."
     ss = {}
     ss[1] = {'size':  4, 'shapes': [(4,)]}
@@ -58,76 +57,46 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
 
 def test_nanmax():
     "Test nanmax."
-    yield unit_maker, bn.nanmax, np.nanmax
+    yield unit_maker, bn.nanmax, bn.slow.nanmax
 
 def test_nanmin():
     "Test nanmin."
-    yield unit_maker, bn.nanmin, np.nanmin
+    yield unit_maker, bn.nanmin, bn.slow.nanmin
 
 def test_nanmean():
     "Test nanmean."
-    yield unit_maker, bn.nanmean, sp.nanmean, 12
+    yield unit_maker, bn.nanmean, bn.slow.nanmean, 5
 
 def test_nanstd():
     "Test nanstd."
-    yield unit_maker, bn.nanstd, scipy_nanstd, 12
+    yield unit_maker, bn.nanstd, bn.slow.nanstd, 5
 
 def test_nanvar():
     "Test nanvar."
-    yield unit_maker, bn.nanvar, scipy_nanstd_squared, 12
+    yield unit_maker, bn.nanvar, bn.slow.nanvar, 5
 
 def test_median():
     "Test median."
-    yield unit_maker, bn.median, np.median, np.inf, False
+    yield unit_maker, bn.median, bn.slow.median, np.inf, False
 
 
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
 
-def test_nanmax_size_zero():
+def test_nanmax_size_zero(dtypes=bn.dtypes):
     "Test nanmax for size zero input arrays."
-    dtypes = ['int32', 'int64', 'float64']
     shapes = [(0,), (2,0), (1,2,0)]
     for shape in shapes:
         for dtype in dtypes:
             a = np.zeros(shape, dtype=dtype)
             assert_raises(ValueError, bn.nanmax, a)
-            assert_raises(ValueError, np.nanmax, a)
+            assert_raises(ValueError, bn.slow.nanmax, a)
             
-def test_nanmin_size_zero():
+def test_nanmin_size_zero(dtypes=bn.dtypes):
     "Test nanmin for size zero input arrays."
-    dtypes = ['int32', 'int64', 'float64']
     shapes = [(0,), (2,0), (1,2,0)]
     for shape in shapes:
         for dtype in dtypes:
             a = np.zeros(shape, dtype=dtype)
             assert_raises(ValueError, bn.nanmin, a)
-            assert_raises(ValueError, np.nanmin, a)
-
-# ---------------------------------------------------------------------------
-# Unit test utility functions
-
-def scipy_nanstd(a, axis, bias=True):
-    "Set bias to True for scipy.stats.nanstd"
-    if axis != None:
-        if axis < 0:
-            axis += a.ndim
-        if (axis < 0) or (axis >= a.ndim):
-            raise ValueError, "axis(=%d) out of bounds" % axis
-    else:
-        a = a.ravel()
-        axis = 0
-    return sp.nanstd(a, axis, bias=True)
-
-def scipy_nanstd_squared(a, axis, bias=True):
-    "Set bias to True for scipy.stats.nanstd"
-    if axis != None:
-        if axis < 0:
-            axis += a.ndim
-        if (axis < 0) or (axis >= a.ndim):
-            raise ValueError, "axis(=%d) out of bounds" % axis
-    else:
-        a = a.ravel()
-        axis = 0
-    x = sp.nanstd(a, axis, bias=True)
-    return x * x
+            assert_raises(ValueError, bn.slow.nanmin, a)

@@ -2,9 +2,9 @@
 
 # key is dtype
 cdef dict group_mapper_dict = {}
-group_mapper_dict[i32] = group_mapper_int32
-group_mapper_dict[i64] = group_mapper_int64
-group_mapper_dict[f64] = group_mapper_float64
+group_mapper_dict[int32] = group_mapper_int32
+group_mapper_dict[int64] = group_mapper_int64
+group_mapper_dict[float64] = group_mapper_float64
 group_mapper_dict['list'] = group_mapper_list
 
 

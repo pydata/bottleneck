@@ -1,11 +1,12 @@
 "median template"
 
 from copy import deepcopy
+import bottleneck as bn
 
 __all__ = ["median"]
 
-FLOAT_DTYPES = ['float64']
-INT_DTYPES = ['int32', 'int64']
+FLOAT_DTYPES = [x for x in bn.dtypes if 'float' in x]
+INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 
 # loops ---------------------------------------------------------------------
 
@@ -37,9 +38,9 @@ loop[1] = """\
             ai = a[i]
             if ai >= amax:
                 amax = ai
-        return np.float64(0.5 * (a[k] + amax))
+        return np.FLOAT(0.5 * (a[k] + amax))
     else:
-        return np.float64(a[k])
+        return np.FLOAT(a[k])
 """        
 loop[2] = """\
     for iINDEX0 in range(nINDEX0): 
@@ -112,7 +113,7 @@ loop[3] = """\
 floats = {}
 floats['dtypes'] = FLOAT_DTYPES
 floats['axisNone'] = False
-floats['force_output_dtype'] = 'float64'
+floats['force_output_dtype'] = False
 
 floats['top'] = """
 @cython.boundscheck(False)
@@ -124,7 +125,7 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
 """
 
 floats['loop'] = {}
-floats['loop'][1] = loop[1]
+floats['loop'][1] = loop[1].replace('FLOAT', 'DTYPE')
 floats['loop'][2] = loop[2].replace('CAST', '')
 floats['loop'][3] = loop[3].replace('CAST', '')
 
@@ -132,8 +133,9 @@ floats['loop'][3] = loop[3].replace('CAST', '')
 
 ints = deepcopy(floats)
 ints['dtypes'] = INT_DTYPES 
+ints['force_output_dtype'] = 'float64'
 ints['loop'] = {}
-ints['loop'][1] = loop[1]
+ints['loop'][1] = loop[1].replace('FLOAT', 'float64')
 ints['loop'][2] = loop[2].replace('CAST', '<np.float64_t> ')
 ints['loop'][3] = loop[3].replace('CAST', '<np.float64_t> ')
 

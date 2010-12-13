@@ -214,6 +214,9 @@ def mov_nanmean(arr, window, axis=-1, method='filter'):
     else:
         msg = "`method` must be 'filter', 'cumsum', 'strides', or 'loop'."
         raise ValueError, msg
+    if y.dtype != arr.dtype:
+        if issubclass(arr.dtype.type, np.inexact):
+            y = y.astype(arr.dtype)
     return y
 
 def mov_mean_filter(arr, window, axis=-1):

@@ -1,11 +1,12 @@
 "group_nanmean template"
 
 from copy import deepcopy
+import bottleneck as bn
 
 __all__ = ["group_nanmean"]
 
-FLOAT_DTYPES = ['float64']
-INT_DTYPES = ['int32', 'int64']
+FLOAT_DTYPES = [x for x in bn.dtypes if 'float' in x]
+INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 
 # Float dtypes (not axis=None) ----------------------------------------------
 
@@ -111,7 +112,7 @@ loop[1] = """\
         for i in idx:
             asum += a[i]
             count += 1
-        y[g] = asum / count
+        y[g] = <np.float64_t> asum / count
     return y, order 
 """        
 loop[2] = """\
@@ -127,7 +128,7 @@ loop[2] = """\
             for i in idx:
                 asum += a[INDEXREPLACE|i|]
                 count += 1
-            y[INDEXREPLACE|g|] = asum / count
+            y[INDEXREPLACE|g|] = <np.float64_t> asum / count
     return y, order
 """
 loop[3] = """\
@@ -144,7 +145,7 @@ loop[3] = """\
                 for i in idx:
                     asum += a[INDEXREPLACE|i|]
                     count += 1
-                y[INDEXREPLACE|g|] = asum / count
+                y[INDEXREPLACE|g|] = <np.float64_t> asum / count
     return y, order
 """
 ints['loop'] = loop

@@ -1,11 +1,12 @@
 "move_nanmean template"
 
 from copy import deepcopy
+import bottleneck as bn
 
 __all__ = ["move_nanmean"]
 
-FLOAT_DTYPES = ['float64']
-INT_DTYPES = ['int32', 'int64']
+FLOAT_DTYPES = [x for x in bn.dtypes if 'float' in x]
+INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 
 # loops ---------------------------------------------------------------------
 
@@ -128,7 +129,7 @@ loop[3] = """\
 floats = {}
 floats['dtypes'] = FLOAT_DTYPES
 floats['axisNone'] = False
-floats['force_output_dtype'] = 'float64'
+floats['force_output_dtype'] = False
 
 floats['top'] = """
 @cython.boundscheck(False)
@@ -148,6 +149,7 @@ floats['loop'][3] = loop[3].replace('CAST', '')
 # Int dtypes (no axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
+ints['force_output_dtype'] = 'float64'
 ints['dtypes'] = INT_DTYPES 
 
 ints['loop'] = {}

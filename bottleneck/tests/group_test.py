@@ -1,15 +1,14 @@
 "Test group functions."
 
 import numpy as np
-from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
+from numpy.testing import (assert_equal, assert_array_equal,
                            assert_array_almost_equal)
 nan = np.nan
-from scipy.stats import nanmean
 import bottleneck as bn
 from bottleneck.testing.group_validator import group_func
 
 
-def array_iter(dtypes=['float64']):
+def array_iter(dtypes=bn.dtypes):
     "Iterator that yield arrays to use for unit testing."
     ss = {}
     ss[1] = {'size':  4, 'shapes': [(4,)]}
@@ -31,7 +30,7 @@ def array_iter(dtypes=['float64']):
                     yield -a
 
 def label_iter(n):
-    "Iterator that yielbn a variety of labels of given length"
+    "Iterator that yields a variety of labels of given length"
     dtypes = ['int32', 'int64', 'float64', 'str']
     for dtype in dtypes:
         label0 = np.ones(n, dtype=dtype)
@@ -86,4 +85,4 @@ def unit_maker(func, func0, decimal=np.inf):
 
 def test_group_nanmean():
     "Test group_nanmean."
-    yield unit_maker, bn.group_nanmean, nanmean, 13
+    yield unit_maker, bn.group_nanmean, bn.slow.nanmean, 6

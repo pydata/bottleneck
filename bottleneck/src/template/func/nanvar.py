@@ -1,11 +1,12 @@
 "nanvar template"
 
 from copy import deepcopy
+import bottleneck as bn
 
 __all__ = ["nanvar"]
 
-FLOAT_DTYPES = ['float64']
-INT_DTYPES = ['int32', 'int64']
+FLOAT_DTYPES = [x for x in bn.dtypes if 'float' in x]
+INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 
 # Float dtypes (not axis=None) ----------------------------------------------
 

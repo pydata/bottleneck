@@ -39,11 +39,14 @@ def group_func(func, arr, label, axis=0):
     ulabels = np.unique(label)
     shape = list(arr.shape)
     shape[axis] = len(ulabels)
-    garr = np.zeros(shape, dtype=np.float64)  
+    garr = np.zeros(shape)  
     idx1 = [slice(None)] * arr.ndim
     idx2 = [slice(None)] * arr.ndim
     for i, ulabel in enumerate(ulabels):
         idx1[axis] = i
         idx2[axis] = label == ulabel
-        garr[idx1] = func(arr[idx2], axis=axis)       
+        garr[idx1] = func(arr[idx2], axis=axis)
+    if garr.dtype != arr.dtype:
+        if issubclass(arr.dtype.type, np.inexact):
+            garr = garr.astype(arr.dtype)
     return garr, ulabels.tolist()

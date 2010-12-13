@@ -8,7 +8,7 @@ import bottleneck as bn
 from bottleneck.testing.move_validators import mov_nanmean as alt_move_nanmean
 
 
-def arrays(dtypes=['int32', 'int64', 'float64']):
+def arrays(dtypes=bn.dtypes):
     "Iterator that yield arrays to use for unit testing."
     ss = {}
     ss[1] = {'size':  4, 'shapes': [(4,)]}
