@@ -7,6 +7,7 @@ from numpy cimport NPY_FLOAT32 as NPY_float32
 from numpy cimport NPY_FLOAT64 as NPY_float64
 from numpy cimport PyArray_EMPTY, import_array
 import_array()
+import bottleneck as bn
 
 ctypedef np.float64_t DTYPE_t
 cdef double NAN = <double> np.nan

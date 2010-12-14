@@ -16,8 +16,17 @@ def template(func):
                            is_reducing_function=func['is_reducing_function'],
                            cdef_output=func['cdef_output'],
                            select=select)
-        codes.append(code)
-    codes.append('\n' + select.asstring())    
+        codes.append(code)    
+    codes.append('\n' + str(select))
+    if 'slow' in func:
+        if func['slow'] is not None:
+            slow = func['slow']
+            code1 = slow_selector(slow['name'])
+            code2 = slow_functions(slow['name'],
+                                   slow['signature'],
+                                   slow['func'])
+            codes.append(code1)
+            codes.append(code2)
     fid = open(func['pyx_file'], 'w')
     fid.write(''.join(codes))
     fid.close()
@@ -320,17 +329,61 @@ class Selector(object):
     
     def __init__(self, name):
         self.name = name
-        self.src = []
-        self.src.append("cdef dict %s_dict = {}" % name)
+        self.data = []
 
     def append(self, ndim, dtype, axis):
+        self.data.append((ndim, dtype, axis))
+
+    def __str__(self):    
         fmt = "%s_dict[(%s, %s, %s)] = %s_%sd_%s_axis%s"
-        if (ndim == 1) and (axis is None):
-            tup = (self.name, str(ndim), str(dtype), str(0),
-                   self.name, str(ndim), str(dtype), str(axis))
-            self.src.append(fmt % tup)
-        tup = 2 * (self.name, str(ndim), str(dtype), str(axis))
-        self.src.append(fmt % tup)
+        src = []
+        src.append("cdef dict %s_dict = {}" % self.name)
+        for ndim, dtype, axis in self.data:
+            if (ndim == 1) and (axis is None):
+                tup = (self.name, str(ndim), str(dtype), str(0),
+                       self.name, str(ndim), str(dtype), str(axis))
+                src.append(fmt % tup)
+            tup = 2 * (self.name, str(ndim), str(dtype), str(axis))
+            src.append(fmt % tup)
+        return '\n'.join(src)
+
+def slow_selector(name, maxaxis=32):
+    "String of code for slow function mapping dictionary."
+    axes = range(maxaxis+1) + [None]
+    src = ['\n']
+    src.append("cdef dict %s_slow_dict = {}" % name)
+    fmt = "%s_slow_dict[%s] = %s_slow_axis%s"
+    for axis in axes:
+        tup = 2 * (name, str(axis)) 
+        src.append(fmt % tup)
+    src.append('\n')
+    return '\n'.join(src)
+
+def slow_functions(name, signature, func, maxaxis=32):
+    "String of code for slow functions."
+    axes = range(maxaxis+1) + [None]
+    tab = '    '
+    sig = "def %s_slow_axis%s(%s):"
+    doc = '%s"Unaccelerated (slow) %s along axis %s."'
+    function = "%sreturn %s\n"
+    src = []
+    for axis in axes:
+        
+        axis = str(axis)
+        
+        # signature
+        code = sig % (name, axis, signature)
+        code = code.replace('AXIS', axis)
+        src.append(code)
+
+        # docstring
+        code = doc % (tab, name, axis)
+        code = code.replace('AXIS', axis)
+        src.append(code)
+        
+        # function
+        code = function % (tab, func)
+        code = code.replace('AXIS', axis)
+        src.append(code)
     
-    def asstring(self):
-        return '\n'.join(self.src)
+    return '\n'.join(src)

@@ -161,18 +161,26 @@ loop[3] = """\
 """
 ints_None['loop'] = loop
 
+# Slow, unaccelerated ndim/dtype --------------------------------------------
+
+slow = {}
+slow['name'] = "nanmean"
+slow['signature'] = "arr"
+slow['func'] = "bn.slow.nanmean(arr, axis=AXIS)"
+
 # Template ------------------------------------------------------------------
 
 nanmean = {}
 nanmean['name'] = 'nanmean'
 nanmean['is_reducing_function'] = True
 nanmean['cdef_output'] = True
+nanmean['slow'] = slow
 nanmean['templates'] = {}
 nanmean['templates']['float'] = floats
 nanmean['templates']['float_None'] = floats_None
 nanmean['templates']['int'] = ints
 nanmean['templates']['int_None'] = ints_None
-nanmean['pyx_file'] = '../func/nanmean.pyx'
+nanmean['pyx_file'] = 'func/nanmean.pyx'
 
 nanmean['main'] = '''"nanmean auto-generated from template"
 
@@ -294,7 +302,10 @@ def nanmean_selector(arr, axis):
     try:
         func = nanmean_dict[key]
     except KeyError:
-        tup = (str(ndim), str(dtype))
-        raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
+        try:
+            func = nanmean_slow_dict[axis]
+        except KeyError:
+            tup = (str(ndim), str(dtype), str(axis))
+            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 '''   

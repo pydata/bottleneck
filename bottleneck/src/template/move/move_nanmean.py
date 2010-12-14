@@ -222,16 +222,24 @@ ints['loop'][3] = loop[3].replace('CAST', '<np.float64_t> ')
 #    return y
 #"""
 
+# Slow, unaccelerated ndim/dtype --------------------------------------------
+
+slow = {}
+slow['name'] = "move_nanmean"
+slow['signature'] = "arr, window"
+slow['func'] = "bn.slow.move_nanmean(arr, window, axis=AXIS)"
+
 # Template ------------------------------------------------------------------
 
 move_nanmean = {}
 move_nanmean['name'] = 'move_nanmean'
 move_nanmean['is_reducing_function'] = False
 move_nanmean['cdef_output'] = True
+move_nanmean['slow'] = slow
 move_nanmean['templates'] = {}
 move_nanmean['templates']['float'] = floats
 move_nanmean['templates']['int'] = ints
-move_nanmean['pyx_file'] = '../move/move_nanmean.pyx'
+move_nanmean['pyx_file'] = 'move/move_nanmean.pyx'
 
 move_nanmean['main'] = '''"move_nanmean auto-generated from template"
 
@@ -327,7 +335,10 @@ def move_nanmean_selector(arr, int window, int axis):
     try:
         func = move_nanmean_dict[key]
     except KeyError:
-        tup = (str(ndim), str(axis))
-        raise TypeError, "Unsupported ndim/axis (%s/%s)." % tup
+        try:
+            func = move_nanmean_slow_dict[axis]
+        except KeyError:
+            tup = (str(ndim), str(dtype), str(axis))
+            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 '''   

@@ -139,16 +139,24 @@ ints['loop'][1] = loop[1].replace('FLOAT', 'float64')
 ints['loop'][2] = loop[2].replace('CAST', '<np.float64_t> ')
 ints['loop'][3] = loop[3].replace('CAST', '<np.float64_t> ')
 
+# Slow, unaccelerated ndim/dtype --------------------------------------------
+
+slow = {}
+slow['name'] = "median"
+slow['signature'] = "arr"
+slow['func'] = "bn.slow.median(arr, axis=AXIS)"
+
 # Template ------------------------------------------------------------------
 
 median = {}
 median['name'] = 'median'
 median['is_reducing_function'] = True
 median['cdef_output'] = True
+median['slow'] = slow
 median['templates'] = {}
 median['templates']['float'] = floats
 median['templates']['int'] = ints
-median['pyx_file'] = '../func/median.pyx'
+median['pyx_file'] = 'func/median.pyx'
 
 median['main'] = '''"median auto-generated from template"
 # (C) 2009 Sturla Molden
@@ -273,7 +281,10 @@ def median_selector(arr, axis):
     try:
         func = median_dict[key]
     except KeyError:
-        tup = (str(ndim), str(dtype), str(axis))
-        raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
+        try:
+            func = median_slow_dict[axis]
+        except KeyError:
+            tup = (str(ndim), str(dtype), str(axis))
+            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 '''   

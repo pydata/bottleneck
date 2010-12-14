@@ -121,8 +121,11 @@ def median_selector(arr, axis):
     try:
         func = median_dict[key]
     except KeyError:
-        tup = (str(ndim), str(dtype), str(axis))
-        raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
+        try:
+            func = median_slow_dict[axis]
+        except KeyError:
+            tup = (str(ndim), str(dtype), str(axis))
+            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 
 @cython.boundscheck(False)
@@ -1186,3 +1189,175 @@ median_dict[(3, float32, 2)] = median_3d_float32_axis2
 median_dict[(3, float64, 0)] = median_3d_float64_axis0
 median_dict[(3, float64, 1)] = median_3d_float64_axis1
 median_dict[(3, float64, 2)] = median_3d_float64_axis2
+
+cdef dict median_slow_dict = {}
+median_slow_dict[0] = median_slow_axis0
+median_slow_dict[1] = median_slow_axis1
+median_slow_dict[2] = median_slow_axis2
+median_slow_dict[3] = median_slow_axis3
+median_slow_dict[4] = median_slow_axis4
+median_slow_dict[5] = median_slow_axis5
+median_slow_dict[6] = median_slow_axis6
+median_slow_dict[7] = median_slow_axis7
+median_slow_dict[8] = median_slow_axis8
+median_slow_dict[9] = median_slow_axis9
+median_slow_dict[10] = median_slow_axis10
+median_slow_dict[11] = median_slow_axis11
+median_slow_dict[12] = median_slow_axis12
+median_slow_dict[13] = median_slow_axis13
+median_slow_dict[14] = median_slow_axis14
+median_slow_dict[15] = median_slow_axis15
+median_slow_dict[16] = median_slow_axis16
+median_slow_dict[17] = median_slow_axis17
+median_slow_dict[18] = median_slow_axis18
+median_slow_dict[19] = median_slow_axis19
+median_slow_dict[20] = median_slow_axis20
+median_slow_dict[21] = median_slow_axis21
+median_slow_dict[22] = median_slow_axis22
+median_slow_dict[23] = median_slow_axis23
+median_slow_dict[24] = median_slow_axis24
+median_slow_dict[25] = median_slow_axis25
+median_slow_dict[26] = median_slow_axis26
+median_slow_dict[27] = median_slow_axis27
+median_slow_dict[28] = median_slow_axis28
+median_slow_dict[29] = median_slow_axis29
+median_slow_dict[30] = median_slow_axis30
+median_slow_dict[31] = median_slow_axis31
+median_slow_dict[32] = median_slow_axis32
+median_slow_dict[None] = median_slow_axisNone
+
+def median_slow_axis0(arr):
+    "Unaccelerated (slow) median along axis 0."
+    return bn.slow.median(arr, axis=0)
+
+def median_slow_axis1(arr):
+    "Unaccelerated (slow) median along axis 1."
+    return bn.slow.median(arr, axis=1)
+
+def median_slow_axis2(arr):
+    "Unaccelerated (slow) median along axis 2."
+    return bn.slow.median(arr, axis=2)
+
+def median_slow_axis3(arr):
+    "Unaccelerated (slow) median along axis 3."
+    return bn.slow.median(arr, axis=3)
+
+def median_slow_axis4(arr):
+    "Unaccelerated (slow) median along axis 4."
+    return bn.slow.median(arr, axis=4)
+
+def median_slow_axis5(arr):
+    "Unaccelerated (slow) median along axis 5."
+    return bn.slow.median(arr, axis=5)
+
+def median_slow_axis6(arr):
+    "Unaccelerated (slow) median along axis 6."
+    return bn.slow.median(arr, axis=6)
+
+def median_slow_axis7(arr):
+    "Unaccelerated (slow) median along axis 7."
+    return bn.slow.median(arr, axis=7)
+
+def median_slow_axis8(arr):
+    "Unaccelerated (slow) median along axis 8."
+    return bn.slow.median(arr, axis=8)
+
+def median_slow_axis9(arr):
+    "Unaccelerated (slow) median along axis 9."
+    return bn.slow.median(arr, axis=9)
+
+def median_slow_axis10(arr):
+    "Unaccelerated (slow) median along axis 10."
+    return bn.slow.median(arr, axis=10)
+
+def median_slow_axis11(arr):
+    "Unaccelerated (slow) median along axis 11."
+    return bn.slow.median(arr, axis=11)
+
+def median_slow_axis12(arr):
+    "Unaccelerated (slow) median along axis 12."
+    return bn.slow.median(arr, axis=12)
+
+def median_slow_axis13(arr):
+    "Unaccelerated (slow) median along axis 13."
+    return bn.slow.median(arr, axis=13)
+
+def median_slow_axis14(arr):
+    "Unaccelerated (slow) median along axis 14."
+    return bn.slow.median(arr, axis=14)
+
+def median_slow_axis15(arr):
+    "Unaccelerated (slow) median along axis 15."
+    return bn.slow.median(arr, axis=15)
+
+def median_slow_axis16(arr):
+    "Unaccelerated (slow) median along axis 16."
+    return bn.slow.median(arr, axis=16)
+
+def median_slow_axis17(arr):
+    "Unaccelerated (slow) median along axis 17."
+    return bn.slow.median(arr, axis=17)
+
+def median_slow_axis18(arr):
+    "Unaccelerated (slow) median along axis 18."
+    return bn.slow.median(arr, axis=18)
+
+def median_slow_axis19(arr):
+    "Unaccelerated (slow) median along axis 19."
+    return bn.slow.median(arr, axis=19)
+
+def median_slow_axis20(arr):
+    "Unaccelerated (slow) median along axis 20."
+    return bn.slow.median(arr, axis=20)
+
+def median_slow_axis21(arr):
+    "Unaccelerated (slow) median along axis 21."
+    return bn.slow.median(arr, axis=21)
+
+def median_slow_axis22(arr):
+    "Unaccelerated (slow) median along axis 22."
+    return bn.slow.median(arr, axis=22)
+
+def median_slow_axis23(arr):
+    "Unaccelerated (slow) median along axis 23."
+    return bn.slow.median(arr, axis=23)
+
+def median_slow_axis24(arr):
+    "Unaccelerated (slow) median along axis 24."
+    return bn.slow.median(arr, axis=24)
+
+def median_slow_axis25(arr):
+    "Unaccelerated (slow) median along axis 25."
+    return bn.slow.median(arr, axis=25)
+
+def median_slow_axis26(arr):
+    "Unaccelerated (slow) median along axis 26."
+    return bn.slow.median(arr, axis=26)
+
+def median_slow_axis27(arr):
+    "Unaccelerated (slow) median along axis 27."
+    return bn.slow.median(arr, axis=27)
+
+def median_slow_axis28(arr):
+    "Unaccelerated (slow) median along axis 28."
+    return bn.slow.median(arr, axis=28)
+
+def median_slow_axis29(arr):
+    "Unaccelerated (slow) median along axis 29."
+    return bn.slow.median(arr, axis=29)
+
+def median_slow_axis30(arr):
+    "Unaccelerated (slow) median along axis 30."
+    return bn.slow.median(arr, axis=30)
+
+def median_slow_axis31(arr):
+    "Unaccelerated (slow) median along axis 31."
+    return bn.slow.median(arr, axis=31)
+
+def median_slow_axis32(arr):
+    "Unaccelerated (slow) median along axis 32."
+    return bn.slow.median(arr, axis=32)
+
+def median_slow_axisNone(arr):
+    "Unaccelerated (slow) median along axis None."
+    return bn.slow.median(arr, axis=None)

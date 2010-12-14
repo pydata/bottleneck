@@ -237,18 +237,26 @@ loop[3] = """\
 """
 ints_None['loop'] = loop
 
+# Slow, unaccelerated ndim/dtype --------------------------------------------
+
+slow = {}
+slow['name'] = "nanstd"
+slow['signature'] = "arr, ddof"
+slow['func'] = "bn.slow.nanstd(arr, axis=AXIS, ddof=ddof)"
+
 # Template ------------------------------------------------------------------
 
 nanstd = {}
 nanstd['name'] = 'nanstd'
 nanstd['is_reducing_function'] = True
 nanstd['cdef_output'] = True
+nanstd['slow'] = slow
 nanstd['templates'] = {}
 nanstd['templates']['float'] = floats
 nanstd['templates']['float_None'] = floats_None
 nanstd['templates']['int'] = ints
 nanstd['templates']['int_None'] = ints_None
-nanstd['pyx_file'] = '../func/nanstd.pyx'
+nanstd['pyx_file'] = 'func/nanstd.pyx'
 
 nanstd['main'] = '''"nanstd auto-generated from template"
 
@@ -366,7 +374,10 @@ def nanstd_selector(arr, axis):
     try:
         func = nanstd_dict[key]
     except KeyError:
-        tup = (str(ndim), str(dtype))
-        raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
+        try:
+            func = nanstd_slow_dict[axis]
+        except KeyError:
+            tup = (str(ndim), str(dtype), str(axis))
+            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 '''   

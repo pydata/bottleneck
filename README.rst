@@ -125,7 +125,7 @@ Note that ``func`` is faster than Numpy's non-NaN version of max::
     >>> timeit arr.max(axis=0)
     100000 loops, best of 3: 4.75 us per loop
 
-So adding NaN protection to your inner loops comes at a negative cost!           
+So adding NaN protection to your inner loops comes at a negative cost!
 
 Functions
 =========
@@ -143,8 +143,12 @@ nanmin
 nanmax          
 =========    ==============   ===============
 
+Data types and array dimension
+==============================
+
 Currently only 1d, 2d, and 3d NumPy arrays with dtype int32, int64, float32,
-and float64 are supported.
+and float64 are accelerated. All other ndim/dtype combinations result in
+calls to slower, unaccelerated functions.
 
 License
 =======
@@ -213,6 +217,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 10 tests in 26.756s
+    Ran 10 tests in 36.756s
     OK
     <nose.result.TextTestResult run=10 errors=0 failures=0> 

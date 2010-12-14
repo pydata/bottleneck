@@ -159,7 +159,7 @@ group_nanmean['cdef_output'] = False
 group_nanmean['templates'] = {}
 group_nanmean['templates']['float'] = floats
 group_nanmean['templates']['int'] = ints
-group_nanmean['pyx_file'] = '../group/group_nanmean.pyx'
+group_nanmean['pyx_file'] = 'group/group_nanmean.pyx'
 
 group_nanmean['main'] = '''"group_nanmean auto-generated from template"
 

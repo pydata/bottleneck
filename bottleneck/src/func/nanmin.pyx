@@ -102,8 +102,11 @@ def nanmin_selector(arr, axis):
     try:
         func = nanmin_dict[key]
     except KeyError:
-        tup = (str(ndim), str(dtype), str(axis))
-        raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
+        try:
+            func = nanmin_slow_dict[axis]
+        except KeyError:
+            tup = (str(ndim), str(dtype), str(axis))
+            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 
 @cython.boundscheck(False)
@@ -865,3 +868,175 @@ nanmin_dict[(2, int32, None)] = nanmin_2d_int32_axisNone
 nanmin_dict[(2, int64, None)] = nanmin_2d_int64_axisNone
 nanmin_dict[(3, int32, None)] = nanmin_3d_int32_axisNone
 nanmin_dict[(3, int64, None)] = nanmin_3d_int64_axisNone
+
+cdef dict nanmin_slow_dict = {}
+nanmin_slow_dict[0] = nanmin_slow_axis0
+nanmin_slow_dict[1] = nanmin_slow_axis1
+nanmin_slow_dict[2] = nanmin_slow_axis2
+nanmin_slow_dict[3] = nanmin_slow_axis3
+nanmin_slow_dict[4] = nanmin_slow_axis4
+nanmin_slow_dict[5] = nanmin_slow_axis5
+nanmin_slow_dict[6] = nanmin_slow_axis6
+nanmin_slow_dict[7] = nanmin_slow_axis7
+nanmin_slow_dict[8] = nanmin_slow_axis8
+nanmin_slow_dict[9] = nanmin_slow_axis9
+nanmin_slow_dict[10] = nanmin_slow_axis10
+nanmin_slow_dict[11] = nanmin_slow_axis11
+nanmin_slow_dict[12] = nanmin_slow_axis12
+nanmin_slow_dict[13] = nanmin_slow_axis13
+nanmin_slow_dict[14] = nanmin_slow_axis14
+nanmin_slow_dict[15] = nanmin_slow_axis15
+nanmin_slow_dict[16] = nanmin_slow_axis16
+nanmin_slow_dict[17] = nanmin_slow_axis17
+nanmin_slow_dict[18] = nanmin_slow_axis18
+nanmin_slow_dict[19] = nanmin_slow_axis19
+nanmin_slow_dict[20] = nanmin_slow_axis20
+nanmin_slow_dict[21] = nanmin_slow_axis21
+nanmin_slow_dict[22] = nanmin_slow_axis22
+nanmin_slow_dict[23] = nanmin_slow_axis23
+nanmin_slow_dict[24] = nanmin_slow_axis24
+nanmin_slow_dict[25] = nanmin_slow_axis25
+nanmin_slow_dict[26] = nanmin_slow_axis26
+nanmin_slow_dict[27] = nanmin_slow_axis27
+nanmin_slow_dict[28] = nanmin_slow_axis28
+nanmin_slow_dict[29] = nanmin_slow_axis29
+nanmin_slow_dict[30] = nanmin_slow_axis30
+nanmin_slow_dict[31] = nanmin_slow_axis31
+nanmin_slow_dict[32] = nanmin_slow_axis32
+nanmin_slow_dict[None] = nanmin_slow_axisNone
+
+def nanmin_slow_axis0(arr):
+    "Unaccelerated (slow) nanmin along axis 0."
+    return bn.slow.nanmin(arr, axis=0)
+
+def nanmin_slow_axis1(arr):
+    "Unaccelerated (slow) nanmin along axis 1."
+    return bn.slow.nanmin(arr, axis=1)
+
+def nanmin_slow_axis2(arr):
+    "Unaccelerated (slow) nanmin along axis 2."
+    return bn.slow.nanmin(arr, axis=2)
+
+def nanmin_slow_axis3(arr):
+    "Unaccelerated (slow) nanmin along axis 3."
+    return bn.slow.nanmin(arr, axis=3)
+
+def nanmin_slow_axis4(arr):
+    "Unaccelerated (slow) nanmin along axis 4."
+    return bn.slow.nanmin(arr, axis=4)
+
+def nanmin_slow_axis5(arr):
+    "Unaccelerated (slow) nanmin along axis 5."
+    return bn.slow.nanmin(arr, axis=5)
+
+def nanmin_slow_axis6(arr):
+    "Unaccelerated (slow) nanmin along axis 6."
+    return bn.slow.nanmin(arr, axis=6)
+
+def nanmin_slow_axis7(arr):
+    "Unaccelerated (slow) nanmin along axis 7."
+    return bn.slow.nanmin(arr, axis=7)
+
+def nanmin_slow_axis8(arr):
+    "Unaccelerated (slow) nanmin along axis 8."
+    return bn.slow.nanmin(arr, axis=8)
+
+def nanmin_slow_axis9(arr):
+    "Unaccelerated (slow) nanmin along axis 9."
+    return bn.slow.nanmin(arr, axis=9)
+
+def nanmin_slow_axis10(arr):
+    "Unaccelerated (slow) nanmin along axis 10."
+    return bn.slow.nanmin(arr, axis=10)
+
+def nanmin_slow_axis11(arr):
+    "Unaccelerated (slow) nanmin along axis 11."
+    return bn.slow.nanmin(arr, axis=11)
+
+def nanmin_slow_axis12(arr):
+    "Unaccelerated (slow) nanmin along axis 12."
+    return bn.slow.nanmin(arr, axis=12)
+
+def nanmin_slow_axis13(arr):
+    "Unaccelerated (slow) nanmin along axis 13."
+    return bn.slow.nanmin(arr, axis=13)
+
+def nanmin_slow_axis14(arr):
+    "Unaccelerated (slow) nanmin along axis 14."
+    return bn.slow.nanmin(arr, axis=14)
+
+def nanmin_slow_axis15(arr):
+    "Unaccelerated (slow) nanmin along axis 15."
+    return bn.slow.nanmin(arr, axis=15)
+
+def nanmin_slow_axis16(arr):
+    "Unaccelerated (slow) nanmin along axis 16."
+    return bn.slow.nanmin(arr, axis=16)
+
+def nanmin_slow_axis17(arr):
+    "Unaccelerated (slow) nanmin along axis 17."
+    return bn.slow.nanmin(arr, axis=17)
+
+def nanmin_slow_axis18(arr):
+    "Unaccelerated (slow) nanmin along axis 18."
+    return bn.slow.nanmin(arr, axis=18)
+
+def nanmin_slow_axis19(arr):
+    "Unaccelerated (slow) nanmin along axis 19."
+    return bn.slow.nanmin(arr, axis=19)
+
+def nanmin_slow_axis20(arr):
+    "Unaccelerated (slow) nanmin along axis 20."
+    return bn.slow.nanmin(arr, axis=20)
+
+def nanmin_slow_axis21(arr):
+    "Unaccelerated (slow) nanmin along axis 21."
+    return bn.slow.nanmin(arr, axis=21)
+
+def nanmin_slow_axis22(arr):
+    "Unaccelerated (slow) nanmin along axis 22."
+    return bn.slow.nanmin(arr, axis=22)
+
+def nanmin_slow_axis23(arr):
+    "Unaccelerated (slow) nanmin along axis 23."
+    return bn.slow.nanmin(arr, axis=23)
+
+def nanmin_slow_axis24(arr):
+    "Unaccelerated (slow) nanmin along axis 24."
+    return bn.slow.nanmin(arr, axis=24)
+
+def nanmin_slow_axis25(arr):
+    "Unaccelerated (slow) nanmin along axis 25."
+    return bn.slow.nanmin(arr, axis=25)
+
+def nanmin_slow_axis26(arr):
+    "Unaccelerated (slow) nanmin along axis 26."
+    return bn.slow.nanmin(arr, axis=26)
+
+def nanmin_slow_axis27(arr):
+    "Unaccelerated (slow) nanmin along axis 27."
+    return bn.slow.nanmin(arr, axis=27)
+
+def nanmin_slow_axis28(arr):
+    "Unaccelerated (slow) nanmin along axis 28."
+    return bn.slow.nanmin(arr, axis=28)
+
+def nanmin_slow_axis29(arr):
+    "Unaccelerated (slow) nanmin along axis 29."
+    return bn.slow.nanmin(arr, axis=29)
+
+def nanmin_slow_axis30(arr):
+    "Unaccelerated (slow) nanmin along axis 30."
+    return bn.slow.nanmin(arr, axis=30)
+
+def nanmin_slow_axis31(arr):
+    "Unaccelerated (slow) nanmin along axis 31."
+    return bn.slow.nanmin(arr, axis=31)
+
+def nanmin_slow_axis32(arr):
+    "Unaccelerated (slow) nanmin along axis 32."
+    return bn.slow.nanmin(arr, axis=32)
+
+def nanmin_slow_axisNone(arr):
+    "Unaccelerated (slow) nanmin along axis None."
+    return bn.slow.nanmin(arr, axis=None)

@@ -114,8 +114,11 @@ def nanstd_selector(arr, axis):
     try:
         func = nanstd_dict[key]
     except KeyError:
-        tup = (str(ndim), str(dtype))
-        raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
+        try:
+            func = nanstd_slow_dict[axis]
+        except KeyError:
+            tup = (str(ndim), str(dtype), str(axis))
+            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 
 @cython.boundscheck(False)
@@ -1055,3 +1058,175 @@ nanstd_dict[(2, int32, None)] = nanstd_2d_int32_axisNone
 nanstd_dict[(2, int64, None)] = nanstd_2d_int64_axisNone
 nanstd_dict[(3, int32, None)] = nanstd_3d_int32_axisNone
 nanstd_dict[(3, int64, None)] = nanstd_3d_int64_axisNone
+
+cdef dict nanstd_slow_dict = {}
+nanstd_slow_dict[0] = nanstd_slow_axis0
+nanstd_slow_dict[1] = nanstd_slow_axis1
+nanstd_slow_dict[2] = nanstd_slow_axis2
+nanstd_slow_dict[3] = nanstd_slow_axis3
+nanstd_slow_dict[4] = nanstd_slow_axis4
+nanstd_slow_dict[5] = nanstd_slow_axis5
+nanstd_slow_dict[6] = nanstd_slow_axis6
+nanstd_slow_dict[7] = nanstd_slow_axis7
+nanstd_slow_dict[8] = nanstd_slow_axis8
+nanstd_slow_dict[9] = nanstd_slow_axis9
+nanstd_slow_dict[10] = nanstd_slow_axis10
+nanstd_slow_dict[11] = nanstd_slow_axis11
+nanstd_slow_dict[12] = nanstd_slow_axis12
+nanstd_slow_dict[13] = nanstd_slow_axis13
+nanstd_slow_dict[14] = nanstd_slow_axis14
+nanstd_slow_dict[15] = nanstd_slow_axis15
+nanstd_slow_dict[16] = nanstd_slow_axis16
+nanstd_slow_dict[17] = nanstd_slow_axis17
+nanstd_slow_dict[18] = nanstd_slow_axis18
+nanstd_slow_dict[19] = nanstd_slow_axis19
+nanstd_slow_dict[20] = nanstd_slow_axis20
+nanstd_slow_dict[21] = nanstd_slow_axis21
+nanstd_slow_dict[22] = nanstd_slow_axis22
+nanstd_slow_dict[23] = nanstd_slow_axis23
+nanstd_slow_dict[24] = nanstd_slow_axis24
+nanstd_slow_dict[25] = nanstd_slow_axis25
+nanstd_slow_dict[26] = nanstd_slow_axis26
+nanstd_slow_dict[27] = nanstd_slow_axis27
+nanstd_slow_dict[28] = nanstd_slow_axis28
+nanstd_slow_dict[29] = nanstd_slow_axis29
+nanstd_slow_dict[30] = nanstd_slow_axis30
+nanstd_slow_dict[31] = nanstd_slow_axis31
+nanstd_slow_dict[32] = nanstd_slow_axis32
+nanstd_slow_dict[None] = nanstd_slow_axisNone
+
+def nanstd_slow_axis0(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 0."
+    return bn.slow.nanstd(arr, axis=0, ddof=ddof)
+
+def nanstd_slow_axis1(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 1."
+    return bn.slow.nanstd(arr, axis=1, ddof=ddof)
+
+def nanstd_slow_axis2(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 2."
+    return bn.slow.nanstd(arr, axis=2, ddof=ddof)
+
+def nanstd_slow_axis3(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 3."
+    return bn.slow.nanstd(arr, axis=3, ddof=ddof)
+
+def nanstd_slow_axis4(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 4."
+    return bn.slow.nanstd(arr, axis=4, ddof=ddof)
+
+def nanstd_slow_axis5(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 5."
+    return bn.slow.nanstd(arr, axis=5, ddof=ddof)
+
+def nanstd_slow_axis6(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 6."
+    return bn.slow.nanstd(arr, axis=6, ddof=ddof)
+
+def nanstd_slow_axis7(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 7."
+    return bn.slow.nanstd(arr, axis=7, ddof=ddof)
+
+def nanstd_slow_axis8(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 8."
+    return bn.slow.nanstd(arr, axis=8, ddof=ddof)
+
+def nanstd_slow_axis9(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 9."
+    return bn.slow.nanstd(arr, axis=9, ddof=ddof)
+
+def nanstd_slow_axis10(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 10."
+    return bn.slow.nanstd(arr, axis=10, ddof=ddof)
+
+def nanstd_slow_axis11(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 11."
+    return bn.slow.nanstd(arr, axis=11, ddof=ddof)
+
+def nanstd_slow_axis12(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 12."
+    return bn.slow.nanstd(arr, axis=12, ddof=ddof)
+
+def nanstd_slow_axis13(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 13."
+    return bn.slow.nanstd(arr, axis=13, ddof=ddof)
+
+def nanstd_slow_axis14(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 14."
+    return bn.slow.nanstd(arr, axis=14, ddof=ddof)
+
+def nanstd_slow_axis15(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 15."
+    return bn.slow.nanstd(arr, axis=15, ddof=ddof)
+
+def nanstd_slow_axis16(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 16."
+    return bn.slow.nanstd(arr, axis=16, ddof=ddof)
+
+def nanstd_slow_axis17(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 17."
+    return bn.slow.nanstd(arr, axis=17, ddof=ddof)
+
+def nanstd_slow_axis18(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 18."
+    return bn.slow.nanstd(arr, axis=18, ddof=ddof)
+
+def nanstd_slow_axis19(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 19."
+    return bn.slow.nanstd(arr, axis=19, ddof=ddof)
+
+def nanstd_slow_axis20(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 20."
+    return bn.slow.nanstd(arr, axis=20, ddof=ddof)
+
+def nanstd_slow_axis21(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 21."
+    return bn.slow.nanstd(arr, axis=21, ddof=ddof)
+
+def nanstd_slow_axis22(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 22."
+    return bn.slow.nanstd(arr, axis=22, ddof=ddof)
+
+def nanstd_slow_axis23(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 23."
+    return bn.slow.nanstd(arr, axis=23, ddof=ddof)
+
+def nanstd_slow_axis24(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 24."
+    return bn.slow.nanstd(arr, axis=24, ddof=ddof)
+
+def nanstd_slow_axis25(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 25."
+    return bn.slow.nanstd(arr, axis=25, ddof=ddof)
+
+def nanstd_slow_axis26(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 26."
+    return bn.slow.nanstd(arr, axis=26, ddof=ddof)
+
+def nanstd_slow_axis27(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 27."
+    return bn.slow.nanstd(arr, axis=27, ddof=ddof)
+
+def nanstd_slow_axis28(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 28."
+    return bn.slow.nanstd(arr, axis=28, ddof=ddof)
+
+def nanstd_slow_axis29(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 29."
+    return bn.slow.nanstd(arr, axis=29, ddof=ddof)
+
+def nanstd_slow_axis30(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 30."
+    return bn.slow.nanstd(arr, axis=30, ddof=ddof)
+
+def nanstd_slow_axis31(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 31."
+    return bn.slow.nanstd(arr, axis=31, ddof=ddof)
+
+def nanstd_slow_axis32(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis 32."
+    return bn.slow.nanstd(arr, axis=32, ddof=ddof)
+
+def nanstd_slow_axisNone(arr, ddof):
+    "Unaccelerated (slow) nanstd along axis None."
+    return bn.slow.nanstd(arr, axis=None, ddof=ddof)

@@ -1,7 +1,7 @@
 "Test moving window functions."
 
 import numpy as np
-from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
+from numpy.testing import (assert_equal, assert_array_equal,
                            assert_array_almost_equal)
 nan = np.nan
 import bottleneck as bn
@@ -13,6 +13,7 @@ def arrays(dtypes=bn.dtypes):
     ss[1] = {'size':  4, 'shapes': [(4,)]}
     ss[2] = {'size':  6, 'shapes': [(1,6), (2,3), (6,1)]}
     ss[3] = {'size': 24, 'shapes': [(1,1,24), (24,1,1), (1,24,1), (2,3,4)]}
+    ss[4] = {'size': 24, 'shapes': [(1,2,3,4)]}  # Unaccelerated
     for ndim in ss:
         size = ss[ndim]['size']
         shapes = ss[ndim]['shapes']

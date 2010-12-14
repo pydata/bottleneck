@@ -102,8 +102,11 @@ def nanmax_selector(arr, axis):
     try:
         func = nanmax_dict[key]
     except KeyError:
-        tup = (str(ndim), str(dtype))
-        raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
+        try:
+            func = nanmax_slow_dict[axis]
+        except KeyError:
+            tup = (str(ndim), str(dtype), str(axis))
+            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 
 @cython.boundscheck(False)
@@ -865,3 +868,175 @@ nanmax_dict[(2, int32, None)] = nanmax_2d_int32_axisNone
 nanmax_dict[(2, int64, None)] = nanmax_2d_int64_axisNone
 nanmax_dict[(3, int32, None)] = nanmax_3d_int32_axisNone
 nanmax_dict[(3, int64, None)] = nanmax_3d_int64_axisNone
+
+cdef dict nanmax_slow_dict = {}
+nanmax_slow_dict[0] = nanmax_slow_axis0
+nanmax_slow_dict[1] = nanmax_slow_axis1
+nanmax_slow_dict[2] = nanmax_slow_axis2
+nanmax_slow_dict[3] = nanmax_slow_axis3
+nanmax_slow_dict[4] = nanmax_slow_axis4
+nanmax_slow_dict[5] = nanmax_slow_axis5
+nanmax_slow_dict[6] = nanmax_slow_axis6
+nanmax_slow_dict[7] = nanmax_slow_axis7
+nanmax_slow_dict[8] = nanmax_slow_axis8
+nanmax_slow_dict[9] = nanmax_slow_axis9
+nanmax_slow_dict[10] = nanmax_slow_axis10
+nanmax_slow_dict[11] = nanmax_slow_axis11
+nanmax_slow_dict[12] = nanmax_slow_axis12
+nanmax_slow_dict[13] = nanmax_slow_axis13
+nanmax_slow_dict[14] = nanmax_slow_axis14
+nanmax_slow_dict[15] = nanmax_slow_axis15
+nanmax_slow_dict[16] = nanmax_slow_axis16
+nanmax_slow_dict[17] = nanmax_slow_axis17
+nanmax_slow_dict[18] = nanmax_slow_axis18
+nanmax_slow_dict[19] = nanmax_slow_axis19
+nanmax_slow_dict[20] = nanmax_slow_axis20
+nanmax_slow_dict[21] = nanmax_slow_axis21
+nanmax_slow_dict[22] = nanmax_slow_axis22
+nanmax_slow_dict[23] = nanmax_slow_axis23
+nanmax_slow_dict[24] = nanmax_slow_axis24
+nanmax_slow_dict[25] = nanmax_slow_axis25
+nanmax_slow_dict[26] = nanmax_slow_axis26
+nanmax_slow_dict[27] = nanmax_slow_axis27
+nanmax_slow_dict[28] = nanmax_slow_axis28
+nanmax_slow_dict[29] = nanmax_slow_axis29
+nanmax_slow_dict[30] = nanmax_slow_axis30
+nanmax_slow_dict[31] = nanmax_slow_axis31
+nanmax_slow_dict[32] = nanmax_slow_axis32
+nanmax_slow_dict[None] = nanmax_slow_axisNone
+
+def nanmax_slow_axis0(arr):
+    "Unaccelerated (slow) nanmax along axis 0."
+    return bn.slow.nanmax(arr, axis=0)
+
+def nanmax_slow_axis1(arr):
+    "Unaccelerated (slow) nanmax along axis 1."
+    return bn.slow.nanmax(arr, axis=1)
+
+def nanmax_slow_axis2(arr):
+    "Unaccelerated (slow) nanmax along axis 2."
+    return bn.slow.nanmax(arr, axis=2)
+
+def nanmax_slow_axis3(arr):
+    "Unaccelerated (slow) nanmax along axis 3."
+    return bn.slow.nanmax(arr, axis=3)
+
+def nanmax_slow_axis4(arr):
+    "Unaccelerated (slow) nanmax along axis 4."
+    return bn.slow.nanmax(arr, axis=4)
+
+def nanmax_slow_axis5(arr):
+    "Unaccelerated (slow) nanmax along axis 5."
+    return bn.slow.nanmax(arr, axis=5)
+
+def nanmax_slow_axis6(arr):
+    "Unaccelerated (slow) nanmax along axis 6."
+    return bn.slow.nanmax(arr, axis=6)
+
+def nanmax_slow_axis7(arr):
+    "Unaccelerated (slow) nanmax along axis 7."
+    return bn.slow.nanmax(arr, axis=7)
+
+def nanmax_slow_axis8(arr):
+    "Unaccelerated (slow) nanmax along axis 8."
+    return bn.slow.nanmax(arr, axis=8)
+
+def nanmax_slow_axis9(arr):
+    "Unaccelerated (slow) nanmax along axis 9."
+    return bn.slow.nanmax(arr, axis=9)
+
+def nanmax_slow_axis10(arr):
+    "Unaccelerated (slow) nanmax along axis 10."
+    return bn.slow.nanmax(arr, axis=10)
+
+def nanmax_slow_axis11(arr):
+    "Unaccelerated (slow) nanmax along axis 11."
+    return bn.slow.nanmax(arr, axis=11)
+
+def nanmax_slow_axis12(arr):
+    "Unaccelerated (slow) nanmax along axis 12."
+    return bn.slow.nanmax(arr, axis=12)
+
+def nanmax_slow_axis13(arr):
+    "Unaccelerated (slow) nanmax along axis 13."
+    return bn.slow.nanmax(arr, axis=13)
+
+def nanmax_slow_axis14(arr):
+    "Unaccelerated (slow) nanmax along axis 14."
+    return bn.slow.nanmax(arr, axis=14)
+
+def nanmax_slow_axis15(arr):
+    "Unaccelerated (slow) nanmax along axis 15."
+    return bn.slow.nanmax(arr, axis=15)
+
+def nanmax_slow_axis16(arr):
+    "Unaccelerated (slow) nanmax along axis 16."
+    return bn.slow.nanmax(arr, axis=16)
+
+def nanmax_slow_axis17(arr):
+    "Unaccelerated (slow) nanmax along axis 17."
+    return bn.slow.nanmax(arr, axis=17)
+
+def nanmax_slow_axis18(arr):
+    "Unaccelerated (slow) nanmax along axis 18."
+    return bn.slow.nanmax(arr, axis=18)
+
+def nanmax_slow_axis19(arr):
+    "Unaccelerated (slow) nanmax along axis 19."
+    return bn.slow.nanmax(arr, axis=19)
+
+def nanmax_slow_axis20(arr):
+    "Unaccelerated (slow) nanmax along axis 20."
+    return bn.slow.nanmax(arr, axis=20)
+
+def nanmax_slow_axis21(arr):
+    "Unaccelerated (slow) nanmax along axis 21."
+    return bn.slow.nanmax(arr, axis=21)
+
+def nanmax_slow_axis22(arr):
+    "Unaccelerated (slow) nanmax along axis 22."
+    return bn.slow.nanmax(arr, axis=22)
+
+def nanmax_slow_axis23(arr):
+    "Unaccelerated (slow) nanmax along axis 23."
+    return bn.slow.nanmax(arr, axis=23)
+
+def nanmax_slow_axis24(arr):
+    "Unaccelerated (slow) nanmax along axis 24."
+    return bn.slow.nanmax(arr, axis=24)
+
+def nanmax_slow_axis25(arr):
+    "Unaccelerated (slow) nanmax along axis 25."
+    return bn.slow.nanmax(arr, axis=25)
+
+def nanmax_slow_axis26(arr):
+    "Unaccelerated (slow) nanmax along axis 26."
+    return bn.slow.nanmax(arr, axis=26)
+
+def nanmax_slow_axis27(arr):
+    "Unaccelerated (slow) nanmax along axis 27."
+    return bn.slow.nanmax(arr, axis=27)
+
+def nanmax_slow_axis28(arr):
+    "Unaccelerated (slow) nanmax along axis 28."
+    return bn.slow.nanmax(arr, axis=28)
+
+def nanmax_slow_axis29(arr):
+    "Unaccelerated (slow) nanmax along axis 29."
+    return bn.slow.nanmax(arr, axis=29)
+
+def nanmax_slow_axis30(arr):
+    "Unaccelerated (slow) nanmax along axis 30."
+    return bn.slow.nanmax(arr, axis=30)
+
+def nanmax_slow_axis31(arr):
+    "Unaccelerated (slow) nanmax along axis 31."
+    return bn.slow.nanmax(arr, axis=31)
+
+def nanmax_slow_axis32(arr):
+    "Unaccelerated (slow) nanmax along axis 32."
+    return bn.slow.nanmax(arr, axis=32)
+
+def nanmax_slow_axisNone(arr):
+    "Unaccelerated (slow) nanmax along axis None."
+    return bn.slow.nanmax(arr, axis=None)

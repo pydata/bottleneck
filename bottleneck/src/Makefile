@@ -4,14 +4,23 @@
 help:
 	@echo "Available tasks:"
 	@echo "help  --> This help page"
-	@echo "build --> Build the Cython extension module"
+	@echo "pyx   --> Create Cython pyx file from templates"
+	@echo "build --> Build the Cython extension modules"
 	@echo "clean --> Remove all the build files for a freah start"
 	@echo "test  --> Run unit tests"
 	@echo "all   --> clean, build, test"
 	@echo "bench --> Run performance benchmark"
 
 
-all: clean build test
+all: clean pyx build test
+
+pyx:
+	python -c "from bottleneck.src.template.func.func import funcpyx; \
+    funcpyx()"
+	python -c "from bottleneck.src.template.move.move import movepyx; \
+    movepyx()"
+	python -c "from bottleneck.src.template.group.group import grouppyx; \
+    grouppyx()"
 
 build: funcs moves groups
 	

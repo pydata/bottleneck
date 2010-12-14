@@ -173,18 +173,26 @@ loop[3] = """\
 
 ints_None['loop'] = loop
 
+# Slow, unaccelerated ndim/dtype --------------------------------------------
+
+slow = {}
+slow['name'] = "nanmin"
+slow['signature'] = "arr"
+slow['func'] = "bn.slow.nanmin(arr, axis=AXIS)"
+
 # Template ------------------------------------------------------------------
 
 nanmin = {}
 nanmin['name'] = 'nanmin'
 nanmin['is_reducing_function'] = True
 nanmin['cdef_output'] = True
+nanmin['slow'] = slow
 nanmin['templates'] = {}
 nanmin['templates']['float'] = floats
 nanmin['templates']['float_None'] = floats_None
 nanmin['templates']['int'] = ints
 nanmin['templates']['int_None'] = ints_None
-nanmin['pyx_file'] = '../func/nanmin.pyx'
+nanmin['pyx_file'] = 'func/nanmin.pyx'
 
 nanmin['main'] = '''"nanmin auto-generated from template"
 
@@ -290,7 +298,10 @@ def nanmin_selector(arr, axis):
     try:
         func = nanmin_dict[key]
     except KeyError:
-        tup = (str(ndim), str(dtype), str(axis))
-        raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
+        try:
+            func = nanmin_slow_dict[axis]
+        except KeyError:
+            tup = (str(ndim), str(dtype), str(axis))
+            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 '''   

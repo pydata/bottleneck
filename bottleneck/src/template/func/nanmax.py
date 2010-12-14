@@ -173,18 +173,26 @@ loop[3] = """\
 
 ints_None['loop'] = loop
 
+# Slow, unaccelerated ndim/dtype --------------------------------------------
+
+slow = {}
+slow['name'] = "nanmax"
+slow['signature'] = "arr"
+slow['func'] = "bn.slow.nanmax(arr, axis=AXIS)"
+
 # Template ------------------------------------------------------------------
 
 nanmax = {}
 nanmax['name'] = 'nanmax'
 nanmax['is_reducing_function'] = True
 nanmax['cdef_output'] = True
+nanmax['slow'] = slow
 nanmax['templates'] = {}
 nanmax['templates']['float'] = floats
 nanmax['templates']['float_None'] = floats_None
 nanmax['templates']['int'] = ints
 nanmax['templates']['int_None'] = ints_None
-nanmax['pyx_file'] = '../func/nanmax.pyx'
+nanmax['pyx_file'] = 'func/nanmax.pyx'
 
 nanmax['main'] = '''"nanmax auto-generated from template"
 
@@ -290,7 +298,10 @@ def nanmax_selector(arr, axis):
     try:
         func = nanmax_dict[key]
     except KeyError:
-        tup = (str(ndim), str(dtype))
-        raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
+        try:
+            func = nanmax_slow_dict[axis]
+        except KeyError:
+            tup = (str(ndim), str(dtype), str(axis))
+            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 '''

@@ -92,8 +92,11 @@ def move_nanmean_selector(arr, int window, int axis):
     try:
         func = move_nanmean_dict[key]
     except KeyError:
-        tup = (str(ndim), str(axis))
-        raise TypeError, "Unsupported ndim/axis (%s/%s)." % tup
+        try:
+            func = move_nanmean_slow_dict[axis]
+        except KeyError:
+            tup = (str(ndim), str(dtype), str(axis))
+            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 
 @cython.boundscheck(False)
@@ -1329,3 +1332,175 @@ move_nanmean_dict[(3, float32, 2)] = move_nanmean_3d_float32_axis2
 move_nanmean_dict[(3, float64, 0)] = move_nanmean_3d_float64_axis0
 move_nanmean_dict[(3, float64, 1)] = move_nanmean_3d_float64_axis1
 move_nanmean_dict[(3, float64, 2)] = move_nanmean_3d_float64_axis2
+
+cdef dict move_nanmean_slow_dict = {}
+move_nanmean_slow_dict[0] = move_nanmean_slow_axis0
+move_nanmean_slow_dict[1] = move_nanmean_slow_axis1
+move_nanmean_slow_dict[2] = move_nanmean_slow_axis2
+move_nanmean_slow_dict[3] = move_nanmean_slow_axis3
+move_nanmean_slow_dict[4] = move_nanmean_slow_axis4
+move_nanmean_slow_dict[5] = move_nanmean_slow_axis5
+move_nanmean_slow_dict[6] = move_nanmean_slow_axis6
+move_nanmean_slow_dict[7] = move_nanmean_slow_axis7
+move_nanmean_slow_dict[8] = move_nanmean_slow_axis8
+move_nanmean_slow_dict[9] = move_nanmean_slow_axis9
+move_nanmean_slow_dict[10] = move_nanmean_slow_axis10
+move_nanmean_slow_dict[11] = move_nanmean_slow_axis11
+move_nanmean_slow_dict[12] = move_nanmean_slow_axis12
+move_nanmean_slow_dict[13] = move_nanmean_slow_axis13
+move_nanmean_slow_dict[14] = move_nanmean_slow_axis14
+move_nanmean_slow_dict[15] = move_nanmean_slow_axis15
+move_nanmean_slow_dict[16] = move_nanmean_slow_axis16
+move_nanmean_slow_dict[17] = move_nanmean_slow_axis17
+move_nanmean_slow_dict[18] = move_nanmean_slow_axis18
+move_nanmean_slow_dict[19] = move_nanmean_slow_axis19
+move_nanmean_slow_dict[20] = move_nanmean_slow_axis20
+move_nanmean_slow_dict[21] = move_nanmean_slow_axis21
+move_nanmean_slow_dict[22] = move_nanmean_slow_axis22
+move_nanmean_slow_dict[23] = move_nanmean_slow_axis23
+move_nanmean_slow_dict[24] = move_nanmean_slow_axis24
+move_nanmean_slow_dict[25] = move_nanmean_slow_axis25
+move_nanmean_slow_dict[26] = move_nanmean_slow_axis26
+move_nanmean_slow_dict[27] = move_nanmean_slow_axis27
+move_nanmean_slow_dict[28] = move_nanmean_slow_axis28
+move_nanmean_slow_dict[29] = move_nanmean_slow_axis29
+move_nanmean_slow_dict[30] = move_nanmean_slow_axis30
+move_nanmean_slow_dict[31] = move_nanmean_slow_axis31
+move_nanmean_slow_dict[32] = move_nanmean_slow_axis32
+move_nanmean_slow_dict[None] = move_nanmean_slow_axisNone
+
+def move_nanmean_slow_axis0(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 0."
+    return bn.slow.move_nanmean(arr, window, axis=0)
+
+def move_nanmean_slow_axis1(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 1."
+    return bn.slow.move_nanmean(arr, window, axis=1)
+
+def move_nanmean_slow_axis2(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 2."
+    return bn.slow.move_nanmean(arr, window, axis=2)
+
+def move_nanmean_slow_axis3(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 3."
+    return bn.slow.move_nanmean(arr, window, axis=3)
+
+def move_nanmean_slow_axis4(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 4."
+    return bn.slow.move_nanmean(arr, window, axis=4)
+
+def move_nanmean_slow_axis5(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 5."
+    return bn.slow.move_nanmean(arr, window, axis=5)
+
+def move_nanmean_slow_axis6(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 6."
+    return bn.slow.move_nanmean(arr, window, axis=6)
+
+def move_nanmean_slow_axis7(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 7."
+    return bn.slow.move_nanmean(arr, window, axis=7)
+
+def move_nanmean_slow_axis8(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 8."
+    return bn.slow.move_nanmean(arr, window, axis=8)
+
+def move_nanmean_slow_axis9(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 9."
+    return bn.slow.move_nanmean(arr, window, axis=9)
+
+def move_nanmean_slow_axis10(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 10."
+    return bn.slow.move_nanmean(arr, window, axis=10)
+
+def move_nanmean_slow_axis11(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 11."
+    return bn.slow.move_nanmean(arr, window, axis=11)
+
+def move_nanmean_slow_axis12(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 12."
+    return bn.slow.move_nanmean(arr, window, axis=12)
+
+def move_nanmean_slow_axis13(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 13."
+    return bn.slow.move_nanmean(arr, window, axis=13)
+
+def move_nanmean_slow_axis14(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 14."
+    return bn.slow.move_nanmean(arr, window, axis=14)
+
+def move_nanmean_slow_axis15(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 15."
+    return bn.slow.move_nanmean(arr, window, axis=15)
+
+def move_nanmean_slow_axis16(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 16."
+    return bn.slow.move_nanmean(arr, window, axis=16)
+
+def move_nanmean_slow_axis17(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 17."
+    return bn.slow.move_nanmean(arr, window, axis=17)
+
+def move_nanmean_slow_axis18(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 18."
+    return bn.slow.move_nanmean(arr, window, axis=18)
+
+def move_nanmean_slow_axis19(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 19."
+    return bn.slow.move_nanmean(arr, window, axis=19)
+
+def move_nanmean_slow_axis20(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 20."
+    return bn.slow.move_nanmean(arr, window, axis=20)
+
+def move_nanmean_slow_axis21(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 21."
+    return bn.slow.move_nanmean(arr, window, axis=21)
+
+def move_nanmean_slow_axis22(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 22."
+    return bn.slow.move_nanmean(arr, window, axis=22)
+
+def move_nanmean_slow_axis23(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 23."
+    return bn.slow.move_nanmean(arr, window, axis=23)
+
+def move_nanmean_slow_axis24(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 24."
+    return bn.slow.move_nanmean(arr, window, axis=24)
+
+def move_nanmean_slow_axis25(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 25."
+    return bn.slow.move_nanmean(arr, window, axis=25)
+
+def move_nanmean_slow_axis26(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 26."
+    return bn.slow.move_nanmean(arr, window, axis=26)
+
+def move_nanmean_slow_axis27(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 27."
+    return bn.slow.move_nanmean(arr, window, axis=27)
+
+def move_nanmean_slow_axis28(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 28."
+    return bn.slow.move_nanmean(arr, window, axis=28)
+
+def move_nanmean_slow_axis29(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 29."
+    return bn.slow.move_nanmean(arr, window, axis=29)
+
+def move_nanmean_slow_axis30(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 30."
+    return bn.slow.move_nanmean(arr, window, axis=30)
+
+def move_nanmean_slow_axis31(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 31."
+    return bn.slow.move_nanmean(arr, window, axis=31)
+
+def move_nanmean_slow_axis32(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis 32."
+    return bn.slow.move_nanmean(arr, window, axis=32)
+
+def move_nanmean_slow_axisNone(arr, window):
+    "Unaccelerated (slow) move_nanmean along axis None."
+    return bn.slow.move_nanmean(arr, window, axis=None)

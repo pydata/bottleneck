@@ -114,8 +114,11 @@ def nanvar_selector(arr, axis):
     try:
         func = nanvar_dict[key]
     except KeyError:
-        tup = (str(ndim), str(dtype))
-        raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
+        try:
+            func = nanvar_slow_dict[axis]
+        except KeyError:
+            tup = (str(ndim), str(dtype), str(axis))
+            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 
 @cython.boundscheck(False)
@@ -1055,3 +1058,175 @@ nanvar_dict[(2, int32, None)] = nanvar_2d_int32_axisNone
 nanvar_dict[(2, int64, None)] = nanvar_2d_int64_axisNone
 nanvar_dict[(3, int32, None)] = nanvar_3d_int32_axisNone
 nanvar_dict[(3, int64, None)] = nanvar_3d_int64_axisNone
+
+cdef dict nanvar_slow_dict = {}
+nanvar_slow_dict[0] = nanvar_slow_axis0
+nanvar_slow_dict[1] = nanvar_slow_axis1
+nanvar_slow_dict[2] = nanvar_slow_axis2
+nanvar_slow_dict[3] = nanvar_slow_axis3
+nanvar_slow_dict[4] = nanvar_slow_axis4
+nanvar_slow_dict[5] = nanvar_slow_axis5
+nanvar_slow_dict[6] = nanvar_slow_axis6
+nanvar_slow_dict[7] = nanvar_slow_axis7
+nanvar_slow_dict[8] = nanvar_slow_axis8
+nanvar_slow_dict[9] = nanvar_slow_axis9
+nanvar_slow_dict[10] = nanvar_slow_axis10
+nanvar_slow_dict[11] = nanvar_slow_axis11
+nanvar_slow_dict[12] = nanvar_slow_axis12
+nanvar_slow_dict[13] = nanvar_slow_axis13
+nanvar_slow_dict[14] = nanvar_slow_axis14
+nanvar_slow_dict[15] = nanvar_slow_axis15
+nanvar_slow_dict[16] = nanvar_slow_axis16
+nanvar_slow_dict[17] = nanvar_slow_axis17
+nanvar_slow_dict[18] = nanvar_slow_axis18
+nanvar_slow_dict[19] = nanvar_slow_axis19
+nanvar_slow_dict[20] = nanvar_slow_axis20
+nanvar_slow_dict[21] = nanvar_slow_axis21
+nanvar_slow_dict[22] = nanvar_slow_axis22
+nanvar_slow_dict[23] = nanvar_slow_axis23
+nanvar_slow_dict[24] = nanvar_slow_axis24
+nanvar_slow_dict[25] = nanvar_slow_axis25
+nanvar_slow_dict[26] = nanvar_slow_axis26
+nanvar_slow_dict[27] = nanvar_slow_axis27
+nanvar_slow_dict[28] = nanvar_slow_axis28
+nanvar_slow_dict[29] = nanvar_slow_axis29
+nanvar_slow_dict[30] = nanvar_slow_axis30
+nanvar_slow_dict[31] = nanvar_slow_axis31
+nanvar_slow_dict[32] = nanvar_slow_axis32
+nanvar_slow_dict[None] = nanvar_slow_axisNone
+
+def nanvar_slow_axis0(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 0."
+    return bn.slow.nanvar(arr, axis=0, ddof=ddof)
+
+def nanvar_slow_axis1(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 1."
+    return bn.slow.nanvar(arr, axis=1, ddof=ddof)
+
+def nanvar_slow_axis2(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 2."
+    return bn.slow.nanvar(arr, axis=2, ddof=ddof)
+
+def nanvar_slow_axis3(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 3."
+    return bn.slow.nanvar(arr, axis=3, ddof=ddof)
+
+def nanvar_slow_axis4(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 4."
+    return bn.slow.nanvar(arr, axis=4, ddof=ddof)
+
+def nanvar_slow_axis5(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 5."
+    return bn.slow.nanvar(arr, axis=5, ddof=ddof)
+
+def nanvar_slow_axis6(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 6."
+    return bn.slow.nanvar(arr, axis=6, ddof=ddof)
+
+def nanvar_slow_axis7(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 7."
+    return bn.slow.nanvar(arr, axis=7, ddof=ddof)
+
+def nanvar_slow_axis8(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 8."
+    return bn.slow.nanvar(arr, axis=8, ddof=ddof)
+
+def nanvar_slow_axis9(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 9."
+    return bn.slow.nanvar(arr, axis=9, ddof=ddof)
+
+def nanvar_slow_axis10(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 10."
+    return bn.slow.nanvar(arr, axis=10, ddof=ddof)
+
+def nanvar_slow_axis11(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 11."
+    return bn.slow.nanvar(arr, axis=11, ddof=ddof)
+
+def nanvar_slow_axis12(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 12."
+    return bn.slow.nanvar(arr, axis=12, ddof=ddof)
+
+def nanvar_slow_axis13(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 13."
+    return bn.slow.nanvar(arr, axis=13, ddof=ddof)
+
+def nanvar_slow_axis14(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 14."
+    return bn.slow.nanvar(arr, axis=14, ddof=ddof)
+
+def nanvar_slow_axis15(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 15."
+    return bn.slow.nanvar(arr, axis=15, ddof=ddof)
+
+def nanvar_slow_axis16(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 16."
+    return bn.slow.nanvar(arr, axis=16, ddof=ddof)
+
+def nanvar_slow_axis17(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 17."
+    return bn.slow.nanvar(arr, axis=17, ddof=ddof)
+
+def nanvar_slow_axis18(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 18."
+    return bn.slow.nanvar(arr, axis=18, ddof=ddof)
+
+def nanvar_slow_axis19(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 19."
+    return bn.slow.nanvar(arr, axis=19, ddof=ddof)
+
+def nanvar_slow_axis20(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 20."
+    return bn.slow.nanvar(arr, axis=20, ddof=ddof)
+
+def nanvar_slow_axis21(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 21."
+    return bn.slow.nanvar(arr, axis=21, ddof=ddof)
+
+def nanvar_slow_axis22(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 22."
+    return bn.slow.nanvar(arr, axis=22, ddof=ddof)
+
+def nanvar_slow_axis23(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 23."
+    return bn.slow.nanvar(arr, axis=23, ddof=ddof)
+
+def nanvar_slow_axis24(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 24."
+    return bn.slow.nanvar(arr, axis=24, ddof=ddof)
+
+def nanvar_slow_axis25(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 25."
+    return bn.slow.nanvar(arr, axis=25, ddof=ddof)
+
+def nanvar_slow_axis26(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 26."
+    return bn.slow.nanvar(arr, axis=26, ddof=ddof)
+
+def nanvar_slow_axis27(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 27."
+    return bn.slow.nanvar(arr, axis=27, ddof=ddof)
+
+def nanvar_slow_axis28(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 28."
+    return bn.slow.nanvar(arr, axis=28, ddof=ddof)
+
+def nanvar_slow_axis29(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 29."
+    return bn.slow.nanvar(arr, axis=29, ddof=ddof)
+
+def nanvar_slow_axis30(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 30."
+    return bn.slow.nanvar(arr, axis=30, ddof=ddof)
+
+def nanvar_slow_axis31(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 31."
+    return bn.slow.nanvar(arr, axis=31, ddof=ddof)
+
+def nanvar_slow_axis32(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis 32."
+    return bn.slow.nanvar(arr, axis=32, ddof=ddof)
+
+def nanvar_slow_axisNone(arr, ddof):
+    "Unaccelerated (slow) nanvar along axis None."
+    return bn.slow.nanvar(arr, axis=None, ddof=ddof)

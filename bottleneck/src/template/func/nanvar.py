@@ -237,18 +237,26 @@ loop[3] = """\
 """
 ints_None['loop'] = loop
 
+# Slow, unaccelerated ndim/dtype --------------------------------------------
+
+slow = {}
+slow['name'] = "nanvar"
+slow['signature'] = "arr, ddof"
+slow['func'] = "bn.slow.nanvar(arr, axis=AXIS, ddof=ddof)"
+
 # Template ------------------------------------------------------------------
 
 nanvar = {}
 nanvar['name'] = 'nanvar'
 nanvar['is_reducing_function'] = True
 nanvar['cdef_output'] = True
+nanvar['slow'] = slow
 nanvar['templates'] = {}
 nanvar['templates']['float'] = floats
 nanvar['templates']['float_None'] = floats_None
 nanvar['templates']['int'] = ints
 nanvar['templates']['int_None'] = ints_None
-nanvar['pyx_file'] = '../func/nanvar.pyx'
+nanvar['pyx_file'] = 'func/nanvar.pyx'
 
 nanvar['main'] = '''"nanvar auto-generated from template"
 
@@ -366,7 +374,10 @@ def nanvar_selector(arr, axis):
     try:
         func = nanvar_dict[key]
     except KeyError:
-        tup = (str(ndim), str(dtype))
-        raise TypeError, "Unsupported ndim/dtype (%s/%s)." % tup
+        try:
+            func = nanvar_slow_dict[axis]
+        except KeyError:
+            tup = (str(ndim), str(dtype), str(axis))
+            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 '''   
