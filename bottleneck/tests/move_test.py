@@ -5,7 +5,6 @@ from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
                            assert_array_almost_equal)
 nan = np.nan
 import bottleneck as bn
-from bottleneck.testing.move_validators import mov_nanmean as alt_move_nanmean
 
 
 def arrays(dtypes=bn.dtypes):
@@ -58,4 +57,4 @@ def unit_maker(func, func0, decimal=np.inf):
 
 def test_move_nanmean():
     "Test move_nanmean."
-    yield unit_maker, bn.move_nanmean, alt_move_nanmean
+    yield unit_maker, bn.move_nanmean, bn.slow.move_nanmean

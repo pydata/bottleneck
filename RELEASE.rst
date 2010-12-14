@@ -13,6 +13,7 @@ Bottleneck 0.2.0
 
 **Enhancements**
 
+- Added support for float32
 - All functions faster (less overhead) when output is not a scalar
 - Added support for NumPy 1.4.1 and SciPy 0.7.2
 - Faster nanmean() for 2d, 3d arrays with NaNs when axis is not None

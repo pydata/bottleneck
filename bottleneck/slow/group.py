@@ -5,6 +5,14 @@ These function are slow but useful as a reference for unit testing.
 """
 
 import numpy as np
+import bottleneck as bn
+
+__all__ = ['group_nanmean']
+
+
+def group_nanmean(arr, label, axis=0):
+    "Slow group_nanmean used for unaccelerated ndim/dtype combinations."
+    return group_func(bn.slow.nanmean, arr, label, axis)
 
 def group_func(func, arr, label, axis=0):
     """

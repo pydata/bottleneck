@@ -5,7 +5,6 @@ from numpy.testing import (assert_equal, assert_array_equal,
                            assert_array_almost_equal)
 nan = np.nan
 import bottleneck as bn
-from bottleneck.testing.group_validator import group_func
 
 
 def array_iter(dtypes=bn.dtypes):
@@ -62,7 +61,7 @@ def unit_maker(func, func0, decimal=np.inf):
             for label in label_iter(arr.shape[axis]):
                 with np.errstate(invalid='ignore'):
                     a1, lab1 = func(arr, label, axis=axis)
-                    a0, lab0 = group_func(func0, arr, label, axis=axis)
+                    a0, lab0 = func0(arr, label, axis=axis)
                 if type(label) == np.ndarray:
                     labeltype = 'array'
                 elif type(label) == list:
@@ -85,4 +84,4 @@ def unit_maker(func, func0, decimal=np.inf):
 
 def test_group_nanmean():
     "Test group_nanmean."
-    yield unit_maker, bn.group_nanmean, bn.slow.nanmean, 6
+    yield unit_maker, bn.group_nanmean, bn.slow.group_nanmean, 6

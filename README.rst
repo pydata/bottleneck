@@ -143,8 +143,8 @@ nanmin
 nanmax          
 =========    ==============   ===============
 
-Currently only 1d, 2d, and 3d NumPy arrays with dtype int32, int64, and
-float64 are supported.
+Currently only 1d, 2d, and 3d NumPy arrays with dtype int32, int64, float32,
+and float64 are supported.
 
 License
 =======
@@ -213,6 +213,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 10 tests in 13.756s
+    Ran 10 tests in 26.756s
     OK
     <nose.result.TextTestResult run=10 errors=0 failures=0> 
