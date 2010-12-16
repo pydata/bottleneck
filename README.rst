@@ -227,7 +227,7 @@ Install
 Requirements:
 
 ======================== ===================================
-Bottleneck               Python, NumPy 1.5.1+, SciPy 0.8.0+
+Bottleneck               Python, NumPy 1.4.1+
 Unit tests               nose
 Compile                  gcc or MinGW
 ======================== ===================================

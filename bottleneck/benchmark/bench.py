@@ -147,18 +147,18 @@ def benchsuite(mode='fast'):
     
     # nanmean
     run = {}
-    run['scipy_required'] = True
+    run['scipy_required'] = False
     if mode == 'fast':
         run['name'] = "nanmean vs local copy of sp.stats.nanmean"
         code = "bn.nanmean(a, axis=0)"
     else:
         run['name'] = "nanmean_selector vs local copy of sp.stats.nanmean"
         code = "func(a)"
-    run['statements'] = [code, "sp.nanmean(a, axis=0)"] 
+    run['statements'] = [code, "scipy_nanmean(a, axis=0)"] 
     setup = """
         import numpy as np
-        import scipy.stats as sp
         import bottleneck as bn
+        from bottleneck.slow.func import scipy_nanmean
         from bottleneck.benchmark.bench import geta
         N = %d
         a = geta((N,N), 'float64', %s)
@@ -176,18 +176,18 @@ def benchsuite(mode='fast'):
 
     # nanstd
     run = {}
-    run['scipy_required'] = True
+    run['scipy_required'] = False
     if mode == 'fast':
         run['name'] = "nanstd vs local copy of sp.stats.nanstd"
         code = "bn.nanstd(a, axis=0)"
     else:
         run['name'] = "nanstd_selector vs local copy of sp.stats.nanstd"
         code = "func(a, 0)"
-    run['statements'] = [code, "sp.nanstd(a, axis=0)"] 
+    run['statements'] = [code, "scipy_nanstd(a, axis=0)"] 
     setup = """
         import numpy as np
-        import scipy.stats as sp
         import bottleneck as bn
+        from bottleneck.slow.func import scipy_nanstd
         from bottleneck.benchmark.bench import geta
         N = %d
         a = geta((N,N), 'float64', %s)

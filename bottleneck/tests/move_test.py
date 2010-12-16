@@ -3,6 +3,11 @@
 import numpy as np
 from numpy.testing import (assert_equal, assert_array_equal,
                            assert_array_almost_equal)
+try:
+    import scipy
+    SCIPY = True
+except ImportError:
+    SCIPY = False
 nan = np.nan
 import bottleneck as bn
 
@@ -13,7 +18,9 @@ def arrays(dtypes=bn.dtypes):
     ss[1] = {'size':  4, 'shapes': [(4,)]}
     ss[2] = {'size':  6, 'shapes': [(1,6), (2,3), (6,1)]}
     ss[3] = {'size': 24, 'shapes': [(1,1,24), (24,1,1), (1,24,1), (2,3,4)]}
-    ss[4] = {'size': 24, 'shapes': [(1,2,3,4)]}  # Unaccelerated
+    if SCIPY:
+        # Unaccelerated fallback requires scipy
+        ss[4] = {'size': 24, 'shapes': [(1,2,3,4)]}  # Unaccelerated
     for ndim in ss:
         size = ss[ndim]['size']
         shapes = ss[ndim]['shapes']
@@ -41,7 +48,7 @@ def unit_maker(func, func0, decimal=np.inf):
             for window in windows:
                 with np.errstate(invalid='ignore'):
                     actual = func(arr, window, axis=axis)
-                    desired = func0(arr, window, axis=axis)
+                    desired = func0(arr, window, axis=axis, method='loop')
                 tup = (func.__name__, window, 'a'+str(i), str(arr.dtype),
                        str(arr.shape), str(axis), arr)
                 err_msg = msg % tup
@@ -58,4 +65,4 @@ def unit_maker(func, func0, decimal=np.inf):
 
 def test_move_nanmean():
     "Test move_nanmean."
-    yield unit_maker, bn.move_nanmean, bn.slow.move_nanmean
+    yield unit_maker, bn.move_nanmean, bn.slow.move_nanmean, 5

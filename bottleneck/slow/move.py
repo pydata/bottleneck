@@ -5,7 +5,11 @@ These function are slow but useful for unit testing.
 """
 
 import numpy as np
-from scipy.ndimage import convolve1d
+try:
+    from scipy.ndimage import convolve1d
+    SCIPY = True
+except ImportError:
+    SCIPY = False
 import bottleneck as bn
 
 __all__ = ['move_nanmean']
@@ -53,7 +57,10 @@ def move_nanmean(arr, window, axis=-1, method='filter'):
     
     """
     if method == 'filter':
-        y = move_nanmean_filter(arr, window, axis=axis)
+        if SCIPY:
+            y = move_nanmean_filter(arr, window, axis=axis)
+        else:
+            raise ValueError("'filter' method requires SciPy.")
     elif method == 'strides':
         y = move_func_strides(bn.slow.nanmean, arr, window, axis=axis)
     elif method == 'loop':
