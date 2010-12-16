@@ -28,17 +28,17 @@ def bench(mode='fast'):
     suite = benchsuite(mode)
     for test in suite:
         if test['scipy_required'] and not SCIPY:
-            print test["name"] + "requires SciPy"
+            print test["name"] + "\n    requires SciPy"
         else:
             print test["name"]
-        speed = timer(test['statements'], test['setups'])
-        results = []
-        for i, name in enumerate(test['setups']):
-            results.append("%8.2f  %s" % (speed[i], name))
-        speed = -np.array(speed)
-        index = speed.argsort()
-        results = [results[idx] for idx in index]
-        print '\n'.join(results)
+            speed = timer(test['statements'], test['setups'])
+            results = []
+            for i, name in enumerate(test['setups']):
+                results.append("%8.2f  %s" % (speed[i], name))
+            speed = -np.array(speed)
+            index = speed.argsort()
+            results = [results[idx] for idx in index]
+            print '\n'.join(results)
 
 def timer(statements, setups):
     speed = []
@@ -192,6 +192,38 @@ def benchsuite(mode='fast'):
         N = %d
         a = geta((N,N), 'float64', %s)
         func, a = bn.func.nanstd_selector(a, axis=0)
+    """
+    setups = {}
+    setups["(10,10)         "] = setup % (10, str(False))
+    setups["(10,10)      NaN"] = setup % (10, str(True))
+    setups["(100,100)       "] = setup % (100, str(False))
+    setups["(100,100)    NaN"] = setup % (100, str(True))
+    setups["(1000,1000)     "] = setup % (1000, str(False))
+    setups["(1000,1000)  NaN"] = setup % (1000, str(True))
+    run['setups'] = setups
+    suite.append(run)
+    
+    # move_nanmean
+    run = {}
+    run['scipy_required'] = True
+    if mode == 'fast':
+        run['name'] = "move_nanmean vs sp.ndimage.convolve1d based function"
+        run['name'] += "\n    window = 5"
+        code = "bn.move_nanmean(a, window=5, axis=0)"
+    else:
+        run['name'] = "move_nanmean_selector vs sp.ndimage.convolve1d"
+        run['name'] += " based function"
+        run['name'] += "\n    window = 5"
+        code = "func(a, 5)"
+    run['statements'] = [code, "scipy_move_nanmean(a, window=5, axis=0)"] 
+    setup = """
+        import numpy as np
+        import bottleneck as bn
+        from bottleneck.slow.move import move_nanmean as scipy_move_nanmean
+        from bottleneck.benchmark.bench import geta
+        N = %d
+        a = geta((N,N), 'float64', %s)
+        func, a = bn.move.move_nanmean_selector(a, window=5, axis=0)
     """
     setups = {}
     setups["(10,10)         "] = setup % (10, str(False))

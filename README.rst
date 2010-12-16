@@ -74,37 +74,45 @@ benchmark::
         Speed is NumPy or SciPy time divided by Bottleneck time
         NaN means all NaNs; axis=0 and float64 are used
     median vs np.median
-        3.81  (10,10)         
-        3.61  (100,100)       
+        3.80  (10,10)         
+        3.59  (100,100)       
         2.55  (1000,1000)     
     nanmax vs np.nanmax
-       10.14  (100,100)       
-        9.16  (100,100)    NaN
-        7.80  (10,10)      NaN
-        6.24  (10,10)         
+       10.13  (100,100)       
+        9.08  (100,100)    NaN
+        7.93  (10,10)      NaN
+        6.30  (10,10)         
         2.06  (1000,1000)     
-        2.00  (1000,1000)  NaN
-    nanmin vs np.nanmin
-        7.83  (100,100)    NaN
-        7.79  (10,10)      NaN
-        6.06  (100,100)       
-        6.06  (10,10)         
         2.01  (1000,1000)  NaN
-        1.75  (1000,1000)     
+    nanmin vs np.nanmin
+        7.83  (10,10)      NaN
+        7.83  (100,100)    NaN
+        6.18  (100,100)       
+        6.12  (10,10)         
+        2.01  (1000,1000)  NaN
+        1.76  (1000,1000)     
     nanmean vs local copy of sp.stats.nanmean
-       45.95  (100,100)    NaN
-       12.89  (100,100)       
-       12.59  (10,10)      NaN
-       11.17  (10,10)         
-        9.45  (1000,1000)  NaN
+       46.16  (100,100)    NaN
+       12.99  (100,100)       
+       12.78  (10,10)      NaN
+       11.61  (10,10)         
+        9.42  (1000,1000)  NaN
         3.16  (1000,1000)     
     nanstd vs local copy of sp.stats.nanstd
-       51.99  (100,100)    NaN
-       18.09  (10,10)      NaN
-       15.31  (10,10)         
-       11.50  (1000,1000)  NaN
-        9.45  (100,100)       
-        2.83  (1000,1000)     
+       51.98  (100,100)    NaN
+       18.16  (10,10)      NaN
+       16.04  (10,10)         
+       11.51  (1000,1000)  NaN
+        9.48  (100,100)       
+        2.86  (1000,1000)     
+    move_nanmean vs sp.ndimage.convolve1d based function
+        window = 5
+       37.30  (100,100)    NaN
+       18.42  (10,10)      NaN
+       16.25  (10,10)         
+        9.38  (1000,1000)  NaN
+        6.52  (100,100)       
+        4.45  (1000,1000)     
 
 Faster
 ======
@@ -148,37 +156,45 @@ Benchmarks for the low-level Cython version of each function::
         Speed is NumPy or SciPy time divided by Bottleneck time
         NaN means all NaNs; axis=0 and float64 are used
     median_selector vs np.median
-       14.25  (10,10)         
-        4.86  (100,100)       
+       13.54  (10,10)         
+        4.91  (100,100)       
         3.00  (1000,1000)     
     nanmax_selector vs np.nanmax
-       25.58  (10,10)      NaN
-       21.20  (10,10)         
-       12.52  (100,100)       
-       11.12  (100,100)    NaN
-        2.06  (1000,1000)     
+       24.92  (10,10)      NaN
+       20.52  (10,10)         
+       12.56  (100,100)       
+       11.18  (100,100)    NaN
+        2.07  (1000,1000)     
         2.01  (1000,1000)  NaN
     nanmin_selector vs np.nanmin
-       25.65  (100,100)    NaN
-       25.37  (10,10)      NaN
-       19.87  (100,100)       
-       19.75  (10,10)         
-        2.01  (1000,1000)  NaN
+       25.25  (10,10)      NaN
+       25.18  (100,100)    NaN
+       19.82  (10,10)         
+       19.80  (100,100)       
+        2.02  (1000,1000)  NaN
         1.76  (1000,1000)     
     nanmean_selector vs local copy of sp.stats.nanmean
-       55.79  (100,100)    NaN
-       40.01  (10,10)      NaN
-       36.92  (10,10)         
-       15.06  (100,100)       
-        9.35  (1000,1000)  NaN
+       56.15  (100,100)    NaN
+       39.14  (10,10)      NaN
+       36.38  (10,10)         
+       15.26  (100,100)       
+        9.38  (1000,1000)  NaN
         3.17  (1000,1000)     
     nanstd_selector vs local copy of sp.stats.nanstd
-       63.03  (100,100)    NaN
-       57.66  (10,10)      NaN
-       43.08  (10,10)         
-       11.54  (1000,1000)  NaN
-       10.23  (100,100)       
-        2.84  (1000,1000)     
+       63.58  (100,100)    NaN
+       55.73  (10,10)      NaN
+       42.21  (10,10)         
+       11.50  (1000,1000)  NaN
+       10.46  (100,100)       
+        2.85  (1000,1000)     
+    move_nanmean_selector vs sp.ndimage.convolve1d based function
+        window = 5
+       60.46  (10,10)      NaN
+       47.82  (10,10)         
+       43.08  (100,100)    NaN
+        9.95  (1000,1000)  NaN
+        6.51  (100,100)       
+        4.61  (1000,1000)     
 
 Functions
 =========
