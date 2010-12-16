@@ -43,7 +43,7 @@ test:
 	python -c "import bottleneck; bottleneck.test()"
 
 bench:
-	python -c "import bottleneck; bottleneck.benchit()"
+	python -c "import bottleneck; bottleneck.bench()"
 
 # Phony targets for cleanup and similar uses
 

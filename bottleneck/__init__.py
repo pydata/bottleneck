@@ -22,7 +22,7 @@ except:
     pass
 
 from bottleneck.version import __version__
-from bottleneck.bench.bench import *
+from bottleneck.benchmark.bench import bench
 
 try:
     from numpy.testing import Tester

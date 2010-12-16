@@ -66,34 +66,45 @@ Bottleneck comes with a benchmark suite that compares the performance of the
 bottleneck functions that have a NumPy/SciPy equivalent. To run the
 benchmark::
     
-    >>> bn.benchit(verbose=False)
+    >>> bn.bench(mode='fast')
     Bottleneck performance benchmark
-        Bottleneck  0.2.0dev
-        Numpy       1.5.1
-        Scipy       0.8.0
-        Speed is numpy (or scipy) time divided by Bottleneck time
-        NaN means all NaNs
-       Speed   Test                  Shape        dtype    NaN?
-       2.5995  median(a, axis=0)     (500,500)    float64  
-       2.3487  median(a, axis=0)     (500,500)    float64  NaN
-       2.8795  median(a, axis=0)     (50,50)      float64  
-       2.4309  median(a, axis=0)     (50,50)      float64  NaN
-       7.0735  nanmax(a, axis=0)     (500,500)    float64  
-       4.9616  nanmax(a, axis=0)     (500,500)    float64  NaN
-       6.6608  nanmax(a, axis=0)     (50,50)      float64  
-       6.4340  nanmax(a, axis=0)     (50,50)      float64  NaN
-       4.3128  nanmin(a, axis=0)     (500,500)    float64  
-       4.6877  nanmin(a, axis=0)     (500,500)    float64  NaN
-       5.0893  nanmin(a, axis=0)     (50,50)      float64  
-       6.3899  nanmin(a, axis=0)     (50,50)      float64  NaN
-      11.6829  nanmean(a, axis=0)    (500,500)    float64  
-      55.3030  nanmean(a, axis=0)    (500,500)    float64  NaN
-      13.1311  nanmean(a, axis=0)    (50,50)      float64  
-      29.4172  nanmean(a, axis=0)    (50,50)      float64  NaN
-       8.4922  nanstd(a, axis=0)     (500,500)    float64  
-      63.2329  nanstd(a, axis=0)     (500,500)    float64  NaN
-      11.5781  nanstd(a, axis=0)     (50,50)      float64  
-      34.2063  nanstd(a, axis=0)     (50,50)      float64  NaN
+        Bottleneck  0.2.0
+        Numpy (np)  1.5.1
+        Scipy (sp)  0.8.0
+        Speed is NumPy or SciPy time divided by Bottleneck time
+        NaN means all NaNs; axis=0 and float64 are used
+    median vs np.median
+        3.81  (10,10)         
+        3.61  (100,100)       
+        2.55  (1000,1000)     
+    nanmax vs np.nanmax
+       10.14  (100,100)       
+        9.16  (100,100)    NaN
+        7.80  (10,10)      NaN
+        6.24  (10,10)         
+        2.06  (1000,1000)     
+        2.00  (1000,1000)  NaN
+    nanmin vs np.nanmin
+        7.83  (100,100)    NaN
+        7.79  (10,10)      NaN
+        6.06  (100,100)       
+        6.06  (10,10)         
+        2.01  (1000,1000)  NaN
+        1.75  (1000,1000)     
+    nanmean vs local copy of sp.stats.nanmean
+       45.95  (100,100)    NaN
+       12.89  (100,100)       
+       12.59  (10,10)      NaN
+       11.17  (10,10)         
+        9.45  (1000,1000)  NaN
+        3.16  (1000,1000)     
+    nanstd vs local copy of sp.stats.nanstd
+       51.99  (100,100)    NaN
+       18.09  (10,10)      NaN
+       15.31  (10,10)         
+       11.50  (1000,1000)  NaN
+        9.45  (100,100)       
+        2.83  (1000,1000)     
 
 Faster
 ======
@@ -126,6 +137,48 @@ Note that ``func`` is faster than Numpy's non-NaN version of max::
     100000 loops, best of 3: 4.75 us per loop
 
 So adding NaN protection to your inner loops comes at a negative cost!
+
+Benchmarks for the low-level Cython version of each function::
+
+    >>> bn.bench(mode='faster')
+    Bottleneck performance benchmark
+        Bottleneck  0.2.0
+        Numpy (np)  1.5.1
+        Scipy (sp)  0.8.0
+        Speed is NumPy or SciPy time divided by Bottleneck time
+        NaN means all NaNs; axis=0 and float64 are used
+    median_selector vs np.median
+       14.25  (10,10)         
+        4.86  (100,100)       
+        3.00  (1000,1000)     
+    nanmax_selector vs np.nanmax
+       25.58  (10,10)      NaN
+       21.20  (10,10)         
+       12.52  (100,100)       
+       11.12  (100,100)    NaN
+        2.06  (1000,1000)     
+        2.01  (1000,1000)  NaN
+    nanmin_selector vs np.nanmin
+       25.65  (100,100)    NaN
+       25.37  (10,10)      NaN
+       19.87  (100,100)       
+       19.75  (10,10)         
+        2.01  (1000,1000)  NaN
+        1.76  (1000,1000)     
+    nanmean_selector vs local copy of sp.stats.nanmean
+       55.79  (100,100)    NaN
+       40.01  (10,10)      NaN
+       36.92  (10,10)         
+       15.06  (100,100)       
+        9.35  (1000,1000)  NaN
+        3.17  (1000,1000)     
+    nanstd_selector vs local copy of sp.stats.nanstd
+       63.03  (100,100)    NaN
+       57.66  (10,10)      NaN
+       43.08  (10,10)         
+       11.54  (1000,1000)  NaN
+       10.23  (100,100)       
+        2.84  (1000,1000)     
 
 Functions
 =========

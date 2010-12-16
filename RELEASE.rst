@@ -20,6 +20,11 @@ Bottleneck 0.2.0
 - Added support for NumPy 1.4.1 and SciPy 0.7.2
 - All functions are now templated for dtype and axis  
 - Added a sandbox for prototyping of new Bottleneck functions
+- Rewrote benchmarking code  
+
+**Breaks from 0.2**
+
+- To run benchmark use bn.bench() instead of bn.benchit()
 
 Older versions
 ==============
