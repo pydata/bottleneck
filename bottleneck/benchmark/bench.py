@@ -88,6 +88,35 @@ def benchsuite(mode='fast'):
     setups["(1000,1000)     "] = setup % 1000
     run['setups'] = setups
     suite.append(run)
+    
+    # nanmedian
+    run = {}
+    run['scipy_required'] = False
+    if mode == 'fast':
+        run['name'] = "nanmedian vs local copy of sp.stats.nanmedian"
+        code = "bn.nanmedian(a, axis=0)"
+    else:
+        run['name'] = "nanmedian_selector vs local copy of sp.stats.nanmedian"
+        code = "func(a)"
+    run['statements'] = [code, "scipy_nanmedian(a, axis=0)"] 
+    setup = """
+        import numpy as np
+        import bottleneck as bn
+        from bottleneck.slow.func import scipy_nanmedian
+        from bottleneck.benchmark.bench import geta
+        N = %d
+        a = geta((N,N), 'float64', %s)
+        func, a = bn.func.nanmedian_selector(a, axis=0)
+    """
+    setups = {}
+    setups["(10,10)         "] = setup % (10, str(False))
+    setups["(10,10)      NaN"] = setup % (10, str(True))
+    setups["(100,100)       "] = setup % (100, str(False))
+    setups["(100,100)    NaN"] = setup % (100, str(True))
+    setups["(1000,1000)     "] = setup % (1000, str(False))
+    setups["(1000,1000)  NaN"] = setup % (1000, str(True))
+    run['setups'] = setups
+    suite.append(run)
 
     # nanmax
     run = {}

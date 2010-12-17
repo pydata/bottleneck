@@ -13,10 +13,12 @@ Bottleneck 0.2.0
 
 **Enhancements**
 
+- New function: nanmedian, 100X faster than scipy.stats.nanmedian for
+  (100,100) input array and axis=0
 - Added support for float32
 - Fallback to slower, non-Cython functions for unaccelerated ndim/dtype  
 - All functions faster (less overhead) when output is not a scalar
-- Faster nanmean() for 2d, 3d arrays with NaNs when axis is not None
+- Faster nanmean() for 2d, 3d arrays containing NaNs when axis is not None
 - Scipy is no longer a dependency
 - Added support for older versions of NumPy (1.4.1)
 - All functions are now templated for dtype and axis  

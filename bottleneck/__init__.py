@@ -9,7 +9,8 @@ import slow
 # rebuild using the templates. So try to import the compiled Bottleneck
 # functions to the top level, but move on if not successful.
 try:
-    from func import nanmax, nanmin, nanmean, nanstd, nanvar, median
+    from func import (nanmax, nanmin, nanmean, nanstd, nanvar, median,
+                      nanmedian)
 except:
     pass
 try:

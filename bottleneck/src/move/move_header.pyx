@@ -9,7 +9,6 @@ from numpy cimport PyArray_EMPTY, import_array
 import_array()
 import bottleneck as bn
 
-ctypedef np.float64_t DTYPE_t
 cdef double NAN = <double> np.nan
 
 int32 = np.dtype(np.int32)

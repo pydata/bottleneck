@@ -80,6 +80,9 @@ def test_median():
     "Test median."
     yield unit_maker, bn.median, bn.slow.median, np.inf, False
 
+def test_nanmedian():
+    "Test nanmedian."
+    yield unit_maker, bn.nanmedian, bn.slow.nanmedian, np.inf, False
 
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised

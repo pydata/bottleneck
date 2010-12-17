@@ -1,9 +1,9 @@
-"median template"
+"nanmedian template"
 
 from copy import deepcopy
 import bottleneck as bn
 
-__all__ = ["median"]
+__all__ = ["nanmedian"]
 
 FLOAT_DTYPES = [x for x in bn.dtypes if 'float' in x]
 INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
@@ -12,9 +12,31 @@ INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 
 loop = {}
 loop[1] = """\
-    k = nAXIS >> 1
+    k = nAXIS 
     l = 0
-    r = nAXIS - 1 
+    r = k - 1
+    while l < r:
+        i = l
+        j = r
+        while a[i] == a[i]:
+            i += 1
+            if i == nAXIS:
+                break
+        while a[j] != a[j]:
+            j -= 1
+        if i <= j:
+            tmp = a[i]
+            a[i] = a[j]
+            a[j] = tmp
+            i += 1
+            j -= 1
+        if i > j: break
+        l = i
+        r = j
+    n = j + 1 
+    k = n >> 1
+    l = 0
+    r = n - 1 
     with nogil:       
         while l < r:
             x = a[k]
@@ -32,7 +54,7 @@ loop[1] = """\
                 if i > j: break
             if j < k: l = i
             if k < i: r = j
-    if nAXIS % 2 == 0:        
+    if n % 2 == 0:        
         amax = MINDTYPE
         for i in range(k):
             ai = a[i]
@@ -44,9 +66,31 @@ loop[1] = """\
 """        
 loop[2] = """\
     for iINDEX0 in range(nINDEX0): 
-        k = nAXIS >> 1
+        k = nAXIS 
         l = 0
-        r = nAXIS - 1
+        r = k - 1
+        while l < r:
+            i = l
+            j = r
+            while a[INDEXREPLACE|i|] == a[INDEXREPLACE|i|]:
+                i += 1
+                if i == nAXIS:
+                    break
+            while a[INDEXREPLACE|j|] != a[INDEXREPLACE|j|]:
+                j -= 1
+            if i <= j:
+                tmp = a[INDEXREPLACE|i|]
+                a[INDEXREPLACE|i|] = a[INDEXREPLACE|j|]
+                a[INDEXREPLACE|j|] = tmp
+                i += 1
+                j -= 1
+            if i > j: break
+            l = i
+            r = j
+        n = j + 1 
+        k = n >> 1
+        l = 0
+        r = n - 1
         while l < r:
             x = a[INDEXREPLACE|k|]
             i = l
@@ -63,7 +107,7 @@ loop[2] = """\
                 if i > j: break
             if j < k: l = i
             if k < i: r = j
-        if nAXIS % 2 == 0:        
+        if n % 2 == 0:        
             amax = MINDTYPE
             for i in range(k):
                 ai = a[INDEXREPLACE|i|]
@@ -77,9 +121,31 @@ loop[2] = """\
 loop[3] = """\
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
-            k = nAXIS >> 1
+            k = nAXIS 
             l = 0
-            r = nAXIS - 1
+            r = k - 1
+            while l < r:
+                i = l
+                j = r
+                while a[INDEXREPLACE|i|] == a[INDEXREPLACE|i|]:
+                    i += 1
+                    if i == nAXIS:
+                        break
+                while a[INDEXREPLACE|j|] != a[INDEXREPLACE|j|]:
+                    j -= 1
+                if i <= j:
+                    tmp = a[INDEXREPLACE|i|]
+                    a[INDEXREPLACE|i|] = a[INDEXREPLACE|j|]
+                    a[INDEXREPLACE|j|] = tmp
+                    i += 1
+                    j -= 1
+                if i > j: break
+                l = i
+                r = j
+            n = j + 1 
+            k = n >> 1
+            l = 0
+            r = n - 1
             while l < r:
                 x = a[INDEXREPLACE|k|]
                 i = l
@@ -96,7 +162,7 @@ loop[3] = """\
                     if i > j: break
                 if j < k: l = i
                 if k < i: r = j
-            if nAXIS % 2 == 0:        
+            if n % 2 == 0:        
                 amax = MINDTYPE
                 for i in range(k):
                     ai = a[INDEXREPLACE|i|]
@@ -120,7 +186,7 @@ floats['top'] = """
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     "Median of NDIMd array with dtype=DTYPE along axis=AXIS."
-    cdef np.npy_intp i, j = 0, l, r, k 
+    cdef np.npy_intp i, j = 0, l, r, k, n 
     cdef np.DTYPE_t x, tmp, amax, ai
 """
 
@@ -142,23 +208,23 @@ ints['loop'][3] = loop[3].replace('CAST', '<np.float64_t> ')
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 
 slow = {}
-slow['name'] = "median"
+slow['name'] = "nanmedian"
 slow['signature'] = "arr"
-slow['func'] = "bn.slow.median(arr, axis=AXIS)"
+slow['func'] = "bn.slow.nanmedian(arr, axis=AXIS)"
 
 # Template ------------------------------------------------------------------
 
-median = {}
-median['name'] = 'median'
-median['is_reducing_function'] = True
-median['cdef_output'] = True
-median['slow'] = slow
-median['templates'] = {}
-median['templates']['float'] = floats
-median['templates']['int'] = ints
-median['pyx_file'] = 'func/median.pyx'
+nanmedian = {}
+nanmedian['name'] = 'nanmedian'
+nanmedian['is_reducing_function'] = True
+nanmedian['cdef_output'] = True
+nanmedian['slow'] = slow
+nanmedian['templates'] = {}
+nanmedian['templates']['float'] = floats
+nanmedian['templates']['int'] = ints
+nanmedian['pyx_file'] = 'func/nanmedian.pyx'
 
-median['main'] = '''"median auto-generated from template"
+nanmedian['main'] = '''"nanmedian auto-generated from template"
 # Select smallest k elements code used for inner loop of median method:
 # http://projects.scipy.org/numpy/attachment/ticket/1213/quickselect.pyx
 # (C) 2009 Sturla Molden
@@ -176,9 +242,9 @@ median['main'] = '''"median auto-generated from template"
 # Adapted and expanded for Bottleneck:
 # (C) 2010 Keith Goodman
 
-def median(arr, axis=None):
+def nanmedian(arr, axis=None):
     """
-    Median of array elements along given axis.
+    Median of array elements along given axis ignoring NaNs.
 
     Parameters
     ----------
@@ -195,35 +261,30 @@ def median(arr, axis=None):
         has been removed. If `arr` is a 0d array, or if axis is None, a scalar
         is returned. `float64` return values are used for integer inputs. 
 
-    Notes
-    -----
-    This function should give the same output as NumPy's median except for
-    when the input contains NaN.
-
     Examples
     --------
     >>> a = np.array([[10, 7, 4], [3, 2, 1]])
     >>> a
     array([[10,  7,  4],
            [ 3,  2,  1]])
-    >>> bn.median(a)
+    >>> bn.nanmedian(a)
     3.5
-    >>> bn.median(a, axis=0)
+    >>> bn.nanmedian(a, axis=0)
     array([ 6.5,  4.5,  2.5])
-    >>> bn.median(a, axis=1)
+    >>> bn.nanmedian(a, axis=1)
     array([ 7.,  2.])
     
     """
-    func, arr = median_selector(arr, axis)
+    func, arr = nanmedian_selector(arr, axis)
     return func(arr)
 
-def median_selector(arr, axis):
+def nanmedian_selector(arr, axis):
     """
-    Return median function and array that matches `arr` and `axis`.
+    Return nanmedian function and array that matches `arr` and `axis`.
     
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in
-    bn.median() is in checking that `axis` is within range, converting `arr`
+    bn.nanmedian() is in checking that `axis` is within range, converting `arr`
     into an array (if it is not already an array), and selecting the function
     to use to calculate the mean.
 
@@ -241,7 +302,7 @@ def median_selector(arr, axis):
     Returns
     -------
     func : function
-        The median function that matches the number of dimensions and dtype
+        The nanmedian function that matches the number of dimensions and dtype
         of the input array and the axis along which you wish to find the
         median.
     a : ndarray
@@ -256,9 +317,9 @@ def median_selector(arr, axis):
     
     Obtain the function needed to determine the median of `arr` along axis=0:
 
-    >>> func, a = bn.func.median_selector(arr, axis=0)
+    >>> func, a = bn.func.nanmedian_selector(arr, axis=0)
     >>> func
-    <built-in function median_1d_float64_axis0> 
+    <built-in function nanmedian_1d_float64_axis0> 
     
     Use the returned function and array to determine the median:
 
@@ -281,10 +342,11 @@ def median_selector(arr, axis):
         ndim = 1
     key = (ndim, dtype, axis)
     try:
-        func = median_dict[key]
+        func = nanmedian_dict[key]
     except KeyError:
+        pass
         try:
-            func = median_slow_dict[axis]
+            func = nanmedian_slow_dict[axis]
         except KeyError:
             tup = (str(ndim), str(dtype), str(axis))
             raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
