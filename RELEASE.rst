@@ -21,6 +21,7 @@ supports more dtypes.
 
 **New functions**
 
+- nanargmin()
 - nanargmax()
 - nanmedian, 100X faster than SciPy's nanmedian for (100,100) input, axis=0
 

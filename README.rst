@@ -11,7 +11,7 @@ Bottleneck, which is in the prototype stage, contains the following functions:
 
 ===================== =======================================================
 NumPy/SciPy           ``median, nanmedian, nanmin, nanmax, nanmean, nanstd,
-                      nanargmax`` 
+                      nanargmin, nanargmax`` 
 Miscellaneous         ``nanvar``
 Moving window         ``move_nanmean``
 Group by              ``group_nanmean``
@@ -288,6 +288,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 12 tests in 41.756s
+    Ran 13 tests in 41.756s
     OK
     <nose.result.TextTestResult run=11 errors=0 failures=0> 

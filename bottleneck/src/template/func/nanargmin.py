@@ -1,9 +1,9 @@
-"nanargmax template"
+"nanargmin template"
 
 from copy import deepcopy
 import bottleneck as bn
 
-__all__ = ["nanargmax"]
+__all__ = ["nanargmin"]
 
 FLOAT_DTYPES = [x for x in bn.dtypes if 'float' in x]
 INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
@@ -21,17 +21,17 @@ floats['top'] = """
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     "Index of max of NDIMd, DTYPE array along axis=AXIS ignoring NaNs."
     cdef int allnan = 1
-    cdef np.DTYPE_t amax, ai
+    cdef np.DTYPE_t amin, ai
     cdef Py_ssize_t idx = 0
 """
 
 loop = {}
 loop[1] = """\
-    amax = MINDTYPE
+    amin = MAXDTYPE
     for iINDEX0 in range(nINDEX0 - 1, -1, -1):
         ai = a[INDEXALL]
-        if ai >= amax:
-            amax = ai
+        if ai <= amin:
+            amin = ai
             allnan = 0
             idx = iINDEX0
     if allnan == 0:       
@@ -41,12 +41,12 @@ loop[1] = """\
 """
 loop[2] = """\
     for iINDEX0 in range(nINDEX0 - 1, -1, -1):
-        amax = MINDTYPE
+        amin = MAXDTYPE
         allnan = 1
         for iINDEX1 in range(nINDEX1 - 1, -1, -1):
             ai = a[INDEXALL]
-            if ai >= amax:
-                amax = ai
+            if ai <= amin:
+                amin = ai
                 allnan = 0
                 idx = iINDEX1
         if allnan == 0:       
@@ -58,12 +58,12 @@ loop[2] = """\
 loop[3] = """\
     for iINDEX0 in range(nINDEX0 - 1, -1, -1):
         for iINDEX1 in range(nINDEX1 - 1, -1, -1):
-            amax = MINDTYPE
+            amin = MAXDTYPE
             allnan = 1
             for iINDEX2 in range(nINDEX2 - 1, -1, -1):
                 ai = a[INDEXALL]
-                if ai >= amax:
-                    amax = ai
+                if ai <= amin:
+                    amin = ai
                     allnan = 0
                     idx = iINDEX2
             if allnan == 0:       
@@ -83,21 +83,21 @@ ints['dtypes'] = INT_DTYPES
 
 loop = {}
 loop[1] = """\
-    amax = MINDTYPE
+    amin = MAXDTYPE
     for iINDEX0 in range(nINDEX0):
         ai = a[INDEXALL]
-        if ai >= amax:
-            amax = ai
+        if ai <= amin:
+            amin = ai
             idx = iINDEX0
     return np.NPINT(idx)
 """
 loop[2] = """\
     for iINDEX0 in range(nINDEX0 - 1, -1, -1):
-        amax = MINDTYPE
+        amin = MAXDTYPE
         for iINDEX1 in range(nINDEX1 - 1, -1, -1):
             ai = a[INDEXALL]
-            if ai >= amax:
-                amax = ai
+            if ai <= amin:
+                amin = ai
                 idx = iINDEX1
         y[INDEXPOP] = idx
     return y
@@ -105,11 +105,11 @@ loop[2] = """\
 loop[3] = """\
     for iINDEX0 in range(nINDEX0 - 1, -1, -1):
         for iINDEX1 in range(nINDEX1 - 1, -1, -1):
-            amax = MINDTYPE
+            amin = MAXDTYPE
             for iINDEX2 in range(nINDEX2 - 1, - 1, -1):
                 ai = a[INDEXALL]
-                if ai >= amax:
-                    amax = ai
+                if ai <= amin:
+                    amin = ai
                     idx = iINDEX2
             y[INDEXPOP] = idx
     return y
@@ -121,30 +121,30 @@ ints['loop'] = loop
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 
 slow = {}
-slow['name'] = "nanargmax"
+slow['name'] = "nanargmin"
 slow['signature'] = "arr"
-slow['func'] = "bn.slow.nanargmax(arr, axis=AXIS)"
+slow['func'] = "bn.slow.nanargmin(arr, axis=AXIS)"
 
 # Template ------------------------------------------------------------------
 
-nanargmax = {}
-nanargmax['name'] = 'nanargmax'
-nanargmax['is_reducing_function'] = True
-nanargmax['cdef_output'] = True
-nanargmax['slow'] = slow
-nanargmax['templates'] = {}
-nanargmax['templates']['float'] = floats
-nanargmax['templates']['int'] = ints
-nanargmax['pyx_file'] = 'func/nanargmax.pyx'
+nanargmin = {}
+nanargmin['name'] = 'nanargmin'
+nanargmin['is_reducing_function'] = True
+nanargmin['cdef_output'] = True
+nanargmin['slow'] = slow
+nanargmin['templates'] = {}
+nanargmin['templates']['float'] = floats
+nanargmin['templates']['int'] = ints
+nanargmin['pyx_file'] = 'func/nanargmin.pyx'
 
-nanargmax['main'] = '''"nanargmax auto-generated from template"
+nanargmin['main'] = '''"nanargmin auto-generated from template"
 
 CANNOTCONVERT = "Bottleneck copies NumPy bahavior: "
 CANNOTCONVERT += "'cannot convert float NaN to integer'"
 
-def nanargmax(arr, axis=None):
+def nanargmin(arr, axis=None):
     """
-    Return indices of the maximum values over an axis, ignoring NaNs.
+    Return indices of the minimum values over an axis, ignoring NaNs.
     
     Parameters
     ----------
@@ -161,28 +161,28 @@ def nanargmax(arr, axis=None):
     Examples
     --------
     >>> a = np.array([[np.nan, 4], [2, 3]])
-    >>> np.argmax(a)
+    >>> np.argmin(a)
     0
-    >>> bn.nanargmax(a)
-    1
-    >>> bn.nanargmax(a, axis=0)
-    array([1, 0])
-    >>> bn.nanargmax(a, axis=1)
+    >>> bn.nanargmin(a)
+    2
+    >>> bn.nanargmin(a, axis=0)
     array([1, 1])
+    >>> bn.nanargmin(a, axis=1)
+    array([1, 0])
     
     """
-    func, arr = nanargmax_selector(arr, axis)
+    func, arr = nanargmin_selector(arr, axis)
     return func(arr)
 
-def nanargmax_selector(arr, axis):
+def nanargmin_selector(arr, axis):
     """
-    Return nanargmax function and array that matches `arr` and `axis`.
+    Return nanargmin function and array that matches `arr` and `axis`.
     
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in
-    bn.nanargmax() is in checking that `axis` is within range, converting
+    bn.nanargmin() is in checking that `axis` is within range, converting
     `arr` into an array (if it is not already an array), and selecting the
-    function to use to find the indices of the maximum.
+    function to use to find the indices of the minimum.
 
     You can get rid of the overhead by doing all this before you, for example,
     enter an inner loop, by using the this function.
@@ -193,12 +193,12 @@ def nanargmax_selector(arr, axis):
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}, optional
         Axis along which the indices are found. The default (axis=None) is to
-        find the index of the maximum value in the flattened array.
+        find the index of the minimum value in the flattened array.
     
     Returns
     -------
     func : function
-        The nanargmax function that matches the number of dimensions and
+        The nanargmin function that matches the number of dimensions and
         dtype of the input array and the axis.
     a : ndarray
         If the input array `arr` is not a ndarray, then `a` will contain the
@@ -210,17 +210,17 @@ def nanargmax_selector(arr, axis):
 
     >>> arr = np.array([1.0, 2.0, 3.0])
     
-    Obtain the function needed to determine the nanargmax of `arr` along
+    Obtain the function needed to determine the nanargmin of `arr` along
     axis=0:
 
-    >>> func, a = bn.func.nanargmax_selector(arr, axis=0)
+    >>> func, a = bn.func.nanargmin_selector(arr, axis=0)
     >>> func
-    <built-in function nanargmax_1d_float64_axis0> 
+    <built-in function nanargmin_1d_float64_axis0> 
     
     Use the returned function and array to determine the maximum:
     
     >>> func(a)
-    2
+    0
 
     """
     cdef np.ndarray a = np.array(arr, copy=False)
@@ -228,7 +228,7 @@ def nanargmax_selector(arr, axis):
     cdef np.dtype dtype = a.dtype
     cdef int size = a.size
     if size == 0:
-        msg = "numpy.nanargmax() raises on size=0; so Bottleneck does too." 
+        msg = "numpy.nanargmin() raises on size=0; so Bottleneck does too." 
         raise ValueError, msg
     if axis != None:
         if axis < 0:
@@ -241,10 +241,10 @@ def nanargmax_selector(arr, axis):
         ndim = 1
     cdef tuple key = (ndim, dtype, axis)
     try:
-        func = nanargmax_dict[key]
+        func = nanargmin_dict[key]
     except KeyError:
         try:
-            func = nanargmax_slow_dict[axis]
+            func = nanargmin_slow_dict[axis]
         except KeyError:
             tup = (str(ndim), str(dtype), str(axis))
             raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup

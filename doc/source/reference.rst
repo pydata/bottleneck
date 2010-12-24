@@ -7,7 +7,7 @@ Bottleneck provides the following functions:
 ===================== ======================================================================================================================
 NumPy/SciPy           :meth:`median <bottleneck.median>`, :meth:`nanmedian <bottleneck.nanmedian>`, :meth:`nanmin <bottleneck.nanmin>`,
                       :meth:`nanmax <bottleneck.nanmax>`, :meth:`nanmean <bottleneck.nanmean>`, :meth:`nanstd <bottleneck.nanstd>`,
-                      :meth:`nanargmax <bottleneck.nanargmax>` 
+                      :meth:`nanargmin <bottleneck.nanargmin>`, :meth:`nanargmax <bottleneck.nanargmax>` 
 Miscellaneous         :meth:`nanvar <bottleneck.nanvar>` 
 Moving window         :meth:`move_nanmean <bottleneck.move_nanmean>`
 Group by              :meth:`group_nanmean <bottleneck.group_nanmean>`
@@ -38,6 +38,10 @@ NumPy/SciPy
 ------------
 
 .. autofunction:: bottleneck.nanstd
+
+------------
+
+.. autofunction:: bottleneck.nanargmin
 
 ------------
 

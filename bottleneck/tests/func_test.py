@@ -71,6 +71,10 @@ def test_nanmax():
     "Test nanmax."
     yield unit_maker, bn.nanmax, bn.slow.nanmax
 
+def test_nanargmin():
+    "Test nanargmin."
+    yield unit_maker, bn.nanargmin, bn.slow.nanargmin
+
 def test_nanargmax():
     "Test nanargmax."
     yield unit_maker, bn.nanargmax, bn.slow.nanargmax
