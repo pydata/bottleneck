@@ -2,7 +2,7 @@
 import numpy as np
 
 __all__ = ['median', 'nanmedian', 'nanmean', 'nanvar', 'nanstd', 'nanmin',
-           'nanmax']
+           'nanmax', 'nanargmin', 'nanargmax']
 
 def median(arr, axis=None):
     "Slow median function used for unaccelerated ndim/dtype combinations."
@@ -71,14 +71,19 @@ def nanstd(arr, axis=None, ddof=0):
 
 def nanmin(arr, axis=None):
     "Slow nanmin function used for unaccelerated ndim/dtype combinations."
-    arr = np.asarray(arr)
     return np.nanmin(arr, axis=axis)
 
 def nanmax(arr, axis=None):
     "Slow nanmax function used for unaccelerated ndim/dtype combinations."
-    arr = np.asarray(arr)
     return np.nanmax(arr, axis=axis)
 
+def nanargmin(arr, axis=None):
+    "Slow nanargmin function used for unaccelerated ndim/dtype combinations."
+    return np.nanargmin(arr, axis=axis)
+
+def nanargmax(arr, axis=None):
+    "Slow nanargmax function used for unaccelerated ndim/dtype combinations."
+    return np.nanargmax(arr, axis=axis)
 
 # ---------------------------------------------------------------------------
 #

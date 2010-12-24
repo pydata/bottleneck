@@ -2,42 +2,26 @@
 Reference
 =========
 
-Most of the functionality of the ``bottleneck`` package falls into three broad
-categories: functions, moving window functions, and group-by functions.
-
 Bottleneck provides the following functions:
 
-======================================== =============================================== ===================================================
-:meth:`median <bottleneck.median>`      
-:meth:`nanmedian <bottleneck.nanmedian>`      
-:meth:`nanmean <bottleneck.nanmean>`     :meth:`move_nanmean <bottleneck.move_nanmean>`  :meth:`group_nanmean <bottleneck.group_nanmean>`
-:meth:`nanvar <bottleneck.nanvar>`                               
-:meth:`nanstd <bottleneck.nanstd>`                               
-:meth:`nanmin <bottleneck.nanmin>`                               
-:meth:`nanmax <bottleneck.nanmax>`                               
-======================================== =============================================== ===================================================
+===================== ======================================================================================================================
+NumPy/SciPy           :meth:`median <bottleneck.median>`, :meth:`nanmedian <bottleneck.nanmedian>`, :meth:`nanmin <bottleneck.nanmin>`,
+                      :meth:`nanmax <bottleneck.nanmax>`, :meth:`nanmean <bottleneck.nanmean>`, :meth:`nanstd <bottleneck.nanstd>`,
+                      :meth:`nanargmin <bottleneck.nanargmin>`, :meth:`nanargmax <bottleneck.nanargmax>` 
+Miscellaneous         :meth:`nanvar <bottleneck.nanvar>` 
+Moving window         :meth:`move_nanmean <bottleneck.move_nanmean>`
+Group by              :meth:`group_nanmean <bottleneck.group_nanmean>`
+===================== ======================================================================================================================
 
 
-Functions
----------
+NumPy/SciPy
+-----------
 
 .. autofunction:: bottleneck.median
 
 ------------
              
 .. autofunction:: bottleneck.nanmedian
-
-------------
-             
-.. autofunction:: bottleneck.nanmean
-
-------------
-             
-.. autofunction:: bottleneck.nanvar
-
-------------
-
-.. autofunction:: bottleneck.nanstd
 
 ------------
 
@@ -47,6 +31,29 @@ Functions
 
 .. autofunction:: bottleneck.nanmax
 
+------------
+             
+.. autofunction:: bottleneck.nanmean
+
+------------
+
+.. autofunction:: bottleneck.nanstd
+
+------------
+
+.. autofunction:: bottleneck.nanargmin
+
+------------
+
+.. autofunction:: bottleneck.nanargmax
+
+
+Miscellaneous
+-------------
+
+------------
+
+.. autofunction:: bottleneck.nanvar
 
 
 Moving window functions

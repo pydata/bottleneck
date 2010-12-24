@@ -232,6 +232,31 @@ def benchsuite(mode='fast'):
     run['setups'] = setups
     suite.append(run)
     
+    # nanargmax
+    run = {}
+    run['scipy_required'] = False
+    if mode == 'fast':
+        run['name'] = "nanargmax vs np.nanargmax"
+        code = "bn.nanargmax(a, axis=0)"
+    else:
+        run['name'] = "nanargmax_selector vs np.nanargmax"
+        code = "func(a)"
+    run['statements'] = [code, "np.nanargmax(a, axis=0)"] 
+    setup = """
+        import numpy as np
+        import bottleneck as bn
+        from bottleneck.benchmark.bench import geta
+        N = %d
+        a = geta((N,N), 'float64', %s)
+        func, a = bn.func.nanargmax_selector(a, axis=0)
+    """
+    setups = {}
+    setups["(10,10)         "] = setup % (10, str(False))
+    setups["(100,100)       "] = setup % (100, str(False))
+    setups["(1000,1000)     "] = setup % (1000, str(False))
+    run['setups'] = setups
+    suite.append(run)
+    
     # move_nanmean
     run = {}
     run['scipy_required'] = True
