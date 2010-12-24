@@ -1,5 +1,14 @@
 "Turn templates into Cython pyx files."
 
+import numpy as np
+
+if np.int_ == np.int32:
+    NPINT = 'int32'
+elif np.int_ == np.int64:
+    NPINT = 'int64'
+else:
+    raise RuntimeError('Expecting default NumPy int to be 32 or 64 bit.')
+
 def template(func):
     "Convert template dictionary `func` to a pyx file."
     codes = []
@@ -62,6 +71,7 @@ def subtemplate(name, top, loop, axisNone, dtypes, force_output_dtype,
                 func = func.replace('NDIM', str(ndim))
                 func = func.replace('DTYPE', dtype)
                 func = func.replace('AXIS', str(axis))
+                func = func.replace('NPINT', NPINT)
 
                 funcs.append(func)
                 select.append(ndim, dtype, axis)

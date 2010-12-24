@@ -26,5 +26,12 @@ int64 = np.dtype(np.int64)
 float32 = np.dtype(np.float32)
 float64 = np.dtype(np.float64)
 
+if np.int_ == np.int32:
+    NPINT = 'int32'
+elif np.int_ == np.int64:
+    NPINT = 'int64'
+else:
+    raise RuntimeError('Expecting default NumPy int to be 32 or 64 bit.')
+
 cdef extern from "math.h":
     double sqrt(double x)

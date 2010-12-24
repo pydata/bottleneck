@@ -10,7 +10,7 @@ import slow
 # functions to the top level, but move on if not successful.
 try:
     from func import (nanmax, nanmin, nanmean, nanstd, nanvar, median,
-                      nanmedian)
+                      nanmedian, nanargmax)
 except:
     pass
 try:

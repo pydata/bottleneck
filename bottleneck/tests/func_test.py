@@ -41,24 +41,39 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
     for i, arr in enumerate(arrays(nans=nans)):
         for axis in range(-arr.ndim, arr.ndim) + [None]:
             with np.errstate(invalid='ignore'):
-                actual = func(arr, axis=axis)
-                desired = func0(arr, axis=axis)
-            tup = (func.__name__, 'a'+str(i), str(arr.dtype), str(arr.shape),
-                   str(axis), arr)
-            err_msg = msg % tup
-            if (decimal < np.inf) and (np.isfinite(arr).sum() > 0):
-                assert_array_almost_equal(actual, desired, decimal, err_msg)
+                actualraised = False
+                try:
+                    actual = func(arr, axis=axis)
+                except:
+                    actualraised = True
+                desiredraised = False
+                try:
+                    desired = func0(arr, axis=axis)
+                except:
+                    desiredraised = True
+            if actualraised and desiredraised:
+                pass
             else:
-                assert_array_equal(actual, desired, err_msg)
-            err_msg += '\n dtype mismatch %s %s'
-            if hasattr(actual, 'dtype') or hasattr(desired, 'dtype'):
-                da = actual.dtype
-                dd = desired.dtype
-                assert_equal(da, dd, err_msg % (da, dd))
+                tup = (func.__name__, 'a'+str(i), str(arr.dtype),
+                       str(arr.shape), str(axis), arr)
+                err_msg = msg % tup
+                if (decimal < np.inf) and (np.isfinite(arr).sum() > 0):
+                    assert_array_almost_equal(actual, desired, decimal, err_msg)
+                else:
+                    assert_array_equal(actual, desired, err_msg)
+                err_msg += '\n dtype mismatch %s %s'
+                if hasattr(actual, 'dtype') or hasattr(desired, 'dtype'):
+                    da = actual.dtype
+                    dd = desired.dtype
+                    assert_equal(da, dd, err_msg % (da, dd))
 
 def test_nanmax():
     "Test nanmax."
     yield unit_maker, bn.nanmax, bn.slow.nanmax
+
+def test_nanargmax():
+    "Test nanargmax."
+    yield unit_maker, bn.nanargmax, bn.slow.nanargmax
 
 def test_nanmin():
     "Test nanmin."
