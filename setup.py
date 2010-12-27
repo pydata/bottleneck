@@ -49,10 +49,18 @@ MINOR               = VER[1]
 MICRO               = VER[2]
 ISRELEASED          = False
 VERSION             = '%s.%s.%s' % (MAJOR, MINOR, MICRO)
-PACKAGES            = ["bottleneck", "bottleneck/src", "bottleneck/src/func",
-                       "bottleneck/src/move", "bottleneck/src/group",
-                       "bottleneck/tests", "bottleneck/testing",
-                       "bottleneck/bench"]
+PACKAGES            = ["bottleneck",
+                       "bottleneck/slow",
+                       "bottleneck/tests",
+                       "bottleneck/benchmark",
+                       "bottleneck/src",
+                       "bottleneck/src/func",
+                       "bottleneck/src/move",
+                       "bottleneck/src/group",
+                       "bottleneck/src/template",
+                       "bottleneck/src/template/func",
+                       "bottleneck/src/template/move",
+                       "bottleneck/src/template/group"]
 PACKAGE_DATA        = {'bottleneck': ['LICENSE']}
 REQUIRES            = ["numpy"]
 
