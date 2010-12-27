@@ -9,7 +9,7 @@ see the commit log at http://github.com/kwgoodman/bottleneck
 Bottleneck 0.2.0
 ================
 
-*Release date: Not yet released, in development*
+*Release date: 2010-12-27*
 
 The second release of Bottleneck is faster, contains more functions, and
 supports more dtypes.
@@ -35,7 +35,7 @@ supports more dtypes.
 - Added a sandbox for prototyping of new Bottleneck functions
 - Rewrote benchmarking code  
 
-**Breaks from 0.2**
+**Breaks from 0.1.0**
 
 - To run benchmark use bn.bench() instead of bn.benchit()
 

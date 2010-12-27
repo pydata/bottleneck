@@ -7,7 +7,6 @@ There are many ways to help improve Bottleneck:
 - Use it and report bugs, typos, suggestions
 - Write a prototype for a new function in the sandbox 
 - Work on bits from the roadmap below
-- Participate in a sprint!
 
 Step #1: Get the code at https://github.com/kwgoodman/bottleneck 
 
@@ -20,16 +19,9 @@ Roadmap
 
 **0.2**
 
-- Add a Cython version of NumPy's apply_along_axis function. Input is a Cython
-  function that reduces a 1d array to a scalar (such as sum, std, or max).
-  Data will probably be passed to the 1d reducing function as pointers
-  to a buffer using strides. See
-  `here <http://projects.scipy.org/numpy/attachment/ticket/1213/_selectmodule.pyx>`_ for a (non-reducing) example.
 - Template the code to make maintance and the expansion to more dtypes
-  easier. Three possible approaches, which is the best fit for Bottleneck:
-  `one <http://mail.scipy.org/pipermail/scipy-user/2010-November/027645.html>`_
-  or `two <http://projects.scipy.org/numpy/attachment/ticket/1213/generate_qselect.py>`_ or
-  `three <https://github.com/jsalvatier/cython_ufuncs>`_?
+  easier.
+- Fall back to slower non-Cython functions for unaccelerated ndim/dtype
 
 **0.3**
 
