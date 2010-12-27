@@ -32,7 +32,7 @@ VER = VER[1].strip()
 VER = VER.strip("\"")
 VER = VER.split('.')
 
-NAME                = 'bottleneck'
+NAME                = 'Bottleneck'
 MAINTAINER          = "Keith Goodman"
 MAINTAINER_EMAIL    = "bottle-neck@googlegroups.com"
 DESCRIPTION         = description
