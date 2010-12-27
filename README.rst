@@ -5,14 +5,12 @@ Bottleneck
 Introduction
 ============
 
-Bottleneck is a collection of fast NumPy array functions written in Cython.
-
-Bottleneck, which is in the prototype stage, contains the following functions:
+Bottleneck is a collection of fast NumPy array functions written in Cython:
 
 ===================== =======================================================
 NumPy/SciPy           ``median, nanmedian, nanmin, nanmax, nanmean, nanstd,
                       nanargmin, nanargmax`` 
-Miscellaneous         ``nanvar``
+Functions             ``nanvar``
 Moving window         ``move_nanmean``
 Group by              ``group_nanmean``
 ===================== =======================================================
@@ -211,9 +209,9 @@ Benchmarks for the low-level Cython version of each function::
 Slow
 ====
 
-Currently only 1d, 2d, and 3d NumPy arrays with dtype int32, int64, float32,
-and float64 are accelerated. All other ndim/dtype combinations result in
-calls to slower, unaccelerated functions.
+Currently only 1d, 2d, and 3d NumPy arrays with data type (dtype) int32,
+int64, float32, and float64 are accelerated. All other ndim/dtype
+combinations result in calls to slower, unaccelerated functions.
 
 License
 =======
@@ -226,23 +224,25 @@ details.
 URLs
 ====
 
-===============   =============================================
- download          http://pypi.python.org/pypi/Bottleneck
- docs              http://berkeleyanalytics.com/bottleneck
- code              http://github.com/kwgoodman/bottleneck
- mailing list      http://groups.google.com/group/bottle-neck
-===============   =============================================
+===================   ========================================================
+ download             http://pypi.python.org/pypi/Bottleneck
+ docs                 http://berkeleyanalytics.com/bottleneck
+ code                 http://github.com/kwgoodman/bottleneck
+ mailing list         http://groups.google.com/group/bottle-neck
+ mailing list 2       http://mail.scipy.org/mailman/listinfo/scipy-user
+===================   ========================================================
 
 Install
 =======
 
 Requirements:
 
-======================== ===================================
+======================== ====================================================
 Bottleneck               Python, NumPy 1.4.1+
 Unit tests               nose
 Compile                  gcc or MinGW
-======================== ===================================
+Optional                 SciPy 0.72+ (portions of benchmark)
+======================== ====================================================
 
 Directions for installing a *released* version of Bottleneck are given below.
 Cython is not required since the Cython files have already been converted to

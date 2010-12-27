@@ -1,3 +1,5 @@
+#cython: embedsignature=True
+
 include "func_header.pyx"
 include "nanmax.pyx"
 include "nanmin.pyx"
