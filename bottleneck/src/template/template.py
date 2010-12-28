@@ -113,12 +113,12 @@ def looper(loop, ndim, axis):
 
     >>> loop = '''
     .... for iINDEX0 in range(nINDEX0):
-    ....         for iINDEX1 in range(nINDEX1):
-    ....             amin = MAXDTYPE
-    ....         for iINDEX2 in range(nINDEX2):
-    ....                 ai = a[INDEXALL]
-    ....             if ai <= amin:
-    ....                 amin = ai
+    ....    for iINDEX1 in range(nINDEX1):
+    ....        amin = MAXDTYPE
+    ....        for iINDEX2 in range(nINDEX2):
+    ....            ai = a[INDEXALL]
+    ....            if ai <= amin:
+    ....                amin = ai
     ....         y[INDEXPOP] = amin
     .... '''
 

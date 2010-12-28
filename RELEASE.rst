@@ -6,8 +6,18 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
-Bottleneck 0.2.0
+Bottleneck 0.3.0
 ================
+
+*Release date: Not yet released, in development*
+
+Older versions
+==============
+
+Release notes from past releases.
+
+Bottleneck 0.2.0
+----------------
 
 *Release date: 2010-12-27*
 
@@ -23,7 +33,7 @@ supports more dtypes.
 
 - nanargmin()
 - nanargmax()
-- nanmedian, 100X faster than SciPy's nanmedian for (100,100) input, axis=0
+- nanmedian, 25X faster than SciPy's nanmedian for (100,100) input, axis=0
 
 **Enhancements**
 
@@ -38,11 +48,6 @@ supports more dtypes.
 **Breaks from 0.1.0**
 
 - To run benchmark use bn.bench() instead of bn.benchit()
-
-Older versions
-==============
-
-Release notes from past releases.
 
 Bottleneck 0.1.0
 ----------------
