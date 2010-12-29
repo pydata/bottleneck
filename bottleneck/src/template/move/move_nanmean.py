@@ -8,7 +8,23 @@ __all__ = ["move_nanmean"]
 FLOAT_DTYPES = [x for x in bn.dtypes if 'float' in x]
 INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 
-# loops ---------------------------------------------------------------------
+
+# Float dtypes (no axis=None) -----------------------------------------------
+
+floats = {}
+floats['dtypes'] = FLOAT_DTYPES
+floats['axisNone'] = False
+floats['force_output_dtype'] = False
+
+floats['top'] = """
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,
+                                  int window):
+    "Moving mean of NDIMd array of dtype=DTYPE along axis=AXIS ignoring NaNs."
+    cdef int count = 0
+    cdef double asum = 0, aold, ai
+"""
 
 loop = {}
 loop[1] = """\
@@ -27,7 +43,7 @@ loop[1] = """\
         asum += ai
         count += 1
     if count > 0:
-       y[INDEXALL] = CASTasum / count
+       y[INDEXALL] = asum / count
     else:
        y[INDEXALL] = NAN
     for iINDEX0 in range(window, nINDEX0):
@@ -40,7 +56,7 @@ loop[1] = """\
             asum -= aold
             count -= 1
         if count > 0:
-            y[INDEXALL] = CASTasum / count
+            y[INDEXALL] = asum / count
         else:
             y[INDEXALL] = NAN
 
@@ -65,7 +81,7 @@ loop[2] = """\
             asum += ai
             count += 1
         if count > 0:
-           y[INDEXALL] = CASTasum / count
+           y[INDEXALL] = asum / count
         else:
            y[INDEXALL] = NAN
         for iINDEX1 in range(window, nINDEX1):
@@ -78,7 +94,7 @@ loop[2] = """\
                 asum -= aold
                 count -= 1
             if count > 0:
-                y[INDEXALL] = CASTasum / count
+                y[INDEXALL] = asum / count
             else:
                 y[INDEXALL] = NAN
 
@@ -104,7 +120,7 @@ loop[3] = """\
                 asum += ai
                 count += 1
             if count > 0:
-               y[INDEXALL] = CASTasum / count
+               y[INDEXALL] = asum / count
             else:
                y[INDEXALL] = NAN
             for iINDEX2 in range(window, nINDEX2):
@@ -117,34 +133,14 @@ loop[3] = """\
                     asum -= aold
                     count -= 1
                 if count > 0:
-                    y[INDEXALL] = CASTasum / count
+                    y[INDEXALL] = asum / count
                 else:
                     y[INDEXALL] = NAN
 
     return y
 """
 
-# Float dtypes (no axis=None) -----------------------------------------------
-
-floats = {}
-floats['dtypes'] = FLOAT_DTYPES
-floats['axisNone'] = False
-floats['force_output_dtype'] = False
-
-floats['top'] = """
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,
-                                  int window):
-    "Moving mean of NDIMd array of dtype=DTYPE along axis=AXIS ignoring NaNs."
-    cdef int count = 0
-    cdef double asum = 0, aold, ai
-"""
-
-floats['loop'] = {}
-floats['loop'][1] = loop[1].replace('CAST', '')
-floats['loop'][2] = loop[2].replace('CAST', '')
-floats['loop'][3] = loop[3].replace('CAST', '')
+floats['loop'] = loop
 
 # Int dtypes (no axis=None) ------------------------------------------------
 
@@ -152,75 +148,68 @@ ints = deepcopy(floats)
 ints['force_output_dtype'] = 'float64'
 ints['dtypes'] = INT_DTYPES 
 
+loop = {}
+loop[1] = """\
+    if (window < 1) or (window > nINDEX0):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nINDEX0)
+
+    for iINDEX0 in range(window - 1):
+        asum += a[INDEXALL]
+        y[INDEXALL] = NAN
+    iINDEX0 = window - 1
+    asum += a[INDEXALL]
+    y[INDEXALL] = <np.float64_t> asum / window
+    for iINDEX0 in range(window, nINDEX0):
+        asum += a[INDEXALL]
+        aold = a[INDEXREPLACE|iAXIS - window|]
+        asum -= aold
+        y[INDEXALL] = <np.float64_t> asum / window 
+
+    return y
+"""        
+loop[2] = """\
+    if (window < 1) or (window > nAXIS):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
+
+    for iINDEX0 in range(nINDEX0):
+        asum = 0
+        for iINDEX1 in range(window - 1):
+            asum += a[INDEXALL]
+            y[INDEXALL] = NAN
+        iINDEX1 = window - 1
+        asum += a[INDEXALL]
+        y[INDEXALL] = <np.float64_t> asum / window
+        for iINDEX1 in range(window, nINDEX1):
+            asum += a[INDEXALL]
+            aold = a[INDEXREPLACE|iAXIS - window|]
+            asum -= aold
+            y[INDEXALL] = <np.float64_t> asum / window
+
+    return y
+"""
+loop[3] = """\
+    if (window < 1) or (window > nAXIS):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
+
+    for iINDEX0 in range(nINDEX0):
+        for iINDEX1 in range(nINDEX1):
+            asum = 0
+            for iINDEX2 in range(window - 1):
+                asum += a[INDEXALL]
+                y[INDEXALL] = NAN
+            iINDEX2 = window - 1
+            asum += a[INDEXALL]
+            y[INDEXALL] = <np.float64_t> asum / window
+            for iINDEX2 in range(window, nINDEX2):
+                asum += a[INDEXALL]
+                aold = a[INDEXREPLACE|iAXIS - window|]
+                asum -= aold
+                y[INDEXALL] = <np.float64_t> asum / window 
+
+    return y
+"""
+
 ints['loop'] = {}
-ints['loop'][1] = loop[1].replace('CAST', '<np.float64_t> ')
-ints['loop'][2] = loop[2].replace('CAST', '<np.float64_t> ')
-ints['loop'][3] = loop[3].replace('CAST', '<np.float64_t> ')
-
-# The loop code below for integers should be faster than using the
-# loop code for floats (which checks for NaNs). But it runs slower.
-# Can anyone spot why?
-
-#loop = {}
-#loop[1] = """\
-#    if (window < 1) or (window > nINDEX0):
-#        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nINDEX0)
-#
-#    for iINDEX0 in range(window - 1):
-#        asum += a[INDEXALL]
-#        y[INDEXALL] = NAN
-#    iINDEX0 = window - 1
-#    asum += a[INDEXALL]
-#    y[INDEXALL] = <np.float64_t> asum / window
-#    for iINDEX0 in range(window, nINDEX0):
-#        asum += a[INDEXALL]
-#        aold = a[INDEXREPLACE|iAXIS - window|]
-#        asum -= aold
-#        y[INDEXALL] = <np.float64_t> asum / window 
-#
-#    return y
-#"""        
-#loop[2] = """\
-#    if (window < 1) or (window > nAXIS):
-#        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
-#
-#    for iINDEX0 in range(nINDEX0):
-#        asum = 0
-#        for iINDEX1 in range(window - 1):
-#            asum += a[INDEXALL]
-#            y[INDEXALL] = NAN
-#        iINDEX1 = window - 1
-#        asum += a[INDEXALL]
-#        y[INDEXALL] = <np.float64_t> asum / window
-#        for iINDEX1 in range(window, nINDEX1):
-#            asum += a[INDEXALL]
-#            aold = a[INDEXREPLACE|iAXIS - window|]
-#            asum -= aold
-#            y[INDEXALL] = <np.float64_t> asum / window
-#
-#    return y
-#"""
-#loop[3] = """\
-#    if (window < 1) or (window > nAXIS):
-#        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
-#
-#    for iINDEX0 in range(nINDEX0):
-#        for iINDEX1 in range(nINDEX1):
-#            asum = 0
-#            for iINDEX2 in range(window - 1):
-#                asum += a[INDEXALL]
-#                y[INDEXALL] = NAN
-#            iINDEX2 = window - 1
-#            asum += a[INDEXALL]
-#            y[INDEXALL] = <np.float64_t> asum / window
-#            for iINDEX2 in range(window, nINDEX2):
-#                asum += a[INDEXALL]
-#                aold = a[INDEXREPLACE|iAXIS - window|]
-#                asum -= aold
-#                y[INDEXALL] = <np.float64_t> asum / window 
-#
-#    return y
-#"""
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 
