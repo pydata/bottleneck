@@ -268,6 +268,35 @@ def benchsuite(mode='fast'):
     run['setups'] = setups
     suite.append(run)
     
+    # move_min
+    run = {}
+    run['scipy_required'] = True
+    if mode == 'fast':
+        run['name'] = "move_min vs sp.ndimage.minimum_filter1d based function"
+        run['name'] += "\n    window = 5"
+        code = "bn.move_min(a, window=5, axis=0)"
+    else:
+        run['name'] = "move_min_selector vs sp.ndimage.minimum_filter1d"
+        run['name'] += " based function"
+        run['name'] += "\n    window = 5"
+        code = "func(a, 5)"
+    run['statements'] = [code, "scipy_move_min(a, window=5, axis=0)"] 
+    setup = """
+        import numpy as np
+        import bottleneck as bn
+        from bottleneck.slow.move import move_min as scipy_move_min
+        from bottleneck.benchmark.bench import getarray
+        N = %d
+        a = getarray((N,N), 'float64', %s)
+        func, a = bn.move.move_min_selector(a, window=5, axis=0)
+    """
+    setups = {}
+    setups["(10,10)         "] = setup % (10, str(False))
+    setups["(100,100)       "] = setup % (100, str(False))
+    setups["(1000,1000)     "] = setup % (1000, str(False))
+    run['setups'] = setups
+    suite.append(run)
+    
     # Strip leading spaces from setup code
     for i, run in enumerate(suite):
         for s in run['setups']:

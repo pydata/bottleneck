@@ -12,7 +12,7 @@ nan = np.nan
 import bottleneck as bn
 
 
-def arrays(dtypes=bn.dtypes):
+def arrays(dtypes=bn.dtypes, nans=True):
     "Iterator that yield arrays to use for unit testing."
     ss = {}
     ss[1] = {'size':  4, 'shapes': [(4,)]}
@@ -30,17 +30,18 @@ def arrays(dtypes=bn.dtypes):
                 a = a.reshape(shape)
                 yield a
                 yield -a
-            if issubclass(a.dtype.type, np.inexact):        
-                for i in range(a.size):
-                    a.flat[i] = np.nan
-                    yield a
-                    yield -a
+            if issubclass(a.dtype.type, np.inexact): 
+                if nans:
+                    for i in range(a.size):
+                        a.flat[i] = np.nan
+                        yield a
+                        yield -a
 
-def unit_maker(func, func0, decimal=np.inf):
+def unit_maker(func, func0, decimal=np.inf, nans=True):
     "Test that bn.xxx gives the same output as a reference function."
     msg = '\nfunc %s | window %d | input %s (%s) | shape %s | axis %s\n'
     msg += '\nInput array:\n%s\n'
-    for i, arr in enumerate(arrays()):
+    for i, arr in enumerate(arrays(nans=nans)):
         for axis in range(-arr.ndim, arr.ndim):
             windows = range(1, arr.shape[axis])
             if len(windows) == 0:
@@ -66,3 +67,8 @@ def unit_maker(func, func0, decimal=np.inf):
 def test_move_nanmean():
     "Test move_nanmean."
     yield unit_maker, bn.move_nanmean, bn.slow.move_nanmean, 5
+
+def test_move_min():
+    "Test move_min."
+    yield unit_maker, bn.move_min, bn.slow.move_min, 5, False
+    

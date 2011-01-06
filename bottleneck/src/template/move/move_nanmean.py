@@ -271,7 +271,7 @@ def move_nanmean_selector(arr, int window, int axis):
     combination of ndim, dtype, and axis. A lot of the overhead in
     bn.move_nanmean() is in checking that `axis` is within range, converting
     `arr` into an array (if it is not already an array), and selecting the
-    function to use to calculate the moving sum.
+    function to use to calculate the moving mean.
 
     You can get rid of the overhead by doing all this before you, for example,
     enter an inner loop, by using the this function.
@@ -304,6 +304,7 @@ def move_nanmean_selector(arr, int window, int axis):
     
     >>> window, axis = 2, 0
     >>> func, a = bn.move.move_nanmean_selector(arr, window=2, axis=0)
+    >>> func
     <built-in function move_nanmean_1d_float64_axis0>    
     
     Use the returned function and array to determine the sum:

@@ -11,6 +11,12 @@ Bottleneck 0.3.0
 
 *Release date: Not yet released, in development*
 
+The third release of Bottleneck adds X new functions.
+
+**New functions**
+
+- move_min()
+
 Older versions
 ==============
 
@@ -44,6 +50,7 @@ supports more dtypes.
 - All functions are now templated for dtype and axis  
 - Added a sandbox for prototyping of new Bottleneck functions
 - Rewrote benchmarking code  
+- Embed function signatures in docstrings
 
 **Breaks from 0.1.0**
 

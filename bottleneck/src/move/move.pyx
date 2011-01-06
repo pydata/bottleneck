@@ -2,3 +2,4 @@
 
 include "move_header.pyx"
 include "move_nanmean.pyx"
+include "move_min.pyx"

@@ -6,14 +6,15 @@ These function are slow but useful for unit testing.
 
 import numpy as np
 try:
-    from scipy.ndimage import convolve1d
+    from scipy.ndimage import convolve1d, minimum_filter1d 
     SCIPY = True
 except ImportError:
     SCIPY = False
 import bottleneck as bn
 
-__all__ = ['move_nanmean']
+__all__ = ['move_nanmean', 'move_min']
 
+# MEAN -------------------------------------------------------------------
 
 def move_nanmean(arr, window, axis=-1, method='filter'):
     """
@@ -94,6 +95,66 @@ def move_nanmean_filter(arr, window, axis=-1):
     arr /= (window - nrr)
     arr[nrr == window] = np.nan
     return arr
+
+# MIN -----------------------------------------------------------------------
+
+def move_min(arr, window, axis=-1, method='filter'):
+    """
+    Slow move_min for unaccelerated ndim/dtype combinations.
+    
+    Parameters
+    ----------
+    arr : ndarray
+        Input array.
+    window : int
+        The number of elements in the moving window.
+    axis : int, optional
+        The axis over which to perform the moving minimum. By default the
+        moving minimum is taken over the last axis (-1).
+    method : str, optional
+        The following moving window methods are available:
+            ==========  =========================================
+            'filter'    scipy.ndimage.minimum_filter1d (default)
+            'strides'   strides tricks (ndim < 4)
+            'loop'      brute force python loop
+            ==========  =========================================
+
+    Returns
+    -------
+    y : ndarray
+        The moving minimum of the input array along the specified axis. The
+        output has the same shape as the input.
+
+    Examples
+    --------
+    >>> arr = np.array([1, 2, 3, 4])
+    >>> la.farray.mov_min(arr, window=2)
+    array([ NaN,   1.,   2.,   3.])    
+
+    """
+    if method == 'filter':
+        y = move_min_filter(arr, window, axis=axis)
+    elif method == 'strides':
+        y = move_func_strides(np.min, arr, window, axis=axis)
+    elif method == 'loop':
+        y = move_func_loop(np.min, arr, window, axis=axis)
+    else:
+        raise ValueError, "`method` must be 'filter', 'strides', or 'loop'."
+    return y
+
+def move_min_filter(arr, window, axis=-1):
+    "Moving window minimium implemented with a filter."
+    if axis == None:
+        raise ValueError, "An `axis` value of None is not supported."
+    if window < 1:  
+        raise ValueError, "`window` must be at least 1."
+    if window > arr.shape[axis]:
+        raise ValueError, "`window` is too long."  
+    y = arr.astype(float)
+    x0 = (window - 1) // 2
+    minimum_filter1d(y, window, axis=axis, mode='constant', cval=np.nan,
+                     origin=x0, output=y)
+    return y
 
 # GENERAL --------------------------------------------------------------------
 

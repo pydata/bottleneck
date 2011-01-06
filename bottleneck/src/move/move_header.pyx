@@ -1,6 +1,7 @@
 import numpy as np
 cimport numpy as np
 import cython
+cimport stdlib
 from numpy cimport NPY_INT32 as NPY_int32
 from numpy cimport NPY_INT64 as NPY_int64
 from numpy cimport NPY_FLOAT32 as NPY_float32
@@ -10,6 +11,11 @@ import_array()
 import bottleneck as bn
 
 cdef double NAN = <double> np.nan
+
+# Used by move_min and move_max
+cdef struct pairs:
+    double value
+    int death
 
 int32 = np.dtype(np.int32)
 int64 = np.dtype(np.int64)
