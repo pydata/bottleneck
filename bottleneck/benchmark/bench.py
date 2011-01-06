@@ -268,27 +268,27 @@ def benchsuite(mode='fast'):
     run['setups'] = setups
     suite.append(run)
     
-    # move_min
+    # move_max
     run = {}
     run['scipy_required'] = True
     if mode == 'fast':
-        run['name'] = "move_min vs sp.ndimage.minimum_filter1d based function"
+        run['name'] = "move_max vs sp.ndimage.maximum_filter1d based function"
         run['name'] += "\n    window = 5"
-        code = "bn.move_min(a, window=5, axis=0)"
+        code = "bn.move_max(a, window=5, axis=0)"
     else:
-        run['name'] = "move_min_selector vs sp.ndimage.minimum_filter1d"
+        run['name'] = "move_max_selector vs sp.ndimage.maximum_filter1d"
         run['name'] += " based function"
         run['name'] += "\n    window = 5"
         code = "func(a, 5)"
-    run['statements'] = [code, "scipy_move_min(a, window=5, axis=0)"] 
+    run['statements'] = [code, "scipy_move_max(a, window=5, axis=0)"] 
     setup = """
         import numpy as np
         import bottleneck as bn
-        from bottleneck.slow.move import move_min as scipy_move_min
+        from bottleneck.slow.move import move_max as scipy_move_max
         from bottleneck.benchmark.bench import getarray
         N = %d
         a = getarray((N,N), 'float64', %s)
-        func, a = bn.move.move_min_selector(a, window=5, axis=0)
+        func, a = bn.move.move_max_selector(a, window=5, axis=0)
     """
     setups = {}
     setups["(10,10)         "] = setup % (10, str(False))

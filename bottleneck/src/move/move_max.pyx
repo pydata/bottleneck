@@ -1,4 +1,4 @@
-"move_min auto-generated from template"
+"move_max auto-generated from template"
 
 # The minimum on a sliding window algorithm by Richard Harter
 # http://home.tiac.net/~cri/2001/slidingmin.html
@@ -8,9 +8,9 @@
 # Adapted and expanded for Bottleneck:
 # Copyright 2010 Keith Goodman
 
-def move_min(arr, int window, int axis=0):
+def move_max(arr, int window, int axis=0):
     """
-    Moving window minimum along the specified axis.
+    Moving window maximum along the specified axis.
     
     float64 output is returned for all input data types.  
     
@@ -21,35 +21,35 @@ def move_min(arr, int window, int axis=0):
     window : int
         The number of elements in the moving window.
     axis : int, optional
-        The axis over which to find the moving minimum. By default the moving
-        minimum is taken over the first axis (axis=0). An axis of None is not
+        The axis over which to find the moving maximum. By default the moving
+        maximum is taken over the first axis (axis=0). An axis of None is not
         allowed.
 
     Returns
     -------
     y : ndarray
-        The moving minimum of the input array along the specified axis. The
+        The moving maximum of the input array along the specified axis. The
         output has the same shape as the input. 
 
     Examples
     --------
     >>> arr = np.array([1.0, 2.0, 4.0, 3.0])
-    >>> bn.move_min(arr, window=2)
-    array([ nan,  1.,  2.,  3.])
+    >>> bn.move_max(arr, window=2)
+    array([ nan,  2.,  4.,  4.])
 
     """
-    func, arr = move_min_selector(arr, window, axis)
+    func, arr = move_max_selector(arr, window, axis)
     return func(arr, window)
 
-def move_min_selector(arr, int window, int axis):
+def move_max_selector(arr, int window, int axis):
     """
-    Return move_min function and array that matches `arr` and `axis`.
+    Return move_max function and array that matches `arr` and `axis`.
     
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in
-    bn.move_min() is in checking that `axis` is within range, converting
+    bn.move_max() is in checking that `axis` is within range, converting
     `arr` into an array (if it is not already an array), and selecting the
-    function to use to calculate the moving minimum.
+    function to use to calculate the moving maximum.
 
     You can get rid of the overhead by doing all this before you, for example,
     enter an inner loop, by using the this function.
@@ -59,14 +59,14 @@ def move_min_selector(arr, int window, int axis):
     arr : array_like
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}, optional
-        Axis along which the moving minimum is to be computed. The default
-        (axis=0) is to compute the moving minimum along the first axis.
+        Axis along which the moving maximum is to be computed. The default
+        (axis=0) is to compute the moving maximum along the first axis.
     
     Returns
     -------
     func : function
-        The moving minimum function that matches the number of dimensions,
-        dtype, and the axis along which you wish to find the minimum.
+        The moving maximum function that matches the number of dimensions,
+        dtype, and the axis along which you wish to find the maximum.
     a : ndarray
         If the input array `arr` is not a ndarray, then `a` will contain the
         result of converting `arr` into a ndarra; otherwise a view is
@@ -81,11 +81,11 @@ def move_min_selector(arr, int window, int axis):
     Obtain the function needed to determine the sum of `arr` along axis=0:
     
     >>> window, axis = 2, 0
-    >>> func, a = bn.move.move_min_selector(arr, window=2, axis=0)
+    >>> func, a = bn.move.move_max_selector(arr, window=2, axis=0)
     >>> func
-    <built-in function move_min_1d_float64_axis0>    
+    <built-in function move_max_1d_float64_axis0>    
     
-    Use the returned function and array to determine the moving minimum:
+    Use the returned function and array to determine the moving maximum:
 
     >>> func(a, window)
     array([ nan,  1.,  2.,  3.])
@@ -101,10 +101,10 @@ def move_min_selector(arr, int window, int axis):
             raise ValueError, "axis(=%d) out of bounds" % axis
     cdef tuple key = (ndim, dtype, axis)
     try:
-        func = move_min_dict[key]
+        func = move_max_dict[key]
     except KeyError:
         try:
-            func = move_min_slow_dict[axis]
+            func = move_max_slow_dict[axis]
         except KeyError:
             tup = (str(ndim), str(dtype), str(axis))
             raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
@@ -112,7 +112,7 @@ def move_min_selector(arr, int window, int axis):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a, int window):
+def move_max_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a, int window):
     "Moving min of 1d array of dtype=int32 along axis=0."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -141,12 +141,12 @@ def move_min_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a, int window):
             if minpair >= end:
                 minpair = ring
         ai = a[i0]
-        if ai <= minpair.value:
+        if ai >= minpair.value:
             minpair.value = ai
             minpair.death = i0 + window
             last = minpair
         else:
-            while last.value >= ai:
+            while last.value <= ai:
                 if last == ring:
                     last = end
                 last -= 1
@@ -164,7 +164,7 @@ def move_min_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a, int window):
+def move_max_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a, int window):
     "Moving min of 1d array of dtype=int64 along axis=0."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -193,12 +193,12 @@ def move_min_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a, int window):
             if minpair >= end:
                 minpair = ring
         ai = a[i0]
-        if ai <= minpair.value:
+        if ai >= minpair.value:
             minpair.value = ai
             minpair.death = i0 + window
             last = minpair
         else:
-            while last.value >= ai:
+            while last.value <= ai:
                 if last == ring:
                     last = end
                 last -= 1
@@ -216,7 +216,7 @@ def move_min_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a, int window):
+def move_max_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a, int window):
     "Moving min of 2d array of dtype=int32 along axis=0."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -249,12 +249,12 @@ def move_min_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a, int window):
                 if minpair >= end:
                     minpair = ring
             ai = a[i0, i1]
-            if ai <= minpair.value:
+            if ai >= minpair.value:
                 minpair.value = ai
                 minpair.death = i0 + window
                 last = minpair
             else:
-                while last.value >= ai:
+                while last.value <= ai:
                     if last == ring:
                         last = end
                     last -= 1
@@ -272,7 +272,7 @@ def move_min_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a, int window):
+def move_max_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a, int window):
     "Moving min of 2d array of dtype=int32 along axis=1."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -305,12 +305,12 @@ def move_min_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a, int window):
                 if minpair >= end:
                     minpair = ring
             ai = a[i0, i1]
-            if ai <= minpair.value:
+            if ai >= minpair.value:
                 minpair.value = ai
                 minpair.death = i1 + window
                 last = minpair
             else:
-                while last.value >= ai:
+                while last.value <= ai:
                     if last == ring:
                         last = end
                     last -= 1
@@ -328,7 +328,7 @@ def move_min_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a, int window):
+def move_max_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a, int window):
     "Moving min of 2d array of dtype=int64 along axis=0."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -361,12 +361,12 @@ def move_min_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a, int window):
                 if minpair >= end:
                     minpair = ring
             ai = a[i0, i1]
-            if ai <= minpair.value:
+            if ai >= minpair.value:
                 minpair.value = ai
                 minpair.death = i0 + window
                 last = minpair
             else:
-                while last.value >= ai:
+                while last.value <= ai:
                     if last == ring:
                         last = end
                     last -= 1
@@ -384,7 +384,7 @@ def move_min_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a, int window):
+def move_max_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a, int window):
     "Moving min of 2d array of dtype=int64 along axis=1."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -417,12 +417,12 @@ def move_min_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a, int window):
                 if minpair >= end:
                     minpair = ring
             ai = a[i0, i1]
-            if ai <= minpair.value:
+            if ai >= minpair.value:
                 minpair.value = ai
                 minpair.death = i1 + window
                 last = minpair
             else:
-                while last.value >= ai:
+                while last.value <= ai:
                     if last == ring:
                         last = end
                     last -= 1
@@ -440,7 +440,7 @@ def move_min_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a, int window):
+def move_max_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=int32 along axis=0."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -474,12 +474,12 @@ def move_min_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a, int window):
                     if minpair >= end:
                         minpair = ring
                 ai = a[i0, i1, i2]
-                if ai <= minpair.value:
+                if ai >= minpair.value:
                     minpair.value = ai
                     minpair.death = i0 + window
                     last = minpair
                 else:
-                    while last.value >= ai:
+                    while last.value <= ai:
                         if last == ring:
                             last = end
                         last -= 1
@@ -497,7 +497,7 @@ def move_min_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a, int window):
+def move_max_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=int32 along axis=1."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -531,12 +531,12 @@ def move_min_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a, int window):
                     if minpair >= end:
                         minpair = ring
                 ai = a[i0, i1, i2]
-                if ai <= minpair.value:
+                if ai >= minpair.value:
                     minpair.value = ai
                     minpair.death = i1 + window
                     last = minpair
                 else:
-                    while last.value >= ai:
+                    while last.value <= ai:
                         if last == ring:
                             last = end
                         last -= 1
@@ -554,7 +554,7 @@ def move_min_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a, int window):
+def move_max_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=int32 along axis=2."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -588,12 +588,12 @@ def move_min_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a, int window):
                     if minpair >= end:
                         minpair = ring
                 ai = a[i0, i1, i2]
-                if ai <= minpair.value:
+                if ai >= minpair.value:
                     minpair.value = ai
                     minpair.death = i2 + window
                     last = minpair
                 else:
-                    while last.value >= ai:
+                    while last.value <= ai:
                         if last == ring:
                             last = end
                         last -= 1
@@ -611,7 +611,7 @@ def move_min_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a, int window):
+def move_max_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=int64 along axis=0."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -645,12 +645,12 @@ def move_min_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a, int window):
                     if minpair >= end:
                         minpair = ring
                 ai = a[i0, i1, i2]
-                if ai <= minpair.value:
+                if ai >= minpair.value:
                     minpair.value = ai
                     minpair.death = i0 + window
                     last = minpair
                 else:
-                    while last.value >= ai:
+                    while last.value <= ai:
                         if last == ring:
                             last = end
                         last -= 1
@@ -668,7 +668,7 @@ def move_min_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a, int window):
+def move_max_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=int64 along axis=1."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -702,12 +702,12 @@ def move_min_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a, int window):
                     if minpair >= end:
                         minpair = ring
                 ai = a[i0, i1, i2]
-                if ai <= minpair.value:
+                if ai >= minpair.value:
                     minpair.value = ai
                     minpair.death = i1 + window
                     last = minpair
                 else:
-                    while last.value >= ai:
+                    while last.value <= ai:
                         if last == ring:
                             last = end
                         last -= 1
@@ -725,7 +725,7 @@ def move_min_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a, int window):
+def move_max_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=int64 along axis=2."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -759,12 +759,12 @@ def move_min_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a, int window):
                     if minpair >= end:
                         minpair = ring
                 ai = a[i0, i1, i2]
-                if ai <= minpair.value:
+                if ai >= minpair.value:
                     minpair.value = ai
                     minpair.death = i2 + window
                     last = minpair
                 else:
-                    while last.value >= ai:
+                    while last.value <= ai:
                         if last == ring:
                             last = end
                         last -= 1
@@ -782,7 +782,7 @@ def move_min_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_1d_float32_axis0(np.ndarray[np.float32_t, ndim=1] a, int window):
+def move_max_1d_float32_axis0(np.ndarray[np.float32_t, ndim=1] a, int window):
     "Moving min of 1d array of dtype=float32 along axis=0."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -811,12 +811,12 @@ def move_min_1d_float32_axis0(np.ndarray[np.float32_t, ndim=1] a, int window):
             if minpair >= end:
                 minpair = ring
         ai = a[i0]
-        if ai <= minpair.value:
+        if ai >= minpair.value:
             minpair.value = ai
             minpair.death = i0 + window
             last = minpair
         else:
-            while last.value >= ai:
+            while last.value <= ai:
                 if last == ring:
                     last = end
                 last -= 1
@@ -834,7 +834,7 @@ def move_min_1d_float32_axis0(np.ndarray[np.float32_t, ndim=1] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a, int window):
+def move_max_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a, int window):
     "Moving min of 1d array of dtype=float64 along axis=0."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -863,12 +863,12 @@ def move_min_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a, int window):
             if minpair >= end:
                 minpair = ring
         ai = a[i0]
-        if ai <= minpair.value:
+        if ai >= minpair.value:
             minpair.value = ai
             minpair.death = i0 + window
             last = minpair
         else:
-            while last.value >= ai:
+            while last.value <= ai:
                 if last == ring:
                     last = end
                 last -= 1
@@ -886,7 +886,7 @@ def move_min_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_2d_float32_axis0(np.ndarray[np.float32_t, ndim=2] a, int window):
+def move_max_2d_float32_axis0(np.ndarray[np.float32_t, ndim=2] a, int window):
     "Moving min of 2d array of dtype=float32 along axis=0."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -919,12 +919,12 @@ def move_min_2d_float32_axis0(np.ndarray[np.float32_t, ndim=2] a, int window):
                 if minpair >= end:
                     minpair = ring
             ai = a[i0, i1]
-            if ai <= minpair.value:
+            if ai >= minpair.value:
                 minpair.value = ai
                 minpair.death = i0 + window
                 last = minpair
             else:
-                while last.value >= ai:
+                while last.value <= ai:
                     if last == ring:
                         last = end
                     last -= 1
@@ -942,7 +942,7 @@ def move_min_2d_float32_axis0(np.ndarray[np.float32_t, ndim=2] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_2d_float32_axis1(np.ndarray[np.float32_t, ndim=2] a, int window):
+def move_max_2d_float32_axis1(np.ndarray[np.float32_t, ndim=2] a, int window):
     "Moving min of 2d array of dtype=float32 along axis=1."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -975,12 +975,12 @@ def move_min_2d_float32_axis1(np.ndarray[np.float32_t, ndim=2] a, int window):
                 if minpair >= end:
                     minpair = ring
             ai = a[i0, i1]
-            if ai <= minpair.value:
+            if ai >= minpair.value:
                 minpair.value = ai
                 minpair.death = i1 + window
                 last = minpair
             else:
-                while last.value >= ai:
+                while last.value <= ai:
                     if last == ring:
                         last = end
                     last -= 1
@@ -998,7 +998,7 @@ def move_min_2d_float32_axis1(np.ndarray[np.float32_t, ndim=2] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a, int window):
+def move_max_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a, int window):
     "Moving min of 2d array of dtype=float64 along axis=0."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -1031,12 +1031,12 @@ def move_min_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a, int window):
                 if minpair >= end:
                     minpair = ring
             ai = a[i0, i1]
-            if ai <= minpair.value:
+            if ai >= minpair.value:
                 minpair.value = ai
                 minpair.death = i0 + window
                 last = minpair
             else:
-                while last.value >= ai:
+                while last.value <= ai:
                     if last == ring:
                         last = end
                     last -= 1
@@ -1054,7 +1054,7 @@ def move_min_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a, int window):
+def move_max_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a, int window):
     "Moving min of 2d array of dtype=float64 along axis=1."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -1087,12 +1087,12 @@ def move_min_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a, int window):
                 if minpair >= end:
                     minpair = ring
             ai = a[i0, i1]
-            if ai <= minpair.value:
+            if ai >= minpair.value:
                 minpair.value = ai
                 minpair.death = i1 + window
                 last = minpair
             else:
-                while last.value >= ai:
+                while last.value <= ai:
                     if last == ring:
                         last = end
                     last -= 1
@@ -1110,7 +1110,7 @@ def move_min_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_3d_float32_axis0(np.ndarray[np.float32_t, ndim=3] a, int window):
+def move_max_3d_float32_axis0(np.ndarray[np.float32_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=float32 along axis=0."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -1144,12 +1144,12 @@ def move_min_3d_float32_axis0(np.ndarray[np.float32_t, ndim=3] a, int window):
                     if minpair >= end:
                         minpair = ring
                 ai = a[i0, i1, i2]
-                if ai <= minpair.value:
+                if ai >= minpair.value:
                     minpair.value = ai
                     minpair.death = i0 + window
                     last = minpair
                 else:
-                    while last.value >= ai:
+                    while last.value <= ai:
                         if last == ring:
                             last = end
                         last -= 1
@@ -1167,7 +1167,7 @@ def move_min_3d_float32_axis0(np.ndarray[np.float32_t, ndim=3] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_3d_float32_axis1(np.ndarray[np.float32_t, ndim=3] a, int window):
+def move_max_3d_float32_axis1(np.ndarray[np.float32_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=float32 along axis=1."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -1201,12 +1201,12 @@ def move_min_3d_float32_axis1(np.ndarray[np.float32_t, ndim=3] a, int window):
                     if minpair >= end:
                         minpair = ring
                 ai = a[i0, i1, i2]
-                if ai <= minpair.value:
+                if ai >= minpair.value:
                     minpair.value = ai
                     minpair.death = i1 + window
                     last = minpair
                 else:
-                    while last.value >= ai:
+                    while last.value <= ai:
                         if last == ring:
                             last = end
                         last -= 1
@@ -1224,7 +1224,7 @@ def move_min_3d_float32_axis1(np.ndarray[np.float32_t, ndim=3] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_3d_float32_axis2(np.ndarray[np.float32_t, ndim=3] a, int window):
+def move_max_3d_float32_axis2(np.ndarray[np.float32_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=float32 along axis=2."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -1258,12 +1258,12 @@ def move_min_3d_float32_axis2(np.ndarray[np.float32_t, ndim=3] a, int window):
                     if minpair >= end:
                         minpair = ring
                 ai = a[i0, i1, i2]
-                if ai <= minpair.value:
+                if ai >= minpair.value:
                     minpair.value = ai
                     minpair.death = i2 + window
                     last = minpair
                 else:
-                    while last.value >= ai:
+                    while last.value <= ai:
                         if last == ring:
                             last = end
                         last -= 1
@@ -1281,7 +1281,7 @@ def move_min_3d_float32_axis2(np.ndarray[np.float32_t, ndim=3] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a, int window):
+def move_max_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=float64 along axis=0."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -1315,12 +1315,12 @@ def move_min_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a, int window):
                     if minpair >= end:
                         minpair = ring
                 ai = a[i0, i1, i2]
-                if ai <= minpair.value:
+                if ai >= minpair.value:
                     minpair.value = ai
                     minpair.death = i0 + window
                     last = minpair
                 else:
-                    while last.value >= ai:
+                    while last.value <= ai:
                         if last == ring:
                             last = end
                         last -= 1
@@ -1338,7 +1338,7 @@ def move_min_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a, int window):
+def move_max_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=float64 along axis=1."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -1372,12 +1372,12 @@ def move_min_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a, int window):
                     if minpair >= end:
                         minpair = ring
                 ai = a[i0, i1, i2]
-                if ai <= minpair.value:
+                if ai >= minpair.value:
                     minpair.value = ai
                     minpair.death = i1 + window
                     last = minpair
                 else:
-                    while last.value >= ai:
+                    while last.value <= ai:
                         if last == ring:
                             last = end
                         last -= 1
@@ -1395,7 +1395,7 @@ def move_min_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a, int window):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def move_min_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a, int window):
+def move_max_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=float64 along axis=2."
     cdef np.float64_t ai
     cdef pairs* ring
@@ -1429,12 +1429,12 @@ def move_min_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a, int window):
                     if minpair >= end:
                         minpair = ring
                 ai = a[i0, i1, i2]
-                if ai <= minpair.value:
+                if ai >= minpair.value:
                     minpair.value = ai
                     minpair.death = i2 + window
                     last = minpair
                 else:
-                    while last.value >= ai:
+                    while last.value <= ai:
                         if last == ring:
                             last = end
                         last -= 1
@@ -1450,200 +1450,200 @@ def move_min_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a, int window):
     stdlib.free(ring)
     return y
 
-cdef dict move_min_dict = {}
-move_min_dict[(1, int32, 0)] = move_min_1d_int32_axis0
-move_min_dict[(1, int64, 0)] = move_min_1d_int64_axis0
-move_min_dict[(2, int32, 0)] = move_min_2d_int32_axis0
-move_min_dict[(2, int32, 1)] = move_min_2d_int32_axis1
-move_min_dict[(2, int64, 0)] = move_min_2d_int64_axis0
-move_min_dict[(2, int64, 1)] = move_min_2d_int64_axis1
-move_min_dict[(3, int32, 0)] = move_min_3d_int32_axis0
-move_min_dict[(3, int32, 1)] = move_min_3d_int32_axis1
-move_min_dict[(3, int32, 2)] = move_min_3d_int32_axis2
-move_min_dict[(3, int64, 0)] = move_min_3d_int64_axis0
-move_min_dict[(3, int64, 1)] = move_min_3d_int64_axis1
-move_min_dict[(3, int64, 2)] = move_min_3d_int64_axis2
-move_min_dict[(1, float32, 0)] = move_min_1d_float32_axis0
-move_min_dict[(1, float64, 0)] = move_min_1d_float64_axis0
-move_min_dict[(2, float32, 0)] = move_min_2d_float32_axis0
-move_min_dict[(2, float32, 1)] = move_min_2d_float32_axis1
-move_min_dict[(2, float64, 0)] = move_min_2d_float64_axis0
-move_min_dict[(2, float64, 1)] = move_min_2d_float64_axis1
-move_min_dict[(3, float32, 0)] = move_min_3d_float32_axis0
-move_min_dict[(3, float32, 1)] = move_min_3d_float32_axis1
-move_min_dict[(3, float32, 2)] = move_min_3d_float32_axis2
-move_min_dict[(3, float64, 0)] = move_min_3d_float64_axis0
-move_min_dict[(3, float64, 1)] = move_min_3d_float64_axis1
-move_min_dict[(3, float64, 2)] = move_min_3d_float64_axis2
+cdef dict move_max_dict = {}
+move_max_dict[(1, int32, 0)] = move_max_1d_int32_axis0
+move_max_dict[(1, int64, 0)] = move_max_1d_int64_axis0
+move_max_dict[(2, int32, 0)] = move_max_2d_int32_axis0
+move_max_dict[(2, int32, 1)] = move_max_2d_int32_axis1
+move_max_dict[(2, int64, 0)] = move_max_2d_int64_axis0
+move_max_dict[(2, int64, 1)] = move_max_2d_int64_axis1
+move_max_dict[(3, int32, 0)] = move_max_3d_int32_axis0
+move_max_dict[(3, int32, 1)] = move_max_3d_int32_axis1
+move_max_dict[(3, int32, 2)] = move_max_3d_int32_axis2
+move_max_dict[(3, int64, 0)] = move_max_3d_int64_axis0
+move_max_dict[(3, int64, 1)] = move_max_3d_int64_axis1
+move_max_dict[(3, int64, 2)] = move_max_3d_int64_axis2
+move_max_dict[(1, float32, 0)] = move_max_1d_float32_axis0
+move_max_dict[(1, float64, 0)] = move_max_1d_float64_axis0
+move_max_dict[(2, float32, 0)] = move_max_2d_float32_axis0
+move_max_dict[(2, float32, 1)] = move_max_2d_float32_axis1
+move_max_dict[(2, float64, 0)] = move_max_2d_float64_axis0
+move_max_dict[(2, float64, 1)] = move_max_2d_float64_axis1
+move_max_dict[(3, float32, 0)] = move_max_3d_float32_axis0
+move_max_dict[(3, float32, 1)] = move_max_3d_float32_axis1
+move_max_dict[(3, float32, 2)] = move_max_3d_float32_axis2
+move_max_dict[(3, float64, 0)] = move_max_3d_float64_axis0
+move_max_dict[(3, float64, 1)] = move_max_3d_float64_axis1
+move_max_dict[(3, float64, 2)] = move_max_3d_float64_axis2
 
-cdef dict move_min_slow_dict = {}
-move_min_slow_dict[0] = move_min_slow_axis0
-move_min_slow_dict[1] = move_min_slow_axis1
-move_min_slow_dict[2] = move_min_slow_axis2
-move_min_slow_dict[3] = move_min_slow_axis3
-move_min_slow_dict[4] = move_min_slow_axis4
-move_min_slow_dict[5] = move_min_slow_axis5
-move_min_slow_dict[6] = move_min_slow_axis6
-move_min_slow_dict[7] = move_min_slow_axis7
-move_min_slow_dict[8] = move_min_slow_axis8
-move_min_slow_dict[9] = move_min_slow_axis9
-move_min_slow_dict[10] = move_min_slow_axis10
-move_min_slow_dict[11] = move_min_slow_axis11
-move_min_slow_dict[12] = move_min_slow_axis12
-move_min_slow_dict[13] = move_min_slow_axis13
-move_min_slow_dict[14] = move_min_slow_axis14
-move_min_slow_dict[15] = move_min_slow_axis15
-move_min_slow_dict[16] = move_min_slow_axis16
-move_min_slow_dict[17] = move_min_slow_axis17
-move_min_slow_dict[18] = move_min_slow_axis18
-move_min_slow_dict[19] = move_min_slow_axis19
-move_min_slow_dict[20] = move_min_slow_axis20
-move_min_slow_dict[21] = move_min_slow_axis21
-move_min_slow_dict[22] = move_min_slow_axis22
-move_min_slow_dict[23] = move_min_slow_axis23
-move_min_slow_dict[24] = move_min_slow_axis24
-move_min_slow_dict[25] = move_min_slow_axis25
-move_min_slow_dict[26] = move_min_slow_axis26
-move_min_slow_dict[27] = move_min_slow_axis27
-move_min_slow_dict[28] = move_min_slow_axis28
-move_min_slow_dict[29] = move_min_slow_axis29
-move_min_slow_dict[30] = move_min_slow_axis30
-move_min_slow_dict[31] = move_min_slow_axis31
-move_min_slow_dict[32] = move_min_slow_axis32
-move_min_slow_dict[None] = move_min_slow_axisNone
+cdef dict move_max_slow_dict = {}
+move_max_slow_dict[0] = move_max_slow_axis0
+move_max_slow_dict[1] = move_max_slow_axis1
+move_max_slow_dict[2] = move_max_slow_axis2
+move_max_slow_dict[3] = move_max_slow_axis3
+move_max_slow_dict[4] = move_max_slow_axis4
+move_max_slow_dict[5] = move_max_slow_axis5
+move_max_slow_dict[6] = move_max_slow_axis6
+move_max_slow_dict[7] = move_max_slow_axis7
+move_max_slow_dict[8] = move_max_slow_axis8
+move_max_slow_dict[9] = move_max_slow_axis9
+move_max_slow_dict[10] = move_max_slow_axis10
+move_max_slow_dict[11] = move_max_slow_axis11
+move_max_slow_dict[12] = move_max_slow_axis12
+move_max_slow_dict[13] = move_max_slow_axis13
+move_max_slow_dict[14] = move_max_slow_axis14
+move_max_slow_dict[15] = move_max_slow_axis15
+move_max_slow_dict[16] = move_max_slow_axis16
+move_max_slow_dict[17] = move_max_slow_axis17
+move_max_slow_dict[18] = move_max_slow_axis18
+move_max_slow_dict[19] = move_max_slow_axis19
+move_max_slow_dict[20] = move_max_slow_axis20
+move_max_slow_dict[21] = move_max_slow_axis21
+move_max_slow_dict[22] = move_max_slow_axis22
+move_max_slow_dict[23] = move_max_slow_axis23
+move_max_slow_dict[24] = move_max_slow_axis24
+move_max_slow_dict[25] = move_max_slow_axis25
+move_max_slow_dict[26] = move_max_slow_axis26
+move_max_slow_dict[27] = move_max_slow_axis27
+move_max_slow_dict[28] = move_max_slow_axis28
+move_max_slow_dict[29] = move_max_slow_axis29
+move_max_slow_dict[30] = move_max_slow_axis30
+move_max_slow_dict[31] = move_max_slow_axis31
+move_max_slow_dict[32] = move_max_slow_axis32
+move_max_slow_dict[None] = move_max_slow_axisNone
 
-def move_min_slow_axis0(arr, window):
-    "Unaccelerated (slow) move_min along axis 0."
-    return bn.slow.move_min(arr, window, axis=0)
+def move_max_slow_axis0(arr, window):
+    "Unaccelerated (slow) move_max along axis 0."
+    return bn.slow.move_max(arr, window, axis=0)
 
-def move_min_slow_axis1(arr, window):
-    "Unaccelerated (slow) move_min along axis 1."
-    return bn.slow.move_min(arr, window, axis=1)
+def move_max_slow_axis1(arr, window):
+    "Unaccelerated (slow) move_max along axis 1."
+    return bn.slow.move_max(arr, window, axis=1)
 
-def move_min_slow_axis2(arr, window):
-    "Unaccelerated (slow) move_min along axis 2."
-    return bn.slow.move_min(arr, window, axis=2)
+def move_max_slow_axis2(arr, window):
+    "Unaccelerated (slow) move_max along axis 2."
+    return bn.slow.move_max(arr, window, axis=2)
 
-def move_min_slow_axis3(arr, window):
-    "Unaccelerated (slow) move_min along axis 3."
-    return bn.slow.move_min(arr, window, axis=3)
+def move_max_slow_axis3(arr, window):
+    "Unaccelerated (slow) move_max along axis 3."
+    return bn.slow.move_max(arr, window, axis=3)
 
-def move_min_slow_axis4(arr, window):
-    "Unaccelerated (slow) move_min along axis 4."
-    return bn.slow.move_min(arr, window, axis=4)
+def move_max_slow_axis4(arr, window):
+    "Unaccelerated (slow) move_max along axis 4."
+    return bn.slow.move_max(arr, window, axis=4)
 
-def move_min_slow_axis5(arr, window):
-    "Unaccelerated (slow) move_min along axis 5."
-    return bn.slow.move_min(arr, window, axis=5)
+def move_max_slow_axis5(arr, window):
+    "Unaccelerated (slow) move_max along axis 5."
+    return bn.slow.move_max(arr, window, axis=5)
 
-def move_min_slow_axis6(arr, window):
-    "Unaccelerated (slow) move_min along axis 6."
-    return bn.slow.move_min(arr, window, axis=6)
+def move_max_slow_axis6(arr, window):
+    "Unaccelerated (slow) move_max along axis 6."
+    return bn.slow.move_max(arr, window, axis=6)
 
-def move_min_slow_axis7(arr, window):
-    "Unaccelerated (slow) move_min along axis 7."
-    return bn.slow.move_min(arr, window, axis=7)
+def move_max_slow_axis7(arr, window):
+    "Unaccelerated (slow) move_max along axis 7."
+    return bn.slow.move_max(arr, window, axis=7)
 
-def move_min_slow_axis8(arr, window):
-    "Unaccelerated (slow) move_min along axis 8."
-    return bn.slow.move_min(arr, window, axis=8)
+def move_max_slow_axis8(arr, window):
+    "Unaccelerated (slow) move_max along axis 8."
+    return bn.slow.move_max(arr, window, axis=8)
 
-def move_min_slow_axis9(arr, window):
-    "Unaccelerated (slow) move_min along axis 9."
-    return bn.slow.move_min(arr, window, axis=9)
+def move_max_slow_axis9(arr, window):
+    "Unaccelerated (slow) move_max along axis 9."
+    return bn.slow.move_max(arr, window, axis=9)
 
-def move_min_slow_axis10(arr, window):
-    "Unaccelerated (slow) move_min along axis 10."
-    return bn.slow.move_min(arr, window, axis=10)
+def move_max_slow_axis10(arr, window):
+    "Unaccelerated (slow) move_max along axis 10."
+    return bn.slow.move_max(arr, window, axis=10)
 
-def move_min_slow_axis11(arr, window):
-    "Unaccelerated (slow) move_min along axis 11."
-    return bn.slow.move_min(arr, window, axis=11)
+def move_max_slow_axis11(arr, window):
+    "Unaccelerated (slow) move_max along axis 11."
+    return bn.slow.move_max(arr, window, axis=11)
 
-def move_min_slow_axis12(arr, window):
-    "Unaccelerated (slow) move_min along axis 12."
-    return bn.slow.move_min(arr, window, axis=12)
+def move_max_slow_axis12(arr, window):
+    "Unaccelerated (slow) move_max along axis 12."
+    return bn.slow.move_max(arr, window, axis=12)
 
-def move_min_slow_axis13(arr, window):
-    "Unaccelerated (slow) move_min along axis 13."
-    return bn.slow.move_min(arr, window, axis=13)
+def move_max_slow_axis13(arr, window):
+    "Unaccelerated (slow) move_max along axis 13."
+    return bn.slow.move_max(arr, window, axis=13)
 
-def move_min_slow_axis14(arr, window):
-    "Unaccelerated (slow) move_min along axis 14."
-    return bn.slow.move_min(arr, window, axis=14)
+def move_max_slow_axis14(arr, window):
+    "Unaccelerated (slow) move_max along axis 14."
+    return bn.slow.move_max(arr, window, axis=14)
 
-def move_min_slow_axis15(arr, window):
-    "Unaccelerated (slow) move_min along axis 15."
-    return bn.slow.move_min(arr, window, axis=15)
+def move_max_slow_axis15(arr, window):
+    "Unaccelerated (slow) move_max along axis 15."
+    return bn.slow.move_max(arr, window, axis=15)
 
-def move_min_slow_axis16(arr, window):
-    "Unaccelerated (slow) move_min along axis 16."
-    return bn.slow.move_min(arr, window, axis=16)
+def move_max_slow_axis16(arr, window):
+    "Unaccelerated (slow) move_max along axis 16."
+    return bn.slow.move_max(arr, window, axis=16)
 
-def move_min_slow_axis17(arr, window):
-    "Unaccelerated (slow) move_min along axis 17."
-    return bn.slow.move_min(arr, window, axis=17)
+def move_max_slow_axis17(arr, window):
+    "Unaccelerated (slow) move_max along axis 17."
+    return bn.slow.move_max(arr, window, axis=17)
 
-def move_min_slow_axis18(arr, window):
-    "Unaccelerated (slow) move_min along axis 18."
-    return bn.slow.move_min(arr, window, axis=18)
+def move_max_slow_axis18(arr, window):
+    "Unaccelerated (slow) move_max along axis 18."
+    return bn.slow.move_max(arr, window, axis=18)
 
-def move_min_slow_axis19(arr, window):
-    "Unaccelerated (slow) move_min along axis 19."
-    return bn.slow.move_min(arr, window, axis=19)
+def move_max_slow_axis19(arr, window):
+    "Unaccelerated (slow) move_max along axis 19."
+    return bn.slow.move_max(arr, window, axis=19)
 
-def move_min_slow_axis20(arr, window):
-    "Unaccelerated (slow) move_min along axis 20."
-    return bn.slow.move_min(arr, window, axis=20)
+def move_max_slow_axis20(arr, window):
+    "Unaccelerated (slow) move_max along axis 20."
+    return bn.slow.move_max(arr, window, axis=20)
 
-def move_min_slow_axis21(arr, window):
-    "Unaccelerated (slow) move_min along axis 21."
-    return bn.slow.move_min(arr, window, axis=21)
+def move_max_slow_axis21(arr, window):
+    "Unaccelerated (slow) move_max along axis 21."
+    return bn.slow.move_max(arr, window, axis=21)
 
-def move_min_slow_axis22(arr, window):
-    "Unaccelerated (slow) move_min along axis 22."
-    return bn.slow.move_min(arr, window, axis=22)
+def move_max_slow_axis22(arr, window):
+    "Unaccelerated (slow) move_max along axis 22."
+    return bn.slow.move_max(arr, window, axis=22)
 
-def move_min_slow_axis23(arr, window):
-    "Unaccelerated (slow) move_min along axis 23."
-    return bn.slow.move_min(arr, window, axis=23)
+def move_max_slow_axis23(arr, window):
+    "Unaccelerated (slow) move_max along axis 23."
+    return bn.slow.move_max(arr, window, axis=23)
 
-def move_min_slow_axis24(arr, window):
-    "Unaccelerated (slow) move_min along axis 24."
-    return bn.slow.move_min(arr, window, axis=24)
+def move_max_slow_axis24(arr, window):
+    "Unaccelerated (slow) move_max along axis 24."
+    return bn.slow.move_max(arr, window, axis=24)
 
-def move_min_slow_axis25(arr, window):
-    "Unaccelerated (slow) move_min along axis 25."
-    return bn.slow.move_min(arr, window, axis=25)
+def move_max_slow_axis25(arr, window):
+    "Unaccelerated (slow) move_max along axis 25."
+    return bn.slow.move_max(arr, window, axis=25)
 
-def move_min_slow_axis26(arr, window):
-    "Unaccelerated (slow) move_min along axis 26."
-    return bn.slow.move_min(arr, window, axis=26)
+def move_max_slow_axis26(arr, window):
+    "Unaccelerated (slow) move_max along axis 26."
+    return bn.slow.move_max(arr, window, axis=26)
 
-def move_min_slow_axis27(arr, window):
-    "Unaccelerated (slow) move_min along axis 27."
-    return bn.slow.move_min(arr, window, axis=27)
+def move_max_slow_axis27(arr, window):
+    "Unaccelerated (slow) move_max along axis 27."
+    return bn.slow.move_max(arr, window, axis=27)
 
-def move_min_slow_axis28(arr, window):
-    "Unaccelerated (slow) move_min along axis 28."
-    return bn.slow.move_min(arr, window, axis=28)
+def move_max_slow_axis28(arr, window):
+    "Unaccelerated (slow) move_max along axis 28."
+    return bn.slow.move_max(arr, window, axis=28)
 
-def move_min_slow_axis29(arr, window):
-    "Unaccelerated (slow) move_min along axis 29."
-    return bn.slow.move_min(arr, window, axis=29)
+def move_max_slow_axis29(arr, window):
+    "Unaccelerated (slow) move_max along axis 29."
+    return bn.slow.move_max(arr, window, axis=29)
 
-def move_min_slow_axis30(arr, window):
-    "Unaccelerated (slow) move_min along axis 30."
-    return bn.slow.move_min(arr, window, axis=30)
+def move_max_slow_axis30(arr, window):
+    "Unaccelerated (slow) move_max along axis 30."
+    return bn.slow.move_max(arr, window, axis=30)
 
-def move_min_slow_axis31(arr, window):
-    "Unaccelerated (slow) move_min along axis 31."
-    return bn.slow.move_min(arr, window, axis=31)
+def move_max_slow_axis31(arr, window):
+    "Unaccelerated (slow) move_max along axis 31."
+    return bn.slow.move_max(arr, window, axis=31)
 
-def move_min_slow_axis32(arr, window):
-    "Unaccelerated (slow) move_min along axis 32."
-    return bn.slow.move_min(arr, window, axis=32)
+def move_max_slow_axis32(arr, window):
+    "Unaccelerated (slow) move_max along axis 32."
+    return bn.slow.move_max(arr, window, axis=32)
 
-def move_min_slow_axisNone(arr, window):
-    "Unaccelerated (slow) move_min along axis None."
-    return bn.slow.move_min(arr, window, axis=None)
+def move_max_slow_axisNone(arr, window):
+    "Unaccelerated (slow) move_max along axis None."
+    return bn.slow.move_max(arr, window, axis=None)

@@ -16,6 +16,7 @@ The third release of Bottleneck adds X new functions.
 **New functions**
 
 - move_min()
+- move_max()  
 
 Older versions
 ==============

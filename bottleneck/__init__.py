@@ -14,7 +14,7 @@ try:
 except:
     pass
 try:
-    from move import move_nanmean, move_min
+    from move import move_nanmean, move_min, move_max
 except:
     pass
 try:

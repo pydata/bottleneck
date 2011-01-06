@@ -307,7 +307,7 @@ def move_nanmean_selector(arr, int window, int axis):
     >>> func
     <built-in function move_nanmean_1d_float64_axis0>    
     
-    Use the returned function and array to determine the sum:
+    Use the returned function and array to determine the moving mean:
 
     >>> func(a, window)
     array([ nan,  1.5,  2.5,  3.5])
