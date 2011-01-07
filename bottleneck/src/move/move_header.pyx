@@ -12,10 +12,8 @@ import bottleneck as bn
 
 cdef double NAN = <double> np.nan
 
-cdef np.int32_t MINint32 = np.iinfo(np.int32).min
-cdef np.int64_t MINint64 = np.iinfo(np.int64).min
-cdef np.float32_t MINfloat32 = np.NINF
 cdef np.float64_t MINfloat64 = np.NINF
+cdef np.float64_t MAXfloat64 = np.inf
 
 # Used by move_min and move_max
 cdef struct pairs:
