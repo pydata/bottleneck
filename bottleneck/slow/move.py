@@ -6,14 +6,16 @@ These function are slow but useful for unit testing.
 
 import numpy as np
 try:
-    from scipy.ndimage import convolve1d
+    from scipy.ndimage import convolve1d, minimum_filter1d, maximum_filter1d
     SCIPY = True
 except ImportError:
     SCIPY = False
 import bottleneck as bn
 
-__all__ = ['move_nanmean']
+__all__ = ['move_nanmean', 'move_min', 'move_max', 'move_nanmin',
+           'move_nanmax']
 
+# MEAN -------------------------------------------------------------------
 
 def move_nanmean(arr, window, axis=-1, method='filter'):
     """
@@ -94,6 +96,323 @@ def move_nanmean_filter(arr, window, axis=-1):
     arr /= (window - nrr)
     arr[nrr == window] = np.nan
     return arr
+
+# MIN -----------------------------------------------------------------------
+
+def move_min(arr, window, axis=-1, method='filter'):
+    """
+    Slow move_min for unaccelerated ndim/dtype combinations.
+    
+    Parameters
+    ----------
+    arr : ndarray
+        Input array.
+    window : int
+        The number of elements in the moving window.
+    axis : int, optional
+        The axis over which to perform the moving minimum. By default the
+        moving minimum is taken over the last axis (-1).
+    method : str, optional
+        The following moving window methods are available:
+            ==========  =========================================
+            'filter'    scipy.ndimage.minimum_filter1d (default)
+            'strides'   strides tricks (ndim < 4)
+            'loop'      brute force python loop
+            ==========  =========================================
+
+    Returns
+    -------
+    y : ndarray
+        The moving minimum of the input array along the specified axis. The
+        output has the same shape as the input.
+
+    Examples
+    --------
+    >>> arr = np.array([1, 2, 3, 4])
+    >>> la.farray.mov_min(arr, window=2)
+    array([ NaN,   1.,   2.,   3.])    
+
+    """
+    if method == 'filter':
+        y = move_min_filter(arr, window, axis=axis)
+    elif method == 'strides':
+        y = move_func_strides(np.min, arr, window, axis=axis)
+    elif method == 'loop':
+        y = move_func_loop(np.min, arr, window, axis=axis)
+    else:
+        raise ValueError, "`method` must be 'filter', 'strides', or 'loop'."
+    return y
+
+def move_nanmin(arr, window, axis=-1, method='filter'):
+    """
+    Slow move_nanmin for unaccelerated ndim/dtype combinations.
+    
+    Parameters
+    ----------
+    arr : ndarray
+        Input array.
+    window : int
+        The number of elements in the moving window.
+    axis : int, optional
+        The axis over which to perform the moving minimum. By default the
+        moving minimum is taken over the last axis (-1).
+    method : str, optional
+        The following moving window methods are available:
+            ==========  =========================================
+            'filter'    scipy.ndimage.minimum_filter1d (default)
+            'strides'   strides tricks (ndim < 4)
+            'loop'      brute force python loop
+            ==========  =========================================
+
+    Returns
+    -------
+    y : ndarray
+        The moving minimum of the input array along the specified axis,
+        ignoring NaNs. (A window with all NaNs returns NaN for the window
+        minimum.) The output has the same shape as the input.
+
+    Examples
+    --------
+    >>> arr = np.array([1, 2, np.nan, 4, 5])
+    >>> la.farray.mov_nanmin(arr, window=2)
+    array([ NaN,   1.,   2.,   4.,   4.])    
+
+    """
+    if method == 'filter':
+        y = move_nanmin_filter(arr, window, axis=axis)
+    elif method == 'strides':
+        y = move_nanmin_strides(arr, window, axis=axis)
+    elif method == 'loop':
+        y = move_nanmin_loop(arr, window, axis=axis)
+    else:
+        raise ValueError, "`method` must be 'filter', 'strides', or 'loop'."
+    return y
+
+def move_min_filter(arr, window, axis=-1):
+    "Moving window minimium implemented with a filter."
+    if axis == None:
+        raise ValueError, "An `axis` value of None is not supported."
+    if window < 1:  
+        raise ValueError, "`window` must be at least 1."
+    if window > arr.shape[axis]:
+        raise ValueError, "`window` is too long."  
+    y = arr.astype(float)
+    x0 = (window - 1) // 2
+    minimum_filter1d(y, window, axis=axis, mode='constant', cval=np.nan,
+                     origin=x0, output=y)
+    return y
+
+def move_nanmin_filter(arr, window, axis=-1):
+    "Moving window minimium ignoring NaNs, implemented with a filter."
+    if axis == None:
+        raise ValueError, "An `axis` value of None is not supported."
+    if window < 1:  
+        raise ValueError, "`window` must be at least 1."
+    if window > arr.shape[axis]:
+        raise ValueError, "`window` is too long."
+    arr = arr.astype(float)
+    nrr = np.isnan(arr)
+    arr[nrr] = np.inf
+    x0 = (window - 1) // 2
+    minimum_filter1d(arr, window, axis=axis, mode='constant', cval=np.nan,
+                     origin=x0, output=arr)
+    w = np.ones(window, dtype=int)
+    nrr = nrr.astype(int)
+    x0 = (1 - window) // 2
+    convolve1d(nrr, w, axis=axis, mode='constant', cval=0, origin=x0,
+               output=nrr)
+    arr[nrr == window] = np.nan
+    return arr
+
+def move_nanmin_loop(arr, window, axis=-1):
+    "Moving window minimium ignoring NaNs, implemented with a python loop."
+    if axis == None:
+        raise ValueError, "An `axis` value of None is not supported."
+    if window < 1:  
+        raise ValueError, "`window` must be at least 1."
+    if window > arr.shape[axis]:
+        raise ValueError, "`window` is too long."
+    arr = arr.astype(float)
+    nrr = np.isnan(arr)
+    arr[nrr] = np.inf
+    y = move_func_loop(np.min, arr, window, axis=axis)
+    m = move_func_loop(np.sum, nrr.astype(int), window, axis=axis)
+    y[m == window] = np.nan
+    return y
+
+def move_nanmin_strides(arr, window, axis=-1):
+    "Moving window minimium ignoring NaNs, implemented with stides tricks."
+    if axis == None:
+        raise ValueError, "An `axis` value of None is not supported."
+    if window < 1:  
+        raise ValueError, "`window` must be at least 1."
+    if window > arr.shape[axis]:
+        raise ValueError, "`window` is too long."
+    arr = arr.astype(float)
+    nrr = np.isnan(arr)
+    arr[nrr] = np.inf
+    y = move_func_strides(np.min, arr, window, axis=axis)
+    m = move_func_strides(np.sum, nrr.astype(int), window, axis=axis)
+    y[m == window] = np.nan
+    return y
+
+# MAX -----------------------------------------------------------------------
+
+def move_max(arr, window, axis=-1, method='filter'):
+    """
+    Slow move_max for unaccelerated ndim/dtype combinations.
+    
+    Parameters
+    ----------
+    arr : ndarray
+        Input array.
+    window : int
+        The number of elements in the moving window.
+    axis : int, optional
+        The axis over which to perform the moving maximum. By default the
+        moving maximum is taken over the last axis (-1).
+    method : str, optional
+        The following moving window methods are available:
+            ==========  =========================================
+            'filter'    scipy.ndimage.minimum_filter1d (default)
+            'strides'   strides tricks (ndim < 4)
+            'loop'      brute force python loop
+            ==========  =========================================
+
+    Returns
+    -------
+    y : ndarray
+        The moving maximum of the input array along the specified axis. The
+        output has the same shape as the input.
+
+    Examples
+    --------
+    >>> arr = np.array([1, 2, 3, 4])
+    >>> la.farray.mov_max(arr, window=2)
+    array([ NaN,   2.,   3.,   4.])    
+
+    """
+    if method == 'filter':
+        y = move_max_filter(arr, window, axis=axis)
+    elif method == 'strides':
+        y = move_func_strides(np.max, arr, window, axis=axis)
+    elif method == 'loop':
+        y = move_func_loop(np.max, arr, window, axis=axis)
+    else:
+        raise ValueError, "`method` must be 'filter', 'strides', or 'loop'."
+    return y
+
+def move_nanmax(arr, window, axis=-1, method='filter'):
+    """
+    Slow move_nanmax for unaccelerated ndim/dtype combinations, ignoring NaNs.
+    
+    Parameters
+    ----------
+    arr : ndarray
+        Input array.
+    window : int
+        The number of elements in the moving window.
+    axis : int, optional
+        The axis over which to perform the moving maximum. By default the
+        moving maximum is taken over the last axis (-1).
+    method : str, optional
+        The following moving window methods are available:
+            ==========  =========================================
+            'filter'    scipy.ndimage.maximum_filter1d (default)
+            'strides'   strides tricks (ndim < 4)
+            'loop'      brute force python loop
+            ==========  =========================================
+
+    Returns
+    -------
+    y : ndarray
+        The moving maximum of the input array along the specified axis,
+        ignoring NaNs. (A window with all NaNs returns NaN for the window
+        maximum.) The output has the same shape as the input.
+
+    Examples
+    --------
+    >>> arr = np.array([1, 2, np.nan, 4, 5])
+    >>> la.farray.mov_nanmax(arr, window=2)
+    array([ NaN,   2.,   2.,   4.,   5.])
+
+    """
+    if method == 'filter':
+        y = move_nanmax_filter(arr, window, axis=axis)
+    elif method == 'strides':
+        y = move_nanmax_strides(arr, window, axis=axis)
+    elif method == 'loop':
+        y = move_nanmax_loop(arr, window, axis=axis)
+    else:
+        raise ValueError, "`method` must be 'filter', 'strides', or 'loop'."
+    return y
+
+def move_max_filter(arr, window, axis=-1):
+    "Moving window maximium implemented with a filter."
+    if axis == None:
+        raise ValueError, "An `axis` value of None is not supported."
+    if window < 1:  
+        raise ValueError, "`window` must be at least 1."
+    if window > arr.shape[axis]:
+        raise ValueError, "`window` is too long."  
+    y = arr.astype(float)
+    x0 = (window - 1) // 2
+    maximum_filter1d(y, window, axis=axis, mode='constant', cval=np.nan,
+                     origin=x0, output=y)
+    return y
+def move_nanmax_filter(arr, window, axis=-1):
+    "Moving window maximium ignoring NaNs, implemented with a filter."
+    if axis == None:
+        raise ValueError, "An `axis` value of None is not supported."
+    if window < 1:  
+        raise ValueError, "`window` must be at least 1."
+    if window > arr.shape[axis]:
+        raise ValueError, "`window` is too long."
+    arr = arr.astype(float)
+    nrr = np.isnan(arr)
+    arr[nrr] = -np.inf
+    x0 = (window - 1) // 2
+    maximum_filter1d(arr, window, axis=axis, mode='constant', cval=np.nan,
+                     origin=x0, output=arr)
+    w = np.ones(window, dtype=int)
+    nrr = nrr.astype(int)
+    x0 = (1 - window) // 2
+    convolve1d(nrr, w, axis=axis, mode='constant', cval=0, origin=x0,
+               output=nrr)
+    arr[nrr == window] = np.nan
+    return arr
+
+def move_nanmax_loop(arr, window, axis=-1):
+    "Moving window maximium ignoring NaNs, implemented with a python loop."
+    if axis == None:
+        raise ValueError, "An `axis` value of None is not supported."
+    if window < 1:  
+        raise ValueError, "`window` must be at least 1."
+    if window > arr.shape[axis]:
+        raise ValueError, "`window` is too long."
+    arr = arr.astype(float)
+    nrr = np.isnan(arr)
+    arr[nrr] = -np.inf
+    y = move_func_loop(np.max, arr, window, axis=axis)
+    m = move_func_loop(np.sum, nrr.astype(int), window, axis=axis)
+    y[m == window] = np.nan
+    return y
+
+def move_nanmax_strides(arr, window, axis=-1):
+    "Moving window maximium ignoring NaNs, implemented with stides tricks."
+    if axis == None:
+        raise ValueError, "An `axis` value of None is not supported."
+    if window < 1:  
+        raise ValueError, "`window` must be at least 1."
+    if window > arr.shape[axis]:
+        raise ValueError, "`window` is too long."
+    arr = arr.astype(float)
+    nrr = np.isnan(arr)
+    arr[nrr] = -np.inf
+    y = move_func_strides(np.max, arr, window, axis=axis)
+    m = move_func_strides(np.sum, nrr.astype(int), window, axis=axis)
+    y[m == window] = np.nan
+    return y
 
 # GENERAL --------------------------------------------------------------------
 

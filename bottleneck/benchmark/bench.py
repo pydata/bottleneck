@@ -268,6 +268,67 @@ def benchsuite(mode='fast'):
     run['setups'] = setups
     suite.append(run)
     
+    # move_max
+    run = {}
+    run['scipy_required'] = True
+    if mode == 'fast':
+        run['name'] = "move_max vs sp.ndimage.maximum_filter1d based function"
+        run['name'] += "\n    window = 5"
+        code = "bn.move_max(a, window=5, axis=0)"
+    else:
+        run['name'] = "move_max_selector vs sp.ndimage.maximum_filter1d"
+        run['name'] += " based function"
+        run['name'] += "\n    window = 5"
+        code = "func(a, 5)"
+    run['statements'] = [code, "scipy_move_max(a, window=5, axis=0)"] 
+    setup = """
+        import numpy as np
+        import bottleneck as bn
+        from bottleneck.slow.move import move_max as scipy_move_max
+        from bottleneck.benchmark.bench import getarray
+        N = %d
+        a = getarray((N,N), 'float64', %s)
+        func, a = bn.move.move_max_selector(a, window=5, axis=0)
+    """
+    setups = {}
+    setups["(10,10)         "] = setup % (10, str(False))
+    setups["(100,100)       "] = setup % (100, str(False))
+    setups["(1000,1000)     "] = setup % (1000, str(False))
+    run['setups'] = setups
+    suite.append(run)
+    
+    # move_nanmax
+    run = {}
+    run['scipy_required'] = True
+    if mode == 'fast':
+        run['name'] = "move_nanmax vs sp.ndimage.maximum_filter1d based "
+        run['name'] += "function\n    window = 5"
+        code = "bn.move_nanmax(a, window=5, axis=0)"
+    else:
+        run['name'] = "move_nanmax_selector vs sp.ndimage.maximum_filter1d"
+        run['name'] += " based function"
+        run['name'] += "\n    window = 5"
+        code = "func(a, 5)"
+    run['statements'] = [code, "scipy_move_nanmax(a, window=5, axis=0)"] 
+    setup = """
+        import numpy as np
+        import bottleneck as bn
+        from bottleneck.slow.move import move_nanmax as scipy_move_nanmax
+        from bottleneck.benchmark.bench import getarray
+        N = %d
+        a = getarray((N,N), 'float64', %s)
+        func, a = bn.move.move_nanmax_selector(a, window=5, axis=0)
+    """
+    setups = {}
+    setups["(10,10)         "] = setup % (10, str(False))
+    setups["(10,10)      NaN"] = setup % (10, str(True))
+    setups["(100,100)       "] = setup % (100, str(False))
+    setups["(100,100)    NaN"] = setup % (100, str(True))
+    setups["(1000,1000)     "] = setup % (1000, str(False))
+    setups["(1000,1000)  NaN"] = setup % (1000, str(True))
+    run['setups'] = setups
+    suite.append(run)
+    
     # Strip leading spaces from setup code
     for i, run in enumerate(suite):
         for s in run['setups']:

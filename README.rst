@@ -11,7 +11,8 @@ Bottleneck is a collection of fast NumPy array functions written in Cython:
 NumPy/SciPy           ``median, nanmedian, nanmin, nanmax, nanmean, nanstd,
                       nanargmin, nanargmax`` 
 Functions             ``nanvar``
-Moving window         ``move_nanmean``
+Moving window         ``move_nanmean, move_min, move_max, move_nanmin,
+                      move_nanmax``
 Group by              ``group_nanmean``
 ===================== =======================================================
 
@@ -62,59 +63,72 @@ benchmark::
     
     >>> bn.bench(mode='fast')
     Bottleneck performance benchmark
-        Bottleneck  0.2.0
+        Bottleneck  0.3.0
         Numpy (np)  1.5.1
         Scipy (sp)  0.8.0
         Speed is NumPy or SciPy time divided by Bottleneck time
         NaN means one-third NaNs; axis=0 and float64 are used
     median vs np.median
-        3.59  (10,10)         
-        2.43  (1001,1001)     
+        3.48  (10,10)         
+        2.41  (1001,1001)     
         2.28  (1000,1000)     
-        2.16  (100,100)       
+        2.17  (100,100)       
     nanmedian vs local copy of sp.stats.nanmedian
-      102.72  (10,10)      NaN
-       94.34  (10,10)         
-       67.89  (100,100)    NaN
-       28.52  (100,100)       
-        6.37  (1000,1000)  NaN
+      102.67  (10,10)      NaN
+       92.03  (10,10)         
+       68.72  (100,100)    NaN
+       28.87  (100,100)       
+        6.40  (1000,1000)  NaN
         4.41  (1000,1000)     
     nanmax vs np.nanmax
-        9.99  (100,100)    NaN
-        6.12  (10,10)      NaN
-        5.99  (10,10)         
-        5.88  (100,100)       
+        9.87  (100,100)    NaN
+        6.27  (10,10)      NaN
+        6.06  (10,10)         
+        5.81  (100,100)       
         1.79  (1000,1000)  NaN
         1.76  (1000,1000)     
     nanmean vs local copy of sp.stats.nanmean
-       25.95  (100,100)    NaN
-       12.85  (100,100)       
-       12.26  (10,10)      NaN
-       11.89  (10,10)         
-        5.15  (1000,1000)  NaN
-        3.17  (1000,1000)     
+       26.11  (100,100)    NaN
+       12.88  (100,100)       
+       12.05  (10,10)      NaN
+       11.58  (10,10)         
+        5.12  (1000,1000)  NaN
+        3.16  (1000,1000)     
     nanstd vs local copy of sp.stats.nanstd
-       16.96  (100,100)    NaN
-       15.75  (10,10)      NaN
-       15.49  (10,10)         
-        9.51  (100,100)       
-        3.85  (1000,1000)  NaN
+       16.86  (100,100)    NaN
+       16.43  (10,10)      NaN
+       15.54  (10,10)         
+        9.44  (100,100)       
+        3.84  (1000,1000)  NaN
         2.82  (1000,1000)     
     nanargmax vs np.nanargmax
-        8.60  (100,100)    NaN
-        5.65  (10,10)      NaN
+        8.52  (100,100)    NaN
         5.62  (100,100)       
-        5.44  (10,10)         
-        2.84  (1000,1000)  NaN
-        2.58  (1000,1000)     
+        5.51  (10,10)      NaN
+        5.33  (10,10)         
+        2.83  (1000,1000)  NaN
+        2.57  (1000,1000)     
     move_nanmean vs sp.ndimage.convolve1d based function
         window = 5
-       19.52  (10,10)      NaN
-       18.55  (10,10)         
-       10.56  (100,100)    NaN
-        6.67  (100,100)       
-        5.19  (1000,1000)  NaN
-        4.42  (1000,1000)     
+       19.92  (10,10)      NaN
+       18.86  (10,10)         
+       11.11  (100,100)    NaN
+        6.24  (100,100)       
+        5.31  (1000,1000)  NaN
+        4.37  (1000,1000)     
+    move_max vs sp.ndimage.maximum_filter1d based function
+        window = 5
+        3.63  (10,10)         
+        1.84  (100,100)       
+        1.48  (1000,1000)     
+    move_nanmax vs sp.ndimage.maximum_filter1d based function
+        window = 5
+       14.94  (10,10)      NaN
+       14.05  (10,10)         
+        8.46  (100,100)    NaN
+        4.16  (1000,1000)  NaN
+        2.94  (100,100)       
+        2.85  (1000,1000)     
 
 Faster
 ======
@@ -152,59 +166,72 @@ Benchmarks for the low-level Cython version of each function::
 
     >>> bn.bench(mode='faster')
     Bottleneck performance benchmark
-        Bottleneck  0.2.0
+        Bottleneck  0.3.0
         Numpy (np)  1.5.1
         Scipy (sp)  0.8.0
         Speed is NumPy or SciPy time divided by Bottleneck time
         NaN means one-third NaNs; axis=0 and float64 are used
     median_selector vs np.median
-       15.29  (10,10)         
-       14.19  (100,100)       
-        8.04  (1001,1001)     
-        7.32  (1000,1000)     
+       14.49  (100,100)       
+       14.14  (10,10)         
+        8.03  (1001,1001)     
+        7.35  (1000,1000)     
     nanmedian_selector vs local copy of sp.stats.nanmedian
-      352.08  (10,10)      NaN
-      340.27  (10,10)         
-      185.56  (100,100)    NaN
-      138.81  (100,100)       
-        8.21  (1000,1000)     
-        8.09  (1000,1000)  NaN
+      337.27  (10,10)      NaN
+      322.51  (10,10)         
+      186.39  (100,100)    NaN
+      138.67  (100,100)       
+        8.25  (1000,1000)     
+        8.11  (1000,1000)  NaN
     nanmax_selector vs np.nanmax
-       21.54  (10,10)      NaN
-       19.98  (10,10)         
-       12.65  (100,100)    NaN
-        6.82  (100,100)       
+       20.49  (10,10)      NaN
+       19.15  (10,10)         
+       12.45  (100,100)    NaN
+        6.73  (100,100)       
         1.79  (1000,1000)  NaN
         1.76  (1000,1000)     
     nanmean_selector vs local copy of sp.stats.nanmean
-       41.08  (10,10)      NaN
-       39.05  (10,10)         
-       31.74  (100,100)    NaN
-       15.24  (100,100)       
-        5.13  (1000,1000)  NaN
-        3.16  (1000,1000)     
+       36.52  (10,10)      NaN
+       35.08  (10,10)         
+       31.36  (100,100)    NaN
+       15.04  (100,100)       
+        5.16  (1000,1000)  NaN
+        3.17  (1000,1000)     
     nanstd_selector vs local copy of sp.stats.nanstd
-       44.55  (10,10)      NaN
-       43.49  (10,10)         
-       18.66  (100,100)    NaN
-       10.29  (100,100)       
-        3.83  (1000,1000)  NaN
-        2.82  (1000,1000)     
+       44.59  (10,10)      NaN
+       42.21  (10,10)         
+       18.67  (100,100)    NaN
+       10.27  (100,100)       
+        3.84  (1000,1000)  NaN
+        2.83  (1000,1000)     
     nanargmax_selector vs np.nanargmax
-       17.91  (10,10)      NaN
-       17.00  (10,10)         
-       10.56  (100,100)    NaN
-        6.50  (100,100)       
-        2.85  (1000,1000)  NaN
-        2.59  (1000,1000)     
+       16.62  (10,10)      NaN
+       16.29  (10,10)         
+       10.48  (100,100)    NaN
+        6.52  (100,100)       
+        2.84  (1000,1000)  NaN
+        2.57  (1000,1000)     
     move_nanmean_selector vs sp.ndimage.convolve1d based function
         window = 5
-       55.96  (10,10)      NaN
-       50.82  (10,10)         
-       11.77  (100,100)    NaN
-        6.93  (100,100)       
-        5.56  (1000,1000)  NaN
-        4.51  (1000,1000)     
+       54.54  (10,10)      NaN
+       49.65  (10,10)         
+       10.72  (100,100)    NaN
+        7.07  (100,100)       
+        5.38  (1000,1000)  NaN
+        4.30  (1000,1000)     
+    move_max_selector vs sp.ndimage.maximum_filter1d based function
+        window = 5
+        9.19  (10,10)         
+        1.92  (100,100)       
+        1.49  (1000,1000)     
+    move_nanmax_selector vs sp.ndimage.maximum_filter1d based function
+        window = 5
+       39.73  (10,10)      NaN
+       33.53  (10,10)         
+        8.92  (100,100)    NaN
+        4.16  (1000,1000)  NaN
+        3.20  (100,100)       
+        2.88  (1000,1000)  
 
 Slow
 ====
@@ -282,6 +309,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 13 tests in 41.756s
+    Ran 17 tests in 54.756s
     OK
-    <nose.result.TextTestResult run=11 errors=0 failures=0> 
+    <nose.result.TextTestResult run=17 errors=0 failures=0> 
