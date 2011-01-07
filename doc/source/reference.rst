@@ -10,7 +10,7 @@ NumPy/SciPy             :meth:`median <bottleneck.median>`, :meth:`nanmedian <bo
                         :meth:`nanargmin <bottleneck.nanargmin>`, :meth:`nanargmax <bottleneck.nanargmax>` 
 Functions               :meth:`nanvar <bottleneck.nanvar>` 
 Moving window           :meth:`move_nanmean <bottleneck.move_nanmean>`, :meth:`move_min <bottleneck.move_min>`,
-                        :meth:`move_max <bottleneck.move_max>`
+                        :meth:`move_max <bottleneck.move_max>`, :meth:`move_nanmax <bottleneck.move_nanmax>`
 Group by                :meth:`group_nanmean <bottleneck.group_nanmean>`
 ======================= ======================================================================================================================
 
@@ -72,6 +72,9 @@ Moving window functions
 
 .. autofunction:: bottleneck.move_max
 
+------------
+
+.. autofunction:: bottleneck.move_nanmax
 
 
 Group functions

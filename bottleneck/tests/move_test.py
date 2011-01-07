@@ -75,4 +75,8 @@ def test_move_min():
 def test_move_max():
     "Test move_max."
     yield unit_maker, bn.move_max, bn.slow.move_max, 5, False
+
+def test_move_nanmax():
+    "Test move_nanmax."
+    yield unit_maker, bn.move_nanmax, bn.slow.move_nanmax, 5
     
