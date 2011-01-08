@@ -1,7 +1,7 @@
 import numpy as np
 cimport numpy as np
 import cython
-cimport stdlib
+from libc cimport stdlib
 from numpy cimport NPY_INT32 as NPY_int32
 from numpy cimport NPY_INT64 as NPY_int64
 from numpy cimport NPY_FLOAT32 as NPY_float32
