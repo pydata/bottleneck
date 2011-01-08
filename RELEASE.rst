@@ -20,6 +20,10 @@ The third release of Bottleneck adds X new functions.
 - move_nanmin()
 - move_nanmax()
 
+**Bug fix**
+
+- int input array resulted in call to slow, non-cython version of move_nanmean 
+
 Older versions
 ==============
 

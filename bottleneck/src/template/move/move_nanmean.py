@@ -209,7 +209,7 @@ loop[3] = """\
     return y
 """
 
-ints['loop'] = {}
+ints['loop'] = loop
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 
