@@ -187,10 +187,12 @@ move_min['main'] = '''"move_min auto-generated from template"
 # The minimum on a sliding window algorithm by Richard Harter
 # http://home.tiac.net/~cri/2001/slidingmin.html
 # Original C code:
-# Copyright Richard Harter 2001
+# Copyright Richard Harter 2009
+# Released under a Simplified BSD license 
 #
 # Adapted and expanded for Bottleneck:
 # Copyright 2010 Keith Goodman
+# Released under the Bottleneck license
 
 def move_min(arr, int window, int axis=0):
     """
