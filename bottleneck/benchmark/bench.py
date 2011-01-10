@@ -10,7 +10,10 @@ from autotimeit import autotimeit
 
 __all__ = ['bench']
 
-def bench(mode='fast'):
+def bench(mode='fast', dtype='float64', axis=0):
+
+    dtype = str(dtype)
+    axis = str(axis)
 
     tab = '    '
 
@@ -23,9 +26,10 @@ def bench(mode='fast'):
     else:
         print "%sScipy (sp)  Cannot import, skipping scipy benchmarks" % tab
     print "%sSpeed is NumPy or SciPy time divided by Bottleneck time" % tab
-    print "%sNaN means one-third NaNs; axis=0 and float64 are used" % tab
+    tup = (tab, dtype, axis)
+    print "%sNaN means one-third NaNs; %s and axis=%s are used" % tup 
 
-    suite = benchsuite(mode)
+    suite = benchsuite(mode, dtype, axis)
     for test in suite:
         if test['scipy_required'] and not SCIPY:
             print test["name"] + "\n    requires SciPy"
@@ -60,11 +64,16 @@ def getarray(shape, dtype, nans=False):
         rs.shuffle(arr)
     return arr.reshape(*shape)
     
-def benchsuite(mode='fast'):
+def benchsuite(mode, dtype, axis):
 
     if mode not in ('fast', 'faster'):
         raise ValueError("`mode` must be 'fast' or 'faster'")
-    
+
+    addnans = False
+    arr = np.ones(1, dtype=dtype)
+    if issubclass(arr.dtype.type, np.inexact):
+        addnans = True
+        
     suite = []
     
     # median
@@ -72,18 +81,18 @@ def benchsuite(mode='fast'):
     run['scipy_required'] = False
     if mode == 'fast':
         run['name'] = "median vs np.median"
-        code = "bn.median(a, axis=0)"
+        code = "bn.median(a, axis=AXIS)"
     else:
         run['name'] = "median_selector vs np.median"
         code = "func(a)"
-    run['statements'] = [code, "np.median(a, axis=0)"] 
+    run['statements'] = [code, "np.median(a, axis=AXIS)"] 
     setup = """
         import numpy as np
         import bottleneck as bn
         from bottleneck.benchmark.bench import getarray
         N = %d
-        a = getarray((N,N), 'float64')
-        func, a = bn.func.median_selector(a, axis=0)
+        a = getarray((N,N), 'DTYPE')
+        func, a = bn.func.median_selector(a, axis=AXIS)
     """
     setups = {}
     setups["(10,10)         "] = setup % 10
@@ -98,27 +107,28 @@ def benchsuite(mode='fast'):
     run['scipy_required'] = False
     if mode == 'fast':
         run['name'] = "nanmedian vs local copy of sp.stats.nanmedian"
-        code = "bn.nanmedian(a, axis=0)"
+        code = "bn.nanmedian(a, axis=AXIS)"
     else:
         run['name'] = "nanmedian_selector vs local copy of sp.stats.nanmedian"
         code = "func(a)"
-    run['statements'] = [code, "scipy_nanmedian(a, axis=0)"] 
+    run['statements'] = [code, "scipy_nanmedian(a, axis=AXIS)"] 
     setup = """
         import numpy as np
         import bottleneck as bn
         from bottleneck.slow.func import scipy_nanmedian
         from bottleneck.benchmark.bench import getarray
         N = %d
-        a = getarray((N,N), 'float64', %s)
-        func, a = bn.func.nanmedian_selector(a, axis=0)
+        a = getarray((N,N), 'DTYPE', %s)
+        func, a = bn.func.nanmedian_selector(a, axis=AXIS)
     """
     setups = {}
     setups["(10,10)         "] = setup % (10, str(False))
-    setups["(10,10)      NaN"] = setup % (10, str(True))
     setups["(100,100)       "] = setup % (100, str(False))
-    setups["(100,100)    NaN"] = setup % (100, str(True))
     setups["(1000,1000)     "] = setup % (1000, str(False))
-    setups["(1000,1000)  NaN"] = setup % (1000, str(True))
+    if addnans:
+        setups["(10,10)      NaN"] = setup % (10, str(True))
+        setups["(100,100)    NaN"] = setup % (100, str(True))
+        setups["(1000,1000)  NaN"] = setup % (1000, str(True))
     run['setups'] = setups
     suite.append(run)
 
@@ -127,26 +137,27 @@ def benchsuite(mode='fast'):
     run['scipy_required'] = False
     if mode == 'fast':
         run['name'] = "nanmax vs np.nanmax"
-        code = "bn.nanmax(a, axis=0)"
+        code = "bn.nanmax(a, axis=AXIS)"
     else:
         run['name'] = "nanmax_selector vs np.nanmax"
         code = "func(a)"
-    run['statements'] = [code, "np.nanmax(a, axis=0)"] 
+    run['statements'] = [code, "np.nanmax(a, axis=AXIS)"] 
     setup = """
         import numpy as np
         import bottleneck as bn
         from bottleneck.benchmark.bench import getarray
         N = %d
-        a = getarray((N,N), 'float64', %s)
-        func, a = bn.func.nanmax_selector(a, axis=0)
+        a = getarray((N,N), 'DTYPE', %s)
+        func, a = bn.func.nanmax_selector(a, axis=AXIS)
     """
     setups = {}
     setups["(10,10)         "] = setup % (10, str(False))
-    setups["(10,10)      NaN"] = setup % (10, str(True))
     setups["(100,100)       "] = setup % (100, str(False))
-    setups["(100,100)    NaN"] = setup % (100, str(True))
     setups["(1000,1000)     "] = setup % (1000, str(False))
-    setups["(1000,1000)  NaN"] = setup % (1000, str(True))
+    if addnans:
+        setups["(10,10)      NaN"] = setup % (10, str(True))
+        setups["(100,100)    NaN"] = setup % (100, str(True))
+        setups["(1000,1000)  NaN"] = setup % (1000, str(True))
     run['setups'] = setups
     suite.append(run)
     
@@ -155,27 +166,28 @@ def benchsuite(mode='fast'):
     run['scipy_required'] = False
     if mode == 'fast':
         run['name'] = "nanmean vs local copy of sp.stats.nanmean"
-        code = "bn.nanmean(a, axis=0)"
+        code = "bn.nanmean(a, axis=AXIS)"
     else:
         run['name'] = "nanmean_selector vs local copy of sp.stats.nanmean"
         code = "func(a)"
-    run['statements'] = [code, "scipy_nanmean(a, axis=0)"] 
+    run['statements'] = [code, "scipy_nanmean(a, axis=AXIS)"] 
     setup = """
         import numpy as np
         import bottleneck as bn
         from bottleneck.slow.func import scipy_nanmean
         from bottleneck.benchmark.bench import getarray
         N = %d
-        a = getarray((N,N), 'float64', %s)
-        func, a = bn.func.nanmean_selector(a, axis=0)
+        a = getarray((N,N), 'DTYPE', %s)
+        func, a = bn.func.nanmean_selector(a, axis=AXIS)
     """
     setups = {}
     setups["(10,10)         "] = setup % (10, str(False))
-    setups["(10,10)      NaN"] = setup % (10, str(True))
     setups["(100,100)       "] = setup % (100, str(False))
-    setups["(100,100)    NaN"] = setup % (100, str(True))
     setups["(1000,1000)     "] = setup % (1000, str(False))
-    setups["(1000,1000)  NaN"] = setup % (1000, str(True))
+    if addnans:
+        setups["(10,10)      NaN"] = setup % (10, str(True))
+        setups["(100,100)    NaN"] = setup % (100, str(True))
+        setups["(1000,1000)  NaN"] = setup % (1000, str(True))
     run['setups'] = setups
     suite.append(run)
 
@@ -184,27 +196,28 @@ def benchsuite(mode='fast'):
     run['scipy_required'] = False
     if mode == 'fast':
         run['name'] = "nanstd vs local copy of sp.stats.nanstd"
-        code = "bn.nanstd(a, axis=0)"
+        code = "bn.nanstd(a, axis=AXIS)"
     else:
         run['name'] = "nanstd_selector vs local copy of sp.stats.nanstd"
         code = "func(a, 0)"
-    run['statements'] = [code, "scipy_nanstd(a, axis=0)"] 
+    run['statements'] = [code, "scipy_nanstd(a, axis=AXIS)"] 
     setup = """
         import numpy as np
         import bottleneck as bn
         from bottleneck.slow.func import scipy_nanstd
         from bottleneck.benchmark.bench import getarray
         N = %d
-        a = getarray((N,N), 'float64', %s)
-        func, a = bn.func.nanstd_selector(a, axis=0)
+        a = getarray((N,N), 'DTYPE', %s)
+        func, a = bn.func.nanstd_selector(a, axis=AXIS)
     """
     setups = {}
     setups["(10,10)         "] = setup % (10, str(False))
-    setups["(10,10)      NaN"] = setup % (10, str(True))
     setups["(100,100)       "] = setup % (100, str(False))
-    setups["(100,100)    NaN"] = setup % (100, str(True))
     setups["(1000,1000)     "] = setup % (1000, str(False))
-    setups["(1000,1000)  NaN"] = setup % (1000, str(True))
+    if addnans:
+        setups["(10,10)      NaN"] = setup % (10, str(True))
+        setups["(100,100)    NaN"] = setup % (100, str(True))
+        setups["(1000,1000)  NaN"] = setup % (1000, str(True))
     run['setups'] = setups
     suite.append(run)
     
@@ -213,26 +226,27 @@ def benchsuite(mode='fast'):
     run['scipy_required'] = False
     if mode == 'fast':
         run['name'] = "nanargmax vs np.nanargmax"
-        code = "bn.nanargmax(a, axis=0)"
+        code = "bn.nanargmax(a, axis=AXIS)"
     else:
         run['name'] = "nanargmax_selector vs np.nanargmax"
         code = "func(a)"
-    run['statements'] = [code, "np.nanargmax(a, axis=0)"] 
+    run['statements'] = [code, "np.nanargmax(a, axis=AXIS)"] 
     setup = """
         import numpy as np
         import bottleneck as bn
         from bottleneck.benchmark.bench import getarray
         N = %d
-        a = getarray((N,N), 'float64', %s)
-        func, a = bn.func.nanargmax_selector(a, axis=0)
+        a = getarray((N,N), 'DTYPE', %s)
+        func, a = bn.func.nanargmax_selector(a, axis=AXIS)
     """
     setups = {}
     setups["(10,10)         "] = setup % (10, str(False))
-    setups["(10,10)      NaN"] = setup % (10, str(True))
     setups["(100,100)       "] = setup % (100, str(False))
-    setups["(100,100)    NaN"] = setup % (100, str(True))
     setups["(1000,1000)     "] = setup % (1000, str(False))
-    setups["(1000,1000)  NaN"] = setup % (1000, str(True))
+    if addnans:
+        setups["(10,10)      NaN"] = setup % (10, str(True))
+        setups["(100,100)    NaN"] = setup % (100, str(True))
+        setups["(1000,1000)  NaN"] = setup % (1000, str(True))
     run['setups'] = setups
     suite.append(run)
     
@@ -242,31 +256,33 @@ def benchsuite(mode='fast'):
     if mode == 'fast':
         run['name'] = "move_nanmean vs sp.ndimage.convolve1d based function"
         run['name'] += "\n    window = 5"
-        code = "bn.move_nanmean(a, window=5, axis=0)"
+        code = "bn.move_nanmean(a, window=5, axis=AXIS)"
     else:
         run['name'] = "move_nanmean_selector vs sp.ndimage.convolve1d"
         run['name'] += " based function"
         run['name'] += "\n    window = 5"
         code = "func(a, 5)"
-    run['statements'] = [code, "scipy_move_nanmean(a, window=5, axis=0)"] 
+    run['statements'] = [code, "scipy_move_nanmean(a, window=5, axis=AXIS)"] 
     setup = """
         import numpy as np
         import bottleneck as bn
         from bottleneck.slow.move import move_nanmean as scipy_move_nanmean
         from bottleneck.benchmark.bench import getarray
         N = %d
-        a = getarray((N,N), 'float64', %s)
-        func, a = bn.move.move_nanmean_selector(a, window=5, axis=0)
+        a = getarray((N,N), 'DTYPE', %s)
+        func, a = bn.move.move_nanmean_selector(a, window=5, axis=AXIS)
     """
     setups = {}
     setups["(10,10)         "] = setup % (10, str(False))
-    setups["(10,10)      NaN"] = setup % (10, str(True))
     setups["(100,100)       "] = setup % (100, str(False))
-    setups["(100,100)    NaN"] = setup % (100, str(True))
     setups["(1000,1000)     "] = setup % (1000, str(False))
-    setups["(1000,1000)  NaN"] = setup % (1000, str(True))
+    if addnans:
+        setups["(10,10)      NaN"] = setup % (10, str(True))
+        setups["(100,100)    NaN"] = setup % (100, str(True))
+        setups["(1000,1000)  NaN"] = setup % (1000, str(True))
     run['setups'] = setups
-    suite.append(run)
+    if axis != 'None':
+        suite.append(run)
     
     # move_max
     run = {}
@@ -274,28 +290,29 @@ def benchsuite(mode='fast'):
     if mode == 'fast':
         run['name'] = "move_max vs sp.ndimage.maximum_filter1d based function"
         run['name'] += "\n    window = 5"
-        code = "bn.move_max(a, window=5, axis=0)"
+        code = "bn.move_max(a, window=5, axis=AXIS)"
     else:
         run['name'] = "move_max_selector vs sp.ndimage.maximum_filter1d"
         run['name'] += " based function"
         run['name'] += "\n    window = 5"
         code = "func(a, 5)"
-    run['statements'] = [code, "scipy_move_max(a, window=5, axis=0)"] 
+    run['statements'] = [code, "scipy_move_max(a, window=5, axis=AXIS)"] 
     setup = """
         import numpy as np
         import bottleneck as bn
         from bottleneck.slow.move import move_max as scipy_move_max
         from bottleneck.benchmark.bench import getarray
         N = %d
-        a = getarray((N,N), 'float64', %s)
-        func, a = bn.move.move_max_selector(a, window=5, axis=0)
+        a = getarray((N,N), 'DTYPE', %s)
+        func, a = bn.move.move_max_selector(a, window=5, axis=AXIS)
     """
     setups = {}
     setups["(10,10)         "] = setup % (10, str(False))
     setups["(100,100)       "] = setup % (100, str(False))
     setups["(1000,1000)     "] = setup % (1000, str(False))
     run['setups'] = setups
-    suite.append(run)
+    if axis != 'None':
+        suite.append(run)
     
     # move_nanmax
     run = {}
@@ -303,31 +320,33 @@ def benchsuite(mode='fast'):
     if mode == 'fast':
         run['name'] = "move_nanmax vs sp.ndimage.maximum_filter1d based "
         run['name'] += "function\n    window = 5"
-        code = "bn.move_nanmax(a, window=5, axis=0)"
+        code = "bn.move_nanmax(a, window=5, axis=AXIS)"
     else:
         run['name'] = "move_nanmax_selector vs sp.ndimage.maximum_filter1d"
         run['name'] += " based function"
         run['name'] += "\n    window = 5"
         code = "func(a, 5)"
-    run['statements'] = [code, "scipy_move_nanmax(a, window=5, axis=0)"] 
+    run['statements'] = [code, "scipy_move_nanmax(a, window=5, axis=AXIS)"] 
     setup = """
         import numpy as np
         import bottleneck as bn
         from bottleneck.slow.move import move_nanmax as scipy_move_nanmax
         from bottleneck.benchmark.bench import getarray
         N = %d
-        a = getarray((N,N), 'float64', %s)
-        func, a = bn.move.move_nanmax_selector(a, window=5, axis=0)
+        a = getarray((N,N), 'DTYPE', %s)
+        func, a = bn.move.move_nanmax_selector(a, window=5, axis=AXIS)
     """
     setups = {}
     setups["(10,10)         "] = setup % (10, str(False))
-    setups["(10,10)      NaN"] = setup % (10, str(True))
     setups["(100,100)       "] = setup % (100, str(False))
-    setups["(100,100)    NaN"] = setup % (100, str(True))
     setups["(1000,1000)     "] = setup % (1000, str(False))
-    setups["(1000,1000)  NaN"] = setup % (1000, str(True))
+    if addnans:
+        setups["(10,10)      NaN"] = setup % (10, str(True))
+        setups["(100,100)    NaN"] = setup % (100, str(True))
+        setups["(1000,1000)  NaN"] = setup % (1000, str(True))
     run['setups'] = setups
-    suite.append(run)
+    if axis != 'None':
+        suite.append(run)
     
     # Strip leading spaces from setup code
     for i, run in enumerate(suite):
@@ -335,5 +354,21 @@ def benchsuite(mode='fast'):
             t = run['setups'][s]
             t = '\n'.join([z.strip() for z in t.split('\n')])
             suite[i]['setups'][s] = t
-  
+            
+    # Set dtype and axis in setups
+    for i, run in enumerate(suite):
+        for s in run['setups']:
+            t = run['setups'][s]
+            t = t.replace('DTYPE', dtype)
+            t = t.replace('AXIS', axis)
+            suite[i]['setups'][s] = t
+
+    # Set dtype and axis in statements
+    for i, run in enumerate(suite):
+        for j in range(2):
+            t = run['statements'][j]
+            t = t.replace('DTYPE', dtype)
+            t = t.replace('AXIS', axis)
+            suite[i]['statements'][j] = t
+
     return suite 
