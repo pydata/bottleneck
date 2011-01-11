@@ -14,6 +14,7 @@ floats = {}
 floats['dtypes'] = FLOAT_DTYPES
 floats['axisNone'] = False
 floats['force_output_dtype'] = False
+floats['reuse_non_nan_func'] = False
 
 floats['top'] = """
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,

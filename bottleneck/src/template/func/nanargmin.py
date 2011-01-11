@@ -14,6 +14,7 @@ floats = {}
 floats['dtypes'] = FLOAT_DTYPES
 floats['axisNone'] = False
 floats['force_output_dtype'] = 'NPINT'
+floats['reuse_non_nan_func'] = False
 
 floats['top'] = """
 @cython.boundscheck(False)
