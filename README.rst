@@ -61,74 +61,37 @@ Bottleneck comes with a benchmark suite that compares the performance of the
 bottleneck functions that have a NumPy/SciPy equivalent. To run the
 benchmark::
     
-    >>> bn.bench(mode='fast')
+    >>> bn.bench(mode='fast', dtype='float64', axis=0)
     Bottleneck performance benchmark
         Bottleneck  0.3.0
         Numpy (np)  1.5.1
         Scipy (sp)  0.8.0
         Speed is NumPy or SciPy time divided by Bottleneck time
-        NaN means one-third NaNs; axis=0 and float64 are used
-    median vs np.median
-        3.48  (10,10)         
-        2.41  (1001,1001)     
-        2.28  (1000,1000)     
-        2.17  (100,100)       
-    nanmedian vs local copy of sp.stats.nanmedian
-      102.67  (10,10)      NaN
-       92.03  (10,10)         
-       68.72  (100,100)    NaN
-       28.87  (100,100)       
-        6.40  (1000,1000)  NaN
-        4.41  (1000,1000)     
-    nanmax vs np.nanmax
-        9.87  (100,100)    NaN
-        6.27  (10,10)      NaN
-        6.06  (10,10)         
-        5.81  (100,100)       
-        1.79  (1000,1000)  NaN
-        1.76  (1000,1000)     
-    nanmean vs local copy of sp.stats.nanmean
-       26.11  (100,100)    NaN
-       12.88  (100,100)       
-       12.05  (10,10)      NaN
-       11.58  (10,10)         
-        5.12  (1000,1000)  NaN
-        3.16  (1000,1000)     
-    nanstd vs local copy of sp.stats.nanstd
-       16.86  (100,100)    NaN
-       16.43  (10,10)      NaN
-       15.54  (10,10)         
-        9.44  (100,100)       
-        3.84  (1000,1000)  NaN
-        2.82  (1000,1000)     
-    nanargmax vs np.nanargmax
-        8.52  (100,100)    NaN
-        5.62  (100,100)       
-        5.51  (10,10)      NaN
-        5.33  (10,10)         
-        2.83  (1000,1000)  NaN
-        2.57  (1000,1000)     
-    move_nanmean vs sp.ndimage.convolve1d based function
-        window = 5
-       19.92  (10,10)      NaN
-       18.86  (10,10)         
-       11.11  (100,100)    NaN
-        6.24  (100,100)       
-        5.31  (1000,1000)  NaN
-        4.37  (1000,1000)     
-    move_max vs sp.ndimage.maximum_filter1d based function
-        window = 5
-        3.63  (10,10)         
-        1.84  (100,100)       
-        1.48  (1000,1000)     
-    move_nanmax vs sp.ndimage.maximum_filter1d based function
-        window = 5
-       14.94  (10,10)      NaN
-       14.05  (10,10)         
-        8.46  (100,100)    NaN
-        4.16  (1000,1000)  NaN
-        2.94  (100,100)       
-        2.85  (1000,1000)     
+        NaN means one-third NaNs; float64 and axis=0 are used
+        High-level functions used (mode='fast')
+
+                     no NaN   no NaN     no NaN     NaN      NaN        NaN
+                    (10,10) (100,100) (1000,1000) (10,10) (100,100) (1000,1000)
+    median            3.43     2.15       2.27      3.88     3.87       2.87
+    nanmedian        95.73    28.52       4.40    106.53    67.26       6.42
+    nanmax            5.99     5.79       1.75      6.21     9.53       1.81
+    nanmean          11.53    12.80       3.15     12.19    25.84       5.11
+    nanstd           16.01     9.44       2.85     16.73    16.77       3.86
+    nanargmax         5.67     5.38       2.61      5.77     8.19       2.88
+    move_nanmean     18.66    11.54      29.83     19.97    14.01      30.94
+    move_max          2.94     4.03      10.52      3.02     8.20      13.69
+    move_nanmax      13.59     5.99      19.34     15.35    13.56      27.03
+
+    Reference functions:
+    median          np.median
+    nanmedian       local copy of sp.stats.nanmedian
+    nanmax          np.nanmax
+    nanmean         local copy of sp.stats.nanmean
+    nanstd          local copy of sp.stats.nanstd
+    nanargmax       np.nanargmax
+    move_nanmean    sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_max        sp.ndimage.maximum_filter1d based, window=a.shape[0]/5
+    move_nanmax     sp.ndimage.maximum_filter1d based, window=a.shape[0]/5
 
 Faster
 ======
@@ -164,74 +127,37 @@ So adding NaN protection to your inner loops comes at a negative cost!
 
 Benchmarks for the low-level Cython version of each function::
 
-    >>> bn.bench(mode='faster')
+    >>> bn.bench(mode='faster', dtype='float64', axis=0)
     Bottleneck performance benchmark
         Bottleneck  0.3.0
         Numpy (np)  1.5.1
         Scipy (sp)  0.8.0
         Speed is NumPy or SciPy time divided by Bottleneck time
-        NaN means one-third NaNs; axis=0 and float64 are used
-    median_selector vs np.median
-       14.49  (100,100)       
-       14.14  (10,10)         
-        8.03  (1001,1001)     
-        7.35  (1000,1000)     
-    nanmedian_selector vs local copy of sp.stats.nanmedian
-      337.27  (10,10)      NaN
-      322.51  (10,10)         
-      186.39  (100,100)    NaN
-      138.67  (100,100)       
-        8.25  (1000,1000)     
-        8.11  (1000,1000)  NaN
-    nanmax_selector vs np.nanmax
-       20.49  (10,10)      NaN
-       19.15  (10,10)         
-       12.45  (100,100)    NaN
-        6.73  (100,100)       
-        1.79  (1000,1000)  NaN
-        1.76  (1000,1000)     
-    nanmean_selector vs local copy of sp.stats.nanmean
-       36.52  (10,10)      NaN
-       35.08  (10,10)         
-       31.36  (100,100)    NaN
-       15.04  (100,100)       
-        5.16  (1000,1000)  NaN
-        3.17  (1000,1000)     
-    nanstd_selector vs local copy of sp.stats.nanstd
-       44.59  (10,10)      NaN
-       42.21  (10,10)         
-       18.67  (100,100)    NaN
-       10.27  (100,100)       
-        3.84  (1000,1000)  NaN
-        2.83  (1000,1000)     
-    nanargmax_selector vs np.nanargmax
-       16.62  (10,10)      NaN
-       16.29  (10,10)         
-       10.48  (100,100)    NaN
-        6.52  (100,100)       
-        2.84  (1000,1000)  NaN
-        2.57  (1000,1000)     
-    move_nanmean_selector vs sp.ndimage.convolve1d based function
-        window = 5
-       54.54  (10,10)      NaN
-       49.65  (10,10)         
-       10.72  (100,100)    NaN
-        7.07  (100,100)       
-        5.38  (1000,1000)  NaN
-        4.30  (1000,1000)     
-    move_max_selector vs sp.ndimage.maximum_filter1d based function
-        window = 5
-        9.19  (10,10)         
-        1.92  (100,100)       
-        1.49  (1000,1000)     
-    move_nanmax_selector vs sp.ndimage.maximum_filter1d based function
-        window = 5
-       39.73  (10,10)      NaN
-       33.53  (10,10)         
-        8.92  (100,100)    NaN
-        4.16  (1000,1000)  NaN
-        3.20  (100,100)       
-        2.88  (1000,1000)  
+        NaN means one-third NaNs; float64 and axis=0 are used
+        Low-level functions used (mode='faster')
+
+                     no NaN   no NaN     no NaN     NaN      NaN        NaN
+                    (10,10) (100,100) (1000,1000) (10,10) (100,100) (1000,1000)
+    median           14.70    15.03       7.31     11.66     3.53       2.81
+    nanmedian       337.25   140.09       8.19    348.42   187.16       8.12
+    nanmax           19.21     6.81       1.75     21.33    12.26       1.80
+    nanmean          36.09    15.22       3.15     37.60    31.51       5.10
+    nanstd           43.85    10.33       2.90     45.35    18.71       3.89
+    nanargmax        16.99     6.31       2.66     18.02    10.27       2.92
+    move_nanmean     50.50    10.75      35.48     55.78    16.88      36.71
+    move_max          8.11     4.89      11.63      8.04    10.46      13.78
+    move_nanmax      31.73     6.79      23.24     38.59    14.77      31.61
+
+    Reference functions:
+    median          np.median
+    nanmedian       local copy of sp.stats.nanmedian
+    nanmax          np.nanmax
+    nanmean         local copy of sp.stats.nanmean
+    nanstd          local copy of sp.stats.nanstd
+    nanargmax       np.nanargmax
+    move_nanmean    sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_max        sp.ndimage.maximum_filter1d based, window=a.shape[0]/5
+    move_nanmax     sp.ndimage.maximum_filter1d based, window=a.shape[0]/5
 
 Slow
 ====
