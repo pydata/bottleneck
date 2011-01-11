@@ -22,6 +22,7 @@ def template(func):
                            axisNone=f['axisNone'],
                            dtypes=f['dtypes'],
                            force_output_dtype=f['force_output_dtype'],
+                           reuse_non_nan_func=f['reuse_non_nan_func'],
                            is_reducing_function=func['is_reducing_function'],
                            cdef_output=func['cdef_output'],
                            select=select)
@@ -41,7 +42,7 @@ def template(func):
     fid.close()
 
 def subtemplate(name, top, loop, axisNone, dtypes, force_output_dtype,
-                is_reducing_function, cdef_output, select):
+                reuse_non_nan_func, is_reducing_function, cdef_output, select):
     "Assemble template"
     ndims = loop.keys()
     ndims.sort()
@@ -54,27 +55,33 @@ def subtemplate(name, top, loop, axisNone, dtypes, force_output_dtype,
         for dtype in dtypes:
             for axis in axes:
 
-                # Code template
-                func = top
-                
-                # loop
-                if force_output_dtype is not False:
-                    ydtype = force_output_dtype
-                else:
-                    ydtype = dtype
-                func += loop_cdef(ndim, ydtype, axis, is_reducing_function,
-                                  cdef_output)
-                func += looper(loop[ndim], ndim, axis)
+                if reuse_non_nan_func:
 
-                # name, ndim, dtype, axis
-                func = func.replace('NAME', name)
-                func = func.replace('NDIM', str(ndim))
-                func = func.replace('DTYPE', dtype)
-                func = func.replace('AXIS', str(axis))
-                func = func.replace('NPINT', NPINT)
+                    select.append(ndim, dtype, axis, True)
 
-                funcs.append(func)
-                select.append(ndim, dtype, axis)
+                else:   
+
+                    # Code template
+                    func = top
+                    
+                    # loop
+                    if force_output_dtype is not False:
+                        ydtype = force_output_dtype
+                    else:
+                        ydtype = dtype
+                    func += loop_cdef(ndim, ydtype, axis, is_reducing_function,
+                                      cdef_output)
+                    func += looper(loop[ndim], ndim, axis)
+
+                    # name, ndim, dtype, axis
+                    func = func.replace('NAME', name)
+                    func = func.replace('NDIM', str(ndim))
+                    func = func.replace('DTYPE', dtype)
+                    func = func.replace('AXIS', str(axis))
+                    func = func.replace('NPINT', NPINT)
+
+                    funcs.append(func)
+                    select.append(ndim, dtype, axis)
     
     return ''.join(funcs)
 
@@ -341,19 +348,23 @@ class Selector(object):
         self.name = name
         self.data = []
 
-    def append(self, ndim, dtype, axis):
-        self.data.append((ndim, dtype, axis))
+    def append(self, ndim, dtype, axis, reuse=False):
+        self.data.append((ndim, dtype, axis, reuse))
 
     def __str__(self):    
         fmt = "%s_dict[(%s, %s, %s)] = %s_%sd_%s_axis%s"
         src = []
         src.append("cdef dict %s_dict = {}" % self.name)
-        for ndim, dtype, axis in self.data:
+        for ndim, dtype, axis, reuse in self.data:
+            name = self.name
+            if reuse:
+                name = name.replace('nan', '')
             if (ndim == 1) and (axis is None):
                 tup = (self.name, str(ndim), str(dtype), str(0),
-                       self.name, str(ndim), str(dtype), str(axis))
+                       name, str(ndim), str(dtype), str(axis))
                 src.append(fmt % tup)
-            tup = 2 * (self.name, str(ndim), str(dtype), str(axis))
+            tup = (self.name, str(ndim), str(dtype), str(axis),
+                   name, str(ndim), str(dtype), str(axis))  
             src.append(fmt % tup)
         return '\n'.join(src)
 

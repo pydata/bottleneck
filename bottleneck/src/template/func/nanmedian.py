@@ -180,6 +180,7 @@ floats = {}
 floats['dtypes'] = FLOAT_DTYPES
 floats['axisNone'] = False
 floats['force_output_dtype'] = False
+floats['reuse_non_nan_func'] = False
 
 floats['top'] = """
 @cython.boundscheck(False)
@@ -199,11 +200,7 @@ floats['loop'][3] = loop[3].replace('CAST', '')
 
 ints = deepcopy(floats)
 ints['dtypes'] = INT_DTYPES 
-ints['force_output_dtype'] = 'float64'
-ints['loop'] = {}
-ints['loop'][1] = loop[1].replace('FLOAT', 'float64')
-ints['loop'][2] = loop[2].replace('CAST', '<np.float64_t> ')
-ints['loop'][3] = loop[3].replace('CAST', '<np.float64_t> ')
+ints['reuse_non_nan_func'] = True
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 
