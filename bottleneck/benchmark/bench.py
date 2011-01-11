@@ -67,7 +67,7 @@ def timer(statements, setups):
 
 def getarray(shape, dtype, nans=False):
     arr = np.arange(np.prod(shape), dtype=dtype)
-    if nans:
+    if nans and issubclass(arr.dtype.type, np.inexact):
         arr[::3] = np.nan
     else:
         rs = np.random.RandomState(shape)
