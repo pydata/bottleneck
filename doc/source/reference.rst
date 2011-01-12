@@ -4,16 +4,16 @@ Function reference
 
 Bottleneck provides the following functions:
 
-======================= ======================================================================================================================
-NumPy/SciPy             :meth:`median <bottleneck.median>`, :meth:`nanmedian <bottleneck.nanmedian>`, :meth:`nanmin <bottleneck.nanmin>`,
-                        :meth:`nanmax <bottleneck.nanmax>`, :meth:`nanmean <bottleneck.nanmean>`, :meth:`nanstd <bottleneck.nanstd>`,
-                        :meth:`nanargmin <bottleneck.nanargmin>`, :meth:`nanargmax <bottleneck.nanargmax>` 
+======================= =======================================================================================================================
+NumPy/SciPy             :meth:`median <bottleneck.median>`, :meth:`nanmedian <bottleneck.nanmedian>`, :meth:`nansum <bottleneck.nansum>`,
+                        :meth:`nanmin <bottleneck.nanmin>`, :meth:`nanmax <bottleneck.nanmax>`, :meth:`nanmean <bottleneck.nanmean>`,
+                        :meth:`nanstd <bottleneck.nanstd>`, :meth:`nanargmin <bottleneck.nanargmin>`, :meth:`nanargmax <bottleneck.nanargmax>` 
 Functions               :meth:`nanvar <bottleneck.nanvar>` 
 Moving window           :meth:`move_nanmean <bottleneck.move_nanmean>`, :meth:`move_min <bottleneck.move_min>`,
                         :meth:`move_max <bottleneck.move_max>`, :meth:`move_nanmin <bottleneck.move_nanmin>`,
                         :meth:`move_nanmax <bottleneck.move_nanmax>`
 Group by                :meth:`group_nanmean <bottleneck.group_nanmean>`
-======================= ======================================================================================================================
+======================= =======================================================================================================================
 
 
 NumPy/SciPy
@@ -24,6 +24,10 @@ NumPy/SciPy
 ------------
              
 .. autofunction:: bottleneck.nanmedian
+
+------------
+
+.. autofunction:: bottleneck.nansum
 
 ------------
 

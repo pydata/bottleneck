@@ -51,6 +51,10 @@ def test_nanmedian_selector():
     "Test nanmedian_selector."
     fast_checker(bn.func.nanmedian_selector)
 
+def test_nansum_selector():
+    "Test nansum_selector."
+    fast_checker(bn.func.nansum_selector)
+
 def test_nanmin_selector():
     "Test nanmin_selector."
     fast_checker(bn.func.nanmin_selector)

@@ -129,6 +129,22 @@ def benchsuite(mode, dtype, axis):
     """
     run['setups'] = getsetups(setup)
     suite.append(run)
+    
+    # nansum
+    run = {}
+    run['name'] = "nansum"
+    run['ref'] = "np.nansum"
+    run['scipy_required'] = False
+    if mode == 'fast':
+        code = "bn.nansum(a, axis=AXIS)"
+    else:
+        code = "func(a)"
+    run['statements'] = [code, "np.nansum(a, axis=AXIS)"] 
+    setup = """
+        func, a = bn.func.nansum_selector(a, axis=AXIS)
+    """    
+    run['setups'] = getsetups(setup)
+    suite.append(run)
 
     # nanmax
     run = {}

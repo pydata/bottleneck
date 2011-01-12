@@ -1,13 +1,24 @@
 
 import numpy as np
 
-__all__ = ['median', 'nanmedian', 'nanmean', 'nanvar', 'nanstd', 'nanmin',
-           'nanmax', 'nanargmin', 'nanargmax']
+__all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
+           'nanmin', 'nanmax', 'nanargmin', 'nanargmax']
 
 def median(arr, axis=None):
     "Slow median function used for unaccelerated ndim/dtype combinations."
     arr = np.asarray(arr)
     y = np.median(arr, axis=axis)
+    if y.dtype != arr.dtype:
+        if issubclass(arr.dtype.type, np.inexact):
+            y = y.astype(arr.dtype)
+    return y
+
+def nansum(arr, axis=None):
+    "Slow nansum function used for unaccelerated ndim/dtype combinations."
+    arr = np.asarray(arr)
+    y = np.nansum(arr, axis=axis)
+    if not hasattr(y, "dtype"):
+        y = arr.dtype.type(y)
     if y.dtype != arr.dtype:
         if issubclass(arr.dtype.type, np.inexact):
             y = y.astype(arr.dtype)
