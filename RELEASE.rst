@@ -16,6 +16,7 @@ The third release of Bottleneck adds X new functions.
 **New functions**
 
 - nansum()
+- move_mean()  
 - move_min()
 - move_max()
 - move_nanmin()

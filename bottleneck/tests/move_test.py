@@ -64,6 +64,10 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
                     dd = desired.dtype
                     assert_equal(da, dd, err_msg % (da, dd))
 
+def test_move_mean():
+    "Test move_mean."
+    yield unit_maker, bn.move_mean, bn.slow.move_mean, 5
+
 def test_move_nanmean():
     "Test move_nanmean."
     yield unit_maker, bn.move_nanmean, bn.slow.move_nanmean, 5

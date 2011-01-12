@@ -1,9 +1,9 @@
-"move_nanmean template"
+"move_mean template"
 
 from copy import deepcopy
 import bottleneck as bn
 
-__all__ = ["move_nanmean"]
+__all__ = ["move_mean"]
 
 FLOAT_DTYPES = [x for x in bn.dtypes if 'float' in x]
 INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
@@ -22,9 +22,9 @@ floats['top'] = """
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,
                                   int window):
-    "Moving mean of NDIMd array of dtype=DTYPE along axis=AXIS ignoring NaNs."
+    "Moving mean of NDIMd array of dtype=DTYPE along axis=AXIS."
     cdef int count = 0
-    cdef double asum = 0, aold, ai
+    cdef double asum = 0, ai, aold
 """
 
 loop = {}
@@ -43,7 +43,7 @@ loop[1] = """\
     if ai == ai:
         asum += ai
         count += 1
-    if count > 0:
+    if count == window:
        y[INDEXALL] = asum / count
     else:
        y[INDEXALL] = NAN
@@ -56,7 +56,7 @@ loop[1] = """\
         if aold == aold:
             asum -= aold
             count -= 1
-        if count > 0:
+        if count == window:
             y[INDEXALL] = asum / count
         else:
             y[INDEXALL] = NAN
@@ -81,7 +81,7 @@ loop[2] = """\
         if ai == ai:
             asum += ai
             count += 1
-        if count > 0:
+        if count == window:
            y[INDEXALL] = asum / count
         else:
            y[INDEXALL] = NAN
@@ -94,7 +94,7 @@ loop[2] = """\
             if aold == aold:
                 asum -= aold
                 count -= 1
-            if count > 0:
+            if count == window:
                 y[INDEXALL] = asum / count
             else:
                 y[INDEXALL] = NAN
@@ -120,7 +120,7 @@ loop[3] = """\
             if ai == ai:
                 asum += ai
                 count += 1
-            if count > 0:
+            if count == window:
                y[INDEXALL] = asum / count
             else:
                y[INDEXALL] = NAN
@@ -133,7 +133,7 @@ loop[3] = """\
                 if aold == aold:
                     asum -= aold
                     count -= 1
-                if count > 0:
+                if count == window:
                     y[INDEXALL] = asum / count
                 else:
                     y[INDEXALL] = NAN
@@ -146,33 +146,96 @@ floats['loop'] = loop
 # Int dtypes (no axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
-ints['reuse_non_nan_func'] = True
+ints['force_output_dtype'] = 'float64'
 ints['dtypes'] = INT_DTYPES 
+
+loop = {}
+loop[1] = """\
+    if (window < 1) or (window > nINDEX0):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nINDEX0)
+
+    for iINDEX0 in range(window - 1):
+        asum += a[INDEXALL]
+        y[INDEXALL] = NAN
+    iINDEX0 = window - 1
+    asum += a[INDEXALL]
+    y[INDEXALL] = <np.float64_t> asum / window
+    for iINDEX0 in range(window, nINDEX0):
+        asum += a[INDEXALL]
+        aold = a[INDEXREPLACE|iAXIS - window|]
+        asum -= aold
+        y[INDEXALL] = <np.float64_t> asum / window 
+
+    return y
+"""        
+loop[2] = """\
+    if (window < 1) or (window > nAXIS):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
+
+    for iINDEX0 in range(nINDEX0):
+        asum = 0
+        for iINDEX1 in range(window - 1):
+            asum += a[INDEXALL]
+            y[INDEXALL] = NAN
+        iINDEX1 = window - 1
+        asum += a[INDEXALL]
+        y[INDEXALL] = <np.float64_t> asum / window
+        for iINDEX1 in range(window, nINDEX1):
+            asum += a[INDEXALL]
+            aold = a[INDEXREPLACE|iAXIS - window|]
+            asum -= aold
+            y[INDEXALL] = <np.float64_t> asum / window
+
+    return y
+"""
+loop[3] = """\
+    if (window < 1) or (window > nAXIS):
+        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
+
+    for iINDEX0 in range(nINDEX0):
+        for iINDEX1 in range(nINDEX1):
+            asum = 0
+            for iINDEX2 in range(window - 1):
+                asum += a[INDEXALL]
+                y[INDEXALL] = NAN
+            iINDEX2 = window - 1
+            asum += a[INDEXALL]
+            y[INDEXALL] = <np.float64_t> asum / window
+            for iINDEX2 in range(window, nINDEX2):
+                asum += a[INDEXALL]
+                aold = a[INDEXREPLACE|iAXIS - window|]
+                asum -= aold
+                y[INDEXALL] = <np.float64_t> asum / window 
+
+    return y
+"""
+
+ints['loop'] = loop
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 
 slow = {}
-slow['name'] = "move_nanmean"
+slow['name'] = "move_mean"
 slow['signature'] = "arr, window"
-slow['func'] = "bn.slow.move_nanmean(arr, window, axis=AXIS)"
+slow['func'] = "bn.slow.move_mean(arr, window, axis=AXIS)"
 
 # Template ------------------------------------------------------------------
 
-move_nanmean = {}
-move_nanmean['name'] = 'move_nanmean'
-move_nanmean['is_reducing_function'] = False
-move_nanmean['cdef_output'] = True
-move_nanmean['slow'] = slow
-move_nanmean['templates'] = {}
-move_nanmean['templates']['float'] = floats
-move_nanmean['templates']['int'] = ints
-move_nanmean['pyx_file'] = 'move/move_nanmean.pyx'
+move_mean = {}
+move_mean['name'] = 'move_mean'
+move_mean['is_reducing_function'] = False
+move_mean['cdef_output'] = True
+move_mean['slow'] = slow
+move_mean['templates'] = {}
+move_mean['templates']['float'] = floats
+move_mean['templates']['int'] = ints
+move_mean['pyx_file'] = 'move/move_mean.pyx'
 
-move_nanmean['main'] = '''"move_nanmean auto-generated from template"
+move_mean['main'] = '''"move_mean auto-generated from template"
 
-def move_nanmean(arr, int window, int axis=0):
+def move_mean(arr, int window, int axis=0):
     """
-    Moving window mean along the specified axis, ignoring NaNs.
+    Moving window mean along the specified axis.
     
     Parameters
     ----------
@@ -194,20 +257,20 @@ def move_nanmean(arr, int window, int axis=0):
     Examples
     --------
     >>> arr = np.array([1.0, 2.0, 3.0, 4.0])
-    >>> bn.move_nanmean(arr, window=2)
+    >>> bn.move_mean(arr, window=2)
     array([ nan,  1.5,  2.5,  3.5])
 
     """
-    func, arr = move_nanmean_selector(arr, window, axis)
+    func, arr = move_mean_selector(arr, window, axis)
     return func(arr, window)
 
-def move_nanmean_selector(arr, int window, int axis):
+def move_mean_selector(arr, int window, int axis):
     """
-    Return move_nanmean function and array that matches `arr` and `axis`.
+    Return move_mean function and array that matches `arr` and `axis`.
     
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in
-    bn.move_nanmean() is in checking that `axis` is within range, converting
+    bn.move_mean() is in checking that `axis` is within range, converting
     `arr` into an array (if it is not already an array), and selecting the
     function to use to calculate the moving mean.
 
@@ -225,7 +288,7 @@ def move_nanmean_selector(arr, int window, int axis):
     Returns
     -------
     func : function
-        The moving nanmean function that matches the number of dimensions,
+        The moving mean function that matches the number of dimensions,
         dtype, and the axis along which you wish to find the mean.
     a : ndarray
         If the input array `arr` is not a ndarray, then `a` will contain the
@@ -241,9 +304,9 @@ def move_nanmean_selector(arr, int window, int axis):
     Obtain the function needed to determine the sum of `arr` along axis=0:
     
     >>> window, axis = 2, 0
-    >>> func, a = bn.move.move_nanmean_selector(arr, window=2, axis=0)
+    >>> func, a = bn.move.move_mean_selector(arr, window=2, axis=0)
     >>> func
-    <built-in function move_nanmean_1d_float64_axis0>    
+    <built-in function move_mean_1d_float64_axis0>    
     
     Use the returned function and array to determine the moving mean:
 
@@ -261,10 +324,10 @@ def move_nanmean_selector(arr, int window, int axis):
             raise ValueError, "axis(=%d) out of bounds" % axis
     cdef tuple key = (ndim, dtype, axis)
     try:
-        func = move_nanmean_dict[key]
+        func = move_mean_dict[key]
     except KeyError:
         try:
-            func = move_nanmean_slow_dict[axis]
+            func = move_mean_slow_dict[axis]
         except KeyError:
             tup = (str(ndim), str(dtype), str(axis))
             raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup

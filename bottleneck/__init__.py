@@ -14,8 +14,8 @@ try:
 except:
     pass
 try:
-    from move import (move_nanmean, move_min, move_max, move_nanmin,
-                      move_nanmax)
+    from move import (move_mean, move_nanmean, move_min, move_max,
+                      move_nanmin, move_nanmax)
 except:
     pass
 try:

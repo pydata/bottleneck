@@ -85,6 +85,10 @@ def test_nanvar_selector():
 
 # Moving functions ----------------------------------------------------------
 
+def test_move_mean_selector():
+    "Test move_mean_selector."
+    fast_checker(bn.move.move_mean_selector, mode='move')
+
 def test_move_nanmean_selector():
     "Test move_nanmean_selector."
     fast_checker(bn.move.move_nanmean_selector, mode='move')

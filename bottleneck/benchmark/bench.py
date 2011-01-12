@@ -212,6 +212,26 @@ def benchsuite(mode, dtype, axis):
     run['setups'] = getsetups(setup)
     suite.append(run)
     
+    # move_mean
+    run = {}
+    run['name'] = "move_mean"
+    run['ref'] = "sp.ndimage.convolve1d based, "
+    run['ref'] += "window=a.shape[%s]/5" % axis
+    run['scipy_required'] = True
+    if mode == 'fast':
+        code = "bn.move_mean(a, window=w, axis=AXIS)"
+    else:
+        code = "func(a, 5)"
+    run['statements'] = [code, "scipy_move_mean(a, window=w, axis=AXIS)"] 
+    setup = """
+        from bottleneck.slow.move import move_mean as scipy_move_mean
+        w = a.shape[AXIS] / 5
+        func, a = bn.move.move_mean_selector(a, window=w, axis=AXIS)
+    """
+    run['setups'] = getsetups(setup)
+    if axis != 'None':
+        suite.append(run)
+    
     # move_nanmean
     run = {}
     run['name'] = "move_nanmean"
