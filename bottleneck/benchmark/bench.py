@@ -212,6 +212,46 @@ def benchsuite(mode, dtype, axis):
     run['setups'] = getsetups(setup)
     suite.append(run)
     
+    # move_sum
+    run = {}
+    run['name'] = "move_sum"
+    run['ref'] = "sp.ndimage.convolve1d based, "
+    run['ref'] += "window=a.shape[%s]/5" % axis
+    run['scipy_required'] = True
+    if mode == 'fast':
+        code = "bn.move_sum(a, window=w, axis=AXIS)"
+    else:
+        code = "func(a, w)"
+    run['statements'] = [code, "scipy_move_sum(a, window=w, axis=AXIS)"] 
+    setup = """
+        from bottleneck.slow.move import move_sum as scipy_move_sum
+        w = a.shape[AXIS] / 5
+        func, a = bn.move.move_sum_selector(a, window=w, axis=AXIS)
+    """
+    run['setups'] = getsetups(setup)
+    if axis != 'None':
+        suite.append(run)
+    
+    # move_nansum
+    run = {}
+    run['name'] = "move_nansum"
+    run['ref'] = "sp.ndimage.convolve1d based, "
+    run['ref'] += "window=a.shape[%s]/5" % axis
+    run['scipy_required'] = True
+    if mode == 'fast':
+        code = "bn.move_nansum(a, window=w, axis=AXIS)"
+    else:
+        code = "func(a, w)"
+    run['statements'] = [code, "scipy_move_nansum(a, window=w, axis=AXIS)"] 
+    setup = """
+        from bottleneck.slow.move import move_nansum as scipy_move_nansum
+        w = a.shape[AXIS] / 5
+        func, a = bn.move.move_nansum_selector(a, window=w, axis=AXIS)
+    """
+    run['setups'] = getsetups(setup)
+    if axis != 'None':
+        suite.append(run)
+    
     # move_mean
     run = {}
     run['name'] = "move_mean"
@@ -221,7 +261,7 @@ def benchsuite(mode, dtype, axis):
     if mode == 'fast':
         code = "bn.move_mean(a, window=w, axis=AXIS)"
     else:
-        code = "func(a, 5)"
+        code = "func(a, w)"
     run['statements'] = [code, "scipy_move_mean(a, window=w, axis=AXIS)"] 
     setup = """
         from bottleneck.slow.move import move_mean as scipy_move_mean
@@ -241,7 +281,7 @@ def benchsuite(mode, dtype, axis):
     if mode == 'fast':
         code = "bn.move_nanmean(a, window=w, axis=AXIS)"
     else:
-        code = "func(a, 5)"
+        code = "func(a, w)"
     run['statements'] = [code, "scipy_move_nanmean(a, window=w, axis=AXIS)"] 
     setup = """
         from bottleneck.slow.move import move_nanmean as scipy_move_nanmean
@@ -261,7 +301,7 @@ def benchsuite(mode, dtype, axis):
     if mode == 'fast':
         code = "bn.move_max(a, window=w, axis=AXIS)"
     else:
-        code = "func(a, 5)"
+        code = "func(a, w)"
     run['statements'] = [code, "scipy_move_max(a, window=w, axis=AXIS)"] 
     setup = """
         from bottleneck.slow.move import move_max as scipy_move_max
@@ -281,7 +321,7 @@ def benchsuite(mode, dtype, axis):
     if mode == 'fast':
         code = "bn.move_nanmax(a, window=w, axis=AXIS)"
     else:
-        code = "func(a, 5)"
+        code = "func(a, w)"
     run['statements'] = [code, "scipy_move_nanmax(a, window=w, axis=AXIS)"] 
     setup = """
         from bottleneck.slow.move import move_nanmax as scipy_move_nanmax

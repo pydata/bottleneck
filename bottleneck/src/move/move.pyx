@@ -1,6 +1,8 @@
 #cython: embedsignature=True
 
 include "move_header.pyx"
+include "move_sum.pyx"
+include "move_nansum.pyx"
 include "move_mean.pyx"
 include "move_nanmean.pyx"
 include "move_min.pyx"

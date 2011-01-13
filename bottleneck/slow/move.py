@@ -12,8 +12,218 @@ except ImportError:
     SCIPY = False
 import bottleneck as bn
 
-__all__ = ['move_mean', 'move_nanmean', 'move_min', 'move_max', 'move_nanmin',
-           'move_nanmax']
+__all__ = ['move_sum', 'move_nansum',
+           'move_mean', 'move_nanmean',
+           'move_min', 'move_nanmin',
+           'move_max', 'move_nanmax']
+
+# SUM -----------------------------------------------------------------------
+
+def move_sum(arr, window, axis=-1, method='filter'):
+    """
+    Slow move_sum for unaccelerated ndim/dtype combinations.
+    
+    Parameters
+    ----------
+    arr : ndarray
+        Input array.
+    window : int
+        The number of elements in the moving window.
+    axis : int, optional
+        The axis over which to perform the moving sum. By default the moving
+        sum is taken over the last axis (-1).
+    method : str, optional
+        The following moving window methods are available:
+            ==========  =====================================
+            'filter'    scipy.ndimage.convolve1d (default)
+            'strides'   strides tricks (ndim < 4)
+            'loop'      brute force python loop
+            ==========  =====================================
+
+    Returns
+    -------
+    y : ndarray
+        The moving sum of the input array along the specified axis. The output
+        has the same shape as the input.
+
+    Examples
+    --------
+    >>> arr = np.array([1, 2, 3, 4])
+    >>> la.farray.mov_sum(arr, window=2, axis=0)
+       array([ NaN,   3.,   5.,   7.])
+
+    """
+    if method == 'filter':
+        if SCIPY:
+            y = move_sum_filter(arr, window, axis=axis)
+        else:
+            raise ValueError("'filter' method requires SciPy.")
+    elif method == 'strides':
+        y = move_func_strides(np.sum, arr, window, axis=axis)
+    elif method == 'loop':
+        y = move_func_loop(np.sum, arr, window, axis=axis)
+    else:
+        msg = "`method` must be 'filter', 'strides', or 'loop'."
+        raise ValueError, msg
+    if y.dtype != arr.dtype:
+        if issubclass(arr.dtype.type, np.inexact):
+            y = y.astype(arr.dtype)
+    return y
+
+def move_nansum(arr, window, axis=-1, method='filter'):
+    """
+    Slow move_nansum for unaccelerated ndim/dtype combinations.
+    
+    Parameters
+    ----------
+    arr : ndarray
+        Input array.
+    window : int
+        The number of elements in the moving window.
+    axis : int, optional
+        The axis over which to perform the moving sum. By default the moving
+        sum is taken over the last axis (-1).
+    method : str, optional
+        The following moving window methods are available:
+            ==========  =====================================
+            'filter'    scipy.ndimage.convolve1d (default)
+            'strides'   strides tricks (ndim < 4)
+            'loop'      brute force python loop
+            ==========  =====================================
+
+    Returns
+    -------
+    y : ndarray
+        The moving sum of the input array along the specified axis, ignoring
+        NaNs. (A window with all NaNs returns NaN for the window sum.) The
+        output has the same shape as the input.
+        
+    Notes
+    -----
+    Care should be taken when using the `cumsum` moving window method. On
+    some problem sizes it is fast; however, it is possible to get small
+    negative values even if the input is non-negative.
+
+    Examples
+    --------
+    >>> arr = np.array([1, 2, np.nan, 4])
+    >>> la.farray.mov_nansum(arr, window=2, axis=0)
+    array([ NaN,   3.,   2.,   4.])
+
+    """
+    if method == 'filter':
+        if SCIPY:
+            y = move_nansum_filter(arr, window, axis=axis)
+        else:
+            raise ValueError("'filter' method requires SciPy.")
+    elif method == 'strides':
+        y = move_func_strides(np.nansum, arr, window, axis=axis)
+    elif method == 'loop':
+        y = move_func_loop(np.nansum, arr, window, axis=axis)
+    else:
+        msg = "`method` must be 'filter', 'cumsum', 'strides', or 'loop'."
+        raise ValueError, msg
+    if y.dtype != arr.dtype:
+        if issubclass(arr.dtype.type, np.inexact):
+            y = y.astype(arr.dtype)
+    return y
+
+def move_sum_filter(arr, window, axis=-1):
+    """
+    Moving window sum along the specified axis using the filter method.
+    
+    Parameters
+    ----------
+    arr : ndarray
+        Input array.
+    window : int
+        The number of elements in the moving window.
+    axis : int, optional
+        The axis over which to perform the moving sum. By default the moving
+        sum is taken over the last axis (-1).
+    
+    Returns
+    -------
+    y : ndarray
+        The moving sum of the input array along the specified axis. The output
+        has the same shape as the input.
+
+    Notes
+    -----
+    The calculation of the sums uses scipy.ndimage.convolve1d. 
+
+    Examples
+    --------
+    >>> from la.farray.mov import mov_sum_filter
+    >>> arr = np.array([1, 2, 3, 4])
+    >>> mov_sum_filter(arr, window=2, axis=0)
+    array([ NaN,   3.,   5.,   7.])
+
+    """
+    if axis == None:
+        raise ValueError, "An `axis` value of None is not supported."
+    if window < 1:  
+        raise ValueError, "`window` must be at least 1."
+    if window > arr.shape[axis]:
+        raise ValueError, "`window` is too long."  
+    arr = arr.astype(float)
+    w = np.ones(window, dtype=int)
+    x0 = (1 - window) // 2
+    convolve1d(arr, w, axis=axis, mode='constant', cval=np.nan, origin=x0,
+               output=arr)
+    return arr
+
+def move_nansum_filter(arr, window, axis=-1):
+    """
+    Moving sum (ignoring NaNs) along specified axis using the filter method.
+    
+    Parameters
+    ----------
+    arr : ndarray
+        Input array.
+    window : int
+        The number of elements in the moving window.
+    axis : int, optional
+        The axis over which to perform the moving sum. By default the moving
+        sum is taken over the last axis (-1).
+    
+    Returns
+    -------
+    y : ndarray
+        The moving sum (ignoring NaNs) of the input array along the specified
+        axis.(A window with all NaNs returns NaN for the window sum.) The
+        output has the same shape as the input.
+
+    Notes
+    -----
+    The calculation of the sums uses scipy.ndimage.convolve1d. 
+
+    Examples
+    --------
+    >>> from la.farray.mov import mov_sum_filter
+    >>> arr = np.array([1, 2, np.nan, 4, 5, 6, 7])
+    >>> mov_nansum_filter(arr, window=2, axis=0)
+    array([ NaN,   3.,   2.,   4.,   9.,  11.,  13.])
+
+    """
+    if axis == None:
+        raise ValueError, "An `axis` value of None is not supported."
+    if window < 1:  
+        raise ValueError, "`window` must be at least 1."
+    if window > arr.shape[axis]:
+        raise ValueError, "`window` is too long."  
+    arr = arr.astype(float)
+    nrr = np.isnan(arr)
+    arr[nrr] = 0
+    nrr = nrr.astype(int)
+    w = np.ones(window, dtype=int)
+    x0 = (1 - window) // 2
+    convolve1d(arr, w, axis=axis, mode='constant', cval=np.nan, origin=x0,
+               output=arr)
+    convolve1d(nrr, w, axis=axis, mode='constant', cval=0, origin=x0,
+               output=nrr)
+    arr[nrr == window] = np.nan
+    return arr
 
 # MEAN -------------------------------------------------------------------
 

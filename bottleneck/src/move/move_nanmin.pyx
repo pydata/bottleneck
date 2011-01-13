@@ -54,7 +54,7 @@ def move_nanmin_selector(arr, int window, int axis):
     function to use to calculate the moving minimum.
 
     You can get rid of the overhead by doing all this before you, for example,
-    enter an inner loop, by using the this function.
+    enter an inner loop, by using this function.
 
     Parameters
     ----------
@@ -71,7 +71,7 @@ def move_nanmin_selector(arr, int window, int axis):
         dtype, and the axis along which you wish to find the minimum.
     a : ndarray
         If the input array `arr` is not a ndarray, then `a` will contain the
-        result of converting `arr` into a ndarra; otherwise a view is
+        result of converting `arr` into a ndarray otherwise a view is
         returned.
 
     Examples
