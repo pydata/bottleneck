@@ -72,17 +72,17 @@ benchmark::
 
                      no NaN   no NaN     no NaN     NaN      NaN        NaN
                     (10,10) (100,100) (1000,1000) (10,10) (100,100) (1000,1000)
-    median            3.58     2.15       2.26      3.89     3.95       2.88
-    nanmedian        90.43    27.72       4.40    102.10    65.14       6.43
-    nansum            5.69     5.84       1.79      5.69     6.69       1.78
-    nanmax            6.11     5.91       1.75      6.32     9.97       1.80
-    nanmean          11.43    12.91       3.15     11.98    26.03       5.13
-    nanstd           15.86     9.42       2.84     16.32    16.55       3.84
-    nanargmax         5.41     5.47       2.59      5.57     8.33       2.84
-    move_mean         6.23     4.14      14.37      6.44     7.31      14.20
-    move_nanmean     18.78    11.41      29.74     19.54    13.85      30.71
-    move_max          2.95     3.97      10.50      2.93     7.25      13.67
-    move_nanmax      13.05     5.86      19.06     14.49    13.20      27.06
+    median            3.16     2.16       2.29      3.56     3.94       2.88
+    nanmedian        88.34    27.40       4.39     96.33    64.26       6.35
+    nansum            5.25     5.58       1.79      5.25     6.33       1.78
+    nanmax            5.64     5.70       1.75      5.85     9.56       1.81
+    nanmean          10.60    12.55       3.14     11.20    25.25       5.14
+    nanstd           14.88     9.32       2.69     15.60    16.41       3.71
+    nanargmax         5.17     5.38       2.62      5.20     8.09       2.88
+    move_mean         6.11     4.16      14.43      6.60     7.87      14.29
+    move_nanmean     17.77    11.48      29.94     19.51    14.02      30.71
+    move_max          2.76     3.61       9.27      2.94     5.20      11.80
+    move_nanmax      13.32     5.91      18.95     14.13    13.57      26.90
 
     Reference functions:
     median          np.median
@@ -142,17 +142,17 @@ Benchmarks for the low-level Cython version of each function::
 
                      no NaN   no NaN     no NaN     NaN      NaN        NaN
                     (10,10) (100,100) (1000,1000) (10,10) (100,100) (1000,1000)
-    median           14.99    14.28       7.27     11.88     3.62       2.82
-    nanmedian       338.15   127.25       8.15    349.93   174.67       8.06
-    nansum           20.61     7.04       1.80     20.75     8.36       1.78
-    nanmax           20.22     6.80       1.75     21.62    12.57       1.81
-    nanmean          37.49    15.30       3.15     39.44    31.77       5.12
-    nanstd           43.26    10.31       2.84     45.91    18.28       3.84
-    nanargmax        16.40     6.37       2.60     17.65    10.24       2.85
-    move_mean        15.50     3.92      17.22     16.97     8.30      17.11
-    move_nanmean     47.57    10.75      36.30     52.68    16.78      36.71
-    move_max          7.50     4.77      11.66      7.68     9.29      14.11
-    move_nanmax      28.56     6.77      23.38     35.45    14.70      31.57
+    median           15.12    14.21       7.29     11.65     3.58       2.82
+    nanmedian       333.70   125.13       8.14    355.41   171.86       8.04
+    nansum           21.44     7.02       1.79     21.47     8.35       1.79
+    nanmax           19.78     6.76       1.76     21.62    12.50       1.79
+    nanmean          38.10    15.11       3.14     40.50    31.61       5.15
+    nanstd           39.65    10.18       2.70     41.16    18.50       3.71
+    nanargmax        16.86     6.32       2.62     17.89    10.19       2.88
+    move_mean        16.00     3.94      17.15     17.31     8.30      17.13
+    move_nanmean     50.89    10.71      35.43     53.21    17.17      36.67
+    move_max          6.07     4.04      11.28      6.80     5.63      13.71
+    move_nanmax      30.62     6.84      23.50     36.24    14.91      31.57
 
     Reference functions:
     median          np.median
@@ -243,6 +243,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 36 tests in 62.108s
+    Ran 36 tests in 67.108s
     OK
     <nose.result.TextTestResult run=36 errors=0 failures=0> 

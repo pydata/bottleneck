@@ -116,7 +116,8 @@ def move_min_selector(arr, int window, int axis):
 @cython.wraparound(False)
 def move_min_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a, int window):
     "Moving min of 1d array of dtype=int32 along axis=0."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -132,17 +133,30 @@ def move_min_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a, int window):
     ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
     end = ring + window
     last = ring
+    
     minpair = ring
-    minpair.value = a[0]
+    ai = a[0]
+    if ai == ai:
+        minpair.value = ai
+    else:
+        minpair.value = MAXfloat64
     minpair.death = window
-    y[0] = a[0]
 
+    count = 0
     for i0 in range(n0):
+        ai = a[i0]
+        if ai == ai:
+            count += 1
+        else:
+            ai = MAXfloat64
+        if i0 >= window:
+            aold = a[i0 - window]
+            if aold == aold:
+                count -= 1
         if minpair.death == i0:
             minpair += 1
             if minpair >= end:
                 minpair = ring
-        ai = a[i0]
         if ai <= minpair.value:
             minpair.value = ai
             minpair.death = i0 + window
@@ -157,7 +171,10 @@ def move_min_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a, int window):
                 last = ring
             last.value = ai
             last.death = i0 + window
-        y[i0] = minpair.value
+        if count == window:        
+            y[i0] = minpair.value
+        else:
+            y[i0] = NAN
     for i0 in range(window - 1):
         y[i0] = NAN
     
@@ -168,7 +185,8 @@ def move_min_1d_int32_axis0(np.ndarray[np.int32_t, ndim=1] a, int window):
 @cython.wraparound(False)
 def move_min_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a, int window):
     "Moving min of 1d array of dtype=int64 along axis=0."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -184,17 +202,30 @@ def move_min_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a, int window):
     ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
     end = ring + window
     last = ring
+    
     minpair = ring
-    minpair.value = a[0]
+    ai = a[0]
+    if ai == ai:
+        minpair.value = ai
+    else:
+        minpair.value = MAXfloat64
     minpair.death = window
-    y[0] = a[0]
 
+    count = 0
     for i0 in range(n0):
+        ai = a[i0]
+        if ai == ai:
+            count += 1
+        else:
+            ai = MAXfloat64
+        if i0 >= window:
+            aold = a[i0 - window]
+            if aold == aold:
+                count -= 1
         if minpair.death == i0:
             minpair += 1
             if minpair >= end:
                 minpair = ring
-        ai = a[i0]
         if ai <= minpair.value:
             minpair.value = ai
             minpair.death = i0 + window
@@ -209,7 +240,10 @@ def move_min_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a, int window):
                 last = ring
             last.value = ai
             last.death = i0 + window
-        y[i0] = minpair.value
+        if count == window:        
+            y[i0] = minpair.value
+        else:
+            y[i0] = NAN
     for i0 in range(window - 1):
         y[i0] = NAN
     
@@ -220,7 +254,8 @@ def move_min_1d_int64_axis0(np.ndarray[np.int64_t, ndim=1] a, int window):
 @cython.wraparound(False)
 def move_min_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a, int window):
     "Moving min of 2d array of dtype=int32 along axis=0."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -240,17 +275,30 @@ def move_min_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a, int window):
     
         end = ring + window
         last = ring
+    
         minpair = ring
-        minpair.value = a[0, i1]
+        ai = a[0, i1]
+        if ai == ai:
+            minpair.value = ai
+        else:
+            minpair.value = MAXfloat64
         minpair.death = window
-        y[0, i1] = a[0, i1]
 
+        count = 0
         for i0 in range(n0):
+            ai = a[i0, i1]
+            if ai == ai:
+                count += 1
+            else:
+                ai = MAXfloat64
+            if i0 >= window:
+                aold = a[i0 - window, i1]
+                if aold == aold:
+                    count -= 1
             if minpair.death == i0:
                 minpair += 1
                 if minpair >= end:
                     minpair = ring
-            ai = a[i0, i1]
             if ai <= minpair.value:
                 minpair.value = ai
                 minpair.death = i0 + window
@@ -265,7 +313,10 @@ def move_min_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a, int window):
                     last = ring
                 last.value = ai
                 last.death = i0 + window
-            y[i0, i1] = minpair.value
+            if count == window:        
+                y[i0, i1] = minpair.value
+            else:
+                y[i0, i1] = NAN
         for i0 in range(window - 1):
             y[i0, i1] = NAN
     
@@ -276,7 +327,8 @@ def move_min_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a, int window):
 @cython.wraparound(False)
 def move_min_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a, int window):
     "Moving min of 2d array of dtype=int32 along axis=1."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -296,17 +348,30 @@ def move_min_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a, int window):
     
         end = ring + window
         last = ring
+    
         minpair = ring
-        minpair.value = a[i0, 0]
+        ai = a[i0, 0]
+        if ai == ai:
+            minpair.value = ai
+        else:
+            minpair.value = MAXfloat64
         minpair.death = window
-        y[i0, 0] = a[i0, 0]
 
+        count = 0
         for i1 in range(n1):
+            ai = a[i0, i1]
+            if ai == ai:
+                count += 1
+            else:
+                ai = MAXfloat64
+            if i1 >= window:
+                aold = a[i0, i1 - window]
+                if aold == aold:
+                    count -= 1
             if minpair.death == i1:
                 minpair += 1
                 if minpair >= end:
                     minpair = ring
-            ai = a[i0, i1]
             if ai <= minpair.value:
                 minpair.value = ai
                 minpair.death = i1 + window
@@ -321,7 +386,10 @@ def move_min_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a, int window):
                     last = ring
                 last.value = ai
                 last.death = i1 + window
-            y[i0, i1] = minpair.value
+            if count == window:        
+                y[i0, i1] = minpair.value
+            else:
+                y[i0, i1] = NAN
         for i1 in range(window - 1):
             y[i0, i1] = NAN
     
@@ -332,7 +400,8 @@ def move_min_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a, int window):
 @cython.wraparound(False)
 def move_min_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a, int window):
     "Moving min of 2d array of dtype=int64 along axis=0."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -352,17 +421,30 @@ def move_min_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a, int window):
     
         end = ring + window
         last = ring
+    
         minpair = ring
-        minpair.value = a[0, i1]
+        ai = a[0, i1]
+        if ai == ai:
+            minpair.value = ai
+        else:
+            minpair.value = MAXfloat64
         minpair.death = window
-        y[0, i1] = a[0, i1]
 
+        count = 0
         for i0 in range(n0):
+            ai = a[i0, i1]
+            if ai == ai:
+                count += 1
+            else:
+                ai = MAXfloat64
+            if i0 >= window:
+                aold = a[i0 - window, i1]
+                if aold == aold:
+                    count -= 1
             if minpair.death == i0:
                 minpair += 1
                 if minpair >= end:
                     minpair = ring
-            ai = a[i0, i1]
             if ai <= minpair.value:
                 minpair.value = ai
                 minpair.death = i0 + window
@@ -377,7 +459,10 @@ def move_min_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a, int window):
                     last = ring
                 last.value = ai
                 last.death = i0 + window
-            y[i0, i1] = minpair.value
+            if count == window:        
+                y[i0, i1] = minpair.value
+            else:
+                y[i0, i1] = NAN
         for i0 in range(window - 1):
             y[i0, i1] = NAN
     
@@ -388,7 +473,8 @@ def move_min_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a, int window):
 @cython.wraparound(False)
 def move_min_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a, int window):
     "Moving min of 2d array of dtype=int64 along axis=1."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -408,17 +494,30 @@ def move_min_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a, int window):
     
         end = ring + window
         last = ring
+    
         minpair = ring
-        minpair.value = a[i0, 0]
+        ai = a[i0, 0]
+        if ai == ai:
+            minpair.value = ai
+        else:
+            minpair.value = MAXfloat64
         minpair.death = window
-        y[i0, 0] = a[i0, 0]
 
+        count = 0
         for i1 in range(n1):
+            ai = a[i0, i1]
+            if ai == ai:
+                count += 1
+            else:
+                ai = MAXfloat64
+            if i1 >= window:
+                aold = a[i0, i1 - window]
+                if aold == aold:
+                    count -= 1
             if minpair.death == i1:
                 minpair += 1
                 if minpair >= end:
                     minpair = ring
-            ai = a[i0, i1]
             if ai <= minpair.value:
                 minpair.value = ai
                 minpair.death = i1 + window
@@ -433,7 +532,10 @@ def move_min_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a, int window):
                     last = ring
                 last.value = ai
                 last.death = i1 + window
-            y[i0, i1] = minpair.value
+            if count == window:        
+                y[i0, i1] = minpair.value
+            else:
+                y[i0, i1] = NAN
         for i1 in range(window - 1):
             y[i0, i1] = NAN
     
@@ -444,7 +546,8 @@ def move_min_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a, int window):
 @cython.wraparound(False)
 def move_min_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=int32 along axis=0."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -465,17 +568,30 @@ def move_min_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a, int window):
         for i2 in range(n2):    
             end = ring + window
             last = ring
+        
             minpair = ring
-            minpair.value = a[0, i1, i2]
+            ai = a[0, i1, i2]
+            if ai == ai:
+                minpair.value = ai
+            else:
+                minpair.value = MAXfloat64
             minpair.death = window
-            y[0, i1, i2] = a[0, i1, i2]
-
+            
+            count = 0
             for i0 in range(n0):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MAXfloat64
+                if i0 >= window:
+                    aold = a[i0 - window, i1, i2]
+                    if aold == aold:
+                        count -= 1
                 if minpair.death == i0:
                     minpair += 1
                     if minpair >= end:
                         minpair = ring
-                ai = a[i0, i1, i2]
                 if ai <= minpair.value:
                     minpair.value = ai
                     minpair.death = i0 + window
@@ -490,7 +606,10 @@ def move_min_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a, int window):
                         last = ring
                     last.value = ai
                     last.death = i0 + window
-                y[i0, i1, i2] = minpair.value
+                if count == window:        
+                    y[i0, i1, i2] = minpair.value
+                else:
+                    y[i0, i1, i2] = NAN
             for i0 in range(window - 1):
                 y[i0, i1, i2] = NAN
     
@@ -501,7 +620,8 @@ def move_min_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a, int window):
 @cython.wraparound(False)
 def move_min_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=int32 along axis=1."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -522,17 +642,30 @@ def move_min_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a, int window):
         for i2 in range(n2):    
             end = ring + window
             last = ring
+        
             minpair = ring
-            minpair.value = a[i0, 0, i2]
+            ai = a[i0, 0, i2]
+            if ai == ai:
+                minpair.value = ai
+            else:
+                minpair.value = MAXfloat64
             minpair.death = window
-            y[i0, 0, i2] = a[i0, 0, i2]
-
+            
+            count = 0
             for i1 in range(n1):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MAXfloat64
+                if i1 >= window:
+                    aold = a[i0, i1 - window, i2]
+                    if aold == aold:
+                        count -= 1
                 if minpair.death == i1:
                     minpair += 1
                     if minpair >= end:
                         minpair = ring
-                ai = a[i0, i1, i2]
                 if ai <= minpair.value:
                     minpair.value = ai
                     minpair.death = i1 + window
@@ -547,7 +680,10 @@ def move_min_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a, int window):
                         last = ring
                     last.value = ai
                     last.death = i1 + window
-                y[i0, i1, i2] = minpair.value
+                if count == window:        
+                    y[i0, i1, i2] = minpair.value
+                else:
+                    y[i0, i1, i2] = NAN
             for i1 in range(window - 1):
                 y[i0, i1, i2] = NAN
     
@@ -558,7 +694,8 @@ def move_min_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a, int window):
 @cython.wraparound(False)
 def move_min_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=int32 along axis=2."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -579,17 +716,30 @@ def move_min_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a, int window):
         for i1 in range(n1):    
             end = ring + window
             last = ring
+        
             minpair = ring
-            minpair.value = a[i0, i1, 0]
+            ai = a[i0, i1, 0]
+            if ai == ai:
+                minpair.value = ai
+            else:
+                minpair.value = MAXfloat64
             minpair.death = window
-            y[i0, i1, 0] = a[i0, i1, 0]
-
+            
+            count = 0
             for i2 in range(n2):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MAXfloat64
+                if i2 >= window:
+                    aold = a[i0, i1, i2 - window]
+                    if aold == aold:
+                        count -= 1
                 if minpair.death == i2:
                     minpair += 1
                     if minpair >= end:
                         minpair = ring
-                ai = a[i0, i1, i2]
                 if ai <= minpair.value:
                     minpair.value = ai
                     minpair.death = i2 + window
@@ -604,7 +754,10 @@ def move_min_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a, int window):
                         last = ring
                     last.value = ai
                     last.death = i2 + window
-                y[i0, i1, i2] = minpair.value
+                if count == window:        
+                    y[i0, i1, i2] = minpair.value
+                else:
+                    y[i0, i1, i2] = NAN
             for i2 in range(window - 1):
                 y[i0, i1, i2] = NAN
     
@@ -615,7 +768,8 @@ def move_min_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a, int window):
 @cython.wraparound(False)
 def move_min_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=int64 along axis=0."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -636,17 +790,30 @@ def move_min_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a, int window):
         for i2 in range(n2):    
             end = ring + window
             last = ring
+        
             minpair = ring
-            minpair.value = a[0, i1, i2]
+            ai = a[0, i1, i2]
+            if ai == ai:
+                minpair.value = ai
+            else:
+                minpair.value = MAXfloat64
             minpair.death = window
-            y[0, i1, i2] = a[0, i1, i2]
-
+            
+            count = 0
             for i0 in range(n0):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MAXfloat64
+                if i0 >= window:
+                    aold = a[i0 - window, i1, i2]
+                    if aold == aold:
+                        count -= 1
                 if minpair.death == i0:
                     minpair += 1
                     if minpair >= end:
                         minpair = ring
-                ai = a[i0, i1, i2]
                 if ai <= minpair.value:
                     minpair.value = ai
                     minpair.death = i0 + window
@@ -661,7 +828,10 @@ def move_min_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a, int window):
                         last = ring
                     last.value = ai
                     last.death = i0 + window
-                y[i0, i1, i2] = minpair.value
+                if count == window:        
+                    y[i0, i1, i2] = minpair.value
+                else:
+                    y[i0, i1, i2] = NAN
             for i0 in range(window - 1):
                 y[i0, i1, i2] = NAN
     
@@ -672,7 +842,8 @@ def move_min_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a, int window):
 @cython.wraparound(False)
 def move_min_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=int64 along axis=1."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -693,17 +864,30 @@ def move_min_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a, int window):
         for i2 in range(n2):    
             end = ring + window
             last = ring
+        
             minpair = ring
-            minpair.value = a[i0, 0, i2]
+            ai = a[i0, 0, i2]
+            if ai == ai:
+                minpair.value = ai
+            else:
+                minpair.value = MAXfloat64
             minpair.death = window
-            y[i0, 0, i2] = a[i0, 0, i2]
-
+            
+            count = 0
             for i1 in range(n1):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MAXfloat64
+                if i1 >= window:
+                    aold = a[i0, i1 - window, i2]
+                    if aold == aold:
+                        count -= 1
                 if minpair.death == i1:
                     minpair += 1
                     if minpair >= end:
                         minpair = ring
-                ai = a[i0, i1, i2]
                 if ai <= minpair.value:
                     minpair.value = ai
                     minpair.death = i1 + window
@@ -718,7 +902,10 @@ def move_min_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a, int window):
                         last = ring
                     last.value = ai
                     last.death = i1 + window
-                y[i0, i1, i2] = minpair.value
+                if count == window:        
+                    y[i0, i1, i2] = minpair.value
+                else:
+                    y[i0, i1, i2] = NAN
             for i1 in range(window - 1):
                 y[i0, i1, i2] = NAN
     
@@ -729,7 +916,8 @@ def move_min_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a, int window):
 @cython.wraparound(False)
 def move_min_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=int64 along axis=2."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -750,17 +938,30 @@ def move_min_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a, int window):
         for i1 in range(n1):    
             end = ring + window
             last = ring
+        
             minpair = ring
-            minpair.value = a[i0, i1, 0]
+            ai = a[i0, i1, 0]
+            if ai == ai:
+                minpair.value = ai
+            else:
+                minpair.value = MAXfloat64
             minpair.death = window
-            y[i0, i1, 0] = a[i0, i1, 0]
-
+            
+            count = 0
             for i2 in range(n2):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MAXfloat64
+                if i2 >= window:
+                    aold = a[i0, i1, i2 - window]
+                    if aold == aold:
+                        count -= 1
                 if minpair.death == i2:
                     minpair += 1
                     if minpair >= end:
                         minpair = ring
-                ai = a[i0, i1, i2]
                 if ai <= minpair.value:
                     minpair.value = ai
                     minpair.death = i2 + window
@@ -775,7 +976,10 @@ def move_min_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a, int window):
                         last = ring
                     last.value = ai
                     last.death = i2 + window
-                y[i0, i1, i2] = minpair.value
+                if count == window:        
+                    y[i0, i1, i2] = minpair.value
+                else:
+                    y[i0, i1, i2] = NAN
             for i2 in range(window - 1):
                 y[i0, i1, i2] = NAN
     
@@ -786,7 +990,8 @@ def move_min_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a, int window):
 @cython.wraparound(False)
 def move_min_1d_float32_axis0(np.ndarray[np.float32_t, ndim=1] a, int window):
     "Moving min of 1d array of dtype=float32 along axis=0."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -802,17 +1007,30 @@ def move_min_1d_float32_axis0(np.ndarray[np.float32_t, ndim=1] a, int window):
     ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
     end = ring + window
     last = ring
+    
     minpair = ring
-    minpair.value = a[0]
+    ai = a[0]
+    if ai == ai:
+        minpair.value = ai
+    else:
+        minpair.value = MAXfloat64
     minpair.death = window
-    y[0] = a[0]
 
+    count = 0
     for i0 in range(n0):
+        ai = a[i0]
+        if ai == ai:
+            count += 1
+        else:
+            ai = MAXfloat64
+        if i0 >= window:
+            aold = a[i0 - window]
+            if aold == aold:
+                count -= 1
         if minpair.death == i0:
             minpair += 1
             if minpair >= end:
                 minpair = ring
-        ai = a[i0]
         if ai <= minpair.value:
             minpair.value = ai
             minpair.death = i0 + window
@@ -827,7 +1045,10 @@ def move_min_1d_float32_axis0(np.ndarray[np.float32_t, ndim=1] a, int window):
                 last = ring
             last.value = ai
             last.death = i0 + window
-        y[i0] = minpair.value
+        if count == window:        
+            y[i0] = minpair.value
+        else:
+            y[i0] = NAN
     for i0 in range(window - 1):
         y[i0] = NAN
     
@@ -838,7 +1059,8 @@ def move_min_1d_float32_axis0(np.ndarray[np.float32_t, ndim=1] a, int window):
 @cython.wraparound(False)
 def move_min_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a, int window):
     "Moving min of 1d array of dtype=float64 along axis=0."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -854,17 +1076,30 @@ def move_min_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a, int window):
     ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
     end = ring + window
     last = ring
+    
     minpair = ring
-    minpair.value = a[0]
+    ai = a[0]
+    if ai == ai:
+        minpair.value = ai
+    else:
+        minpair.value = MAXfloat64
     minpair.death = window
-    y[0] = a[0]
 
+    count = 0
     for i0 in range(n0):
+        ai = a[i0]
+        if ai == ai:
+            count += 1
+        else:
+            ai = MAXfloat64
+        if i0 >= window:
+            aold = a[i0 - window]
+            if aold == aold:
+                count -= 1
         if minpair.death == i0:
             minpair += 1
             if minpair >= end:
                 minpair = ring
-        ai = a[i0]
         if ai <= minpair.value:
             minpair.value = ai
             minpair.death = i0 + window
@@ -879,7 +1114,10 @@ def move_min_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a, int window):
                 last = ring
             last.value = ai
             last.death = i0 + window
-        y[i0] = minpair.value
+        if count == window:        
+            y[i0] = minpair.value
+        else:
+            y[i0] = NAN
     for i0 in range(window - 1):
         y[i0] = NAN
     
@@ -890,7 +1128,8 @@ def move_min_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a, int window):
 @cython.wraparound(False)
 def move_min_2d_float32_axis0(np.ndarray[np.float32_t, ndim=2] a, int window):
     "Moving min of 2d array of dtype=float32 along axis=0."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -910,17 +1149,30 @@ def move_min_2d_float32_axis0(np.ndarray[np.float32_t, ndim=2] a, int window):
     
         end = ring + window
         last = ring
+    
         minpair = ring
-        minpair.value = a[0, i1]
+        ai = a[0, i1]
+        if ai == ai:
+            minpair.value = ai
+        else:
+            minpair.value = MAXfloat64
         minpair.death = window
-        y[0, i1] = a[0, i1]
 
+        count = 0
         for i0 in range(n0):
+            ai = a[i0, i1]
+            if ai == ai:
+                count += 1
+            else:
+                ai = MAXfloat64
+            if i0 >= window:
+                aold = a[i0 - window, i1]
+                if aold == aold:
+                    count -= 1
             if minpair.death == i0:
                 minpair += 1
                 if minpair >= end:
                     minpair = ring
-            ai = a[i0, i1]
             if ai <= minpair.value:
                 minpair.value = ai
                 minpair.death = i0 + window
@@ -935,7 +1187,10 @@ def move_min_2d_float32_axis0(np.ndarray[np.float32_t, ndim=2] a, int window):
                     last = ring
                 last.value = ai
                 last.death = i0 + window
-            y[i0, i1] = minpair.value
+            if count == window:        
+                y[i0, i1] = minpair.value
+            else:
+                y[i0, i1] = NAN
         for i0 in range(window - 1):
             y[i0, i1] = NAN
     
@@ -946,7 +1201,8 @@ def move_min_2d_float32_axis0(np.ndarray[np.float32_t, ndim=2] a, int window):
 @cython.wraparound(False)
 def move_min_2d_float32_axis1(np.ndarray[np.float32_t, ndim=2] a, int window):
     "Moving min of 2d array of dtype=float32 along axis=1."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -966,17 +1222,30 @@ def move_min_2d_float32_axis1(np.ndarray[np.float32_t, ndim=2] a, int window):
     
         end = ring + window
         last = ring
+    
         minpair = ring
-        minpair.value = a[i0, 0]
+        ai = a[i0, 0]
+        if ai == ai:
+            minpair.value = ai
+        else:
+            minpair.value = MAXfloat64
         minpair.death = window
-        y[i0, 0] = a[i0, 0]
 
+        count = 0
         for i1 in range(n1):
+            ai = a[i0, i1]
+            if ai == ai:
+                count += 1
+            else:
+                ai = MAXfloat64
+            if i1 >= window:
+                aold = a[i0, i1 - window]
+                if aold == aold:
+                    count -= 1
             if minpair.death == i1:
                 minpair += 1
                 if minpair >= end:
                     minpair = ring
-            ai = a[i0, i1]
             if ai <= minpair.value:
                 minpair.value = ai
                 minpair.death = i1 + window
@@ -991,7 +1260,10 @@ def move_min_2d_float32_axis1(np.ndarray[np.float32_t, ndim=2] a, int window):
                     last = ring
                 last.value = ai
                 last.death = i1 + window
-            y[i0, i1] = minpair.value
+            if count == window:        
+                y[i0, i1] = minpair.value
+            else:
+                y[i0, i1] = NAN
         for i1 in range(window - 1):
             y[i0, i1] = NAN
     
@@ -1002,7 +1274,8 @@ def move_min_2d_float32_axis1(np.ndarray[np.float32_t, ndim=2] a, int window):
 @cython.wraparound(False)
 def move_min_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a, int window):
     "Moving min of 2d array of dtype=float64 along axis=0."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -1022,17 +1295,30 @@ def move_min_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a, int window):
     
         end = ring + window
         last = ring
+    
         minpair = ring
-        minpair.value = a[0, i1]
+        ai = a[0, i1]
+        if ai == ai:
+            minpair.value = ai
+        else:
+            minpair.value = MAXfloat64
         minpair.death = window
-        y[0, i1] = a[0, i1]
 
+        count = 0
         for i0 in range(n0):
+            ai = a[i0, i1]
+            if ai == ai:
+                count += 1
+            else:
+                ai = MAXfloat64
+            if i0 >= window:
+                aold = a[i0 - window, i1]
+                if aold == aold:
+                    count -= 1
             if minpair.death == i0:
                 minpair += 1
                 if minpair >= end:
                     minpair = ring
-            ai = a[i0, i1]
             if ai <= minpair.value:
                 minpair.value = ai
                 minpair.death = i0 + window
@@ -1047,7 +1333,10 @@ def move_min_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a, int window):
                     last = ring
                 last.value = ai
                 last.death = i0 + window
-            y[i0, i1] = minpair.value
+            if count == window:        
+                y[i0, i1] = minpair.value
+            else:
+                y[i0, i1] = NAN
         for i0 in range(window - 1):
             y[i0, i1] = NAN
     
@@ -1058,7 +1347,8 @@ def move_min_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a, int window):
 @cython.wraparound(False)
 def move_min_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a, int window):
     "Moving min of 2d array of dtype=float64 along axis=1."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -1078,17 +1368,30 @@ def move_min_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a, int window):
     
         end = ring + window
         last = ring
+    
         minpair = ring
-        minpair.value = a[i0, 0]
+        ai = a[i0, 0]
+        if ai == ai:
+            minpair.value = ai
+        else:
+            minpair.value = MAXfloat64
         minpair.death = window
-        y[i0, 0] = a[i0, 0]
 
+        count = 0
         for i1 in range(n1):
+            ai = a[i0, i1]
+            if ai == ai:
+                count += 1
+            else:
+                ai = MAXfloat64
+            if i1 >= window:
+                aold = a[i0, i1 - window]
+                if aold == aold:
+                    count -= 1
             if minpair.death == i1:
                 minpair += 1
                 if minpair >= end:
                     minpair = ring
-            ai = a[i0, i1]
             if ai <= minpair.value:
                 minpair.value = ai
                 minpair.death = i1 + window
@@ -1103,7 +1406,10 @@ def move_min_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a, int window):
                     last = ring
                 last.value = ai
                 last.death = i1 + window
-            y[i0, i1] = minpair.value
+            if count == window:        
+                y[i0, i1] = minpair.value
+            else:
+                y[i0, i1] = NAN
         for i1 in range(window - 1):
             y[i0, i1] = NAN
     
@@ -1114,7 +1420,8 @@ def move_min_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a, int window):
 @cython.wraparound(False)
 def move_min_3d_float32_axis0(np.ndarray[np.float32_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=float32 along axis=0."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -1135,17 +1442,30 @@ def move_min_3d_float32_axis0(np.ndarray[np.float32_t, ndim=3] a, int window):
         for i2 in range(n2):    
             end = ring + window
             last = ring
+        
             minpair = ring
-            minpair.value = a[0, i1, i2]
+            ai = a[0, i1, i2]
+            if ai == ai:
+                minpair.value = ai
+            else:
+                minpair.value = MAXfloat64
             minpair.death = window
-            y[0, i1, i2] = a[0, i1, i2]
-
+            
+            count = 0
             for i0 in range(n0):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MAXfloat64
+                if i0 >= window:
+                    aold = a[i0 - window, i1, i2]
+                    if aold == aold:
+                        count -= 1
                 if minpair.death == i0:
                     minpair += 1
                     if minpair >= end:
                         minpair = ring
-                ai = a[i0, i1, i2]
                 if ai <= minpair.value:
                     minpair.value = ai
                     minpair.death = i0 + window
@@ -1160,7 +1480,10 @@ def move_min_3d_float32_axis0(np.ndarray[np.float32_t, ndim=3] a, int window):
                         last = ring
                     last.value = ai
                     last.death = i0 + window
-                y[i0, i1, i2] = minpair.value
+                if count == window:        
+                    y[i0, i1, i2] = minpair.value
+                else:
+                    y[i0, i1, i2] = NAN
             for i0 in range(window - 1):
                 y[i0, i1, i2] = NAN
     
@@ -1171,7 +1494,8 @@ def move_min_3d_float32_axis0(np.ndarray[np.float32_t, ndim=3] a, int window):
 @cython.wraparound(False)
 def move_min_3d_float32_axis1(np.ndarray[np.float32_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=float32 along axis=1."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -1192,17 +1516,30 @@ def move_min_3d_float32_axis1(np.ndarray[np.float32_t, ndim=3] a, int window):
         for i2 in range(n2):    
             end = ring + window
             last = ring
+        
             minpair = ring
-            minpair.value = a[i0, 0, i2]
+            ai = a[i0, 0, i2]
+            if ai == ai:
+                minpair.value = ai
+            else:
+                minpair.value = MAXfloat64
             minpair.death = window
-            y[i0, 0, i2] = a[i0, 0, i2]
-
+            
+            count = 0
             for i1 in range(n1):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MAXfloat64
+                if i1 >= window:
+                    aold = a[i0, i1 - window, i2]
+                    if aold == aold:
+                        count -= 1
                 if minpair.death == i1:
                     minpair += 1
                     if minpair >= end:
                         minpair = ring
-                ai = a[i0, i1, i2]
                 if ai <= minpair.value:
                     minpair.value = ai
                     minpair.death = i1 + window
@@ -1217,7 +1554,10 @@ def move_min_3d_float32_axis1(np.ndarray[np.float32_t, ndim=3] a, int window):
                         last = ring
                     last.value = ai
                     last.death = i1 + window
-                y[i0, i1, i2] = minpair.value
+                if count == window:        
+                    y[i0, i1, i2] = minpair.value
+                else:
+                    y[i0, i1, i2] = NAN
             for i1 in range(window - 1):
                 y[i0, i1, i2] = NAN
     
@@ -1228,7 +1568,8 @@ def move_min_3d_float32_axis1(np.ndarray[np.float32_t, ndim=3] a, int window):
 @cython.wraparound(False)
 def move_min_3d_float32_axis2(np.ndarray[np.float32_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=float32 along axis=2."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -1249,17 +1590,30 @@ def move_min_3d_float32_axis2(np.ndarray[np.float32_t, ndim=3] a, int window):
         for i1 in range(n1):    
             end = ring + window
             last = ring
+        
             minpair = ring
-            minpair.value = a[i0, i1, 0]
+            ai = a[i0, i1, 0]
+            if ai == ai:
+                minpair.value = ai
+            else:
+                minpair.value = MAXfloat64
             minpair.death = window
-            y[i0, i1, 0] = a[i0, i1, 0]
-
+            
+            count = 0
             for i2 in range(n2):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MAXfloat64
+                if i2 >= window:
+                    aold = a[i0, i1, i2 - window]
+                    if aold == aold:
+                        count -= 1
                 if minpair.death == i2:
                     minpair += 1
                     if minpair >= end:
                         minpair = ring
-                ai = a[i0, i1, i2]
                 if ai <= minpair.value:
                     minpair.value = ai
                     minpair.death = i2 + window
@@ -1274,7 +1628,10 @@ def move_min_3d_float32_axis2(np.ndarray[np.float32_t, ndim=3] a, int window):
                         last = ring
                     last.value = ai
                     last.death = i2 + window
-                y[i0, i1, i2] = minpair.value
+                if count == window:        
+                    y[i0, i1, i2] = minpair.value
+                else:
+                    y[i0, i1, i2] = NAN
             for i2 in range(window - 1):
                 y[i0, i1, i2] = NAN
     
@@ -1285,7 +1642,8 @@ def move_min_3d_float32_axis2(np.ndarray[np.float32_t, ndim=3] a, int window):
 @cython.wraparound(False)
 def move_min_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=float64 along axis=0."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -1306,17 +1664,30 @@ def move_min_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a, int window):
         for i2 in range(n2):    
             end = ring + window
             last = ring
+        
             minpair = ring
-            minpair.value = a[0, i1, i2]
+            ai = a[0, i1, i2]
+            if ai == ai:
+                minpair.value = ai
+            else:
+                minpair.value = MAXfloat64
             minpair.death = window
-            y[0, i1, i2] = a[0, i1, i2]
-
+            
+            count = 0
             for i0 in range(n0):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MAXfloat64
+                if i0 >= window:
+                    aold = a[i0 - window, i1, i2]
+                    if aold == aold:
+                        count -= 1
                 if minpair.death == i0:
                     minpair += 1
                     if minpair >= end:
                         minpair = ring
-                ai = a[i0, i1, i2]
                 if ai <= minpair.value:
                     minpair.value = ai
                     minpair.death = i0 + window
@@ -1331,7 +1702,10 @@ def move_min_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a, int window):
                         last = ring
                     last.value = ai
                     last.death = i0 + window
-                y[i0, i1, i2] = minpair.value
+                if count == window:        
+                    y[i0, i1, i2] = minpair.value
+                else:
+                    y[i0, i1, i2] = NAN
             for i0 in range(window - 1):
                 y[i0, i1, i2] = NAN
     
@@ -1342,7 +1716,8 @@ def move_min_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a, int window):
 @cython.wraparound(False)
 def move_min_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=float64 along axis=1."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -1363,17 +1738,30 @@ def move_min_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a, int window):
         for i2 in range(n2):    
             end = ring + window
             last = ring
+        
             minpair = ring
-            minpair.value = a[i0, 0, i2]
+            ai = a[i0, 0, i2]
+            if ai == ai:
+                minpair.value = ai
+            else:
+                minpair.value = MAXfloat64
             minpair.death = window
-            y[i0, 0, i2] = a[i0, 0, i2]
-
+            
+            count = 0
             for i1 in range(n1):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MAXfloat64
+                if i1 >= window:
+                    aold = a[i0, i1 - window, i2]
+                    if aold == aold:
+                        count -= 1
                 if minpair.death == i1:
                     minpair += 1
                     if minpair >= end:
                         minpair = ring
-                ai = a[i0, i1, i2]
                 if ai <= minpair.value:
                     minpair.value = ai
                     minpair.death = i1 + window
@@ -1388,7 +1776,10 @@ def move_min_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a, int window):
                         last = ring
                     last.value = ai
                     last.death = i1 + window
-                y[i0, i1, i2] = minpair.value
+                if count == window:        
+                    y[i0, i1, i2] = minpair.value
+                else:
+                    y[i0, i1, i2] = NAN
             for i1 in range(window - 1):
                 y[i0, i1, i2] = NAN
     
@@ -1399,7 +1790,8 @@ def move_min_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a, int window):
 @cython.wraparound(False)
 def move_min_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a, int window):
     "Moving min of 3d array of dtype=float64 along axis=2."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
@@ -1420,17 +1812,30 @@ def move_min_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a, int window):
         for i1 in range(n1):    
             end = ring + window
             last = ring
+        
             minpair = ring
-            minpair.value = a[i0, i1, 0]
+            ai = a[i0, i1, 0]
+            if ai == ai:
+                minpair.value = ai
+            else:
+                minpair.value = MAXfloat64
             minpair.death = window
-            y[i0, i1, 0] = a[i0, i1, 0]
-
+            
+            count = 0
             for i2 in range(n2):
+                ai = a[i0, i1, i2]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MAXfloat64
+                if i2 >= window:
+                    aold = a[i0, i1, i2 - window]
+                    if aold == aold:
+                        count -= 1
                 if minpair.death == i2:
                     minpair += 1
                     if minpair >= end:
                         minpair = ring
-                ai = a[i0, i1, i2]
                 if ai <= minpair.value:
                     minpair.value = ai
                     minpair.death = i2 + window
@@ -1445,7 +1850,10 @@ def move_min_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a, int window):
                         last = ring
                     last.value = ai
                     last.death = i2 + window
-                y[i0, i1, i2] = minpair.value
+                if count == window:        
+                    y[i0, i1, i2] = minpair.value
+                else:
+                    y[i0, i1, i2] = NAN
             for i2 in range(window - 1):
                 y[i0, i1, i2] = NAN
     

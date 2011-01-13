@@ -74,11 +74,11 @@ def test_move_nanmean():
 
 def test_move_min():
     "Test move_min."
-    yield unit_maker, bn.move_min, bn.slow.move_min, 5, False
+    yield unit_maker, bn.move_min, bn.slow.move_min, 5
 
 def test_move_max():
     "Test move_max."
-    yield unit_maker, bn.move_max, bn.slow.move_max, 5, False
+    yield unit_maker, bn.move_max, bn.slow.move_max, 5
 
 def test_move_nanmin():
     "Test move_nanmin."

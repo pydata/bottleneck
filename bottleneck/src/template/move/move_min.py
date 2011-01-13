@@ -18,17 +18,30 @@ loop[1] = """\
     ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
     end = ring + window
     last = ring
+    
     minpair = ring
-    minpair.value = a[INDEXREPLACE|0|]
+    ai = a[INDEXREPLACE|0|]
+    if ai == ai:
+        minpair.value = ai
+    else:
+        minpair.value = MAXfloat64
     minpair.death = window
-    y[INDEXREPLACE|0|] = a[INDEXREPLACE|0|]
 
+    count = 0
     for iINDEX0 in range(nINDEX0):
+        ai = a[INDEXALL]
+        if ai == ai:
+            count += 1
+        else:
+            ai = MAXfloat64
+        if iINDEX0 >= window:
+            aold = a[INDEXREPLACE|iINDEX0 - window|]
+            if aold == aold:
+                count -= 1
         if minpair.death == iINDEX0:
             minpair += 1
             if minpair >= end:
                 minpair = ring
-        ai = a[INDEXALL]
         if ai <= minpair.value:
             minpair.value = ai
             minpair.death = iINDEX0 + window
@@ -43,7 +56,10 @@ loop[1] = """\
                 last = ring
             last.value = ai
             last.death = iINDEX0 + window
-        y[INDEXALL] = minpair.value
+        if count == window:        
+            y[INDEXALL] = minpair.value
+        else:
+            y[INDEXALL] = NAN
     for iINDEX0 in range(window - 1):
         y[INDEXALL] = NAN
     
@@ -60,17 +76,30 @@ loop[2] = """\
     
         end = ring + window
         last = ring
+    
         minpair = ring
-        minpair.value = a[INDEXREPLACE|0|]
+        ai = a[INDEXREPLACE|0|]
+        if ai == ai:
+            minpair.value = ai
+        else:
+            minpair.value = MAXfloat64
         minpair.death = window
-        y[INDEXREPLACE|0|] = a[INDEXREPLACE|0|]
 
+        count = 0
         for iINDEX1 in range(nINDEX1):
+            ai = a[INDEXALL]
+            if ai == ai:
+                count += 1
+            else:
+                ai = MAXfloat64
+            if iINDEX1 >= window:
+                aold = a[INDEXREPLACE|iINDEX1 - window|]
+                if aold == aold:
+                    count -= 1
             if minpair.death == iINDEX1:
                 minpair += 1
                 if minpair >= end:
                     minpair = ring
-            ai = a[INDEXALL]
             if ai <= minpair.value:
                 minpair.value = ai
                 minpair.death = iINDEX1 + window
@@ -85,7 +114,10 @@ loop[2] = """\
                     last = ring
                 last.value = ai
                 last.death = iINDEX1 + window
-            y[INDEXALL] = minpair.value
+            if count == window:        
+                y[INDEXALL] = minpair.value
+            else:
+                y[INDEXALL] = NAN
         for iINDEX1 in range(window - 1):
             y[INDEXALL] = NAN
     
@@ -102,17 +134,30 @@ loop[3] = """\
         for iINDEX1 in range(nINDEX1):    
             end = ring + window
             last = ring
+        
             minpair = ring
-            minpair.value = a[INDEXREPLACE|0|]
+            ai = a[INDEXREPLACE|0|]
+            if ai == ai:
+                minpair.value = ai
+            else:
+                minpair.value = MAXfloat64
             minpair.death = window
-            y[INDEXREPLACE|0|] = a[INDEXREPLACE|0|]
-
+            
+            count = 0
             for iINDEX2 in range(nINDEX2):
+                ai = a[INDEXALL]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MAXfloat64
+                if iINDEX2 >= window:
+                    aold = a[INDEXREPLACE|iINDEX2 - window|]
+                    if aold == aold:
+                        count -= 1
                 if minpair.death == iINDEX2:
                     minpair += 1
                     if minpair >= end:
                         minpair = ring
-                ai = a[INDEXALL]
                 if ai <= minpair.value:
                     minpair.value = ai
                     minpair.death = iINDEX2 + window
@@ -127,7 +172,10 @@ loop[3] = """\
                         last = ring
                     last.value = ai
                     last.death = iINDEX2 + window
-                y[INDEXALL] = minpair.value
+                if count == window:        
+                    y[INDEXALL] = minpair.value
+                else:
+                    y[INDEXALL] = NAN
             for iINDEX2 in range(window - 1):
                 y[INDEXALL] = NAN
     
@@ -148,7 +196,8 @@ floats['top'] = """
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a, int window):
     "Moving min of NDIMd array of dtype=DTYPE along axis=AXIS."
-    cdef np.float64_t ai
+    cdef np.float64_t ai, aold
+    cdef int count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end
