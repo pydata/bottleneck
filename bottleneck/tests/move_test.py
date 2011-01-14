@@ -16,8 +16,8 @@ def arrays(dtypes=bn.dtypes, nans=True):
     "Iterator that yield arrays to use for unit testing."
     ss = {}
     ss[1] = {'size':  4, 'shapes': [(4,)]}
-    ss[2] = {'size':  6, 'shapes': [(1,6), (2,3), (6,1)]}
-    ss[3] = {'size': 24, 'shapes': [(1,1,24), (24,1,1), (1,24,1), (2,3,4)]}
+    ss[2] = {'size':  6, 'shapes': [(1,6), (2,3)]}
+    ss[3] = {'size':  6, 'shapes': [(1,2,3)]}
     if SCIPY:
         # Unaccelerated fallback requires scipy
         ss[4] = {'size': 24, 'shapes': [(1,2,3,4)]}  # Unaccelerated

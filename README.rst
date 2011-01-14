@@ -251,6 +251,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 40 tests in 75.108s
+    Ran 40 tests in 35.108s
     OK
     <nose.result.TextTestResult run=40 errors=0 failures=0> 
