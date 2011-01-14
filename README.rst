@@ -12,7 +12,8 @@ NumPy/SciPy           ``median, nanmedian, nansum, nanmin, nanmax, nanmean,
                       nanstd, nanargmin, nanargmax`` 
 Functions             ``nanvar``
 Moving window         ``move_sum, move_nansum, move_mean, move_nanmean,
-                      move_min, move_nanmin, move_max, move_nanmax``
+                      move_std, move_nanstd, move_min, move_nanmin, move_max,
+                      move_nanmax``
 Group by              ``group_nanmean``
 ===================== =======================================================
 
@@ -72,19 +73,21 @@ benchmark::
 
                      no NaN   no NaN     no NaN     NaN      NaN        NaN
                     (10,10) (100,100) (1000,1000) (10,10) (100,100) (1000,1000)
-    median            3.55     2.17       2.28      4.07     3.99       2.88
-    nanmedian        96.98    28.51       4.44    108.27    66.47       6.40
-    nansum            5.19     5.64       1.77      5.21     6.46       1.76
-    nanmax            6.18     5.91       1.74      6.37    10.06       1.81
-    nanmean          12.03    13.01       3.14     12.45    26.52       5.06
-    nanstd           16.61     9.53       2.87     17.08    16.68       3.87
-    nanargmax         5.55     5.46       2.62      5.75     8.40       2.88
-    move_sum          6.22     7.57      14.55      6.44     7.86      14.11
-    move_nansum      16.07    18.40      29.32     16.50    23.40      29.77
-    move_mean         6.31     4.17      14.33      6.44     7.97      14.15
-    move_nanmean     19.39    11.46      29.72     20.59    14.06      30.66
-    move_max          2.71     3.59       9.16      2.94     5.21      11.77
-    move_nanmax      13.62     5.98      19.15     15.22    13.54      27.19
+    median            3.59     2.17       2.29      4.03     4.00       2.89
+    nanmedian        97.31    28.09       4.42    107.76    65.73       6.43
+    nansum            6.10     5.82       1.81      6.09     6.69       1.78
+    nanmax            5.92     5.70       1.75      6.14     9.57       1.79
+    nanmean          12.01    12.84       3.17     12.70    25.87       5.14
+    nanstd           16.40     9.46       2.89     17.09    16.50       3.89
+    nanargmax         5.43     5.40       2.62      5.65     8.22       2.88
+    move_sum          5.90     7.49      14.61      6.03     7.72      14.07
+    move_nansum      14.98    18.26      29.54     15.77    23.11      29.75
+    move_mean         5.92     4.16      14.50      6.02     7.67      14.29
+    move_nanmean     19.00    11.46      29.99     19.98    14.08      31.01
+    move_std         11.56     3.29      22.90     13.40    18.94      29.96
+    move_nanstd      22.72     6.14      35.10     25.88     6.99      36.30
+    move_max          2.67     3.50       9.15      2.91     5.16      11.89
+    move_nanmax      13.62     6.01      19.51     15.32    13.44      27.26
 
     Reference functions:
     median          np.median
@@ -98,6 +101,8 @@ benchmark::
     move_nansum     sp.ndimage.convolve1d based, window=a.shape[0]/5
     move_mean       sp.ndimage.convolve1d based, window=a.shape[0]/5
     move_nanmean    sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_std        sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_nanstd     sp.ndimage.convolve1d based, window=a.shape[0]/5
     move_max        sp.ndimage.maximum_filter1d based, window=a.shape[0]/5
     move_nanmax     sp.ndimage.maximum_filter1d based, window=a.shape[0]/5
 
@@ -146,19 +151,21 @@ Benchmarks for the low-level Cython version of each function::
 
                      no NaN   no NaN     no NaN     NaN      NaN        NaN
                     (10,10) (100,100) (1000,1000) (10,10) (100,100) (1000,1000)
-    median           14.36    14.19       7.25     11.23     3.62       2.82
-    nanmedian       329.99   126.77       8.21    346.97   174.34       8.04
-    nansum           20.74     7.07       1.78     20.64     8.38       1.77
-    nanmax           19.70     6.83       1.74     21.47    12.59       1.83
-    nanmean          36.78    15.14       3.12     39.58    31.52       5.10
-    nanstd           43.23    10.32       2.88     46.03    18.27       3.88
-    nanargmax        16.32     6.29       2.63     17.17    10.22       2.90
-    move_sum         19.02     8.70      14.51     19.13     9.13      14.08
-    move_nansum      48.83    21.24      29.34     51.22    26.92      29.69
-    move_mean        16.63     4.37      14.40     17.61     8.94      14.20
-    move_nanmean     53.43    12.09      29.76     55.76    14.82      30.78
-    move_max          5.79     3.71       9.26      6.99     5.53      11.83
-    move_nanmax      28.19     6.17      19.32     34.70    14.43      27.17
+    median           14.35    14.16       7.31     11.37     3.59       2.85
+    nanmedian       325.28   127.47       8.23    333.08   174.28       8.11
+    nansum           20.49     7.04       1.81     20.80     8.31       1.79
+    nanmax           19.04     6.73       1.76     20.80    12.46       1.80
+    nanmean          37.23    15.11       3.17     39.19    31.45       5.16
+    nanstd           43.39    10.34       2.89     46.11    18.26       3.89
+    nanargmax        15.82     6.28       2.66     16.97    10.12       2.91
+    move_sum         17.58     8.61      14.62     17.90     9.04      14.16
+    move_nansum      47.59    21.41      29.52     50.09    27.04      29.81
+    move_mean        15.90     4.35      14.50     17.25     8.90      14.29
+    move_nanmean     53.71    12.06      29.97     55.72    14.81      31.04
+    move_std         22.01     3.34      23.02     31.34    21.59      30.03
+    move_nanstd      46.56     6.23      35.16     57.32     7.09      36.30
+    move_max          6.05     3.60       9.17      7.28     5.50      11.93
+    move_nanmax      29.65     6.21      19.47     38.29    14.38      27.28
 
     Reference functions:
     median          np.median
@@ -172,6 +179,8 @@ Benchmarks for the low-level Cython version of each function::
     move_nansum     sp.ndimage.convolve1d based, window=a.shape[0]/5
     move_mean       sp.ndimage.convolve1d based, window=a.shape[0]/5
     move_nanmean    sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_std        sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_nanstd     sp.ndimage.convolve1d based, window=a.shape[0]/5
     move_max        sp.ndimage.maximum_filter1d based, window=a.shape[0]/5
     move_nanmax     sp.ndimage.maximum_filter1d based, window=a.shape[0]/5
 
@@ -251,6 +260,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 40 tests in 35.108s
+    Ran 44 tests in 39.108s
     OK
-    <nose.result.TextTestResult run=40 errors=0 failures=0> 
+    <nose.result.TextTestResult run=44 errors=0 failures=0> 

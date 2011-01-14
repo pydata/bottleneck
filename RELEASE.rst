@@ -11,7 +11,7 @@ Bottleneck 0.3.0
 
 *Release date: Not yet released, in development*
 
-The third release of Bottleneck adds X new functions.
+Moving window functions are the focus of the third release of Bottleneck.
 
 **New functions**
 
@@ -19,6 +19,8 @@ The third release of Bottleneck adds X new functions.
 - move_sum()
 - move_nansum()  
 - move_mean()  
+- move_std()
+- move_nanstd()  
 - move_min()
 - move_nanmin()
 - move_max()

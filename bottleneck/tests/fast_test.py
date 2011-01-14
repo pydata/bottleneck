@@ -101,6 +101,14 @@ def test_move_nanmean_selector():
     "Test move_nanmean_selector."
     fast_checker(bn.move.move_nanmean_selector, mode='move')
 
+def test_move_std_selector():
+    "Test move_std_selector."
+    fast_checker(bn.move.move_std_selector, mode='move')
+
+def test_move_nanstd_selector():
+    "Test move_nanstd_selector."
+    fast_checker(bn.move.move_nanstd_selector, mode='move')
+
 def test_move_min_selector():
     "Test move_min_selector."
     fast_checker(bn.move.move_min_selector, mode='move')

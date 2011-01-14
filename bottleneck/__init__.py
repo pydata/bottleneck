@@ -16,6 +16,7 @@ except:
 try:
     from move import (move_sum, move_nansum,
                       move_mean, move_nanmean,
+                      move_std, move_nanstd,
                       move_min, move_nanmin,
                       move_max, move_nanmax)
 except:

@@ -292,6 +292,46 @@ def benchsuite(mode, dtype, axis):
     if axis != 'None':
         suite.append(run)
     
+    # move_std
+    run = {}
+    run['name'] = "move_std"
+    run['ref'] = "sp.ndimage.convolve1d based, "
+    run['ref'] += "window=a.shape[%s]/5" % axis
+    run['scipy_required'] = True
+    if mode == 'fast':
+        code = "bn.move_std(a, window=w, axis=AXIS)"
+    else:
+        code = "func(a, w, 0)"
+    run['statements'] = [code, "scipy_move_std(a, window=w, axis=AXIS)"] 
+    setup = """
+        from bottleneck.slow.move import move_std as scipy_move_std
+        w = a.shape[AXIS] / 5
+        func, a = bn.move.move_std_selector(a, window=w, axis=AXIS)
+    """
+    run['setups'] = getsetups(setup)
+    if axis != 'None':
+        suite.append(run)
+    
+    # move_nanstd
+    run = {}
+    run['name'] = "move_nanstd"
+    run['ref'] = "sp.ndimage.convolve1d based, "
+    run['ref'] += "window=a.shape[%s]/5" % axis
+    run['scipy_required'] = True
+    if mode == 'fast':
+        code = "bn.move_nanstd(a, window=w, axis=AXIS)"
+    else:
+        code = "func(a, w, 0)"
+    run['statements'] = [code, "scipy_move_nanstd(a, window=w, axis=AXIS)"] 
+    setup = """
+        from bottleneck.slow.move import move_nanstd as scipy_move_nanstd
+        w = a.shape[AXIS] / 5
+        func, a = bn.move.move_nanstd_selector(a, window=w, axis=AXIS)
+    """
+    run['setups'] = getsetups(setup)
+    if axis != 'None':
+        suite.append(run)
+    
     # move_max
     run = {}
     run['name'] = "move_max"

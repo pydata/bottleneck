@@ -14,6 +14,7 @@ import bottleneck as bn
 
 __all__ = ['move_sum', 'move_nansum',
            'move_mean', 'move_nanmean',
+           'move_std', 'move_nanstd',
            'move_min', 'move_nanmin',
            'move_max', 'move_nanmax']
 
@@ -49,7 +50,7 @@ def move_sum(arr, window, axis=-1, method='filter'):
     Examples
     --------
     >>> arr = np.array([1, 2, 3, 4])
-    >>> la.farray.mov_sum(arr, window=2, axis=0)
+    >>> la.farray.move_sum(arr, window=2, axis=0)
        array([ NaN,   3.,   5.,   7.])
 
     """
@@ -107,7 +108,7 @@ def move_nansum(arr, window, axis=-1, method='filter'):
     Examples
     --------
     >>> arr = np.array([1, 2, np.nan, 4])
-    >>> la.farray.mov_nansum(arr, window=2, axis=0)
+    >>> la.farray.move_nansum(arr, window=2, axis=0)
     array([ NaN,   3.,   2.,   4.])
 
     """
@@ -154,9 +155,9 @@ def move_sum_filter(arr, window, axis=-1):
 
     Examples
     --------
-    >>> from la.farray.mov import mov_sum_filter
+    >>> from la.farray.mov import move_sum_filter
     >>> arr = np.array([1, 2, 3, 4])
-    >>> mov_sum_filter(arr, window=2, axis=0)
+    >>> move_sum_filter(arr, window=2, axis=0)
     array([ NaN,   3.,   5.,   7.])
 
     """
@@ -200,9 +201,9 @@ def move_nansum_filter(arr, window, axis=-1):
 
     Examples
     --------
-    >>> from la.farray.mov import mov_sum_filter
+    >>> from la.farray.mov import move_sum_filter
     >>> arr = np.array([1, 2, np.nan, 4, 5, 6, 7])
-    >>> mov_nansum_filter(arr, window=2, axis=0)
+    >>> move_nansum_filter(arr, window=2, axis=0)
     array([ NaN,   3.,   2.,   4.,   9.,  11.,  13.])
 
     """
@@ -257,7 +258,7 @@ def move_mean(arr, window, axis=-1, method='filter'):
     Examples
     --------
     >>> arr = np.array([1, 2, 3, 4])
-    >>> la.farray.mov_mean(arr, window=2, axis=0)
+    >>> la.farray.move_mean(arr, window=2, axis=0)
     array([ NaN,  1.5,  2.5,  3.5])
     
     """
@@ -374,6 +375,297 @@ def move_nanmean_filter(arr, window, axis=-1):
     arr[nrr == window] = np.nan
     return arr
 
+# VAR -----------------------------------------------------------------------
+
+def move_var(arr, window, axis=-1, method='filter', ddof=0):
+    """
+    Slow move_var for unaccelerated ndim/dtype combinations.
+    
+    Parameters
+    ----------
+    arr : ndarray
+        Input array.
+    window : int
+        The number of elements in the moving window.
+    axis : int, optional
+        The axis over which to perform the moving variance. By default the
+        moving variance is taken over the last axis (-1).
+    method : str, optional
+        The following moving window methods are available:
+            ==========  =====================================
+            'filter'    scipy.ndimage.convolve1d (default)
+            'strides'   strides tricks (ndim < 4)
+            'loop'      brute force python loop
+            ==========  =====================================
+
+    Returns
+    -------
+    y : ndarray
+        The moving variance of the input array along the specified axis. The
+        output has the same shape as the input.
+
+    Examples
+    --------
+    >>> arr = np.array([1, 2, 3, 4])
+    >>> la.farray.move_var(arr, window=2, axis=0)
+    array([  NaN,  0.25,  0.25,  0.25])
+    
+    """
+    if ddof != 0:
+        raise ValueError("`ddof` must be zero for unaccelerated input.")
+    if method == 'filter':
+        if SCIPY:
+            y = move_var_filter(arr, window, axis=axis)
+        else:
+            raise ValueError("'filter' method requires SciPy.")
+    elif method == 'strides':
+        y = move_func_strides(np.var, arr, window, axis=axis)
+    elif method == 'loop':
+        y = move_func_loop(np.var, arr, window, axis=axis)
+    else:
+        msg = "`method` must be 'filter', 'strides', or 'loop'."
+        raise ValueError, msg
+    if y.dtype != arr.dtype:
+        if issubclass(arr.dtype.type, np.inexact):
+            y = y.astype(arr.dtype)
+    return y
+
+def move_nanvar(arr, window, axis=-1, method='filter', ddof=0):
+    """
+    Slow move_nanvar for unaccelerated ndim/dtype combinations.
+    
+    Parameters
+    ----------
+    arr : ndarray
+        Input array.
+    window : int
+        The number of elements in the moving window.
+    axis : int, optional
+        The axis over which to perform the moving variance. By default the
+        moving variance is taken over the last axis (-1).
+    method : str, optional
+        The following moving window methods are available:
+            ==========  =====================================
+            'filter'    scipy.ndimage.convolve1d (default)
+            'strides'   strides tricks (ndim < 4)
+            'loop'      brute force python loop
+            ==========  =====================================
+
+    Returns
+    -------
+    y : ndarray
+        The moving variance of the input array along the specified axis,
+        ignoring NaNs. (A window with all NaNs returns NaN for the window
+        variance.) The output has the same shape as the input.
+
+    Examples
+    --------
+    >>> arr = np.array([1, 2, np.nan, 4, 5])
+    >>> la.farray.move_nanvar(arr, window=3, axis=0)
+    array([  NaN,   NaN,  0.25,  1.  ,  0.25])
+    
+    """
+    if ddof != 0:
+        raise ValueError("`ddof` must be zero for unaccelerated input.")
+    if method == 'filter':
+        if SCIPY:
+            y = move_nanvar_filter(arr, window, axis=axis)
+        else:
+            raise ValueError("'filter' method requires SciPy.")
+    elif method == 'strides':
+        y = move_func_strides(bn.slow.nanvar, arr, window, axis=axis)
+    elif method == 'loop':
+        y = move_func_loop(bn.slow.nanvar, arr, window, axis=axis)
+    else:
+        msg = "`method` must be 'filter', 'strides', or 'loop'."
+        raise ValueError, msg
+    if y.dtype != arr.dtype:
+        if issubclass(arr.dtype.type, np.inexact):
+            y = y.astype(arr.dtype)
+    return y
+
+def move_var_filter(arr, window, axis=-1):
+    "Moving window variance implemented with a filter."
+    if axis == None:
+        raise ValueError, "An `axis` value of None is not supported."
+    if window < 1:  
+        raise ValueError, "`window` must be at least 1."
+    if window > arr.shape[axis]:
+        raise ValueError, "`window` is too long."  
+    arr = arr.astype(float)
+    w = np.empty(window)
+    w.fill(1.0 / window)
+    x0 = (1 - window) // 2
+    y = convolve1d(arr, w, axis=axis, mode='constant', cval=np.nan, origin=x0)
+    y *= y
+    arr *= arr
+    convolve1d(arr, w, axis=axis, mode='constant', cval=np.nan, origin=x0,
+               output=arr)
+    arr -= y 
+    return arr
+
+def move_nanvar_filter(arr, window, axis=-1):
+    "Moving window variance ignoring NaNs, implemented with a filter."
+    if axis == None:
+        raise ValueError, "An `axis` value of None is not supported."
+    if window < 1:  
+        raise ValueError, "`window` must be at least 1."
+    if window > arr.shape[axis]:
+        raise ValueError, "`window` is too long."  
+    arr = arr.astype(float)
+    nrr = np.isnan(arr)
+    arr[nrr] = 0
+    nrr = nrr.astype(int)
+    w = np.ones(window, dtype=int)
+    x0 = (1 - window) // 2
+    convolve1d(nrr, w, axis=axis, mode='constant', cval=0, origin=x0,
+               output=nrr)
+    y = convolve1d(arr, w, axis=axis, mode='constant', cval=np.nan, origin=x0)
+    y /= (window - nrr)
+    y *= y
+    arr *= arr
+    convolve1d(arr, w, axis=axis, mode='constant', cval=np.nan, origin=x0,
+               output=arr)
+    arr /= (window - nrr)
+    arr -= y
+    arr[nrr == window] = np.nan
+    return arr
+
+# STD -----------------------------------------------------------------------
+
+def move_std(arr, window, axis=-1, method='filter', ddof=0):
+    """
+    Moving window standard deviation along the specified axis.
+    
+    Parameters
+    ----------
+    arr : ndarray
+        Input array.
+    window : int
+        The number of elements in the moving window.
+    axis : int, optional
+        The axis over which to perform the moving standard deviation.
+        By default the moving standard deviation is taken over the last
+        axis (-1).
+    method : str, optional
+        The following moving window methods are available:
+            ==========  =====================================
+            'filter'    scipy.ndimage.convolve1d (default)
+            'strides'   strides tricks (ndim < 4)
+            'loop'      brute force python loop
+            ==========  =====================================
+
+    Returns
+    -------
+    y : ndarray
+        The moving standard deviation of the input array along the specified
+        axis. The output has the same shape as the input.
+
+    Examples
+    --------
+    >>> arr = np.array([1, 2, 3, 4])
+    >>> la.farray.move_std(arr, window=2)
+    array([ NaN,  0.5,  0.5,  0.5])
+    
+    """
+    if ddof != 0:
+        raise ValueError("`ddof` must be zero for unaccelerated input.")
+    if method == 'filter':
+        if SCIPY:
+            y = move_std_filter(arr, window, axis=axis)
+        else:
+            raise ValueError("'filter' method requires SciPy.")
+    elif method == 'strides':
+        y = move_func_strides(np.std, arr, window, axis=axis)
+    elif method == 'loop':
+        y = move_func_loop(np.std, arr, window, axis=axis)
+    else:
+        msg = "`method` must be 'filter', 'strides', or 'loop'."
+        raise ValueError, msg
+    if y.dtype != arr.dtype:
+        if issubclass(arr.dtype.type, np.inexact):
+            y = y.astype(arr.dtype)
+    return y
+
+def move_nanstd(arr, window, axis=-1, method='filter', ddof=0):
+    """
+    Moving window standard deviation along the specified axis, ignoring NaNs.
+    
+    Parameters
+    ----------
+    arr : ndarray
+        Input array.
+    window : int
+        The number of elements in the moving window.
+    axis : int, optional
+        The axis over which to perform the moving standard deviation.
+        By default the moving standard deviation is taken over the last
+        axis (-1).
+    method : str, optional
+        The following moving window methods are available:
+            ==========  =====================================
+            'filter'    scipy.ndimage.convolve1d (default)
+            'strides'   strides tricks (ndim < 4)
+            'loop'      brute force python loop
+            ==========  =====================================
+
+    Returns
+    -------
+    y : ndarray
+        The moving standard deviation of the input array along the specified
+        axis, ignoring NaNs. (A window with all NaNs returns NaN for the window
+        standard deviation.) The output has the same shape as the input.
+
+    Examples
+    --------
+    >>> arr = np.array([1, 2, np.nan, 4, 5])
+    >>> la.farray.move_nanstd(arr, window=3)
+    array([ NaN,  NaN,  0.5,  1. ,  0.5])    
+
+    """
+    if ddof != 0:
+        raise ValueError("`ddof` must be zero for unaccelerated input.")
+    if method == 'filter':
+        if SCIPY:
+            y = move_nanstd_filter(arr, window, axis=axis)
+        else:
+            raise ValueError("'filter' method requires SciPy.")
+    elif method == 'strides':
+        y = move_func_strides(bn.slow.nanstd, arr, window, axis=axis)
+    elif method == 'loop':
+        y = move_func_loop(bn.slow.nanstd, arr, window, axis=axis)
+    else:
+        msg = "`method` must be 'filter', 'strides', or 'loop'."
+        raise ValueError, msg
+    if y.dtype != arr.dtype:
+        if issubclass(arr.dtype.type, np.inexact):
+            y = y.astype(arr.dtype)
+    return y
+
+def move_std_filter(arr, window, axis=-1):
+    "Moving window standard deviation implemented with a filter."
+    if axis == None:
+        raise ValueError, "An `axis` value of None is not supported."
+    if window < 1:  
+        raise ValueError, "`window` must be at least 1."
+    if window > arr.shape[axis]:
+        raise ValueError, "`window` is too long."  
+    y = move_var_filter(arr, window, axis=axis)
+    np.sqrt(y, y)
+    return y
+
+def move_nanstd_filter(arr, window, axis=-1):
+    "Moving window standard deviation ignoring NaNs, implemented with a filter."
+    if axis == None:
+        raise ValueError, "An `axis` value of None is not supported."
+    if window < 1:  
+        raise ValueError, "`window` must be at least 1."
+    if window > arr.shape[axis]:
+        raise ValueError, "`window` is too long."  
+    y = move_nanvar_filter(arr, window, axis=axis)
+    np.sqrt(y, y)
+    return y
+
 # MIN -----------------------------------------------------------------------
 
 def move_min(arr, window, axis=-1, method='filter'):
@@ -406,7 +698,7 @@ def move_min(arr, window, axis=-1, method='filter'):
     Examples
     --------
     >>> arr = np.array([1, 2, 3, 4])
-    >>> la.farray.mov_min(arr, window=2)
+    >>> la.farray.move_min(arr, window=2)
     array([ NaN,   1.,   2.,   3.])    
 
     """
@@ -451,7 +743,7 @@ def move_nanmin(arr, window, axis=-1, method='filter'):
     Examples
     --------
     >>> arr = np.array([1, 2, np.nan, 4, 5])
-    >>> la.farray.mov_nanmin(arr, window=2)
+    >>> la.farray.move_nanmin(arr, window=2)
     array([ NaN,   1.,   2.,   4.,   4.])    
 
     """
@@ -565,7 +857,7 @@ def move_max(arr, window, axis=-1, method='filter'):
     Examples
     --------
     >>> arr = np.array([1, 2, 3, 4])
-    >>> la.farray.mov_max(arr, window=2)
+    >>> la.farray.move_max(arr, window=2)
     array([ NaN,   2.,   3.,   4.])    
 
     """
@@ -610,7 +902,7 @@ def move_nanmax(arr, window, axis=-1, method='filter'):
     Examples
     --------
     >>> arr = np.array([1, 2, np.nan, 4, 5])
-    >>> la.farray.mov_nanmax(arr, window=2)
+    >>> la.farray.move_nanmax(arr, window=2)
     array([ NaN,   2.,   2.,   4.,   5.])
 
     """

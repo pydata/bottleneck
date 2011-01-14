@@ -80,6 +80,14 @@ def test_move_nanmean():
     "Test move_nanmean."
     yield unit_maker, bn.move_nanmean, bn.slow.move_nanmean, 5
 
+def test_move_std():
+    "Test move_std."
+    yield unit_maker, bn.move_std, bn.slow.move_std, 5
+
+def test_move_nanstd():
+    "Test move_nanstd."
+    yield unit_maker, bn.move_nanstd, bn.slow.move_nanstd, 5
+
 def test_move_min():
     "Test move_min."
     yield unit_maker, bn.move_min, bn.slow.move_min, 5
@@ -95,4 +103,3 @@ def test_move_nanmin():
 def test_move_nanmax():
     "Test move_nanmax."
     yield unit_maker, bn.move_nanmax, bn.slow.move_nanmax, 5
-    
