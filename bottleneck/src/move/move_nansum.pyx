@@ -81,7 +81,11 @@ def move_nansum_selector(arr, int window, int axis):
     array([ nan,  3.,  5.,  7.])
 
     """
-    cdef np.ndarray a = np.array(arr, copy=False)
+    cdef np.ndarray a
+    if type(arr) is np.ndarray:
+        a = arr
+    else:    
+        a = np.array(arr, copy=False)
     cdef int ndim = a.ndim
     cdef np.dtype dtype = a.dtype
     if dtype < np.int_:

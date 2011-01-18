@@ -81,7 +81,11 @@ def move_nanmean_selector(arr, int window, int axis):
     array([ nan,  1.5,  2.5,  3.5])
 
     """
-    cdef np.ndarray a = np.array(arr, copy=False)
+    cdef np.ndarray a
+    if type(arr) is np.ndarray:
+        a = arr
+    else:    
+        a = np.array(arr, copy=False)
     cdef np.dtype dtype = a.dtype
     cdef int ndim = a.ndim
     if axis != None:

@@ -105,7 +105,11 @@ def nanmedian_selector(arr, axis):
     2.0
 
     """
-    cdef np.ndarray a = np.array(arr, copy=True)
+    cdef np.ndarray a
+    if type(arr) is np.ndarray:
+        a = arr
+    else:    
+        a = np.array(arr, copy=False)
     cdef tuple key
     cdef int ndim = a.ndim
     cdef np.dtype dtype = a.dtype

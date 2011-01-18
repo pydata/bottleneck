@@ -155,7 +155,11 @@ def group_nanmean_selector(arr, label, order=None, int axis=0):
     (array([ 5. ,  2.5]), ['a', 'b'])
 
     """
-    cdef np.ndarray a = np.array(arr, copy=False)
+    cdef np.ndarray a
+    if type(arr) is np.ndarray:
+        a = arr
+    else:    
+        a = np.array(arr, copy=False)
     cdef int ndim = a.ndim
     cdef np.dtype dtype = a.dtype
     if axis < 0:

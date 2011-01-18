@@ -40,6 +40,10 @@ def nanvar(arr, axis=None, int ddof=0):
         returned. `float64` intermediate and return values are used for
         integer inputs. 
     
+    See also
+    --------
+    bottleneck.nanstd: Standard deviation along specified axis ignoring NaNs.
+    
     Notes
     -----
     If positive or negative infinity are present the result is Not A Number
@@ -118,7 +122,11 @@ def nanvar_selector(arr, axis):
     0.66666666666666663
 
     """
-    cdef np.ndarray a = np.array(arr, copy=False)
+    cdef np.ndarray a
+    if type(arr) is np.ndarray:
+        a = arr
+    else:    
+        a = np.array(arr, copy=False)
     cdef int ndim = a.ndim
     cdef np.dtype dtype = a.dtype
     if axis != None:

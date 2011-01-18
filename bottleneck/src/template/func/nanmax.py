@@ -288,7 +288,11 @@ def nanmax_selector(arr, axis):
     3.0
 
     """
-    cdef np.ndarray a = np.array(arr, copy=False)
+    cdef np.ndarray a
+    if type(arr) is np.ndarray:
+        a = arr
+    else:    
+        a = np.array(arr, copy=False)
     cdef int ndim = a.ndim
     cdef np.dtype dtype = a.dtype
     cdef int size = a.size

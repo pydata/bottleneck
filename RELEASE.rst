@@ -11,7 +11,11 @@ Bottleneck 0.3.0
 
 *Release date: Not yet released, in development*
 
-Moving window functions are the focus of the third release of Bottleneck.
+The third release of Bottleneck is faster and contains 10 new function.
+
+**Faster**
+
+- All functions are faster (less overhead in high-level functions) 
 
 **New functions**
 
@@ -29,6 +33,7 @@ Moving window functions are the focus of the third release of Bottleneck.
 **Enhancements**
 
 - You can now specify the dtype and axis to use in the benchmark timings
+- Improved documentation and more unit tests  
 
 **Bug fix**
 
