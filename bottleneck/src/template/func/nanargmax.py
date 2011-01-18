@@ -145,15 +145,21 @@ CANNOTCONVERT += "'cannot convert float NaN to integer'"
 
 def nanargmax(arr, axis=None):
     """
-    Return indices of the maximum values over an axis, ignoring NaNs.
+    Indices of the maximum values along an axis, ignoring NaNs.
     
     Parameters
     ----------
     a : array_like
         Input data.
-    axis : int, optional
-        Axis along which to operate. By default flattened input is used.
-    
+    axis : {int, None}, optional
+        Axis along which to operate. By default (axis=None) flattened input
+        is used.
+   
+    See also
+    --------
+    bottleneck.nanargmin: Indices of the minimum values along an axis.
+    bottleneck.nanmax: Maximum values along specified axis, ignoring NaNs.
+
     Returns
     -------
     index_array : ndarray
@@ -162,10 +168,10 @@ def nanargmax(arr, axis=None):
     Examples
     --------
     >>> a = np.array([[np.nan, 4], [2, 3]])
-    >>> np.argmax(a)
-    0
     >>> bn.nanargmax(a)
     1
+    >>> a.flat[1]
+    4.0
     >>> bn.nanargmax(a, axis=0)
     array([1, 0])
     >>> bn.nanargmax(a, axis=1)

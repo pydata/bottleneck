@@ -56,7 +56,7 @@ supports more dtypes.
 
 - nanargmin()
 - nanargmax()
-- nanmedian, 25X faster than SciPy's nanmedian for (100,100) input, axis=0
+- nanmedian()
 
 **Enhancements**
 

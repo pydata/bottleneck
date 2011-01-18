@@ -2,21 +2,26 @@
 
 def nanmax(arr, axis=None):
     """
-    Maximum along the specified axis, ignoring NaNs.
+    Maximum values along specified axis, ignoring NaNs.
 
     Parameters
     ----------
     arr : array_like
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}, optional
-        Axis along which the maximum is computed. The default is to compute
-        the maximum of the flattened array.
+        Axis along which the maximum is computed. The default (axis=None) is
+        to compute the maximum of the flattened array.
 
     Returns
     -------
     y : ndarray
         An array with the same shape as `arr`, with the specified axis removed.
         If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+
+    See also
+    --------
+    bottleneck.nanmin: Minimum along specified axis, ignoring NaNs.
+    bottleneck.nanargmax: Indices of maximum values along axis, ignoring NaNs. 
     
     Examples
     --------

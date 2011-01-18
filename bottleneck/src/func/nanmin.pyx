@@ -2,22 +2,27 @@
 
 def nanmin(arr, axis=None):
     """
-    Minimum along the specified axis, ignoring NaNs.
+    Minimum values along specified axis, ignoring NaNs.
 
     Parameters
     ----------
     arr : array_like
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}, optional
-        Axis along which the minimum is computed. The default is to compute
-        the minimum of the flattened array.
+        Axis along which the minimum is computed. The default (axis=None) is
+        to compute the minimum of the flattened array.
 
     Returns
     -------
     y : ndarray
         An array with the same shape as `arr`, with the specified axis removed.
         If `arr` is a 0-d array, or if axis is None, a scalar is returned.
-    
+
+    See also
+    --------
+    bottleneck.nanmax: Maximum along specified axis, ignoring NaNs.
+    bottleneck.nanargmin: Indices of minimum values along axis, ignoring NaNs. 
+
     Examples
     --------
     >>> bn.nanmin(1)

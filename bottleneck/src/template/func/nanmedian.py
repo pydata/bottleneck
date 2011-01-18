@@ -248,7 +248,7 @@ def nanmedian(arr, axis=None):
     arr : array_like
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}, optional
-        Axis along which the median is computed. The default (axis=None)is to
+        Axis along which the median is computed. The default (axis=None) is to
         compute the median of the flattened array.
 
     Returns
@@ -257,19 +257,23 @@ def nanmedian(arr, axis=None):
         An array with the same shape as `arr`, except that the specified axis
         has been removed. If `arr` is a 0d array, or if axis is None, a scalar
         is returned. `float64` return values are used for integer inputs. 
+    
+    See also
+    --------
+    bottleneck.median: Median along specified axis. 
 
     Examples
     --------
-    >>> a = np.array([[10, 7, 4], [3, 2, 1]])
-    >>> a
-    array([[10,  7,  4],
-           [ 3,  2,  1]])
+    >>> a = np.array([[np.nan, 7, 4], [3, 2, 1]])
+    >>> a 
+    array([[ nan,   7.,   4.],
+           [  3.,   2.,   1.]])
     >>> bn.nanmedian(a)
-    3.5
-    >>> bn.nanmedian(a, axis=0)
-    array([ 6.5,  4.5,  2.5])
-    >>> bn.nanmedian(a, axis=1)
-    array([ 7.,  2.])
+    3.0
+    >> bn.nanmedian(a, axis=0)
+    array([ 3. ,  4.5,  2.5])
+    >> bn.nanmedian(a, axis=1)
+    array([ 5.5,  2. ])
     
     """
     func, arr = nanmedian_selector(arr, axis)

@@ -58,9 +58,7 @@ Let's not forget to add some NaNs::
     >>> timeit bn.nanmax(arr)
     100000 loops, best of 3: 15.2 us per loop
 
-Bottleneck comes with a benchmark suite that compares the performance of the
-bottleneck functions that have a NumPy/SciPy equivalent. To run the
-benchmark::
+Bottleneck comes with a benchmark suite. To run the benchmark::
     
     >>> bn.bench(mode='fast', dtype='float64', axis=0)
     Bottleneck performance benchmark
@@ -138,7 +136,7 @@ Note that ``func`` is faster than Numpy's non-NaN version of max::
 
 So adding NaN protection to your inner loops comes at a negative cost!
 
-Benchmarks for the low-level Cython version of each function::
+Benchmarks for the low-level Cython functions::
 
     >>> bn.bench(mode='faster', dtype='float64', axis=0)
     Bottleneck performance benchmark
@@ -187,7 +185,7 @@ Benchmarks for the low-level Cython version of each function::
 Slow
 ====
 
-Currently only 1d, 2d, and 3d NumPy arrays with data type (dtype) int32,
+Currently only 1d, 2d, and 3d input arrays with data type (dtype) int32,
 int64, float32, and float64 are accelerated. All other ndim/dtype
 combinations result in calls to slower, unaccelerated functions.
 
@@ -222,11 +220,12 @@ Compile                  gcc or MinGW
 Optional                 SciPy 0.72+ (portions of benchmark)
 ======================== ====================================================
 
-Directions for installing a *released* version of Bottleneck are given below.
-Cython is not required since the Cython files have already been converted to
-C source files. (If you obtained bottleneck directly from the repository, then
-you will need to generate the C source files using the included Makefile which
-requires Cython.)
+Directions for installing a *released* version of Bottleneck (i.e., one
+obtained from http://pypi.python.org/pypi/Bottleneck) are given below. Cython
+is not required since the Cython files have already been converted to C source
+files. (If you obtained bottleneck directly from the repository, then you will
+need to generate the C source files using the included Makefile which requires
+Cython.)
 
 **GNU/Linux, Mac OS X, et al.**
 
@@ -244,8 +243,7 @@ Or, if you wish to specify where Bottleneck is installed, for example inside
 **Windows**
 
 In order to compile the C code in Bottleneck you need a Windows version of the
-gcc compiler. MinGW (Minimalist GNU for Windows) contains gcc and has been used
-to successfully compile Bottleneck on Windows.
+gcc compiler. MinGW (Minimalist GNU for Windows) contains gcc.
 
 Install MinGW and add it to your system path. Then install Bottleneck with the
 commands::

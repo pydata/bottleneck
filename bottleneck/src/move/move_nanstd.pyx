@@ -5,7 +5,7 @@ def move_nanstd(arr, int window, int axis=0, int ddof=0):
     Moving window standard deviation along the specified axis, ignoring NaNs.
 
     Unlike bn.nanstd, which uses a more rubust two-pass algorithm, move_nanstd
-    uses a one-pass algorithm.
+    uses a faster one-pass algorithm.
 
     An example of a one-pass algorithm:
 

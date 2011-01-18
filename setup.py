@@ -20,7 +20,8 @@ description = "Fast NumPy array functions written in Cython"
 fid = file('README.rst', 'r')
 long_description = fid.read()
 fid.close()
-long_description = long_description[7:]
+idx = max(0, long_description.find("Bottleneck is a collection"))
+long_description = long_description[idx:]
 
 # Get bottleneck version
 ver_file = os.path.join('bottleneck', 'version.py')

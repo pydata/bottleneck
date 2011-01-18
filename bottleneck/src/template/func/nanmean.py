@@ -197,8 +197,8 @@ def nanmean(arr, axis=None):
         Array containing numbers whose mean is desired. If `arr` is not an
         array, a conversion is attempted.
     axis : {int, None}, optional
-        Axis along which the mean is computed. The default is to compute the
-        mean of the flattened array.
+        Axis along which the mean is computed. The default (axis=None) is to
+        compute the mean of the flattened array.
 
     Returns
     -------
@@ -206,6 +206,10 @@ def nanmean(arr, axis=None):
         An array with the same shape as `arr`, with the specified axis removed.
         If `arr` is a 0-d array, or if axis is None, a scalar is returned.
         `float64` intermediate and return values are used for integer inputs. 
+
+    See also
+    --------
+    bottleneck.nanmedian: Median along specified axis, ignoring NaNs.
     
     Notes
     -----

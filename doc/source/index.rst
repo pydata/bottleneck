@@ -9,7 +9,6 @@ Fast NumPy array functions written in Cython.
    
    intro
    reference
-   development
    release
    license
 
@@ -19,4 +18,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

@@ -6,13 +6,31 @@ def nanvar(arr, axis=None, int ddof=0):
 
     `float64` intermediate and return values are used for integer inputs.
 
+    Instead of a faster one-pass algorithm, a more stable two-pass algorithm
+    is used.
+
+    An example of a one-pass algorithm:
+
+        >>> np.sqrt((arr*arr).mean() - arr.mean()**2)
+    
+    An example of a two-pass algorithm:    
+    
+        >>> np.sqrt(((arr - arr.mean())**2).mean())
+
+    Note in the two-pass algorithm the mean must be found (first pass) before
+    the squared deviation (second pass) can be found.
+
     Parameters
     ----------
     arr : array_like
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}, optional
-        Axis along which the variance is computed. The default is to compute
-        the variance of the flattened array.
+        Axis along which the variance is computed. The default (axis=None)is
+        to compute the variance of the flattened array.
+    ddof : int, optional
+        Means Delta Degrees of Freedom. The divisor used in calculations
+        is ``N - ddof``, where ``N`` represents the number of elements.
+        By default `ddof` is zero.
 
     Returns
     -------
@@ -24,8 +42,6 @@ def nanvar(arr, axis=None, int ddof=0):
     
     Notes
     -----
-    No error is raised on overflow.
-
     If positive or negative infinity are present the result is Not A Number
     (NaN).
 

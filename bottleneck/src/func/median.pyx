@@ -25,7 +25,7 @@ def median(arr, axis=None):
     arr : array_like
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}, optional
-        Axis along which the median is computed. The default (axis=None)is to
+        Axis along which the median is computed. The default (axis=None) is to
         compute the median of the flattened array.
 
     Returns
@@ -34,11 +34,15 @@ def median(arr, axis=None):
         An array with the same shape as `arr`, except that the specified axis
         has been removed. If `arr` is a 0d array, or if axis is None, a scalar
         is returned. `float64` return values are used for integer inputs. 
+    
+    See also
+    --------
+    bottleneck.nanmedian: Median along specified axis ignoring NaNs. 
 
     Notes
     -----
-    This function should give the same output as NumPy's median except for
-    when the input contains NaN.
+    This function returns the same output as NumPy's median except when the
+    input contains NaN.
 
     Examples
     --------

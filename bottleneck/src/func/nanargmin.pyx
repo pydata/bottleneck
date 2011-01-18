@@ -5,15 +5,21 @@ CANNOTCONVERT += "'cannot convert float NaN to integer'"
 
 def nanargmin(arr, axis=None):
     """
-    Return indices of the minimum values over an axis, ignoring NaNs.
+    Indices of the minimum values along an axis, ignoring NaNs.
     
     Parameters
     ----------
     a : array_like
         Input data.
-    axis : int, optional
-        Axis along which to operate. By default flattened input is used.
-    
+    axis : {int, None}, optional
+        Axis along which to operate. By default (axis=None) flattened input
+        is used.
+   
+    See also
+    --------
+    bottleneck.nanargmax: Indices of the maximum values along an axis.
+    bottleneck.nanmin: Minimum values along specified axis, ignoring NaNs.
+
     Returns
     -------
     index_array : ndarray
@@ -22,13 +28,13 @@ def nanargmin(arr, axis=None):
     Examples
     --------
     >>> a = np.array([[np.nan, 4], [2, 3]])
-    >>> np.argmin(a)
-    0
     >>> bn.nanargmin(a)
     2
-    >>> bn.nanargmin(a, axis=0)
+    >>> a.flat[1]
+    2.0
+    >>> bn.nanargmax(a, axis=0)
     array([1, 1])
-    >>> bn.nanargmin(a, axis=1)
+    >>> bn.nanargmax(a, axis=1)
     array([1, 0])
     
     """

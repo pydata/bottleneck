@@ -21,6 +21,10 @@ Group by                :meth:`group_nanmean <bottleneck.group_nanmean>`
 NumPy/SciPy
 -----------
 
+Fast replacements for NumPy and SciPy functions.
+
+------------
+
 .. autofunction:: bottleneck.median
 
 ------------
@@ -59,6 +63,8 @@ NumPy/SciPy
 Functions
 ---------
 
+Miscellaneous functions.
+
 ------------
 
 .. autofunction:: bottleneck.nanvar
@@ -66,6 +72,8 @@ Functions
 
 Moving window functions
 -----------------------
+
+Moving window functions with a 1d window.
 
 ------------
 
@@ -110,6 +118,8 @@ Moving window functions
 
 Group functions
 ---------------
+
+Calculations done on like-labeled elements.
 
 ------------
 

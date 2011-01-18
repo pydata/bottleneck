@@ -199,8 +199,8 @@ def nansum(arr, axis=None):
         Array containing numbers whose sum is desired. If `arr` is not an
         array, a conversion is attempted.
     axis : {int, None}, optional
-        Axis along which the sum is computed. The default is to compute the
-        sum of the flattened array.
+        Axis along which the sum is computed. The default (axis=None) is to
+        compute the sum of the flattened array.
 
     Returns
     -------

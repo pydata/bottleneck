@@ -6,13 +6,32 @@ def nanstd(arr, axis=None, int ddof=0):
 
     `float64` intermediate and return values are used for integer inputs.
 
+    Instead of a faster one-pass algorithm, a more stable two-pass algorithm
+    is used.
+
+    An example of a one-pass algorithm:
+
+        >>> np.sqrt((arr*arr).mean() - arr.mean()**2)
+    
+    An example of a two-pass algorithm:    
+    
+        >>> np.sqrt(((arr - arr.mean())**2).mean())
+
+    Note in the two-pass algorithm the mean must be found (first pass) before
+    the squared deviation (second pass) can be found.
+
     Parameters
     ----------
     arr : array_like
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}, optional
-        Axis along which the standard deviation is computed. The default is
-        to compute the standard deviation of the flattened array.
+        Axis along which the standard deviation is computed. The default
+        (axis=None) is to compute the standard deviation of the flattened
+        array.
+    ddof : int, optional
+        Means Delta Degrees of Freedom. The divisor used in calculations
+        is ``N - ddof``, where ``N`` represents the number of elements.
+        By default `ddof` is zero.
 
     Returns
     -------
@@ -20,11 +39,13 @@ def nanstd(arr, axis=None, int ddof=0):
         An array with the same shape as `arr`, with the specified axis removed.
         If `arr` is a 0-d array, or if axis is None, a scalar is returned.
         `float64` intermediate and return values are used for integer inputs. 
-    
+
+    See also
+    --------
+    bottleneck.nanvar: Variance along specified axis ignoring NaNs
+
     Notes
     -----
-    No error is raised on overflow.
-
     If positive or negative infinity are present the result is Not A Number
     (NaN).
 
