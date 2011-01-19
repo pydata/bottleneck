@@ -5,7 +5,7 @@ from numpy cimport NPY_INT32 as NPY_int32
 from numpy cimport NPY_INT64 as NPY_int64
 from numpy cimport NPY_FLOAT32 as NPY_float32
 from numpy cimport NPY_FLOAT64 as NPY_float64
-from numpy cimport PyArray_EMPTY, import_array
+from numpy cimport PyArray_EMPTY, PyArray_TYPE, PyArray_NDIM, import_array
 import_array()
 import bottleneck as bn
 

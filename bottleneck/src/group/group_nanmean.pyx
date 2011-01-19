@@ -160,8 +160,8 @@ def group_nanmean_selector(arr, label, order=None, int axis=0):
         a = arr
     else:    
         a = np.array(arr, copy=False)
-    cdef int ndim = a.ndim
-    cdef np.dtype dtype = a.dtype
+    cdef int ndim = PyArray_NDIM(a)
+    cdef int dtype = PyArray_TYPE(a)
     if axis < 0:
        axis += ndim
     cdef int narr = a.shape[axis], nlabel = len(label)
@@ -175,7 +175,7 @@ def group_nanmean_selector(arr, label, order=None, int axis=0):
     except KeyError:
         if (axis < 0) or (axis >= ndim):
             raise ValueError("axis(=%d) out of bounds" % axis)
-        tup = (str(ndim), str(dtype))
+        tup = (str(ndim), str(a.dtype))
         raise TypeError("Unsupported ndim/dtype (%s/%s)." % tup)
     label_dict, order = group_mapper(label, order)
     return func, a, label_dict, order
@@ -887,27 +887,27 @@ def group_nanmean_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a,
     return y, order 
 
 cdef dict group_nanmean_dict = {}
-group_nanmean_dict[(1, int32, 0)] = group_nanmean_1d_int32_axis0
-group_nanmean_dict[(1, int64, 0)] = group_nanmean_1d_int64_axis0
-group_nanmean_dict[(2, int32, 0)] = group_nanmean_2d_int32_axis0
-group_nanmean_dict[(2, int32, 1)] = group_nanmean_2d_int32_axis1
-group_nanmean_dict[(2, int64, 0)] = group_nanmean_2d_int64_axis0
-group_nanmean_dict[(2, int64, 1)] = group_nanmean_2d_int64_axis1
-group_nanmean_dict[(3, int32, 0)] = group_nanmean_3d_int32_axis0
-group_nanmean_dict[(3, int32, 1)] = group_nanmean_3d_int32_axis1
-group_nanmean_dict[(3, int32, 2)] = group_nanmean_3d_int32_axis2
-group_nanmean_dict[(3, int64, 0)] = group_nanmean_3d_int64_axis0
-group_nanmean_dict[(3, int64, 1)] = group_nanmean_3d_int64_axis1
-group_nanmean_dict[(3, int64, 2)] = group_nanmean_3d_int64_axis2
-group_nanmean_dict[(1, float32, 0)] = group_nanmean_1d_float32_axis0
-group_nanmean_dict[(1, float64, 0)] = group_nanmean_1d_float64_axis0
-group_nanmean_dict[(2, float32, 0)] = group_nanmean_2d_float32_axis0
-group_nanmean_dict[(2, float32, 1)] = group_nanmean_2d_float32_axis1
-group_nanmean_dict[(2, float64, 0)] = group_nanmean_2d_float64_axis0
-group_nanmean_dict[(2, float64, 1)] = group_nanmean_2d_float64_axis1
-group_nanmean_dict[(3, float32, 0)] = group_nanmean_3d_float32_axis0
-group_nanmean_dict[(3, float32, 1)] = group_nanmean_3d_float32_axis1
-group_nanmean_dict[(3, float32, 2)] = group_nanmean_3d_float32_axis2
-group_nanmean_dict[(3, float64, 0)] = group_nanmean_3d_float64_axis0
-group_nanmean_dict[(3, float64, 1)] = group_nanmean_3d_float64_axis1
-group_nanmean_dict[(3, float64, 2)] = group_nanmean_3d_float64_axis2
+group_nanmean_dict[(1, NPY_int32, 0)] = group_nanmean_1d_int32_axis0
+group_nanmean_dict[(1, NPY_int64, 0)] = group_nanmean_1d_int64_axis0
+group_nanmean_dict[(2, NPY_int32, 0)] = group_nanmean_2d_int32_axis0
+group_nanmean_dict[(2, NPY_int32, 1)] = group_nanmean_2d_int32_axis1
+group_nanmean_dict[(2, NPY_int64, 0)] = group_nanmean_2d_int64_axis0
+group_nanmean_dict[(2, NPY_int64, 1)] = group_nanmean_2d_int64_axis1
+group_nanmean_dict[(3, NPY_int32, 0)] = group_nanmean_3d_int32_axis0
+group_nanmean_dict[(3, NPY_int32, 1)] = group_nanmean_3d_int32_axis1
+group_nanmean_dict[(3, NPY_int32, 2)] = group_nanmean_3d_int32_axis2
+group_nanmean_dict[(3, NPY_int64, 0)] = group_nanmean_3d_int64_axis0
+group_nanmean_dict[(3, NPY_int64, 1)] = group_nanmean_3d_int64_axis1
+group_nanmean_dict[(3, NPY_int64, 2)] = group_nanmean_3d_int64_axis2
+group_nanmean_dict[(1, NPY_float32, 0)] = group_nanmean_1d_float32_axis0
+group_nanmean_dict[(1, NPY_float64, 0)] = group_nanmean_1d_float64_axis0
+group_nanmean_dict[(2, NPY_float32, 0)] = group_nanmean_2d_float32_axis0
+group_nanmean_dict[(2, NPY_float32, 1)] = group_nanmean_2d_float32_axis1
+group_nanmean_dict[(2, NPY_float64, 0)] = group_nanmean_2d_float64_axis0
+group_nanmean_dict[(2, NPY_float64, 1)] = group_nanmean_2d_float64_axis1
+group_nanmean_dict[(3, NPY_float32, 0)] = group_nanmean_3d_float32_axis0
+group_nanmean_dict[(3, NPY_float32, 1)] = group_nanmean_3d_float32_axis1
+group_nanmean_dict[(3, NPY_float32, 2)] = group_nanmean_3d_float32_axis2
+group_nanmean_dict[(3, NPY_float64, 0)] = group_nanmean_3d_float64_axis0
+group_nanmean_dict[(3, NPY_float64, 1)] = group_nanmean_3d_float64_axis1
+group_nanmean_dict[(3, NPY_float64, 2)] = group_nanmean_3d_float64_axis2

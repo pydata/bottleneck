@@ -95,9 +95,9 @@ def nanargmin_selector(arr, axis):
         a = arr
     else:    
         a = np.array(arr, copy=False)
-    cdef int ndim = a.ndim
-    cdef np.dtype dtype = a.dtype
-    cdef int size = a.size
+    cdef int ndim = PyArray_NDIM(a)
+    cdef int dtype = PyArray_TYPE(a)
+    cdef int size = PyArray_SIZE(a)
     if size == 0:
         msg = "numpy.nanargmin() raises on size=0; so Bottleneck does too." 
         raise ValueError, msg
@@ -117,7 +117,7 @@ def nanargmin_selector(arr, axis):
         try:
             func = nanargmin_slow_dict[axis]
         except KeyError:
-            tup = (str(ndim), str(dtype), str(axis))
+            tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 
@@ -732,30 +732,30 @@ def nanargmin_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a):
     return y
 
 cdef dict nanargmin_dict = {}
-nanargmin_dict[(1, int32, 0)] = nanargmin_1d_int32_axis0
-nanargmin_dict[(1, int64, 0)] = nanargmin_1d_int64_axis0
-nanargmin_dict[(2, int32, 0)] = nanargmin_2d_int32_axis0
-nanargmin_dict[(2, int32, 1)] = nanargmin_2d_int32_axis1
-nanargmin_dict[(2, int64, 0)] = nanargmin_2d_int64_axis0
-nanargmin_dict[(2, int64, 1)] = nanargmin_2d_int64_axis1
-nanargmin_dict[(3, int32, 0)] = nanargmin_3d_int32_axis0
-nanargmin_dict[(3, int32, 1)] = nanargmin_3d_int32_axis1
-nanargmin_dict[(3, int32, 2)] = nanargmin_3d_int32_axis2
-nanargmin_dict[(3, int64, 0)] = nanargmin_3d_int64_axis0
-nanargmin_dict[(3, int64, 1)] = nanargmin_3d_int64_axis1
-nanargmin_dict[(3, int64, 2)] = nanargmin_3d_int64_axis2
-nanargmin_dict[(1, float32, 0)] = nanargmin_1d_float32_axis0
-nanargmin_dict[(1, float64, 0)] = nanargmin_1d_float64_axis0
-nanargmin_dict[(2, float32, 0)] = nanargmin_2d_float32_axis0
-nanargmin_dict[(2, float32, 1)] = nanargmin_2d_float32_axis1
-nanargmin_dict[(2, float64, 0)] = nanargmin_2d_float64_axis0
-nanargmin_dict[(2, float64, 1)] = nanargmin_2d_float64_axis1
-nanargmin_dict[(3, float32, 0)] = nanargmin_3d_float32_axis0
-nanargmin_dict[(3, float32, 1)] = nanargmin_3d_float32_axis1
-nanargmin_dict[(3, float32, 2)] = nanargmin_3d_float32_axis2
-nanargmin_dict[(3, float64, 0)] = nanargmin_3d_float64_axis0
-nanargmin_dict[(3, float64, 1)] = nanargmin_3d_float64_axis1
-nanargmin_dict[(3, float64, 2)] = nanargmin_3d_float64_axis2
+nanargmin_dict[(1, NPY_int32, 0)] = nanargmin_1d_int32_axis0
+nanargmin_dict[(1, NPY_int64, 0)] = nanargmin_1d_int64_axis0
+nanargmin_dict[(2, NPY_int32, 0)] = nanargmin_2d_int32_axis0
+nanargmin_dict[(2, NPY_int32, 1)] = nanargmin_2d_int32_axis1
+nanargmin_dict[(2, NPY_int64, 0)] = nanargmin_2d_int64_axis0
+nanargmin_dict[(2, NPY_int64, 1)] = nanargmin_2d_int64_axis1
+nanargmin_dict[(3, NPY_int32, 0)] = nanargmin_3d_int32_axis0
+nanargmin_dict[(3, NPY_int32, 1)] = nanargmin_3d_int32_axis1
+nanargmin_dict[(3, NPY_int32, 2)] = nanargmin_3d_int32_axis2
+nanargmin_dict[(3, NPY_int64, 0)] = nanargmin_3d_int64_axis0
+nanargmin_dict[(3, NPY_int64, 1)] = nanargmin_3d_int64_axis1
+nanargmin_dict[(3, NPY_int64, 2)] = nanargmin_3d_int64_axis2
+nanargmin_dict[(1, NPY_float32, 0)] = nanargmin_1d_float32_axis0
+nanargmin_dict[(1, NPY_float64, 0)] = nanargmin_1d_float64_axis0
+nanargmin_dict[(2, NPY_float32, 0)] = nanargmin_2d_float32_axis0
+nanargmin_dict[(2, NPY_float32, 1)] = nanargmin_2d_float32_axis1
+nanargmin_dict[(2, NPY_float64, 0)] = nanargmin_2d_float64_axis0
+nanargmin_dict[(2, NPY_float64, 1)] = nanargmin_2d_float64_axis1
+nanargmin_dict[(3, NPY_float32, 0)] = nanargmin_3d_float32_axis0
+nanargmin_dict[(3, NPY_float32, 1)] = nanargmin_3d_float32_axis1
+nanargmin_dict[(3, NPY_float32, 2)] = nanargmin_3d_float32_axis2
+nanargmin_dict[(3, NPY_float64, 0)] = nanargmin_3d_float64_axis0
+nanargmin_dict[(3, NPY_float64, 1)] = nanargmin_3d_float64_axis1
+nanargmin_dict[(3, NPY_float64, 2)] = nanargmin_3d_float64_axis2
 
 cdef dict nanargmin_slow_dict = {}
 nanargmin_slow_dict[0] = nanargmin_slow_axis0

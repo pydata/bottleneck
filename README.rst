@@ -46,17 +46,17 @@ Bottleneck is fast::
 
     >>> arr = np.random.rand(100, 100)    
     >>> timeit np.nanmax(arr)
-    10000 loops, best of 3: 93.9 us per loop
+    10000 loops, best of 3: 91.5 us per loop
     >>> timeit bn.nanmax(arr)
-    100000 loops, best of 3: 14.3 us per loop
+    100000 loops, best of 3: 13.3 us per loop
 
 Let's not forget to add some NaNs::
 
     >>> arr[arr > 0.5] = np.nan
     >>> timeit np.nanmax(arr)
-    10000 loops, best of 3: 139 us per loop
+    10000 loops, best of 3: 140 us per loop
     >>> timeit bn.nanmax(arr)
-    100000 loops, best of 3: 14.3 us per loop
+    100000 loops, best of 3: 13.2 us per loop
 
 Bottleneck comes with a benchmark suite. To run the benchmark::
     
@@ -71,21 +71,21 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
 
                      no NaN   no NaN     no NaN     NaN      NaN        NaN
                     (10,10) (100,100) (1000,1000) (10,10) (100,100) (1000,1000)
-    median            6.59    13.83       7.22      5.83     3.50       2.83
-    nanmedian       160.86   135.68       8.27    163.28   179.70       8.05
-    nansum            7.51     5.85       1.71      7.56     6.74       1.70
-    nanmax            8.40     5.89       1.67      8.66     9.37       1.68
-    nanmean          16.02    13.48       2.98     16.77    27.22       4.97
-    nanstd           20.37     9.33       2.62     21.01    17.10       3.64
-    nanargmax         7.79     5.72       2.57      7.78     8.43       2.76
-    move_sum          7.82     7.86      14.41      7.82     8.20      13.95
-    move_nansum      18.89    18.73      29.44     18.31    23.83      29.83
-    move_mean         7.14     4.17      14.47      7.17     8.13      14.28
-    move_nanmean     22.34    11.56      29.87     22.77    14.09      30.91
-    move_std         12.26     3.31      22.94     14.45    19.95      29.92
-    move_nanstd      25.12     6.14      34.99     27.98     6.97      36.13
-    move_max          3.07     3.64       9.33      3.64     5.44      11.76
-    move_nanmax      16.04     6.28      19.38     16.72    14.56      27.44
+    median            9.71    13.75       7.24      8.23     3.67       2.82
+    nanmedian       238.04   128.73       8.11    247.20   174.31       8.02
+    nansum           13.40     6.50       1.70     13.34     7.43       1.69
+    nanmax           13.08     6.35       1.67     14.08    10.42       1.69
+    nanmean          23.88    13.87       2.97     24.78    28.81       4.95
+    nanstd           33.04     9.75       2.62     33.33    17.96       3.66
+    nanargmax        12.10     5.85       2.59     12.48     9.02       2.79
+    move_sum         11.95     8.27      14.53     11.73     8.63      14.11
+    move_nansum      31.44    20.06      29.41     30.16    25.53      29.80
+    move_mean        10.99     4.28      14.46     10.94     8.45      14.26
+    move_nanmean     32.77    11.76      29.87     33.38    14.43      30.80
+    move_std         17.28     3.33      22.95     21.63    20.66      29.86
+    move_nanstd      34.08     6.18      35.02     39.70     7.01      36.18
+    move_max          4.21     3.64       9.36      4.89     6.07      11.81
+    move_nanmax      22.19     6.28      19.66     24.07    14.71      27.19
 
     Reference functions:
     median          np.median

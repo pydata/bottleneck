@@ -11,11 +11,12 @@ Bottleneck 0.3.0
 
 *Release date: Not yet released, in development*
 
-The third release of Bottleneck is faster and contains 10 new function.
+The third release of Bottleneck is twice as fast for small input arrays and
+contains 10 new functions.
 
 **Faster**
 
-- All functions are faster (less overhead in high-level functions) 
+- All functions are faster (less overhead in selector functions) 
 
 **New functions**
 

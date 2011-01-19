@@ -102,8 +102,8 @@ def move_std_selector(arr, int axis):
         a = arr
     else:    
         a = np.array(arr, copy=False)
-    cdef np.dtype dtype = a.dtype
-    cdef int ndim = a.ndim
+    cdef int ndim = PyArray_NDIM(a)
+    cdef int dtype = PyArray_TYPE(a)
     if axis < 0:
         axis += ndim
     cdef tuple key = (ndim, dtype, axis)
@@ -115,7 +115,7 @@ def move_std_selector(arr, int axis):
         try:
             func = move_std_slow_dict[axis]
         except KeyError:
-            tup = (str(ndim), str(dtype), str(axis))
+            tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 
@@ -1290,30 +1290,30 @@ def move_std_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a,
     return y
 
 cdef dict move_std_dict = {}
-move_std_dict[(1, int32, 0)] = move_std_1d_int32_axis0
-move_std_dict[(1, int64, 0)] = move_std_1d_int64_axis0
-move_std_dict[(2, int32, 0)] = move_std_2d_int32_axis0
-move_std_dict[(2, int32, 1)] = move_std_2d_int32_axis1
-move_std_dict[(2, int64, 0)] = move_std_2d_int64_axis0
-move_std_dict[(2, int64, 1)] = move_std_2d_int64_axis1
-move_std_dict[(3, int32, 0)] = move_std_3d_int32_axis0
-move_std_dict[(3, int32, 1)] = move_std_3d_int32_axis1
-move_std_dict[(3, int32, 2)] = move_std_3d_int32_axis2
-move_std_dict[(3, int64, 0)] = move_std_3d_int64_axis0
-move_std_dict[(3, int64, 1)] = move_std_3d_int64_axis1
-move_std_dict[(3, int64, 2)] = move_std_3d_int64_axis2
-move_std_dict[(1, float32, 0)] = move_std_1d_float32_axis0
-move_std_dict[(1, float64, 0)] = move_std_1d_float64_axis0
-move_std_dict[(2, float32, 0)] = move_std_2d_float32_axis0
-move_std_dict[(2, float32, 1)] = move_std_2d_float32_axis1
-move_std_dict[(2, float64, 0)] = move_std_2d_float64_axis0
-move_std_dict[(2, float64, 1)] = move_std_2d_float64_axis1
-move_std_dict[(3, float32, 0)] = move_std_3d_float32_axis0
-move_std_dict[(3, float32, 1)] = move_std_3d_float32_axis1
-move_std_dict[(3, float32, 2)] = move_std_3d_float32_axis2
-move_std_dict[(3, float64, 0)] = move_std_3d_float64_axis0
-move_std_dict[(3, float64, 1)] = move_std_3d_float64_axis1
-move_std_dict[(3, float64, 2)] = move_std_3d_float64_axis2
+move_std_dict[(1, NPY_int32, 0)] = move_std_1d_int32_axis0
+move_std_dict[(1, NPY_int64, 0)] = move_std_1d_int64_axis0
+move_std_dict[(2, NPY_int32, 0)] = move_std_2d_int32_axis0
+move_std_dict[(2, NPY_int32, 1)] = move_std_2d_int32_axis1
+move_std_dict[(2, NPY_int64, 0)] = move_std_2d_int64_axis0
+move_std_dict[(2, NPY_int64, 1)] = move_std_2d_int64_axis1
+move_std_dict[(3, NPY_int32, 0)] = move_std_3d_int32_axis0
+move_std_dict[(3, NPY_int32, 1)] = move_std_3d_int32_axis1
+move_std_dict[(3, NPY_int32, 2)] = move_std_3d_int32_axis2
+move_std_dict[(3, NPY_int64, 0)] = move_std_3d_int64_axis0
+move_std_dict[(3, NPY_int64, 1)] = move_std_3d_int64_axis1
+move_std_dict[(3, NPY_int64, 2)] = move_std_3d_int64_axis2
+move_std_dict[(1, NPY_float32, 0)] = move_std_1d_float32_axis0
+move_std_dict[(1, NPY_float64, 0)] = move_std_1d_float64_axis0
+move_std_dict[(2, NPY_float32, 0)] = move_std_2d_float32_axis0
+move_std_dict[(2, NPY_float32, 1)] = move_std_2d_float32_axis1
+move_std_dict[(2, NPY_float64, 0)] = move_std_2d_float64_axis0
+move_std_dict[(2, NPY_float64, 1)] = move_std_2d_float64_axis1
+move_std_dict[(3, NPY_float32, 0)] = move_std_3d_float32_axis0
+move_std_dict[(3, NPY_float32, 1)] = move_std_3d_float32_axis1
+move_std_dict[(3, NPY_float32, 2)] = move_std_3d_float32_axis2
+move_std_dict[(3, NPY_float64, 0)] = move_std_3d_float64_axis0
+move_std_dict[(3, NPY_float64, 1)] = move_std_3d_float64_axis1
+move_std_dict[(3, NPY_float64, 2)] = move_std_3d_float64_axis2
 
 cdef dict move_std_slow_dict = {}
 move_std_slow_dict[0] = move_std_slow_axis0

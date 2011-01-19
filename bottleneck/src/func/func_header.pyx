@@ -5,7 +5,8 @@ from numpy cimport NPY_INT32 as NPY_int32
 from numpy cimport NPY_INT64 as NPY_int64
 from numpy cimport NPY_FLOAT32 as NPY_float32
 from numpy cimport NPY_FLOAT64 as NPY_float64
-from numpy cimport PyArray_EMPTY, import_array
+from numpy cimport (PyArray_EMPTY, PyArray_TYPE, PyArray_NDIM,
+                    PyArray_SIZE, import_array)
 import_array()
 import bottleneck as bn
 
@@ -28,8 +29,10 @@ float64 = np.dtype(np.float64)
 
 if np.int_ == np.int32:
     NPINT = 'int32'
+    NPY_int_ = NPY_int32
 elif np.int_ == np.int64:
     NPINT = 'int64'
+    NPY_int_ = NPY_int64
 else:
     raise RuntimeError('Expecting default NumPy int to be 32 or 64 bit.')
 

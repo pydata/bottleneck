@@ -111,11 +111,11 @@ def nansum_selector(arr, axis):
         a = arr
     else:    
         a = np.array(arr, copy=False)
-    cdef int ndim = a.ndim
-    cdef np.dtype dtype = a.dtype
-    if dtype < np.int_:
+    cdef int ndim = PyArray_NDIM(a)
+    cdef int dtype = PyArray_TYPE(a)
+    if dtype < NPY_int_:
         a = a.astype(np.int_)
-        dtype = a.dtype
+        dtype = PyArray_TYPE(a)
     if (axis < 0) and (axis is not None):
         axis += ndim
     cdef tuple key = (ndim, dtype, axis)
@@ -128,7 +128,7 @@ def nansum_selector(arr, axis):
         try:
             func = nansum_slow_dict[axis]
         except KeyError:
-            tup = (str(ndim), str(dtype), str(axis))
+            tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 
@@ -807,42 +807,42 @@ def nansum_3d_int64_axisNone(np.ndarray[np.int64_t, ndim=3] a):
     return np.int64(asum)
 
 cdef dict nansum_dict = {}
-nansum_dict[(2, int32, 0)] = nansum_2d_int32_axis0
-nansum_dict[(2, int32, 1)] = nansum_2d_int32_axis1
-nansum_dict[(2, int64, 0)] = nansum_2d_int64_axis0
-nansum_dict[(2, int64, 1)] = nansum_2d_int64_axis1
-nansum_dict[(3, int32, 0)] = nansum_3d_int32_axis0
-nansum_dict[(3, int32, 1)] = nansum_3d_int32_axis1
-nansum_dict[(3, int32, 2)] = nansum_3d_int32_axis2
-nansum_dict[(3, int64, 0)] = nansum_3d_int64_axis0
-nansum_dict[(3, int64, 1)] = nansum_3d_int64_axis1
-nansum_dict[(3, int64, 2)] = nansum_3d_int64_axis2
-nansum_dict[(1, float32, 0)] = nansum_1d_float32_axisNone
-nansum_dict[(1, float32, None)] = nansum_1d_float32_axisNone
-nansum_dict[(1, float64, 0)] = nansum_1d_float64_axisNone
-nansum_dict[(1, float64, None)] = nansum_1d_float64_axisNone
-nansum_dict[(2, float32, None)] = nansum_2d_float32_axisNone
-nansum_dict[(2, float64, None)] = nansum_2d_float64_axisNone
-nansum_dict[(3, float32, None)] = nansum_3d_float32_axisNone
-nansum_dict[(3, float64, None)] = nansum_3d_float64_axisNone
-nansum_dict[(2, float32, 0)] = nansum_2d_float32_axis0
-nansum_dict[(2, float32, 1)] = nansum_2d_float32_axis1
-nansum_dict[(2, float64, 0)] = nansum_2d_float64_axis0
-nansum_dict[(2, float64, 1)] = nansum_2d_float64_axis1
-nansum_dict[(3, float32, 0)] = nansum_3d_float32_axis0
-nansum_dict[(3, float32, 1)] = nansum_3d_float32_axis1
-nansum_dict[(3, float32, 2)] = nansum_3d_float32_axis2
-nansum_dict[(3, float64, 0)] = nansum_3d_float64_axis0
-nansum_dict[(3, float64, 1)] = nansum_3d_float64_axis1
-nansum_dict[(3, float64, 2)] = nansum_3d_float64_axis2
-nansum_dict[(1, int32, 0)] = nansum_1d_int32_axisNone
-nansum_dict[(1, int32, None)] = nansum_1d_int32_axisNone
-nansum_dict[(1, int64, 0)] = nansum_1d_int64_axisNone
-nansum_dict[(1, int64, None)] = nansum_1d_int64_axisNone
-nansum_dict[(2, int32, None)] = nansum_2d_int32_axisNone
-nansum_dict[(2, int64, None)] = nansum_2d_int64_axisNone
-nansum_dict[(3, int32, None)] = nansum_3d_int32_axisNone
-nansum_dict[(3, int64, None)] = nansum_3d_int64_axisNone
+nansum_dict[(2, NPY_int32, 0)] = nansum_2d_int32_axis0
+nansum_dict[(2, NPY_int32, 1)] = nansum_2d_int32_axis1
+nansum_dict[(2, NPY_int64, 0)] = nansum_2d_int64_axis0
+nansum_dict[(2, NPY_int64, 1)] = nansum_2d_int64_axis1
+nansum_dict[(3, NPY_int32, 0)] = nansum_3d_int32_axis0
+nansum_dict[(3, NPY_int32, 1)] = nansum_3d_int32_axis1
+nansum_dict[(3, NPY_int32, 2)] = nansum_3d_int32_axis2
+nansum_dict[(3, NPY_int64, 0)] = nansum_3d_int64_axis0
+nansum_dict[(3, NPY_int64, 1)] = nansum_3d_int64_axis1
+nansum_dict[(3, NPY_int64, 2)] = nansum_3d_int64_axis2
+nansum_dict[(1, NPY_float32, 0)] = nansum_1d_float32_axisNone
+nansum_dict[(1, NPY_float32, None)] = nansum_1d_float32_axisNone
+nansum_dict[(1, NPY_float64, 0)] = nansum_1d_float64_axisNone
+nansum_dict[(1, NPY_float64, None)] = nansum_1d_float64_axisNone
+nansum_dict[(2, NPY_float32, None)] = nansum_2d_float32_axisNone
+nansum_dict[(2, NPY_float64, None)] = nansum_2d_float64_axisNone
+nansum_dict[(3, NPY_float32, None)] = nansum_3d_float32_axisNone
+nansum_dict[(3, NPY_float64, None)] = nansum_3d_float64_axisNone
+nansum_dict[(2, NPY_float32, 0)] = nansum_2d_float32_axis0
+nansum_dict[(2, NPY_float32, 1)] = nansum_2d_float32_axis1
+nansum_dict[(2, NPY_float64, 0)] = nansum_2d_float64_axis0
+nansum_dict[(2, NPY_float64, 1)] = nansum_2d_float64_axis1
+nansum_dict[(3, NPY_float32, 0)] = nansum_3d_float32_axis0
+nansum_dict[(3, NPY_float32, 1)] = nansum_3d_float32_axis1
+nansum_dict[(3, NPY_float32, 2)] = nansum_3d_float32_axis2
+nansum_dict[(3, NPY_float64, 0)] = nansum_3d_float64_axis0
+nansum_dict[(3, NPY_float64, 1)] = nansum_3d_float64_axis1
+nansum_dict[(3, NPY_float64, 2)] = nansum_3d_float64_axis2
+nansum_dict[(1, NPY_int32, 0)] = nansum_1d_int32_axisNone
+nansum_dict[(1, NPY_int32, None)] = nansum_1d_int32_axisNone
+nansum_dict[(1, NPY_int64, 0)] = nansum_1d_int64_axisNone
+nansum_dict[(1, NPY_int64, None)] = nansum_1d_int64_axisNone
+nansum_dict[(2, NPY_int32, None)] = nansum_2d_int32_axisNone
+nansum_dict[(2, NPY_int64, None)] = nansum_2d_int64_axisNone
+nansum_dict[(3, NPY_int32, None)] = nansum_3d_int32_axisNone
+nansum_dict[(3, NPY_int64, None)] = nansum_3d_int64_axisNone
 
 cdef dict nansum_slow_dict = {}
 nansum_slow_dict[0] = nansum_slow_axis0

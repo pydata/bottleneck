@@ -324,8 +324,8 @@ def group_nanmean_selector(arr, label, order=None, int axis=0):
         a = arr
     else:    
         a = np.array(arr, copy=False)
-    cdef int ndim = a.ndim
-    cdef np.dtype dtype = a.dtype
+    cdef int ndim = PyArray_NDIM(a)
+    cdef int dtype = PyArray_TYPE(a)
     if axis < 0:
        axis += ndim
     cdef int narr = a.shape[axis], nlabel = len(label)
@@ -339,7 +339,7 @@ def group_nanmean_selector(arr, label, order=None, int axis=0):
     except KeyError:
         if (axis < 0) or (axis >= ndim):
             raise ValueError("axis(=%d) out of bounds" % axis)
-        tup = (str(ndim), str(dtype))
+        tup = (str(ndim), str(a.dtype))
         raise TypeError("Unsupported ndim/dtype (%s/%s)." % tup)
     label_dict, order = group_mapper(label, order)
     return func, a, label_dict, order

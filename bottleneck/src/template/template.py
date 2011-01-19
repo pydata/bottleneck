@@ -352,7 +352,7 @@ class Selector(object):
         self.data.append((ndim, dtype, axis, reuse))
 
     def __str__(self):    
-        fmt = "%s_dict[(%s, %s, %s)] = %s_%sd_%s_axis%s"
+        fmt = "%s_dict[(%s, NPY_%s, %s)] = %s_%sd_%s_axis%s"
         src = []
         src.append("cdef dict %s_dict = {}" % self.name)
         for ndim, dtype, axis, reuse in self.data:

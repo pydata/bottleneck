@@ -293,9 +293,9 @@ def nanmax_selector(arr, axis):
         a = arr
     else:    
         a = np.array(arr, copy=False)
-    cdef int ndim = a.ndim
-    cdef np.dtype dtype = a.dtype
-    cdef int size = a.size
+    cdef int ndim = PyArray_NDIM(a)
+    cdef int dtype = PyArray_TYPE(a)
+    cdef int size = PyArray_SIZE(a)
     if size == 0:
         msg = "numpy.nanmax() raises on size=0 input; so Bottleneck does too." 
         raise ValueError, msg
@@ -311,7 +311,7 @@ def nanmax_selector(arr, axis):
         try:
             func = nanmax_slow_dict[axis]
         except KeyError:
-            tup = (str(ndim), str(dtype), str(axis))
+            tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 '''

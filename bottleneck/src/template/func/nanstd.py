@@ -389,8 +389,8 @@ def nanstd_selector(arr, axis):
         a = arr
     else:    
         a = np.array(arr, copy=False)
-    cdef int ndim = a.ndim
-    cdef np.dtype dtype = a.dtype
+    cdef int ndim = PyArray_NDIM(a)
+    cdef int dtype = PyArray_TYPE(a)
     if (axis < 0) and (axis is not None):
         axis += ndim
     cdef tuple key = (ndim, dtype, axis)
@@ -403,7 +403,7 @@ def nanstd_selector(arr, axis):
         try:
             func = nanstd_slow_dict[axis]
         except KeyError:
-            tup = (str(ndim), str(dtype), str(axis))
+            tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
     return func, a
 '''   
