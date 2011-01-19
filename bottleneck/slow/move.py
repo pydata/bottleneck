@@ -50,7 +50,7 @@ def move_sum(arr, window, axis=-1, method='filter'):
     Examples
     --------
     >>> arr = np.array([1, 2, 3, 4])
-    >>> la.farray.move_sum(arr, window=2, axis=0)
+    >>> bn.slow.move_sum(arr, window=2, axis=0)
        array([ NaN,   3.,   5.,   7.])
 
     """
@@ -108,7 +108,7 @@ def move_nansum(arr, window, axis=-1, method='filter'):
     Examples
     --------
     >>> arr = np.array([1, 2, np.nan, 4])
-    >>> la.farray.move_nansum(arr, window=2, axis=0)
+    >>> bn.slow.move_nansum(arr, window=2, axis=0)
     array([ NaN,   3.,   2.,   4.])
 
     """
@@ -155,7 +155,7 @@ def move_sum_filter(arr, window, axis=-1):
 
     Examples
     --------
-    >>> from la.farray.mov import move_sum_filter
+    >>> from bottleneck.slow.move import move_sum_filter
     >>> arr = np.array([1, 2, 3, 4])
     >>> move_sum_filter(arr, window=2, axis=0)
     array([ NaN,   3.,   5.,   7.])
@@ -201,7 +201,7 @@ def move_nansum_filter(arr, window, axis=-1):
 
     Examples
     --------
-    >>> from la.farray.mov import move_sum_filter
+    >>> from bottleneck.slow.move import move_sum_filter
     >>> arr = np.array([1, 2, np.nan, 4, 5, 6, 7])
     >>> move_nansum_filter(arr, window=2, axis=0)
     array([ NaN,   3.,   2.,   4.,   9.,  11.,  13.])
@@ -258,7 +258,7 @@ def move_mean(arr, window, axis=-1, method='filter'):
     Examples
     --------
     >>> arr = np.array([1, 2, 3, 4])
-    >>> la.farray.move_mean(arr, window=2, axis=0)
+    >>> bn.slow.move_mean(arr, window=2, axis=0)
     array([ NaN,  1.5,  2.5,  3.5])
     
     """
@@ -316,7 +316,7 @@ def move_nanmean(arr, window, axis=-1, method='filter'):
     Examples
     --------
     >>> arr = np.array([1, 2, np.nan, 4])
-    >>> la.farray.move_nanmean(arr, window=2, axis=0)
+    >>> bn.slow.move_nanmean(arr, window=2, axis=0)
     array([ NaN,  1.5,  2. ,  4. ])
     
     """
@@ -407,7 +407,7 @@ def move_var(arr, window, axis=-1, method='filter', ddof=0):
     Examples
     --------
     >>> arr = np.array([1, 2, 3, 4])
-    >>> la.farray.move_var(arr, window=2, axis=0)
+    >>> bn.slow.move_var(arr, window=2, axis=0)
     array([  NaN,  0.25,  0.25,  0.25])
     
     """
@@ -461,7 +461,7 @@ def move_nanvar(arr, window, axis=-1, method='filter', ddof=0):
     Examples
     --------
     >>> arr = np.array([1, 2, np.nan, 4, 5])
-    >>> la.farray.move_nanvar(arr, window=3, axis=0)
+    >>> bn.slow.move_nanvar(arr, window=3, axis=0)
     array([  NaN,   NaN,  0.25,  1.  ,  0.25])
     
     """
@@ -564,7 +564,7 @@ def move_std(arr, window, axis=-1, method='filter', ddof=0):
     Examples
     --------
     >>> arr = np.array([1, 2, 3, 4])
-    >>> la.farray.move_std(arr, window=2)
+    >>> bn.slow.move_std(arr, window=2)
     array([ NaN,  0.5,  0.5,  0.5])
     
     """
@@ -619,7 +619,7 @@ def move_nanstd(arr, window, axis=-1, method='filter', ddof=0):
     Examples
     --------
     >>> arr = np.array([1, 2, np.nan, 4, 5])
-    >>> la.farray.move_nanstd(arr, window=3)
+    >>> bn.slow.move_nanstd(arr, window=3)
     array([ NaN,  NaN,  0.5,  1. ,  0.5])    
 
     """
@@ -698,7 +698,7 @@ def move_min(arr, window, axis=-1, method='filter'):
     Examples
     --------
     >>> arr = np.array([1, 2, 3, 4])
-    >>> la.farray.move_min(arr, window=2)
+    >>> bn.slow.move_min(arr, window=2)
     array([ NaN,   1.,   2.,   3.])    
 
     """
@@ -743,7 +743,7 @@ def move_nanmin(arr, window, axis=-1, method='filter'):
     Examples
     --------
     >>> arr = np.array([1, 2, np.nan, 4, 5])
-    >>> la.farray.move_nanmin(arr, window=2)
+    >>> bn.slow.move_nanmin(arr, window=2)
     array([ NaN,   1.,   2.,   4.,   4.])    
 
     """
@@ -857,7 +857,7 @@ def move_max(arr, window, axis=-1, method='filter'):
     Examples
     --------
     >>> arr = np.array([1, 2, 3, 4])
-    >>> la.farray.move_max(arr, window=2)
+    >>> bn.slow.move_max(arr, window=2)
     array([ NaN,   2.,   3.,   4.])    
 
     """
@@ -902,7 +902,7 @@ def move_nanmax(arr, window, axis=-1, method='filter'):
     Examples
     --------
     >>> arr = np.array([1, 2, np.nan, 4, 5])
-    >>> la.farray.move_nanmax(arr, window=2)
+    >>> bn.slow.move_nanmax(arr, window=2)
     array([ NaN,   2.,   2.,   4.,   5.])
 
     """
@@ -1017,12 +1017,12 @@ def move_func(func, arr, window, axis=-1, method='loop', **kwargs):
     Examples
     --------
     >>> arr = np.arange(4)
-    >>> la.farray.move_func(np.sum, arr, window=2)
+    >>> bn.slow.move_func(np.sum, arr, window=2)
     array([ NaN,   1.,   3.,   5.])
 
     which give the same result as:
 
-    >>> la.farray.move_sum(arr, window=2)
+    >>> bn.slow.move_sum(arr, window=2)
     array([ NaN,   1.,   3.,   5.])
 
     """
