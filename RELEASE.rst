@@ -9,7 +9,7 @@ see the commit log at http://github.com/kwgoodman/bottleneck
 Bottleneck 0.3.0
 ================
 
-*Release date: Not yet released, in development*
+*Release date: 2010-01-19*
 
 The third release of Bottleneck is twice as fast for small input arrays and
 contains 10 new functions.
