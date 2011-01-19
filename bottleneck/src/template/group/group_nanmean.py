@@ -328,8 +328,6 @@ def group_nanmean_selector(arr, label, order=None, int axis=0):
     cdef np.dtype dtype = a.dtype
     if axis < 0:
        axis += ndim
-    if (axis < 0) or (axis >= ndim):
-        raise ValueError("axis(=%d) out of bounds" % axis)
     cdef int narr = a.shape[axis], nlabel = len(label)
     if narr != nlabel:
         msg = "Number of labels (=%d) must equal number of elements (=%d) "
@@ -339,6 +337,8 @@ def group_nanmean_selector(arr, label, order=None, int axis=0):
     try:
         func = group_nanmean_dict[key]
     except KeyError:
+        if (axis < 0) or (axis >= ndim):
+            raise ValueError("axis(=%d) out of bounds" % axis)
         tup = (str(ndim), str(dtype))
         raise TypeError("Unsupported ndim/dtype (%s/%s)." % tup)
     label_dict, order = group_mapper(label, order)

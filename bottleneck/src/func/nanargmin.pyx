@@ -101,11 +101,9 @@ def nanargmin_selector(arr, axis):
     if size == 0:
         msg = "numpy.nanargmin() raises on size=0; so Bottleneck does too." 
         raise ValueError, msg
-    if axis != None:
+    if axis is not None:
         if axis < 0:
             axis += ndim
-        if (axis < 0) or (axis >= ndim):
-            raise ValueError, "axis(=%d) out of bounds" % axis
     else:
         a = a.ravel()
         axis = 0
@@ -114,6 +112,8 @@ def nanargmin_selector(arr, axis):
     try:
         func = nanargmin_dict[key]
     except KeyError:
+        if (axis < 0) or (axis >= ndim):
+            raise ValueError, "axis(=%d) out of bounds" % axis
         try:
             func = nanargmin_slow_dict[axis]
         except KeyError:

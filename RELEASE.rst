@@ -35,6 +35,10 @@ The third release of Bottleneck is faster and contains 10 new function.
 - You can now specify the dtype and axis to use in the benchmark timings
 - Improved documentation and more unit tests  
 
+**Breaks from 0.2.0**
+
+- Low-level moving window selector functions no longer take window as input 
+
 **Bug fix**
 
 - int input array resulted in call to slow, non-cython version of move_nanmean 

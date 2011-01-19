@@ -301,15 +301,15 @@ def nansum_selector(arr, axis):
     if dtype < np.int_:
         a = a.astype(np.int_)
         dtype = a.dtype
-    if axis != None:
-        if axis < 0:
-            axis += ndim
-        if (axis < 0) or (axis >= ndim):
-            raise ValueError, "axis(=%d) out of bounds" % axis
+    if (axis < 0) and (axis is not None):
+        axis += ndim
     cdef tuple key = (ndim, dtype, axis)
     try:
         func = nansum_dict[key]
     except KeyError:
+        if axis is not None:
+            if (axis < 0) or (axis >= ndim):
+                raise ValueError, "axis(=%d) out of bounds" % axis
         try:
             func = nansum_slow_dict[axis]
         except KeyError:

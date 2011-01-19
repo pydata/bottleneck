@@ -117,15 +117,15 @@ def nanmean_selector(arr, axis):
         a = np.array(arr, copy=False)
     cdef int ndim = a.ndim
     cdef np.dtype dtype = a.dtype
-    if axis != None:
-        if axis < 0:
-            axis += ndim
-        if (axis < 0) or (axis >= ndim):
-            raise ValueError, "axis(=%d) out of bounds" % axis
+    if (axis < 0) and (axis is not None):
+        axis += ndim
     cdef tuple key = (ndim, dtype, axis)
     try:
         func = nanmean_dict[key]
     except KeyError:
+        if axis is not None:
+            if (axis < 0) or (axis >= ndim):
+                raise ValueError, "axis(=%d) out of bounds" % axis
         try:
             func = nanmean_slow_dict[axis]
         except KeyError:

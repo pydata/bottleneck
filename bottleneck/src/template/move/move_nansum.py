@@ -198,10 +198,10 @@ def move_nansum(arr, int window, int axis=0):
     array([ nan,  3.,  5.,  7.])
 
     """
-    func, arr = move_nansum_selector(arr, window, axis)
+    func, arr = move_nansum_selector(arr, axis)
     return func(arr, window)
 
-def move_nansum_selector(arr, int window, int axis):
+def move_nansum_selector(arr, int axis):
     """
     Return move_nansum function and array that matches `arr` and `axis`.
     
@@ -241,7 +241,7 @@ def move_nansum_selector(arr, int window, int axis):
     Obtain the function needed to determine the nansum of `arr` along axis=0:
     
     >>> window, axis = 2, 0
-    >>> func, a = bn.move.move_nansum_selector(arr, window=2, axis=0)
+    >>> func, a = bn.move.move_nansum_selector(arr, axis)
     >>> func
     <built-in function move_nansum_1d_float64_axis0>    
     
@@ -261,15 +261,14 @@ def move_nansum_selector(arr, int window, int axis):
     if dtype < np.int_:
         a = a.astype(np.int_)
         dtype = a.dtype
-    if axis != None:
-        if axis < 0:
-            axis += ndim
-        if (axis < 0) or (axis >= ndim):
-            raise ValueError, "axis(=%d) out of bounds" % axis
+    if axis < 0:
+        axis += ndim
     cdef tuple key = (ndim, dtype, axis)
     try:
         func = move_nansum_dict[key]
     except KeyError:
+        if (axis < 0) or (axis >= ndim):
+            raise ValueError, "axis(=%d) out of bounds" % axis
         try:
             func = move_nansum_slow_dict[axis]
         except KeyError:

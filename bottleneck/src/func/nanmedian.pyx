@@ -113,11 +113,9 @@ def nanmedian_selector(arr, axis):
     cdef tuple key
     cdef int ndim = a.ndim
     cdef np.dtype dtype = a.dtype
-    if axis != None:
+    if axis is not None:
         if axis < 0:
             axis += ndim
-        if (axis < 0) or (axis >= ndim):
-            raise ValueError, "axis(=%d) out of bounds" % axis
     else:
         a = a.ravel()
         axis = 0
@@ -126,7 +124,8 @@ def nanmedian_selector(arr, axis):
     try:
         func = nanmedian_dict[key]
     except KeyError:
-        pass
+        if (axis < 0) or (axis >= ndim):
+            raise ValueError, "axis(=%d) out of bounds" % axis
         try:
             func = nanmedian_slow_dict[axis]
         except KeyError:

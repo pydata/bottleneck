@@ -273,10 +273,10 @@ def move_nanmax(arr, int window, int axis=0):
     array([ nan,  2.,  4.,  4.])
 
     """
-    func, arr = move_nanmax_selector(arr, window, axis)
+    func, arr = move_nanmax_selector(arr, axis)
     return func(arr, window)
 
-def move_nanmax_selector(arr, int window, int axis):
+def move_nanmax_selector(arr, int axis):
     """
     Return move_nanmax function and array that matches `arr` and `axis`.
     
@@ -316,7 +316,7 @@ def move_nanmax_selector(arr, int window, int axis):
     Obtain the function needed to determine the sum of `arr` along axis=0:
     
     >>> window, axis = 2, 0
-    >>> func, a = bn.move.move_nanmax_selector(arr, window=2, axis=0)
+    >>> func, a = bn.move.move_nanmax_selector(arr, axis)
     >>> func
     <built-in function move_nanmax_1d_float64_axis0>    
     
@@ -333,15 +333,14 @@ def move_nanmax_selector(arr, int window, int axis):
         a = np.array(arr, copy=False)
     cdef np.dtype dtype = a.dtype
     cdef int ndim = a.ndim
-    if axis != None:
-        if axis < 0:
-            axis += ndim
-        if (axis < 0) or (axis >= ndim):
-            raise ValueError, "axis(=%d) out of bounds" % axis
+    if axis < 0:
+        axis += ndim
     cdef tuple key = (ndim, dtype, axis)
     try:
         func = move_nanmax_dict[key]
     except KeyError:
+        if (axis < 0) or (axis >= ndim):
+            raise ValueError, "axis(=%d) out of bounds" % axis
         try:
             func = move_nanmax_slow_dict[axis]
         except KeyError:

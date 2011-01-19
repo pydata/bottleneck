@@ -102,15 +102,15 @@ def nanmin_selector(arr, axis):
     if size == 0:
         msg = "numpy.nanmin() raises on size=0 input; so Bottleneck does too." 
         raise ValueError, msg
-    if axis != None:
-        if axis < 0:
-            axis += ndim
-        if (axis < 0) or (axis >= ndim):
-            raise ValueError, "axis(=%d) out of bounds" % axis
+    if (axis < 0) and (axis is not None):
+        axis += ndim
     cdef tuple key = (ndim, dtype, axis)
     try:
         func = nanmin_dict[key]
     except KeyError:
+        if axis is not None:
+            if (axis < 0) or (axis >= ndim):
+                raise ValueError, "axis(=%d) out of bounds" % axis
         try:
             func = nanmin_slow_dict[axis]
         except KeyError:

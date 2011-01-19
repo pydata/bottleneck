@@ -226,7 +226,7 @@ def benchsuite(mode, dtype, axis):
     setup = """
         from bottleneck.slow.move import move_sum as scipy_move_sum
         w = a.shape[AXIS] / 5
-        func, a = bn.move.move_sum_selector(a, window=w, axis=AXIS)
+        func, a = bn.move.move_sum_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup)
     if axis != 'None':
@@ -246,7 +246,7 @@ def benchsuite(mode, dtype, axis):
     setup = """
         from bottleneck.slow.move import move_nansum as scipy_move_nansum
         w = a.shape[AXIS] / 5
-        func, a = bn.move.move_nansum_selector(a, window=w, axis=AXIS)
+        func, a = bn.move.move_nansum_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup)
     if axis != 'None':
@@ -266,7 +266,7 @@ def benchsuite(mode, dtype, axis):
     setup = """
         from bottleneck.slow.move import move_mean as scipy_move_mean
         w = a.shape[AXIS] / 5
-        func, a = bn.move.move_mean_selector(a, window=w, axis=AXIS)
+        func, a = bn.move.move_mean_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup)
     if axis != 'None':
@@ -286,7 +286,7 @@ def benchsuite(mode, dtype, axis):
     setup = """
         from bottleneck.slow.move import move_nanmean as scipy_move_nanmean
         w = a.shape[AXIS] / 5
-        func, a = bn.move.move_nanmean_selector(a, window=w, axis=AXIS)
+        func, a = bn.move.move_nanmean_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup)
     if axis != 'None':
@@ -306,7 +306,7 @@ def benchsuite(mode, dtype, axis):
     setup = """
         from bottleneck.slow.move import move_std as scipy_move_std
         w = a.shape[AXIS] / 5
-        func, a = bn.move.move_std_selector(a, window=w, axis=AXIS)
+        func, a = bn.move.move_std_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup)
     if axis != 'None':
@@ -326,7 +326,7 @@ def benchsuite(mode, dtype, axis):
     setup = """
         from bottleneck.slow.move import move_nanstd as scipy_move_nanstd
         w = a.shape[AXIS] / 5
-        func, a = bn.move.move_nanstd_selector(a, window=w, axis=AXIS)
+        func, a = bn.move.move_nanstd_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup)
     if axis != 'None':
@@ -346,7 +346,7 @@ def benchsuite(mode, dtype, axis):
     setup = """
         from bottleneck.slow.move import move_max as scipy_move_max
         w = a.shape[AXIS] / 5
-        func, a = bn.move.move_max_selector(a, window=w, axis=AXIS)
+        func, a = bn.move.move_max_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup)
     if axis != 'None':
@@ -366,7 +366,7 @@ def benchsuite(mode, dtype, axis):
     setup = """
         from bottleneck.slow.move import move_nanmax as scipy_move_nanmax
         w = a.shape[AXIS] / 5
-        func, a = bn.move.move_nanmax_selector(a, window=w, axis=AXIS)
+        func, a = bn.move.move_nanmax_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup)
     if axis != 'None':

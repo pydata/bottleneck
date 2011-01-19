@@ -27,7 +27,7 @@ def fast_checker(selector, mode='func'):
             func, a = selector(arr, axis)
         elif mode == 'move':
             if axis is not None:
-                func, a = selector(arr, 1, axis)
+                func, a = selector(arr, axis)
             else:
                 func = np.sum
         elif mode == 'group':
