@@ -1,6 +1,6 @@
 "move_std auto-generated from template"
 
-def move_std(arr, int window, int axis=0, int ddof=0):
+def move_std(arr, int window, int axis=-1, int ddof=0):
     """
     Moving window standard deviation along the specified axis.
 
@@ -26,8 +26,8 @@ def move_std(arr, int window, int axis=0, int ddof=0):
         The number of elements in the moving window.
     axis : int, optional
         The axis over which to perform the moving standard deviation. By
-        default the moving standard deviation is taken over the first axis
-        (axis=0). An axis of None is not allowed.
+        default the moving standard deviation is taken over the last axis
+        (axis=-1). An axis of None is not allowed.
 
     Returns
     -------

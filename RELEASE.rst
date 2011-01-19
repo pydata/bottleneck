@@ -38,6 +38,7 @@ contains 10 new functions.
 
 **Breaks from 0.2.0**
 
+- Moving window functions now default to axis=-1 instead of axis=0
 - Low-level moving window selector functions no longer take window as input 
 
 **Bug fix**

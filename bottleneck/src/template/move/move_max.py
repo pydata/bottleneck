@@ -244,7 +244,7 @@ move_max['main'] = '''"move_max auto-generated from template"
 # Copyright 2010 Keith Goodman
 # Released under the Bottleneck license
 
-def move_max(arr, int window, int axis=0):
+def move_max(arr, int window, int axis=-1):
     """
     Moving window maximum along the specified axis.
     
@@ -258,7 +258,7 @@ def move_max(arr, int window, int axis=0):
         The number of elements in the moving window.
     axis : int, optional
         The axis over which to find the moving maximum. By default the moving
-        maximum is taken over the first axis (axis=0). An axis of None is not
+        maximum is taken over the last axis (axis=-1). An axis of None is not
         allowed.
 
     Returns

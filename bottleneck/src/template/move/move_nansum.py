@@ -170,7 +170,7 @@ move_nansum['pyx_file'] = 'move/move_nansum.pyx'
 
 move_nansum['main'] = '''"move_nansum auto-generated from template"
 
-def move_nansum(arr, int window, int axis=0):
+def move_nansum(arr, int window, int axis=-1):
     """
     Moving window sum along the specified axis, ignoring NaNs.
     
@@ -182,7 +182,7 @@ def move_nansum(arr, int window, int axis=0):
         The number of elements in the moving window.
     axis : int, optional
         The axis over which to perform the moving sum. By default the moving
-        sum is taken over the first axis (axis=0). An axis of None is not
+        sum is taken over the last axis (axis=-1). An axis of None is not
         allowed.
 
     Returns

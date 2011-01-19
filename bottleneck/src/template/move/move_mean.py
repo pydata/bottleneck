@@ -233,7 +233,7 @@ move_mean['pyx_file'] = 'move/move_mean.pyx'
 
 move_mean['main'] = '''"move_mean auto-generated from template"
 
-def move_mean(arr, int window, int axis=0):
+def move_mean(arr, int window, int axis=-1):
     """
     Moving window mean along the specified axis.
     
@@ -245,7 +245,7 @@ def move_mean(arr, int window, int axis=0):
         The number of elements in the moving window.
     axis : int, optional
         The axis over which to perform the moving mean. By default the moving
-        mean is taken over the first axis (axis=0). An axis of None is not
+        mean is taken over the last axis (axis=-1). An axis of None is not
         allowed.
 
     Returns
