@@ -12,4 +12,4 @@ $ make html
 
 Then to upload (it will ask for the password):
 
-$ scp -r doc/build/html/* username@berkeleyanalytics.com:html/bottleneck/
+$ scp -r build/html/* username@berkeleyanalytics.com:html/bottleneck/
