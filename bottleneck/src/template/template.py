@@ -277,9 +277,11 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
 
     >>> print loop_cdef(ndim, dtype, axis, is_reducing_function)
         cdef Py_ssize_t i0, i1, i2
-        cdef int n0 = a.shape[0]
-        cdef int n1 = a.shape[1]
-        cdef int n2 = a.shape[2]
+        cdef np.npy_intp *dim
+        dim = PyArray_DIMS(a)
+        cdef int n0 = dim[0]
+        cdef int n1 = dim[1]
+        cdef int n2 = dim[2]
         cdef np.npy_intp *dims = [n0, n2]
         cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                                   NPY_float64, 0)
@@ -289,9 +291,11 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
     >>> is_reducing_function = False     
     >>> print loop_cdef(ndim, dtype, axis, is_reducing_function)
         cdef Py_ssize_t i0, i1, i2
-        cdef int n0 = a.shape[0]
-        cdef int n1 = a.shape[1]
-        cdef int n2 = a.shape[2]
+        cdef np.npy_intp *dim
+        dim = PyArray_DIMS(a)
+        cdef int n0 = dim[0]
+        cdef int n1 = dim[1]
+        cdef int n2 = dim[2]
         cdef np.npy_intp *dims = [n0, n1, n2]
         cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
                                                   NPY_float64, 0)
@@ -313,8 +317,10 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
     cdefs.append(tab + 'cdef Py_ssize_t ' + idx)
     
     # Length along each dimension
+    cdefs.append(tab + "cdef np.npy_intp *dim")
+    cdefs.append(tab + "dim = PyArray_DIMS(a)")
     for dim in range(ndim):
-        cdefs.append(tab + "cdef int n%d = a.shape[%d]" % (dim, dim))
+        cdefs.append(tab + "cdef int n%d = dim[%d]" % (dim, dim))
     
     if not cdef_output:
         return '\n'.join(cdefs) + '\n'

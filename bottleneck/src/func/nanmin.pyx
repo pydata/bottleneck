@@ -125,8 +125,10 @@ def nanmin_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a):
     cdef int allnan = 1
     cdef np.int32_t amin, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n1]
     cdef np.ndarray[np.int32_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_int32, 0)
@@ -146,8 +148,10 @@ def nanmin_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a):
     cdef int allnan = 1
     cdef np.int32_t amin, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n0]
     cdef np.ndarray[np.int32_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_int32, 0)
@@ -167,8 +171,10 @@ def nanmin_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a):
     cdef int allnan = 1
     cdef np.int64_t amin, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n1]
     cdef np.ndarray[np.int64_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_int64, 0)
@@ -188,8 +194,10 @@ def nanmin_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a):
     cdef int allnan = 1
     cdef np.int64_t amin, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n0]
     cdef np.ndarray[np.int64_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_int64, 0)
@@ -209,9 +217,11 @@ def nanmin_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a):
     cdef int allnan = 1
     cdef np.int32_t amin, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n1, n2]
     cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_int32, 0)
@@ -232,9 +242,11 @@ def nanmin_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a):
     cdef int allnan = 1
     cdef np.int32_t amin, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n2]
     cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_int32, 0)
@@ -255,9 +267,11 @@ def nanmin_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a):
     cdef int allnan = 1
     cdef np.int32_t amin, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n1]
     cdef np.ndarray[np.int32_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_int32, 0)
@@ -278,9 +292,11 @@ def nanmin_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a):
     cdef int allnan = 1
     cdef np.int64_t amin, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n1, n2]
     cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_int64, 0)
@@ -301,9 +317,11 @@ def nanmin_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a):
     cdef int allnan = 1
     cdef np.int64_t amin, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n2]
     cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_int64, 0)
@@ -324,9 +342,11 @@ def nanmin_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a):
     cdef int allnan = 1
     cdef np.int64_t amin, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n1]
     cdef np.ndarray[np.int64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_int64, 0)
@@ -347,7 +367,9 @@ def nanmin_1d_float32_axisNone(np.ndarray[np.float32_t, ndim=1] a):
     cdef int allnan = 1
     cdef np.float32_t amin, ai
     cdef Py_ssize_t i0
-    cdef int n0 = a.shape[0]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
     amin = MAXfloat32
     for i0 in range(n0):
         ai = a[i0]
@@ -366,7 +388,9 @@ def nanmin_1d_float64_axisNone(np.ndarray[np.float64_t, ndim=1] a):
     cdef int allnan = 1
     cdef np.float64_t amin, ai
     cdef Py_ssize_t i0
-    cdef int n0 = a.shape[0]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
     amin = MAXfloat64
     for i0 in range(n0):
         ai = a[i0]
@@ -385,8 +409,10 @@ def nanmin_2d_float32_axisNone(np.ndarray[np.float32_t, ndim=2] a):
     cdef int allnan = 1
     cdef np.float32_t amin, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     amin = MAXfloat32
     for i0 in range(n0):
         for i1 in range(n1):
@@ -406,8 +432,10 @@ def nanmin_2d_float64_axisNone(np.ndarray[np.float64_t, ndim=2] a):
     cdef int allnan = 1
     cdef np.float64_t amin, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     amin = MAXfloat64
     for i0 in range(n0):
         for i1 in range(n1):
@@ -427,9 +455,11 @@ def nanmin_3d_float32_axisNone(np.ndarray[np.float32_t, ndim=3] a):
     cdef int allnan = 1
     cdef np.float32_t amin, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     amin = MAXfloat32
     for i0 in range(n0):
         for i1 in range(n1):
@@ -450,9 +480,11 @@ def nanmin_3d_float64_axisNone(np.ndarray[np.float64_t, ndim=3] a):
     cdef int allnan = 1
     cdef np.float64_t amin, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     amin = MAXfloat64
     for i0 in range(n0):
         for i1 in range(n1):
@@ -473,8 +505,10 @@ def nanmin_2d_float32_axis0(np.ndarray[np.float32_t, ndim=2] a):
     cdef int allnan = 1
     cdef np.float32_t amin, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n1]
     cdef np.ndarray[np.float32_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_float32, 0)
@@ -499,8 +533,10 @@ def nanmin_2d_float32_axis1(np.ndarray[np.float32_t, ndim=2] a):
     cdef int allnan = 1
     cdef np.float32_t amin, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n0]
     cdef np.ndarray[np.float32_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_float32, 0)
@@ -525,8 +561,10 @@ def nanmin_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a):
     cdef int allnan = 1
     cdef np.float64_t amin, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n1]
     cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_float64, 0)
@@ -551,8 +589,10 @@ def nanmin_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a):
     cdef int allnan = 1
     cdef np.float64_t amin, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n0]
     cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_float64, 0)
@@ -577,9 +617,11 @@ def nanmin_3d_float32_axis0(np.ndarray[np.float32_t, ndim=3] a):
     cdef int allnan = 1
     cdef np.float32_t amin, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n1, n2]
     cdef np.ndarray[np.float32_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float32, 0)
@@ -605,9 +647,11 @@ def nanmin_3d_float32_axis1(np.ndarray[np.float32_t, ndim=3] a):
     cdef int allnan = 1
     cdef np.float32_t amin, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n2]
     cdef np.ndarray[np.float32_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float32, 0)
@@ -633,9 +677,11 @@ def nanmin_3d_float32_axis2(np.ndarray[np.float32_t, ndim=3] a):
     cdef int allnan = 1
     cdef np.float32_t amin, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n1]
     cdef np.ndarray[np.float32_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float32, 0)
@@ -661,9 +707,11 @@ def nanmin_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a):
     cdef int allnan = 1
     cdef np.float64_t amin, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n1, n2]
     cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float64, 0)
@@ -689,9 +737,11 @@ def nanmin_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a):
     cdef int allnan = 1
     cdef np.float64_t amin, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n2]
     cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float64, 0)
@@ -717,9 +767,11 @@ def nanmin_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a):
     cdef int allnan = 1
     cdef np.float64_t amin, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n1]
     cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float64, 0)
@@ -745,7 +797,9 @@ def nanmin_1d_int32_axisNone(np.ndarray[np.int32_t, ndim=1] a):
     cdef int allnan = 1
     cdef np.int32_t amin, ai
     cdef Py_ssize_t i0
-    cdef int n0 = a.shape[0]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
     amin = MAXint32
     for i0 in range(n0):
         ai = a[i0]
@@ -760,7 +814,9 @@ def nanmin_1d_int64_axisNone(np.ndarray[np.int64_t, ndim=1] a):
     cdef int allnan = 1
     cdef np.int64_t amin, ai
     cdef Py_ssize_t i0
-    cdef int n0 = a.shape[0]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
     amin = MAXint64
     for i0 in range(n0):
         ai = a[i0]
@@ -775,8 +831,10 @@ def nanmin_2d_int32_axisNone(np.ndarray[np.int32_t, ndim=2] a):
     cdef int allnan = 1
     cdef np.int32_t amin, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     amin = MAXint32
     for i0 in range(n0):
         for i1 in range(n1):
@@ -792,8 +850,10 @@ def nanmin_2d_int64_axisNone(np.ndarray[np.int64_t, ndim=2] a):
     cdef int allnan = 1
     cdef np.int64_t amin, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     amin = MAXint64
     for i0 in range(n0):
         for i1 in range(n1):
@@ -809,9 +869,11 @@ def nanmin_3d_int32_axisNone(np.ndarray[np.int32_t, ndim=3] a):
     cdef int allnan = 1
     cdef np.int32_t amin, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     amin = MAXint32
     for i0 in range(n0):
         for i1 in range(n1):
@@ -828,9 +890,11 @@ def nanmin_3d_int64_axisNone(np.ndarray[np.int64_t, ndim=3] a):
     cdef int allnan = 1
     cdef np.int64_t amin, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     amin = MAXint64
     for i0 in range(n0):
         for i1 in range(n1):

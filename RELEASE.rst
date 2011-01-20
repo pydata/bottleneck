@@ -6,8 +6,29 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
-Bottleneck 0.3.0
+Bottleneck 0.4.0
 ================
+
+*Release date: Not yet released, in development*
+
+The fourth release of Bottleneck is faster for small input arrays and
+contains X new group-by functions.
+
+**Faster**
+
+- All functions are faster (less overhead in low-level functions)
+- Biggest speed when calling low-level functions with small input arrays  
+
+**New functions**
+  
+
+Older versions
+==============
+
+Release notes from past releases.
+
+Bottleneck 0.3.0
+----------------
 
 *Release date: 2010-01-19*
 
@@ -43,12 +64,7 @@ contains 10 new functions.
 
 **Bug fix**
 
-- int input array resulted in call to slow, non-cython version of move_nanmean 
-
-Older versions
-==============
-
-Release notes from past releases.
+- int input array resulted in call to slow, non-cython version of move_nanmean
 
 Bottleneck 0.2.0
 ----------------

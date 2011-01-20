@@ -46,15 +46,15 @@ Bottleneck is fast::
 
     >>> arr = np.random.rand(100, 100)    
     >>> timeit np.nanmax(arr)
-    10000 loops, best of 3: 91.5 us per loop
+    10000 loops, best of 3: 95.2 us per loop
     >>> timeit bn.nanmax(arr)
-    100000 loops, best of 3: 13.3 us per loop
+    100000 loops, best of 3: 13.2 us per loop
 
 Let's not forget to add some NaNs::
 
     >>> arr[arr > 0.5] = np.nan
     >>> timeit np.nanmax(arr)
-    10000 loops, best of 3: 140 us per loop
+    10000 loops, best of 3: 141 us per loop
     >>> timeit bn.nanmax(arr)
     100000 loops, best of 3: 13.2 us per loop
 
@@ -62,7 +62,7 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
     
     >>> bn.bench(mode='fast', dtype='float64', axis=0)
     Bottleneck performance benchmark
-        Bottleneck  0.3.0
+        Bottleneck  0.4.0
         Numpy (np)  1.5.1
         Scipy (sp)  0.8.0
         Speed is NumPy or SciPy time divided by Bottleneck time
@@ -71,21 +71,21 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
 
                      no NaN   no NaN     no NaN     NaN      NaN        NaN
                     (10,10) (100,100) (1000,1000) (10,10) (100,100) (1000,1000)
-    median            9.71    13.75       7.24      8.23     3.67       2.82
-    nanmedian       238.04   128.73       8.11    247.20   174.31       8.02
-    nansum           13.40     6.50       1.70     13.34     7.43       1.69
-    nanmax           13.08     6.35       1.67     14.08    10.42       1.69
-    nanmean          23.88    13.87       2.97     24.78    28.81       4.95
-    nanstd           33.04     9.75       2.62     33.33    17.96       3.66
-    nanargmax        12.10     5.85       2.59     12.48     9.02       2.79
-    move_sum         11.95     8.27      14.53     11.73     8.63      14.11
-    move_nansum      31.44    20.06      29.41     30.16    25.53      29.80
-    move_mean        10.99     4.28      14.46     10.94     8.45      14.26
-    move_nanmean     32.77    11.76      29.87     33.38    14.43      30.80
-    move_std         17.28     3.33      22.95     21.63    20.66      29.86
-    move_nanstd      34.08     6.18      35.02     39.70     7.01      36.18
-    move_max          4.21     3.64       9.36      4.89     6.07      11.81
-    move_nanmax      22.19     6.28      19.66     24.07    14.71      27.19
+    median           10.14    14.08       7.25      8.63     3.50       2.82
+    nanmedian       247.68   140.30       8.18    257.18   188.18       8.08
+    nansum           13.56     6.44       1.69     13.45     7.48       1.69
+    nanmax           13.44     6.31       1.67     14.37    10.47       1.69
+    nanmean          25.13    13.88       2.98     26.21    29.24       4.93
+    nanstd           30.41     9.63       2.61     31.16    17.90       3.63
+    nanargmax        12.36     5.82       2.56     13.00     9.04       2.74
+    move_sum         12.10     8.46      14.53     11.95     8.78      14.10
+    move_nansum      30.81    20.37      29.43     30.02    25.92      29.71
+    move_mean        11.11     4.28      14.44     11.22     8.70      14.24
+    move_nanmean     32.91    11.83      29.79     34.33    14.45      30.73
+    move_std         17.29     3.33      22.95     22.53    21.08      29.84
+    move_nanstd      34.49     6.19      35.03     39.71     7.01      36.15
+    move_max          4.46     3.66       9.35      5.19     5.61      11.80
+    move_nanmax      22.39     6.32      19.56     23.91    14.80      27.14
 
     Reference functions:
     median          np.median
@@ -123,16 +123,16 @@ an inner loop::
 Let's see how much faster than runs::
     
     >>> timeit np.nanmax(arr, axis=0)
-    10000 loops, best of 3: 24.9 us per loop
+    10000 loops, best of 3: 26.2 us per loop
     >>> timeit bn.nanmax(arr, axis=0)
-    100000 loops, best of 3: 4.97 us per loop
+    100000 loops, best of 3: 1.93 us per loop
     >>> timeit func(a)
-    100000 loops, best of 3: 2.13 us per loop
+    100000 loops, best of 3: 1.26 us per loop
 
 Note that ``func`` is faster than Numpy's non-NaN version of max::
     
     >>> timeit arr.max(axis=0)
-    100000 loops, best of 3: 4.75 us per loop
+    100000 loops, best of 3: 5 us per loop
 
 So adding NaN protection to your inner loops comes at a negative cost!
 
@@ -140,7 +140,7 @@ Benchmarks for the low-level Cython functions::
 
     >>> bn.bench(mode='faster', dtype='float64', axis=0)
     Bottleneck performance benchmark
-        Bottleneck  0.3.0
+        Bottleneck  0.4.0
         Numpy (np)  1.5.1
         Scipy (sp)  0.8.0
         Speed is NumPy or SciPy time divided by Bottleneck time
@@ -149,21 +149,21 @@ Benchmarks for the low-level Cython functions::
 
                      no NaN   no NaN     no NaN     NaN      NaN        NaN
                     (10,10) (100,100) (1000,1000) (10,10) (100,100) (1000,1000)
-    median           14.35    14.16       7.31     11.37     3.59       2.85
-    nanmedian       325.28   127.47       8.23    333.08   174.28       8.11
-    nansum           20.49     7.04       1.81     20.80     8.31       1.79
-    nanmax           19.04     6.73       1.76     20.80    12.46       1.80
-    nanmean          37.23    15.11       3.17     39.19    31.45       5.16
-    nanstd           43.39    10.34       2.89     46.11    18.26       3.89
-    nanargmax        15.82     6.28       2.66     16.97    10.12       2.91
-    move_sum         17.58     8.61      14.62     17.90     9.04      14.16
-    move_nansum      47.59    21.41      29.52     50.09    27.04      29.81
-    move_mean        15.90     4.35      14.50     17.25     8.90      14.29
-    move_nanmean     53.71    12.06      29.97     55.72    14.81      31.04
-    move_std         22.01     3.34      23.02     31.34    21.59      30.03
-    move_nanstd      46.56     6.23      35.16     57.32     7.09      36.30
-    move_max          6.05     3.60       9.17      7.28     5.50      11.93
-    move_nanmax      29.65     6.21      19.47     38.29    14.38      27.28
+    median           15.08    14.72       7.24     11.99     3.54       2.83
+    nanmedian       341.83   143.61       8.18    357.21   192.56       8.07
+    nansum           21.67     6.76       1.70     21.55     7.92       1.70
+    nanmax           21.17     6.57       1.67     23.42    11.20       1.68
+    nanmean          38.60    14.42       2.99     40.84    30.70       4.98
+    nanstd           43.67     9.85       2.61     46.20    18.34       3.63
+    nanargmax        18.19     6.11       2.56     19.28     9.50       2.75
+    move_sum         18.01     8.70      14.51     17.99     9.02      14.10
+    move_nansum      47.44    21.28      29.40     49.06    26.60      29.68
+    move_mean        17.02     4.34      14.43     17.31     8.87      14.23
+    move_nanmean     53.00    11.95      29.77     54.41    14.63      30.81
+    move_std         23.60     3.35      22.85     33.80    21.60      29.69
+    move_nanstd      47.09     6.21      34.87     57.45     7.02      36.03
+    move_max          5.93     3.70       9.33      6.77     5.70      11.83
+    move_nanmax      30.34     6.39      19.54     36.06    15.04      27.14
 
     Reference functions:
     median          np.median

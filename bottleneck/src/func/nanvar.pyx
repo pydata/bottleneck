@@ -151,8 +151,10 @@ def nanvar_2d_int32_axis0(np.ndarray[np.int32_t, ndim=2] a, int ddof):
     "Valriance of 2d array with dtype=int32 along axis=0 ignoring NaNs."
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n1]
     cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_float64, 0)
@@ -175,8 +177,10 @@ def nanvar_2d_int32_axis1(np.ndarray[np.int32_t, ndim=2] a, int ddof):
     "Valriance of 2d array with dtype=int32 along axis=0 ignoring NaNs."
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n0]
     cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_float64, 0)
@@ -199,8 +203,10 @@ def nanvar_2d_int64_axis0(np.ndarray[np.int64_t, ndim=2] a, int ddof):
     "Valriance of 2d array with dtype=int64 along axis=0 ignoring NaNs."
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n1]
     cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_float64, 0)
@@ -223,8 +229,10 @@ def nanvar_2d_int64_axis1(np.ndarray[np.int64_t, ndim=2] a, int ddof):
     "Valriance of 2d array with dtype=int64 along axis=0 ignoring NaNs."
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n0]
     cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_float64, 0)
@@ -247,9 +255,11 @@ def nanvar_3d_int32_axis0(np.ndarray[np.int32_t, ndim=3] a, int ddof):
     "Valriance of 3d array with dtype=int32 along axis=0 ignoring NaNs."
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n1, n2]
     cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float64, 0)
@@ -273,9 +283,11 @@ def nanvar_3d_int32_axis1(np.ndarray[np.int32_t, ndim=3] a, int ddof):
     "Valriance of 3d array with dtype=int32 along axis=0 ignoring NaNs."
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n2]
     cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float64, 0)
@@ -299,9 +311,11 @@ def nanvar_3d_int32_axis2(np.ndarray[np.int32_t, ndim=3] a, int ddof):
     "Valriance of 3d array with dtype=int32 along axis=0 ignoring NaNs."
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n1]
     cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float64, 0)
@@ -325,9 +339,11 @@ def nanvar_3d_int64_axis0(np.ndarray[np.int64_t, ndim=3] a, int ddof):
     "Valriance of 3d array with dtype=int64 along axis=0 ignoring NaNs."
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n1, n2]
     cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float64, 0)
@@ -351,9 +367,11 @@ def nanvar_3d_int64_axis1(np.ndarray[np.int64_t, ndim=3] a, int ddof):
     "Valriance of 3d array with dtype=int64 along axis=0 ignoring NaNs."
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n2]
     cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float64, 0)
@@ -377,9 +395,11 @@ def nanvar_3d_int64_axis2(np.ndarray[np.int64_t, ndim=3] a, int ddof):
     "Valriance of 3d array with dtype=int64 along axis=0 ignoring NaNs."
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n1]
     cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float64, 0)
@@ -404,7 +424,9 @@ def nanvar_1d_float32_axisNone(np.ndarray[np.float32_t, ndim=1] a, int ddof):
     cdef int count = 0
     cdef np.float32_t asum = 0, amean, ai
     cdef Py_ssize_t i0
-    cdef int n0 = a.shape[0]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
     for i0 in range(n0):
         ai = a[i0]
         if ai == ai:
@@ -429,7 +451,9 @@ def nanvar_1d_float64_axisNone(np.ndarray[np.float64_t, ndim=1] a, int ddof):
     cdef int count = 0
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0
-    cdef int n0 = a.shape[0]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
     for i0 in range(n0):
         ai = a[i0]
         if ai == ai:
@@ -454,8 +478,10 @@ def nanvar_2d_float32_axisNone(np.ndarray[np.float32_t, ndim=2] a, int ddof):
     cdef int count = 0
     cdef np.float32_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     for i0 in range(n0):
         for i1 in range(n1):
             ai = a[i0, i1]
@@ -482,8 +508,10 @@ def nanvar_2d_float64_axisNone(np.ndarray[np.float64_t, ndim=2] a, int ddof):
     cdef int count = 0
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     for i0 in range(n0):
         for i1 in range(n1):
             ai = a[i0, i1]
@@ -510,9 +538,11 @@ def nanvar_3d_float32_axisNone(np.ndarray[np.float32_t, ndim=3] a, int ddof):
     cdef int count = 0
     cdef np.float32_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     for i0 in range(n0):
         for i1 in range(n1):
             for i2 in range(n2):
@@ -541,9 +571,11 @@ def nanvar_3d_float64_axisNone(np.ndarray[np.float64_t, ndim=3] a, int ddof):
     cdef int count = 0
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     for i0 in range(n0):
         for i1 in range(n1):
             for i2 in range(n2):
@@ -572,8 +604,10 @@ def nanvar_2d_float32_axis0(np.ndarray[np.float32_t, ndim=2] a, int ddof):
     cdef int count = 0
     cdef np.float32_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n1]
     cdef np.ndarray[np.float32_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_float32, 0)
@@ -605,8 +639,10 @@ def nanvar_2d_float32_axis1(np.ndarray[np.float32_t, ndim=2] a, int ddof):
     cdef int count = 0
     cdef np.float32_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n0]
     cdef np.ndarray[np.float32_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_float32, 0)
@@ -638,8 +674,10 @@ def nanvar_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a, int ddof):
     cdef int count = 0
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n1]
     cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_float64, 0)
@@ -671,8 +709,10 @@ def nanvar_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a, int ddof):
     cdef int count = 0
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n0]
     cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_float64, 0)
@@ -704,9 +744,11 @@ def nanvar_3d_float32_axis0(np.ndarray[np.float32_t, ndim=3] a, int ddof):
     cdef int count = 0
     cdef np.float32_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n1, n2]
     cdef np.ndarray[np.float32_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float32, 0)
@@ -739,9 +781,11 @@ def nanvar_3d_float32_axis1(np.ndarray[np.float32_t, ndim=3] a, int ddof):
     cdef int count = 0
     cdef np.float32_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n2]
     cdef np.ndarray[np.float32_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float32, 0)
@@ -774,9 +818,11 @@ def nanvar_3d_float32_axis2(np.ndarray[np.float32_t, ndim=3] a, int ddof):
     cdef int count = 0
     cdef np.float32_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n1]
     cdef np.ndarray[np.float32_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float32, 0)
@@ -809,9 +855,11 @@ def nanvar_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a, int ddof):
     cdef int count = 0
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n1, n2]
     cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float64, 0)
@@ -844,9 +892,11 @@ def nanvar_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a, int ddof):
     cdef int count = 0
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n2]
     cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float64, 0)
@@ -879,9 +929,11 @@ def nanvar_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a, int ddof):
     cdef int count = 0
     cdef np.float64_t asum = 0, amean, ai
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n1]
     cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float64, 0)
@@ -914,7 +966,9 @@ def nanvar_1d_int32_axisNone(np.ndarray[np.int32_t, ndim=1] a, int ddof):
     cdef np.float64_t asum = 0, amean, ai
     cdef int size
     cdef Py_ssize_t i0
-    cdef int n0 = a.shape[0]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
     size = n0    
     for i0 in range(n0):
         ai = a[i0]
@@ -936,7 +990,9 @@ def nanvar_1d_int64_axisNone(np.ndarray[np.int64_t, ndim=1] a, int ddof):
     cdef np.float64_t asum = 0, amean, ai
     cdef int size
     cdef Py_ssize_t i0
-    cdef int n0 = a.shape[0]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
     size = n0    
     for i0 in range(n0):
         ai = a[i0]
@@ -958,8 +1014,10 @@ def nanvar_2d_int32_axisNone(np.ndarray[np.int32_t, ndim=2] a, int ddof):
     cdef np.float64_t asum = 0, amean, ai
     cdef int size
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     size = n0 * n1
     for i0 in range(n0):
         for i1 in range(n1):
@@ -980,8 +1038,10 @@ def nanvar_2d_int64_axisNone(np.ndarray[np.int64_t, ndim=2] a, int ddof):
     cdef np.float64_t asum = 0, amean, ai
     cdef int size
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     size = n0 * n1
     for i0 in range(n0):
         for i1 in range(n1):
@@ -1002,9 +1062,11 @@ def nanvar_3d_int32_axisNone(np.ndarray[np.int32_t, ndim=3] a, int ddof):
     cdef np.float64_t asum = 0, amean, ai
     cdef int size
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     size = n0 * n1 * n2
     for i0 in range(n0):
         for i1 in range(n1):
@@ -1027,9 +1089,11 @@ def nanvar_3d_int64_axisNone(np.ndarray[np.int64_t, ndim=3] a, int ddof):
     cdef np.float64_t asum = 0, amean, ai
     cdef int size
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     size = n0 * n1 * n2
     for i0 in range(n0):
         for i1 in range(n1):

@@ -114,7 +114,9 @@ def move_nansum_1d_float32_axis0(np.ndarray[np.float32_t, ndim=1] a,
     cdef int count = 0
     cdef double asum = 0, ai, aold
     cdef Py_ssize_t i0
-    cdef int n0 = a.shape[0]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
     cdef np.npy_intp *dims = [n0]
     cdef np.ndarray[np.float32_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_float32, 0)
@@ -160,7 +162,9 @@ def move_nansum_1d_float64_axis0(np.ndarray[np.float64_t, ndim=1] a,
     cdef int count = 0
     cdef double asum = 0, ai, aold
     cdef Py_ssize_t i0
-    cdef int n0 = a.shape[0]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
     cdef np.npy_intp *dims = [n0]
     cdef np.ndarray[np.float64_t, ndim=1] y = PyArray_EMPTY(1, dims,
                                               NPY_float64, 0)
@@ -206,8 +210,10 @@ def move_nansum_2d_float32_axis0(np.ndarray[np.float32_t, ndim=2] a,
     cdef int count = 0
     cdef double asum = 0, ai, aold
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n0, n1]
     cdef np.ndarray[np.float32_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float32, 0)
@@ -256,8 +262,10 @@ def move_nansum_2d_float32_axis1(np.ndarray[np.float32_t, ndim=2] a,
     cdef int count = 0
     cdef double asum = 0, ai, aold
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n0, n1]
     cdef np.ndarray[np.float32_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float32, 0)
@@ -306,8 +314,10 @@ def move_nansum_2d_float64_axis0(np.ndarray[np.float64_t, ndim=2] a,
     cdef int count = 0
     cdef double asum = 0, ai, aold
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n0, n1]
     cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float64, 0)
@@ -356,8 +366,10 @@ def move_nansum_2d_float64_axis1(np.ndarray[np.float64_t, ndim=2] a,
     cdef int count = 0
     cdef double asum = 0, ai, aold
     cdef Py_ssize_t i0, i1
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
     cdef np.npy_intp *dims = [n0, n1]
     cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                               NPY_float64, 0)
@@ -406,9 +418,11 @@ def move_nansum_3d_float32_axis0(np.ndarray[np.float32_t, ndim=3] a,
     cdef int count = 0
     cdef double asum = 0, ai, aold
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n1, n2]
     cdef np.ndarray[np.float32_t, ndim=3] y = PyArray_EMPTY(3, dims,
                                               NPY_float32, 0)
@@ -458,9 +472,11 @@ def move_nansum_3d_float32_axis1(np.ndarray[np.float32_t, ndim=3] a,
     cdef int count = 0
     cdef double asum = 0, ai, aold
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n1, n2]
     cdef np.ndarray[np.float32_t, ndim=3] y = PyArray_EMPTY(3, dims,
                                               NPY_float32, 0)
@@ -510,9 +526,11 @@ def move_nansum_3d_float32_axis2(np.ndarray[np.float32_t, ndim=3] a,
     cdef int count = 0
     cdef double asum = 0, ai, aold
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n1, n2]
     cdef np.ndarray[np.float32_t, ndim=3] y = PyArray_EMPTY(3, dims,
                                               NPY_float32, 0)
@@ -562,9 +580,11 @@ def move_nansum_3d_float64_axis0(np.ndarray[np.float64_t, ndim=3] a,
     cdef int count = 0
     cdef double asum = 0, ai, aold
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n1, n2]
     cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
                                               NPY_float64, 0)
@@ -614,9 +634,11 @@ def move_nansum_3d_float64_axis1(np.ndarray[np.float64_t, ndim=3] a,
     cdef int count = 0
     cdef double asum = 0, ai, aold
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n1, n2]
     cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
                                               NPY_float64, 0)
@@ -666,9 +688,11 @@ def move_nansum_3d_float64_axis2(np.ndarray[np.float64_t, ndim=3] a,
     cdef int count = 0
     cdef double asum = 0, ai, aold
     cdef Py_ssize_t i0, i1, i2
-    cdef int n0 = a.shape[0]
-    cdef int n1 = a.shape[1]
-    cdef int n2 = a.shape[2]
+    cdef np.npy_intp *dim
+    dim = PyArray_DIMS(a)
+    cdef int n0 = dim[0]
+    cdef int n1 = dim[1]
+    cdef int n2 = dim[2]
     cdef np.npy_intp *dims = [n0, n1, n2]
     cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
                                               NPY_float64, 0)
