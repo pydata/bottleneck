@@ -24,6 +24,6 @@ funcs['nanmax'] = nanmax
 funcs['nanargmin'] = nanargmin
 funcs['nanargmax'] = nanargmax
 
-def funcpyx(funcs=funcs):
+def funcpyx(funcs=funcs, bits=None):
     for func in funcs:
-        template(funcs[func])
+        template(funcs[func], bits)

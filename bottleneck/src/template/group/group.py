@@ -6,6 +6,6 @@ from group_nanmean import group_nanmean
 funcs = {}
 funcs['group_nanmean'] = group_nanmean
 
-def grouppyx(funcs=funcs):
+def grouppyx(funcs=funcs, bits=None):
     for func in funcs:
-        template(funcs[func])
+        template(funcs[func], bits)

@@ -24,6 +24,6 @@ funcs['move_max'] = move_max
 funcs['move_nanmin'] = move_nanmin
 funcs['move_nanmax'] = move_nanmax
 
-def movepyx(funcs=funcs):
+def movepyx(funcs=funcs, bits=None):
     for func in funcs:
-        template(funcs[func])
+        template(funcs[func], bits)

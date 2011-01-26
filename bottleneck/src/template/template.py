@@ -1,17 +1,10 @@
 "Turn templates into Cython pyx files."
 
-import numpy as np
 
-if np.int_ == np.int32:
-    NPINT = 'int32'
-elif np.int_ == np.int64:
-    NPINT = 'int64'
-else:
-    raise RuntimeError('Expecting default NumPy int to be 32 or 64 bit.')
-
-def template(func):
+def template(func, bits):
     "Convert template dictionary `func` to a pyx file."
     codes = []
+    codes.append("# %s bit version\n" % str(bits))
     codes.append(func['main'])
     select = Selector(func['name'])
     for key in func['templates']:
@@ -25,7 +18,8 @@ def template(func):
                            reuse_non_nan_func=f['reuse_non_nan_func'],
                            is_reducing_function=func['is_reducing_function'],
                            cdef_output=func['cdef_output'],
-                           select=select)
+                           select=select,
+                           bits=bits)
         codes.append(code)    
     codes.append('\n' + str(select))
     if 'slow' in func:
@@ -42,8 +36,15 @@ def template(func):
     fid.close()
 
 def subtemplate(name, top, loop, axisNone, dtypes, force_output_dtype,
-                reuse_non_nan_func, is_reducing_function, cdef_output, select):
+                reuse_non_nan_func, is_reducing_function, cdef_output, select,
+                bits):
     "Assemble template"
+    if bits == 32:
+        NPINT = 'int32'
+    elif bits == 64:
+        NPINT = 'int64'
+    else:
+        raise RuntimeError("`bits` must be 32 or 64.")
     ndims = loop.keys()
     ndims.sort()
     funcs = []

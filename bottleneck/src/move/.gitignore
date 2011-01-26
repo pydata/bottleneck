@@ -1,0 +1,10 @@
+move_max.pyx
+move_mean.pyx
+move_min.pyx
+move_nanmax.pyx
+move_nanmean.pyx
+move_nanmin.pyx
+move_nanstd.pyx
+move_nansum.pyx
+move_std.pyx
+move_sum.pyx
