@@ -14,7 +14,6 @@ Moving window           :meth:`move_sum <bottleneck.move_sum>`, :meth:`move_nans
                         :meth:`move_std <bottleneck.move_std>`, :meth:`move_nanstd <bottleneck.move_nanstd>`,
                         :meth:`move_min <bottleneck.move_min>`, :meth:`move_nanmin <bottleneck.move_nanmin>`,
                         :meth:`move_max <bottleneck.move_max>`, :meth:`move_nanmax <bottleneck.move_nanmax>`
-Group by                :meth:`group_nanmean <bottleneck.group_nanmean>`
 ======================= =======================================================================================================================
 
 
@@ -114,13 +113,3 @@ Moving window functions with a 1d window.
 ------------
 
 .. autofunction:: bottleneck.move_nanmax
-
-
-Group functions
----------------
-
-Calculations done on like-labeled elements.
-
-------------
-
-.. autofunction:: bottleneck.group_nanmean

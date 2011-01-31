@@ -57,11 +57,9 @@ PACKAGES            = ["bottleneck",
                        "bottleneck/src",
                        "bottleneck/src/func",
                        "bottleneck/src/move",
-                       "bottleneck/src/group",
                        "bottleneck/src/template",
                        "bottleneck/src/template/func",
-                       "bottleneck/src/template/move",
-                       "bottleneck/src/template/group"]
+                       "bottleneck/src/template/move"]
 PACKAGE_DATA        = {'bottleneck': ['LICENSE']}
 REQUIRES            = ["numpy"]
 
@@ -88,8 +86,5 @@ setup(name=NAME,
                              include_dirs=[numpy.get_include()]),           
                    Extension("move",
                              sources=["bottleneck/src/move/move.c"],
-                             include_dirs=[numpy.get_include()]),
-                   Extension("group",
-                             sources=["bottleneck/src/group/group.c"],
                              include_dirs=[numpy.get_include()])]
      )                

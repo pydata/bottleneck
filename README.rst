@@ -14,7 +14,6 @@ Functions             ``nanvar``
 Moving window         ``move_sum, move_nansum, move_mean, move_nanmean,
                       move_std, move_nanstd, move_min, move_nanmin, move_max,
                       move_nanmax``
-Group by              ``group_nanmean``
 ===================== =======================================================
 
 Let's give it a try. Create a NumPy array::
@@ -32,12 +31,6 @@ Moving window nanmean::
 
     >>> bn.move_nanmean(arr, window=2)
     array([ nan,  1.5,  2. ,  4. ,  4.5])
-
-Group nanmean::   
-
-    >>> label = ['a', 'a', 'b', 'b', 'a']
-    >>> bn.group_nanmean(arr, label)
-    (array([ 2.66666667,  4.        ]), ['a', 'b'])
 
 Fast
 ====
@@ -258,6 +251,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 44 tests in 39.108s
+    Ran 42 tests in 35.108s
     OK
-    <nose.result.TextTestResult run=44 errors=0 failures=0> 
+    <nose.result.TextTestResult run=42 errors=0 failures=0> 

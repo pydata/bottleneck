@@ -30,7 +30,7 @@ pyx64:
 	python -c "from bottleneck.src.makepyx import makepyx; makepyx(bits=64)"
 
 
-build: funcs moves groups
+build: funcs moves
 	
 funcs:
 	rm -rf func/func.c ../func.so
@@ -41,11 +41,6 @@ moves:
 	rm -rf move/move.c ../move.so
 	python move/setup.py build_ext --inplace
 	mv move.so ../move.so
-
-groups:
-	rm -rf group/group.c ../group.so
-	python group/setup.py build_ext --inplace
-	mv group.so ../group.so
 
 test:
 	python -c "import bottleneck; bottleneck.test()"

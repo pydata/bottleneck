@@ -21,10 +21,6 @@ try:
                       move_max, move_nanmax)
 except:
     pass
-try:
-    from group import group_nanmean
-except:
-    pass
 
 from bottleneck.version import __version__
 from bottleneck.benchmark.bench import bench

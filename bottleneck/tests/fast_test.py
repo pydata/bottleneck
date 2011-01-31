@@ -30,12 +30,6 @@ def fast_checker(selector, mode='func'):
                 func, a = selector(arr, axis)
             else:
                 func = np.sum
-        elif mode == 'group':
-            if axis is not None:
-                label = range(arr.shape[axis])
-                func, a, label_dict, order = selector(arr, label, None, axis)
-            else:
-                func = np.sum
         else:
             raise ValueError("`mode` value not recognized.")
         if 'slow' in func.__name__:
@@ -124,9 +118,3 @@ def test_move_nanmin_selector():
 def test_move_nanmixn_selector():
     "Test move_nanmax_selector."
     fast_checker(bn.move.move_nanmax_selector, mode='move')
-
-# Group functions -----------------------------------------------------------
-
-def test_group_nanmean_selector():
-    "Test group_nanmean_selector."
-    fast_checker(bn.group.group_nanmean_selector, mode='group')

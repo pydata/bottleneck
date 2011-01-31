@@ -4,7 +4,6 @@ import numpy as np
 
 from bottleneck.src.template.func.func import funcpyx
 from bottleneck.src.template.move.move import movepyx
-from bottleneck.src.template.group.group import grouppyx
 
 def makepyx(bits=None):
     if bits is None:
@@ -16,4 +15,3 @@ def makepyx(bits=None):
         raise RuntimeError("`bits` must be 32 or 64")
     funcpyx(bits=bits)
     movepyx(bits=bits)
-    grouppyx(bits=bits)
