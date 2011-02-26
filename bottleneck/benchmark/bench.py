@@ -10,7 +10,39 @@ from autotimeit import autotimeit
 
 __all__ = ['bench']
 
-def bench(mode='fast', dtype='float64', axis=0):
+def bench(mode='fast', dtype='float64', axis=0,
+          shapes=[(10,10),(100,100),(1000,1000),(10,10),(100,100),(1000,1000)],
+          nans=[False, False, False, True, True, True]):
+    """
+    Bottleneck benchmark.
+
+    Parameters
+    ----------
+    mode : {'fast', 'faster'}, optional
+        Whether to benchmark the high-level functions ('fast') such as
+        bn.median or the low-level functions ('faster') such as
+        bn.func.median_2d_float64_axis0. By default the high-level functions
+        are benchmarked.
+    dtype : str, optional
+        Data type string such as 'float64', which is the default.
+    axis : int, optional
+        Axis along which to perform the calculations that are being
+        benchmarked. The default is the first axis (axis=0).
+    shapes : list, optional
+        A list of tuple shapes of input arrays to use in the benchmark.
+    nans : list, optional
+        A list of the bools (True or False), one for each tuple in the
+        `shapes` list, that tells whether the input arrays should be filled
+        with one-third NaNs.
+
+    Returns
+    -------
+    A benchmark report is printed to stdout.
+
+    """
+
+    if len(shapes) != len(nans):
+        raise ValueError("`shapes` and `nans` must have the same length")
 
     dtype = str(dtype)
     axis = str(axis)
@@ -33,26 +65,32 @@ def bench(mode='fast', dtype='float64', axis=0):
     elif mode == 'faster':    
         print "%sLow-level functions used (mode='faster')" % tab
     
-    h1 = "%s no NaN   no NaN     no NaN     NaN      NaN        NaN"
-    h2 = "%s(10,10) (100,100) (1000,1000) (10,10) (100,100) (1000,1000)"
     print
-    print h1 % (16*" ")
-    print h2 % (16*" ")
+    header = [" "*14]
+    for nan in nans:
+        if nan:
+            header.append("NaN".center(11))
+        else:
+            header.append("no NaN".center(11))
+    print "".join(header)       
+    header = ["".join(str(shape).split(" ")).center(11) for shape in shapes]
+    header = [" "*14] + header
+    print "".join(header)
 
-    suite = benchsuite(mode, dtype, axis)
-    fmt = "%s%6.2f   %6.2f     %6.2f    %6.2f   %6.2f     %6.2f"
+    suite = benchsuite(mode, shapes, dtype, axis, nans)
     for test in suite:
-        name = test["name"].ljust(16)
+        name = test["name"].ljust(12)
+        fmt = name + "%10.2f" + "%11.2f"*(len(shapes) - 1)
         if test['scipy_required'] and not SCIPY:
             print "%s%s" % (name, "requires SciPy")
         else:
-            s = timer(test['statements'], test['setups'])
-            print fmt % (name, s[0], s[1], s[2], s[3], s[4], s[5])
+            speed = timer(test['statements'], test['setups'])
+            print fmt % tuple(speed)
 
     print
     print 'Reference functions:'
     for test in suite:
-        print "%s%s" % (test["name"].ljust(16), test['ref'])
+        print "%s%s" % (test["name"].ljust(15), test['ref'])
 
 def timer(statements, setups):
     speed = []
@@ -74,27 +112,22 @@ def getarray(shape, dtype, nans=False):
         rs.shuffle(arr)
     return arr.reshape(*shape)
     
-def benchsuite(mode, dtype, axis):
+def benchsuite(mode, shapes, dtype, axis, nans):
 
     if mode not in ('fast', 'faster'):
         raise ValueError("`mode` must be 'fast' or 'faster'")
 
     suite = []
    
-    def getsetups(setup):
+    def getsetups(setup, shapes, nans):
         template = """import numpy as np
         import bottleneck as bn
         from bottleneck.benchmark.bench import getarray
-        N = %d
-        a = getarray((N,N), 'DTYPE', %s)
+        a = getarray(%s, 'DTYPE', %s)
         %s"""
         setups = []
-        setups.append(template % (10, str(False), setup))
-        setups.append(template % (100, str(False), setup))
-        setups.append(template % (1000, str(False), setup))
-        setups.append(template % (10, str(True), setup))
-        setups.append(template % (100, str(True), setup))
-        setups.append(template % (1000, str(True), setup))
+        for shape, nan in zip(shapes, nans):
+            setups.append(template % (str(shape), str(nan), setup))
         return setups
 
     # median
@@ -110,7 +143,7 @@ def benchsuite(mode, dtype, axis):
     setup = """
         func, a = bn.func.median_selector(a, axis=AXIS)
     """    
-    run['setups'] = getsetups(setup)
+    run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
     
     # nanmedian
@@ -127,7 +160,7 @@ def benchsuite(mode, dtype, axis):
         from bottleneck.slow.func import scipy_nanmedian
         func, a = bn.func.nanmedian_selector(a, axis=AXIS)
     """
-    run['setups'] = getsetups(setup)
+    run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
     
     # nansum
@@ -143,7 +176,7 @@ def benchsuite(mode, dtype, axis):
     setup = """
         func, a = bn.func.nansum_selector(a, axis=AXIS)
     """    
-    run['setups'] = getsetups(setup)
+    run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
 
     # nanmax
@@ -159,7 +192,7 @@ def benchsuite(mode, dtype, axis):
     setup = """
         func, a = bn.func.nanmax_selector(a, axis=AXIS)
     """    
-    run['setups'] = getsetups(setup)
+    run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
     
     # nanmean
@@ -176,7 +209,7 @@ def benchsuite(mode, dtype, axis):
         from bottleneck.slow.func import scipy_nanmean
         func, a = bn.func.nanmean_selector(a, axis=AXIS)
     """
-    run['setups'] = getsetups(setup)
+    run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
 
     # nanstd
@@ -193,7 +226,7 @@ def benchsuite(mode, dtype, axis):
         from bottleneck.slow.func import scipy_nanstd
         func, a = bn.func.nanstd_selector(a, axis=AXIS)
     """
-    run['setups'] = getsetups(setup)
+    run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
     
     # nanargmax
@@ -209,7 +242,7 @@ def benchsuite(mode, dtype, axis):
     setup = """
         func, a = bn.func.nanargmax_selector(a, axis=AXIS)
     """
-    run['setups'] = getsetups(setup)
+    run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
     
     # move_sum
@@ -228,7 +261,7 @@ def benchsuite(mode, dtype, axis):
         w = a.shape[AXIS] / 5
         func, a = bn.move.move_sum_selector(a, axis=AXIS)
     """
-    run['setups'] = getsetups(setup)
+    run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':
         suite.append(run)
     
@@ -248,7 +281,7 @@ def benchsuite(mode, dtype, axis):
         w = a.shape[AXIS] / 5
         func, a = bn.move.move_nansum_selector(a, axis=AXIS)
     """
-    run['setups'] = getsetups(setup)
+    run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':
         suite.append(run)
     
@@ -268,7 +301,7 @@ def benchsuite(mode, dtype, axis):
         w = a.shape[AXIS] / 5
         func, a = bn.move.move_mean_selector(a, axis=AXIS)
     """
-    run['setups'] = getsetups(setup)
+    run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':
         suite.append(run)
     
@@ -288,7 +321,7 @@ def benchsuite(mode, dtype, axis):
         w = a.shape[AXIS] / 5
         func, a = bn.move.move_nanmean_selector(a, axis=AXIS)
     """
-    run['setups'] = getsetups(setup)
+    run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':
         suite.append(run)
     
@@ -308,7 +341,7 @@ def benchsuite(mode, dtype, axis):
         w = a.shape[AXIS] / 5
         func, a = bn.move.move_std_selector(a, axis=AXIS)
     """
-    run['setups'] = getsetups(setup)
+    run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':
         suite.append(run)
     
@@ -328,7 +361,7 @@ def benchsuite(mode, dtype, axis):
         w = a.shape[AXIS] / 5
         func, a = bn.move.move_nanstd_selector(a, axis=AXIS)
     """
-    run['setups'] = getsetups(setup)
+    run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':
         suite.append(run)
     
@@ -348,7 +381,7 @@ def benchsuite(mode, dtype, axis):
         w = a.shape[AXIS] / 5
         func, a = bn.move.move_max_selector(a, axis=AXIS)
     """
-    run['setups'] = getsetups(setup)
+    run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':
         suite.append(run)
     
@@ -368,7 +401,7 @@ def benchsuite(mode, dtype, axis):
         w = a.shape[AXIS] / 5
         func, a = bn.move.move_nanmax_selector(a, axis=AXIS)
     """
-    run['setups'] = getsetups(setup)
+    run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':
         suite.append(run)
     

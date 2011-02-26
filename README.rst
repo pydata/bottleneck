@@ -62,40 +62,40 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
         NaN means one-third NaNs; float64 and axis=0 are used
         High-level functions used (mode='fast')
 
-                     no NaN   no NaN     no NaN     NaN      NaN        NaN
-                    (10,10) (100,100) (1000,1000) (10,10) (100,100) (1000,1000)
-    median           10.14    14.08       7.25      8.63     3.50       2.82
-    nanmedian       247.68   140.30       8.18    257.18   188.18       8.08
-    nansum           13.56     6.44       1.69     13.45     7.48       1.69
-    nanmax           13.44     6.31       1.67     14.37    10.47       1.69
-    nanmean          25.13    13.88       2.98     26.21    29.24       4.93
-    nanstd           30.41     9.63       2.61     31.16    17.90       3.63
-    nanargmax        12.36     5.82       2.56     13.00     9.04       2.74
-    move_sum         12.10     8.46      14.53     11.95     8.78      14.10
-    move_nansum      30.81    20.37      29.43     30.02    25.92      29.71
-    move_mean        11.11     4.28      14.44     11.22     8.70      14.24
-    move_nanmean     32.91    11.83      29.79     34.33    14.45      30.73
-    move_std         17.29     3.33      22.95     22.53    21.08      29.84
-    move_nanstd      34.49     6.19      35.03     39.71     7.01      36.15
-    move_max          4.46     3.66       9.35      5.19     5.61      11.80
-    move_nanmax      22.39     6.32      19.56     23.91    14.80      27.14
+                     no NaN     no NaN     no NaN      NaN        NaN        NaN    
+                    (10,10)   (100,100) (1000,1000)  (10,10)   (100,100) (1000,1000)
+    median           10.35      14.05       7.27       8.86       3.69       2.83
+    nanmedian       242.80     130.89       8.90     253.81     178.11       8.11
+    nansum           13.07       6.43       1.73      13.25       7.27       1.72
+    nanmax           12.85       6.17       1.68      13.55      10.25       1.68
+    nanmean          23.91      13.92       3.03      25.17      29.62       5.00
+    nanstd           30.50       9.84       2.82      31.64      17.53       3.79
+    nanargmax        12.31       6.06       2.61      12.57       9.20       2.76
+    move_sum         11.94       8.24      14.54      11.84       8.66      14.06
+    move_nansum      32.74      19.55      29.33      33.45      25.29      29.75
+    move_mean        11.27       4.32      14.33      11.89       8.32      14.20
+    move_nanmean     34.21      11.83      29.78      35.71      14.36      30.25
+    move_std         17.88       3.36      22.76      23.65      20.29      29.59
+    move_nanstd      37.32       6.21      34.70      44.47       7.02      35.99
+    move_max          4.44       3.64       9.29       4.94       5.54      11.82
+    move_nanmax      23.47       6.28      19.43      26.97      14.65      26.94
 
     Reference functions:
-    median          np.median
-    nanmedian       local copy of sp.stats.nanmedian
-    nansum          np.nansum
-    nanmax          np.nanmax
-    nanmean         local copy of sp.stats.nanmean
-    nanstd          local copy of sp.stats.nanstd
-    nanargmax       np.nanargmax
-    move_sum        sp.ndimage.convolve1d based, window=a.shape[0]/5
-    move_nansum     sp.ndimage.convolve1d based, window=a.shape[0]/5
-    move_mean       sp.ndimage.convolve1d based, window=a.shape[0]/5
-    move_nanmean    sp.ndimage.convolve1d based, window=a.shape[0]/5
-    move_std        sp.ndimage.convolve1d based, window=a.shape[0]/5
-    move_nanstd     sp.ndimage.convolve1d based, window=a.shape[0]/5
-    move_max        sp.ndimage.maximum_filter1d based, window=a.shape[0]/5
-    move_nanmax     sp.ndimage.maximum_filter1d based, window=a.shape[0]/5
+    median         np.median
+    nanmedian      local copy of sp.stats.nanmedian
+    nansum         np.nansum
+    nanmax         np.nanmax
+    nanmean        local copy of sp.stats.nanmean
+    nanstd         local copy of sp.stats.nanstd
+    nanargmax      np.nanargmax
+    move_sum       sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_nansum    sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_mean      sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_nanmean   sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_std       sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_nanstd    sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_max       sp.ndimage.maximum_filter1d based, window=a.shape[0]/5
+    move_nanmax    sp.ndimage.maximum_filter1d based, window=a.shape[0]/5
 
 Faster
 ======
@@ -140,40 +140,40 @@ Benchmarks for the low-level Cython functions::
         NaN means one-third NaNs; float64 and axis=0 are used
         Low-level functions used (mode='faster')
 
-                     no NaN   no NaN     no NaN     NaN      NaN        NaN
-                    (10,10) (100,100) (1000,1000) (10,10) (100,100) (1000,1000)
-    median           15.08    14.72       7.24     11.99     3.54       2.83
-    nanmedian       341.83   143.61       8.18    357.21   192.56       8.07
-    nansum           21.67     6.76       1.70     21.55     7.92       1.70
-    nanmax           21.17     6.57       1.67     23.42    11.20       1.68
-    nanmean          38.60    14.42       2.99     40.84    30.70       4.98
-    nanstd           43.67     9.85       2.61     46.20    18.34       3.63
-    nanargmax        18.19     6.11       2.56     19.28     9.50       2.75
-    move_sum         18.01     8.70      14.51     17.99     9.02      14.10
-    move_nansum      47.44    21.28      29.40     49.06    26.60      29.68
-    move_mean        17.02     4.34      14.43     17.31     8.87      14.23
-    move_nanmean     53.00    11.95      29.77     54.41    14.63      30.81
-    move_std         23.60     3.35      22.85     33.80    21.60      29.69
-    move_nanstd      47.09     6.21      34.87     57.45     7.02      36.03
-    move_max          5.93     3.70       9.33      6.77     5.70      11.83
-    move_nanmax      30.34     6.39      19.54     36.06    15.04      27.14
+                     no NaN     no NaN     no NaN      NaN        NaN        NaN    
+                    (10,10)   (100,100) (1000,1000)  (10,10)   (100,100) (1000,1000)
+    median           14.81      14.50       7.33      12.12       3.72       2.88
+    nanmedian       335.66     131.98       8.88     355.71     182.22       8.09
+    nansum           21.13       6.72       1.73      20.74       7.91       1.71
+    nanmax           18.98       6.46       1.68      20.99      10.68       1.69
+    nanmean          36.97      14.82       2.98      39.08      30.64       5.01
+    nanstd           42.69      10.00       2.82      45.11      18.07       3.88
+    nanargmax        17.46       6.20       2.62      18.31       9.54       2.78
+    move_sum         17.69       8.39      14.41      17.99       8.76      14.02
+    move_nansum      47.15      20.30      29.36      49.38      25.93      29.64
+    move_mean        16.58       4.35      14.34      17.13       8.63      14.17
+    move_nanmean     50.97      12.04      29.67      53.19      14.63      30.79
+    move_std         22.80       3.37      22.80      32.82      21.03      29.92
+    move_nanstd      45.88       6.20      34.79      56.78       7.06      36.01
+    move_max          5.73       3.60       9.32       6.68       5.63      11.75
+    move_nanmax      29.51       6.30      19.45      36.13      14.85      27.03
 
     Reference functions:
-    median          np.median
-    nanmedian       local copy of sp.stats.nanmedian
-    nansum          np.nansum
-    nanmax          np.nanmax
-    nanmean         local copy of sp.stats.nanmean
-    nanstd          local copy of sp.stats.nanstd
-    nanargmax       np.nanargmax
-    move_sum        sp.ndimage.convolve1d based, window=a.shape[0]/5
-    move_nansum     sp.ndimage.convolve1d based, window=a.shape[0]/5
-    move_mean       sp.ndimage.convolve1d based, window=a.shape[0]/5
-    move_nanmean    sp.ndimage.convolve1d based, window=a.shape[0]/5
-    move_std        sp.ndimage.convolve1d based, window=a.shape[0]/5
-    move_nanstd     sp.ndimage.convolve1d based, window=a.shape[0]/5
-    move_max        sp.ndimage.maximum_filter1d based, window=a.shape[0]/5
-    move_nanmax     sp.ndimage.maximum_filter1d based, window=a.shape[0]/5
+    median         np.median
+    nanmedian      local copy of sp.stats.nanmedian
+    nansum         np.nansum
+    nanmax         np.nanmax
+    nanmean        local copy of sp.stats.nanmean
+    nanstd         local copy of sp.stats.nanstd
+    nanargmax      np.nanargmax
+    move_sum       sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_nansum    sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_mean      sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_nanmean   sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_std       sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_nanstd    sp.ndimage.convolve1d based, window=a.shape[0]/5
+    move_max       sp.ndimage.maximum_filter1d based, window=a.shape[0]/5
+    move_nanmax    sp.ndimage.maximum_filter1d based, window=a.shape[0]/5
 
 Slow
 ====

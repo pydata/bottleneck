@@ -19,6 +19,11 @@ contains X new functions.
 - All functions are faster (less overhead in low-level functions)
 - Biggest speed up when calling low-level functions with small input arrays  
 
+**Enhancements**
+
+- Optionally specify the shapes of the arrays used in benchmark
+- Can specify which input arrays to fill with one-third NaNs in benchmark
+
 **New functions**
 
 **Breaks from 0.3.0**
