@@ -17,11 +17,11 @@ contains X new functions.
 **Faster**
 
 - All functions are faster (less overhead in low-level functions)
-- Biggest speed up when calling low-level functions with small input arrays  
 
 **New functions**
 
 - rankdata()
+- nanrankdata()
 
 **Enhancements**
 

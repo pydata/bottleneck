@@ -7,7 +7,8 @@ except ImportError:
     SCIPY = False
 
 __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
-           'nanmin', 'nanmax', 'nanargmin', 'nanargmax', 'rankdata']
+           'nanmin', 'nanmax', 'nanargmin', 'nanargmax', 'rankdata',
+           'nanrankdata']
 
 def median(arr, axis=None):
     "Slow median function used for unaccelerated ndim/dtype combinations."
@@ -116,6 +117,27 @@ def rankdata(arr, axis=None):
     for ij in np.ndindex(*itshape):
         ijslice = list(ij[:axis]) + [slice(None)] + list(ij[axis:])
         y[ijslice] = scipy_rankdata(arr[ijslice].astype('float'))
+    return y
+
+def nanrankdata(arr, axis=None):
+    "Slow nanrankdata function used for unaccelerated ndim/dtype combinations."
+    if not SCIPY:
+        raise ValueError("The slow version of nanrankdata requires SciPy.")
+    if axis is None:
+        arr = arr.ravel()
+        axis = 0
+    elif axis < 0:
+        axis = range(arr.ndim)[axis]
+    y = np.empty(arr.shape)
+    y.fill(np.nan)
+    itshape = list(arr.shape)
+    itshape.pop(axis)
+    for ij in np.ndindex(*itshape):
+        ijslice = list(ij[:axis]) + [slice(None)] + list(ij[axis:])
+        x1d = arr[ijslice].astype(float)
+        mask1d = ~np.isnan(x1d)
+        x1d[mask1d] = scipy_rankdata(x1d[mask1d])
+        y[ijslice] = x1d
     return y
 
 # ---------------------------------------------------------------------------

@@ -10,7 +10,7 @@ Bottleneck is a collection of fast NumPy array functions written in Cython:
 ===================== =======================================================
 NumPy/SciPy           ``median, nanmedian, rankdata, nansum, nanmin, nanmax,
                       nanmean, nanstd, nanargmin, nanargmax`` 
-Functions             ``nanvar``
+Functions             ``nanrankdata, nanvar``
 Moving window         ``move_sum, move_nansum, move_mean, move_nanmean,
                       move_std, move_nanstd, move_min, move_nanmin, move_max,
                       move_nanmax``
@@ -255,6 +255,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 44 tests in 37.108s
+    Ran 46 tests in 40.457s
     OK
-    <nose.result.TextTestResult run=44 errors=0 failures=0> 
+    <nose.result.TextTestResult run=46 errors=0 failures=0> 

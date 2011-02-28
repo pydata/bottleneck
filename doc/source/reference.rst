@@ -9,7 +9,7 @@ NumPy/SciPy             :meth:`median <bottleneck.median>`, :meth:`nanmedian <bo
                         :meth:`nansum <bottleneck.nansum>`, :meth:`nanmin <bottleneck.nanmin>`, :meth:`nanmax <bottleneck.nanmax>`,
                         :meth:`nanmean <bottleneck.nanmean>`, :meth:`nanstd <bottleneck.nanstd>`, :meth:`nanargmin <bottleneck.nanargmin>`,
                         :meth:`nanargmax <bottleneck.nanargmax>` 
-Functions               :meth:`nanvar <bottleneck.nanvar>` 
+Functions               :meth:`nanrankdata <bottleneck.nanrankdata>`, :meth:`nanvar <bottleneck.nanvar>` 
 Moving window           :meth:`move_sum <bottleneck.move_sum>`, :meth:`move_nansum <bottleneck.move_nansum>`,
                         :meth:`move_mean <bottleneck.move_mean>`, :meth:`move_nanmean <bottleneck.move_nanmean>`,
                         :meth:`move_std <bottleneck.move_std>`, :meth:`move_nanstd <bottleneck.move_nanstd>`,
@@ -68,6 +68,10 @@ Functions
 ---------
 
 Miscellaneous functions.
+
+------------
+
+.. autofunction:: bottleneck.nanrankdata
 
 ------------
 
