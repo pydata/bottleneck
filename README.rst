@@ -8,8 +8,8 @@ Introduction
 Bottleneck is a collection of fast NumPy array functions written in Cython:
 
 ===================== =======================================================
-NumPy/SciPy           ``median, nanmedian, nansum, nanmin, nanmax, nanmean,
-                      nanstd, nanargmin, nanargmax`` 
+NumPy/SciPy           ``median, nanmedian, rankdata, nansum, nanmin, nanmax,
+                      nanmean, nanstd, nanargmin, nanargmax`` 
 Functions             ``nanvar``
 Moving window         ``move_sum, move_nansum, move_mean, move_nanmean,
                       move_std, move_nanstd, move_min, move_nanmin, move_max,
@@ -64,21 +64,22 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
 
                      no NaN     no NaN     no NaN      NaN        NaN        NaN    
                     (10,10)   (100,100) (1000,1000)  (10,10)   (100,100) (1000,1000)
-    median           10.35      14.05       7.27       8.86       3.69       2.83
-    nanmedian       242.80     130.89       8.90     253.81     178.11       8.11
-    nansum           13.07       6.43       1.73      13.25       7.27       1.72
-    nanmax           12.85       6.17       1.68      13.55      10.25       1.68
-    nanmean          23.91      13.92       3.03      25.17      29.62       5.00
-    nanstd           30.50       9.84       2.82      31.64      17.53       3.79
-    nanargmax        12.31       6.06       2.61      12.57       9.20       2.76
-    move_sum         11.94       8.24      14.54      11.84       8.66      14.06
-    move_nansum      32.74      19.55      29.33      33.45      25.29      29.75
-    move_mean        11.27       4.32      14.33      11.89       8.32      14.20
-    move_nanmean     34.21      11.83      29.78      35.71      14.36      30.25
-    move_std         17.88       3.36      22.76      23.65      20.29      29.59
-    move_nanstd      37.32       6.21      34.70      44.47       7.02      35.99
-    move_max          4.44       3.64       9.29       4.94       5.54      11.82
-    move_nanmax      23.47       6.28      19.43      26.97      14.65      26.94
+    median           10.55      13.91       7.31       8.86       3.64       2.81
+    nanmedian       241.00     134.34       8.93     247.97     180.80       8.24
+    nansum           12.60       6.94       1.71      12.50       7.39       1.72
+    nanmax           12.96       6.29       1.68      13.56      10.24       1.69
+    nanmean          22.77      13.74       3.02      24.08      29.00       5.03
+    nanstd           29.52       9.77       2.92      30.87      17.87       3.94
+    nanargmax        11.61       5.85       2.68      11.73       9.11       2.88
+    rankdata         23.52      13.18       8.30      23.35      14.36       9.44
+    move_sum         11.15       8.28      14.08      11.69       8.56      13.93
+    move_nansum      31.36      20.22      29.39      31.85      25.75      29.52
+    move_mean        10.68       4.29      14.38      10.79       8.50      14.19
+    move_nanmean     34.62      11.93      29.77      36.48      14.44      30.42
+    move_std         18.33       3.36      22.85      24.07      20.65      29.70
+    move_nanstd      35.86       6.23      34.96      41.42       7.20      35.69
+    move_max          4.17       3.67       9.32       4.90       5.54      11.79
+    move_nanmax      22.20       6.34      19.60      24.97      14.74      27.00
 
     Reference functions:
     median         np.median
@@ -88,6 +89,7 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
     nanmean        local copy of sp.stats.nanmean
     nanstd         local copy of sp.stats.nanstd
     nanargmax      np.nanargmax
+    rankdata       scipy.stats.rankdata based (axis support added)
     move_sum       sp.ndimage.convolve1d based, window=a.shape[0]/5
     move_nansum    sp.ndimage.convolve1d based, window=a.shape[0]/5
     move_mean      sp.ndimage.convolve1d based, window=a.shape[0]/5
@@ -142,21 +144,22 @@ Benchmarks for the low-level Cython functions::
 
                      no NaN     no NaN     no NaN      NaN        NaN        NaN    
                     (10,10)   (100,100) (1000,1000)  (10,10)   (100,100) (1000,1000)
-    median           14.81      14.50       7.33      12.12       3.72       2.88
-    nanmedian       335.66     131.98       8.88     355.71     182.22       8.09
-    nansum           21.13       6.72       1.73      20.74       7.91       1.71
-    nanmax           18.98       6.46       1.68      20.99      10.68       1.69
-    nanmean          36.97      14.82       2.98      39.08      30.64       5.01
-    nanstd           42.69      10.00       2.82      45.11      18.07       3.88
-    nanargmax        17.46       6.20       2.62      18.31       9.54       2.78
-    move_sum         17.69       8.39      14.41      17.99       8.76      14.02
-    move_nansum      47.15      20.30      29.36      49.38      25.93      29.64
-    move_mean        16.58       4.35      14.34      17.13       8.63      14.17
-    move_nanmean     50.97      12.04      29.67      53.19      14.63      30.79
-    move_std         22.80       3.37      22.80      32.82      21.03      29.92
-    move_nanstd      45.88       6.20      34.79      56.78       7.06      36.01
-    move_max          5.73       3.60       9.32       6.68       5.63      11.75
-    move_nanmax      29.51       6.30      19.45      36.13      14.85      27.03
+    median           15.23      14.06       7.28      12.04       3.71       2.86
+    nanmedian       339.61     134.76       9.05     364.30     184.69       8.32
+    nansum           20.89       6.97       1.73      20.87       7.82       1.72
+    nanmax           19.42       6.52       1.69      21.10      10.86       1.69
+    nanmean          38.65      14.50       3.00      39.08      30.92       5.03
+    nanstd           44.05       9.98       2.87      45.92      18.45       3.88
+    nanargmax        17.83       6.07       2.68      18.02       9.51       2.87
+    rankdata         25.12      12.85       8.43      25.20      14.28       9.46
+    move_sum         17.02       8.59      14.53      16.65       8.92      14.12
+    move_nansum      46.26      21.06      29.51      47.59      26.86      29.73
+    move_mean        16.61       4.39      14.37      16.28       8.79      14.24
+    move_nanmean     51.30      12.04      29.71      53.29      14.78      30.96
+    move_std         23.00       3.37      22.80      32.56      21.49      29.27
+    move_nanstd      46.17       6.30      34.89      55.09       7.13      35.67
+    move_max          5.58       3.72       9.37       6.40       5.64      11.86
+    move_nanmax      29.89       6.39      19.60      34.99      14.99      26.98
 
     Reference functions:
     median         np.median
@@ -166,6 +169,7 @@ Benchmarks for the low-level Cython functions::
     nanmean        local copy of sp.stats.nanmean
     nanstd         local copy of sp.stats.nanstd
     nanargmax      np.nanargmax
+    rankdata       scipy.stats.rankdata based (axis support added)
     move_sum       sp.ndimage.convolve1d based, window=a.shape[0]/5
     move_nansum    sp.ndimage.convolve1d based, window=a.shape[0]/5
     move_mean      sp.ndimage.convolve1d based, window=a.shape[0]/5
@@ -251,6 +255,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 42 tests in 35.108s
+    Ran 44 tests in 37.108s
     OK
-    <nose.result.TextTestResult run=42 errors=0 failures=0> 
+    <nose.result.TextTestResult run=44 errors=0 failures=0> 

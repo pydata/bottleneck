@@ -1,8 +1,13 @@
 
 import numpy as np
+try:
+    from scipy.stats import rankdata as scipy_rankdata
+    SCIPY = True
+except ImportError:
+    SCIPY = False
 
 __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
-           'nanmin', 'nanmax', 'nanargmin', 'nanargmax']
+           'nanmin', 'nanmax', 'nanargmin', 'nanargmax', 'rankdata']
 
 def median(arr, axis=None):
     "Slow median function used for unaccelerated ndim/dtype combinations."
@@ -95,6 +100,23 @@ def nanargmin(arr, axis=None):
 def nanargmax(arr, axis=None):
     "Slow nanargmax function used for unaccelerated ndim/dtype combinations."
     return np.nanargmax(arr, axis=axis)
+
+def rankdata(arr, axis=None):
+    "Slow rankdata function used for unaccelerated ndim/dtype combinations."
+    if not SCIPY:
+        raise ValueError("The slow version of rankdata requires SciPy.")
+    if axis is None:
+        arr = arr.ravel()
+        axis = 0
+    elif axis < 0:
+        axis = range(arr.ndim)[axis]
+    y = np.empty(arr.shape)
+    itshape = list(arr.shape)
+    itshape.pop(axis)
+    for ij in np.ndindex(*itshape):
+        ijslice = list(ij[:axis]) + [slice(None)] + list(ij[axis:])
+        y[ijslice] = scipy_rankdata(arr[ijslice].astype('float'))
+    return y
 
 # ---------------------------------------------------------------------------
 #

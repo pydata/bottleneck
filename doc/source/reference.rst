@@ -5,9 +5,10 @@ Function reference
 Bottleneck provides the following functions:
 
 ======================= =======================================================================================================================
-NumPy/SciPy             :meth:`median <bottleneck.median>`, :meth:`nanmedian <bottleneck.nanmedian>`, :meth:`nansum <bottleneck.nansum>`,
-                        :meth:`nanmin <bottleneck.nanmin>`, :meth:`nanmax <bottleneck.nanmax>`, :meth:`nanmean <bottleneck.nanmean>`,
-                        :meth:`nanstd <bottleneck.nanstd>`, :meth:`nanargmin <bottleneck.nanargmin>`, :meth:`nanargmax <bottleneck.nanargmax>` 
+NumPy/SciPy             :meth:`median <bottleneck.median>`, :meth:`nanmedian <bottleneck.nanmedian>`, :meth:`rankdata <bottleneck.rankdata>`,
+                        :meth:`nansum <bottleneck.nansum>`, :meth:`nanmin <bottleneck.nanmin>`, :meth:`nanmax <bottleneck.nanmax>`,
+                        :meth:`nanmean <bottleneck.nanmean>`, :meth:`nanstd <bottleneck.nanstd>`, :meth:`nanargmin <bottleneck.nanargmin>`,
+                        :meth:`nanargmax <bottleneck.nanargmax>` 
 Functions               :meth:`nanvar <bottleneck.nanvar>` 
 Moving window           :meth:`move_sum <bottleneck.move_sum>`, :meth:`move_nansum <bottleneck.move_nansum>`,
                         :meth:`move_mean <bottleneck.move_mean>`, :meth:`move_nanmean <bottleneck.move_nanmean>`,
@@ -29,6 +30,10 @@ Fast replacements for NumPy and SciPy functions.
 ------------
              
 .. autofunction:: bottleneck.nanmedian
+
+------------
+
+.. autofunction:: bottleneck.rankdata
 
 ------------
 

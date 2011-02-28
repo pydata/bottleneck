@@ -11,6 +11,7 @@ from nanmin import nanmin
 from nanmax import nanmax
 from nanargmin import nanargmin
 from nanargmax import nanargmax
+from rankdata import rankdata
 
 funcs = {}
 funcs['median'] = median
@@ -23,6 +24,7 @@ funcs['nanmin'] = nanmin
 funcs['nanmax'] = nanmax
 funcs['nanargmin'] = nanargmin
 funcs['nanargmax'] = nanargmax
+funcs['rankdata'] = rankdata
 
 def funcpyx(funcs=funcs, bits=None):
     for func in funcs:

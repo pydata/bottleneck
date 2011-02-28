@@ -245,6 +245,22 @@ def benchsuite(mode, shapes, dtype, axis, nans):
     run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
     
+    # rankdata
+    run = {}
+    run['name'] = "rankdata"
+    run['ref'] = "scipy.stats.rankdata based (axis support added)"
+    run['scipy_required'] = False
+    if mode == 'fast':
+        code = "bn.rankdata(a, axis=AXIS)"
+    else:
+        code = "func(a)"
+    run['statements'] = [code, "bn.slow.rankdata(a, axis=AXIS)"] 
+    setup = """
+        func, a = bn.func.rankdata_selector(a, axis=AXIS)
+    """
+    run['setups'] = getsetups(setup, shapes, nans)
+    suite.append(run)
+    
     # move_sum
     run = {}
     run['name'] = "move_sum"

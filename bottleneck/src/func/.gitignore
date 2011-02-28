@@ -8,3 +8,4 @@ nanmin.pyx
 nanstd.pyx
 nansum.pyx
 nanvar.pyx
+rankdata.pyx

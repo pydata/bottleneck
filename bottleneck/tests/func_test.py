@@ -107,6 +107,10 @@ def test_nanmedian():
     "Test nanmedian."
     yield unit_maker, bn.nanmedian, bn.slow.nanmedian, np.inf, False
 
+def test_rankdata():
+    "Test rankdata."
+    yield unit_maker, bn.rankdata, bn.slow.rankdata
+
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
 

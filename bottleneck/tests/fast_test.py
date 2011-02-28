@@ -77,6 +77,10 @@ def test_nanvar_selector():
     "Test nanvar_selector."
     fast_checker(bn.func.nanvar_selector)
 
+def test_rankdata_selector():
+    "Test rankdata_selector."
+    fast_checker(bn.func.rankdata_selector)
+
 # Moving functions ----------------------------------------------------------
 
 def test_move_sum_selector():
