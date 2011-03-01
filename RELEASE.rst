@@ -17,6 +17,7 @@ contains X new functions.
 **Faster**
 
 - All functions are faster (less overhead in low-level functions)
+- median, nanmedian, nanargmax, nanargmin faster for axis=None
 
 **New functions**
 

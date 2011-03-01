@@ -265,7 +265,7 @@ def nanrankdata_selector(arr, axis):
         if axis < 0:
             axis += ndim
     else:
-        a = a.ravel()
+        a = PyArray_Ravel(a, NPY_CORDER)
         axis = 0
         ndim = 1
     key = (ndim, dtype, axis)
