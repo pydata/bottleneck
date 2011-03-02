@@ -27,6 +27,9 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
 
 loop = {}
 loop[2] = """\
+    if nINDEX1 == 0:
+        msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does." 
+        raise ValueError(msg)
     for iINDEX0 in range(nINDEX0):
         amax = MINDTYPE
         allnan = 1
@@ -42,6 +45,9 @@ loop[2] = """\
     return y
 """
 loop[3] = """\
+    if nINDEX2 == 0:
+        msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does." 
+        raise ValueError(msg)
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
             amax = MINDTYPE
@@ -67,6 +73,9 @@ floats_None['axisNone'] = True
 
 loop = {}
 loop[1] = """\
+    if nINDEX0 == 0:
+        m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too." 
+        raise ValueError(m)
     amax = MINDTYPE
     for iINDEX0 in range(nINDEX0):
         ai = a[INDEXALL]
@@ -79,6 +88,9 @@ loop[1] = """\
         return NAN
 """
 loop[2] = """\
+    if nINDEX0 * nINDEX1 == 0:
+        m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too." 
+        raise ValueError(m)
     amax = MINDTYPE
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
@@ -92,6 +104,9 @@ loop[2] = """\
         return NAN
 """
 loop[3] = """\
+    if nINDEX0 * nINDEX1 * nINDEX2 == 0:
+        m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too." 
+        raise ValueError(m)
     amax = MINDTYPE
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
@@ -115,6 +130,9 @@ ints['dtypes'] = INT_DTYPES
 
 loop = {}
 loop[2] = """\
+    if nINDEX1 == 0:
+        msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
+        raise ValueError(msg)
     for iINDEX0 in range(nINDEX0):
         amax = MINDTYPE
         for iINDEX1 in range(nINDEX1):
@@ -125,6 +143,9 @@ loop[2] = """\
     return y
 """
 loop[3] = """\
+    if nINDEX2 == 0:
+        msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
+        raise ValueError(msg)
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
             amax = MINDTYPE
@@ -145,6 +166,9 @@ ints_None['axisNone'] = True
 
 loop = {}
 loop[1] = """\
+    if nINDEX0 == 0:
+        m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
+        raise ValueError(m)
     amax = MINDTYPE
     for iINDEX0 in range(nINDEX0):
         ai = a[INDEXALL]
@@ -153,6 +177,9 @@ loop[1] = """\
     return np.DTYPE(amax)
 """
 loop[2] = """\
+    if nINDEX0 * nINDEX1 == 0:
+        m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
+        raise ValueError(m)
     amax = MINDTYPE
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
@@ -162,6 +189,9 @@ loop[2] = """\
     return np.DTYPE(amax)
 """
 loop[3] = """\
+    if nINDEX0 * nINDEX1 * nINDEX2 == 0:
+        m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
+        raise ValueError(m)
     amax = MINDTYPE
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
@@ -295,10 +325,6 @@ def nanmax_selector(arr, axis):
         a = np.array(arr, copy=False)
     cdef int ndim = PyArray_NDIM(a)
     cdef int dtype = PyArray_TYPE(a)
-    cdef int size = PyArray_SIZE(a)
-    if size == 0:
-        msg = "numpy.nanmax() raises on size=0 input; so Bottleneck does too." 
-        raise ValueError, msg
     if (axis < 0) and (axis is not None):
         axis += ndim
     cdef tuple key = (ndim, dtype, axis)

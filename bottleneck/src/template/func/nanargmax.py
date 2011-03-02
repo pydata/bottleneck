@@ -28,6 +28,9 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
 
 loop = {}
 loop[1] = """\
+    if nINDEX0 == 0:
+        msg = "numpy.nanargmax raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
     amax = MINDTYPE
     for iINDEX0 in range(nINDEX0 - 1, -1, -1):
         ai = a[INDEXALL]
@@ -41,6 +44,9 @@ loop[1] = """\
         return NAN
 """
 loop[2] = """\
+    if nINDEX1 == 0:
+        msg = "numpy.nanargmax raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
     for iINDEX0 in range(nINDEX0 - 1, -1, -1):
         amax = MINDTYPE
         allnan = 1
@@ -57,6 +63,9 @@ loop[2] = """\
     return y
 """
 loop[3] = """\
+    if nINDEX2 == 0:
+        msg = "numpy.nanargmax raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
     for iINDEX0 in range(nINDEX0 - 1, -1, -1):
         for iINDEX1 in range(nINDEX1 - 1, -1, -1):
             amax = MINDTYPE
@@ -84,6 +93,9 @@ ints['dtypes'] = INT_DTYPES
 
 loop = {}
 loop[1] = """\
+    if nINDEX0 == 0:
+        msg = "numpy.nanargmax raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
     amax = MINDTYPE
     for iINDEX0 in range(nINDEX0):
         ai = a[INDEXALL]
@@ -93,6 +105,9 @@ loop[1] = """\
     return np.NPINT(idx)
 """
 loop[2] = """\
+    if nINDEX1 == 0:
+        msg = "numpy.nanargmax raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
     for iINDEX0 in range(nINDEX0 - 1, -1, -1):
         amax = MINDTYPE
         for iINDEX1 in range(nINDEX1 - 1, -1, -1):
@@ -104,6 +119,9 @@ loop[2] = """\
     return y
 """
 loop[3] = """\
+    if nINDEX2 == 0:
+        msg = "numpy.nanargmax raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
     for iINDEX0 in range(nINDEX0 - 1, -1, -1):
         for iINDEX1 in range(nINDEX1 - 1, -1, -1):
             amax = MINDTYPE
@@ -237,10 +255,6 @@ def nanargmax_selector(arr, axis):
         a = np.array(arr, copy=False)
     cdef int ndim = PyArray_NDIM(a)
     cdef int dtype = PyArray_TYPE(a)
-    cdef int size = PyArray_SIZE(a)
-    if size == 0:
-        msg = "numpy.nanargmax() raises on size=0; so Bottleneck does too." 
-        raise ValueError, msg
     if axis is not None:
         if axis < 0:
             axis += ndim

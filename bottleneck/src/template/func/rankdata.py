@@ -12,6 +12,9 @@ INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
     
 loop = {}
 loop[1] = """\
+    if nINDEX0 == 0:
+        PyArray_FillWithScalar(y, NAN)
+        return y
     old = a[ivec[0]]
     for iINDEX0 in xrange(nINDEX0-1):
         sumranks += iINDEX0
@@ -33,6 +36,9 @@ loop[1] = """\
     return y
 """        
 loop[2] = """\
+    if nINDEX1 == 0:
+        PyArray_FillWithScalar(y, NAN)
+        return y
     for iINDEX0 in xrange(nINDEX0):
         idx = ivec[INDEXREPLACE|0|]
         old = a[INDEXREPLACE|idx|]
@@ -61,6 +67,9 @@ loop[2] = """\
     return y
 """
 loop[3] = """\
+    if nINDEX2 == 0:
+        PyArray_FillWithScalar(y, NAN)
+        return y
     for iINDEX0 in xrange(nINDEX0):
         for iINDEX1 in xrange(nINDEX1):
             idx = ivec[INDEXREPLACE|0|]

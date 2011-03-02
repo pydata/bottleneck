@@ -154,32 +154,41 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a, int ddof):
 
 loop = {}
 loop[2] = """\
-    for iINDEX0 in range(nINDEX0):
-        asum = 0
-        for iINDEX1 in range(nINDEX1):
-            asum += a[INDEXALL]
-        amean = asum / nINDEX1
-        asum = 0
-        for iINDEX1 in range(nINDEX1):
-            ai = a[INDEXALL]
-            ai -= amean
-            asum += (ai * ai)
-        y[INDEXPOP] = sqrt(asum / (nINDEX1 - ddof))
-    return y 
-"""
-loop[3] = """\
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
+    if nINDEX1 == 0:
+        for iINDEX0 in range(nINDEX0):
+            y[INDEXPOP] = NAN
+    else:        
+        for iINDEX0 in range(nINDEX0):
             asum = 0
-            for iINDEX2 in range(nINDEX2):
+            for iINDEX1 in range(nINDEX1):
                 asum += a[INDEXALL]
-            amean = asum / nINDEX2
+            amean = asum / nINDEX1
             asum = 0
-            for iINDEX2 in range(nINDEX2):
+            for iINDEX1 in range(nINDEX1):
                 ai = a[INDEXALL]
                 ai -= amean
                 asum += (ai * ai)
-            y[INDEXPOP] = sqrt(asum / (nINDEX2 - ddof))
+            y[INDEXPOP] = sqrt(asum / (nINDEX1 - ddof))
+    return y 
+"""
+loop[3] = """\
+    if nINDEX2 == 0:
+        for iINDEX0 in range(nINDEX0):
+            for iINDEX1 in range(nINDEX0):
+                y[INDEXPOP] = NAN
+    else:            
+        for iINDEX0 in range(nINDEX0):
+            for iINDEX1 in range(nINDEX1):
+                asum = 0
+                for iINDEX2 in range(nINDEX2):
+                    asum += a[INDEXALL]
+                amean = asum / nINDEX2
+                asum = 0
+                for iINDEX2 in range(nINDEX2):
+                    ai = a[INDEXALL]
+                    ai -= amean
+                    asum += (ai * ai)
+                y[INDEXPOP] = sqrt(asum / (nINDEX2 - ddof))
     return y 
 """
 ints['loop'] = loop
@@ -192,7 +201,9 @@ ints_None['axisNone'] = True
 
 loop = {}
 loop[1] = """\
-    size = nINDEX0    
+    size = nINDEX0
+    if size == 0:
+        return np.float64(NAN)
     for iINDEX0 in range(nINDEX0):
         ai = a[INDEXALL]
         if ai == ai:
@@ -204,10 +215,15 @@ loop[1] = """\
         if ai == ai:
             ai -= amean
             asum += (ai * ai)
-    return np.float64(sqrt(asum / (size - ddof)))
+    if size > ddof:        
+        return np.float64(sqrt(asum / (size - ddof)))
+    else:
+        return np.float64(NAN)
 """
 loop[2] = """\
     size = nINDEX0 * nINDEX1
+    if size == 0:
+        return np.float64(NAN)
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
             asum += a[INDEXALL]
@@ -218,10 +234,15 @@ loop[2] = """\
             ai = a[INDEXALL]
             ai -= amean
             asum += (ai * ai)
-    return np.float64(sqrt(asum / (size - ddof)))
+    if size > ddof:        
+        return np.float64(sqrt(asum / (size - ddof)))
+    else:
+        return np.float64(NAN)
 """
 loop[3] = """\
     size = nINDEX0 * nINDEX1 * nINDEX2
+    if size == 0:
+        return np.float64(NAN)
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
             for iINDEX2 in range(nINDEX2):
@@ -234,7 +255,10 @@ loop[3] = """\
                 ai = a[INDEXALL]
                 ai -= amean
                 asum += (ai * ai)
-    return np.float64(sqrt(asum / (size - ddof))) 
+    if size > ddof:        
+        return np.float64(sqrt(asum / (size - ddof)))
+    else:
+        return np.float64(NAN)
 """
 ints_None['loop'] = loop
 

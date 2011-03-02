@@ -271,6 +271,7 @@ def _nanmedian(arr1d):  # This only works on 1d arrays
         return np.nan
     return np.median(x)
 
+# Feb 2011: patched nanmedian to handle nanmedian(a, 1) with a = np.ones((2,0))
 def scipy_nanmedian(x, axis=0):
     """
     Compute the median along the given axis ignoring nan values.
@@ -321,10 +322,15 @@ def scipy_nanmedian(x, axis=0):
     x, axis = _chk_asarray(x, axis)
     if x.ndim == 0:
         return float(x.item())
-    x = x.copy()
-    x = np.apply_along_axis(_nanmedian, axis, x)
-    if x.ndim == 0:
-        x = float(x.item())
+    shape = list(x.shape)
+    shape.pop(axis)
+    if 0 in shape:
+        x = np.empty(shape)
+    else:    
+        x = x.copy()
+        x = np.apply_along_axis(_nanmedian, axis, x)
+        if x.ndim == 0:
+            x = float(x.item())
     return x
 
 def _chk_asarray(a, axis):

@@ -114,20 +114,29 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
 
 loop = {}
 loop[2] = """\
-    for iINDEX0 in range(nINDEX0):
-        asum = 0
-        for iINDEX1 in range(nINDEX1):
-            asum += a[INDEXALL]
-        y[INDEXPOP] = asum / nINDEX1
+    if nINDEX1 == 0:
+        for iINDEX0 in range(nINDEX0):
+            y[INDEXPOP] = NAN
+    else:
+        for iINDEX0 in range(nINDEX0):
+            asum = 0
+            for iINDEX1 in range(nINDEX1):
+                asum += a[INDEXALL]
+            y[INDEXPOP] = asum / nINDEX1
     return y
 """
 loop[3] = """\
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            asum = 0
-            for iINDEX2 in range(nINDEX2):
-                asum += a[INDEXALL]
-            y[INDEXPOP] = asum / nINDEX2
+    if nINDEX2 == 0:
+        for iINDEX0 in range(nINDEX0):
+            for iINDEX1 in range(nINDEX1):
+                y[INDEXPOP] = NAN
+    else:
+        for iINDEX0 in range(nINDEX0):
+            for iINDEX1 in range(nINDEX1):
+                asum = 0
+                for iINDEX2 in range(nINDEX2):
+                    asum += a[INDEXALL]
+                y[INDEXPOP] = asum / nINDEX2
     return y
 """
 ints['loop'] = loop
@@ -143,14 +152,20 @@ loop[1] = """\
     size = nINDEX0
     for iINDEX0 in range(nINDEX0):
         asum += a[INDEXALL]
-    return np.float64(asum / size)
+    if size > 0:    
+        return np.float64(asum / size)
+    else:
+        return np.float64(NAN)
 """
 loop[2] = """\
     size = nINDEX0 * nINDEX1    
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
             asum += a[INDEXALL]
-    return np.float64(asum / size)
+    if size > 0:    
+        return np.float64(asum / size)
+    else:
+        return np.float64(NAN)
 """
 loop[3] = """\
     size = nINDEX0 * nINDEX1 * nINDEX2 
@@ -158,7 +173,10 @@ loop[3] = """\
         for iINDEX1 in range(nINDEX1):
             for iINDEX2 in range(nINDEX2):
                 asum += a[INDEXALL]
-    return np.float64(asum / size)
+    if size > 0:    
+        return np.float64(asum / size)
+    else:
+        return np.float64(NAN)
 """
 ints_None['loop'] = loop
 

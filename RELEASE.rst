@@ -33,6 +33,10 @@ contains X new functions.
 
 - Function removed: group_nanmean()
 
+**Bug fix**
+
+- Some functions choked on size zero input arrays
+
 Older versions
 ==============
 

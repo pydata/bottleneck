@@ -12,6 +12,8 @@ INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 
 loop = {}
 loop[1] = """\
+    if nINDEX0 == 0:
+        return np.FLOAT(NAN)
     k = nAXIS 
     l = 0
     r = k - 1
@@ -65,6 +67,9 @@ loop[1] = """\
         return np.FLOAT(a[k])
 """        
 loop[2] = """\
+    if nINDEX1 == 0:
+        PyArray_FillWithScalar(y, NAN)
+        return y
     for iINDEX0 in range(nINDEX0): 
         k = nAXIS 
         l = 0
@@ -119,6 +124,9 @@ loop[2] = """\
     return y
 """
 loop[3] = """\
+    if nINDEX2 == 0:
+        PyArray_FillWithScalar(y, NAN)
+        return y
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
             k = nAXIS 

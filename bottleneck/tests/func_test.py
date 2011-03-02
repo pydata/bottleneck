@@ -10,6 +10,7 @@ import bottleneck as bn
 def arrays(dtypes=bn.dtypes, nans=True):
     "Iterator that yield arrays to use for unit testing."
     ss = {}
+    ss[0] = {'size':  0, 'shapes': [(0,), (0,0), (2,0), (2,0,1)]}
     ss[1] = {'size':  4, 'shapes': [(4,)]}
     ss[2] = {'size':  6, 'shapes': [(1,6), (2,3)]}
     ss[3] = {'size':  6, 'shapes': [(1,2,3)]}
@@ -41,6 +42,8 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
     for i, arr in enumerate(arrays(nans=nans)):
         for axis in range(-arr.ndim, arr.ndim) + [None]:
             with np.errstate(invalid='ignore'):
+                actual = 'Crashed'
+                desired = 'Crashed'
                 actualraised = False
                 try:
                     actual = func(arr, axis=axis)
@@ -105,8 +108,8 @@ def test_median():
 
 def test_nanmedian():
     "Test nanmedian."
-    yield unit_maker, bn.nanmedian, bn.slow.nanmedian, np.inf, False
-
+    yield unit_maker, bn.nanmedian, bn.slow.nanmedian
+   
 def test_rankdata():
     "Test rankdata."
     yield unit_maker, bn.rankdata, bn.slow.rankdata
