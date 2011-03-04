@@ -29,8 +29,8 @@ def template(func, bits):
             code2 = slow_functions(slow['name'],
                                    slow['signature'],
                                    slow['func'])
-            codes.append(code1)
             codes.append(code2)
+            codes.append(code1)
     fid = open(func['pyx_file'], 'w')
     fid.write(''.join(codes))
     fid.close()
@@ -384,7 +384,6 @@ def slow_selector(name, maxaxis=32):
     for axis in axes:
         tup = 2 * (name, str(axis)) 
         src.append(fmt % tup)
-    src.append('\n')
     return '\n'.join(src)
 
 def slow_functions(name, signature, func, maxaxis=32):
@@ -394,7 +393,7 @@ def slow_functions(name, signature, func, maxaxis=32):
     sig = "def %s_slow_axis%s(%s):"
     doc = '%s"Unaccelerated (slow) %s along axis %s."'
     function = "%sreturn %s\n"
-    src = []
+    src = ['\n']
     for axis in axes:
         
         axis = str(axis)
