@@ -11,13 +11,9 @@ Bottleneck 0.4.0
 
 *Release date: Not yet released, in development*
 
-The fourth release of Bottleneck is faster for small input arrays and
-contains X new functions.
-
-**Faster**
-
-- All functions are faster (less overhead in low-level functions)
-- median, nanmedian, nanargmax, nanargmin faster for axis=None
+The fourth release of Bottleneck contains two new functions and a few bug
+fixes. Separate source code distributions are now made for 32 bit and 64 bit
+operating systems.
 
 **New functions**
 
@@ -31,11 +27,14 @@ contains X new functions.
 
 **Breaks from 0.3.0**
 
-- Function removed: group_nanmean()
+- Removed group_nanmean() function
+- Bump dependency from NumPy 1.4.1 to NumPy 1.5.1
 
 **Bug fix**
 
-- Some functions choked on size zero input arrays
+- #6 Some functions gave wrong output dtype for some input dtypes on 32 bit OS
+- #7 Some functions choked on size zero input arrays
+- #8 Segmentation fault with Cython 0.14.1 (but not 0.13)
 
 Older versions
 ==============
