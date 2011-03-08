@@ -6,7 +6,7 @@ from distutils.extension import Extension
 import numpy
 
 
-CLASSIFIERS = ["Development Status :: 3 - Alpha",
+CLASSIFIERS = ["Development Status :: 4 - Beta",
                "Environment :: Console",
                "Intended Audience :: Science/Research",
                "License :: OSI Approved :: BSD License",
