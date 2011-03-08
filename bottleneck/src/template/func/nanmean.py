@@ -115,8 +115,7 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
 loop = {}
 loop[2] = """\
     if nINDEX1 == 0:
-        for iINDEX0 in range(nINDEX0):
-            y[INDEXPOP] = NAN
+        PyArray_FillWithScalar(y, NAN)
     else:
         for iINDEX0 in range(nINDEX0):
             asum = 0
@@ -127,9 +126,7 @@ loop[2] = """\
 """
 loop[3] = """\
     if nINDEX2 == 0:
-        for iINDEX0 in range(nINDEX0):
-            for iINDEX1 in range(nINDEX1):
-                y[INDEXPOP] = NAN
+        PyArray_FillWithScalar(y, NAN)
     else:
         for iINDEX0 in range(nINDEX0):
             for iINDEX1 in range(nINDEX1):

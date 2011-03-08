@@ -6,8 +6,23 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
-Bottleneck 0.4.1
+Bottleneck 0.4.2
 ================
+
+*Release date: 2011-03-08*
+
+This is a bug fix release.
+
+Same bug fixed in Bottleneck 0.4.1 for nanstd() was fixed for nanvar() in
+this release. Thanks again to Christoph Gohlke for finding the bug.
+
+Older versions
+==============
+
+Release notes from past releases.
+
+Bottleneck 0.4.1
+----------------
 
 *Release date: 2011-03-08*
 
@@ -19,11 +34,6 @@ array if arr.shape[1] == 0 and arr.shape[0] > arr.shape[2], where arr is
 the input array.
 
 Thanks to Christoph Gohlke for finding an example to demonstrate the bug.
-
-Older versions
-==============
-
-Release notes from past releases.
 
 Bottleneck 0.4.0
 ----------------
