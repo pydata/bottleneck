@@ -6,8 +6,27 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
-Bottleneck 0.4.0
+Bottleneck 0.4.1
 ================
+
+*Release date: 2011-03-08*
+
+This is a bug fix release.
+
+The low-level functions nanstd_3d_int32_axis1 and nanstd_3d_int64_axis1,
+called by bottleneck.nanstd(), wrote beyond the memory owned by the output
+array if arr.shape[1] == 0 and arr.shape[0] > arr.shape[2], where arr is
+the input array.
+
+Thanks to Christoph Gohlke for finding an example to demonstrate the bug.
+
+Older versions
+==============
+
+Release notes from past releases.
+
+Bottleneck 0.4.0
+----------------
 
 *Release date: 2011-03-08*
 
@@ -36,11 +55,6 @@ operating systems.
 - #6 Some functions gave wrong output dtype for some input dtypes on 32 bit OS
 - #7 Some functions choked on size zero input arrays
 - #8 Segmentation fault with Cython 0.14.1 (but not 0.13)
-
-Older versions
-==============
-
-Release notes from past releases.
 
 Bottleneck 0.3.0
 ----------------

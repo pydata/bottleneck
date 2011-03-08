@@ -21,7 +21,7 @@ floats['top'] = """
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
-    "Mean of NDIMd array with dtype=DTYPE along axis=0 ignoring NaNs."
+    "Mean of NDIMd array with dtype=DTYPE along axis=AXIS ignoring NaNs."
     cdef int allnan = 1
     cdef np.DTYPE_t asum = 0, ai
 """
@@ -108,7 +108,7 @@ ints['top'] = """
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
-    "Mean of NDIMd array with dtype=DTYPE along axis=0 ignoring NaNs."
+    "Mean of NDIMd array with dtype=DTYPE along axis=AXIS ignoring NaNs."
     cdef np.DTYPE_t asum = 0, ai
 """
 

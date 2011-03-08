@@ -20,7 +20,7 @@ floats['top'] = """
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a, int ddof):
-    "Variance of NDIMd array with dtype=DTYPE along axis=0 ignoring NaNs."
+    "Variance of NDIMd array with dtype=DTYPE along axis=AXIS ignoring NaNs."
     cdef int count = 0
     cdef np.DTYPE_t asum = 0, amean, ai
 """
@@ -148,7 +148,7 @@ ints['top'] = """
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a, int ddof):
-    "Valriance of NDIMd array with dtype=DTYPE along axis=0 ignoring NaNs."
+    "Valriance of NDIMd array with dtype=DTYPE along axis=AXIS ignoring NaNs."
     cdef np.float64_t asum = 0, amean, ai
 """
 
