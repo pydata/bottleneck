@@ -9,10 +9,10 @@ see the commit log at http://github.com/kwgoodman/bottleneck
 Bottleneck 0.4.0
 ================
 
-*Release date: Not yet released, in development*
+*Release date: 2011-03-08*
 
-The fourth release of Bottleneck contains two new functions and a few bug
-fixes. Separate source code distributions are now made for 32 bit and 64 bit
+The fourth release of Bottleneck contains new functions and bug fixes.
+Separate source code distributions are now made for 32 bit and 64 bit
 operating systems.
 
 **New functions**
@@ -29,8 +29,9 @@ operating systems.
 
 - Removed group_nanmean() function
 - Bump dependency from NumPy 1.4.1 to NumPy 1.5.1
+- C files are now generated with Cython 0.14.1 instead of 0.13
 
-**Bug fix**
+**Bug fixes**
 
 - #6 Some functions gave wrong output dtype for some input dtypes on 32 bit OS
 - #7 Some functions choked on size zero input arrays

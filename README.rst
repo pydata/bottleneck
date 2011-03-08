@@ -39,17 +39,17 @@ Bottleneck is fast::
 
     >>> arr = np.random.rand(100, 100)    
     >>> timeit np.nanmax(arr)
-    10000 loops, best of 3: 95.2 us per loop
+    10000 loops, best of 3: 90 us per loop
     >>> timeit bn.nanmax(arr)
-    100000 loops, best of 3: 13.2 us per loop
+    100000 loops, best of 3: 12.6 us per loop
 
 Let's not forget to add some NaNs::
 
     >>> arr[arr > 0.5] = np.nan
     >>> timeit np.nanmax(arr)
-    10000 loops, best of 3: 141 us per loop
+    10000 loops, best of 3: 133 us per loop
     >>> timeit bn.nanmax(arr)
-    100000 loops, best of 3: 13.2 us per loop
+    100000 loops, best of 3: 12.6 us per loop
 
 Bottleneck comes with a benchmark suite. To run the benchmark::
     
@@ -118,16 +118,16 @@ an inner loop::
 Let's see how much faster than runs::
     
     >>> timeit np.nanmax(arr, axis=0)
-    10000 loops, best of 3: 26.2 us per loop
+    10000 loops, best of 3: 24.7 us per loop
     >>> timeit bn.nanmax(arr, axis=0)
-    100000 loops, best of 3: 1.93 us per loop
+    100000 loops, best of 3: 2.1 us per loop
     >>> timeit func(a)
-    100000 loops, best of 3: 1.26 us per loop
+    100000 loops, best of 3: 1.47 us per loop
 
 Note that ``func`` is faster than Numpy's non-NaN version of max::
     
     >>> timeit arr.max(axis=0)
-    100000 loops, best of 3: 5 us per loop
+    100000 loops, best of 3: 4.78 us per loop
 
 So adding NaN protection to your inner loops comes at a negative cost!
 
@@ -259,6 +259,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 46 tests in 43.457s
+    Ran 46 tests in 41.457s
     OK
     <nose.result.TextTestResult run=46 errors=0 failures=0> 
