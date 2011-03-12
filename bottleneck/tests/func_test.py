@@ -36,7 +36,7 @@ def arrays(dtypes=bn.dtypes, nans=True):
                     yield -a
 
 def unit_maker(func, func0, decimal=np.inf, nans=True):
-    "Test that bn.xxx gives the same output as np.."
+    "Test that bn.xxx gives the same output as np.xxx."
     msg = '\nfunc %s | input %s (%s) | shape %s | axis %s\n'
     msg += '\nInput array:\n%s\n'
     for i, arr in enumerate(arrays(nans=nans)):
@@ -46,12 +46,12 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
                 desired = 'Crashed'
                 actualraised = False
                 try:
-                    actual = func(arr, axis=axis)
+                    actual = func(arr.copy(), axis=axis)
                 except:
                     actualraised = True
                 desiredraised = False
                 try:
-                    desired = func0(arr, axis=axis)
+                    desired = func0(arr.copy(), axis=axis)
                 except:
                     desiredraised = True
             if actualraised and desiredraised:

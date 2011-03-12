@@ -20,16 +20,16 @@ loop[1] = """\
     while l < r:
         i = l
         j = r
-        while a[i] == a[i]:
+        while b[i] == b[i]:
             i += 1
             if i == nAXIS:
                 break
-        while a[j] != a[j]:
+        while b[j] != b[j]:
             j -= 1
         if i <= j:
-            tmp = a[i]
-            a[i] = a[j]
-            a[j] = tmp
+            tmp = b[i]
+            b[i] = b[j]
+            b[j] = tmp
             i += 1
             j -= 1
         if i > j: break
@@ -41,16 +41,16 @@ loop[1] = """\
     r = n - 1 
     with nogil:       
         while l < r:
-            x = a[k]
+            x = b[k]
             i = l
             j = r
             while 1:
-                while a[i] < x: i += 1
-                while x < a[j]: j -= 1
+                while b[i] < x: i += 1
+                while x < b[j]: j -= 1
                 if i <= j:
-                    tmp = a[i]
-                    a[i] = a[j]
-                    a[j] = tmp
+                    tmp = b[i]
+                    b[i] = b[j]
+                    b[j] = tmp
                     i += 1
                     j -= 1
                 if i > j: break
@@ -58,13 +58,18 @@ loop[1] = """\
             if k < i: r = j
     if n % 2 == 0:        
         amax = MINDTYPE
+        allnan = 1
         for i in range(k):
-            ai = a[i]
+            ai = b[i]
             if ai >= amax:
                 amax = ai
-        return np.FLOAT(0.5 * (a[k] + amax))
+                allnan = 0
+        if allnan == 0:        
+            return np.FLOAT(0.5 * (b[k] + amax))
+        else:
+            return np.FLOAT(b[k])
     else:
-        return np.FLOAT(a[k])
+        return np.FLOAT(b[k])
 """        
 loop[2] = """\
     if nINDEX1 == 0:
@@ -77,16 +82,16 @@ loop[2] = """\
         while l < r:
             i = l
             j = r
-            while a[INDEXREPLACE|i|] == a[INDEXREPLACE|i|]:
+            while b[INDEXREPLACE|i|] == b[INDEXREPLACE|i|]:
                 i += 1
                 if i == nAXIS:
                     break
-            while a[INDEXREPLACE|j|] != a[INDEXREPLACE|j|]:
+            while b[INDEXREPLACE|j|] != b[INDEXREPLACE|j|]:
                 j -= 1
             if i <= j:
-                tmp = a[INDEXREPLACE|i|]
-                a[INDEXREPLACE|i|] = a[INDEXREPLACE|j|]
-                a[INDEXREPLACE|j|] = tmp
+                tmp = b[INDEXREPLACE|i|]
+                b[INDEXREPLACE|i|] = b[INDEXREPLACE|j|]
+                b[INDEXREPLACE|j|] = tmp
                 i += 1
                 j -= 1
             if i > j: break
@@ -97,16 +102,16 @@ loop[2] = """\
         l = 0
         r = n - 1
         while l < r:
-            x = a[INDEXREPLACE|k|]
+            x = b[INDEXREPLACE|k|]
             i = l
             j = r
             while 1:
-                while a[INDEXREPLACE|i|] < x: i += 1
-                while x < a[INDEXREPLACE|j|]: j -= 1
+                while b[INDEXREPLACE|i|] < x: i += 1
+                while x < b[INDEXREPLACE|j|]: j -= 1
                 if i <= j:
-                    tmp = a[INDEXREPLACE|i|]
-                    a[INDEXREPLACE|i|] = a[INDEXREPLACE|j|]
-                    a[INDEXREPLACE|j|] = tmp
+                    tmp = b[INDEXREPLACE|i|]
+                    b[INDEXREPLACE|i|] = b[INDEXREPLACE|j|]
+                    b[INDEXREPLACE|j|] = tmp
                     i += 1
                     j -= 1
                 if i > j: break
@@ -114,13 +119,18 @@ loop[2] = """\
             if k < i: r = j
         if n % 2 == 0:        
             amax = MINDTYPE
+            allnan = 1
             for i in range(k):
-                ai = a[INDEXREPLACE|i|]
+                ai = b[INDEXREPLACE|i|]
                 if ai >= amax:
                     amax = ai
-            y[INDEXPOP] = 0.5 * (a[INDEXREPLACE|k|] + amax)
+                    allnan = 0
+            if allnan == 0:        
+                y[INDEXPOP] = 0.5 * (b[INDEXREPLACE|k|] + amax)
+            else:
+                y[INDEXPOP] = CASTb[INDEXREPLACE|k|]         
         else:
-            y[INDEXPOP] = CASTa[INDEXREPLACE|k|]         
+            y[INDEXPOP] = CASTb[INDEXREPLACE|k|]         
     return y
 """
 loop[3] = """\
@@ -135,16 +145,16 @@ loop[3] = """\
             while l < r:
                 i = l
                 j = r
-                while a[INDEXREPLACE|i|] == a[INDEXREPLACE|i|]:
+                while b[INDEXREPLACE|i|] == b[INDEXREPLACE|i|]:
                     i += 1
                     if i == nAXIS:
                         break
-                while a[INDEXREPLACE|j|] != a[INDEXREPLACE|j|]:
+                while b[INDEXREPLACE|j|] != b[INDEXREPLACE|j|]:
                     j -= 1
                 if i <= j:
-                    tmp = a[INDEXREPLACE|i|]
-                    a[INDEXREPLACE|i|] = a[INDEXREPLACE|j|]
-                    a[INDEXREPLACE|j|] = tmp
+                    tmp = b[INDEXREPLACE|i|]
+                    b[INDEXREPLACE|i|] = b[INDEXREPLACE|j|]
+                    b[INDEXREPLACE|j|] = tmp
                     i += 1
                     j -= 1
                 if i > j: break
@@ -155,16 +165,16 @@ loop[3] = """\
             l = 0
             r = n - 1
             while l < r:
-                x = a[INDEXREPLACE|k|]
+                x = b[INDEXREPLACE|k|]
                 i = l
                 j = r
                 while 1:
-                    while a[INDEXREPLACE|i|] < x: i += 1
-                    while x < a[INDEXREPLACE|j|]: j -= 1
+                    while b[INDEXREPLACE|i|] < x: i += 1
+                    while x < b[INDEXREPLACE|j|]: j -= 1
                     if i <= j:
-                        tmp = a[INDEXREPLACE|i|]
-                        a[INDEXREPLACE|i|] = a[INDEXREPLACE|j|]
-                        a[INDEXREPLACE|j|] = tmp
+                        tmp = b[INDEXREPLACE|i|]
+                        b[INDEXREPLACE|i|] = b[INDEXREPLACE|j|]
+                        b[INDEXREPLACE|j|] = tmp
                         i += 1
                         j -= 1
                     if i > j: break
@@ -172,13 +182,18 @@ loop[3] = """\
                 if k < i: r = j
             if n % 2 == 0:        
                 amax = MINDTYPE
+                allnan = 1
                 for i in range(k):
-                    ai = a[INDEXREPLACE|i|]
+                    ai = b[INDEXREPLACE|i|]
                     if ai >= amax:
                         amax = ai
-                y[INDEXPOP] = 0.5 * (a[INDEXREPLACE|k|] + amax)
+                        allnan = 0
+                if allnan == 0:   
+                    y[INDEXPOP] = 0.5 * (b[INDEXREPLACE|k|] + amax)
+                else:
+                    y[INDEXPOP] = CASTb[INDEXREPLACE|k|]
             else:
-                y[INDEXPOP] = CASTa[INDEXREPLACE|k|]         
+                y[INDEXPOP] = CASTb[INDEXREPLACE|k|]         
     return y
 """
 
@@ -195,8 +210,10 @@ floats['top'] = """
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     "Median of NDIMd array with dtype=DTYPE along axis=AXIS."
+    cdef int allnan = 1
     cdef np.npy_intp i, j = 0, l, r, k, n 
     cdef np.DTYPE_t x, tmp, amax, ai
+    cdef np.ndarray[np.DTYPE_t, ndim=NDIM] b = PyArray_Copy(a)
 """
 
 floats['loop'] = {}
