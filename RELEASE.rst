@@ -15,7 +15,8 @@ This is a bug fix release.
 
 **Bug fixes**
 
-- #11 median() and nanmedian() modify input array
+- #11 median and nanmedian modified (partial sort) input array
+- #12 nanmedian wrong when odd number of elements with all but last a NaN
 
 Older versions
 ==============

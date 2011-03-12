@@ -58,11 +58,16 @@ loop[1] = """\
             if k < i: r = j
     if n % 2 == 0:        
         amax = MINDTYPE
+        allnan = 1
         for i in range(k):
             ai = b[i]
             if ai >= amax:
                 amax = ai
-        return np.FLOAT(0.5 * (b[k] + amax))
+                allnan = 0
+        if allnan == 0:        
+            return np.FLOAT(0.5 * (b[k] + amax))
+        else:
+            return np.FLOAT(b[k])
     else:
         return np.FLOAT(b[k])
 """        
@@ -114,11 +119,16 @@ loop[2] = """\
             if k < i: r = j
         if n % 2 == 0:        
             amax = MINDTYPE
+            allnan = 1
             for i in range(k):
                 ai = b[INDEXREPLACE|i|]
                 if ai >= amax:
                     amax = ai
-            y[INDEXPOP] = 0.5 * (b[INDEXREPLACE|k|] + amax)
+                    allnan = 0
+            if allnan == 0:        
+                y[INDEXPOP] = 0.5 * (b[INDEXREPLACE|k|] + amax)
+            else:
+                y[INDEXPOP] = CASTb[INDEXREPLACE|k|]         
         else:
             y[INDEXPOP] = CASTb[INDEXREPLACE|k|]         
     return y
@@ -172,11 +182,16 @@ loop[3] = """\
                 if k < i: r = j
             if n % 2 == 0:        
                 amax = MINDTYPE
+                allnan = 1
                 for i in range(k):
                     ai = b[INDEXREPLACE|i|]
                     if ai >= amax:
                         amax = ai
-                y[INDEXPOP] = 0.5 * (b[INDEXREPLACE|k|] + amax)
+                        allnan = 0
+                if allnan == 0:   
+                    y[INDEXPOP] = 0.5 * (b[INDEXREPLACE|k|] + amax)
+                else:
+                    y[INDEXPOP] = CASTb[INDEXREPLACE|k|]
             else:
                 y[INDEXPOP] = CASTb[INDEXREPLACE|k|]         
     return y
@@ -195,6 +210,7 @@ floats['top'] = """
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     "Median of NDIMd array with dtype=DTYPE along axis=AXIS."
+    cdef int allnan = 1
     cdef np.npy_intp i, j = 0, l, r, k, n 
     cdef np.DTYPE_t x, tmp, amax, ai
     cdef np.ndarray[np.DTYPE_t, ndim=NDIM] b = PyArray_Copy(a)
