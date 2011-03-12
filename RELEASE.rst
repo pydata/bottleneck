@@ -6,8 +6,24 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
-Bottleneck 0.4.2
+Bottleneck 0.4.3
 ================
+
+*Release date: not yet released; in development*
+
+This is a bug fix release.
+
+**Bug fixes**
+
+- #11 median() and nanmedian() modify input array
+
+Older versions
+==============
+
+Release notes from past releases.
+
+Bottleneck 0.4.2
+----------------
 
 *Release date: 2011-03-08*
 
@@ -15,11 +31,6 @@ This is a bug fix release.
 
 Same bug fixed in Bottleneck 0.4.1 for nanstd() was fixed for nanvar() in
 this release. Thanks again to Christoph Gohlke for finding the bug.
-
-Older versions
-==============
-
-Release notes from past releases.
 
 Bottleneck 0.4.1
 ----------------

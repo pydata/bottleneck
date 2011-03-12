@@ -8,7 +8,7 @@ from numpy cimport NPY_FLOAT64 as NPY_float64
 from numpy cimport (PyArray_EMPTY, PyArray_TYPE, PyArray_NDIM,
                     PyArray_SIZE, PyArray_DIMS, import_array,
                     PyArray_ArgSort, NPY_QUICKSORT, NPY_CORDER, 
-                    PyArray_Ravel, PyArray_FillWithScalar)
+                    PyArray_Ravel, PyArray_FillWithScalar, PyArray_Copy)
 import_array()
 import bottleneck as bn
 
