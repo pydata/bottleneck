@@ -18,6 +18,10 @@ This is a bug fix release.
 - #11 median and nanmedian modified (partial sort) input array
 - #12 nanmedian wrong when odd number of elements with all but last a NaN
 
+**Enhancement**
+
+- Lazy import of SciPy (rarely used) speeds Bottleneck import time by 3x
+
 Older versions
 ==============
 

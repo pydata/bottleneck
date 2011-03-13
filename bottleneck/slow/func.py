@@ -1,10 +1,6 @@
 
 import numpy as np
-try:
-    from scipy.stats import rankdata as scipy_rankdata
-    SCIPY = True
-except ImportError:
-    SCIPY = False
+scipy_rankdata = None
 
 __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
            'nanmin', 'nanmax', 'nanargmin', 'nanargmax', 'rankdata',
@@ -104,8 +100,12 @@ def nanargmax(arr, axis=None):
 
 def rankdata(arr, axis=None):
     "Slow rankdata function used for unaccelerated ndim/dtype combinations."
-    if not SCIPY:
-        raise ValueError("The slow version of rankdata requires SciPy.")
+    global scipy_rankdata
+    if scipy_rankdata is None:
+        try:
+            from scipy.stats import rankdata as scipy_rankdata
+        except ImportError:
+            raise ValueError("The slow version of rankdata requires SciPy.")
     if axis is None:
         arr = arr.ravel()
         axis = 0
@@ -121,8 +121,12 @@ def rankdata(arr, axis=None):
 
 def nanrankdata(arr, axis=None):
     "Slow nanrankdata function used for unaccelerated ndim/dtype combinations."
-    if not SCIPY:
-        raise ValueError("The slow version of nanrankdata requires SciPy.")
+    global scipy_rankdata
+    if scipy_rankdata is None:
+        try:
+            from scipy.stats import rankdata as scipy_rankdata
+        except ImportError:
+            raise ValueError("The slow version of rankdata requires SciPy.")
     if axis is None:
         arr = arr.ravel()
         axis = 0

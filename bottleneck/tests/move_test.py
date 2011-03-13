@@ -3,17 +3,17 @@
 import numpy as np
 from numpy.testing import (assert_equal, assert_array_equal,
                            assert_array_almost_equal)
-try:
-    import scipy
-    SCIPY = True
-except ImportError:
-    SCIPY = False
 nan = np.nan
 import bottleneck as bn
 
 
 def arrays(dtypes=bn.dtypes, nans=True):
     "Iterator that yield arrays to use for unit testing."
+    try:
+        import scipy
+        SCIPY = True
+    except ImportError:
+        SCIPY = False
     ss = {}
     ss[1] = {'size':  4, 'shapes': [(4,)]}
     ss[2] = {'size':  6, 'shapes': [(1,6), (2,3)]}

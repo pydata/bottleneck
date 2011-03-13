@@ -5,12 +5,11 @@ These function are slow but useful for unit testing.
 """
 
 import numpy as np
-try:
-    from scipy.ndimage import convolve1d, minimum_filter1d, maximum_filter1d
-    SCIPY = True
-except ImportError:
-    SCIPY = False
 import bottleneck as bn
+
+convolve1d = None
+minimum_filter1d = None
+maximum_filter1d = None
 
 __all__ = ['move_sum', 'move_nansum',
            'move_mean', 'move_nanmean',
@@ -55,10 +54,7 @@ def move_sum(arr, window, axis=-1, method='filter'):
 
     """
     if method == 'filter':
-        if SCIPY:
-            y = move_sum_filter(arr, window, axis=axis)
-        else:
-            raise ValueError("'filter' method requires SciPy.")
+        y = move_sum_filter(arr, window, axis=axis)
     elif method == 'strides':
         y = move_func_strides(np.sum, arr, window, axis=axis)
     elif method == 'loop':
@@ -113,10 +109,7 @@ def move_nansum(arr, window, axis=-1, method='filter'):
 
     """
     if method == 'filter':
-        if SCIPY:
-            y = move_nansum_filter(arr, window, axis=axis)
-        else:
-            raise ValueError("'filter' method requires SciPy.")
+        y = move_nansum_filter(arr, window, axis=axis)
     elif method == 'strides':
         y = move_func_strides(np.nansum, arr, window, axis=axis)
     elif method == 'loop':
@@ -161,6 +154,12 @@ def move_sum_filter(arr, window, axis=-1):
     array([ NaN,   3.,   5.,   7.])
 
     """
+    global convolve1d
+    if convolve1d is None:
+        try:
+            from scipy.ndimage import convolve1d
+        except ImportError:
+            raise ValueError("'filter' method requires SciPy.")
     if axis == None:
         raise ValueError, "An `axis` value of None is not supported."
     if window < 1:  
@@ -207,6 +206,12 @@ def move_nansum_filter(arr, window, axis=-1):
     array([ NaN,   3.,   2.,   4.,   9.,  11.,  13.])
 
     """
+    global convolve1d
+    if convolve1d is None:
+        try:
+            from scipy.ndimage import convolve1d
+        except ImportError:
+            raise ValueError("'filter' method requires SciPy.")
     if axis == None:
         raise ValueError, "An `axis` value of None is not supported."
     if window < 1:  
@@ -263,10 +268,7 @@ def move_mean(arr, window, axis=-1, method='filter'):
     
     """
     if method == 'filter':
-        if SCIPY:
-            y = move_mean_filter(arr, window, axis=axis)
-        else:
-            raise ValueError("'filter' method requires SciPy.")
+        y = move_mean_filter(arr, window, axis=axis)
     elif method == 'strides':
         y = move_func_strides(np.mean, arr, window, axis=axis)
     elif method == 'loop':
@@ -321,10 +323,7 @@ def move_nanmean(arr, window, axis=-1, method='filter'):
     
     """
     if method == 'filter':
-        if SCIPY:
-            y = move_nanmean_filter(arr, window, axis=axis)
-        else:
-            raise ValueError("'filter' method requires SciPy.")
+        y = move_nanmean_filter(arr, window, axis=axis)
     elif method == 'strides':
         y = move_func_strides(bn.slow.nanmean, arr, window, axis=axis)
     elif method == 'loop':
@@ -339,6 +338,12 @@ def move_nanmean(arr, window, axis=-1, method='filter'):
 
 def move_mean_filter(arr, window, axis=-1):
     "Moving window mean implemented with a filter."
+    global convolve1d
+    if convolve1d is None:
+        try:
+            from scipy.ndimage import convolve1d
+        except ImportError:
+            raise ValueError("'filter' method requires SciPy.")
     if axis == None:
         raise ValueError, "An `axis` value of None is not supported."
     if window < 1: 
@@ -355,6 +360,12 @@ def move_mean_filter(arr, window, axis=-1):
 
 def move_nanmean_filter(arr, window, axis=-1):
     "Moving window nanmean implemented with a filter."
+    global convolve1d
+    if convolve1d is None:
+        try:
+            from scipy.ndimage import convolve1d
+        except ImportError:
+            raise ValueError("'filter' method requires SciPy.")
     if axis == None:
         raise ValueError, "An `axis` value of None is not supported."
     if window < 1:  
@@ -414,10 +425,7 @@ def move_var(arr, window, axis=-1, method='filter', ddof=0):
     if ddof != 0:
         raise ValueError("`ddof` must be zero for unaccelerated input.")
     if method == 'filter':
-        if SCIPY:
-            y = move_var_filter(arr, window, axis=axis)
-        else:
-            raise ValueError("'filter' method requires SciPy.")
+        y = move_var_filter(arr, window, axis=axis)
     elif method == 'strides':
         y = move_func_strides(np.var, arr, window, axis=axis)
     elif method == 'loop':
@@ -468,10 +476,7 @@ def move_nanvar(arr, window, axis=-1, method='filter', ddof=0):
     if ddof != 0:
         raise ValueError("`ddof` must be zero for unaccelerated input.")
     if method == 'filter':
-        if SCIPY:
-            y = move_nanvar_filter(arr, window, axis=axis)
-        else:
-            raise ValueError("'filter' method requires SciPy.")
+        y = move_nanvar_filter(arr, window, axis=axis)
     elif method == 'strides':
         y = move_func_strides(bn.slow.nanvar, arr, window, axis=axis)
     elif method == 'loop':
@@ -486,6 +491,12 @@ def move_nanvar(arr, window, axis=-1, method='filter', ddof=0):
 
 def move_var_filter(arr, window, axis=-1):
     "Moving window variance implemented with a filter."
+    global convolve1d
+    if convolve1d is None:
+        try:
+            from scipy.ndimage import convolve1d
+        except ImportError:
+            raise ValueError("'filter' method requires SciPy.")
     if axis == None:
         raise ValueError, "An `axis` value of None is not supported."
     if window < 1:  
@@ -506,6 +517,12 @@ def move_var_filter(arr, window, axis=-1):
 
 def move_nanvar_filter(arr, window, axis=-1):
     "Moving window variance ignoring NaNs, implemented with a filter."
+    global convolve1d
+    if convolve1d is None:
+        try:
+            from scipy.ndimage import convolve1d
+        except ImportError:
+            raise ValueError("'filter' method requires SciPy.")
     if axis == None:
         raise ValueError, "An `axis` value of None is not supported."
     if window < 1:  
@@ -571,10 +588,7 @@ def move_std(arr, window, axis=-1, method='filter', ddof=0):
     if ddof != 0:
         raise ValueError("`ddof` must be zero for unaccelerated input.")
     if method == 'filter':
-        if SCIPY:
-            y = move_std_filter(arr, window, axis=axis)
-        else:
-            raise ValueError("'filter' method requires SciPy.")
+        y = move_std_filter(arr, window, axis=axis)
     elif method == 'strides':
         y = move_func_strides(np.std, arr, window, axis=axis)
     elif method == 'loop':
@@ -626,10 +640,7 @@ def move_nanstd(arr, window, axis=-1, method='filter', ddof=0):
     if ddof != 0:
         raise ValueError("`ddof` must be zero for unaccelerated input.")
     if method == 'filter':
-        if SCIPY:
-            y = move_nanstd_filter(arr, window, axis=axis)
-        else:
-            raise ValueError("'filter' method requires SciPy.")
+        y = move_nanstd_filter(arr, window, axis=axis)
     elif method == 'strides':
         y = move_func_strides(bn.slow.nanstd, arr, window, axis=axis)
     elif method == 'loop':
@@ -759,6 +770,12 @@ def move_nanmin(arr, window, axis=-1, method='filter'):
 
 def move_min_filter(arr, window, axis=-1):
     "Moving window minimium implemented with a filter."
+    global minimum_filter1d
+    if minimum_filter1d is None:
+        try:
+            from scipy.ndimage import minimum_filter1d
+        except ImportError:
+            raise ValueError("'filter' method requires SciPy.")
     if axis == None:
         raise ValueError, "An `axis` value of None is not supported."
     if window < 1:  
@@ -773,6 +790,17 @@ def move_min_filter(arr, window, axis=-1):
 
 def move_nanmin_filter(arr, window, axis=-1):
     "Moving window minimium ignoring NaNs, implemented with a filter."
+    global minimum_filter1d, convolve1d
+    if minimum_filter1d is None:
+        try:
+            from scipy.ndimage import minimum_filter1d
+        except ImportError:
+            raise ValueError("'filter' method requires SciPy.")
+    if convolve1d is None:
+        try:
+            from scipy.ndimage import convolve1d
+        except ImportError:
+            raise ValueError("'filter' method requires SciPy.")
     if axis == None:
         raise ValueError, "An `axis` value of None is not supported."
     if window < 1:  
@@ -918,6 +946,12 @@ def move_nanmax(arr, window, axis=-1, method='filter'):
 
 def move_max_filter(arr, window, axis=-1):
     "Moving window maximium implemented with a filter."
+    global maximum_filter1d
+    if maximum_filter1d is None:
+        try:
+            from scipy.ndimage import maximum_filter1d
+        except ImportError:
+            raise ValueError("'filter' method requires SciPy.")
     if axis == None:
         raise ValueError, "An `axis` value of None is not supported."
     if window < 1:  
@@ -931,6 +965,17 @@ def move_max_filter(arr, window, axis=-1):
     return y
 def move_nanmax_filter(arr, window, axis=-1):
     "Moving window maximium ignoring NaNs, implemented with a filter."
+    global maximum_filter1d, convolve1d
+    if maximum_filter1d is None:
+        try:
+            from scipy.ndimage import maximum_filter1d
+        except ImportError:
+            raise ValueError("'filter' method requires SciPy.")
+    if convolve1d is None:
+        try:
+            from scipy.ndimage import convolve1d
+        except ImportError:
+            raise ValueError("'filter' method requires SciPy.")
     if axis == None:
         raise ValueError, "An `axis` value of None is not supported."
     if window < 1:  
