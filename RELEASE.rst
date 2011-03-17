@@ -9,7 +9,7 @@ see the commit log at http://github.com/kwgoodman/bottleneck
 Bottleneck 0.4.3
 ================
 
-*Release date: 20011-03-17*
+*Release date: 2011-03-17*
 
 This is a bug fix release.
 
