@@ -8,7 +8,7 @@ help:
 	@echo "pyx32 --> Create Cython pyx files from templates (32 bit OS)"
 	@echo "pyx64 --> Create Cython pyx files from templates (64 bit OS)"
 	@echo "build --> Build the Cython extension modules"
-	@echo "clean --> Remove all the build files for a freah start"
+	@echo "clean --> Remove all the build files for a fresh start"
 	@echo "test  --> Run unit tests"
 	@echo "all   --> clean, build, test"
 	@echo "all32 --> clean, build, test for 32 bit OS"

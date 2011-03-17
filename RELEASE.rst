@@ -20,7 +20,7 @@ This is a bug fix release.
 
 **Enhancement**
 
-- Lazy import of SciPy (rarely used) speeds Bottleneck import time by 3x
+- Lazy import of SciPy (rarely used) speeds Bottleneck import 3x
 
 Older versions
 ==============

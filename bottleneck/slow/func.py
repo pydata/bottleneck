@@ -1,6 +1,5 @@
 
 import numpy as np
-scipy_rankdata = None
 
 __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
            'nanmin', 'nanmax', 'nanargmin', 'nanargmax', 'rankdata',
@@ -100,12 +99,6 @@ def nanargmax(arr, axis=None):
 
 def rankdata(arr, axis=None):
     "Slow rankdata function used for unaccelerated ndim/dtype combinations."
-    global scipy_rankdata
-    if scipy_rankdata is None:
-        try:
-            from scipy.stats import rankdata as scipy_rankdata
-        except ImportError:
-            raise ValueError("The slow version of rankdata requires SciPy.")
     if axis is None:
         arr = arr.ravel()
         axis = 0
@@ -121,12 +114,6 @@ def rankdata(arr, axis=None):
 
 def nanrankdata(arr, axis=None):
     "Slow nanrankdata function used for unaccelerated ndim/dtype combinations."
-    global scipy_rankdata
-    if scipy_rankdata is None:
-        try:
-            from scipy.stats import rankdata as scipy_rankdata
-        except ImportError:
-            raise ValueError("The slow version of rankdata requires SciPy.")
     if axis is None:
         arr = arr.ravel()
         axis = 0
@@ -153,7 +140,8 @@ def nanrankdata(arr, axis=None):
 # which is distributed with Bottleneck.
 #
 # Code taken from scipy trunk on Dec 16, 2010.
-# nanmedian take from scipy trunk on Dec 17, 2010.
+# nanmedian taken from scipy trunk on Dec 17, 2010.
+# rankdata taken from scipy HEAD on Mar 16, 2011.
 
 def scipy_nanmean(x, axis=0):
     """
@@ -345,3 +333,64 @@ def _chk_asarray(a, axis):
         a = np.asarray(a)
         outaxis = axis
     return a, outaxis
+
+def fastsort(a):
+    """
+    Sort an array and provide the argsort.
+
+    Parameters
+    ----------
+    a : array_like
+        Input array.
+
+    Returns
+    -------
+    fastsort : ndarray of type int
+        sorted indices into the original array
+
+    """
+    # TODO: the wording in the docstring is nonsense.
+    it = np.argsort(a)
+    as_ = a[it]
+    return as_, it
+
+def scipy_rankdata(a):
+    """
+    Ranks the data, dealing with ties appropriately.
+
+    Equal values are assigned a rank that is the average of the ranks that
+    would have been otherwise assigned to all of the values within that set.
+    Ranks begin at 1, not 0.
+
+    Parameters
+    ----------
+    a : array_like
+        This array is first flattened.
+
+    Returns
+    -------
+    rankdata : ndarray
+         An array of length equal to the size of `a`, containing rank scores.
+
+    Examples
+    --------
+    >>> stats.rankdata([0, 2, 2, 3])
+    array([ 1. ,  2.5,  2.5,  4. ])
+
+    """
+    a = np.ravel(a)
+    n = len(a)
+    svec, ivec = fastsort(a)
+    sumranks = 0
+    dupcount = 0
+    newarray = np.zeros(n, float)
+    for i in xrange(n):
+        sumranks += i
+        dupcount += 1
+        if i==n-1 or svec[i] != svec[i+1]:
+            averank = sumranks / float(dupcount) + 1
+            for j in xrange(i-dupcount+1,i+1):
+                newarray[ivec[j]] = averank
+            sumranks = 0
+            dupcount = 0
+    return newarray

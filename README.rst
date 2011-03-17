@@ -57,29 +57,29 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
     Bottleneck performance benchmark
         Bottleneck  0.4.3
         Numpy (np)  1.5.1
-        Scipy (sp)  0.8.0
+        Scipy (sp)  0.9.0
         Speed is NumPy or SciPy time divided by Bottleneck time
         NaN means one-third NaNs; float64 and axis=0 are used
         High-level functions used (mode='fast')
 
                      no NaN     no NaN     no NaN      NaN        NaN        NaN    
                     (10,10)   (100,100) (1000,1000)  (10,10)   (100,100) (1000,1000)
-    median            5.13       2.18       2.26       6.18       4.06       2.89
-    nanmedian       123.05      28.56       4.37     153.27      73.41       6.42
-    nansum           12.35       6.33       1.72      12.72       7.23       1.70
-    nanmax           12.57       6.25       1.68      13.70      10.40       1.68
-    nanmean          24.24      13.72       3.00      25.13      29.74       4.87
-    nanstd           29.77       9.63       2.63      31.46      17.74       3.65
-    nanargmax        11.55       5.76       2.62      12.04       8.80       2.81
-    rankdata         22.70      12.89       8.65      22.41      14.57       9.65
-    move_sum         10.29       7.99      14.46      11.12       8.41      13.87
-    move_nansum      29.09      18.81      29.31      28.62      24.58      29.62
-    move_mean        10.01       4.24      14.49      10.16       7.80      14.09
-    move_nanmean     31.90      11.75      29.38      32.71      14.49      31.03
-    move_std         16.92       3.28      22.77      21.25      20.10      29.58
-    move_nanstd      33.67       6.21      34.67      38.34       7.03      36.06
-    move_max          3.95       3.72       9.35       4.91       5.50      11.74
-    move_nanmax      22.77       6.28      19.57      24.26      14.73      26.61
+    median            5.03       2.18       2.28       5.77       4.08       2.89
+    nanmedian       120.51      29.31       4.40     151.19      75.39       6.56
+    nansum           11.79       6.29       1.71      11.77       7.32       1.69
+    nanmax           12.31       6.22       1.67      13.25      10.42       1.68
+    nanmean          23.02      13.81       2.98      23.71      29.02       5.10
+    nanstd           27.88       9.66       2.66      29.18      17.78       3.67
+    nanargmax        10.97       5.87       2.65      11.25       8.73       2.81
+    rankdata         22.46      12.85       8.76      22.22      14.41       9.84
+    move_sum         11.34       8.55      14.29      11.05       9.03      13.84
+    move_nansum      29.18      20.42      29.05      29.58      25.72      29.40
+    move_mean        10.66       4.41      14.36      10.47       8.90      13.95
+    move_nanmean     31.35      12.07      29.77      32.50      15.50      30.61
+    move_std         17.40       3.42      22.98      22.37      21.23      29.89
+    move_nanstd      34.71       6.36      34.77      40.26       7.14      36.14
+    move_max          3.98       3.74       9.30       4.62       5.87      11.68
+    move_nanmax      21.64       6.47      19.59      24.89      15.40      26.98
 
     Reference functions:
     median         np.median
@@ -137,29 +137,29 @@ Benchmarks for the low-level Cython functions::
     Bottleneck performance benchmark
         Bottleneck  0.4.3
         Numpy (np)  1.5.1
-        Scipy (sp)  0.8.0
+        Scipy (sp)  0.9.0
         Speed is NumPy or SciPy time divided by Bottleneck time
         NaN means one-third NaNs; float64 and axis=0 are used
         Low-level functions used (mode='faster')
 
                      no NaN     no NaN     no NaN      NaN        NaN        NaN    
                     (10,10)   (100,100) (1000,1000)  (10,10)   (100,100) (1000,1000)
-    median            6.69       2.20       2.28       8.05       4.20       2.90
-    nanmedian       153.28      28.59       4.37     202.89      75.00       6.46
-    nansum           19.81       6.64       1.74      19.93       7.78       1.71
-    nanmax           19.52       6.42       1.69      21.98      11.03       1.69
-    nanmean          37.07      14.51       2.98      39.31      30.74       5.00
-    nanstd           42.13       9.84       2.64      44.11      18.21       3.66
-    nanargmax        17.91       6.01       2.65      18.81       9.42       2.82
-    rankdata         24.50      12.73       8.59      24.32      14.56       9.77
-    move_sum         17.19       8.56      14.68      17.17       8.90      14.07
-    move_nansum      46.11      21.13      29.80      47.85      26.42      29.95
-    move_mean        16.35       4.27      14.30      16.58       8.96      14.23
-    move_nanmean     47.75      11.91      29.89      50.23      14.61      30.91
-    move_std         22.55       3.36      22.85      31.19      21.64      29.86
-    move_nanstd      46.23       6.20      34.91      54.68       7.07      35.87
-    move_max          5.64       3.69       9.40       6.72       5.71      11.83
-    move_nanmax      29.37       6.38      19.61      36.51      14.68      27.15
+    median            6.07       2.20       2.29       7.51       4.13       2.89
+    nanmedian       145.48      29.33       4.41     201.33      77.24       6.54
+    nansum           20.22       6.66       1.72      20.02       7.95       1.69
+    nanmax           19.31       6.48       1.69      21.36      11.07       1.66
+    nanmean          37.43      14.38       3.00      39.66      30.58       5.01
+    nanstd           42.84       9.90       2.85      44.79      18.23       3.82
+    nanargmax        17.83       6.06       2.68      18.13       9.54       2.85
+    rankdata         23.62      12.63       8.83      23.59      14.30       9.87
+    move_sum         17.53       8.99      13.94      17.01       9.47      13.74
+    move_nansum      47.25      21.71      29.44      49.74      27.34      28.95
+    move_mean        16.45       4.48      14.27      16.19       9.08      13.85
+    move_nanmean     49.29      12.22      29.45      51.56      14.97      30.25
+    move_std         22.57       3.46      23.01      31.58      22.34      29.68
+    move_nanstd      46.73       6.34      34.83      56.56       7.18      35.95
+    move_max          5.69       3.81       9.25       6.70       5.97      11.73
+    move_nanmax      29.97       6.48      19.57      35.73      15.92      27.10
 
     Reference functions:
     median         np.median
@@ -214,7 +214,7 @@ Requirements:
 Bottleneck               Python, NumPy 1.5.1
 Unit tests               nose
 Compile                  gcc or MinGW
-Optional                 SciPy 0.8.0 (portions of benchmark)
+Optional                 SciPy 0.8.0 or 0.9.0 (portions of benchmark)
 ======================== ====================================================
 
 Directions for installing a *released* version of Bottleneck (i.e., one
