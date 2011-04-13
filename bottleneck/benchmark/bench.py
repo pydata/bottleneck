@@ -1,4 +1,7 @@
 
+# For support of python 2.5
+from __future__ import with_statement
+
 import numpy as np
 import bottleneck as bn
 from autotimeit import autotimeit

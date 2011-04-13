@@ -6,8 +6,22 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
-Bottleneck 0.4.3
+Bottleneck 0.5.0
 ================
+
+*Release date: Not yet released, in development*
+
+**Bug fixes**
+
+- #14 Support python 2.5 by importing `with` statement
+  
+Older versions
+==============
+
+Release notes from past releases.
+
+Bottleneck 0.4.3
+----------------
 
 *Release date: 2011-03-17*
 
@@ -21,11 +35,6 @@ This is a bug fix release.
 **Enhancement**
 
 - Lazy import of SciPy (rarely used) speeds Bottleneck import 3x
-
-Older versions
-==============
-
-Release notes from past releases.
 
 Bottleneck 0.4.2
 ----------------

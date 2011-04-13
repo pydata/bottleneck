@@ -1,5 +1,8 @@
 "Test moving window functions."
 
+# For support of python 2.5
+from __future__ import with_statement
+
 import numpy as np
 from numpy.testing import (assert_equal, assert_array_equal,
                            assert_array_almost_equal)
