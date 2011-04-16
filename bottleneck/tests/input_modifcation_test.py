@@ -66,6 +66,7 @@ def test_modification():
              bn.nanmedian,
              bn.rankdata,
              bn.nanrankdata,
+             bn.ss,
              bn.move_sum,
              bn.move_nansum,
              bn.move_mean,

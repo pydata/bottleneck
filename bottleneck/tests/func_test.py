@@ -121,6 +121,10 @@ def test_nanrankdata():
     "Test nanrankdata."
     yield unit_maker, bn.nanrankdata, bn.slow.nanrankdata
 
+def test_ss():
+    "Test ss."
+    yield unit_maker, bn.ss, bn.slow.ss
+
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
 

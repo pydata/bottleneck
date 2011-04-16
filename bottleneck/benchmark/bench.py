@@ -249,6 +249,23 @@ def benchsuite(mode, shapes, dtype, axis, nans):
     """
     run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
+
+    # ss
+    run = {}
+    run['name'] = "ss"
+    run['ref'] = "scipy.stats.ss"
+    run['scipy_required'] = False
+    if mode == 'fast':
+        code = "bn.ss(a, axis=AXIS)"
+    else:
+        code = "func(a)"
+    run['statements'] = [code, "scipy_ss(a, axis=AXIS)"] 
+    setup = """
+        from bottleneck.slow.func import scipy_ss
+        func, a = bn.func.ss_selector(a, axis=AXIS)
+    """    
+    run['setups'] = getsetups(setup, shapes, nans)
+    suite.append(run)
     
     # rankdata
     run = {}

@@ -11,6 +11,10 @@ Bottleneck 0.5.0
 
 *Release date: Not yet released, in development*
 
+**New functions**
+
+- ss(), sum of squares, faster version of scipy.stats.ss
+
 **Bug fixes**
 
 - #14 Support python 2.5 by importing `with` statement
