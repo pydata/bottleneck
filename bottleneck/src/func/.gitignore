@@ -10,3 +10,4 @@ nansum.pyx
 nanvar.pyx
 rankdata.pyx
 nanrankdata.pyx
+ss.pyx
