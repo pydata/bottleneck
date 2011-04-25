@@ -3,7 +3,7 @@ import numpy as np
 
 __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
            'nanmin', 'nanmax', 'nanargmin', 'nanargmax', 'rankdata',
-           'nanrankdata', 'ss']
+           'nanrankdata', 'ss', 'partsort']
 
 def median(arr, axis=None):
     "Slow median function used for unaccelerated ndim/dtype combinations."
@@ -133,7 +133,11 @@ def nanrankdata(arr, axis=None):
 
 def ss(arr, axis=0):
     "Slow sum of squares used for unaccelerated ndim/dtype combinations."
-    return scipy_ss(arr, axis) 
+    return scipy_ss(arr, axis)
+
+def partsort(arr, n, axis=-1):
+    "Slow partial sort used for unaccelerated ndim/dtype combinations."
+    return np.sort(arr, axis)
 
 # ---------------------------------------------------------------------------
 #

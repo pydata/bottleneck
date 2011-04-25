@@ -38,3 +38,5 @@ else:
 
 cdef extern from "math.h":
     double sqrt(double x)
+    
+PARTSORT_ERR_MSG = "`n` (=%d) must be between 1 and %d, inclusive."    

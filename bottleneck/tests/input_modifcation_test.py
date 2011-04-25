@@ -41,11 +41,11 @@ def unit_maker(func, nans=True):
             with np.errstate(invalid='ignore'):
                 arr1 = arr.copy()
                 arr2 = arr.copy()
-                if 'move_' in func.__name__:
+                if ('move_' in func.__name__) or (func.__name__ == 'partsort'):
                     if axis is None:
                         continue
                     actual = func(arr1, 1, axis=axis)
-                else:    
+                else:
                     try:
                         actual = func(arr1, axis=axis)
                     except:
@@ -67,6 +67,7 @@ def test_modification():
              bn.rankdata,
              bn.nanrankdata,
              bn.ss,
+             bn.partsort,
              bn.move_sum,
              bn.move_nansum,
              bn.move_mean,

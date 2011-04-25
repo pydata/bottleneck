@@ -14,6 +14,7 @@ from nanargmax import nanargmax
 from rankdata import rankdata
 from nanrankdata import nanrankdata
 from ss import ss
+from partsort import partsort
 
 funcs = {}
 funcs['median'] = median
@@ -29,6 +30,7 @@ funcs['nanargmax'] = nanargmax
 funcs['rankdata'] = rankdata
 funcs['nanrankdata'] = nanrankdata
 funcs['ss'] = ss
+funcs['partsprt'] = partsort
 
 def funcpyx(funcs=funcs, bits=None):
     for func in funcs:

@@ -13,6 +13,7 @@ Bottleneck 0.5.0
 
 **New functions**
 
+- partsort()
 - ss(), sum of squares, faster version of scipy.stats.ss
 
 **Bug fixes**
