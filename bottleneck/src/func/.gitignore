@@ -12,3 +12,4 @@ rankdata.pyx
 nanrankdata.pyx
 ss.pyx
 partsort.pyx
+argpartsort.pyx

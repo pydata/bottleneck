@@ -27,14 +27,12 @@ def arrays(dtypes=bn.dtypes):
                 a = a.reshape(shape)
                 yield a
                 yield -a
-            if issubclass(a.dtype.type, np.inexact): 
-                for i in range(a.size):
-                    a.flat[i] = np.inf
-                    yield a
-                    yield -a
+            for i in range(0, a.size, 2):
+                a.flat[i] *= -1
+                yield a
 
-def unit_maker(func, func0, decimal=np.inf):
-    "Test that bn.partsort gives the same output as bn.slow.partsum."
+def unit_maker(func, func0):
+    "Test bn.(arg)partsort gives same output as bn.slow.(arg)partsort."
     msg = '\nfunc %s | input %s (%s) | shape %s | n %d | axis %s\n'
     msg += '\nInput array:\n%s\n'
     for i, arr in enumerate(arrays()):
@@ -49,13 +47,13 @@ def unit_maker(func, func0, decimal=np.inf):
                 actual[:n] = np.sort(actual[:n], axis=axis)
                 actual[n:] = np.sort(actual[n:], axis=axis)
                 desired = func0(arr.copy(), n, axis=axis)
+                if 'arg' in func.__name__:
+                    desired[:n] = np.sort(desired[:n], axis=axis)
+                    desired[n:] = np.sort(desired[n:], axis=axis)
             tup = (func.__name__, 'a'+str(i), str(arr.dtype),
                    str(arr.shape), n, str(axis), arr)
             err_msg = msg % tup
-            if (decimal < np.inf) and (np.isfinite(arr).sum() > 0):
-                assert_array_almost_equal(actual, desired, decimal, err_msg)
-            else:
-                assert_array_equal(actual, desired, err_msg)
+            assert_array_equal(actual, desired, err_msg)
             err_msg += '\n dtype mismatch %s %s'
             if hasattr(actual, 'dtype') or hasattr(desired, 'dtype'):
                 da = actual.dtype
@@ -65,3 +63,7 @@ def unit_maker(func, func0, decimal=np.inf):
 def test_partsort():
     "Test partsort."
     yield unit_maker, bn.partsort, bn.slow.partsort
+
+def test_argpartsort():
+    "Test argpartsort."
+    yield unit_maker, bn.argpartsort, bn.slow.argpartsort
