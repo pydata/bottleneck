@@ -284,6 +284,44 @@ def benchsuite(mode, shapes, dtype, axis, nans):
     run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
     
+    # partsort
+    run = {}
+    run['name'] = "partsort"
+    run['ref'] = "np.sort, n=max(a.shape[%s]/2,1)" % axis
+    run['scipy_required'] = False
+    if mode == 'fast':
+        code = "bn.partsort(a, n=n, axis=AXIS)"
+    else:
+        code = "func(a, n)"
+    run['statements'] = [code, "np.sort(a, axis=AXIS)"] 
+    setup = """
+        if AXIS is None: n = a.size
+        else: n = a.shape[AXIS]
+        n = max(n / 2, 1)
+        func, a = bn.func.partsort_selector(a, axis=AXIS)
+    """
+    run['setups'] = getsetups(setup, shapes, nans)
+    suite.append(run)
+    
+    # argpartsort
+    run = {}
+    run['name'] = "argpartsort"
+    run['ref'] = "np.argsort, n=max(a.shape[%s]/2,1)" % axis
+    run['scipy_required'] = False
+    if mode == 'fast':
+        code = "bn.argpartsort(a, n=n, axis=AXIS)"
+    else:
+        code = "func(a, n)"
+    run['statements'] = [code, "np.argsort(a, axis=AXIS)"] 
+    setup = """
+        if AXIS is None: n = a.size
+        else: n = a.shape[AXIS]
+        n = max(n / 2, 1)
+        func, a = bn.func.argpartsort_selector(a, axis=AXIS)
+    """
+    run['setups'] = getsetups(setup, shapes, nans)
+    suite.append(run)
+    
     # move_sum
     run = {}
     run['name'] = "move_sum"
