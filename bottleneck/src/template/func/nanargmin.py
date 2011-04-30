@@ -215,9 +215,8 @@ def nanargmin_selector(arr, axis):
     ----------
     arr : array_like
         Input array. If `arr` is not an array, a conversion is attempted.
-    axis : {int, None}, optional
-        Axis along which the indices are found. The default (axis=None) is to
-        find the index of the minimum value in the flattened array.
+    axis : {int, None}
+        Axis along which the indices are found.
     
     Returns
     -------

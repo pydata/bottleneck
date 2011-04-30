@@ -218,9 +218,8 @@ def move_nanmean_selector(arr, int axis):
     ----------
     arr : array_like
         Input array. If `arr` is not an array, a conversion is attempted.
-    axis : {int, None}, optional
-        Axis along which the moving mean is to be computed. The default
-        (axis=0) is to compute the moving mean along the first axis.
+    axis : {int, None}
+        Axis along which the moving mean is to be computed.
     
     Returns
     -------

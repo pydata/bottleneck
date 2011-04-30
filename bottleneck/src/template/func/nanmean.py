@@ -279,9 +279,8 @@ def nanmean_selector(arr, axis):
     ----------
     arr : array_like
         Input array. If `arr` is not an array, a conversion is attempted.
-    axis : {int, None}, optional
-        Axis along which the mean is to be computed. The default (axis=None)
-        is to compute the mean of the flattened array.
+    axis : {int, None}
+        Axis along which the mean is to be computed.
     
     Returns
     -------

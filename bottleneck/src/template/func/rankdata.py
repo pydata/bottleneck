@@ -207,9 +207,8 @@ def rankdata_selector(arr, axis):
     ----------
     arr : array_like
         Input array. If `arr` is not an array, a conversion is attempted.
-    axis : {int, None}, optional
-        Axis along which to rank the elements of the array. The default
-        (axis=None) is to rank the elements of the flattened array.
+    axis : {int, None}
+        Axis along which to rank the elements of the array.
     
     Returns
     -------

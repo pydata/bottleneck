@@ -249,10 +249,8 @@ def move_nanstd_selector(arr, int axis):
     ----------
     arr : array_like
         Input array. If `arr` is not an array, a conversion is attempted.
-    axis : {int, None}, optional
+    axis : {int, None}
         Axis along which the moving standard deviation is to be computed.
-        The default (axis=0) is to compute the moving standard deviation
-        along the first axis.
     
     Returns
     -------
