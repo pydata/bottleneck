@@ -11,7 +11,7 @@ import slow
 try:
     from func import (nansum, nanmax, nanmin, nanmean, nanstd, nanvar, median,
                       nanmedian, nanargmin, nanargmax, rankdata, nanrankdata,
-                      ss)
+                      ss, partsort, argpartsort)
 except:
     pass
 try:

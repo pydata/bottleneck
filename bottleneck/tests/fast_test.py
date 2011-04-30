@@ -89,6 +89,14 @@ def test_ss_selector():
     "Test ss_selector."
     fast_checker(bn.func.ss_selector)
 
+def test_partsort_selector():
+    "Test partsort_selector."
+    fast_checker(bn.func.partsort_selector)
+
+def test_argpartsort_selector():
+    "Test argpartsort_selector."
+    fast_checker(bn.func.argpartsort_selector)
+
 # Moving functions ----------------------------------------------------------
 
 def test_move_sum_selector():
