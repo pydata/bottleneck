@@ -85,7 +85,7 @@ loop[1] = """\
     if allnan == 0:       
         return np.DTYPE(amax)
     else:
-        return NAN
+        return np.DTYPE(NAN)
 """
 loop[2] = """\
     if nINDEX0 * nINDEX1 == 0:
@@ -101,7 +101,7 @@ loop[2] = """\
     if allnan == 0:       
         return np.DTYPE(amax)
     else:
-        return NAN
+        return np.DTYPE(NAN)
 """
 loop[3] = """\
     if nINDEX0 * nINDEX1 * nINDEX2 == 0:
@@ -118,7 +118,7 @@ loop[3] = """\
     if allnan == 0:       
         return np.DTYPE(amax)
     else:
-        return NAN
+        return np.DTYPE(NAN)
 """
 
 floats_None['loop'] = loop

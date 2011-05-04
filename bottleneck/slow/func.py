@@ -83,11 +83,19 @@ def nanstd(arr, axis=None, ddof=0):
 
 def nanmin(arr, axis=None):
     "Slow nanmin function used for unaccelerated ndim/dtype combinations."
-    return np.nanmin(arr, axis=axis)
+    y =  np.nanmin(arr, axis=axis)
+    if not hasattr(y, "dtype"):
+        # Numpy 1.5.1 doesn't return object with dtype when input is all NaN
+        y = arr.dtype.type(y)
+    return y
 
 def nanmax(arr, axis=None):
     "Slow nanmax function used for unaccelerated ndim/dtype combinations."
-    return np.nanmax(arr, axis=axis)
+    y =  np.nanmax(arr, axis=axis)
+    if not hasattr(y, "dtype"):
+        # Numpy 1.5.1 doesn't return object with dtype when input is all NaN
+        y = arr.dtype.type(y)
+    return y
 
 def nanargmin(arr, axis=None):
     "Slow nanargmin function used for unaccelerated ndim/dtype combinations."

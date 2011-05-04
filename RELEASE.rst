@@ -20,6 +20,10 @@ Bottleneck 0.5.0
 **Bug fixes**
 
 - #14 Support python 2.5 by importing `with` statement
+
+**Breaks from 0.4.3**
+
+- nanmax and nanmin now follow Numpy 1.6 (not 1.5.1) when input is all NaN
   
 Older versions
 ==============
