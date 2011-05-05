@@ -37,6 +37,13 @@ def arrays(dtypes=bn.dtypes, nans=True):
                     a.flat[i] = np.inf
                     yield a
                     yield -a
+    if nans:
+        # nanmedian regression tests
+        a = np.array([1, nan, nan, 2])
+        yield a
+        a = np.vstack((a, a))
+        yield a
+        yield a.reshape(1,2,4)
 
 def unit_maker(func, func0, decimal=np.inf, nans=True):
     "Test that bn.xxx gives the same output as np.xxx."

@@ -24,6 +24,10 @@ Bottleneck 0.5.0
 **Breaks from 0.4.3**
 
 - nanmax and nanmin now follow Numpy 1.6 (not 1.5.1) when input is all NaN
+
+**Bug fixes**
+
+- #22 nanmedian wrong for particular ordering of NaN and non-NaN elements
   
 Older versions
 ==============

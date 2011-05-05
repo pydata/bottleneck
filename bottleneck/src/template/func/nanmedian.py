@@ -14,28 +14,21 @@ loop = {}
 loop[1] = """\
     if nINDEX0 == 0:
         return np.FLOAT(NAN)
-    k = nAXIS 
-    l = 0
-    r = k - 1
-    while l < r:
-        i = l
-        j = r
-        while b[i] == b[i]:
-            i += 1
-            if i == nAXIS:
+    j = nAXIS - 1
+    flag = 1
+    for i in range(nINDEX0):
+        if b[i] != b[i]:
+            while b[j] != b[j]:
+                if j <= 0:
+                    break
+                j -= 1    
+            if i >= j:
+                flag = 0
                 break
-        while b[j] != b[j]:
-            j -= 1
-        if i <= j:
             tmp = b[i]
             b[i] = b[j]
             b[j] = tmp
-            i += 1
-            j -= 1
-        if i > j: break
-        l = i
-        r = j
-    n = j + 1 
+    n = i + flag
     k = n >> 1
     l = 0
     r = n - 1 
@@ -75,29 +68,22 @@ loop[2] = """\
     if nINDEX1 == 0:
         PyArray_FillWithScalar(y, NAN)
         return y
-    for iINDEX0 in range(nINDEX0): 
-        k = nAXIS 
-        l = 0
-        r = k - 1
-        while l < r:
-            i = l
-            j = r
-            while b[INDEXREPLACE|i|] == b[INDEXREPLACE|i|]:
-                i += 1
-                if i == nAXIS:
+    for iINDEX0 in range(nINDEX0):
+        j = nAXIS - 1
+        flag = 1
+        for i in range(nINDEX1):
+            if b[INDEXREPLACE|i|] != b[INDEXREPLACE|i|]:
+                while b[INDEXREPLACE|j|] != b[INDEXREPLACE|j|]:
+                    if j <= 0:
+                        break
+                    j -= 1    
+                if i >= j:
+                    flag = 0
                     break
-            while b[INDEXREPLACE|j|] != b[INDEXREPLACE|j|]:
-                j -= 1
-            if i <= j:
                 tmp = b[INDEXREPLACE|i|]
                 b[INDEXREPLACE|i|] = b[INDEXREPLACE|j|]
                 b[INDEXREPLACE|j|] = tmp
-                i += 1
-                j -= 1
-            if i > j: break
-            l = i
-            r = j
-        n = j + 1 
+        n = i + flag
         k = n >> 1
         l = 0
         r = n - 1
@@ -139,28 +125,21 @@ loop[3] = """\
         return y
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
-            k = nAXIS 
-            l = 0
-            r = k - 1
-            while l < r:
-                i = l
-                j = r
-                while b[INDEXREPLACE|i|] == b[INDEXREPLACE|i|]:
-                    i += 1
-                    if i == nAXIS:
+            j = nAXIS - 1
+            flag = 1
+            for i in range(nINDEX2):
+                if b[INDEXREPLACE|i|] != b[INDEXREPLACE|i|]:
+                    while b[INDEXREPLACE|j|] != b[INDEXREPLACE|j|]:
+                        if j <= 0:
+                            break
+                        j -= 1    
+                    if i >= j:
+                        flag = 0
                         break
-                while b[INDEXREPLACE|j|] != b[INDEXREPLACE|j|]:
-                    j -= 1
-                if i <= j:
                     tmp = b[INDEXREPLACE|i|]
                     b[INDEXREPLACE|i|] = b[INDEXREPLACE|j|]
                     b[INDEXREPLACE|j|] = tmp
-                    i += 1
-                    j -= 1
-                if i > j: break
-                l = i
-                r = j
-            n = j + 1 
+            n = i + flag
             k = n >> 1
             l = 0
             r = n - 1
@@ -210,8 +189,8 @@ floats['top'] = """
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     "Median of NDIMd array with dtype=DTYPE along axis=AXIS."
-    cdef int allnan = 1
-    cdef np.npy_intp i, j = 0, l, r, k, n 
+    cdef int allnan = 1, flag = 0
+    cdef np.npy_intp i = 0, j = 0, l, r, k, n 
     cdef np.DTYPE_t x, tmp, amax, ai
     cdef np.ndarray[np.DTYPE_t, ndim=NDIM] b = PyArray_Copy(a)
 """
