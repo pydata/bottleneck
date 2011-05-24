@@ -43,7 +43,7 @@ moves:
 	mv move.so ../move.so
 
 test:
-	python -c "import bottleneck; bottleneck.test()"
+	python -c "import bottleneck;bottleneck.test(extra_argv=['--processes=4'])"
 
 bench:
 	python -c "import bottleneck; bottleneck.bench()"
