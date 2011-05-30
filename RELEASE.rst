@@ -19,6 +19,10 @@ Changes relative to bottleneck 0.4.3:
 - argpartsort()
 - ss(), sum of squares, faster version of scipy.stats.ss
 
+**Enhancement**
+
+- Single source distribution instead of separate 32 and 64 bit versions
+
 **Breaks from 0.4.3**
 
 - nanmax and nanmin now follow Numpy 1.6 (not 1.5.1) when input is all NaN
