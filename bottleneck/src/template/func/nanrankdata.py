@@ -166,7 +166,7 @@ nanrankdata['slow'] = slow
 nanrankdata['templates'] = {}
 nanrankdata['templates']['float'] = floats
 nanrankdata['templates']['int'] = ints
-nanrankdata['pyx_file'] = 'func/nanrankdata.pyx'
+nanrankdata['pyx_file'] = 'func/%sbit/nanrankdata.pyx'
 
 nanrankdata['main'] = '''"nanrankdata auto-generated from template"
 

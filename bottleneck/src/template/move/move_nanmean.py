@@ -166,7 +166,7 @@ move_nanmean['slow'] = slow
 move_nanmean['templates'] = {}
 move_nanmean['templates']['float'] = floats
 move_nanmean['templates']['int'] = ints
-move_nanmean['pyx_file'] = 'move/move_nanmean.pyx'
+move_nanmean['pyx_file'] = 'move/%sbit/move_nanmean.pyx'
 
 move_nanmean['main'] = '''"move_nanmean auto-generated from template"
 

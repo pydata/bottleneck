@@ -196,7 +196,7 @@ nanmean['templates']['float'] = floats
 nanmean['templates']['float_None'] = floats_None
 nanmean['templates']['int'] = ints
 nanmean['templates']['int_None'] = ints_None
-nanmean['pyx_file'] = 'func/nanmean.pyx'
+nanmean['pyx_file'] = 'func/%sbit/nanmean.pyx'
 
 nanmean['main'] = '''"nanmean auto-generated from template"
 

@@ -230,7 +230,7 @@ move_max['slow'] = slow
 move_max['templates'] = {}
 move_max['templates']['float'] = floats
 move_max['templates']['int'] = ints
-move_max['pyx_file'] = 'move/move_max.pyx'
+move_max['pyx_file'] = 'move/%sbit/move_max.pyx'
 
 move_max['main'] = '''"move_max auto-generated from template"
 

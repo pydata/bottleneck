@@ -1,55 +1,56 @@
-# Simple makefile to quickly access handy build commands for Cython
-# extensions.
+# Bottleneck Makefile 
 
 help:
 	@echo "Available tasks:"
-	@echo "help  --> This help page"
-	@echo "pyx   --> Create Cython pyx files from templates"
-	@echo "pyx32 --> Create Cython pyx files from templates (32 bit OS)"
-	@echo "pyx64 --> Create Cython pyx files from templates (64 bit OS)"
-	@echo "build --> Build the Cython extension modules"
-	@echo "clean --> Remove all the build files for a fresh start"
-	@echo "test  --> Run unit tests"
-	@echo "all   --> clean, build, test"
-	@echo "all32 --> clean, build, test for 32 bit OS"
-	@echo "all64 --> clean, build, test for 64 bit OS"
-	@echo "bench --> Run performance benchmark"
+	@echo "help   -->  This help page"
+	@echo "pyx    -->  Create Cython pyx files from templates"
+	@echo "cfiles -->  Convert pyx files to C files"
+	@echo "build  -->  Build the Cython extension modules"
+	@echo "clean  -->  Remove all the build files for a fresh start"
+	@echo "test   -->  Run unit tests"
+	@echo "all    -->  clean, pyx, build, test"
+	@echo "bench  -->  Run performance benchmark"
+	@echo "sdist  -->  Make source distribution"
 
-
-all: clean pyx build test
-all32: clean pyx32 build test
-all64: clean pyx64 build test
+all: clean pyx cfiles build test
 
 pyx:
-	python -c "from bottleneck.src.makepyx import makepyx; makepyx(bits=None)"
+	python -c "from bottleneck.src.makepyx import makepyx; makepyx()"
 
-pyx32:
-	python -c "from bottleneck.src.makepyx import makepyx; makepyx(bits=32)"
-
-pyx64:
-	python -c "from bottleneck.src.makepyx import makepyx; makepyx(bits=64)"
-
+cfiles:
+	cython func/32bit/func.pyx
+	cython func/64bit/func.pyx
+	cython move/32bit/move.pyx
+	cython move/64bit/move.pyx
 
 build: funcs moves
 	
 funcs:
-	rm -rf func/func.c ../func.so
+	rm -rf ../func.so
 	python func/setup.py build_ext --inplace
-	mv func.so ../func.so
 	
 moves:
-	rm -rf move/move.c ../move.so
+	rm -rf ../move.so
 	python move/setup.py build_ext --inplace
-	mv move.so ../move.so
-
+		
 test:
 	python -c "import bottleneck;bottleneck.test(extra_argv=['--processes=4'])"
 
 bench:
 	python -c "import bottleneck; bottleneck.bench()"
 
+sdist:
+	rm -f ../../MANIFEST
+	git status
+	find ../.. -name *.c
+	cd ../..; python setup.py sdist
+
 # Phony targets for cleanup and similar uses
 
 .PHONY: clean
 clean:
-	rm -rf *~ *.so *.c *.o *.html build ../*.so func/*.c move/*.c
+	rm -rf *~ *.so *.c *.o *.html build ../*.so
+	rm -rf func/32bit/*.c func/64bit/*.c
+	rm -rf move/32bit/*.c move/64bit/*.c
+	rm -rf func/32bit/*.pyx  func/64bit/*.pyx
+	rm -rf move/32bit/*.pyx  move/64bit/*.pyx

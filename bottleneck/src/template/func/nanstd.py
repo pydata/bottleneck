@@ -278,7 +278,7 @@ nanstd['templates']['float'] = floats
 nanstd['templates']['float_None'] = floats_None
 nanstd['templates']['int'] = ints
 nanstd['templates']['int_None'] = ints_None
-nanstd['pyx_file'] = 'func/nanstd.pyx'
+nanstd['pyx_file'] = 'func/%sbit/nanstd.pyx'
 
 nanstd['main'] = '''"nanstd auto-generated from template"
 

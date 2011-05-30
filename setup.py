@@ -3,7 +3,7 @@
 import os
 from distutils.core import setup
 from distutils.extension import Extension
-import numpy
+import numpy as np
 
 
 CLASSIFIERS = ["Development Status :: 4 - Beta",
@@ -64,6 +64,14 @@ PACKAGE_DATA        = {'bottleneck': ['LICENSE']}
 REQUIRES            = ["numpy"]
 
 
+# Is the OS 32 or 64 bits?
+if np.int_ == np.int32:
+    bits = '32'
+elif np.int_ == np.int64:
+    bits = '64'
+else:
+    raise ValueError("Your OS does not appear to be 32 or 64 bits.")
+
 setup(name=NAME,
       maintainer=MAINTAINER,
       maintainer_email=MAINTAINER_EMAIL,
@@ -82,9 +90,9 @@ setup(name=NAME,
       requires=REQUIRES,
       ext_package='bottleneck',
       ext_modules=[Extension("func",
-                             sources=["bottleneck/src/func/func.c"],
-                             include_dirs=[numpy.get_include()]),           
+                     sources=["bottleneck/src/func/%sbit/func.c" % bits],
+                     include_dirs=[np.get_include()]),           
                    Extension("move",
-                             sources=["bottleneck/src/move/move.c"],
-                             include_dirs=[numpy.get_include()])]
+                     sources=["bottleneck/src/move/%sbit/move.c" % bits],
+                     include_dirs=[np.get_include()])]
      )                

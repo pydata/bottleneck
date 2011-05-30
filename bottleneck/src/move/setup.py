@@ -14,13 +14,22 @@ $ python move/setup.py build_ext --inplace
 
 """
 
+import os
 from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
-import numpy
+import numpy as np
 
-ext_modules = [Extension("move", ["move/move.pyx"],
-               include_dirs=[numpy.get_include()])]
+# Is the OS 32 or 64 bits?
+if np.int_ == np.int32:
+    bits = '32'
+elif np.int_ == np.int64:
+    bits = '64'
+else:
+    raise ValueError("Your OS does not appear to be 32 or 64 bits.")
+    
+ext_modules = [Extension("move", ["move/%sbit/move.pyx" % bits],
+               include_dirs=[np.get_include()])]
 
 setup(
   name = 'move',
@@ -28,3 +37,4 @@ setup(
   ext_modules = ext_modules
 )
 
+os.rename("move.so", "../move.so")

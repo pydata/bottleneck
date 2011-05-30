@@ -133,7 +133,7 @@ partsort['slow'] = slow
 partsort['templates'] = {}
 partsort['templates']['float'] = floats
 partsort['templates']['int'] = ints
-partsort['pyx_file'] = 'func/partsort.pyx'
+partsort['pyx_file'] = 'func/%sbit/partsort.pyx'
 
 partsort['main'] = '''"partsort auto-generated from template"
 # Select smallest k elements code used for inner loop of partsort method:

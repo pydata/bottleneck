@@ -1,5 +1,6 @@
 include LICENSE README.rst RELEASE.rst bottleneck/LICENSE
 include bottleneck/src/Makefile
 recursive-include bottleneck/src *.pyx
+recursive-include bottleneck/src *.c
 recursive-include doc *
 recursive-exclude doc/build *

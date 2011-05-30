@@ -273,7 +273,7 @@ move_std['slow'] = slow
 move_std['templates'] = {}
 move_std['templates']['float'] = floats
 move_std['templates']['int'] = ints
-move_std['pyx_file'] = 'move/move_std.pyx'
+move_std['pyx_file'] = 'move/%sbit/move_std.pyx'
 
 move_std['main'] = '''"move_std auto-generated from template"
 

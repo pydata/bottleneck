@@ -229,7 +229,7 @@ move_sum['slow'] = slow
 move_sum['templates'] = {}
 move_sum['templates']['float'] = floats
 move_sum['templates']['int'] = ints
-move_sum['pyx_file'] = 'move/move_sum.pyx'
+move_sum['pyx_file'] = 'move/%sbit/move_sum.pyx'
 
 move_sum['main'] = '''"move_sum auto-generated from template"
 

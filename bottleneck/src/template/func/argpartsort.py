@@ -151,7 +151,7 @@ argpartsort['slow'] = slow
 argpartsort['templates'] = {}
 argpartsort['templates']['float'] = floats
 argpartsort['templates']['int'] = ints
-argpartsort['pyx_file'] = 'func/argpartsort.pyx'
+argpartsort['pyx_file'] = 'func/%sbit/argpartsort.pyx'
 
 argpartsort['main'] = '''"argpartsort auto-generated from template"
 # Select smallest k elements code used for inner loop of argpartsort method:

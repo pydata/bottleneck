@@ -31,7 +31,7 @@ def template(func, bits):
                                    slow['func'])
             codes.append(code2)
             codes.append(code1)
-    fid = open(func['pyx_file'], 'w')
+    fid = open(func['pyx_file'] % str(bits), 'w')
     fid.write(''.join(codes))
     fid.close()
 

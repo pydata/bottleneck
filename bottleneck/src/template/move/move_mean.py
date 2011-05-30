@@ -229,7 +229,7 @@ move_mean['slow'] = slow
 move_mean['templates'] = {}
 move_mean['templates']['float'] = floats
 move_mean['templates']['int'] = ints
-move_mean['pyx_file'] = 'move/move_mean.pyx'
+move_mean['pyx_file'] = 'move/%sbit/move_mean.pyx'
 
 move_mean['main'] = '''"move_mean auto-generated from template"
 

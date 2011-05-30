@@ -144,7 +144,7 @@ rankdata['slow'] = slow
 rankdata['templates'] = {}
 rankdata['templates']['float'] = floats
 rankdata['templates']['int'] = ints
-rankdata['pyx_file'] = 'func/rankdata.pyx'
+rankdata['pyx_file'] = 'func/%sbit/rankdata.pyx'
 
 rankdata['main'] = '''"rankdata auto-generated from template"
 

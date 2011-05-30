@@ -223,7 +223,7 @@ nanmax['templates']['float'] = floats
 nanmax['templates']['float_None'] = floats_None
 nanmax['templates']['int'] = ints
 nanmax['templates']['int_None'] = ints_None
-nanmax['pyx_file'] = 'func/nanmax.pyx'
+nanmax['pyx_file'] = 'func/%sbit/nanmax.pyx'
 
 nanmax['main'] = '''"nanmax auto-generated from template"
 

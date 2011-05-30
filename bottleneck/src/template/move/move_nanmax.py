@@ -229,7 +229,7 @@ move_nanmax['slow'] = slow
 move_nanmax['templates'] = {}
 move_nanmax['templates']['float'] = floats
 move_nanmax['templates']['int'] = ints
-move_nanmax['pyx_file'] = 'move/move_nanmax.pyx'
+move_nanmax['pyx_file'] = 'move/%sbit/move_nanmax.pyx'
 
 move_nanmax['main'] = '''"move_nanmax auto-generated from template"
 
