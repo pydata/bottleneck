@@ -11,23 +11,22 @@ Bottleneck 0.5.0
 
 *Release date: Not yet released, in development*
 
+Changes relative to bottleneck 0.4.3:
+
 **New functions**
 
 - partsort(), partial sort
 - argpartsort()
 - ss(), sum of squares, faster version of scipy.stats.ss
 
-**Enhancement**
+**Breaks from 0.4.3**
 
-- Single source distribution instead of separate 32 and 64 bit versions
+- nanmax and nanmin now follow Numpy 1.6 (not 1.5.1) when input is all NaN
 
 **Bug fixes**
 
 - #14 Support python 2.5 by importing `with` statement
-
-**Breaks from 0.4.3**
-
-- nanmax and nanmin now follow Numpy 1.6 (not 1.5.1) when input is all NaN
+- #22 nanmedian wrong for particular ordering of NaN and non-NaN elements
   
 Older versions
 ==============
@@ -163,6 +162,10 @@ supports more dtypes.
 **Faster**
 
 - All functions faster (less overhead) when output is not a scalar
+
+**Faster**
+
+- All functions faster (less overhead) when output is not a scalar
 - Faster nanmean() for 2d, 3d arrays containing NaNs when axis is not None
 
 **New functions**
@@ -180,7 +183,3 @@ supports more dtypes.
 - All functions are now templated for dtype and axis  
 - Added a sandbox for prototyping of new Bottleneck functions
 - Rewrote benchmarking code  
-- Embed function signatures in docstrings
-
-**Breaks from 0.1.0**
-
