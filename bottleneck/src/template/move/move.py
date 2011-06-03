@@ -4,6 +4,7 @@ from bottleneck.src.template.template import template
 from move_sum import move_sum
 from move_nansum import move_nansum
 from move_mean import move_mean
+from move_median import move_median
 from move_nanmean import move_nanmean
 from move_std import move_std
 from move_nanstd import move_nanstd
@@ -16,6 +17,7 @@ funcs = {}
 funcs['move_sum'] = move_sum
 funcs['move_nansum'] = move_nansum
 funcs['move_mean'] = move_mean
+funcs['move_median'] = move_median
 funcs['move_nanmean'] = move_nanmean
 funcs['move_std'] = move_std
 funcs['move_nanstd'] = move_nanstd
@@ -35,7 +37,7 @@ from numpy cimport NPY_INT64 as NPY_int64
 from numpy cimport NPY_FLOAT32 as NPY_float32
 from numpy cimport NPY_FLOAT64 as NPY_float64
 from numpy cimport (PyArray_EMPTY, PyArray_TYPE, PyArray_NDIM, PyArray_DIMS,
-                    import_array)
+                    import_array, PyArray_Copy)
 import_array()
 import bottleneck as bn
 
@@ -67,6 +69,7 @@ MOVE_WINDOW_ERR_MSG = "Moving window (=%d) must between 1 and %d, inclusive"
 include "move_sum.pyx"
 include "move_nansum.pyx"
 include "move_mean.pyx"
+include "move_median.pyx"
 include "move_nanmean.pyx"
 include "move_std.pyx"
 include "move_nanstd.pyx"

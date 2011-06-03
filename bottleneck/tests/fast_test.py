@@ -111,6 +111,10 @@ def test_move_mean_selector():
     "Test move_mean_selector."
     fast_checker(bn.move.move_mean_selector, mode='move')
 
+def test_move_median_selector():
+    "Test move_median_selector."
+    fast_checker(bn.move.move_median_selector, mode='move')
+
 def test_move_nanmean_selector():
     "Test move_nanmean_selector."
     fast_checker(bn.move.move_nanmean_selector, mode='move')

@@ -15,7 +15,8 @@ __all__ = ['move_sum', 'move_nansum',
            'move_mean', 'move_nanmean',
            'move_std', 'move_nanstd',
            'move_min', 'move_nanmin',
-           'move_max', 'move_nanmax']
+           'move_max', 'move_nanmax',
+           'move_median']
 
 # SUM -----------------------------------------------------------------------
 
@@ -963,6 +964,7 @@ def move_max_filter(arr, window, axis=-1):
     maximum_filter1d(y, window, axis=axis, mode='constant', cval=np.nan,
                      origin=x0, output=y)
     return y
+
 def move_nanmax_filter(arr, window, axis=-1):
     "Moving window maximium ignoring NaNs, implemented with a filter."
     global maximum_filter1d, convolve1d
@@ -1026,6 +1028,53 @@ def move_nanmax_strides(arr, window, axis=-1):
     y = move_func_strides(np.max, arr, window, axis=axis)
     m = move_func_strides(np.sum, nrr.astype(int), window, axis=axis)
     y[m == window] = np.nan
+    return y
+
+# MEDIAN --------------------------------------------------------------------
+
+def move_median(arr, window, axis=-1, method='loop'):
+    """
+    Slow moving window median along the specified axis.
+    
+    Parameters
+    ----------
+    arr : ndarray
+        Input array.
+    window : int
+        The number of elements in the moving window.
+    axis : int, optional
+        The axis over which to perform the moving median. By default the
+        moving median is taken over the last axis (-1).
+    method : str, optional
+        The following moving window methods are available:
+            ==========  =====================================
+            'loop'      brute force python loop (default)
+            'strides'   strides tricks (ndim < 4)
+            ==========  =====================================
+
+    Returns
+    -------
+    y : ndarray
+        The moving median of the input array along the specified axis. The
+        output has the same shape as the input.
+
+    Examples
+    --------
+    >>> arr = np.array([1, 2, 3, 4, 5])
+    >>> bn.move_median(arr, window=2)
+    array([ NaN,  1.5,  2.5,  3.5,  4.5])
+
+    """
+    if method == 'strides':
+        y = move_func_strides(np.median, arr, window, axis=axis)
+    elif method == 'loop':
+        y = move_func_loop(np.median, arr, window, axis=axis)
+    else:
+        msg = "`method` must be 'strides' or 'loop'."
+        raise ValueError, msg
+    if y.dtype != arr.dtype:
+        if issubclass(arr.dtype.type, np.inexact):
+            y = y.astype(arr.dtype)
     return y
 
 # GENERAL --------------------------------------------------------------------

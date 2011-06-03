@@ -13,6 +13,7 @@ Functions               :meth:`nanrankdata <bottleneck.nanrankdata>`, :meth:`nan
                         :meth:`partsort <bottleneck.partsort>`, :meth:`argpartsort <bottleneck.argpartsort>`
 Moving window           :meth:`move_sum <bottleneck.move_sum>`, :meth:`move_nansum <bottleneck.move_nansum>`,
                         :meth:`move_mean <bottleneck.move_mean>`, :meth:`move_nanmean <bottleneck.move_nanmean>`,
+                        :meth:`move_median <bottleneck.move_median>`,
                         :meth:`move_std <bottleneck.move_std>`, :meth:`move_nanstd <bottleneck.move_nanstd>`,
                         :meth:`move_min <bottleneck.move_min>`, :meth:`move_nanmin <bottleneck.move_nanmin>`,
                         :meth:`move_max <bottleneck.move_max>`, :meth:`move_nanmax <bottleneck.move_nanmax>`
@@ -111,6 +112,10 @@ Moving window functions with a 1d window.
 ------------
 
 .. autofunction:: bottleneck.move_nanmean
+
+------------
+
+.. autofunction:: bottleneck.move_median
 
 ------------
 

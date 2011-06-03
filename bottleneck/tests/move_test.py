@@ -79,6 +79,10 @@ def test_move_mean():
     "Test move_mean."
     yield unit_maker, bn.move_mean, bn.slow.move_mean, 5
 
+def test_move_median():
+    "Test move_median."
+    yield unit_maker, bn.move_median, bn.slow.move_median, 5
+
 def test_move_nanmean():
     "Test move_nanmean."
     yield unit_maker, bn.move_nanmean, bn.slow.move_nanmean, 5

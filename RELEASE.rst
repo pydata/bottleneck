@@ -11,7 +11,7 @@ Bottleneck 0.5.0
 
 *Release date: Not yet released, in development*
 
-The fifth release of bottleneck adds three new functions, comes in a single
+The fifth release of bottleneck adds four new functions, comes in a single
 source distribution instead of separate 32 and 64 bit versions, and fixes a
 bug in nanmedian.
 
@@ -19,6 +19,7 @@ Changes relative to bottleneck 0.4.3:
 
 **New functions**
 
+- move_median(), moving window median
 - partsort(), partial sort
 - argpartsort()
 - ss(), sum of squares, faster version of scipy.stats.ss
