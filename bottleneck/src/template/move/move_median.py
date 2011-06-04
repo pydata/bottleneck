@@ -145,6 +145,9 @@ def move_median(arr, int window, int axis=-1):
     """
     Moving window median along the specified axis.
     
+    This functions is not protected against NaN. Therefore, you may get
+    unexpected results if the input contains NaN.
+    
     Parameters
     ----------
     arr : ndarray
@@ -161,6 +164,10 @@ def move_median(arr, int window, int axis=-1):
     y : ndarray
         The moving median of the input array along the specified axis. The output
         has the same shape as the input. 
+    
+    Notes
+    -----
+    Unexpected results may occur if the input array contains NaN.
 
     Examples
     --------
