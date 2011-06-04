@@ -31,8 +31,11 @@ loop[1] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
     elif (window == 1):
-        return a.astype(np.float64)
-    for iINDEX0 in range(window):    
+        if issubclass(a.dtype.type, np.inexact):
+            return PyArray_Copy(a)
+        else:
+            return a.astype(np.float64)
+    for iINDEX0 in range(window-1):    
         y[INDEXALL] = np.nan
     mm = mm_new(window)
     for iINDEX0 in range(window):
@@ -48,10 +51,13 @@ loop[2] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
     elif (window == 1):
-        return a.astype(np.float64)
+        if issubclass(a.dtype.type, np.inexact):
+            return PyArray_Copy(a)
+        else:
+            return a.astype(np.float64)
     mm = mm_new(window)
     for iINDEX0 in range(nINDEX0):    
-        for iINDEX1 in range(window):    
+        for iINDEX1 in range(window-1):    
             y[INDEXALL] = np.nan
         for iINDEX1 in range(window):
             mm_insert_init(mm, a[INDEXALL])
@@ -68,16 +74,19 @@ loop[3] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
     elif (window == 1):
-        return a.astype(np.float64)
+        if issubclass(a.dtype.type, np.inexact):
+            return PyArray_Copy(a)
+        else:
+            return a.astype(np.float64)
     mm = mm_new(window)
     for iINDEX0 in range(nINDEX0):    
         for iINDEX1 in range(nINDEX1):
-            for iINDEX2 in range(window):    
+            for iINDEX2 in range(window-1):    
                 y[INDEXALL] = np.nan
             for iINDEX2 in range(window):
                 mm_insert_init(mm, a[INDEXALL])
             y[INDEXREPLACE|window-1|] = mm_get_median(mm)
-            for iINDEX2 in range(window, nINDEX1):
+            for iINDEX2 in range(window, nINDEX2):
                 mm_update(mm, a[INDEXALL])
                 y[INDEXALL] = mm_get_median(mm)
             mm.n_s = 0
