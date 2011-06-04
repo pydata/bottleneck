@@ -46,9 +46,9 @@ typedef npy_float64 value_t;
 
 
 struct _mm_node {
-  int          small; // 1 if the node is in the small heap. 
-  _size_t       idx;   // The node's index in the heap array.
-  value_t      val;   // The node's value. 
+  int              small; // 1 if the node is in the small heap. 
+  _size_t          idx;   // The node's index in the heap array.
+  value_t          val;   // The node's value. 
   struct _mm_node *next;  // The next node in order of insertion. 
 };
 
@@ -206,7 +206,7 @@ inline void move_down_large(mm_node **heap,
 
 
 /*
- * Move the given node down through the heap to the appropriate position. 
+ * Move the given node up through the heap to the appropriate position. 
  */ 
 inline void move_up_large(mm_node **heap,
                           _size_t   size,
@@ -227,11 +227,11 @@ inline void move_up_large(mm_node **heap,
  * Swap the heap heads. 
  */
 inline void swap_heap_heads(mm_node **s_heap,
-                                _size_t   n_s,
-                                mm_node **l_heap,
-                                _size_t   n_l,
-                                mm_node  *s_node,
-                                mm_node  *l_node) {
+                            _size_t   n_s,
+                            mm_node **l_heap,
+                            _size_t   n_l,
+                            mm_node  *s_node,
+                            mm_node  *l_node) {
   s_node->small = 0;
   l_node->small = 1;
   s_heap[0] = l_node;
