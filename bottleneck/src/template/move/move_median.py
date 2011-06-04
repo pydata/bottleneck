@@ -49,17 +49,19 @@ loop[2] = """\
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
     elif (window == 1):
         return a.astype(np.float64)
+    mm = mm_new(window)
     for iINDEX0 in range(nINDEX0):    
         for iINDEX1 in range(window):    
             y[INDEXALL] = np.nan
-        mm = mm_new(window)
         for iINDEX1 in range(window):
             mm_insert_init(mm, a[INDEXALL])
         y[INDEXREPLACE|window-1|] = mm_get_median(mm)
         for iINDEX1 in range(window, nINDEX1):
             mm_update(mm, a[INDEXALL])
             y[INDEXALL] = mm_get_median(mm)
-        mm_free(mm)
+        mm.n_s = 0
+        mm.n_l = 0
+    mm_free(mm)
     return y
 """
 loop[3] = """\
@@ -67,18 +69,20 @@ loop[3] = """\
         raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
     elif (window == 1):
         return a.astype(np.float64)
+    mm = mm_new(window)
     for iINDEX0 in range(nINDEX0):    
         for iINDEX1 in range(nINDEX1):
             for iINDEX2 in range(window):    
                 y[INDEXALL] = np.nan
-            mm = mm_new(window)
             for iINDEX2 in range(window):
                 mm_insert_init(mm, a[INDEXALL])
             y[INDEXREPLACE|window-1|] = mm_get_median(mm)
             for iINDEX2 in range(window, nINDEX1):
                 mm_update(mm, a[INDEXALL])
                 y[INDEXALL] = mm_get_median(mm)
-            mm_free(mm)
+            mm.n_s = 0
+            mm.n_l = 0
+    mm_free(mm)
     return y
 """
 
