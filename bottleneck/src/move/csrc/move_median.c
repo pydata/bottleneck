@@ -80,11 +80,11 @@ typedef struct _mm_handle mm_handle;
  * Return the index of the smallest child of the node. The pointer
  * child will also be set.
  */
-inline _size_t get_smallest_child(mm_node **heap,
-                                 _size_t   size,
-                                 _size_t   idx,
-                                 mm_node  *node,
-                                 mm_node  **child) {
+__inline _size_t get_smallest_child(mm_node **heap,
+                                   _size_t   size,
+                                   _size_t   idx,
+                                   mm_node  *node,
+                                   mm_node  **child) {
   _size_t i0 = FC_IDX(idx);
   _size_t i1 = i0 + NUM_CHILDREN;
   i1 = min(i1, size);
@@ -109,11 +109,11 @@ inline _size_t get_smallest_child(mm_node **heap,
  * Return the index of the largest child of the node. The pointer
  * child will also be set. 
  */
-inline _size_t get_largest_child(mm_node **heap,
-                                 _size_t   size,
-                                 _size_t   idx,
-                                 mm_node  *node,
-                                 mm_node  **child) {
+__inline _size_t get_largest_child(mm_node **heap,
+                                   _size_t   size,
+                                   _size_t   idx,
+                                   mm_node  *node,
+                                   mm_node  **child) {
   _size_t i0 = FC_IDX(idx);
   _size_t i1 = i0 + NUM_CHILDREN;
   i1 = min(i1, size);
@@ -148,12 +148,12 @@ inline _size_t get_largest_child(mm_node **heap,
 /*
  * Move the given node up through the heap to the appropriate position. 
  */
-inline void move_up_small(mm_node **heap,
-                          _size_t   size,
-                          _size_t   idx,
-                          mm_node  *node,
-                          _size_t   p_idx,
-                          mm_node  *parent) {
+__inline void move_up_small(mm_node **heap,
+                            _size_t   size,
+                            _size_t   idx,
+                            mm_node  *node,
+                            _size_t   p_idx,
+                            mm_node  *parent) {
   do {
     SWAP_NODES(heap, idx, node, p_idx, parent);
     if(idx == 0) {
@@ -168,10 +168,10 @@ inline void move_up_small(mm_node **heap,
 /*
  * Move the given node down through the heap to the appropriate position. 
  */ 
-inline void move_down_small(mm_node **heap,
-                            _size_t   size,
-                            _size_t   idx,
-                            mm_node  *node) {
+__inline void move_down_small(mm_node **heap,
+                              _size_t   size,
+                              _size_t   idx,
+                              mm_node  *node) {
   mm_node *child;
   value_t val   = node->val;
   _size_t c_idx = get_largest_child(heap, size, idx, node, &child);
@@ -187,12 +187,12 @@ inline void move_down_small(mm_node **heap,
  * Move the given node down through the heap to the appropriate
  * position.
  */ 
-inline void move_down_large(mm_node **heap,
-                            _size_t   size,
-                            _size_t   idx,
-                            mm_node  *node,
-                            _size_t   p_idx,
-                            mm_node  *parent) {
+__inline void move_down_large(mm_node **heap,
+                              _size_t   size,
+                              _size_t   idx,
+                              mm_node  *node,
+                              _size_t   p_idx,
+                              mm_node  *parent) {
   do {
     SWAP_NODES(heap, idx, node, p_idx, parent);
     if(idx == 0) {
@@ -208,10 +208,10 @@ inline void move_down_large(mm_node **heap,
 /*
  * Move the given node up through the heap to the appropriate position. 
  */ 
-inline void move_up_large(mm_node **heap,
-                          _size_t   size,
-                          _size_t   idx,
-                          mm_node  *node) {
+__inline void move_up_large(mm_node **heap,
+                            _size_t   size,
+                            _size_t   idx,
+                            mm_node  *node) {
   mm_node *child;
   value_t val   = node->val;
   _size_t c_idx = get_smallest_child(heap, size, idx, node, &child);
@@ -226,12 +226,12 @@ inline void move_up_large(mm_node **heap,
 /*
  * Swap the heap heads. 
  */
-inline void swap_heap_heads(mm_node **s_heap,
-                            _size_t   n_s,
-                            mm_node **l_heap,
-                            _size_t   n_l,
-                            mm_node  *s_node,
-                            mm_node  *l_node) {
+__inline void swap_heap_heads(mm_node **s_heap,
+                              _size_t   n_s,
+                              mm_node **l_heap,
+                              _size_t   n_l,
+                              mm_node  *s_node,
+                              mm_node  *l_node) {
   s_node->small = 0;
   l_node->small = 1;
   s_heap[0] = l_node;
@@ -433,7 +433,7 @@ void mm_insert_init(mm_handle *mm, value_t val) {
 /*
  * Return the current median value. 
  */
-inline value_t mm_get_median(mm_handle *mm) {
+__inline value_t mm_get_median(mm_handle *mm) {
   if(mm->odd) {
     return mm->s_heap[0]->val;
   } else {
@@ -446,10 +446,10 @@ inline value_t mm_get_median(mm_handle *mm) {
  * Print the two heaps to the screen.
  */
 void mm_dump(mm_handle *mm) {
+  _size_t i;
   printf("\n\nFirst: %f\n", (double)mm->first->val);
   printf("Last: %f\n", (double)mm->last->val);
   
-  _size_t i;
   printf("\n\nSmall heap:\n");
   for(i = 0; i < mm->n_s; ++i) {
     printf("%i %f\n", (int)mm->s_heap[i]->idx, mm->s_heap[i]->val);
@@ -465,7 +465,7 @@ void mm_dump(mm_handle *mm) {
 /*
  * Free memory allocated in mm_new.
  */
-inline void mm_free(mm_handle *mm) {
+__inline void mm_free(mm_handle *mm) {
   free(mm->node_data);
   free(mm->nodes);
   free(mm);

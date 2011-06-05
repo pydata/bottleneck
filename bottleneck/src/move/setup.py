@@ -21,13 +21,13 @@ from Cython.Distutils import build_ext
 import numpy as np
 
 # Is the OS 32 or 64 bits?
-if np.int_ == np.int32:
+if tuple.__itemsize__ == 4:
     bits = '32'
-elif np.int_ == np.int64:
+elif tuple.__itemsize__ == 8:
     bits = '64'
 else:
     raise ValueError("Your OS does not appear to be 32 or 64 bits.")
-    
+
 ext_modules = [Extension("move", ["move/%sbit/move.pyx" % bits],
                include_dirs=[np.get_include()])]
 
