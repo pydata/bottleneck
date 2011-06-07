@@ -20,10 +20,10 @@ from distutils.extension import Extension
 from Cython.Distutils import build_ext
 import numpy as np
 
-# Is the OS 32 or 64 bits?
-if tuple.__itemsize__ == 4:
+# Is the default numpy int 32 or 64 bits?
+if np.int_ == np.int32:
     bits = '32'
-elif tuple.__itemsize__ == 8:
+elif np.int_ == np.int64:
     bits = '64'
 else:
     raise ValueError("Your OS does not appear to be 32 or 64 bits.")

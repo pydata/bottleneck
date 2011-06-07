@@ -27,7 +27,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.  
 */
 
-typedef npy_int64   _size_t;
+typedef npy_intp _size_t;
 typedef npy_float64 value_t;
 
 
