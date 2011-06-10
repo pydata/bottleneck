@@ -13,7 +13,7 @@ INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 floats = {}
 floats['dtypes'] = FLOAT_DTYPES
 floats['axisNone'] = False
-floats['force_output_dtype'] = 'NPINT'
+floats['force_output_dtype'] = 'intp'
 floats['reuse_non_nan_func'] = False
 
 floats['top'] = """
@@ -39,7 +39,7 @@ loop[1] = """\
             allnan = 0
             idx = iINDEX0
     if allnan == 0:       
-        return np.NPINT(idx)
+        return np.intp(idx)
     else:
         return NAN
 """
@@ -84,7 +84,6 @@ loop[3] = """\
 """
 
 floats['loop'] = loop
-#floats['loop'][1] = floats['loop'][1].replace('DTYPE2', NPINT)
 
 # Int dtypes (not axis=None) ------------------------------------------------
 
@@ -102,7 +101,7 @@ loop[1] = """\
         if ai >= amax:
             amax = ai
             idx = iINDEX0
-    return np.NPINT(idx)
+    return np.intp(idx)
 """
 loop[2] = """\
     if nINDEX1 == 0:
@@ -135,7 +134,6 @@ loop[3] = """\
 """
 
 ints['loop'] = loop
-#ints['loop'][1] = ints['loop'][1].replace('DTYPE2', NPINT)
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 

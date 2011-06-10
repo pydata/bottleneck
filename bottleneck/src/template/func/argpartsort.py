@@ -114,7 +114,7 @@ loop[3] = """\
 floats = {}
 floats['dtypes'] = FLOAT_DTYPES
 floats['axisNone'] = False
-floats['force_output_dtype'] = 'NPINT'
+floats['force_output_dtype'] = 'intp'
 floats['reuse_non_nan_func'] = False
 
 floats['top'] = """

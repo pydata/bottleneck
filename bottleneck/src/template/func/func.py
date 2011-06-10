@@ -47,6 +47,12 @@ from numpy cimport (PyArray_EMPTY, PyArray_TYPE, PyArray_NDIM,
                     PyArray_SIZE, PyArray_DIMS, import_array,
                     PyArray_ArgSort, NPY_QUICKSORT, NPY_CORDER, 
                     PyArray_Ravel, PyArray_FillWithScalar, PyArray_Copy)
+
+# NPY_INTP is missing from numpy.pxd in cython 0.14.1 and earlier
+cdef extern from "numpy/arrayobject.h":
+    cdef enum NPY_TYPES:
+        NPY_intp "NPY_INTP"
+
 import_array()
 import bottleneck as bn
 
