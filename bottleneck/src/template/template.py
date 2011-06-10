@@ -39,12 +39,6 @@ def subtemplate(name, top, loop, axisNone, dtypes, force_output_dtype,
                 reuse_non_nan_func, is_reducing_function, cdef_output, select,
                 bits):
     "Assemble template"
-    if bits == 32:
-        NPINT = 'int32'
-    elif bits == 64:
-        NPINT = 'int64'
-    else:
-        raise RuntimeError("`bits` must be 32 or 64.")
     ndims = loop.keys()
     ndims.sort()
     funcs = []
@@ -79,7 +73,6 @@ def subtemplate(name, top, loop, axisNone, dtypes, force_output_dtype,
                     func = func.replace('NDIM', str(ndim))
                     func = func.replace('DTYPE', dtype)
                     func = func.replace('AXIS', str(axis))
-                    func = func.replace('NPINT', NPINT)
 
                     funcs.append(func)
                     select.append(ndim, dtype, axis)

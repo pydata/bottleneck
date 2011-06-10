@@ -33,8 +33,9 @@ Changes relative to bottleneck 0.4.3:
 
 - #14 Support python 2.5 by importing `with` statement
 - #22 nanmedian wrong for particular ordering of NaN and non-NaN elements
-- #26 argpartsort, nanargmin, nanargmax returned wrong dtype on 64 bit Windows
-  
+- #26 argpartsort, nanargmin, nanargmax returned wrong dtype on 64-bit Windows
+- #29 rankdata and nanrankdata crashed on 64-bit Windows
+
 Older versions
 ==============
 

@@ -114,7 +114,7 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     "Ranks nNDIMd array with dtype=DTYPE along axis=AXIS, dealing with ties." 
     cdef dupcount = 0
     cdef Py_ssize_t j, k, idx
-    cdef np.ndarray[np.NPINT_t, ndim=NDIM] ivec = PyArray_ArgSort(a, AXIS, NPY_QUICKSORT)
+    cdef np.ndarray[np.intp_t, ndim=NDIM] ivec = PyArray_ArgSort(a, AXIS, NPY_QUICKSORT)
     cdef np.float64_t old, new, averank, sumranks = 0
 """
 
