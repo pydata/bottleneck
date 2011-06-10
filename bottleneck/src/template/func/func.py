@@ -1,5 +1,7 @@
 
 from bottleneck.src.template.template import template
+import bottleneck.src.template.template as tempmod
+import os.path
 
 from median import median
 from nanmedian import nanmedian
@@ -99,6 +101,7 @@ include "argpartsort.pyx"
 def funcpyx(funcs=funcs, bits=None):
     for func in funcs:
         template(funcs[func], bits)
-    fid = open("func/%sbit/func.pyx" % str(bits), 'w')
+    template_path = os.path.dirname(tempmod.__file__)
+    fid = open(os.path.join(template_path, '..', "func/%sbit/func.pyx") % str(bits), 'w')
     fid.write(header)
     fid.close()
