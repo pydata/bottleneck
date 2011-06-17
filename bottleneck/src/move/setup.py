@@ -15,6 +15,7 @@ $ python move/setup.py build_ext --inplace
 """
 
 import os
+import os.path
 from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
@@ -28,7 +29,8 @@ elif np.int_ == np.int64:
 else:
     raise ValueError("Your OS does not appear to be 32 or 64 bits.")
 
-ext_modules = [Extension("move", ["move/%sbit/move.pyx" % bits],
+mod_dir = os.path.dirname(__file__)
+ext_modules = [Extension("move", [os.path.join(mod_dir, "%sbit/move.pyx") % bits],
                include_dirs=[np.get_include()])]
 
 setup(
@@ -37,4 +39,4 @@ setup(
   ext_modules = ext_modules
 )
 
-os.rename("move.so", "../move.so")
+os.rename("move.so", os.path.join(mod_dir, "../../move.so"))

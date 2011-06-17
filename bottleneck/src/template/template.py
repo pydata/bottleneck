@@ -1,5 +1,6 @@
 "Turn templates into Cython pyx files."
 
+import os.path
 
 def template(func, bits):
     "Convert template dictionary `func` to a pyx file."
@@ -31,7 +32,8 @@ def template(func, bits):
                                    slow['func'])
             codes.append(code2)
             codes.append(code1)
-    fid = open(func['pyx_file'] % str(bits), 'w')
+    modpath = os.path.dirname(__file__)
+    fid = open(os.path.join(modpath, '..', func['pyx_file']) % str(bits), 'w')
     fid.write(''.join(codes))
     fid.close()
 

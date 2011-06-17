@@ -1,5 +1,7 @@
 
 from bottleneck.src.template.template import template
+import bottleneck.src.template.template as tempmod
+import os.path
 
 from move_sum import move_sum
 from move_nansum import move_nansum
@@ -82,6 +84,7 @@ include "move_nanmax.pyx"
 def movepyx(funcs=funcs, bits=None):
     for func in funcs:
         template(funcs[func], bits)
-    fid = open("move/%sbit/move.pyx" % str(bits), 'w')
+    template_path = os.path.dirname(tempmod.__file__)
+    fid = open(os.path.join(template_path, '..', "move/%sbit/move.pyx") % str(bits), 'w')
     fid.write(header)
     fid.close()
