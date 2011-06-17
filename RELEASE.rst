@@ -6,8 +6,20 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
-Bottleneck 0.5.0
+Bottleneck 0.6.0
 ================
+
+*Release date: Not yet released, in development*
+
+
+
+Older versions
+==============
+
+Release notes from past releases.
+
+Bottleneck 0.5.0
+----------------
 
 *Release date: 2011-06-13*
 
@@ -36,11 +48,6 @@ window median.
 - #22 nanmedian wrong for particular ordering of NaN and non-NaN elements
 - #26 argpartsort, nanargmin, nanargmax returned wrong dtype on 64-bit Windows
 - #29 rankdata and nanrankdata crashed on 64-bit Windows
-
-Older versions
-==============
-
-Release notes from past releases.
 
 Bottleneck 0.4.3
 ----------------
