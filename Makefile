@@ -1,5 +1,7 @@
 # Bottleneck Makefile 
 
+srcdir := bottleneck/src
+
 help:
 	@echo "Available tasks:"
 	@echo "help   -->  This help page"
@@ -18,20 +20,20 @@ pyx:
 	python -c "from bottleneck.src.makepyx import makepyx; makepyx()"
 
 cfiles:
-	cython func/32bit/func.pyx
-	cython func/64bit/func.pyx
-	cython move/32bit/move.pyx
-	cython move/64bit/move.pyx
+	cython ${srcdir}/func/32bit/func.pyx
+	cython ${srcdir}/func/64bit/func.pyx
+	cython ${srcdir}/move/32bit/move.pyx
+	cython ${srcdir}/move/64bit/move.pyx
 
 build: funcs moves
 	
 funcs:
-	rm -rf ../func.so
-	python func/setup.py build_ext --inplace
+	rm -rf ${srcdir}/../func.so
+	python ${srcdir}/func/setup.py build_ext --inplace
 	
 moves:
-	rm -rf ../move.so
-	python move/setup.py build_ext --inplace
+	rm -rf ${srcdir}/../move.so
+	python ${srcdir}/move/setup.py build_ext --inplace
 		
 test:
 	python -c "import bottleneck;bottleneck.test(extra_argv=['--processes=4'])"
@@ -40,17 +42,17 @@ bench:
 	python -c "import bottleneck; bottleneck.bench()"
 
 sdist:
-	rm -f ../../MANIFEST
+	rm -f MANIFEST
 	git status
-	find ../.. -name *.c
-	cd ../..; python setup.py sdist
+	find -name *.c
+	python setup.py sdist
 
 # Phony targets for cleanup and similar uses
 
 .PHONY: clean
 clean:
-	rm -rf *~ *.so *.c *.o *.html build ../*.so
-	rm -rf func/32bit/*.c func/64bit/*.c
-	rm -rf move/32bit/*.c move/64bit/*.c
-	rm -rf func/32bit/*.pyx  func/64bit/*.pyx
-	rm -rf move/32bit/*.pyx  move/64bit/*.pyx
+	rm -rf ${srcdir}/*~ ${srcdir}/*.so ${srcdir}/*.c ${srcdir}/*.o ${srcdir}/*.html ${srcdir}/build ${srcdir}/../*.so
+	rm -rf ${srcdir}/func/32bit/*.c ${srcdir}/func/64bit/*.c
+	rm -rf ${srcdir}/move/32bit/*.c ${srcdir}/move/64bit/*.c
+	rm -rf ${srcdir}/func/32bit/*.pyx  ${srcdir}/func/64bit/*.pyx
+	rm -rf ${srcdir}/move/32bit/*.pyx  ${srcdir}/move/64bit/*.pyx
