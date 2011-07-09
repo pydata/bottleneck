@@ -41,7 +41,7 @@ test:
 bench:
 	python -c "import bottleneck; bottleneck.bench()"
 
-sdist:
+sdist: pyx cfiles
 	rm -f MANIFEST
 	git status
 	find -name *.c
