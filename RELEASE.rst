@@ -11,6 +11,9 @@ Bottleneck 0.6.0
 
 *Release date: Not yet released, in development*
 
+**Bug fixes**
+
+- #31 Confusing error message in partsort and argpartsort
 
 
 Older versions

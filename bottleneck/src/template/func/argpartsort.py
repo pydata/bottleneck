@@ -17,7 +17,7 @@ loop[1] = """\
     if nAXIS == 0:
         return y
     if (n < 1) or (n > nAXIS):
-        raise ValueError(PARTSORT_ERR_MSG % (n, nINDEX0))    
+        raise ValueError(PARTSORT_ERR_MSG % (n, nAXIS))
     l = 0
     r = nAXIS - 1
     with nogil:       
@@ -49,7 +49,7 @@ loop[2] = """\
     if nAXIS == 0:
         return y
     if (n < 1) or (n > nAXIS):
-        raise ValueError(PARTSORT_ERR_MSG % (n, nINDEX0))
+        raise ValueError(PARTSORT_ERR_MSG % (n, nAXIS))
     for iINDEX0 in range(nINDEX0): 
         l = 0
         r = nAXIS - 1
@@ -82,7 +82,7 @@ loop[3] = """\
     if nAXIS == 0:
         return y
     if (n < 1) or (n > nAXIS):
-        raise ValueError(PARTSORT_ERR_MSG % (n, nINDEX0))
+        raise ValueError(PARTSORT_ERR_MSG % (n, nAXIS))
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
             l = 0
