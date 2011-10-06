@@ -237,6 +237,9 @@ files. (If you obtained bottleneck directly from the repository, then you will
 need to generate the C source files using the included Makefile which requires
 Cython.)
 
+Bottleneck takes a few minutes to build on newer machines. On older machines
+it can take a lot longer (one user reported 30 minutes!).
+
 **GNU/Linux, Mac OS X, et al.**
 
 To install Bottleneck::
