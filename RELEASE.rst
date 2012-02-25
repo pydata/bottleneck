@@ -11,10 +11,14 @@ Bottleneck 0.6.0
 
 *Release date: Not yet released, in development*
 
+**Enhancements**
+
+- Upgrade numpydoc from 0.3.1 to 0.4 to support Sphinx 1.0.1
+
 **Bug fixes**
 
 - #31 Confusing error message in partsort and argpartsort
-
+- #32 Update path in MANIFEST.in
 
 Older versions
 ==============

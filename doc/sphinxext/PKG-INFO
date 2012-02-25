@@ -1,8 +1,8 @@
 Metadata-Version: 1.0
 Name: numpydoc
-Version: 0.3.1
+Version: 0.4
 Summary: Sphinx extension to support docstrings in Numpy format
-Home-page: http://projects.scipy.org/numpy/browser/trunk/doc/sphinxext
+Home-page: http://github.com/numpy/numpy/tree/master/doc/sphinxext
 Author: Pauli Virtanen and others
 Author-email: pav@iki.fi
 License: BSD
