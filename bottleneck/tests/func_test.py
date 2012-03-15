@@ -152,15 +152,3 @@ def test_nanmin_size_zero(dtypes=bn.dtypes):
             a = np.zeros(shape, dtype=dtype)
             assert_raises(ValueError, bn.nanmin, a)
             assert_raises(ValueError, bn.slow.nanmin, a)
-
-def test_replace_unsafe_cast():
-    "Test replace for unsafe casts."
-    dtypes = [x for x in bn.dtypes if 'int' in x]
-    shapes = [(0,), (2,0), (1,2,0)]
-    for shape in shapes:
-        for dtype in dtypes:
-            a = np.zeros(shape, dtype=dtype)
-            assert_raises(ValueError, bn.replace, a, 0.1, 0)
-            assert_raises(ValueError, bn.replace, a, 0, 0.1)
-            assert_raises(ValueError, bn.slow.replace, a, 0.1, 0)
-            assert_raises(ValueError, bn.slow.replace, a, 0, 0.1)

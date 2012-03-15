@@ -1,11 +1,7 @@
-"Test functions."
-
-# For support of python 2.5
-from __future__ import with_statement
+"Test replace()."
 
 import numpy as np
-from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
-                           assert_array_almost_equal)
+from numpy.testing import assert_equal, assert_array_equal, assert_raises
 nan = np.nan
 import bottleneck as bn
 
@@ -91,8 +87,9 @@ def test_replace_unsafe_cast():
             assert_raises(ValueError, bn.slow.replace, a, 0.1, 0)
             assert_raises(ValueError, bn.slow.replace, a, 0, 0.1)
 
-# ---------------------------------------------------------------------------
-# Check that no array input raises TypeError
-
-
-            
+def test_non_array():
+    "Test that non-array input raises"
+    a = [1, 2, 3]
+    assert_raises(TypeError, bn.replace, a, 0, 1)
+    a = (1, 2, 3)
+    assert_raises(TypeError, bn.replace, a, 0, 1)
