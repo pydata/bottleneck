@@ -30,6 +30,8 @@ def fast_checker(selector, mode='func'):
                 func, a = selector(arr, axis)
             else:
                 func = np.sum
+        elif mode == 'replace':
+            func = selector(arr)
         else:
             raise ValueError("`mode` value not recognized.")
         if 'slow' in func.__name__:
@@ -96,6 +98,10 @@ def test_partsort_selector():
 def test_argpartsort_selector():
     "Test argpartsort_selector."
     fast_checker(bn.func.argpartsort_selector)
+
+def test_replace_selector():
+    "Test replace_selector."
+    fast_checker(bn.func.replace_selector, mode='replace')
 
 # Moving functions ----------------------------------------------------------
 

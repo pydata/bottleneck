@@ -321,7 +321,24 @@ def benchsuite(mode, shapes, dtype, axis, nans):
     """
     run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
-    
+
+    # replace
+    run = {}
+    run['name'] = "replace"
+    run['ref'] = "np.putmask based (see bn.slow.replace)"
+    run['scipy_required'] = False
+    if mode == 'fast':
+        code = "bn.replace(a, np.nan, 0)"
+    else:
+        code = "func(a, np.nan, 0)"
+    run['statements'] = [code, "replace(a, np.nan, 0)"] 
+    setup = """
+        from bottleneck.slow.func import replace
+        func = bn.func.replace_selector(a)
+    """    
+    run['setups'] = getsetups(setup, shapes, nans)
+    suite.append(run)
+
     # move_sum
     run = {}
     run['name'] = "move_sum"

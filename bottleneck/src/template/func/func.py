@@ -18,6 +18,7 @@ from nanrankdata import nanrankdata
 from ss import ss
 from partsort import partsort
 from argpartsort import argpartsort
+from replace import replace
 
 funcs = {}
 funcs['median'] = median
@@ -35,6 +36,7 @@ funcs['nanrankdata'] = nanrankdata
 funcs['ss'] = ss
 funcs['partsport'] = partsort
 funcs['argpartsort'] = argpartsort
+funcs['replace'] = replace
 
 header = """#cython: embedsignature=True
 
@@ -102,6 +104,7 @@ include "nanrankdata.pyx"
 include "ss.pyx"
 include "partsort.pyx"
 include "argpartsort.pyx"
+include "replace.pyx"
 """
 
 def funcpyx(funcs=funcs, bits=None):

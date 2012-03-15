@@ -11,6 +11,10 @@ Bottleneck 0.6.0
 
 *Release date: Not yet released, in development*
 
+**New functions**
+
+- replace(arr, old, new), e.g, replace(arr, np.nan, 0)
+
 **Enhancements**
 
 - Upgrade numpydoc from 0.3.1 to 0.4 to support Sphinx 1.0.1
