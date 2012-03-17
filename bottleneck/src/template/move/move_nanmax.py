@@ -197,7 +197,7 @@ floats['top'] = """
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a, int window):
     "Moving max of NDIMd array of dtype=DTYPE along axis=AXIS ignoring NaNs."
     cdef np.float64_t ai, aold
-    cdef int count
+    cdef Py_ssize_t count
     cdef pairs* ring
     cdef pairs* minpair
     cdef pairs* end

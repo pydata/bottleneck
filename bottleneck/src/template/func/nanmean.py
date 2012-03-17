@@ -21,7 +21,7 @@ floats['top'] = """
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     "Mean of NDIMd array with dtype=DTYPE along axis=AXIS ignoring NaNs."
-    cdef int count = 0
+    cdef Py_ssize_t count = 0
     cdef np.DTYPE_t asum = 0, ai
 """
 
@@ -141,7 +141,7 @@ ints['loop'] = loop
 # Int dtypes (axis=None) ----------------------------------------------------
 
 ints_None = deepcopy(ints) 
-ints_None['top'] = ints['top'] + "    cdef int size\n"
+ints_None['top'] = ints['top'] + "    cdef Py_ssize_t size\n"
 ints_None['axisNone'] = True
 
 loop = {}

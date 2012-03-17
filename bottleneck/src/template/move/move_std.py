@@ -23,7 +23,7 @@ floats['top'] = """
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,
                                   int window, int ddof):
     "Moving std of NDIMd array of dtype=DTYPE along axis=AXIS."
-    cdef int count = 0
+    cdef Py_ssize_t count = 0
     cdef double asum = 0, a2sum = 0, ai
 """
 

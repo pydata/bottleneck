@@ -135,7 +135,7 @@ ints['loop'] = loop
 # Int dtypes (axis=None) ----------------------------------------------------
 
 ints_None = deepcopy(ints) 
-ints_None['top'] = ints['top'] + "    cdef int size\n"
+ints_None['top'] = ints['top'] + "    cdef Py_ssize_t size\n"
 ints_None['axisNone'] = True
 
 loop = {}

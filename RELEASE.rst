@@ -23,6 +23,7 @@ Bottleneck 0.6.0
 
 - #31 Confusing error message in partsort and argpartsort
 - #32 Update path in MANIFEST.in
+- #35 Wrong output for very large (2**31) input arrays
 
 Older versions
 ==============

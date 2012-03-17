@@ -234,8 +234,8 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
 
     The output string contains code for: index array counters, one for each
     dimension (cdef Py_size_t i0, i1, i2, ....); the length along each
-    dimension of the input array, `a` (cdef int n0 = a.shape[0],...); the
-    initialized, empty output array, `y`.
+    dimension of the input array, `a` (cdef Py_ssize_t n0 = a.shape[0],...);
+    the initialized, empty output array, `y`.
 
     Parameters
     ----------
@@ -275,9 +275,9 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
         cdef Py_ssize_t i0, i1, i2
         cdef np.npy_intp *dim
         dim = PyArray_DIMS(a)
-        cdef int n0 = dim[0]
-        cdef int n1 = dim[1]
-        cdef int n2 = dim[2]
+        Py_ssize_t n0 = dim[0]
+        Py_ssize_t n1 = dim[1]
+        Py_ssize_t n2 = dim[2]
         cdef np.npy_intp *dims = [n0, n2]
         cdef np.ndarray[np.float64_t, ndim=2] y = PyArray_EMPTY(2, dims,
                                                   NPY_float64, 0)
@@ -289,9 +289,9 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
         cdef Py_ssize_t i0, i1, i2
         cdef np.npy_intp *dim
         dim = PyArray_DIMS(a)
-        cdef int n0 = dim[0]
-        cdef int n1 = dim[1]
-        cdef int n2 = dim[2]
+        Py_ssize_t n0 = dim[0]
+        Py_ssize_t n1 = dim[1]
+        Py_ssize_t n2 = dim[2]
         cdef np.npy_intp *dims = [n0, n1, n2]
         cdef np.ndarray[np.float64_t, ndim=3] y = PyArray_EMPTY(3, dims,
                                                   NPY_float64, 0)
@@ -316,7 +316,7 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
     cdefs.append(tab + "cdef np.npy_intp *dim")
     cdefs.append(tab + "dim = PyArray_DIMS(a)")
     for dim in range(ndim):
-        cdefs.append(tab + "cdef int n%d = dim[%d]" % (dim, dim))
+        cdefs.append(tab + "cdef Py_ssize_t n%d = dim[%d]" % (dim, dim))
     
     if not cdef_output:
         return '\n'.join(cdefs) + '\n'
