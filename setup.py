@@ -17,7 +17,7 @@ CLASSIFIERS = ["Development Status :: 4 - Beta",
 
 # Description
 description = "Fast NumPy array functions written in Cython"
-fid = file('README.rst', 'r')
+fid = open('README.rst', 'r')
 long_description = fid.read()
 fid.close()
 idx = max(0, long_description.find("Bottleneck is a collection"))
@@ -25,7 +25,7 @@ long_description = long_description[idx:]
 
 # Get bottleneck version
 ver_file = os.path.join('bottleneck', 'version.py')
-fid = file(ver_file, 'r')
+fid = open(ver_file, 'r')
 VER = fid.read()
 fid.close()
 VER = VER.split("= ")
