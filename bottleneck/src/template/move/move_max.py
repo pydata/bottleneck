@@ -13,7 +13,7 @@ INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 loop = {}
 loop[1] = """\
     if (window < 1) or (window > nAXIS):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
+        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 
     ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
     end = ring + window
@@ -68,7 +68,7 @@ loop[1] = """\
 """        
 loop[2] = """\
     if (window < 1) or (window > nAXIS):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
+        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 
     ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
 
@@ -126,7 +126,7 @@ loop[2] = """\
 """
 loop[3] = """\
     if (window < 1) or (window > nAXIS):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
+        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 
     ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
 
@@ -340,11 +340,11 @@ def move_max_selector(arr, int axis):
         func = move_max_dict[key]
     except KeyError:
         if (axis < 0) or (axis >= ndim):
-            raise ValueError, "axis(=%d) out of bounds" % axis
+            raise ValueError("axis(=%d) out of bounds" % axis)
         try:
             func = move_max_slow_dict[axis]
         except KeyError:
             tup = (str(ndim), str(a.dtype), str(axis))
-            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
+            raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
 '''   

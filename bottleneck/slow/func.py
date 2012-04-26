@@ -70,7 +70,7 @@ def nanstd(arr, axis=None, ddof=0):
         if axis < 0:
             axis += arr.ndim
         if (axis < 0) or (axis >= arr.ndim):
-            raise ValueError, "axis(=%d) out of bounds" % axis
+            raise ValueError("axis(=%d) out of bounds" % axis)
     else:
         # Older versions of scipy choke on axis=None
         arr = arr.ravel()

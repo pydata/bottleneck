@@ -253,6 +253,6 @@ def replace_selector(arr):
             func = replace_slow_dict[axis]
         except KeyError:
             tup = (str(ndim), str(arr.dtype), str(axis))
-            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
+            raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func
 '''   

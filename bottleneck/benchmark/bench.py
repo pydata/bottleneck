@@ -55,47 +55,47 @@ def bench(mode='fast', dtype='float64', axis=0,
     tab = '    '
 
     # Header
-    print 'Bottleneck performance benchmark'
-    print "%sBottleneck  %s" % (tab, bn.__version__)
-    print "%sNumpy (np)  %s" % (tab, np.__version__)
+    print('Bottleneck performance benchmark')
+    print("%sBottleneck  %s" % (tab, bn.__version__))
+    print("%sNumpy (np)  %s" % (tab, np.__version__))
     if SCIPY:
-        print "%sScipy (sp)  %s" % (tab, sp.__version__)
+        print("%sScipy (sp)  %s" % (tab, sp.__version__))
     else:
-        print "%sScipy (sp)  Cannot import, skipping scipy benchmarks" % tab
-    print "%sSpeed is NumPy or SciPy time divided by Bottleneck time" % tab
+        print("%sScipy (sp)  Cannot import, skipping scipy benchmarks" % tab)
+    print("%sSpeed is NumPy or SciPy time divided by Bottleneck time" % tab)
     tup = (tab, dtype, axis)
-    print "%sNaN means one-third NaNs; %s and axis=%s are used" % tup 
+    print("%sNaN means one-third NaNs; %s and axis=%s are used" % tup )
     if mode == 'fast':
-        print "%sHigh-level functions used (mode='fast')" % tab
+        print("%sHigh-level functions used (mode='fast')" % tab)
     elif mode == 'faster':    
-        print "%sLow-level functions used (mode='faster')" % tab
+        print("%sLow-level functions used (mode='faster')" % tab)
     
-    print
+    print('')
     header = [" "*14]
     for nan in nans:
         if nan:
             header.append("NaN".center(11))
         else:
             header.append("no NaN".center(11))
-    print "".join(header)       
+    print("".join(header))
     header = ["".join(str(shape).split(" ")).center(11) for shape in shapes]
     header = [" "*14] + header
-    print "".join(header)
+    print("".join(header))
 
     suite = benchsuite(mode, shapes, dtype, axis, nans)
     for test in suite:
         name = test["name"].ljust(12)
         fmt = name + "%10.2f" + "%11.2f"*(len(shapes) - 1)
         if test['scipy_required'] and not SCIPY:
-            print "%s%s" % (name, "requires SciPy")
+            print("%s%s" % (name, "requires SciPy"))
         else:
             speed = timer(test['statements'], test['setups'])
-            print fmt % tuple(speed)
+            print(fmt % tuple(speed))
 
-    print
-    print 'Reference functions:'
+    print('')
+    print('Reference functions:')
     for test in suite:
-        print "%s%s" % (test["name"].ljust(15), test['ref'])
+        print("%s%s" % (test["name"].ljust(15), test['ref']))
 
 def timer(statements, setups):
     speed = []

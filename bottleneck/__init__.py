@@ -32,4 +32,4 @@ try:
     test = Tester().test
     del Tester
 except (ImportError, ValueError):
-    print "No Bottleneck unit testing available."
+    print("No Bottleneck unit testing available.")

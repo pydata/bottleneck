@@ -131,7 +131,7 @@ def looper(loop, ndim, axis):
 
     Make a loop over axis=0:
 
-    >>> print looper(loop, ndim=3, axis=0)
+    >>> print(looper(loop, ndim=3, axis=0))
     for i1 in range(n1):
         for i2 in range(n2):
             amin = MAXDTYPE
@@ -143,7 +143,7 @@ def looper(loop, ndim, axis):
 
     Make a loop over axis=1:
 
-    >>> print looper(loop, ndim=3, axis=1)
+    >>> print(looper(loop, ndim=3, axis=1))
     for i0 in range(n0):
         for i2 in range(n2):
             amin = MAXDTYPE
@@ -155,7 +155,7 @@ def looper(loop, ndim, axis):
 
     Make a loop over axis=2:
 
-    >>> print looper(loop, ndim=3, axis=2)
+    >>> print(looper(loop, ndim=3, axis=2))
     for i0 in range(n0):
         for i1 in range(n1):
             amin = MAXDTYPE
@@ -197,13 +197,13 @@ def looper(loop, ndim, axis):
     mark = 'INDEXREPLACE|' 
     nreplace = code.count(mark)
     if (nreplace > 0) and (axis is None):
-        raise ValueError, "`INDEXREPLACE` cannot be used when axis is None."
+        raise ValueError("`INDEXREPLACE` cannot be used when axis is None.")
     while mark in code:
         idx0 = code.index(mark) 
         idx1 = idx0 + len(mark)
         idx2 = idx1 + code[idx1:].index('|')
         if (idx0 >= idx1) or (idx1 >= idx2):
-            raise RuntimeError, "Parsing error or poorly formatted input."
+            raise RuntimeError("Parsing error or poorly formatted input.")
         replacement = code[idx1:idx2]
         idx = ['i' + str(i) for i in range(ndim)]
         idx[axis] = replacement
@@ -219,7 +219,7 @@ def looper(loop, ndim, axis):
         idx1 = idx0 + len(mark)
         idx2 = idx1 + code[idx1:].index('|')
         if (idx0 >= idx1) or (idx1 >= idx2):
-            raise RuntimeError, "Parsing error or poorly formatted input."
+            raise RuntimeError("Parsing error or poorly formatted input.")
         replacement = code[idx1:idx2]
         idx = ['n' + str(i) for i in range(ndim)]
         idx[axis] = replacement
@@ -271,7 +271,7 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
 
     Make loop initialization code:
 
-    >>> print loop_cdef(ndim, dtype, axis, is_reducing_function)
+    >>> print(loop_cdef(ndim, dtype, axis, is_reducing_function))
         cdef Py_ssize_t i0, i1, i2
         cdef np.npy_intp *dim
         dim = PyArray_DIMS(a)
@@ -285,7 +285,7 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
     Repeat, but this time make the output non-reducing:
 
     >>> is_reducing_function = False     
-    >>> print loop_cdef(ndim, dtype, axis, is_reducing_function)
+    >>> print(loop_cdef(ndim, dtype, axis, is_reducing_function))
         cdef Py_ssize_t i0, i1, i2
         cdef np.npy_intp *dim
         dim = PyArray_DIMS(a)
