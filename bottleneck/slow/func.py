@@ -419,12 +419,12 @@ def scipy_rankdata(a):
     sumranks = 0
     dupcount = 0
     newarray = np.zeros(n, float)
-    for i in xrange(n):
+    for i in range(n):
         sumranks += i
         dupcount += 1
         if i==n-1 or svec[i] != svec[i+1]:
             averank = sumranks / float(dupcount) + 1
-            for j in xrange(i-dupcount+1,i+1):
+            for j in range(i-dupcount+1,i+1):
                 newarray[ivec[j]] = averank
             sumranks = 0
             dupcount = 0
