@@ -410,7 +410,7 @@ def nanvar_selector(arr, axis):
         a = np.array(arr, copy=False)
     cdef int ndim = PyArray_NDIM(a)
     cdef int dtype = PyArray_TYPE(a)
-    if (axis < 0) and (axis is not None):
+    if (axis is not None) and (axis < 0):
         axis += ndim
     cdef tuple key = (ndim, dtype, axis)
     try:

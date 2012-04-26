@@ -169,7 +169,7 @@ def looper(loop, ndim, axis):
     
     if ndim < 1:
         raise ValueError("ndim(=%d) must be and integer greater than 0" % ndim)
-    if (axis < 0) and (axis is not None):
+    if (axis is not None) and (axis < 0):
         raise ValueError("`axis` must be a non-negative integer or None")
     if axis >= ndim:
         raise ValueError("`axis` must be less then `ndim`")
@@ -300,7 +300,7 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
 
     if ndim < 1:
         raise ValueError("ndim(=%d) must be and integer greater than 0" % ndim)
-    if (axis < 0) and (axis is not None):
+    if (axis is not None) and (axis < 0):
         raise ValueError("`axis` must be a non-negative integer or None")
     if axis >= ndim:
         raise ValueError("`axis` must be less then `ndim`")
