@@ -1,4 +1,2 @@
-from __future__ import absolute_import
-
-from .func import *
-from .move import *
+from bottleneck.slow.func import *
+from bottleneck.slow.move import *
