@@ -1,5 +1,7 @@
 # Bottleneck Makefile 
 
+PYTHON=python
+
 srcdir := bottleneck/src
 
 help:
@@ -17,7 +19,7 @@ help:
 all: clean pyx cfiles build test
 
 pyx:
-	python -c "from bottleneck.src.makepyx import makepyx; makepyx()"
+	${PYTHON} -c "from bottleneck.src.makepyx import makepyx; makepyx()"
 
 cfiles:
 	cython ${srcdir}/func/32bit/func.pyx
@@ -29,23 +31,23 @@ build: funcs moves
 	
 funcs:
 	rm -rf ${srcdir}/../func.so
-	python ${srcdir}/func/setup.py build_ext --inplace
+	${PYTHON} ${srcdir}/func/setup.py build_ext --inplace
 	
 moves:
 	rm -rf ${srcdir}/../move.so
-	python ${srcdir}/move/setup.py build_ext --inplace
+	${PYTHON} ${srcdir}/move/setup.py build_ext --inplace
 		
 test:
-	python -c "import bottleneck;bottleneck.test(extra_argv=['--processes=4'])"
+	${PYTHON} -c "import bottleneck;bottleneck.test(extra_argv=['--processes=4'])"
 
 bench:
-	python -c "import bottleneck; bottleneck.bench()"
+	${PYTHON} -c "import bottleneck; bottleneck.bench()"
 
 sdist: pyx cfiles
 	rm -f MANIFEST
 	git status
 	find -name *.c
-	python setup.py sdist
+	${PYTHON} setup.py sdist
 
 # Phony targets for cleanup and similar uses
 
