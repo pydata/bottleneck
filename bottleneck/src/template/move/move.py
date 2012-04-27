@@ -1,19 +1,20 @@
+from __future__ import absolute_import
 
 from bottleneck.src.template.template import template
 import bottleneck.src.template.template as tempmod
 import os.path
 
-from move_sum import move_sum
-from move_nansum import move_nansum
-from move_mean import move_mean
-from move_median import move_median
-from move_nanmean import move_nanmean
-from move_std import move_std
-from move_nanstd import move_nanstd
-from move_min import move_min
-from move_max import move_max
-from move_nanmin import move_nanmin
-from move_nanmax import move_nanmax
+from .move_sum import move_sum
+from .move_nansum import move_nansum
+from .move_mean import move_mean
+from .move_median import move_median
+from .move_nanmean import move_nanmean
+from .move_std import move_std
+from .move_nanstd import move_nanstd
+from .move_min import move_min
+from .move_max import move_max
+from .move_nanmin import move_nanmin
+from .move_nanmax import move_nanmax
 
 funcs = {}
 funcs['move_sum'] = move_sum

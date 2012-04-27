@@ -37,7 +37,7 @@ def unit_maker(func, nans=True):
     msg =  "\nInput array modifed by %s.\n\n"
     msg += "input array before:\n%s\nafter:\n%s\n"
     for i, arr in enumerate(arrays(nans=nans)):
-        for axis in range(-arr.ndim, arr.ndim) + [None]:
+        for axis in list(range(-arr.ndim, arr.ndim)) + [None]:
             with np.errstate(invalid='ignore'):
                 arr1 = arr.copy()
                 arr2 = arr.copy()

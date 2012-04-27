@@ -30,7 +30,7 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,
 loop = {}
 loop[1] = """\
     if (window < 1) or (window > nINDEX0):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nINDEX0)
+        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nINDEX0))
 
     for iINDEX0 in range(window - 1):
         ai = a[INDEXALL]
@@ -65,7 +65,7 @@ loop[1] = """\
 """        
 loop[2] = """\
     if (window < 1) or (window > nAXIS):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
+        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 
     for iINDEX0 in range(nINDEX0):
         asum = 0
@@ -103,7 +103,7 @@ loop[2] = """\
 """
 loop[3] = """\
     if (window < 1) or (window > nAXIS):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
+        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
@@ -152,7 +152,7 @@ ints['dtypes'] = INT_DTYPES
 loop = {}
 loop[1] = """\
     if (window < 1) or (window > nINDEX0):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nINDEX0)
+        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nINDEX0))
 
     for iINDEX0 in range(window - 1):
         asum += a[INDEXALL]
@@ -170,7 +170,7 @@ loop[1] = """\
 """        
 loop[2] = """\
     if (window < 1) or (window > nAXIS):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
+        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 
     for iINDEX0 in range(nINDEX0):
         asum = 0
@@ -190,7 +190,7 @@ loop[2] = """\
 """
 loop[3] = """\
     if (window < 1) or (window > nAXIS):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
+        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
@@ -327,11 +327,11 @@ def move_mean_selector(arr, int axis):
         func = move_mean_dict[key]
     except KeyError:
         if (axis < 0) or (axis >= ndim):
-            raise ValueError, "axis(=%d) out of bounds" % axis
+            raise ValueError("axis(=%d) out of bounds" % axis)
         try:
             func = move_mean_slow_dict[axis]
         except KeyError:
             tup = (str(ndim), str(a.dtype), str(axis))
-            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
+            raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
 '''   

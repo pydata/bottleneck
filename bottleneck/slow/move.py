@@ -62,7 +62,7 @@ def move_sum(arr, window, axis=-1, method='filter'):
         y = move_func_loop(np.sum, arr, window, axis=axis)
     else:
         msg = "`method` must be 'filter', 'strides', or 'loop'."
-        raise ValueError, msg
+        raise ValueError(msg)
     if y.dtype != arr.dtype:
         if issubclass(arr.dtype.type, np.inexact):
             y = y.astype(arr.dtype)
@@ -117,7 +117,7 @@ def move_nansum(arr, window, axis=-1, method='filter'):
         y = move_func_loop(np.nansum, arr, window, axis=axis)
     else:
         msg = "`method` must be 'filter', 'cumsum', 'strides', or 'loop'."
-        raise ValueError, msg
+        raise ValueError(msg)
     if y.dtype != arr.dtype:
         if issubclass(arr.dtype.type, np.inexact):
             y = y.astype(arr.dtype)
@@ -162,11 +162,11 @@ def move_sum_filter(arr, window, axis=-1):
         except ImportError:
             raise ValueError("'filter' method requires SciPy.")
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."  
+        raise ValueError("`window` is too long.")
     arr = arr.astype(float)
     w = np.ones(window, dtype=int)
     x0 = (1 - window) // 2
@@ -214,11 +214,11 @@ def move_nansum_filter(arr, window, axis=-1):
         except ImportError:
             raise ValueError("'filter' method requires SciPy.")
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."  
+        raise ValueError("`window` is too long.")
     arr = arr.astype(float)
     nrr = np.isnan(arr)
     arr[nrr] = 0
@@ -276,7 +276,7 @@ def move_mean(arr, window, axis=-1, method='filter'):
         y = move_func_loop(np.mean, arr, window, axis=axis)
     else:
         msg = "`method` must be 'filter', 'strides', or 'loop'."
-        raise ValueError, msg
+        raise ValueError(msg)
     if y.dtype != arr.dtype:
         if issubclass(arr.dtype.type, np.inexact):
             y = y.astype(arr.dtype)
@@ -331,7 +331,7 @@ def move_nanmean(arr, window, axis=-1, method='filter'):
         y = move_func_loop(bn.slow.nanmean, arr, window, axis=axis)
     else:
         msg = "`method` must be 'filter', 'cumsum', 'strides', or 'loop'."
-        raise ValueError, msg
+        raise ValueError(msg)
     if y.dtype != arr.dtype:
         if issubclass(arr.dtype.type, np.inexact):
             y = y.astype(arr.dtype)
@@ -346,11 +346,11 @@ def move_mean_filter(arr, window, axis=-1):
         except ImportError:
             raise ValueError("'filter' method requires SciPy.")
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1: 
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."  
+        raise ValueError("`window` is too long.")
     arr = arr.astype(float)
     w = np.empty(window)
     w.fill(1.0 / window)
@@ -368,11 +368,11 @@ def move_nanmean_filter(arr, window, axis=-1):
         except ImportError:
             raise ValueError("'filter' method requires SciPy.")
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."  
+        raise ValueError("`window` is too long.")
     arr = arr.astype(float)
     nrr = np.isnan(arr)
     arr[nrr] = 0
@@ -433,7 +433,7 @@ def move_var(arr, window, axis=-1, method='filter', ddof=0):
         y = move_func_loop(np.var, arr, window, axis=axis)
     else:
         msg = "`method` must be 'filter', 'strides', or 'loop'."
-        raise ValueError, msg
+        raise ValueError(msg)
     if y.dtype != arr.dtype:
         if issubclass(arr.dtype.type, np.inexact):
             y = y.astype(arr.dtype)
@@ -484,7 +484,7 @@ def move_nanvar(arr, window, axis=-1, method='filter', ddof=0):
         y = move_func_loop(bn.slow.nanvar, arr, window, axis=axis)
     else:
         msg = "`method` must be 'filter', 'strides', or 'loop'."
-        raise ValueError, msg
+        raise ValueError(msg)
     if y.dtype != arr.dtype:
         if issubclass(arr.dtype.type, np.inexact):
             y = y.astype(arr.dtype)
@@ -499,11 +499,11 @@ def move_var_filter(arr, window, axis=-1):
         except ImportError:
             raise ValueError("'filter' method requires SciPy.")
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."  
+        raise ValueError("`window` is too long.")
     arr = arr.astype(float)
     w = np.empty(window)
     w.fill(1.0 / window)
@@ -525,11 +525,11 @@ def move_nanvar_filter(arr, window, axis=-1):
         except ImportError:
             raise ValueError("'filter' method requires SciPy.")
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."  
+        raise ValueError("`window` is too long.")
     arr = arr.astype(float)
     nrr = np.isnan(arr)
     arr[nrr] = 0
@@ -596,7 +596,7 @@ def move_std(arr, window, axis=-1, method='filter', ddof=0):
         y = move_func_loop(np.std, arr, window, axis=axis)
     else:
         msg = "`method` must be 'filter', 'strides', or 'loop'."
-        raise ValueError, msg
+        raise ValueError(msg)
     if y.dtype != arr.dtype:
         if issubclass(arr.dtype.type, np.inexact):
             y = y.astype(arr.dtype)
@@ -648,7 +648,7 @@ def move_nanstd(arr, window, axis=-1, method='filter', ddof=0):
         y = move_func_loop(bn.slow.nanstd, arr, window, axis=axis)
     else:
         msg = "`method` must be 'filter', 'strides', or 'loop'."
-        raise ValueError, msg
+        raise ValueError(msg)
     if y.dtype != arr.dtype:
         if issubclass(arr.dtype.type, np.inexact):
             y = y.astype(arr.dtype)
@@ -657,11 +657,11 @@ def move_nanstd(arr, window, axis=-1, method='filter', ddof=0):
 def move_std_filter(arr, window, axis=-1):
     "Moving window standard deviation implemented with a filter."
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."  
+        raise ValueError("`window` is too long.")
     y = move_var_filter(arr, window, axis=axis)
     np.sqrt(y, y)
     return y
@@ -669,11 +669,11 @@ def move_std_filter(arr, window, axis=-1):
 def move_nanstd_filter(arr, window, axis=-1):
     "Moving window standard deviation ignoring NaNs, implemented with a filter."
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."  
+        raise ValueError("`window` is too long.")
     y = move_nanvar_filter(arr, window, axis=axis)
     np.sqrt(y, y)
     return y
@@ -721,7 +721,7 @@ def move_min(arr, window, axis=-1, method='filter'):
     elif method == 'loop':
         y = move_func_loop(np.min, arr, window, axis=axis)
     else:
-        raise ValueError, "`method` must be 'filter', 'strides', or 'loop'."
+        raise ValueError("`method` must be 'filter', 'strides', or 'loop'.")
     return y
 
 def move_nanmin(arr, window, axis=-1, method='filter'):
@@ -766,7 +766,7 @@ def move_nanmin(arr, window, axis=-1, method='filter'):
     elif method == 'loop':
         y = move_nanmin_loop(arr, window, axis=axis)
     else:
-        raise ValueError, "`method` must be 'filter', 'strides', or 'loop'."
+        raise ValueError("`method` must be 'filter', 'strides', or 'loop'.")
     return y
 
 def move_min_filter(arr, window, axis=-1):
@@ -778,11 +778,11 @@ def move_min_filter(arr, window, axis=-1):
         except ImportError:
             raise ValueError("'filter' method requires SciPy.")
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."  
+        raise ValueError("`window` is too long.")
     y = arr.astype(float)
     x0 = (window - 1) // 2
     minimum_filter1d(y, window, axis=axis, mode='constant', cval=np.nan,
@@ -803,11 +803,11 @@ def move_nanmin_filter(arr, window, axis=-1):
         except ImportError:
             raise ValueError("'filter' method requires SciPy.")
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."
+        raise ValueError("`window` is too long.")
     arr = arr.astype(float)
     nrr = np.isnan(arr)
     arr[nrr] = np.inf
@@ -825,11 +825,11 @@ def move_nanmin_filter(arr, window, axis=-1):
 def move_nanmin_loop(arr, window, axis=-1):
     "Moving window minimium ignoring NaNs, implemented with a python loop."
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."
+        raise ValueError("`window` is too long.")
     arr = arr.astype(float)
     nrr = np.isnan(arr)
     arr[nrr] = np.inf
@@ -841,11 +841,11 @@ def move_nanmin_loop(arr, window, axis=-1):
 def move_nanmin_strides(arr, window, axis=-1):
     "Moving window minimium ignoring NaNs, implemented with stides tricks."
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."
+        raise ValueError("`window` is too long.")
     arr = arr.astype(float)
     nrr = np.isnan(arr)
     arr[nrr] = np.inf
@@ -897,7 +897,7 @@ def move_max(arr, window, axis=-1, method='filter'):
     elif method == 'loop':
         y = move_func_loop(np.max, arr, window, axis=axis)
     else:
-        raise ValueError, "`method` must be 'filter', 'strides', or 'loop'."
+        raise ValueError("`method` must be 'filter', 'strides', or 'loop'.")
     return y
 
 def move_nanmax(arr, window, axis=-1, method='filter'):
@@ -942,7 +942,7 @@ def move_nanmax(arr, window, axis=-1, method='filter'):
     elif method == 'loop':
         y = move_nanmax_loop(arr, window, axis=axis)
     else:
-        raise ValueError, "`method` must be 'filter', 'strides', or 'loop'."
+        raise ValueError("`method` must be 'filter', 'strides', or 'loop'.")
     return y
 
 def move_max_filter(arr, window, axis=-1):
@@ -954,11 +954,11 @@ def move_max_filter(arr, window, axis=-1):
         except ImportError:
             raise ValueError("'filter' method requires SciPy.")
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."  
+        raise ValueError("`window` is too long.")
     y = arr.astype(float)
     x0 = (window - 1) // 2
     maximum_filter1d(y, window, axis=axis, mode='constant', cval=np.nan,
@@ -979,11 +979,11 @@ def move_nanmax_filter(arr, window, axis=-1):
         except ImportError:
             raise ValueError("'filter' method requires SciPy.")
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."
+        raise ValueError("`window` is too long.")
     arr = arr.astype(float)
     nrr = np.isnan(arr)
     arr[nrr] = -np.inf
@@ -1001,11 +1001,11 @@ def move_nanmax_filter(arr, window, axis=-1):
 def move_nanmax_loop(arr, window, axis=-1):
     "Moving window maximium ignoring NaNs, implemented with a python loop."
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."
+        raise ValueError("`window` is too long.")
     arr = arr.astype(float)
     nrr = np.isnan(arr)
     arr[nrr] = -np.inf
@@ -1017,11 +1017,11 @@ def move_nanmax_loop(arr, window, axis=-1):
 def move_nanmax_strides(arr, window, axis=-1):
     "Moving window maximium ignoring NaNs, implemented with stides tricks."
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."
+        raise ValueError("`window` is too long.")
     arr = arr.astype(float)
     nrr = np.isnan(arr)
     arr[nrr] = -np.inf
@@ -1071,7 +1071,7 @@ def move_median(arr, window, axis=-1, method='loop'):
         y = move_func_loop(np.median, arr, window, axis=axis)
     else:
         msg = "`method` must be 'strides' or 'loop'."
-        raise ValueError, msg
+        raise ValueError(msg)
     if y.dtype != arr.dtype:
         if issubclass(arr.dtype.type, np.inexact):
             y = y.astype(arr.dtype)
@@ -1126,17 +1126,17 @@ def move_func(func, arr, window, axis=-1, method='loop', **kwargs):
         y = move_func_loop(func, arr, window, axis=axis)
     else:
         msg = "`method` must be 'strides' or 'loop'."
-        raise ValueError, msg
+        raise ValueError(msg)
     return y
 
 def move_func_loop(func, arr, window, axis=-1, **kwargs):
     "Generic moving window function implemented with a python loop."
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."
+        raise ValueError("`window` is too long.")
     y = np.empty(arr.shape)
     y.fill(np.nan)
     idx1 = [slice(None)] * arr.ndim
@@ -1150,18 +1150,18 @@ def move_func_loop(func, arr, window, axis=-1, **kwargs):
 def move_func_strides(func, arr, window, axis=-1, **kwargs):
     "Generic moving window function implemented with strides."
     if axis == None:
-        raise ValueError, "An `axis` value of None is not supported."
+        raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
-        raise ValueError, "`window` must be at least 1."
+        raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
-        raise ValueError, "`window` is too long."
+        raise ValueError("`window` is too long.")
     ndim = arr.ndim
     as_strided = np.lib.stride_tricks.as_strided
     idx = range(ndim)
     axis = idx[axis]
     arrshape0 = tuple(arr.shape)
     if axis >= ndim:
-        raise IndexError, "`axis` is out of range."
+        raise IndexError("`axis` is out of range.")
     if ndim == 1:
         strides = arr.strides
         shape = (arr.size - window + 1, window)
@@ -1189,7 +1189,7 @@ def move_func_strides(func, arr, window, axis=-1, **kwargs):
         if axis > 0:
             y = y.swapaxes(0, axis)
     else:
-        raise ValueError, "Only 1d, 2d, and 3d input arrays are supported."
+        raise ValueError("Only 1d, 2d, and 3d input arrays are supported.")
     ynan = np.empty(arrshape0)
     ynan.fill(np.nan)
     index = [slice(None)] * ndim 

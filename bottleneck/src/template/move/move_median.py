@@ -29,7 +29,7 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,
 loop = {}
 loop[1] = """\
     if (window < 1) or (window > nAXIS):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
+        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
     elif (window == 1):
         if issubclass(a.dtype.type, np.inexact):
             return PyArray_Copy(a)
@@ -49,7 +49,7 @@ loop[1] = """\
 """ 
 loop[2] = """\
     if (window < 1) or (window > nAXIS):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
+        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
     elif (window == 1):
         if issubclass(a.dtype.type, np.inexact):
             return PyArray_Copy(a)
@@ -72,7 +72,7 @@ loop[2] = """\
 """
 loop[3] = """\
     if (window < 1) or (window > nAXIS):
-        raise ValueError, MOVE_WINDOW_ERR_MSG % (window, nAXIS)
+        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
     elif (window == 1):
         if issubclass(a.dtype.type, np.inexact):
             return PyArray_Copy(a)
@@ -251,11 +251,11 @@ def move_median_selector(arr, int axis):
         func = move_median_dict[key]
     except KeyError:
         if (axis < 0) or (axis >= ndim):
-            raise ValueError, "axis(=%d) out of bounds" % axis
+            raise ValueError("axis(=%d) out of bounds" % axis)
         try:
             func = move_median_slow_dict[axis]
         except KeyError:
             tup = (str(ndim), str(a.dtype), str(axis))
-            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
+            raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
 '''   

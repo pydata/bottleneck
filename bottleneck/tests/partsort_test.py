@@ -36,7 +36,7 @@ def unit_maker(func, func0):
     msg = '\nfunc %s | input %s (%s) | shape %s | n %d | axis %s\n'
     msg += '\nInput array:\n%s\n'
     for i, arr in enumerate(arrays()):
-        for axis in range(-arr.ndim, arr.ndim) + [None]:
+        for axis in list(range(-arr.ndim, arr.ndim)) + [None]:
             if axis is None:
                 n = arr.size
             else:
