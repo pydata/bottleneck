@@ -1,24 +1,25 @@
+from __future__ import absolute_import
 
 from bottleneck.src.template.template import template
 import bottleneck.src.template.template as tempmod
 import os.path
 
-from median import median
-from nanmedian import nanmedian
-from nansum import nansum
-from nanmean import nanmean
-from nanvar import nanvar
-from nanstd import nanstd
-from nanmin import nanmin
-from nanmax import nanmax
-from nanargmin import nanargmin
-from nanargmax import nanargmax
-from rankdata import rankdata
-from nanrankdata import nanrankdata
-from ss import ss
-from partsort import partsort
-from argpartsort import argpartsort
-from replace import replace
+from .median import median
+from .nanmedian import nanmedian
+from .nansum import nansum
+from .nanmean import nanmean
+from .nanvar import nanvar
+from .nanstd import nanstd
+from .nanmin import nanmin
+from .nanmax import nanmax
+from .nanargmin import nanargmin
+from .nanargmax import nanargmax
+from .rankdata import rankdata
+from .nanrankdata import nanrankdata
+from .ss import ss
+from .partsort import partsort
+from .argpartsort import argpartsort
+from .replace import replace
 
 funcs = {}
 funcs['median'] = median

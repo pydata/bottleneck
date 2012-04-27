@@ -41,14 +41,13 @@ def subtemplate(name, top, loop, axisNone, dtypes, force_output_dtype,
                 reuse_non_nan_func, is_reducing_function, cdef_output, select,
                 bits):
     "Assemble template"
-    ndims = loop.keys()
-    ndims.sort()
+    ndims = sorted(loop.keys())
     funcs = []
     for ndim in ndims:
         if axisNone:
             axes = [None]
         else:
-            axes = range(ndim)
+            axes = list(range(ndim))
         for dtype in dtypes:
             for axis in axes:
 
@@ -169,24 +168,25 @@ def looper(loop, ndim, axis):
     
     if ndim < 1:
         raise ValueError("ndim(=%d) must be and integer greater than 0" % ndim)
-    if (axis is not None) and (axis < 0):
-        raise ValueError("`axis` must be a non-negative integer or None")
-    if axis >= ndim:
-        raise ValueError("`axis` must be less then `ndim`")
+    if axis is not None:
+        if axis < 0:
+            raise ValueError("`axis` must be a non-negative integer or None")
+        elif axis >= ndim:
+            raise ValueError("`axis` must be less then `ndim`")
   
     # INDEXALL
-    INDEXALL = ', '.join(['i' + str(i) for i in range(ndim)])
+    INDEXALL = ', '.join('i' + str(i) for i in range(ndim))
     code = loop.replace('INDEXALL', INDEXALL)
     
     # INDEXPOP
-    idx = range(ndim)
+    idx = list(range(ndim))
     if axis is not None:
         idx.pop(axis)
     INDEXPOP = ', '.join(['i' + str(i) for i in idx])
     code = code.replace('INDEXPOP', INDEXPOP)
 
     # INDEXN
-    idx = range(ndim)
+    idx = list(range(ndim))
     if axis is not None:
         idxpop = idx.pop(axis)
         idx.append(idxpop)
@@ -300,16 +300,17 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
 
     if ndim < 1:
         raise ValueError("ndim(=%d) must be and integer greater than 0" % ndim)
-    if (axis is not None) and (axis < 0):
-        raise ValueError("`axis` must be a non-negative integer or None")
-    if axis >= ndim:
-        raise ValueError("`axis` must be less then `ndim`")
+    if axis is not None:
+        if axis < 0:
+            raise ValueError("`axis` must be a non-negative integer or None")
+        elif axis >= ndim:
+            raise ValueError("`axis` must be less then `ndim`")
 
     tab = '    '
     cdefs = []
 
     # cdef loop indices
-    idx = ', '.join(['i'+str(i) for i in range(ndim)])
+    idx = ', '.join('i'+str(i) for i in range(ndim))
     cdefs.append(tab + 'cdef Py_ssize_t ' + idx)
     
     # Length along each dimension
@@ -324,7 +325,7 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
     # cdef initialize output
     if is_reducing_function:
         if (ndim > 1) and (axis is not None):
-            idx = range(ndim)
+            idx = list(range(ndim))
             del idx[axis]
             ns = ', '.join(['n'+str(i) for i in idx])
             cdefs.append("%scdef np.npy_intp *dims = [%s]" % (tab, ns))
@@ -333,8 +334,8 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
             y += "\n                                              NPY_%s, 0)"
             cdefs.append(y % (tab, dtype, ndim-1, ndim-1, dtype))
     else:
-        idx = range(ndim)
-        ns = ', '.join(['n'+str(i) for i in idx])
+        idx = list(range(ndim))
+        ns = ', '.join('n'+str(i) for i in idx)
         cdefs.append("%scdef np.npy_intp *dims = [%s]" % (tab, ns))
         y = "%scdef np.ndarray[np.%s_t, ndim=%d] "
         y += "y = PyArray_EMPTY(%d, dims,"
@@ -372,7 +373,7 @@ class Selector(object):
 
 def slow_selector(name, maxaxis=32):
     "String of code for slow function mapping dictionary."
-    axes = range(maxaxis+1) + [None]
+    axes = list(range(maxaxis+1)) + [None]
     src = ['\n']
     src.append("cdef dict %s_slow_dict = {}" % name)
     fmt = "%s_slow_dict[%s] = %s_slow_axis%s"
@@ -383,7 +384,7 @@ def slow_selector(name, maxaxis=32):
 
 def slow_functions(name, signature, func, maxaxis=32):
     "String of code for slow functions."
-    axes = range(maxaxis+1) + [None]
+    axes = list(range(maxaxis+1)) + [None]
     tab = '    '
     sig = "def %s_slow_axis%s(%s):"
     doc = '%s"Unaccelerated (slow) %s along axis %s."'
