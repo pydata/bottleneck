@@ -17,6 +17,7 @@ Bottleneck 0.6.0
 
 **Enhancements**
 
+- Python 3 support -- only 3.2 tested, but earlier versions may work
 - Upgrade numpydoc from 0.3.1 to 0.4 to support Sphinx 1.0.1
 
 **Bug fixes**

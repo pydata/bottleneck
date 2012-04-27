@@ -18,7 +18,7 @@ def arrayaxis(dtypes=bn.dtypes):
             if not issubclass(a.dtype.type, np.inexact):
                 for shape in shapes:
                     a = a.reshape(shape)
-                    for axis in range(-a.ndim, a.ndim) + [None]:
+                    for axis in list(range(-a.ndim, a.ndim)) + [None]:
                         yield a.copy(), axis
 
 def fast_checker(selector, mode='func'):

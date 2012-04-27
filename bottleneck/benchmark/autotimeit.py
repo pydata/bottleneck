@@ -14,5 +14,5 @@ def autoscaler(timer, mintime):
         if time > mintime:
             return number, time 
         number *= 10
-    raise RuntimeError, 'function is too fast to test'    
+    raise RuntimeError('function is too fast to test')
     

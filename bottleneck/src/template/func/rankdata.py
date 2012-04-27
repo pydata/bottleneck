@@ -257,11 +257,11 @@ def rankdata_selector(arr, axis):
         func = rankdata_dict[key]
     except KeyError:
         if (axis < 0) or (axis >= ndim):
-            raise ValueError, "axis(=%d) out of bounds" % axis
+            raise ValueError("axis(=%d) out of bounds" % axis)
         try:
             func = rankdata_slow_dict[axis]
         except KeyError:
             tup = (str(ndim), str(a.dtype), str(axis))
-            raise TypeError, "Unsupported ndim/dtype/axis (%s/%s/%s)." % tup
+            raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
 '''   
