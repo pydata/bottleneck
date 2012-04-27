@@ -13,6 +13,7 @@ CLASSIFIERS = ["Development Status :: 4 - Beta",
                "Operating System :: OS Independent",
                "Programming Language :: Cython",
                "Programming Language :: Python",
+               "Programming Language :: Python :: 3",
                "Topic :: Scientific/Engineering"]
 
 # Description
