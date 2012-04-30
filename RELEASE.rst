@@ -11,14 +11,20 @@ Bottleneck 0.6.0
 
 *Release date: Not yet released, in development*
 
+Thanks to Dougal Sutherland, Bottleneck now runs on Python 3.2.
+
 **New functions**
 
 - replace(arr, old, new), e.g, replace(arr, np.nan, 0)
 
 **Enhancements**
 
-- Python 3 support -- only 3.2 tested, but earlier versions may work
+- Python 3.2 support (may work on earlier verions of Python 3)
 - Upgrade numpydoc from 0.3.1 to 0.4 to support Sphinx 1.0.1
+
+**Breaks from 0.5.0**
+
+- Support for Python 2.5 dropped
 
 **Bug fixes**
 
