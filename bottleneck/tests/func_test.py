@@ -5,7 +5,7 @@ from __future__ import with_statement
 
 import numpy as np
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
-                           assert_array_almost_equal)
+                           assert_array_almost_equal, assert_almost_equal)
 nan = np.nan
 import bottleneck as bn
 
@@ -152,3 +152,38 @@ def test_nanmin_size_zero(dtypes=bn.dtypes):
             a = np.zeros(shape, dtype=dtype)
             assert_raises(ValueError, bn.nanmin, a)
             assert_raises(ValueError, bn.slow.nanmin, a)
+
+# ---------------------------------------------------------------------------
+# Check nn
+
+def arrays2(dtypes=bn.dtypes):
+    "Iterator that yield arrays to use for unit testing."
+    for dtype in bn.dtypes:
+        arr = np.random.randint(0, 10, (2, 3)).astype(dtype)
+        arr0 = np.random.randint(0, 10, 3).astype(dtype)
+        axis = 0
+        yield arr.copy(), arr0[:2].copy(), axis
+        axis = 1
+        yield arr.copy(), arr0.copy(), axis
+        # Make sure ties are handled in the same way
+        arr.fill(0)
+        arr0.fill(0)
+        axis = 0
+        yield arr.copy(), arr0[:2].copy(), axis
+        axis = 1
+        yield arr.copy(), arr0.copy(), axis
+
+def test_nn():
+    "Test that bn.nn gives the same output as bn.slow.nn."
+    msg = '\nfunc %s | input %s (%s) | axis %s\n'
+    msg += '\nInput array `arr`:\n%s\n'
+    msg += '\nInput array `arr0`:\n%s\n'
+    count = -1
+    for arr, arr0, axis in arrays2():
+        actual = bn.nn(arr, arr0, axis)
+        desired = bn.slow.nn(arr, arr0, axis)
+        count += 1
+        tup = ('bn.nn', 'arr'+str(count), str(arr.dtype),
+               str(axis), arr, arr0)
+        err_msg = msg % tup
+        assert_almost_equal(actual, desired, decimal=5, err_msg=err_msg)
