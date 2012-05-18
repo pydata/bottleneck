@@ -21,6 +21,7 @@ from .nn import nn
 from .partsort import partsort
 from .argpartsort import argpartsort
 from .replace import replace
+from .anynan import anynan
 
 funcs = {}
 funcs['median'] = median
@@ -40,6 +41,7 @@ funcs['nn'] = nn
 funcs['partsport'] = partsort
 funcs['argpartsort'] = argpartsort
 funcs['replace'] = replace
+funcs['anynan'] = anynan
 
 header = """#cython: embedsignature=True
 
@@ -53,7 +55,8 @@ from numpy cimport NPY_FLOAT64 as NPY_float64
 from numpy cimport (PyArray_EMPTY, PyArray_TYPE, PyArray_NDIM,
                     PyArray_SIZE, PyArray_DIMS, import_array,
                     PyArray_ArgSort, NPY_QUICKSORT, NPY_CORDER, 
-                    PyArray_Ravel, PyArray_FillWithScalar, PyArray_Copy)
+                    PyArray_Ravel, PyArray_FillWithScalar, PyArray_Copy,
+                    NPY_BOOL)
 
 # NPY_INTP is missing from numpy.pxd in cython 0.14.1 and earlier
 cdef extern from "numpy/arrayobject.h":
@@ -109,6 +112,7 @@ include "nn.pyx"
 include "partsort.pyx"
 include "argpartsort.pyx"
 include "replace.pyx"
+include "anynan.pyx"
 """
 
 def funcpyx(funcs=funcs, bits=None):

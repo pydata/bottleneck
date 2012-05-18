@@ -244,6 +244,9 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
     dtype : str
         The data type of the output. Used for initilizing the empty output
         array, `y`.
+    axis : {int, None}
+        If `is_reducing_function` is True then remove the dimension given
+        by `axis` when initializing the output array, `y`.
     is_reducing_function : bool    
         If True then remove the dimension given by `axis` when initializing
         the output array, `y`.
@@ -329,18 +332,30 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
             del idx[axis]
             ns = ', '.join(['n'+str(i) for i in idx])
             cdefs.append("%scdef np.npy_intp *dims = [%s]" % (tab, ns))
-            y = "%scdef np.ndarray[np.%s_t, ndim=%d] "
-            y += "y = PyArray_EMPTY(%d, dims,"
-            y += "\n                                              NPY_%s, 0)"
-            cdefs.append(y % (tab, dtype, ndim-1, ndim-1, dtype))
+            if dtype == 'bool':
+                y = "%scdef np.ndarray[np.uint8_t, ndim=%d, cast=True] "
+                y += "y = PyArray_EMPTY(%d, dims,"
+                y += "\n                                              NPY_BOOL, 0)"
+                cdefs.append(y % (tab, ndim-1, ndim-1))
+            else:    
+                y = "%scdef np.ndarray[np.%s_t, ndim=%d] "
+                y += "y = PyArray_EMPTY(%d, dims,"
+                y += "\n                                              NPY_%s, 0)"
+                cdefs.append(y % (tab, dtype, ndim-1, ndim-1, dtype))
     else:
         idx = list(range(ndim))
         ns = ', '.join('n'+str(i) for i in idx)
         cdefs.append("%scdef np.npy_intp *dims = [%s]" % (tab, ns))
-        y = "%scdef np.ndarray[np.%s_t, ndim=%d] "
-        y += "y = PyArray_EMPTY(%d, dims,"
-        y += "\n                                              NPY_%s, 0)"
-        cdefs.append(y % (tab, dtype, ndim, ndim, dtype))
+        if dtype == 'bool':
+            y = "%scdef np.ndarray[np.uint8_t, ndim=%d, cast=True] "
+            y += "y = PyArray_EMPTY(%d, dims,"
+            y += "\n                                              NPY_BOOL, 0)"
+            cdefs.append(y % (tab, ndim, ndim))
+        else:
+            y = "%scdef np.ndarray[np.%s_t, ndim=%d] "
+            y += "y = PyArray_EMPTY(%d, dims,"
+            y += "\n                                              NPY_%s, 0)"
+            cdefs.append(y % (tab, dtype, ndim, ndim, dtype))
 
     return '\n'.join(cdefs) + '\n'
 

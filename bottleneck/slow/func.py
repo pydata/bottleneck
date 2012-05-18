@@ -3,7 +3,8 @@ import numpy as np
 
 __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
            'nanmin', 'nanmax', 'nanargmin', 'nanargmax', 'rankdata',
-           'nanrankdata', 'ss', 'nn', 'partsort', 'argpartsort', 'replace']
+           'nanrankdata', 'ss', 'nn', 'partsort', 'argpartsort', 'replace',
+           'anynan']
 
 def median(arr, axis=None):
     "Slow median function used for unaccelerated ndim/dtype combinations."
@@ -183,6 +184,10 @@ def replace(arr, old, new):
     else:
         mask = arr == old
     np.putmask(arr, mask, new)
+
+def anynan(arr, axis):
+    "Slow check for Nans used for unaccelerated ndim/dtype combinations."
+    return np.isnan(arr).any(axis)
 
 # ---------------------------------------------------------------------------
 #

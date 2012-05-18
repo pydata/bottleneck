@@ -69,6 +69,7 @@ def test_modification():
              bn.ss,
              bn.partsort,
              bn.argpartsort,
+             bn.anynan,
              bn.move_sum,
              bn.move_nansum,
              bn.move_mean,

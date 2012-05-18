@@ -17,6 +17,7 @@ Thanks to Dougal Sutherland, Bottleneck now runs on Python 3.2.
 
 - replace(arr, old, new), e.g, replace(arr, np.nan, 0)
 - nn(arr, arr0, axis) nearest neighbor and its index of 1d arr0 in 2d arr
+- anynan(arr, axis) faster alternative to np.isnan(arr).any(axis) 
 
 **Enhancements**
 

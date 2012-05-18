@@ -103,6 +103,10 @@ def test_replace_selector():
     "Test replace_selector."
     fast_checker(bn.func.replace_selector, mode='replace')
 
+def test_anynan_selector():
+    "Test anynan_selector."
+    fast_checker(bn.func.anynan_selector)
+
 # Moving functions ----------------------------------------------------------
 
 def test_move_sum_selector():

@@ -338,6 +338,22 @@ def benchsuite(mode, shapes, dtype, axis, nans):
     """    
     run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
+    
+    # anynan
+    run = {}
+    run['name'] = "anynan"
+    run['ref'] = "np.isnan(arr).any(axis)"
+    run['scipy_required'] = False
+    if mode == 'fast':
+        code = "bn.anynan(a, axis=AXIS)"
+    else:
+        code = "func(a)"
+    run['statements'] = [code, "np.isnan(a).any(axis=AXIS)"] 
+    setup = """
+        func, a = bn.func.anynan_selector(a, axis=AXIS)
+    """    
+    run['setups'] = getsetups(setup, shapes, nans)
+    suite.append(run)
 
     # move_sum
     run = {}

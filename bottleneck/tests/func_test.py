@@ -132,6 +132,10 @@ def test_ss():
     "Test ss."
     yield unit_maker, bn.ss, bn.slow.ss
 
+def test_anynan():
+    "Test anynan."
+    yield unit_maker, bn.anynan, bn.slow.anynan
+
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
 
