@@ -172,6 +172,14 @@ def arrays2(dtypes=bn.dtypes):
         yield arr.copy(), arr0[:2].copy(), axis
         axis = 1
         yield arr.copy(), arr0.copy(), axis
+        if issubclass(arr.dtype.type, np.inexact): 
+            # Make sure NaNs are handled in the same way
+            arr.fill(np.nan)
+            arr0.fill(np.nan)
+            axis = 0
+            yield arr.copy(), arr0[:2].copy(), axis
+            axis = 1
+            yield arr.copy(), arr0.copy(), axis
 
 def test_nn():
     "Test that bn.nn gives the same output as bn.slow.nn."
