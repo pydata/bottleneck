@@ -70,6 +70,7 @@ def test_modification():
              bn.partsort,
              bn.argpartsort,
              bn.anynan,
+             bn.allnan,
              bn.move_sum,
              bn.move_nansum,
              bn.move_mean,

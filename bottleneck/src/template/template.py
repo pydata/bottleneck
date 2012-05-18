@@ -335,12 +335,12 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
             if dtype == 'bool':
                 y = "%scdef np.ndarray[np.uint8_t, ndim=%d, cast=True] "
                 y += "y = PyArray_EMPTY(%d, dims,"
-                y += "\n                                              NPY_BOOL, 0)"
+                y += "\n\t\tNPY_BOOL, 0)"
                 cdefs.append(y % (tab, ndim-1, ndim-1))
             else:    
                 y = "%scdef np.ndarray[np.%s_t, ndim=%d] "
                 y += "y = PyArray_EMPTY(%d, dims,"
-                y += "\n                                              NPY_%s, 0)"
+                y += "\n\t\tNPY_%s, 0)"
                 cdefs.append(y % (tab, dtype, ndim-1, ndim-1, dtype))
     else:
         idx = list(range(ndim))
@@ -349,12 +349,12 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
         if dtype == 'bool':
             y = "%scdef np.ndarray[np.uint8_t, ndim=%d, cast=True] "
             y += "y = PyArray_EMPTY(%d, dims,"
-            y += "\n                                              NPY_BOOL, 0)"
+            y += "\n\t\tNPY_BOOL, 0)"
             cdefs.append(y % (tab, ndim, ndim))
         else:
             y = "%scdef np.ndarray[np.%s_t, ndim=%d] "
             y += "y = PyArray_EMPTY(%d, dims,"
-            y += "\n                                              NPY_%s, 0)"
+            y += "\n\t\tNPY_%s, 0)"
             cdefs.append(y % (tab, dtype, ndim, ndim, dtype))
 
     return '\n'.join(cdefs) + '\n'

@@ -12,7 +12,7 @@ from . import slow
 try:
     from .func import (nansum, nanmax, nanmin, nanmean, nanstd, nanvar, median,
                       nanmedian, nanargmin, nanargmax, rankdata, nanrankdata,
-                      ss, nn, partsort, argpartsort, replace, anynan)
+                      ss, nn, partsort, argpartsort, replace, anynan, allnan)
 except:
     pass
 try:

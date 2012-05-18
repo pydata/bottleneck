@@ -136,6 +136,10 @@ def test_anynan():
     "Test anynan."
     yield unit_maker, bn.anynan, bn.slow.anynan
 
+def test_allnan():
+    "Test allnan."
+    yield unit_maker, bn.allnan, bn.slow.allnan
+
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
 

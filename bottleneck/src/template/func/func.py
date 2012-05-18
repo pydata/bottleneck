@@ -22,6 +22,7 @@ from .partsort import partsort
 from .argpartsort import argpartsort
 from .replace import replace
 from .anynan import anynan
+from .allnan import allnan
 
 funcs = {}
 funcs['median'] = median
@@ -42,6 +43,7 @@ funcs['partsport'] = partsort
 funcs['argpartsort'] = argpartsort
 funcs['replace'] = replace
 funcs['anynan'] = anynan
+funcs['allnan'] = allnan
 
 header = """#cython: embedsignature=True
 
@@ -113,6 +115,7 @@ include "partsort.pyx"
 include "argpartsort.pyx"
 include "replace.pyx"
 include "anynan.pyx"
+include "allnan.pyx"
 """
 
 def funcpyx(funcs=funcs, bits=None):
