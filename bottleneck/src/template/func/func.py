@@ -17,6 +17,7 @@ from .nanargmax import nanargmax
 from .rankdata import rankdata
 from .nanrankdata import nanrankdata
 from .ss import ss
+from .nn import nn
 from .partsort import partsort
 from .argpartsort import argpartsort
 from .replace import replace
@@ -35,6 +36,7 @@ funcs['nanargmax'] = nanargmax
 funcs['rankdata'] = rankdata
 funcs['nanrankdata'] = nanrankdata
 funcs['ss'] = ss
+funcs['nn'] = nn
 funcs['partsport'] = partsort
 funcs['argpartsort'] = argpartsort
 funcs['replace'] = replace
@@ -103,6 +105,7 @@ include "nanargmax.pyx"
 include "rankdata.pyx"
 include "nanrankdata.pyx"
 include "ss.pyx"
+include "nn.pyx"
 include "partsort.pyx"
 include "argpartsort.pyx"
 include "replace.pyx"
