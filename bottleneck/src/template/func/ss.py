@@ -127,7 +127,11 @@ def ss(arr, axis=0):
     -------
     y : ndarray
         The sum of a**2 along the given axis. 
-    
+
+    See also
+    --------
+    bottleneck.nn: Nearest neighbor.    
+
     Examples
     --------
     >>> a = np.array([1., 2., 5.])

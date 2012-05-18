@@ -111,6 +111,10 @@ def nn(arr, arr0, int axis=1):
         Index of nearest neighbor in `arr`. If all distances are NaN
         then the index returned is zero.
 
+    See also
+    --------
+    bottleneck.ss: Sum of squares along specified axis.
+
     Notes
     -----
     A brute force algorithm is used to find the nearest neighbor.
@@ -122,8 +126,6 @@ def nn(arr, arr0, int axis=1):
     the same array `arr` to find nearest neighbors with different
     `arr0`. That is because it takes time to set up SciPy's cKDTree.
 
-    If `arr` fits into your memory's cache then bn.nn() is fast.
- 
     Examples
     --------
     Create the input arrays:
