@@ -205,7 +205,19 @@ def allnan(arr, axis=None):
     >>> bn.allnan(a)
     False
     >>> bn.allnan(a, axis=0)
-    array([False,  True], dtype=bool)    
+    array([False,  True], dtype=bool)
+
+    An empty array returns True:
+
+    >>> bn.allnan([])
+    True
+
+    which is similar to:
+
+    >>> all([])
+    True
+    >>> np.isnan([]).all()
+    True
 
     """
     func, arr = allnan_selector(arr, axis)
@@ -221,7 +233,7 @@ def allnan_selector(arr, axis):
     array (if it is not already an array), and selecting the function to use.
 
     You can get rid of the overhead by doing all this before you, for example,
-    enter an inner loop, by using the this function.
+    enter an inner loop, by using this function.
 
     Parameters
     ----------
