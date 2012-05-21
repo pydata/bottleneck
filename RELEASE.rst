@@ -28,6 +28,7 @@ Thanks to Dougal Sutherland, Bottleneck now runs on Python 3.2.
 **Breaks from 0.5.0**
 
 - Support for Python 2.5 dropped
+- Default axis for benchmark suite is now axis=1 (was 0)
 
 **Bug fixes**
 
@@ -192,18 +193,6 @@ supports more dtypes.
 **Faster**
 
 - All functions faster (less overhead) when output is not a scalar
-
-**Faster**
-
-- All functions faster (less overhead) when output is not a scalar
-
-**Faster**
-
-- All functions faster (less overhead) when output is not a scalar
-
-**Faster**
-
-- All functions faster (less overhead) when output is not a scalar
 - Faster nanmean() for 2d, 3d arrays containing NaNs when axis is not None
 
 **New functions**
@@ -220,4 +209,15 @@ supports more dtypes.
 - Added support for older versions of NumPy (1.4.1)
 - All functions are now templated for dtype and axis  
 - Added a sandbox for prototyping of new Bottleneck functions
-- Rewrote benchmarking code  
+- Rewrote benchmarking code
+
+Bottleneck 0.1.0
+----------------
+
+*Release date: 2010-12-10*
+
+Initial release. The three categories of Bottleneck functions:
+
+- Faster replacement for NumPy and SciPy functions
+- Moving window functions
+- Group functions that bin calculations by like-labeled elements

@@ -9,7 +9,7 @@ from .autotimeit import autotimeit
 __all__ = ['bench']
 
 
-def bench(mode='fast', dtype='float64', axis=0,
+def bench(mode='fast', dtype='float64', axis=1,
           shapes=[(10,10),(100,100),(1000,1000),(10,10),(100,100),(1000,1000)],
           nans=[False, False, False, True, True, True]):
     """
@@ -26,7 +26,7 @@ def bench(mode='fast', dtype='float64', axis=0,
         Data type string such as 'float64', which is the default.
     axis : int, optional
         Axis along which to perform the calculations that are being
-        benchmarked. The default is the first axis (axis=0).
+        benchmarked. The default is the second axis (axis=1).
     shapes : list, optional
         A list of tuple shapes of input arrays to use in the benchmark.
     nans : list, optional
