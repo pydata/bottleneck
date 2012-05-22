@@ -224,7 +224,6 @@ URLs
  docs                 http://berkeleyanalytics.com/bottleneck
  code                 http://github.com/kwgoodman/bottleneck
  mailing list         http://groups.google.com/group/bottle-neck
- mailing list 2       http://mail.scipy.org/mailman/listinfo/scipy-user
 ===================   ========================================================
 
 Install
