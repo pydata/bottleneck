@@ -23,6 +23,7 @@ Thanks to Dougal Sutherland, Bottleneck now runs on Python 3.2.
 **Enhancements**
 
 - Python 3.2 support (may work on earlier verions of Python 3)
+- C files are now generated with Cython 0.16 instead of 0.14.1
 - Upgrade numpydoc from 0.3.1 to 0.4 to support Sphinx 1.0.1
 
 **Breaks from 0.5.0**
