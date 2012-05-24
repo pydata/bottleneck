@@ -93,3 +93,20 @@ def test_non_array():
     assert_raises(TypeError, bn.replace, a, 0, 1)
     a = (1, 2, 3)
     assert_raises(TypeError, bn.replace, a, 0, 1)
+
+# ---------------------------------------------------------------------------
+# Make sure bn.replace and bn.slow.replace can handle int arrays where
+# user wants to replace nans
+
+def test_replace_nan_int():
+    "Test replace, int array, old=nan, new=0"
+    a = np.arange(2*3*4).reshape(2,3,4)
+    actual = a.copy()
+    bn.replace(actual, np.nan, 0)
+    desired = a.copy()
+    msg = 'replace failed on int input looking for nans'
+    assert_array_equal(actual, desired, err_msg=msg)
+    actual = a.copy()
+    bn.slow.replace(actual, np.nan, 0)
+    msg = 'slow.replace failed on int input looking for nans'
+    assert_array_equal(actual, desired, err_msg=msg)
