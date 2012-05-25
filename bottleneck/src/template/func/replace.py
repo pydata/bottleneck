@@ -242,6 +242,7 @@ def replace_selector(arr):
     """
     axis = None
     if type(arr) is not np.ndarray:
+        # replace works in place so input must be an array, not (e.g.) a list
         raise TypeError("`arr` must be a numpy array.")
     cdef int ndim = PyArray_NDIM(arr)
     cdef int dtype = PyArray_TYPE(arr)

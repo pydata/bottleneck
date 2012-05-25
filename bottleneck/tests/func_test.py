@@ -11,7 +11,7 @@ import bottleneck as bn
 
 
 def arrays(dtypes=bn.dtypes, nans=True):
-    "Iterator that yield arrays to use for unit testing."
+    "Iterator that yields arrays to use for unit testing."
     ss = {}
     ss[0] = {'size':  0, 'shapes': [(0,), (0,0), (2,0), (2,0,1)]}
     ss[1] = {'size':  4, 'shapes': [(4,)]}
@@ -46,7 +46,7 @@ def arrays(dtypes=bn.dtypes, nans=True):
         yield a.reshape(1,2,4)
 
 def unit_maker(func, func0, decimal=np.inf, nans=True):
-    "Test that bn.xxx gives the same output as np.xxx."
+    "Test that bn.xxx gives the same output as bn.slow.xxx."
     msg = '\nfunc %s | input %s (%s) | shape %s | axis %s\n'
     msg += '\nInput array:\n%s\n'
     for i, arr in enumerate(arrays(nans=nans)):

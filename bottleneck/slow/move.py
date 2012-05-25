@@ -26,7 +26,7 @@ def move_sum(arr, window, axis=-1, method='filter'):
     
     Parameters
     ----------
-    arr : ndarray
+    arr : array_like
         Input array.
     window : int
         The number of elements in the moving window.
@@ -43,7 +43,7 @@ def move_sum(arr, window, axis=-1, method='filter'):
 
     Returns
     -------
-    y : ndarray
+    y : array_like
         The moving sum of the input array along the specified axis. The output
         has the same shape as the input.
 
@@ -54,6 +54,7 @@ def move_sum(arr, window, axis=-1, method='filter'):
        array([ NaN,   3.,   5.,   7.])
 
     """
+    arr = np.array(arr, copy=False)
     if method == 'filter':
         y = move_sum_filter(arr, window, axis=axis)
     elif method == 'strides':
@@ -74,7 +75,7 @@ def move_nansum(arr, window, axis=-1, method='filter'):
     
     Parameters
     ----------
-    arr : ndarray
+    arr : array_like
         Input array.
     window : int
         The number of elements in the moving window.
@@ -96,12 +97,6 @@ def move_nansum(arr, window, axis=-1, method='filter'):
         NaNs. (A window with all NaNs returns NaN for the window sum.) The
         output has the same shape as the input.
         
-    Notes
-    -----
-    Care should be taken when using the `cumsum` moving window method. On
-    some problem sizes it is fast; however, it is possible to get small
-    negative values even if the input is non-negative.
-
     Examples
     --------
     >>> arr = np.array([1, 2, np.nan, 4])
@@ -109,6 +104,7 @@ def move_nansum(arr, window, axis=-1, method='filter'):
     array([ NaN,   3.,   2.,   4.])
 
     """
+    arr = np.array(arr, copy=False)
     if method == 'filter':
         y = move_nansum_filter(arr, window, axis=axis)
     elif method == 'strides':
@@ -129,7 +125,7 @@ def move_sum_filter(arr, window, axis=-1):
     
     Parameters
     ----------
-    arr : ndarray
+    arr : array_like
         Input array.
     window : int
         The number of elements in the moving window.
@@ -155,6 +151,7 @@ def move_sum_filter(arr, window, axis=-1):
     array([ NaN,   3.,   5.,   7.])
 
     """
+    arr = np.array(arr, copy=False)
     global convolve1d
     if convolve1d is None:
         try:
@@ -180,7 +177,7 @@ def move_nansum_filter(arr, window, axis=-1):
     
     Parameters
     ----------
-    arr : ndarray
+    arr : array_like
         Input array.
     window : int
         The number of elements in the moving window.
@@ -207,6 +204,7 @@ def move_nansum_filter(arr, window, axis=-1):
     array([ NaN,   3.,   2.,   4.,   9.,  11.,  13.])
 
     """
+    arr = np.array(arr, copy=False)
     global convolve1d
     if convolve1d is None:
         try:
@@ -240,7 +238,7 @@ def move_mean(arr, window, axis=-1, method='filter'):
     
     Parameters
     ----------
-    arr : ndarray
+    arr : array_like
         Input array.
     window : int
         The number of elements in the moving window.
@@ -268,6 +266,7 @@ def move_mean(arr, window, axis=-1, method='filter'):
     array([ NaN,  1.5,  2.5,  3.5])
     
     """
+    arr = np.array(arr, copy=False)
     if method == 'filter':
         y = move_mean_filter(arr, window, axis=axis)
     elif method == 'strides':
@@ -288,7 +287,7 @@ def move_nanmean(arr, window, axis=-1, method='filter'):
     
     Parameters
     ----------
-    arr : ndarray
+    arr : array_like
         Input array.
     window : int
         The number of elements in the moving window.
@@ -323,6 +322,7 @@ def move_nanmean(arr, window, axis=-1, method='filter'):
     array([ NaN,  1.5,  2. ,  4. ])
     
     """
+    arr = np.array(arr, copy=False)
     if method == 'filter':
         y = move_nanmean_filter(arr, window, axis=axis)
     elif method == 'strides':
@@ -339,6 +339,7 @@ def move_nanmean(arr, window, axis=-1, method='filter'):
 
 def move_mean_filter(arr, window, axis=-1):
     "Moving window mean implemented with a filter."
+    arr = np.array(arr, copy=False)
     global convolve1d
     if convolve1d is None:
         try:
@@ -361,6 +362,7 @@ def move_mean_filter(arr, window, axis=-1):
 
 def move_nanmean_filter(arr, window, axis=-1):
     "Moving window nanmean implemented with a filter."
+    arr = np.array(arr, copy=False)
     global convolve1d
     if convolve1d is None:
         try:
@@ -395,7 +397,7 @@ def move_var(arr, window, axis=-1, method='filter', ddof=0):
     
     Parameters
     ----------
-    arr : ndarray
+    arr : array_like
         Input array.
     window : int
         The number of elements in the moving window.
@@ -423,6 +425,7 @@ def move_var(arr, window, axis=-1, method='filter', ddof=0):
     array([  NaN,  0.25,  0.25,  0.25])
     
     """
+    arr = np.array(arr, copy=False)
     if ddof != 0:
         raise ValueError("`ddof` must be zero for unaccelerated input.")
     if method == 'filter':
@@ -445,7 +448,7 @@ def move_nanvar(arr, window, axis=-1, method='filter', ddof=0):
     
     Parameters
     ----------
-    arr : ndarray
+    arr : array_like
         Input array.
     window : int
         The number of elements in the moving window.
@@ -474,6 +477,7 @@ def move_nanvar(arr, window, axis=-1, method='filter', ddof=0):
     array([  NaN,   NaN,  0.25,  1.  ,  0.25])
     
     """
+    arr = np.array(arr, copy=False)
     if ddof != 0:
         raise ValueError("`ddof` must be zero for unaccelerated input.")
     if method == 'filter':
@@ -492,6 +496,7 @@ def move_nanvar(arr, window, axis=-1, method='filter', ddof=0):
 
 def move_var_filter(arr, window, axis=-1):
     "Moving window variance implemented with a filter."
+    arr = np.array(arr, copy=False)
     global convolve1d
     if convolve1d is None:
         try:
@@ -518,6 +523,7 @@ def move_var_filter(arr, window, axis=-1):
 
 def move_nanvar_filter(arr, window, axis=-1):
     "Moving window variance ignoring NaNs, implemented with a filter."
+    arr = np.array(arr, copy=False)
     global convolve1d
     if convolve1d is None:
         try:
@@ -557,7 +563,7 @@ def move_std(arr, window, axis=-1, method='filter', ddof=0):
     
     Parameters
     ----------
-    arr : ndarray
+    arr : array_like
         Input array.
     window : int
         The number of elements in the moving window.
@@ -586,6 +592,7 @@ def move_std(arr, window, axis=-1, method='filter', ddof=0):
     array([ NaN,  0.5,  0.5,  0.5])
     
     """
+    arr = np.array(arr, copy=False)
     if ddof != 0:
         raise ValueError("`ddof` must be zero for unaccelerated input.")
     if method == 'filter':
@@ -608,7 +615,7 @@ def move_nanstd(arr, window, axis=-1, method='filter', ddof=0):
     
     Parameters
     ----------
-    arr : ndarray
+    arr : array_like
         Input array.
     window : int
         The number of elements in the moving window.
@@ -638,6 +645,7 @@ def move_nanstd(arr, window, axis=-1, method='filter', ddof=0):
     array([ NaN,  NaN,  0.5,  1. ,  0.5])    
 
     """
+    arr = np.array(arr, copy=False)
     if ddof != 0:
         raise ValueError("`ddof` must be zero for unaccelerated input.")
     if method == 'filter':
@@ -656,6 +664,7 @@ def move_nanstd(arr, window, axis=-1, method='filter', ddof=0):
 
 def move_std_filter(arr, window, axis=-1):
     "Moving window standard deviation implemented with a filter."
+    arr = np.array(arr, copy=False)
     if axis == None:
         raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
@@ -668,6 +677,7 @@ def move_std_filter(arr, window, axis=-1):
 
 def move_nanstd_filter(arr, window, axis=-1):
     "Moving window standard deviation ignoring NaNs, implemented with a filter."
+    arr = np.array(arr, copy=False)
     if axis == None:
         raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
@@ -686,7 +696,7 @@ def move_min(arr, window, axis=-1, method='filter'):
     
     Parameters
     ----------
-    arr : ndarray
+    arr : array_like
         Input array.
     window : int
         The number of elements in the moving window.
@@ -730,7 +740,7 @@ def move_nanmin(arr, window, axis=-1, method='filter'):
     
     Parameters
     ----------
-    arr : ndarray
+    arr : array_like
         Input array.
     window : int
         The number of elements in the moving window.
@@ -771,6 +781,7 @@ def move_nanmin(arr, window, axis=-1, method='filter'):
 
 def move_min_filter(arr, window, axis=-1):
     "Moving window minimium implemented with a filter."
+    arr = np.array(arr, copy=False)
     global minimum_filter1d
     if minimum_filter1d is None:
         try:
@@ -792,6 +803,7 @@ def move_min_filter(arr, window, axis=-1):
 def move_nanmin_filter(arr, window, axis=-1):
     "Moving window minimium ignoring NaNs, implemented with a filter."
     global minimum_filter1d, convolve1d
+    arr = np.array(arr, copy=False)
     if minimum_filter1d is None:
         try:
             from scipy.ndimage import minimum_filter1d
@@ -824,6 +836,7 @@ def move_nanmin_filter(arr, window, axis=-1):
 
 def move_nanmin_loop(arr, window, axis=-1):
     "Moving window minimium ignoring NaNs, implemented with a python loop."
+    arr = np.array(arr, copy=False)
     if axis == None:
         raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
@@ -840,6 +853,7 @@ def move_nanmin_loop(arr, window, axis=-1):
 
 def move_nanmin_strides(arr, window, axis=-1):
     "Moving window minimium ignoring NaNs, implemented with stides tricks."
+    arr = np.array(arr, copy=False)
     if axis == None:
         raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
@@ -862,7 +876,7 @@ def move_max(arr, window, axis=-1, method='filter'):
     
     Parameters
     ----------
-    arr : ndarray
+    arr : array_like
         Input array.
     window : int
         The number of elements in the moving window.
@@ -906,7 +920,7 @@ def move_nanmax(arr, window, axis=-1, method='filter'):
     
     Parameters
     ----------
-    arr : ndarray
+    arr : array_like
         Input array.
     window : int
         The number of elements in the moving window.
@@ -947,6 +961,7 @@ def move_nanmax(arr, window, axis=-1, method='filter'):
 
 def move_max_filter(arr, window, axis=-1):
     "Moving window maximium implemented with a filter."
+    arr = np.array(arr, copy=False)
     global maximum_filter1d
     if maximum_filter1d is None:
         try:
@@ -967,6 +982,7 @@ def move_max_filter(arr, window, axis=-1):
 
 def move_nanmax_filter(arr, window, axis=-1):
     "Moving window maximium ignoring NaNs, implemented with a filter."
+    arr = np.array(arr, copy=False)
     global maximum_filter1d, convolve1d
     if maximum_filter1d is None:
         try:
@@ -1000,6 +1016,7 @@ def move_nanmax_filter(arr, window, axis=-1):
 
 def move_nanmax_loop(arr, window, axis=-1):
     "Moving window maximium ignoring NaNs, implemented with a python loop."
+    arr = np.array(arr, copy=False)
     if axis == None:
         raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
@@ -1016,6 +1033,7 @@ def move_nanmax_loop(arr, window, axis=-1):
 
 def move_nanmax_strides(arr, window, axis=-1):
     "Moving window maximium ignoring NaNs, implemented with stides tricks."
+    arr = np.array(arr, copy=False)
     if axis == None:
         raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
@@ -1038,7 +1056,7 @@ def move_median(arr, window, axis=-1, method='loop'):
     
     Parameters
     ----------
-    arr : ndarray
+    arr : array_like
         Input array.
     window : int
         The number of elements in the moving window.
@@ -1065,6 +1083,7 @@ def move_median(arr, window, axis=-1, method='loop'):
     array([ NaN,  1.5,  2.5,  3.5,  4.5])
 
     """
+    arr = np.array(arr, copy=False)
     if method == 'strides':
         y = move_func_strides(np.median, arr, window, axis=axis)
     elif method == 'loop':
@@ -1088,7 +1107,7 @@ def move_func(func, arr, window, axis=-1, method='loop', **kwargs):
     func : function
         A reducing function such as np.sum, np.max, or np.median that takes
         a Numpy array and axis and, optionally, key word arguments as input.
-    arr : ndarray
+    arr : array_like
         Input array.
     window : int
         The number of elements in the moving window.
@@ -1131,6 +1150,7 @@ def move_func(func, arr, window, axis=-1, method='loop', **kwargs):
 
 def move_func_loop(func, arr, window, axis=-1, **kwargs):
     "Generic moving window function implemented with a python loop."
+    arr = np.array(arr, copy=False)
     if axis == None:
         raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  
@@ -1149,6 +1169,7 @@ def move_func_loop(func, arr, window, axis=-1, **kwargs):
 
 def move_func_strides(func, arr, window, axis=-1, **kwargs):
     "Generic moving window function implemented with strides."
+    arr = np.array(arr, copy=False)
     if axis == None:
         raise ValueError("An `axis` value of None is not supported.")
     if window < 1:  

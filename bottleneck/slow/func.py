@@ -148,6 +148,8 @@ def ss(arr, axis=0):
 
 def nn(arr, arr0, axis=1):
     "Slow nearest neighbor used for unaccelerated ndim/dtype combinations."
+    arr = np.array(arr, copy=False)
+    arr0 = np.array(arr0, copy=False)
     if arr.ndim != 2:
         raise ValueError("`arr` must be 2d")
     if arr0.ndim != 1:
