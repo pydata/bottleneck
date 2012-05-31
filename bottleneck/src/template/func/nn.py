@@ -199,7 +199,7 @@ def nn_selector(arr, arr0, int axis):
 
     >>> func, a, a0 = bn.func.nn_selector(arr, arr0, axis=0)
     >>> func
-    <function nn_2d_int64_axis0>    
+    <function nn_2d_int64_axis0>
     
     Use the returned function and arrays to determine the nearest
     neighbor:

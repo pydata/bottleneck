@@ -229,7 +229,7 @@ def rankdata_selector(arr, axis):
 
     >>> func, a = bn.func.rankdata_selector(arr, axis=0)
     >>> func
-    <built-in function rankdata_1d_int64_axis0> 
+    <function rankdata_1d_int64_axis0>
     
     Use the returned function and array:
 

@@ -229,7 +229,7 @@ def move_median_selector(arr, int axis):
     >>> window, axis = 2, 0
     >>> func, a = bn.move.move_median_selector(arr, axis)
     >>> func
-    <built-in function move_median_1d_float64_axis0>    
+    <function move_median_1d_float64_axis0>
     
     Use the returned function and array to determine the moving median:
 

@@ -230,7 +230,7 @@ def anynan_selector(arr, axis):
 
     >>> func, a = bn.func.anynan_selector(arr, axis=0)
     >>> func
-    <function anynan_1d_float64_axisNone> 
+    <function anynan_1d_float64_axisNone>
     
     Use the returned function and array to determine if there are any
     NaNs:

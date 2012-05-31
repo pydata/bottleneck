@@ -231,7 +231,7 @@ def replace_selector(arr):
 
     >>> func = bn.func.replace_selector(arr)
     >>> func
-    <built-in function replace_1d_float64_axisNone>
+    <function replace_1d_float64_axisNone>
 
     Use the returned function to replace NaN with zero:
 

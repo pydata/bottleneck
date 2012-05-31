@@ -261,7 +261,7 @@ def allnan_selector(arr, axis):
 
     >>> func, a = bn.func.allnan_selector(arr, axis=0)
     >>> func
-    <function allnan_1d_float64_axisNone> 
+    <function allnan_1d_float64_axisNone>
     
     Use the returned function and array to determine is all elements are
     NaN:

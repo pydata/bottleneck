@@ -277,7 +277,7 @@ def argpartsort_selector(arr, axis):
 
     >>> func, a = bn.func.argpartsort_selector(arr, axis=0)
     >>> func
-    <built-in function argpartsort_1d_int64_axis0>
+    <function argpartsort_1d_int64_axis0>
     
     Use the returned function and array to find the indices of the partial
     sort:

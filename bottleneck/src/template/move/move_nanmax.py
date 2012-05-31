@@ -317,7 +317,7 @@ def move_nanmax_selector(arr, int axis):
     >>> window, axis = 2, 0
     >>> func, a = bn.move.move_nanmax_selector(arr, axis)
     >>> func
-    <built-in function move_nanmax_1d_float64_axis0>    
+    <function move_nanmax_1d_float64_axis0>
     
     Use the returned function and array to determine the moving maximum:
 

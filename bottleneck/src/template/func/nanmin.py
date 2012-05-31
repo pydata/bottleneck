@@ -309,7 +309,7 @@ def nanmin_selector(arr, axis):
 
     >>> func, a = bn.func.nanmin_selector(arr, axis=0)
     >>> func
-    <built-in function nanmin_1d_float64_axis0> 
+    <function nanmin_1d_float64_axis0>
     
     Use the returned function and array to determine the minimum:
     

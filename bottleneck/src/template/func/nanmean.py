@@ -301,7 +301,7 @@ def nanmean_selector(arr, axis):
 
     >>> func, a = bn.func.nanmean_selector(arr, axis=0)
     >>> func
-    <built-in function nanmean_1d_float64_axis0> 
+    <function nanmean_1d_float64_axis0>
     
     Use the returned function and array to determine the mean:
 

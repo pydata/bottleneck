@@ -395,7 +395,7 @@ def nanvar_selector(arr, axis):
 
     >>> func, a = ds.func.nanvar_selector(arr, axis=0)
     >>> func
-    <built-in function nanvar_1d_float64_axis0> 
+    <function nanvar_1d_float64_axis0>
     
     Use the returned function and array to determine the variance:
     

@@ -395,7 +395,7 @@ def nanstd_selector(arr, axis):
 
     >>> func, a = bn.func.nanstd_selector(arr, axis=0)
     >>> func
-    <built-in function nanstd_1d_float64_axis0> 
+    <function nanstd_1d_float64_axis0>
     
     Use the returned function and array to determine the standard deviation:
     

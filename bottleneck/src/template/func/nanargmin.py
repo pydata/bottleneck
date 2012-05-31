@@ -237,7 +237,7 @@ def nanargmin_selector(arr, axis):
 
     >>> func, a = bn.func.nanargmin_selector(arr, axis=0)
     >>> func
-    <built-in function nanargmin_1d_float64_axis0> 
+    <function nanargmin_1d_float64_axis0>
     
     Use the returned function and array to determine the maximum:
     

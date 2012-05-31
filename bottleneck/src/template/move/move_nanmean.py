@@ -242,7 +242,7 @@ def move_nanmean_selector(arr, int axis):
     >>> window, axis = 2, 0
     >>> func, a = bn.move.move_nanmean_selector(arr, axis)
     >>> func
-    <built-in function move_nanmean_1d_float64_axis0>    
+    <function move_nanmean_1d_float64_axis0>
     
     Use the returned function and array to determine the moving mean:
 

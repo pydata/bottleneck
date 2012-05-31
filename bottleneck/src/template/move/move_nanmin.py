@@ -317,7 +317,7 @@ def move_nanmin_selector(arr, int axis):
     >>> window, axis = 2, 0
     >>> func, a = bn.move.move_nanmin_selector(arr, axis)
     >>> func
-    <built-in function move_nanmin_1d_float64_axis0>    
+    <function move_nanmin_1d_float64_axis0>
     
     Use the returned function and array to determine the moving minimum:
 

@@ -251,7 +251,7 @@ def partsort_selector(arr, axis):
 
     >>> func, a = bn.func.partsort_selector(arr, axis=0)
     >>> func
-    <built-in function partsort_1d_int64_axis0>
+    <function partsort_1d_int64_axis0>
     
     Use the returned function and array to partially sort:
 

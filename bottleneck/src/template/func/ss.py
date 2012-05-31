@@ -189,7 +189,7 @@ def ss_selector(arr, axis):
 
     >>> func, a = bn.func.ss_selector(arr, axis=0)
     >>> func
-    <built-in function ss_1d_float64_axisNone>    
+    <function ss_1d_float64_axisNone>
     
     Use the returned function and array to determine the sum of squares:
 
