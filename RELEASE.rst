@@ -9,7 +9,7 @@ see the commit log at http://github.com/kwgoodman/bottleneck
 Bottleneck 0.6.0
 ================
 
-*Release date: Not yet released, in development*
+*Release date: 2012-06-04*
 
 Thanks to Dougal Sutherland, Bottleneck now runs on Python 3.2.
 
