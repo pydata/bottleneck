@@ -6,8 +6,19 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
-Bottleneck 0.6.0
+Bottleneck 0.7.0
 ================
+
+*Release date: Not yet released, in development*
+
+
+Older versions
+==============
+
+Release notes from past releases.
+
+Bottleneck 0.6.0
+----------------
 
 *Release date: 2012-06-04*
 
@@ -22,7 +33,7 @@ Thanks to Dougal Sutherland, Bottleneck now runs on Python 3.2.
 
 **Enhancements**
 
-- Python 3.2 support (may work on earlier verions of Python 3)
+- Python 3.2 support (may work on earlier versions of Python 3)
 - C files are now generated with Cython 0.16 instead of 0.14.1
 - Upgrade numpydoc from 0.3.1 to 0.4 to support Sphinx 1.0.1
 
@@ -36,11 +47,6 @@ Thanks to Dougal Sutherland, Bottleneck now runs on Python 3.2.
 - #31 Confusing error message in partsort and argpartsort
 - #32 Update path in MANIFEST.in
 - #35 Wrong output for very large (2**31) input arrays
-
-Older versions
-==============
-
-Release notes from past releases.
 
 Bottleneck 0.5.0
 ----------------
