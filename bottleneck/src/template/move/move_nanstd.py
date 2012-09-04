@@ -215,6 +215,10 @@ def move_nanstd(arr, int window, int axis=-1, int ddof=0):
         The axis over which to perform the moving standard deviation. By
         default the moving standard deviation is taken over the last axis
         (axis=-1). An axis of None is not allowed.
+    ddof : int, optional
+        Means Delta Degrees of Freedom. The divisor used in calculations
+        is ``N - ddof``, where ``N`` represents the number of elements.
+        By default `ddof` is zero.
 
     Returns
     -------
