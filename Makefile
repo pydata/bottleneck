@@ -38,7 +38,7 @@ moves:
 	${PYTHON} ${srcdir}/move/setup.py build_ext --inplace
 		
 test:
-	${PYTHON} -c "import bottleneck;bottleneck.test(extra_argv=['--processes=4'])"
+	${PYTHON} -c "import bottleneck;bottleneck.test()"
 
 bench:
 	${PYTHON} -c "import bottleneck; bottleneck.bench()"

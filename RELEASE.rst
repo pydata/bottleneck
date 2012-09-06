@@ -14,6 +14,7 @@ Bottleneck 0.7.0
 **Bug fixes**
 
 - #50 move_std, move_nanstd return inappropriate NaNs (sqrt of negative #)
+- #52 `make test` fails on some computers
 
 Older versions
 ==============
