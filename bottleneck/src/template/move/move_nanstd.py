@@ -24,7 +24,7 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,
                                   int window, int ddof):
     "Moving std of NDIMd array of dtype=DTYPE along axis=AXIS, ignoring NaNs."
     cdef Py_ssize_t count = 0
-    cdef double asum = 0, a2sum = 0, ai
+    cdef double asum = 0, a2sum = 0, ai, ssr
 """
 
 loop = {}
@@ -46,7 +46,11 @@ loop[1] = """\
         a2sum += ai * ai
         count += 1
     if count > 0:
-       y[INDEXALL] = sqrt((a2sum - asum * asum / count) / (count - ddof))
+        ssr = a2sum - asum * asum / count
+        if ssr < 0:
+            y[INDEXALL] = 0
+        else:
+            y[INDEXALL] = sqrt(ssr / (count - ddof))
     else:
        y[INDEXALL] = NAN
     for iINDEX0 in range(window, nINDEX0):
@@ -61,7 +65,11 @@ loop[1] = """\
             a2sum -= ai * ai
             count -= 1
         if count > 0:
-            y[INDEXALL] = sqrt((a2sum - asum * asum / count) / (count - ddof))
+            ssr = a2sum - asum * asum / count
+            if ssr < 0:
+                y[INDEXALL] = 0
+            else:
+                y[INDEXALL] = sqrt(ssr / (count - ddof))
         else:
             y[INDEXALL] = NAN
 
@@ -89,7 +97,11 @@ loop[2] = """\
             a2sum += ai * ai
             count += 1
         if count > 0:
-           y[INDEXALL] = sqrt((a2sum - asum * asum / count) / (count - ddof))
+            ssr = a2sum - asum * asum / count
+            if ssr < 0:
+                y[INDEXALL] = 0
+            else:
+                y[INDEXALL] = sqrt(ssr / (count - ddof))
         else:
            y[INDEXALL] = NAN
         for iINDEX1 in range(window, nINDEX1):
@@ -104,8 +116,11 @@ loop[2] = """\
                 a2sum -= ai * ai
                 count -= 1
             if count > 0:
-                y[INDEXALL] = sqrt((a2sum - asum * asum / count) \
-                              / (count - ddof))
+                ssr = a2sum - asum * asum / count
+                if ssr < 0:
+                    y[INDEXALL] = 0
+                else:
+                    y[INDEXALL] = sqrt(ssr / (count - ddof))
             else:
                 y[INDEXALL] = NAN
 
@@ -134,8 +149,11 @@ loop[3] = """\
                 a2sum += ai * ai
                 count += 1
             if count > 0:
-               y[INDEXALL] = sqrt((a2sum - asum * asum / count) \
-                             / (count - ddof))
+                ssr = a2sum - asum * asum / count
+                if ssr < 0:
+                    y[INDEXALL] = 0
+                else:
+                    y[INDEXALL] = sqrt(ssr / (count - ddof))
             else:
                y[INDEXALL] = NAN
             for iINDEX2 in range(window, nINDEX2):
@@ -150,8 +168,11 @@ loop[3] = """\
                     a2sum -= ai * ai
                     count -= 1
                 if count > 0:
-                    y[INDEXALL] = sqrt((a2sum - asum * asum / count) \
-                                  / (count - ddof))
+                    ssr = a2sum - asum * asum / count
+                    if ssr < 0:
+                        y[INDEXALL] = 0
+                    else:
+                        y[INDEXALL] = sqrt(ssr / (count - ddof))
                 else:
                     y[INDEXALL] = NAN
 
