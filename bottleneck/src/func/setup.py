@@ -14,6 +14,7 @@ $ python func/setup.py build_ext --inplace
 
 """
 
+import sys
 import os
 import os.path
 from distutils.core import setup
@@ -39,8 +40,13 @@ setup(
   ext_modules = ext_modules
 )
 
-# E.g. Ubuntu has ABI version tagged .so files
-# http://www.python.org/dev/peps/pep-3149/
-import sysconfig
-ext = sysconfig.get_config_var('SO')
-os.rename("func{}".format(ext), os.path.join(mod_dir, "../../func{}".format(ext)))
+if sys.version_info[0] >= 3:
+	# E.g. Ubuntu has ABI version tagged .so files
+	# http://www.python.org/dev/peps/pep-3149/
+	import sysconfig
+	ext = sysconfig.get_config_var('SO')
+else:
+	ext = '.so'
+
+os.rename("func{0}".format(ext),
+          os.path.join(mod_dir, "../../func{0}".format(ext)))
