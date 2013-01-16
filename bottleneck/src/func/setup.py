@@ -39,5 +39,8 @@ setup(
   ext_modules = ext_modules
 )
 
-os.rename("func.so", os.path.join(mod_dir, "../../func.so"))
-
+# E.g. Ubuntu has ABI version tagged .so files
+# http://www.python.org/dev/peps/pep-3149/
+import sysconfig
+ext = sysconfig.get_config_var('SO')
+os.rename("func{}".format(ext), os.path.join(mod_dir, "../../func{}".format(ext)))
