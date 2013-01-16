@@ -1,23 +1,33 @@
 language: python
 
 python:
-    - 3.2
-    - 2.7
-    - 2.6
+  - 3.2
+  - 2.7
+  - 2.6
 
 env:
-    - NUMPY_VERSION=1.6.2
-    - NUMPY_VERSION=1.5.1
+  - NUMPY_VERSION=1.7.x
+  - NUMPY_VERSION=1.6.2
+  - NUMPY_VERSION=1.5.1
 
 before_install:
    # We do this to make sure we get the dependencies so pip works below
-   - sudo apt-get update -qq
-   - sudo apt-get install -qq python-numpy cython
+   # Maybe not neede?
+   - time sudo apt-get install -qq python-numpy cython
 
 install:
-   - pip install --upgrade "numpy==$NUMPY_VERSION" --use-mirrors
-   - pip install --upgrade Cython --use-mirrors
-   - pip install --upgrade nose --use-mirrors
+   - time pip install --upgrade nose --use-mirrors
+   - time pip install --upgrade Cython --use-mirrors
+   # Numpy 1.7 is not released yet. Check against release candidate
+   - if [ "${NUMPY_VERSION}" == "1.7.x" ]; then
+      git clone https://github.com/numpy/numpy.git ;
+      cd numpy ;
+      git checkout maintenance/1.7.x ;
+      python setup.py install ;
+      cd .. ;
+    else
+      pip install --upgrade "numpy==$NUMPY_VERSION" --use-mirrors
+    fi
 
 script:
    - make all
