@@ -31,6 +31,7 @@ else:
 
 mod_dir = os.path.dirname(__file__)
 ext_modules = [Extension("move", [os.path.join(mod_dir, "%sbit/move.pyx") % bits],
+               extra_compile_args=["-std=gnu89"],
                include_dirs=[np.get_include()])]
 
 setup(
