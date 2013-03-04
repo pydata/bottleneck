@@ -16,6 +16,7 @@ Bottleneck 0.7.0
 - #50 move_std, move_nanstd return inappropriate NaNs (sqrt of negative #)
 - #52 `make test` fails on some computers
 - #49, #55 now works on Mac OS X 10.8 using clang compiler
+- #60 nanstd([1.0], ddof=1) and nanvar([1.0], ddof=1) crash
 
 Older versions
 ==============
