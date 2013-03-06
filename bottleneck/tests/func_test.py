@@ -207,64 +207,68 @@ def test_nn():
 # ---------------------------------------------------------------------------
 
 # nanstd and nanvar regression test (issue #60)
+# Behaviour for arrays with only one item has changed in numpy from 1.6.1 to 1.6.2
+# Conventions from 1.6.2 and above are used in bottleneck, so check versions here
+np162 = list(int(x) for x in np.__version__.split('.')) >= [1,6,2]
 
 def test_nanstd_issue60():
     "nanstd regression test (issue #60)"
 
     b = bn.nanstd([1.0], ddof=1)
-    n = np.std([1.0], ddof=1)
+    n = np.std([1.0], ddof=1) if np162 else nan
     assert_equal(b, n, err_msg="bn.nanstd([1.0], ddof=1) wrong")
     with np.errstate(invalid='ignore'):
         b = bn.slow.nanstd([1.0], ddof=1)
     assert_equal(b, n, err_msg="bn.slow.nanstd([1.0], ddof=1) wrong")
 
     b = bn.nanstd([1], ddof=1)
-    n = np.std([1], ddof=1)
+    n = np.std([1], ddof=1) if np162 else nan
     assert_equal(b, n, err_msg="bn.nanstd([1], ddof=1) wrong")
     with np.errstate(invalid='ignore'):
         b = bn.slow.nanstd([1], ddof=1)
     assert_equal(b, n, err_msg="bn.slow.nanstd([1], ddof=1) wrong")
 
     b = bn.nanstd([1, np.nan], ddof=1)
-    n = np.std([1, np.nan], ddof=1)
+    n = np.std([1, np.nan], ddof=1) if np162 else nan
     assert_equal(b, n, err_msg="bn.nanstd([1, nan], ddof=1) wrong")
     with np.errstate(invalid='ignore'):
         b = bn.slow.nanstd([1, np.nan], ddof=1)
     assert_equal(b, n, err_msg="bn.slow.nanstd([1, nan], ddof=1) wrong")
 
     b = bn.nanstd([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
-    n = np.std([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
+    n = np.std([[1, np.nan], [np.nan, 1]], axis=0, ddof=1) if np162 else np.array([nan, nan])
     assert_equal(b, n, err_msg="issue #60 regression")
     with np.errstate(invalid='ignore'):
         b = bn.slow.nanstd([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
     assert_equal(b, n, err_msg="issue #60 regression")
 
+
 def test_nanvar_issue60():
     "nanvar regression test (issue #60)"
 
     b = bn.nanvar([1.0], ddof=1)
-    n = np.std([1.0], ddof=1)
+    n = np.var([1.0], ddof=1) if np162 else nan
     assert_equal(b, n, err_msg="bn.nanvar([1.0], ddof=1) wrong")
     with np.errstate(invalid='ignore'):
         b = bn.slow.nanvar([1.0], ddof=1)
     assert_equal(b, n, err_msg="bn.slow.nanvar([1.0], ddof=1) wrong")
 
     b = bn.nanvar([1], ddof=1)
-    n = np.std([1], ddof=1)
+    n = np.var([1], ddof=1) if np162 else nan
     assert_equal(b, n, err_msg="bn.nanvar([1], ddof=1) wrong")
     with np.errstate(invalid='ignore'):
         b = bn.slow.nanvar([1], ddof=1)
     assert_equal(b, n, err_msg="bn.slow.nanvar([1], ddof=1) wrong")
 
     b = bn.nanvar([1, np.nan], ddof=1)
-    n = np.std([1, np.nan], ddof=1)
+    n = np.var([1, np.nan], ddof=1) if np162 else nan
     assert_equal(b, n, err_msg="bn.nanvar([1, nan], ddof=1) wrong")
     with np.errstate(invalid='ignore'):
         b = bn.slow.nanvar([1, np.nan], ddof=1)
     assert_equal(b, n, err_msg="bn.slow.nanvar([1, nan], ddof=1) wrong")
 
     b = bn.nanvar([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
-    n = np.std([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
+    n = np.var([[1, np.nan], [np.nan, 1]], axis=0, ddof=1) if np162 else np.array([nan, nan])
     assert_equal(b, n, err_msg="issue #60 regression")
     with np.errstate(invalid='ignore'):
         b = bn.slow.nanvar([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
