@@ -35,7 +35,7 @@ loop[2] = """\
             if ai == ai:
                 asum += ai
                 count += 1
-        if count - ddof > 0:
+        if count > ddof:
             amean = asum / count
             asum = 0
             for iINDEX1 in range(nINDEX1):
@@ -58,7 +58,7 @@ loop[3] = """\
                 if ai == ai:
                     asum += ai
                     count += 1
-            if count - ddof > 0:
+            if count > ddof:
                 amean = asum / count
                 asum = 0
                 for iINDEX2 in range(nINDEX2):
@@ -91,7 +91,7 @@ loop[1] = """\
         if ai == ai:
             asum += ai
             count += 1
-    if count - ddof > 0:
+    if count > ddof:
         amean = asum / count
         asum = 0
         for iINDEX0 in range(nINDEX0):
@@ -107,7 +107,7 @@ loop[2] = """\
             if ai == ai:
                 asum += ai
                 count += 1
-    if count - ddof > 0:
+    if count > ddof:
         amean = asum / count
         asum = 0
         for iINDEX0 in range(nINDEX0):
@@ -125,7 +125,7 @@ loop[3] = """\
                 if ai == ai:
                     asum += ai
                     count += 1
-    if count - ddof > 0:
+    if count > ddof:
         amean = asum / count
         asum = 0
         for iINDEX0 in range(nINDEX0):
