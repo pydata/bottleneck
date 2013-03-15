@@ -112,7 +112,7 @@ def move_nansum(arr, window, axis=-1, method='loop'):
     elif method == 'loop':
         y = move_func_loop(np.nansum, arr, window, axis=axis)
     else:
-        msg = "`method` must be 'filter', 'cumsum', 'strides', or 'loop'."
+        msg = "`method` must be 'filter', 'strides', or 'loop'."
         raise ValueError(msg)
     if y.dtype != arr.dtype:
         if issubclass(arr.dtype.type, np.inexact):
@@ -309,12 +309,6 @@ def move_nanmean(arr, window, axis=-1, method='loop'):
         NaNs. (A window with all NaNs returns NaN for the window mean.) The
         output has the same shape as the input.
     
-    Notes
-    -----
-    Care should be taken when using the `cumsum` moving window method. On
-    some problem sizes it is fast; however, it is possible to get small
-    negative values even if the input is non-negative.
-
     Examples
     --------
     >>> arr = np.array([1, 2, np.nan, 4])
@@ -330,7 +324,7 @@ def move_nanmean(arr, window, axis=-1, method='loop'):
     elif method == 'loop':
         y = move_func_loop(bn.slow.nanmean, arr, window, axis=axis)
     else:
-        msg = "`method` must be 'filter', 'cumsum', 'strides', or 'loop'."
+        msg = "`method` must be 'filter', 'strides', or 'loop'."
         raise ValueError(msg)
     if y.dtype != arr.dtype:
         if issubclass(arr.dtype.type, np.inexact):
