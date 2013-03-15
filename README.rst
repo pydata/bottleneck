@@ -233,10 +233,15 @@ Requirements:
 
 ======================== ====================================================
 Bottleneck               Python 2.6, 2.7, 3.2; NumPy 1.5.1, 1.6.2, 1.7.0
-Unit tests               nose
 Compile                  gcc or MinGW
-Optional                 SciPy (portions of benchmark)
-Optional                 tox, virtualenv (test across python/numpy versions)
+Unit tests               nose
+======================== ====================================================
+
+Optional:
+
+======================== ====================================================
+SciPy                    portions of benchmark suite
+tox, virtualenv          run unit tests across multiple python/numpy versions
 ======================== ====================================================
 
 Directions for installing a *released* version of Bottleneck (i.e., one
