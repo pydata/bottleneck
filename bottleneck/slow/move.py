@@ -20,7 +20,7 @@ __all__ = ['move_sum', 'move_nansum',
 
 # SUM -----------------------------------------------------------------------
 
-def move_sum(arr, window, axis=-1, method='filter'):
+def move_sum(arr, window, axis=-1, method='loop'):
     """
     Slow move_sum for unaccelerated ndim/dtype combinations.
     
@@ -36,9 +36,9 @@ def move_sum(arr, window, axis=-1, method='filter'):
     method : str, optional
         The following moving window methods are available:
             ==========  =====================================
-            'filter'    scipy.ndimage.convolve1d (default)
+            'filter'    scipy.ndimage.convolve1d
             'strides'   strides tricks (ndim < 4)
-            'loop'      brute force python loop
+            'loop'      brute force python loop (default)
             ==========  =====================================
 
     Returns
@@ -69,7 +69,7 @@ def move_sum(arr, window, axis=-1, method='filter'):
             y = y.astype(arr.dtype)
     return y
 
-def move_nansum(arr, window, axis=-1, method='filter'):
+def move_nansum(arr, window, axis=-1, method='loop'):
     """
     Slow move_nansum for unaccelerated ndim/dtype combinations.
     
@@ -85,9 +85,9 @@ def move_nansum(arr, window, axis=-1, method='filter'):
     method : str, optional
         The following moving window methods are available:
             ==========  =====================================
-            'filter'    scipy.ndimage.convolve1d (default)
+            'filter'    scipy.ndimage.convolve1d
             'strides'   strides tricks (ndim < 4)
-            'loop'      brute force python loop
+            'loop'      brute force python loop (default)
             ==========  =====================================
 
     Returns
@@ -232,7 +232,7 @@ def move_nansum_filter(arr, window, axis=-1):
 
 # MEAN -------------------------------------------------------------------
 
-def move_mean(arr, window, axis=-1, method='filter'):
+def move_mean(arr, window, axis=-1, method='loop'):
     """
     Slow move_mean for unaccelerated ndim/dtype combinations.
     
@@ -248,9 +248,9 @@ def move_mean(arr, window, axis=-1, method='filter'):
     method : str, optional
         The following moving window methods are available:
             ==========  =====================================
-            'filter'    scipy.ndimage.convolve1d (default)
+            'filter'    scipy.ndimage.convolve1d
             'strides'   strides tricks (ndim < 4)
-            'loop'      brute force python loop
+            'loop'      brute force python loop (default)
             ==========  =====================================
 
     Returns
@@ -281,7 +281,7 @@ def move_mean(arr, window, axis=-1, method='filter'):
             y = y.astype(arr.dtype)
     return y
 
-def move_nanmean(arr, window, axis=-1, method='filter'):
+def move_nanmean(arr, window, axis=-1, method='loop'):
     """
     Slow move_nanmean for unaccelerated ndim/dtype combinations.
     
@@ -297,9 +297,9 @@ def move_nanmean(arr, window, axis=-1, method='filter'):
     method : str, optional
         The following moving window methods are available:
             ==========  =====================================
-            'filter'    scipy.ndimage.convolve1d (default)
+            'filter'    scipy.ndimage.convolve1d
             'strides'   strides tricks (ndim < 4)
-            'loop'      brute force python loop
+            'loop'      brute force python loop (default)
             ==========  =====================================
 
     Returns
@@ -391,7 +391,7 @@ def move_nanmean_filter(arr, window, axis=-1):
 
 # VAR -----------------------------------------------------------------------
 
-def move_var(arr, window, axis=-1, method='filter', ddof=0):
+def move_var(arr, window, axis=-1, method='loop', ddof=0):
     """
     Slow move_var for unaccelerated ndim/dtype combinations.
     
@@ -407,9 +407,9 @@ def move_var(arr, window, axis=-1, method='filter', ddof=0):
     method : str, optional
         The following moving window methods are available:
             ==========  =====================================
-            'filter'    scipy.ndimage.convolve1d (default)
+            'filter'    scipy.ndimage.convolve1d
             'strides'   strides tricks (ndim < 4)
-            'loop'      brute force python loop
+            'loop'      brute force python loop (default)
             ==========  =====================================
 
     Returns
@@ -442,7 +442,7 @@ def move_var(arr, window, axis=-1, method='filter', ddof=0):
             y = y.astype(arr.dtype)
     return y
 
-def move_nanvar(arr, window, axis=-1, method='filter', ddof=0):
+def move_nanvar(arr, window, axis=-1, method='loop', ddof=0):
     """
     Slow move_nanvar for unaccelerated ndim/dtype combinations.
     
@@ -458,9 +458,9 @@ def move_nanvar(arr, window, axis=-1, method='filter', ddof=0):
     method : str, optional
         The following moving window methods are available:
             ==========  =====================================
-            'filter'    scipy.ndimage.convolve1d (default)
+            'filter'    scipy.ndimage.convolve1d
             'strides'   strides tricks (ndim < 4)
-            'loop'      brute force python loop
+            'loop'      brute force python loop (default)
             ==========  =====================================
 
     Returns
@@ -557,7 +557,7 @@ def move_nanvar_filter(arr, window, axis=-1):
 
 # STD -----------------------------------------------------------------------
 
-def move_std(arr, window, axis=-1, method='filter', ddof=0):
+def move_std(arr, window, axis=-1, method='loop', ddof=0):
     """
     Moving window standard deviation along the specified axis.
     
@@ -574,9 +574,9 @@ def move_std(arr, window, axis=-1, method='filter', ddof=0):
     method : str, optional
         The following moving window methods are available:
             ==========  =====================================
-            'filter'    scipy.ndimage.convolve1d (default)
+            'filter'    scipy.ndimage.convolve1d
             'strides'   strides tricks (ndim < 4)
-            'loop'      brute force python loop
+            'loop'      brute force python loop (default)
             ==========  =====================================
 
     Returns
@@ -609,7 +609,7 @@ def move_std(arr, window, axis=-1, method='filter', ddof=0):
             y = y.astype(arr.dtype)
     return y
 
-def move_nanstd(arr, window, axis=-1, method='filter', ddof=0):
+def move_nanstd(arr, window, axis=-1, method='loop', ddof=0):
     """
     Moving window standard deviation along the specified axis, ignoring NaNs.
     
@@ -626,9 +626,9 @@ def move_nanstd(arr, window, axis=-1, method='filter', ddof=0):
     method : str, optional
         The following moving window methods are available:
             ==========  =====================================
-            'filter'    scipy.ndimage.convolve1d (default)
+            'filter'    scipy.ndimage.convolve1d
             'strides'   strides tricks (ndim < 4)
-            'loop'      brute force python loop
+            'loop'      brute force python loop (default)
             ==========  =====================================
 
     Returns
@@ -690,7 +690,7 @@ def move_nanstd_filter(arr, window, axis=-1):
 
 # MIN -----------------------------------------------------------------------
 
-def move_min(arr, window, axis=-1, method='filter'):
+def move_min(arr, window, axis=-1, method='loop'):
     """
     Slow move_min for unaccelerated ndim/dtype combinations.
     
@@ -706,9 +706,9 @@ def move_min(arr, window, axis=-1, method='filter'):
     method : str, optional
         The following moving window methods are available:
             ==========  =========================================
-            'filter'    scipy.ndimage.minimum_filter1d (default)
+            'filter'    scipy.ndimage.minimum_filter1d
             'strides'   strides tricks (ndim < 4)
-            'loop'      brute force python loop
+            'loop'      brute force python loop (default)
             ==========  =========================================
 
     Returns
@@ -734,7 +734,7 @@ def move_min(arr, window, axis=-1, method='filter'):
         raise ValueError("`method` must be 'filter', 'strides', or 'loop'.")
     return y
 
-def move_nanmin(arr, window, axis=-1, method='filter'):
+def move_nanmin(arr, window, axis=-1, method='loop'):
     """
     Slow move_nanmin for unaccelerated ndim/dtype combinations.
     
@@ -750,9 +750,9 @@ def move_nanmin(arr, window, axis=-1, method='filter'):
     method : str, optional
         The following moving window methods are available:
             ==========  =========================================
-            'filter'    scipy.ndimage.minimum_filter1d (default)
+            'filter'    scipy.ndimage.minimum_filter1d
             'strides'   strides tricks (ndim < 4)
-            'loop'      brute force python loop
+            'loop'      brute force python loop (default)
             ==========  =========================================
 
     Returns
@@ -870,7 +870,7 @@ def move_nanmin_strides(arr, window, axis=-1):
 
 # MAX -----------------------------------------------------------------------
 
-def move_max(arr, window, axis=-1, method='filter'):
+def move_max(arr, window, axis=-1, method='loop'):
     """
     Slow move_max for unaccelerated ndim/dtype combinations.
     
@@ -886,9 +886,9 @@ def move_max(arr, window, axis=-1, method='filter'):
     method : str, optional
         The following moving window methods are available:
             ==========  =========================================
-            'filter'    scipy.ndimage.minimum_filter1d (default)
+            'filter'    scipy.ndimage.minimum_filter1d
             'strides'   strides tricks (ndim < 4)
-            'loop'      brute force python loop
+            'loop'      brute force python loop (default)
             ==========  =========================================
 
     Returns
@@ -914,7 +914,7 @@ def move_max(arr, window, axis=-1, method='filter'):
         raise ValueError("`method` must be 'filter', 'strides', or 'loop'.")
     return y
 
-def move_nanmax(arr, window, axis=-1, method='filter'):
+def move_nanmax(arr, window, axis=-1, method='loop'):
     """
     Slow move_nanmax for unaccelerated ndim/dtype combinations, ignoring NaNs.
     
@@ -930,9 +930,9 @@ def move_nanmax(arr, window, axis=-1, method='filter'):
     method : str, optional
         The following moving window methods are available:
             ==========  =========================================
-            'filter'    scipy.ndimage.maximum_filter1d (default)
+            'filter'    scipy.ndimage.maximum_filter1d
             'strides'   strides tricks (ndim < 4)
-            'loop'      brute force python loop
+            'loop'      brute force python loop (default)
             ==========  =========================================
 
     Returns
