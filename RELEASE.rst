@@ -11,6 +11,10 @@ Bottleneck 0.7.0
 
 *Release date: Not yet released, in development*
 
+**Enhancements**
+
+- Can now test bottleneck on multiple python versions using tox
+
 **Bug fixes**
 
 - #50 move_std, move_nanstd return inappropriate NaNs (sqrt of negative #)
