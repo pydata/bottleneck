@@ -13,7 +13,7 @@ Bottleneck 0.7.0
 
 **Enhancements**
 
-- Can now test bottleneck on multiple python versions using tox
+- Test bottleneck across multiple python/numpy versions using tox
 
 **Bug fixes**
 
