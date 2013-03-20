@@ -13,6 +13,7 @@ Bottleneck 0.7.0
 
 **Enhancements**
 
+- bn.rankdata() is twice as fast (with input a = np.random.rand(1000000))
 - Test bottleneck across multiple python/numpy versions using tox
 
 **Bug fixes**
