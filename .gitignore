@@ -5,3 +5,4 @@ dist
 MANIFEST
 *.so
 .tox
+.coverage

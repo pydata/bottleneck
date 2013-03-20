@@ -6,15 +6,16 @@ srcdir := bottleneck/src
 
 help:
 	@echo "Available tasks:"
-	@echo "help   -->  This help page"
-	@echo "pyx    -->  Create Cython pyx files from templates"
-	@echo "cfiles -->  Convert pyx files to C files"
-	@echo "build  -->  Build the Cython extension modules"
-	@echo "clean  -->  Remove all the build files for a fresh start"
-	@echo "test   -->  Run unit tests"
-	@echo "all    -->  clean, pyx, build, test"
-	@echo "bench  -->  Run performance benchmark"
-	@echo "sdist  -->  Make source distribution"
+	@echo "help    -->  This help page"
+	@echo "pyx     -->  Create Cython pyx files from templates"
+	@echo "cfiles  -->  Convert pyx files to C files"
+	@echo "build   -->  Build the Cython extension modules"
+	@echo "clean   -->  Remove all the build files for a fresh start"
+	@echo "test    -->  Run unit tests"
+	@echo "coverage-->  Unit test coverage (doesn't check compiled functions)"
+	@echo "all     -->  clean, pyx, build, test"
+	@echo "bench   -->  Run performance benchmark"
+	@echo "sdist   -->  Make source distribution"
 
 all: clean pyx cfiles build test
 
@@ -39,6 +40,10 @@ moves:
 		
 test:
 	${PYTHON} -c "import bottleneck;bottleneck.test()"
+
+coverage:
+	rm -rf .coverage
+	python -c "import bottleneck; bottleneck.test(coverage=True)"
 
 bench:
 	${PYTHON} -c "import bottleneck; bottleneck.bench()"
