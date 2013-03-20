@@ -206,6 +206,12 @@ def partsort(arr, n, axis=-1):
 
     >>> bn.partsort(a, n=3)
     array([1, 0, 2, 4, 3])
+
+    Now partially sort array so that the last 2 elements are the largest 2
+    elements:
+
+    >>> bn.partsort(a, n=a.shape[0]-2)
+    array([1, 0, 2, 3, 4])
     
     """
     func, arr = partsort_selector(arr, axis)
