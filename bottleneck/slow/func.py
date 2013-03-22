@@ -6,6 +6,8 @@ __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
            'nanrankdata', 'ss', 'nn', 'partsort', 'argpartsort', 'replace',
            'anynan', 'allnan']
 
+rankdata_func = None
+
 def median(arr, axis=None):
     "Slow median function used for unaccelerated ndim/dtype combinations."
     arr = np.asarray(arr)
@@ -108,6 +110,15 @@ def nanargmax(arr, axis=None):
 
 def rankdata(arr, axis=None):
     "Slow rankdata function used for unaccelerated ndim/dtype combinations."
+    global rankdata_func
+    if rankdata_func is None:
+        try:
+            # Use scipy's rankdata; newer scipy has cython version
+            from scipy.stats import rankdata as imported_rankdata
+            rankdata_func = imported_rankdata
+        except ImportError:
+            # Use a local copy of scipy's python (not cython) rankdata
+            rankdata_func = scipy_rankdata
     arr = np.asarray(arr)
     if axis is None:
         arr = arr.ravel()
@@ -119,7 +130,7 @@ def rankdata(arr, axis=None):
     itshape.pop(axis)
     for ij in np.ndindex(*itshape):
         ijslice = list(ij[:axis]) + [slice(None)] + list(ij[axis:])
-        y[ijslice] = scipy_rankdata(arr[ijslice].astype('float'))
+        y[ijslice] = rankdata_func(arr[ijslice].astype('float'))
     return y
 
 def nanrankdata(arr, axis=None):

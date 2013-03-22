@@ -271,7 +271,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
     run = {}
     run['name'] = "rankdata"
     run['ref'] = "scipy.stats.rankdata based (axis support added)"
-    run['scipy_required'] = False
+    run['scipy_required'] = True
     if mode == 'fast':
         code = "bn.rankdata(a, axis=AXIS)"
     else:
