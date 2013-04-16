@@ -48,11 +48,10 @@ coverage:
 bench:
 	${PYTHON} -c "import bottleneck; bottleneck.bench()"
 
-sdist: pyx cfiles
+sdist: pyx
 	rm -f MANIFEST
-	git status
-	find -name *.c
 	${PYTHON} setup.py sdist
+	git status
 
 # Phony targets for cleanup and similar uses
 
