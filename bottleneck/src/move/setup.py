@@ -13,7 +13,7 @@ $ cd bottleneck/bottleneck/src
 $ python move/setup.py build_ext --inplace
 
 """
-
+import sys
 import os
 import os.path
 from distutils.core import setup
@@ -40,4 +40,13 @@ setup(
   ext_modules = ext_modules
 )
 
-os.rename("move.so", os.path.join(mod_dir, "../../move.so"))
+if sys.version_info[0] >= 3:
+	# E.g. Ubuntu has ABI version tagged .so files
+	# http://www.python.org/dev/peps/pep-3149/
+	import sysconfig
+	ext = sysconfig.get_config_var('SO')
+else:
+	ext = '.so'
+
+os.rename("move{0}".format(ext),
+          os.path.join(mod_dir, "../../move{0}".format(ext)))

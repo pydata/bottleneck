@@ -1,0 +1,34 @@
+language: python
+
+python:
+  - 3.2
+  - 2.7
+  - 2.6
+
+env:
+  - NUMPY_VERSION=1.6.2
+  - NUMPY_VERSION=1.5.1
+
+# pip install numpy 1.5.1 fails with Python 3
+# Log: https://travis-ci.org/cdeil/bottleneck/jobs/4189022/#L1687
+# It should work: http://scipy.github.com/faq.html#do-numpy-and-scipy-support-python-3-x
+# But I don't care enough to find a workaround, so for now I'll just exclude this build
+matrix:
+  exclude:
+    - python: 3.2
+      env: NUMPY_VERSION=1.5.1
+
+
+before_install:
+   # We do this to make sure we get the dependencies so pip works below
+   # Maybe not neede?
+   - time sudo apt-get install -qq python-numpy cython libatlas-dev liblapack-dev gfortran
+
+install:
+   - time pip install --upgrade nose --use-mirrors
+   - time pip install --upgrade Cython --use-mirrors
+   - time pip install --upgrade "numpy==$NUMPY_VERSION" --use-mirrors
+
+script:
+   - make all
+   - make bench
