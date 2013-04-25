@@ -16,6 +16,7 @@ Bottleneck 0.7.0
 - bn.rankdata() is twice as fast (with input a = np.random.rand(1000000))
 - C files now included in github repo; cython not needed to try latest
 - Test bottleneck across multiple python/numpy versions using tox
+- Source tarball file size cut in half
 
 **Bug fixes**
 
