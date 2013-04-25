@@ -163,7 +163,7 @@ allnan['templates']['float'] = floats
 allnan['templates']['float_None'] = floats_None
 allnan['templates']['int'] = ints
 allnan['templates']['int_None'] = ints_None
-allnan['pyx_file'] = 'func/%sbit/allnan.pyx'
+allnan['pyx_file'] = 'func/allnan.pyx'
 
 allnan['main'] = '''"allnan auto-generated from template"
 

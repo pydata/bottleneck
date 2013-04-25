@@ -82,10 +82,10 @@ include "move_nanmin.pyx"
 include "move_nanmax.pyx"
 """
 
-def movepyx(funcs=funcs, bits=None):
+def movepyx(funcs=funcs):
     for func in funcs:
-        template(funcs[func], bits)
+        template(funcs[func])
     template_path = os.path.dirname(tempmod.__file__)
-    fid = open(os.path.join(template_path, '..', "move/%sbit/move.pyx") % str(bits), 'w')
+    fid = open(os.path.join(template_path, '..', "move/move.pyx"), 'w')
     fid.write(header)
     fid.close()

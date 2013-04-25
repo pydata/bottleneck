@@ -146,7 +146,7 @@ anynan['templates']['float'] = floats
 anynan['templates']['float_None'] = floats_None
 anynan['templates']['int'] = ints
 anynan['templates']['int_None'] = ints_None
-anynan['pyx_file'] = 'func/%sbit/anynan.pyx'
+anynan['pyx_file'] = 'func/anynan.pyx'
 
 anynan['main'] = '''"anynan auto-generated from template"
 

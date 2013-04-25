@@ -181,7 +181,7 @@ nansum['templates']['float'] = floats
 nansum['templates']['float_None'] = floats_None
 nansum['templates']['int'] = ints
 nansum['templates']['int_None'] = ints_None
-nansum['pyx_file'] = 'func/%sbit/nansum.pyx'
+nansum['pyx_file'] = 'func/nansum.pyx'
 
 nansum['main'] = '''"nansum auto-generated from template"
 

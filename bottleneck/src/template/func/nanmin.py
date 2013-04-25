@@ -223,7 +223,7 @@ nanmin['templates']['float'] = floats
 nanmin['templates']['float_None'] = floats_None
 nanmin['templates']['int'] = ints
 nanmin['templates']['int_None'] = ints_None
-nanmin['pyx_file'] = 'func/%sbit/nanmin.pyx'
+nanmin['pyx_file'] = 'func/nanmin.pyx'
 
 nanmin['main'] = '''"nanmin auto-generated from template"
 

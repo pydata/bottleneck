@@ -229,7 +229,7 @@ move_nanmin['slow'] = slow
 move_nanmin['templates'] = {}
 move_nanmin['templates']['float'] = floats
 move_nanmin['templates']['int'] = ints
-move_nanmin['pyx_file'] = 'move/%sbit/move_nanmin.pyx'
+move_nanmin['pyx_file'] = 'move/move_nanmin.pyx'
 
 move_nanmin['main'] = '''"move_nanmin auto-generated from template"
 

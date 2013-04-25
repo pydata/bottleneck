@@ -149,7 +149,7 @@ replace['slow'] = slow
 replace['templates'] = {}
 replace['templates']['float_None'] = floats
 replace['templates']['int_None'] = ints
-replace['pyx_file'] = 'func/%sbit/replace.pyx'
+replace['pyx_file'] = 'func/replace.pyx'
 
 replace['main'] = '''"replace auto-generated from template"
 

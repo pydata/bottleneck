@@ -106,7 +106,7 @@ ss['templates']['float'] = floats
 ss['templates']['float_None'] = floats_None
 ss['templates']['int'] = ints
 ss['templates']['int_None'] = ints_None
-ss['pyx_file'] = 'func/%sbit/ss.pyx'
+ss['pyx_file'] = 'func/ss.pyx'
 
 ss['main'] = '''"ss auto-generated from template"
 

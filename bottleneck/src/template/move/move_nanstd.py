@@ -204,7 +204,7 @@ move_nanstd['slow'] = slow
 move_nanstd['templates'] = {}
 move_nanstd['templates']['float'] = floats
 move_nanstd['templates']['int'] = ints
-move_nanstd['pyx_file'] = 'move/%sbit/move_nanstd.pyx'
+move_nanstd['pyx_file'] = 'move/move_nanstd.pyx'
 
 move_nanstd['main'] = '''"move_nanstd auto-generated from template"
 

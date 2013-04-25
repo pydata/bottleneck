@@ -118,10 +118,10 @@ include "anynan.pyx"
 include "allnan.pyx"
 """
 
-def funcpyx(funcs=funcs, bits=None):
+def funcpyx(funcs=funcs):
     for func in funcs:
-        template(funcs[func], bits)
+        template(funcs[func])
     template_path = os.path.dirname(tempmod.__file__)
-    fid = open(os.path.join(template_path, '..', "func/%sbit/func.pyx") % str(bits), 'w')
+    fid = open(os.path.join(template_path, '..', "func/func.pyx"), 'w')
     fid.write(header)
     fid.close()

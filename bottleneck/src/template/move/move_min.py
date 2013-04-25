@@ -230,7 +230,7 @@ move_min['slow'] = slow
 move_min['templates'] = {}
 move_min['templates']['float'] = floats
 move_min['templates']['int'] = ints
-move_min['pyx_file'] = 'move/%sbit/move_min.pyx'
+move_min['pyx_file'] = 'move/move_min.pyx'
 
 move_min['main'] = '''"move_min auto-generated from template"
 
