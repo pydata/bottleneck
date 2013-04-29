@@ -166,7 +166,7 @@ median['slow'] = slow
 median['templates'] = {}
 median['templates']['float'] = floats
 median['templates']['int'] = ints
-median['pyx_file'] = 'func/%sbit/median.pyx'
+median['pyx_file'] = 'func/median.pyx'
 
 median['main'] = '''"median auto-generated from template"
 # Select smallest k elements code used for inner loop of median method:

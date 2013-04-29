@@ -2,10 +2,9 @@
 
 import os.path
 
-def template(func, bits):
+def template(func):
     "Convert template dictionary `func` to a pyx file."
     codes = []
-    codes.append("# %s bit version\n" % str(bits))
     codes.append(func['main'])
     select = Selector(func['name'])
     for key in func['templates']:
@@ -19,8 +18,7 @@ def template(func, bits):
                            reuse_non_nan_func=f['reuse_non_nan_func'],
                            is_reducing_function=func['is_reducing_function'],
                            cdef_output=func['cdef_output'],
-                           select=select,
-                           bits=bits)
+                           select=select)
         codes.append(code)    
     codes.append('\n' + str(select))
     if 'slow' in func:
@@ -33,13 +31,13 @@ def template(func, bits):
             codes.append(code2)
             codes.append(code1)
     modpath = os.path.dirname(__file__)
-    fid = open(os.path.join(modpath, '..', func['pyx_file']) % str(bits), 'w')
+    fid = open(os.path.join(modpath, '..', func['pyx_file']), 'w')
     fid.write(''.join(codes))
     fid.close()
 
 def subtemplate(name, top, loop, axisNone, dtypes, force_output_dtype,
-                reuse_non_nan_func, is_reducing_function, cdef_output, select,
-                bits):
+                reuse_non_nan_func, is_reducing_function, cdef_output,
+                select):
     "Assemble template"
     ndims = sorted(loop.keys())
     funcs = []

@@ -278,7 +278,7 @@ nanvar['templates']['float'] = floats
 nanvar['templates']['float_None'] = floats_None
 nanvar['templates']['int'] = ints
 nanvar['templates']['int_None'] = ints_None
-nanvar['pyx_file'] = 'func/%sbit/nanvar.pyx'
+nanvar['pyx_file'] = 'func/nanvar.pyx'
 
 nanvar['main'] = '''"nanvar auto-generated from template"
 

@@ -166,7 +166,7 @@ move_nansum['slow'] = slow
 move_nansum['templates'] = {}
 move_nansum['templates']['float'] = floats
 move_nansum['templates']['int'] = ints
-move_nansum['pyx_file'] = 'move/%sbit/move_nansum.pyx'
+move_nansum['pyx_file'] = 'move/move_nansum.pyx'
 
 move_nansum['main'] = '''"move_nansum auto-generated from template"
 

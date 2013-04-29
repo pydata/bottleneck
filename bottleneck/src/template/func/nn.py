@@ -72,7 +72,7 @@ nn['slow'] = slow
 nn['templates'] = {}
 nn['templates']['float'] = floats
 nn['templates']['int'] = ints
-nn['pyx_file'] = 'func/%sbit/nn.pyx'
+nn['pyx_file'] = 'func/nn.pyx'
 
 nn['main'] = '''"nn auto-generated from template"
 

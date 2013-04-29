@@ -152,7 +152,7 @@ nanargmax['slow'] = slow
 nanargmax['templates'] = {}
 nanargmax['templates']['float'] = floats
 nanargmax['templates']['int'] = ints
-nanargmax['pyx_file'] = 'func/%sbit/nanargmax.pyx'
+nanargmax['pyx_file'] = 'func/nanargmax.pyx'
 
 nanargmax['main'] = '''"nanargmax auto-generated from template"
 

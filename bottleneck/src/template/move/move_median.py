@@ -120,11 +120,11 @@ move_median['slow'] = slow
 move_median['templates'] = {}
 move_median['templates']['float'] = floats
 move_median['templates']['int'] = ints
-move_median['pyx_file'] = 'move/%sbit/move_median.pyx'
+move_median['pyx_file'] = 'move/move_median.pyx'
 
 move_median['main'] = '''"move_median auto-generated from template"
 
-cdef extern from "../csrc/move_median.c":
+cdef extern from "csrc/move_median.c":
     struct _mm_node:
         np.npy_uint32   small
         np.npy_uint64   idx

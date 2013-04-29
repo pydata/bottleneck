@@ -152,7 +152,7 @@ nanargmin['slow'] = slow
 nanargmin['templates'] = {}
 nanargmin['templates']['float'] = floats
 nanargmin['templates']['int'] = ints
-nanargmin['pyx_file'] = 'func/%sbit/nanargmin.pyx'
+nanargmin['pyx_file'] = 'func/nanargmin.pyx'
 
 nanargmin['main'] = '''"nanargmin auto-generated from template"
 

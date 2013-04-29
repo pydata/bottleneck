@@ -223,7 +223,7 @@ nanmedian['slow'] = slow
 nanmedian['templates'] = {}
 nanmedian['templates']['float'] = floats
 nanmedian['templates']['int'] = ints
-nanmedian['pyx_file'] = 'func/%sbit/nanmedian.pyx'
+nanmedian['pyx_file'] = 'func/nanmedian.pyx'
 
 nanmedian['main'] = '''"nanmedian auto-generated from template"
 # Select smallest k elements code used for inner loop of median method:
