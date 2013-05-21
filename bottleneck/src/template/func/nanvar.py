@@ -399,7 +399,7 @@ def nanvar_selector(arr, axis):
     
     Use the returned function and array to determine the variance:
     
-    >>> func(a)
+    >>> func(a, ddof=0)
     0.66666666666666663
 
     """
