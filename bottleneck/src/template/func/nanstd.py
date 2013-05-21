@@ -399,7 +399,7 @@ def nanstd_selector(arr, axis):
     
     Use the returned function and array to determine the standard deviation:
     
-    >>> func(a)
+    >>> func(a, ddof=0)
     0.81649658092772603
 
     """
