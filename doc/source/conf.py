@@ -39,7 +39,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Bottleneck'
-copyright = u'2010, Archipel Asset Management AB'
+copyright = u'Berkeley Analytics LLC'
 
 # Grab version from bottleneck/version.py
 ver_file = os.path.join('..', '..', 'bottleneck', 'version.py')
