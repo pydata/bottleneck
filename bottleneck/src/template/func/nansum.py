@@ -36,7 +36,7 @@ loop[2] = """\
             if ai == ai:
                 asum += ai
                 allnan = 0
-        if allnan == 0:       
+        if allnan == 0:
             y[INDEXPOP] = asum
         else:
             y[INDEXPOP] = NAN
@@ -52,7 +52,7 @@ loop[3] = """\
                 if ai == ai:
                     asum += ai
                     allnan = 0
-            if allnan == 0:   
+            if allnan == 0:
                 y[INDEXPOP] = asum
             else:
                 y[INDEXPOP] = NAN
@@ -70,7 +70,7 @@ returns = """\
         return np.DTYPE(asum)
     else:
         return np.DTYPE(NAN)
-"""        
+"""
 
 loop = {}
 loop[1] = """\
@@ -102,7 +102,7 @@ floats_None['loop'] = loop
 # Int dtypes (not axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
-ints['dtypes'] = INT_DTYPES 
+ints['dtypes'] = INT_DTYPES
 
 ints['top'] = """
 @cython.boundscheck(False)
@@ -134,7 +134,7 @@ ints['loop'] = loop
 
 # Int dtypes (axis=None) ----------------------------------------------------
 
-ints_None = deepcopy(ints) 
+ints_None = deepcopy(ints)
 ints_None['top'] = ints['top'] + "    cdef Py_ssize_t size\n"
 ints_None['axisNone'] = True
 
@@ -146,14 +146,14 @@ loop[1] = """\
     return np.DTYPE(asum)
 """
 loop[2] = """\
-    size = nINDEX0 * nINDEX1    
+    size = nINDEX0 * nINDEX1
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
             asum += a[INDEXALL]
     return np.DTYPE(asum)
 """
 loop[3] = """\
-    size = nINDEX0 * nINDEX1 * nINDEX2 
+    size = nINDEX0 * nINDEX1 * nINDEX2
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
             for iINDEX2 in range(nINDEX2):
@@ -206,8 +206,8 @@ def nansum(arr, axis=None):
     -------
     y : ndarray
         An array with the same shape as `arr`, with the specified axis removed.
-        If `arr` is a 0-d array, or if axis is None, a scalar is returned. 
-    
+        If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+
     Notes
     -----
     No error is raised on overflow.
@@ -238,7 +238,7 @@ def nansum(arr, axis=None):
     -inf
     >>> bn.nansum([1, np.nan, np.inf, np.NINF])
     nan
-    
+
     """
     func, arr = nansum_selector(arr, axis)
     return func(arr)
@@ -246,7 +246,7 @@ def nansum(arr, axis=None):
 def nansum_selector(arr, axis):
     """
     Return nansum function and array that matches `arr` and `axis`.
-    
+
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in
     bn.nansum() is in checking that `axis` is within range, converting `arr`
@@ -262,7 +262,7 @@ def nansum_selector(arr, axis):
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}
         Axis along which the sum is to be computed.
-    
+
     Returns
     -------
     func : function
@@ -277,13 +277,13 @@ def nansum_selector(arr, axis):
     Create a numpy array:
 
     >>> arr = np.array([1.0, np.nan, 3.0])
-    
+
     Obtain the function needed to determine the nansum of `arr` along axis=0:
 
     >>> func, a = bn.func.nansum_selector(arr, axis=0)
     >>> func
     <function nansum_1d_float64_axis0>
-    
+
     Use the returned function and array to determine the sum:
 
     >>> func(a)
@@ -293,7 +293,7 @@ def nansum_selector(arr, axis):
     cdef np.ndarray a
     if type(arr) is np.ndarray:
         a = arr
-    else:    
+    else:
         a = np.array(arr, copy=False)
     cdef int ndim = PyArray_NDIM(a)
     cdef int dtype = PyArray_TYPE(a)
@@ -315,4 +315,4 @@ def nansum_selector(arr, axis):
             tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
-'''   
+'''

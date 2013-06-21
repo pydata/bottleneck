@@ -74,7 +74,7 @@ loop[1] = """\
             y[INDEXALL] = NAN
 
     return y
-"""        
+"""
 loop[2] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
@@ -192,7 +192,7 @@ ints['dtypes'] = INT_DTYPES
 slow = {}
 slow['name'] = "move_nanstd"
 slow['signature'] = "arr, window, ddof"
-slow['func'] = "bn.slow.move_nanstd(arr, window, axis=AXIS, ddof=ddof)"    
+slow['func'] = "bn.slow.move_nanstd(arr, window, axis=AXIS, ddof=ddof)"
 
 # Template ------------------------------------------------------------------
 
@@ -218,9 +218,9 @@ def move_nanstd(arr, int window, int axis=-1, int ddof=0):
     An example of a one-pass algorithm:
 
         >>> np.sqrt((arr*arr).mean() - arr.mean()**2)
-    
-    An example of a two-pass algorithm:    
-    
+
+    An example of a two-pass algorithm:
+
         >>> np.sqrt(((arr - arr.mean())**2).mean())
 
     Note in the two-pass algorithm the mean must be found (first pass) before
@@ -245,7 +245,7 @@ def move_nanstd(arr, int window, int axis=-1, int ddof=0):
     -------
     y : ndarray
         The moving standard deviation of the input array along the specified
-        axis. The output has the same shape as the input. 
+        axis. The output has the same shape as the input.
 
     Examples
     --------
@@ -260,7 +260,7 @@ def move_nanstd(arr, int window, int axis=-1, int ddof=0):
 def move_nanstd_selector(arr, int axis):
     """
     Return move_nanstd function and array that matches `arr` and `axis`.
-    
+
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in
     bn.move_nanstd() is in checking that `axis` is within range, converting
@@ -276,7 +276,7 @@ def move_nanstd_selector(arr, int axis):
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}
         Axis along which the moving standard deviation is to be computed.
-    
+
     Returns
     -------
     func : function
@@ -293,14 +293,14 @@ def move_nanstd_selector(arr, int axis):
     Create a numpy array:
 
     >>> arr = np.array([1.0, 2.0, 3.0, 4.0])
-    
+
     Obtain the function needed to determine the sum of `arr` along axis=0:
-    
+
     >>> window, axis = 2, 0
     >>> func, a = bn.move.move_nanstd_selector(arr, axis)
     >>> func
     <function move_nanstd_1d_float64_axis0>
-    
+
     Use the returned function and array to determine the moving nanstd:
 
     >>> func(a, window)
@@ -310,7 +310,7 @@ def move_nanstd_selector(arr, int axis):
     cdef np.ndarray a
     if type(arr) is np.ndarray:
         a = arr
-    else:    
+    else:
         a = np.array(arr, copy=False)
     cdef int ndim = PyArray_NDIM(a)
     cdef int dtype = PyArray_TYPE(a)
@@ -328,4 +328,4 @@ def move_nanstd_selector(arr, int axis):
             tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
-'''   
+'''

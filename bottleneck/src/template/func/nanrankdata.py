@@ -9,7 +9,7 @@ FLOAT_DTYPES = [x for x in bn.dtypes if 'float' in x]
 INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 
 # loops ---------------------------------------------------------------------
-    
+
 loop = {}
 loop[1] = """\
     if nINDEX0 == 0:
@@ -30,7 +30,7 @@ loop[1] = """\
                 y[INDEXREPLACE|ivec[iINDEX0]|] = NAN
             sumranks = 0
             dupcount = 0
-        old = new    
+        old = new
     sumranks += (nINDEX0 - 1)
     dupcount += 1
     if old == old:
@@ -40,7 +40,7 @@ loop[1] = """\
     else:
         y[INDEXREPLACE|ivec[nINDEX0 - 1]|] = NAN
     return y
-"""        
+"""
 loop[2] = """\
     if nINDEX1 == 0:
         PyArray_FillWithScalar(y, NAN)
@@ -67,7 +67,7 @@ loop[2] = """\
                     y[INDEXREPLACE|idx|] = NAN
                 sumranks = 0
                 dupcount = 0
-            old = new    
+            old = new
         sumranks += (nINDEX1 - 1)
         dupcount += 1
         averank = sumranks / dupcount + 1
@@ -107,7 +107,7 @@ loop[3] = """\
                         y[INDEXREPLACE|idx|] = NAN
                     sumranks = 0
                     dupcount = 0
-                old = new    
+                old = new
             sumranks += (nINDEX2 - 1)
             dupcount += 1
             averank = sumranks / dupcount + 1
@@ -133,10 +133,10 @@ floats['top'] = """
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
-    "Ranks nNDIMd array with dtype=DTYPE along axis=AXIS, dealing with ties." 
+    "Ranks nNDIMd array with dtype=DTYPE along axis=AXIS, dealing with ties."
     cdef dupcount = 0
     cdef Py_ssize_t j=0, k, idx
-    cdef np.ndarray[np.intp_t, ndim=NDIM] ivec = PyArray_ArgSort(a, AXIS, NPY_QUICKSORT)
+    cdef np.ndarray[np.intp_t, ndim=NDIM] ivec = PyArray_ArgSort(a, AXIS, NPY_QUICKSORT)  # noqa
     cdef np.float64_t old, new, averank, sumranks = 0
 """
 
@@ -145,7 +145,7 @@ floats['loop'] = deepcopy(loop)
 # Int dtypes (not axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
-ints['dtypes'] = INT_DTYPES 
+ints['dtypes'] = INT_DTYPES
 ints['reuse_non_nan_func'] = True
 ints['loop'] = deepcopy(loop)
 
@@ -192,11 +192,11 @@ def nanrankdata(arr, axis=None):
     -------
     y : ndarray
         An array with the same shape as `arr`. The dtype is 'float64'.
-    
+
     See also
     --------
     bottleneck.rankdata: Ranks the data, dealing with ties and appropriately.
-    
+
     Examples
     --------
     >>> bn.nanrankdata([np.nan, 2, 2, 3])
@@ -209,7 +209,7 @@ def nanrankdata(arr, axis=None):
     >>> bn.nanrankdata([[np.nan, 2], [2, 3]], axis=1)
     array([[ nan,   1.],
            [  1.,   2.]])
-    
+
     """
     func, arr = nanrankdata_selector(arr, axis)
     return func(arr)
@@ -217,7 +217,7 @@ def nanrankdata(arr, axis=None):
 def nanrankdata_selector(arr, axis):
     """
     Return nanrankdata function and array that matches `arr` and `axis`.
-    
+
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in
     bn.nanrankdata() is in checking that `axis` is within range, converting
@@ -233,7 +233,7 @@ def nanrankdata_selector(arr, axis):
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}
         Axis along which to rank the elements of the array.
-    
+
     Returns
     -------
     func : function
@@ -248,13 +248,13 @@ def nanrankdata_selector(arr, axis):
     Create a numpy array:
 
     >>> arr = np.array([np.nan, 2, 2, 3])
-    
+
     Obtain the function needed to rank the elements of `arr` along axis=0:
 
     >>> func, a = bn.func.nanrankdata_selector(arr, axis=0)
     >>> func
     <function nanrankdata_1d_float64_axis0>
-    
+
     Use the returned function and array:
 
     >>> func(a)
@@ -264,7 +264,7 @@ def nanrankdata_selector(arr, axis):
     cdef np.ndarray a
     if type(arr) is np.ndarray:
         a = arr
-    else:    
+    else:
         a = np.array(arr, copy=False)
     cdef tuple key
     cdef int ndim = PyArray_NDIM(a)
@@ -288,4 +288,4 @@ def nanrankdata_selector(arr, axis):
             tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
-'''   
+'''

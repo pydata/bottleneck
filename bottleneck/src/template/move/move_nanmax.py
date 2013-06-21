@@ -18,7 +18,7 @@ loop[1] = """\
     ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
     end = ring + window
     last = ring
-    
+
     minpair = ring
     ai = a[INDEXREPLACE|0|]
     if ai == ai:
@@ -56,16 +56,16 @@ loop[1] = """\
                 last = ring
             last.value = ai
             last.death = iINDEX0 + window
-        if count > 0:        
+        if count > 0:
             y[INDEXALL] = minpair.value
         else:
             y[INDEXALL] = NAN
     for iINDEX0 in range(window - 1):
         y[INDEXALL] = NAN
-    
+
     stdlib.free(ring)
     return y
-"""        
+"""
 loop[2] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
@@ -73,10 +73,10 @@ loop[2] = """\
     ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
 
     for iINDEX0 in range(nINDEX0):
-    
+
         end = ring + window
         last = ring
-    
+
         minpair = ring
         ai = a[INDEXREPLACE|0|]
         if ai == ai:
@@ -114,13 +114,13 @@ loop[2] = """\
                     last = ring
                 last.value = ai
                 last.death = iINDEX1 + window
-            if count > 0:        
+            if count > 0:
                 y[INDEXALL] = minpair.value
             else:
                 y[INDEXALL] = NAN
         for iINDEX1 in range(window - 1):
             y[INDEXALL] = NAN
-    
+
     stdlib.free(ring)
     return y
 """
@@ -131,10 +131,10 @@ loop[3] = """\
     ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
 
     for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):    
+        for iINDEX1 in range(nINDEX1):
             end = ring + window
             last = ring
-        
+
             minpair = ring
             ai = a[INDEXREPLACE|0|]
             if ai == ai:
@@ -142,7 +142,7 @@ loop[3] = """\
             else:
                 minpair.value = MINfloat64
             minpair.death = window
-            
+
             count = 0
             for iINDEX2 in range(nINDEX2):
                 ai = a[INDEXALL]
@@ -172,13 +172,13 @@ loop[3] = """\
                         last = ring
                     last.value = ai
                     last.death = iINDEX2 + window
-                if count > 0:        
+                if count > 0:
                     y[INDEXALL] = minpair.value
                 else:
                     y[INDEXALL] = NAN
             for iINDEX2 in range(window - 1):
                 y[INDEXALL] = NAN
-    
+
     stdlib.free(ring)
     return y
 """
@@ -210,7 +210,7 @@ floats['loop'] = loop
 
 ints = deepcopy(floats)
 ints['reuse_non_nan_func'] = True
-ints['dtypes'] = INT_DTYPES 
+ints['dtypes'] = INT_DTYPES
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 
@@ -237,7 +237,7 @@ move_nanmax['main'] = '''"move_nanmax auto-generated from template"
 # http://home.tiac.net/~cri/2001/slidingmin.html
 # Original C code:
 # Copyright Richard Harter 2009
-# Released under a Simplified BSD license 
+# Released under a Simplified BSD license
 #
 # Adapted and expanded for Bottleneck:
 # Copyright 2010 Keith Goodman
@@ -246,9 +246,9 @@ move_nanmax['main'] = '''"move_nanmax auto-generated from template"
 def move_nanmax(arr, int window, int axis=-1):
     """
     Moving window maximum along the specified axis, ignoring NaNs.
-    
-    float64 output is returned for all input data types.  
-    
+
+    float64 output is returned for all input data types.
+
     Parameters
     ----------
     arr : ndarray
@@ -264,7 +264,7 @@ def move_nanmax(arr, int window, int axis=-1):
     -------
     y : ndarray
         The moving maximum of the input array along the specified axis. The
-        output has the same shape as the input. 
+        output has the same shape as the input.
 
     Examples
     --------
@@ -279,7 +279,7 @@ def move_nanmax(arr, int window, int axis=-1):
 def move_nanmax_selector(arr, int axis):
     """
     Return move_nanmax function and array that matches `arr` and `axis`.
-    
+
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in
     bn.move_nanmax() is in checking that `axis` is within range, converting
@@ -311,14 +311,14 @@ def move_nanmax_selector(arr, int axis):
     Create a numpy array:
 
     >>> arr = np.array([1.0, 2.0, 4.0, 3.0])
-    
+
     Obtain the function needed to determine the sum of `arr` along axis=0:
-    
+
     >>> window, axis = 2, 0
     >>> func, a = bn.move.move_nanmax_selector(arr, axis)
     >>> func
     <function move_nanmax_1d_float64_axis0>
-    
+
     Use the returned function and array to determine the moving maximum:
 
     >>> func(a, window)
@@ -328,7 +328,7 @@ def move_nanmax_selector(arr, int axis):
     cdef np.ndarray a
     if type(arr) is np.ndarray:
         a = arr
-    else:    
+    else:
         a = np.array(arr, copy=False)
     cdef int ndim = PyArray_NDIM(a)
     cdef int dtype = PyArray_TYPE(a)
@@ -346,4 +346,4 @@ def move_nanmax_selector(arr, int axis):
             tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
-'''   
+'''

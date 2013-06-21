@@ -79,12 +79,12 @@ floats_None['loop'] = loop
 # Int dtypes (not axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
-ints['dtypes'] = INT_DTYPES 
+ints['dtypes'] = INT_DTYPES
 
 # Int dtypes (axis=None) ----------------------------------------------------
 
-ints_None = deepcopy(floats_None) 
-ints_None['dtypes'] = INT_DTYPES 
+ints_None = deepcopy(floats_None)
+ints_None['dtypes'] = INT_DTYPES
 ints_None['axisNone'] = True
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
@@ -126,11 +126,11 @@ def ss(arr, axis=0):
     Returns
     -------
     y : ndarray
-        The sum of a**2 along the given axis. 
+        The sum of a**2 along the given axis.
 
     See also
     --------
-    bottleneck.nn: Nearest neighbor.    
+    bottleneck.nn: Nearest neighbor.
 
     Examples
     --------
@@ -143,7 +143,7 @@ def ss(arr, axis=0):
     >>> b = np.array([[1., 2., 5.], [2., 5., 6.]])
     >>> bn.ss(b, axis=1)
     array([ 30., 65.])
-    
+
     """
     func, arr = ss_selector(arr, axis)
     return func(arr)
@@ -151,7 +151,7 @@ def ss(arr, axis=0):
 def ss_selector(arr, axis):
     """
     Return ss function and array that matches `arr` and `axis`.
-    
+
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in
     bn.ss() is in checking that `axis` is within range, converting `arr`
@@ -183,14 +183,14 @@ def ss_selector(arr, axis):
     Create a numpy array:
 
     >>> arr = np.array([1.0, 2.0, 5.0])
-    
+
     Obtain the function needed to determine the sum of squares of `arr` along
     axis=0:
 
     >>> func, a = bn.func.ss_selector(arr, axis=0)
     >>> func
     <function ss_1d_float64_axisNone>
-    
+
     Use the returned function and array to determine the sum of squares:
 
     >>> func(a)
@@ -200,7 +200,7 @@ def ss_selector(arr, axis):
     cdef np.ndarray a
     if type(arr) is np.ndarray:
         a = arr
-    else:    
+    else:
         a = np.array(arr, copy=False)
     cdef int ndim = PyArray_NDIM(a)
     cdef int dtype = PyArray_TYPE(a)
@@ -222,4 +222,4 @@ def ss_selector(arr, axis):
             tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
-'''   
+'''

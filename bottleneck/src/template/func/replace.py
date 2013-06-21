@@ -24,7 +24,7 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,
     double old, double new):
     "replace (inplace) specified elements of NDIMd array of dtype=DTYPE."
     cdef np.DTYPE_t ai
-"""     
+"""
 
 loop = {}
 loop[1] = """\
@@ -74,7 +74,7 @@ floats['loop'] = loop
 # Int dtypes (axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
-ints['dtypes'] = INT_DTYPES 
+ints['dtypes'] = INT_DTYPES
 ints['axisNone'] = True
 
 ints['top'] = """
@@ -158,9 +158,9 @@ def replace(arr, old, new):
     Replace (inplace) given scalar values of an array with new values.
 
     The equivalent numpy function:
-        
+
         arr[arr==old] = new
-        
+
     Or in the case where old=np.nan:
 
         arr[np.isnan(old)] = new
@@ -177,8 +177,8 @@ def replace(arr, old, new):
 
     Returns
     -------
-    None, the operation is inplace. 
-    
+    None, the operation is inplace.
+
     Examples
     --------
     Replace zero with 3 (note that the input array is modified):
@@ -194,7 +194,7 @@ def replace(arr, old, new):
     >>> bn.replace(a, np.nan, 0)
     >>> a
     array([ 1.,  2.,  0.])
-    
+
     """
     func = replace_selector(arr)
     return func(arr, old, new)
@@ -202,7 +202,7 @@ def replace(arr, old, new):
 def replace_selector(arr):
     """
     Return replace function and array that matches `arr`.
-    
+
     Under the hood Bottleneck uses a separate replace() Cython function for
     each combination of ndim and dtype. A lot of the overhead in bn.replace()
     is inselecting the low level function to use.
@@ -214,7 +214,7 @@ def replace_selector(arr):
     ----------
     arr : numpy.ndarray
         Input array.
-    
+
     Returns
     -------
     func : function
@@ -226,7 +226,7 @@ def replace_selector(arr):
     Create a numpy array:
 
     >>> arr = np.array([1.0, np.nan, 3.0])
-    
+
     Obtain the function needed to replace values in `arr`:
 
     >>> func = bn.func.replace_selector(arr)
@@ -256,4 +256,4 @@ def replace_selector(arr):
             tup = (str(ndim), str(arr.dtype), str(axis))
             raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func
-'''   
+'''

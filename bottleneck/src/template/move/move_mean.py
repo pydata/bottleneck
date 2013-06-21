@@ -62,7 +62,7 @@ loop[1] = """\
             y[INDEXALL] = NAN
 
     return y
-"""        
+"""
 loop[2] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
@@ -147,7 +147,7 @@ floats['loop'] = loop
 
 ints = deepcopy(floats)
 ints['force_output_dtype'] = 'float64'
-ints['dtypes'] = INT_DTYPES 
+ints['dtypes'] = INT_DTYPES
 
 loop = {}
 loop[1] = """\
@@ -164,10 +164,10 @@ loop[1] = """\
         asum += a[INDEXALL]
         aold = a[INDEXREPLACE|iAXIS - window|]
         asum -= aold
-        y[INDEXALL] = <np.float64_t> asum / window 
+        y[INDEXALL] = <np.float64_t> asum / window
 
     return y
-"""        
+"""
 loop[2] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
@@ -205,7 +205,7 @@ loop[3] = """\
                 asum += a[INDEXALL]
                 aold = a[INDEXREPLACE|iAXIS - window|]
                 asum -= aold
-                y[INDEXALL] = <np.float64_t> asum / window 
+                y[INDEXALL] = <np.float64_t> asum / window
 
     return y
 """
@@ -236,7 +236,7 @@ move_mean['main'] = '''"move_mean auto-generated from template"
 def move_mean(arr, int window, int axis=-1):
     """
     Moving window mean along the specified axis.
-    
+
     Parameters
     ----------
     arr : ndarray
@@ -252,7 +252,7 @@ def move_mean(arr, int window, int axis=-1):
     -------
     y : ndarray
         The moving mean of the input array along the specified axis. The output
-        has the same shape as the input. 
+        has the same shape as the input.
 
     Examples
     --------
@@ -267,7 +267,7 @@ def move_mean(arr, int window, int axis=-1):
 def move_mean_selector(arr, int axis):
     """
     Return move_mean function and array that matches `arr` and `axis`.
-    
+
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in
     bn.move_mean() is in checking that `axis` is within range, converting
@@ -299,14 +299,14 @@ def move_mean_selector(arr, int axis):
     Create a numpy array:
 
     >>> arr = np.array([1.0, 2.0, 3.0, 4.0])
-    
+
     Obtain the function needed to determine the sum of `arr` along axis=0:
-    
+
     >>> window, axis = 2, 0
     >>> func, a = bn.move.move_mean_selector(arr, axis)
     >>> func
     <function move_mean_1d_float64_axis0>
-    
+
     Use the returned function and array to determine the moving mean:
 
     >>> func(a, window)
@@ -316,7 +316,7 @@ def move_mean_selector(arr, int axis):
     cdef np.ndarray a
     if type(arr) is np.ndarray:
         a = arr
-    else:    
+    else:
         a = np.array(arr, copy=False)
     cdef int ndim = PyArray_NDIM(a)
     cdef int dtype = PyArray_TYPE(a)
@@ -334,4 +334,4 @@ def move_mean_selector(arr, int axis):
             tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
-'''   
+'''

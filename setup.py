@@ -34,35 +34,35 @@ VER = VER[1].strip()
 VER = VER.strip("\"")
 VER = VER.split('.')
 
-NAME                = 'Bottleneck'
-MAINTAINER          = "Keith Goodman"
-MAINTAINER_EMAIL    = "bottle-neck@googlegroups.com"
-DESCRIPTION         = description
-LONG_DESCRIPTION    = long_description
-URL                 = "http://berkeleyanalytics.com/bottleneck"
-DOWNLOAD_URL        = "http://pypi.python.org/pypi/Bottleneck"
-LICENSE             = "Simplified BSD"
-CLASSIFIERS         = CLASSIFIERS
-AUTHOR              = "Berkeley Analytics LLC"
-AUTHOR_EMAIL        = "kwgoodman@gmail.com"
-PLATFORMS           = "OS Independent"
-MAJOR               = VER[0]
-MINOR               = VER[1]
-MICRO               = VER[2]
-ISRELEASED          = False
-VERSION             = '%s.%s.%s' % (MAJOR, MINOR, MICRO)
-PACKAGES            = ["bottleneck",
-                       "bottleneck/slow",
-                       "bottleneck/tests",
-                       "bottleneck/benchmark",
-                       "bottleneck/src",
-                       "bottleneck/src/func",
-                       "bottleneck/src/move",
-                       "bottleneck/src/template",
-                       "bottleneck/src/template/func",
-                       "bottleneck/src/template/move"]
-PACKAGE_DATA        = {'bottleneck': ['LICENSE']}
-REQUIRES            = ["numpy"]
+NAME = 'Bottleneck'
+MAINTAINER = "Keith Goodman"
+MAINTAINER_EMAIL = "bottle-neck@googlegroups.com"
+DESCRIPTION = description
+LONG_DESCRIPTION = long_description
+URL = "http://berkeleyanalytics.com/bottleneck"
+DOWNLOAD_URL = "http://pypi.python.org/pypi/Bottleneck"
+LICENSE = "Simplified BSD"
+CLASSIFIERS = CLASSIFIERS
+AUTHOR = "Berkeley Analytics LLC"
+AUTHOR_EMAIL = "kwgoodman@gmail.com"
+PLATFORMS = "OS Independent"
+MAJOR = VER[0]
+MINOR = VER[1]
+MICRO = VER[2]
+ISRELEASED = False
+VERSION = '%s.%s.%s' % (MAJOR, MINOR, MICRO)
+PACKAGES = ["bottleneck",
+            "bottleneck/slow",
+            "bottleneck/tests",
+            "bottleneck/benchmark",
+            "bottleneck/src",
+            "bottleneck/src/func",
+            "bottleneck/src/move",
+            "bottleneck/src/template",
+            "bottleneck/src/template/func",
+            "bottleneck/src/template/move"]
+PACKAGE_DATA = {'bottleneck': ['LICENSE']}
+REQUIRES = ["numpy"]
 
 setup(name=NAME,
       maintainer=MAINTAINER,
@@ -81,10 +81,8 @@ setup(name=NAME,
       package_data=PACKAGE_DATA,
       requires=REQUIRES,
       ext_package='bottleneck',
-      ext_modules=[Extension("func",
-                     sources=["bottleneck/src/func/func.c"],
-                     include_dirs=[np.get_include()]),           
-                   Extension("move",
-                     sources=["bottleneck/src/move/move.c"],
-                     include_dirs=[np.get_include()])]
-     )                
+      ext_modules=[Extension("func", sources=["bottleneck/src/func/func.c"],
+                             include_dirs=[np.get_include()]),
+                   Extension("move", sources=["bottleneck/src/move/move.c"],
+                             include_dirs=[np.get_include()])]
+      )

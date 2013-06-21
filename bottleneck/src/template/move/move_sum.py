@@ -62,7 +62,7 @@ loop[1] = """\
             y[INDEXALL] = NAN
 
     return y
-"""        
+"""
 loop[2] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
@@ -146,7 +146,7 @@ floats['loop'] = loop
 # Int dtypes (no axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
-ints['dtypes'] = INT_DTYPES 
+ints['dtypes'] = INT_DTYPES
 ints['force_output_dtype'] = 'float64'
 
 loop = {}
@@ -164,10 +164,10 @@ loop[1] = """\
         asum += a[INDEXALL]
         aold = a[INDEXREPLACE|iAXIS - window|]
         asum -= aold
-        y[INDEXALL] = <double>asum 
+        y[INDEXALL] = <double>asum
 
     return y
-"""        
+"""
 loop[2] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
@@ -205,7 +205,7 @@ loop[3] = """\
                 asum += a[INDEXALL]
                 aold = a[INDEXREPLACE|iAXIS - window|]
                 asum -= aold
-                y[INDEXALL] = <double>asum 
+                y[INDEXALL] = <double>asum
 
     return y
 """
@@ -236,7 +236,7 @@ move_sum['main'] = '''"move_sum auto-generated from template"
 def move_sum(arr, int window, int axis=-1):
     """
     Moving window sum along the specified axis.
-    
+
     Parameters
     ----------
     arr : ndarray
@@ -252,7 +252,7 @@ def move_sum(arr, int window, int axis=-1):
     -------
     y : ndarray
         The moving sum of the input array along the specified axis. The output
-        has the same shape as the input. 
+        has the same shape as the input.
 
     Examples
     --------
@@ -267,7 +267,7 @@ def move_sum(arr, int window, int axis=-1):
 def move_sum_selector(arr, int axis):
     """
     Return move_sum function and array that matches `arr` and `axis`.
-    
+
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in
     bn.move_sum() is in checking that `axis` is within range, converting
@@ -283,7 +283,7 @@ def move_sum_selector(arr, int axis):
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}
         Axis along which the moving sum is to be computed.
-    
+
     Returns
     -------
     func : function
@@ -299,14 +299,14 @@ def move_sum_selector(arr, int axis):
     Create a numpy array:
 
     >>> arr = np.array([1.0, 2.0, 3.0, 4.0])
-    
+
     Obtain the function needed to determine the sum of `arr` along axis=0:
-    
+
     >>> window, axis = 2, 0
     >>> func, a = bn.move.move_sum_selector(arr, axis)
     >>> func
     <function move_sum_1d_float64_axis0>
-    
+
     Use the returned function and array to determine the moving sum:
 
     >>> func(a, window)
@@ -316,7 +316,7 @@ def move_sum_selector(arr, int axis):
     cdef np.ndarray a
     if type(arr) is np.ndarray:
         a = arr
-    else:    
+    else:
         a = np.array(arr, copy=False)
     cdef int ndim = PyArray_NDIM(a)
     cdef int dtype = PyArray_TYPE(a)
@@ -337,4 +337,4 @@ def move_sum_selector(arr, int axis):
             tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
-'''   
+'''

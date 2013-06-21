@@ -92,7 +92,7 @@ floats_None['loop'] = loop
 # Int dtypes (not axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
-ints['dtypes'] = INT_DTYPES 
+ints['dtypes'] = INT_DTYPES
 
 loop = {}
 loop[2] = """\
@@ -111,7 +111,7 @@ ints['loop'] = loop
 
 # Int dtypes (axis=None) ----------------------------------------------------
 
-ints_None = deepcopy(ints) 
+ints_None = deepcopy(ints)
 ints_None['axisNone'] = True
 
 loop = {}
@@ -186,7 +186,7 @@ def anynan(arr, axis=None):
     >>> bn.anynan(a)
     True
     >>> bn.anynan(a, axis=0)
-    array([False,  True], dtype=bool)    
+    array([False,  True], dtype=bool)
 
     """
     func, arr = anynan_selector(arr, axis)
@@ -195,7 +195,7 @@ def anynan(arr, axis=None):
 def anynan_selector(arr, axis):
     """
     Return anynan function and array that matches `arr` and `axis`.
-    
+
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in bn.anynan()
     is in checking that `axis` is within range, converting `arr` into an
@@ -210,7 +210,7 @@ def anynan_selector(arr, axis):
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}
         Axis along which NaNs are searched.
-    
+
     Returns
     -------
     func : function
@@ -225,16 +225,16 @@ def anynan_selector(arr, axis):
     Create a numpy array:
 
     >>> arr = np.array([1.0, 2.0, 3.0])
-    
+
     Obtain the function needed to determine if there are any NaN in `arr`:
 
     >>> func, a = bn.func.anynan_selector(arr, axis=0)
     >>> func
     <function anynan_1d_float64_axisNone>
-    
+
     Use the returned function and array to determine if there are any
     NaNs:
-    
+
     >>> func(a)
     False
 
@@ -242,7 +242,7 @@ def anynan_selector(arr, axis):
     cdef np.ndarray a
     if type(arr) is np.ndarray:
         a = arr
-    else:    
+    else:
         a = np.array(arr, copy=False)
     cdef int ndim = PyArray_NDIM(a)
     cdef int dtype = PyArray_TYPE(a)
@@ -261,4 +261,4 @@ def anynan_selector(arr, axis):
             tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
-'''   
+'''
