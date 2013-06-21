@@ -35,7 +35,7 @@ loop[2] = """\
             if ai == ai:
                 asum += ai
                 count += 1
-        if count > 0:       
+        if count > 0:
             y[INDEXPOP] = asum / count
         else:
             y[INDEXPOP] = NAN
@@ -51,7 +51,7 @@ loop[3] = """\
                 if ai == ai:
                     asum += ai
                     count += 1
-            if count > 0:       
+            if count > 0:
                 y[INDEXPOP] = asum / count
             else:
                 y[INDEXPOP] = NAN
@@ -69,7 +69,7 @@ returns = """\
         return np.DTYPE(asum / count)
     else:
         return np.DTYPE(NAN)
-"""        
+"""
 
 loop = {}
 loop[1] = """\
@@ -101,7 +101,7 @@ floats_None['loop'] = loop
 # Int dtypes (not axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
-ints['dtypes'] = INT_DTYPES 
+ints['dtypes'] = INT_DTYPES
 ints['force_output_dtype'] = 'float64'
 
 ints['top'] = """
@@ -140,7 +140,7 @@ ints['loop'] = loop
 
 # Int dtypes (axis=None) ----------------------------------------------------
 
-ints_None = deepcopy(ints) 
+ints_None = deepcopy(ints)
 ints_None['top'] = ints['top'] + "    cdef Py_ssize_t size\n"
 ints_None['axisNone'] = True
 
@@ -149,28 +149,28 @@ loop[1] = """\
     size = nINDEX0
     for iINDEX0 in range(nINDEX0):
         asum += a[INDEXALL]
-    if size > 0:    
+    if size > 0:
         return np.float64(asum / size)
     else:
         return np.float64(NAN)
 """
 loop[2] = """\
-    size = nINDEX0 * nINDEX1    
+    size = nINDEX0 * nINDEX1
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
             asum += a[INDEXALL]
-    if size > 0:    
+    if size > 0:
         return np.float64(asum / size)
     else:
         return np.float64(NAN)
 """
 loop[3] = """\
-    size = nINDEX0 * nINDEX1 * nINDEX2 
+    size = nINDEX0 * nINDEX1 * nINDEX2
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
             for iINDEX2 in range(nINDEX2):
                 asum += a[INDEXALL]
-    if size > 0:    
+    if size > 0:
         return np.float64(asum / size)
     else:
         return np.float64(NAN)
@@ -220,12 +220,12 @@ def nanmean(arr, axis=None):
     y : ndarray
         An array with the same shape as `arr`, with the specified axis removed.
         If `arr` is a 0-d array, or if axis is None, a scalar is returned.
-        `float64` intermediate and return values are used for integer inputs. 
+        `float64` intermediate and return values are used for integer inputs.
 
     See also
     --------
     bottleneck.nanmedian: Median along specified axis, ignoring NaNs.
-    
+
     Notes
     -----
     No error is raised on overflow. (The sum is computed and then the result
@@ -257,7 +257,7 @@ def nanmean(arr, axis=None):
     -inf
     >>> bn.nanmean([1, np.nan, np.inf, np.NINF])
     nan
-    
+
     """
     func, arr = nanmean_selector(arr, axis)
     return func(arr)
@@ -265,7 +265,7 @@ def nanmean(arr, axis=None):
 def nanmean_selector(arr, axis):
     """
     Return nanmean function and array that matches `arr` and `axis`.
-    
+
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in
     bn.nanmean() is in checking that `axis` is within range, converting `arr`
@@ -281,7 +281,7 @@ def nanmean_selector(arr, axis):
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}
         Axis along which the mean is to be computed.
-    
+
     Returns
     -------
     func : function
@@ -296,13 +296,13 @@ def nanmean_selector(arr, axis):
     Create a numpy array:
 
     >>> arr = np.array([1.0, 2.0, 3.0])
-    
+
     Obtain the function needed to determine the nanmean of `arr` along axis=0:
 
     >>> func, a = bn.func.nanmean_selector(arr, axis=0)
     >>> func
     <function nanmean_1d_float64_axis0>
-    
+
     Use the returned function and array to determine the mean:
 
     >>> func(a)
@@ -312,7 +312,7 @@ def nanmean_selector(arr, axis):
     cdef np.ndarray a
     if type(arr) is np.ndarray:
         a = arr
-    else:    
+    else:
         a = np.array(arr, copy=False)
     cdef int ndim = PyArray_NDIM(a)
     cdef int dtype = PyArray_TYPE(a)
@@ -331,4 +331,4 @@ def nanmean_selector(arr, axis):
             tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
-'''   
+'''

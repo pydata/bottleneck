@@ -82,6 +82,7 @@ include "move_nanmin.pyx"
 include "move_nanmax.pyx"
 """
 
+
 def movepyx(funcs=funcs):
     for func in funcs:
         template(funcs[func])

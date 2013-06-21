@@ -44,8 +44,8 @@ loop[2] = """\
     if imin == -1:
         dist = NAN
         imin = 0
-    else:    
-        dist = sqrt(xsummin)        
+    else:
+        dist = sqrt(xsummin)
     return dist, imin
 """
 floats['loop'] = loop
@@ -53,7 +53,7 @@ floats['loop'] = loop
 # Int dtypes (not axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
-ints['dtypes'] = INT_DTYPES 
+ints['dtypes'] = INT_DTYPES
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 
@@ -121,7 +121,7 @@ def nn(arr, arr0, int axis=1):
 
     Depending on the shapes of `arr` and `arr0`, SciPy's cKDTree may
     be faster than bn.nn(). So benchmark if speed is important.
-    
+
     The relative speed also depends on how many times you will use
     the same array `arr` to find nearest neighbors with different
     `arr0`. That is because it takes time to set up SciPy's cKDTree.
@@ -148,7 +148,7 @@ def nn(arr, arr0, int axis=1):
     0.0
     >>> idx
     1
-    
+
     """
     func, a, a0 = nn_selector(arr, arr0, axis)
     return func(a, a0)
@@ -156,7 +156,7 @@ def nn(arr, arr0, int axis=1):
 def nn_selector(arr, arr0, int axis):
     """
     Return nn function and arrays.
-    
+
     Under the hood Bottleneck uses a separate Cython function for each
     combination of dtype, and axis. A lot of the overhead in bn.nn() is in
     checking that `axis` is within range, converting `arr` into an array
@@ -193,14 +193,14 @@ def nn_selector(arr, arr0, int axis):
 
     >>> arr = np.array([[1, 2], [3, 4]])
     >>> arr0 = np.array([2, 4])
-    
+
     Obtain the function needed to find the nearest neighbor of `arr0`
     in `arr0` along axis 0:
 
     >>> func, a, a0 = bn.func.nn_selector(arr, arr0, axis=0)
     >>> func
     <function nn_2d_int64_axis0>
-    
+
     Use the returned function and arrays to determine the nearest
     neighbor:
 
@@ -215,12 +215,12 @@ def nn_selector(arr, arr0, int axis):
     cdef np.ndarray a
     if type(arr) is np.ndarray:
         a = arr
-    else:    
+    else:
         a = np.array(arr, copy=False)
     cdef np.ndarray a0
     if type(arr0) is np.ndarray:
         a0 = arr0
-    else:    
+    else:
         a0 = np.array(arr0, copy=False)
     cdef int dtype = PyArray_TYPE(a)
     cdef int dtype0 = PyArray_TYPE(a0)
@@ -233,7 +233,7 @@ def nn_selector(arr, arr0, int axis):
     if ndim0 != 1:
         raise ValueError("`arr0` must be 1d")
     if axis < 0:
-        axis += ndim    
+        axis += ndim
     cdef tuple key = (ndim, dtype, axis)
     try:
         func = nn_dict[key]
@@ -247,4 +247,4 @@ def nn_selector(arr, arr0, int axis):
             tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a, a0
-'''   
+'''

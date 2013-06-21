@@ -20,7 +20,7 @@ loop[1] = """\
         raise ValueError(PARTSORT_ERR_MSG % (n, nAXIS))
     l = 0
     r = nAXIS - 1
-    with nogil:       
+    with nogil:
         while l < r:
             x = b[k]
             i = l
@@ -41,7 +41,7 @@ loop[1] = """\
             if j < k: l = i
             if k < i: r = j
     return y
-"""        
+"""
 loop[2] = """\
     for i0 in range(n0):
         for i1 in range(n1):
@@ -50,7 +50,7 @@ loop[2] = """\
         return y
     if (n < 1) or (n > nAXIS):
         raise ValueError(PARTSORT_ERR_MSG % (n, nAXIS))
-    for iINDEX0 in range(nINDEX0): 
+    for iINDEX0 in range(nINDEX0):
         l = 0
         r = nAXIS - 1
         while l < r:
@@ -122,7 +122,7 @@ floats['top'] = """
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a, int n):
     "Partial sort of NDIMd array with dtype=DTYPE along axis=AXIS."
-    cdef np.npy_intp i, j = 0, l, r, k = n-1, itmp 
+    cdef np.npy_intp i, j = 0, l, r, k = n-1, itmp
     cdef np.DTYPE_t x, tmp
     cdef np.ndarray[np.DTYPE_t, ndim=NDIM] b = PyArray_Copy(a)
 """
@@ -132,7 +132,7 @@ floats['loop'] = loop
 # Int dtypes (not axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
-ints['dtypes'] = INT_DTYPES 
+ints['dtypes'] = INT_DTYPES
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 
@@ -157,7 +157,7 @@ argpartsort['main'] = '''"argpartsort auto-generated from template"
 # Select smallest k elements code used for inner loop of argpartsort method:
 # http://projects.scipy.org/numpy/attachment/ticket/1213/quickselect.pyx
 # (C) 2009 Sturla Molden
-# SciPy license 
+# SciPy license
 #
 # From the original C function (code in public domain) in:
 #   Fast median search: an ANSI C implementation
@@ -191,7 +191,7 @@ def argpartsort(arr, n, axis=-1):
     ----------
     arr : array_like
         Input array. If `arr` is not an array, a conversion is attempted.
-    n : int    
+    n : int
         The indices of the `n` smallest elements will appear in the first `n`
         elements of the output array along the given `axis`.
     axis : {int, None}, optional
@@ -208,7 +208,7 @@ def argpartsort(arr, n, axis=-1):
     See Also
     --------
     bottleneck.partsort: Partial sorting of array elements along given axis.
-    
+
     Notes
     -----
     Unexpected results may occur if the input array contains NaN.
@@ -218,7 +218,7 @@ def argpartsort(arr, n, axis=-1):
     Create a numpy array:
 
     >>> a = np.array([1, 0, 3, 4, 2])
-    
+
     Find the indices that partially sort that array so that the first 3
     elements are the smallest 3 elements:
 
@@ -231,7 +231,7 @@ def argpartsort(arr, n, axis=-1):
 
     >>> a[index]
     array([1, 0, 2, 4, 3])
-    
+
     """
     func, arr = argpartsort_selector(arr, axis)
     return func(arr, n)
@@ -239,7 +239,7 @@ def argpartsort(arr, n, axis=-1):
 def argpartsort_selector(arr, axis):
     """
     Return argpartsort function and array that matches `arr` and `axis`.
-    
+
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in
     bn.argpartsort() is in checking that `axis` is within range, converting
@@ -255,7 +255,7 @@ def argpartsort_selector(arr, axis):
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}
         Axis along which to partially sort.
-    
+
     Returns
     -------
     func : function
@@ -271,14 +271,14 @@ def argpartsort_selector(arr, axis):
     Create a numpy array:
 
     >>> arr = np.array([1, 0, 3, 4, 2])
-    
+
     Obtain the function needed to find the indices of a partial sort of `arr`
     along axis=0:
 
     >>> func, a = bn.func.argpartsort_selector(arr, axis=0)
     >>> func
     <function argpartsort_1d_int64_axis0>
-    
+
     Use the returned function and array to find the indices of the partial
     sort:
 
@@ -289,7 +289,7 @@ def argpartsort_selector(arr, axis):
     cdef np.ndarray a
     if type(arr) is np.ndarray:
         a = arr
-    else:    
+    else:
         a = np.array(arr, copy=False)
     cdef tuple key
     cdef int ndim = PyArray_NDIM(a)
@@ -313,4 +313,4 @@ def argpartsort_selector(arr, axis):
             tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
-'''   
+'''

@@ -62,7 +62,7 @@ loop[1] = """\
             y[INDEXALL] = NAN
 
     return y
-"""        
+"""
 loop[2] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
@@ -147,7 +147,7 @@ floats['loop'] = loop
 
 ints = deepcopy(floats)
 ints['reuse_non_nan_func'] = True
-ints['dtypes'] = INT_DTYPES 
+ints['dtypes'] = INT_DTYPES
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 
@@ -173,7 +173,7 @@ move_nanmean['main'] = '''"move_nanmean auto-generated from template"
 def move_nanmean(arr, int window, int axis=-1):
     """
     Moving window mean along the specified axis, ignoring NaNs.
-    
+
     Parameters
     ----------
     arr : ndarray
@@ -189,7 +189,7 @@ def move_nanmean(arr, int window, int axis=-1):
     -------
     y : ndarray
         The moving mean of the input array along the specified axis. The output
-        has the same shape as the input. 
+        has the same shape as the input.
 
     Examples
     --------
@@ -204,7 +204,7 @@ def move_nanmean(arr, int window, int axis=-1):
 def move_nanmean_selector(arr, int axis):
     """
     Return move_nanmean function and array that matches `arr` and `axis`.
-    
+
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in
     bn.move_nanmean() is in checking that `axis` is within range, converting
@@ -220,7 +220,7 @@ def move_nanmean_selector(arr, int axis):
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}
         Axis along which the moving mean is to be computed.
-    
+
     Returns
     -------
     func : function
@@ -236,14 +236,14 @@ def move_nanmean_selector(arr, int axis):
     Create a numpy array:
 
     >>> arr = np.array([1.0, 2.0, 3.0, 4.0])
-    
+
     Obtain the function needed to determine the sum of `arr` along axis=0:
-    
+
     >>> window, axis = 2, 0
     >>> func, a = bn.move.move_nanmean_selector(arr, axis)
     >>> func
     <function move_nanmean_1d_float64_axis0>
-    
+
     Use the returned function and array to determine the moving mean:
 
     >>> func(a, window)
@@ -253,7 +253,7 @@ def move_nanmean_selector(arr, int axis):
     cdef np.ndarray a
     if type(arr) is np.ndarray:
         a = arr
-    else:    
+    else:
         a = np.array(arr, copy=False)
     cdef int ndim = PyArray_NDIM(a)
     cdef int dtype = PyArray_TYPE(a)
@@ -271,4 +271,4 @@ def move_nanmean_selector(arr, int axis):
             tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
-'''   
+'''

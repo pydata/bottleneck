@@ -38,7 +38,7 @@ loop[2] = """\
             if ai <= amin:
                 amin = ai
                 allnan = 0
-        if allnan == 0:       
+        if allnan == 0:
             y[INDEXPOP] = amin
         else:
             y[INDEXPOP] = NAN
@@ -46,7 +46,7 @@ loop[2] = """\
 """
 loop[3] = """\
     if nINDEX2 == 0:
-        msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does." 
+        msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."
         raise ValueError(msg)
     for iINDEX0 in range(nINDEX0):
         for iINDEX1 in range(nINDEX1):
@@ -57,7 +57,7 @@ loop[3] = """\
                 if ai <= amin:
                     amin = ai
                     allnan = 0
-            if allnan == 0:       
+            if allnan == 0:
                 y[INDEXPOP] = amin
             else:
                 y[INDEXPOP] = NAN
@@ -74,7 +74,7 @@ floats_None['axisNone'] = True
 loop = {}
 loop[1] = """\
     if nINDEX0 == 0:
-        m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too." 
+        m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."
         raise ValueError(m)
     amin = MAXDTYPE
     for iINDEX0 in range(nINDEX0):
@@ -82,14 +82,14 @@ loop[1] = """\
         if ai <= amin:
             amin = ai
             allnan = 0
-    if allnan == 0:       
+    if allnan == 0:
         return np.DTYPE(amin)
     else:
         return np.DTYPE(NAN)
 """
 loop[2] = """\
     if nINDEX0 * nINDEX1 == 0:
-        m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too." 
+        m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."
         raise ValueError(m)
     amin = MAXDTYPE
     for iINDEX0 in range(nINDEX0):
@@ -98,14 +98,14 @@ loop[2] = """\
             if ai <= amin:
                 amin = ai
                 allnan = 0
-    if allnan == 0:       
+    if allnan == 0:
         return np.DTYPE(amin)
     else:
         return np.DTYPE(NAN)
 """
 loop[3] = """\
     if nINDEX0 * nINDEX1 * nINDEX2 == 0:
-        m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too." 
+        m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."
         raise ValueError(m)
     amin = MAXDTYPE
     for iINDEX0 in range(nINDEX0):
@@ -115,7 +115,7 @@ loop[3] = """\
                 if ai <= amin:
                     amin = ai
                     allnan = 0
-    if allnan == 0:       
+    if allnan == 0:
         return np.DTYPE(amin)
     else:
         return np.DTYPE(NAN)
@@ -126,7 +126,7 @@ floats_None['loop'] = loop
 # Int dtypes (not axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
-ints['dtypes'] = INT_DTYPES 
+ints['dtypes'] = INT_DTYPES
 
 loop = {}
 loop[2] = """\
@@ -161,7 +161,7 @@ ints['loop'] = loop
 
 # Int dtypes (axis=None) ----------------------------------------------------
 
-ints_None = deepcopy(ints) 
+ints_None = deepcopy(ints)
 ints_None['axisNone'] = True
 
 loop = {}
@@ -248,7 +248,7 @@ def nanmin(arr, axis=None):
     See also
     --------
     bottleneck.nanmax: Maximum along specified axis, ignoring NaNs.
-    bottleneck.nanargmin: Indices of minimum values along axis, ignoring NaNs. 
+    bottleneck.nanargmin: Indices of minimum values along axis, ignoring NaNs.
 
     Examples
     --------
@@ -263,7 +263,7 @@ def nanmin(arr, axis=None):
     1.0
     >>> bn.nanmin(a, axis=0)
     array([ 1.,  4.])
-    
+
     """
     func, arr = nanmin_selector(arr, axis)
     return func(arr)
@@ -271,7 +271,7 @@ def nanmin(arr, axis=None):
 def nanmin_selector(arr, axis):
     """
     Return nanmin function and array that matches `arr` and `axis`.
-    
+
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in bn.nanmin()
     is in checking that `axis` is within range, converting `arr` into an
@@ -287,7 +287,7 @@ def nanmin_selector(arr, axis):
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}
         Axis along which the minimum is to be computed.
-    
+
     Returns
     -------
     func : function
@@ -303,16 +303,16 @@ def nanmin_selector(arr, axis):
     Create a numpy array:
 
     >>> arr = np.array([1.0, 2.0, 3.0])
-    
+
     Obtain the function needed to determine the minimum of `arr` along
     axis=0:
 
     >>> func, a = bn.func.nanmin_selector(arr, axis=0)
     >>> func
     <function nanmin_1d_float64_axis0>
-    
+
     Use the returned function and array to determine the minimum:
-    
+
     >>> func(a)
     1.0
 
@@ -320,7 +320,7 @@ def nanmin_selector(arr, axis):
     cdef np.ndarray a
     if type(arr) is np.ndarray:
         a = arr
-    else:    
+    else:
         a = np.array(arr, copy=False)
     cdef int ndim = PyArray_NDIM(a)
     cdef int dtype = PyArray_TYPE(a)
@@ -339,4 +339,4 @@ def nanmin_selector(arr, axis):
             tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
-'''   
+'''

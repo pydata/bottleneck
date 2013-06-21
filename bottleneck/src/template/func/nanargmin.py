@@ -38,7 +38,7 @@ loop[1] = """\
             amin = ai
             allnan = 0
             idx = iINDEX0
-    if allnan == 0:       
+    if allnan == 0:
         return np.intp(idx)
     else:
         return NAN
@@ -56,7 +56,7 @@ loop[2] = """\
                 amin = ai
                 allnan = 0
                 idx = iINDEX1
-        if allnan == 0:       
+        if allnan == 0:
             y[INDEXPOP] = idx
         else:
             raise ValueError(CANNOTCONVERT)
@@ -64,7 +64,7 @@ loop[2] = """\
 """
 loop[3] = """\
     if nINDEX2 == 0:
-        msg = "numpy.nanargmin raises on a.shape[axis]==0; Bottleneck too." 
+        msg = "numpy.nanargmin raises on a.shape[axis]==0; Bottleneck too."
         raise ValueError(msg)
     for iINDEX0 in range(nINDEX0 - 1, -1, -1):
         for iINDEX1 in range(nINDEX1 - 1, -1, -1):
@@ -76,7 +76,7 @@ loop[3] = """\
                     amin = ai
                     allnan = 0
                     idx = iINDEX2
-            if allnan == 0:       
+            if allnan == 0:
                 y[INDEXPOP] = idx
             else:
                 raise ValueError(CANNOTCONVERT)
@@ -88,7 +88,7 @@ floats['loop'] = loop
 # Int dtypes (not axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
-ints['dtypes'] = INT_DTYPES 
+ints['dtypes'] = INT_DTYPES
 
 loop = {}
 loop[1] = """\
@@ -162,7 +162,7 @@ CANNOTCONVERT += "'cannot convert float NaN to integer'"
 def nanargmin(arr, axis=None):
     """
     Indices of the minimum values along an axis, ignoring NaNs.
-    
+
     Parameters
     ----------
     a : array_like
@@ -170,7 +170,7 @@ def nanargmin(arr, axis=None):
     axis : {int, None}, optional
         Axis along which to operate. By default (axis=None) flattened input
         is used.
-   
+
     See also
     --------
     bottleneck.nanargmax: Indices of the maximum values along an axis.
@@ -180,7 +180,7 @@ def nanargmin(arr, axis=None):
     -------
     index_array : ndarray
         An array of indices or a single index value.
-    
+
     Examples
     --------
     >>> a = np.array([[np.nan, 4], [2, 3]])
@@ -192,7 +192,7 @@ def nanargmin(arr, axis=None):
     array([1, 1])
     >>> bn.nanargmax(a, axis=1)
     array([1, 0])
-    
+
     """
     func, arr = nanargmin_selector(arr, axis)
     return func(arr)
@@ -200,7 +200,7 @@ def nanargmin(arr, axis=None):
 def nanargmin_selector(arr, axis):
     """
     Return nanargmin function and array that matches `arr` and `axis`.
-    
+
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in
     bn.nanargmin() is in checking that `axis` is within range, converting
@@ -216,7 +216,7 @@ def nanargmin_selector(arr, axis):
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}
         Axis along which the indices are found.
-    
+
     Returns
     -------
     func : function
@@ -231,16 +231,16 @@ def nanargmin_selector(arr, axis):
     Create a numpy array:
 
     >>> arr = np.array([1.0, 2.0, 3.0])
-    
+
     Obtain the function needed to determine the nanargmin of `arr` along
     axis=0:
 
     >>> func, a = bn.func.nanargmin_selector(arr, axis=0)
     >>> func
     <function nanargmin_1d_float64_axis0>
-    
+
     Use the returned function and array to determine the maximum:
-    
+
     >>> func(a)
     0
 
@@ -248,7 +248,7 @@ def nanargmin_selector(arr, axis):
     cdef np.ndarray a
     if type(arr) is np.ndarray:
         a = arr
-    else:    
+    else:
         a = np.array(arr, copy=False)
     cdef int ndim = PyArray_NDIM(a)
     cdef int dtype = PyArray_TYPE(a)

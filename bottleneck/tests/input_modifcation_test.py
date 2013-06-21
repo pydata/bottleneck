@@ -12,9 +12,9 @@ import bottleneck as bn
 def arrays(dtypes=bn.dtypes, nans=True):
     "Iterator that yield arrays to use for unit testing."
     ss = {}
-    ss[1] = {'size':  4, 'shapes': [(4,)]} 
-    ss[2] = {'size':  6, 'shapes': [(2,3)]}
-    ss[3] = {'size':  6, 'shapes': [(1,2,3)]}
+    ss[1] = {'size':  4, 'shapes': [(4,)]}
+    ss[2] = {'size':  6, 'shapes': [(2, 3)]}
+    ss[3] = {'size':  6, 'shapes': [(1, 2, 3)]}
     for ndim in ss:
         size = ss[ndim]['size']
         shapes = ss[ndim]['shapes']
@@ -23,7 +23,7 @@ def arrays(dtypes=bn.dtypes, nans=True):
             for shape in shapes:
                 a = a.reshape(shape)
                 yield a
-            if issubclass(a.dtype.type, np.inexact): 
+            if issubclass(a.dtype.type, np.inexact):
                 if nans:
                     for i in range(a.size):
                         a.flat[i] = np.nan
@@ -32,9 +32,10 @@ def arrays(dtypes=bn.dtypes, nans=True):
                     a.flat[i] = np.inf
                     yield a
 
+
 def unit_maker(func, nans=True):
     "Test that bn.xxx gives the same output as np.xxx."
-    msg =  "\nInput array modifed by %s.\n\n"
+    msg = "\nInput array modifed by %s.\n\n"
     msg += "input array before:\n%s\nafter:\n%s\n"
     for i, arr in enumerate(arrays(nans=nans)):
         for axis in list(range(-arr.ndim, arr.ndim)) + [None]:
@@ -52,13 +53,14 @@ def unit_maker(func, nans=True):
                         continue
                 assert_equal(arr1, arr2, msg % (func.__name__, arr1, arr2))
 
+
 def test_modification():
     "Test for illegal inplace modification of input array"
     funcs = [bn.nansum,
              bn.nanmax,
              bn.nanargmin,
              bn.nanargmax,
-             bn.nanmin, 
+             bn.nanmin,
              bn.nanmean,
              bn.nanstd,
              bn.nanvar,

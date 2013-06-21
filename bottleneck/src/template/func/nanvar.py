@@ -46,7 +46,7 @@ loop[2] = """\
             y[INDEXPOP] = asum / (count - ddof)
         else:
             y[INDEXPOP] = NAN
-    return y  
+    return y
 """
 loop[3] = """\
     for iINDEX0 in range(nINDEX0):
@@ -69,7 +69,7 @@ loop[3] = """\
                 y[INDEXPOP] = asum / (count - ddof)
             else:
                 y[INDEXPOP] = NAN
-    return y  
+    return y
 """
 floats['loop'] = loop
 
@@ -82,7 +82,7 @@ returns = """\
         return np.DTYPE(asum / (count - ddof))
     else:
         return np.DTYPE(NAN)
-"""        
+"""
 
 loop = {}
 loop[1] = """\
@@ -141,7 +141,7 @@ floats_None['loop'] = loop
 # Int dtypes (not axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
-ints['dtypes'] = INT_DTYPES 
+ints['dtypes'] = INT_DTYPES
 ints['force_output_dtype'] = 'float64'
 
 ints['top'] = """
@@ -168,12 +168,12 @@ loop[2] = """\
                 ai -= amean
                 asum += (ai * ai)
             y[INDEXPOP] = asum / (nINDEX1 - ddof)
-    return y 
+    return y
 """
 loop[3] = """\
     if nINDEX2 == 0:
         PyArray_FillWithScalar(y, NAN)
-    else:            
+    else:
         for iINDEX0 in range(nINDEX0):
             for iINDEX1 in range(nINDEX1):
                 asum = 0
@@ -186,19 +186,19 @@ loop[3] = """\
                     ai -= amean
                     asum += (ai * ai)
                 y[INDEXPOP] = asum / (nINDEX2 - ddof)
-    return y 
+    return y
 """
 ints['loop'] = loop
 
 # Int dtypes (axis=None) ----------------------------------------------------
 
-ints_None = deepcopy(ints) 
+ints_None = deepcopy(ints)
 ints_None['top'] = ints['top'] + "    cdef Py_ssize_t size\n"
 ints_None['axisNone'] = True
 
 loop = {}
 loop[1] = """\
-    size = nINDEX0    
+    size = nINDEX0
     if size == 0:
         return np.float64(NAN)
     for iINDEX0 in range(nINDEX0):
@@ -212,7 +212,7 @@ loop[1] = """\
         if ai == ai:
             ai -= amean
             asum += (ai * ai)
-    if size > ddof:        
+    if size > ddof:
         return np.float64(asum / (size - ddof))
     else:
         return np.float64(NAN)
@@ -231,7 +231,7 @@ loop[2] = """\
             ai = a[INDEXALL]
             ai -= amean
             asum += (ai * ai)
-    if size > ddof:        
+    if size > ddof:
         return np.float64(asum / (size - ddof))
     else:
         return np.float64(NAN)
@@ -252,7 +252,7 @@ loop[3] = """\
                 ai = a[INDEXALL]
                 ai -= amean
                 asum += (ai * ai)
-    if size > ddof:        
+    if size > ddof:
         return np.float64(asum / (size - ddof))
     else:
         return np.float64(NAN)
@@ -294,9 +294,9 @@ def nanvar(arr, axis=None, int ddof=0):
     An example of a one-pass algorithm:
 
         >>> np.sqrt((arr*arr).mean() - arr.mean()**2)
-    
-    An example of a two-pass algorithm:    
-    
+
+    An example of a two-pass algorithm:
+
         >>> np.sqrt(((arr - arr.mean())**2).mean())
 
     Note in the two-pass algorithm the mean must be found (first pass) before
@@ -320,12 +320,12 @@ def nanvar(arr, axis=None, int ddof=0):
         An array with the same shape as `arr`, with the specified axis
         removed. If `arr` is a 0-d array, or if axis is None, a scalar is
         returned. `float64` intermediate and return values are used for
-        integer inputs. 
-    
+        integer inputs.
+
     See also
     --------
     bottleneck.nanstd: Standard deviation along specified axis ignoring NaNs.
-    
+
     Notes
     -----
     If positive or negative infinity are present the result is Not A Number
@@ -349,7 +349,7 @@ def nanvar(arr, axis=None, int ddof=0):
 
     >>> bn.nanvar([1, np.nan, np.inf])
     nan
-    
+
     """
     func, arr = nanvar_selector(arr, axis)
     return func(arr, ddof)
@@ -357,7 +357,7 @@ def nanvar(arr, axis=None, int ddof=0):
 def nanvar_selector(arr, axis):
     """
     Return nanvar function and array that matches `arr` and `axis`.
-    
+
     Under the hood Bottleneck uses a separate Cython function for each
     combination of ndim, dtype, and axis. A lot of the overhead in bn.nanvar()
     is in checking that `axis` is within range, converting `arr` into an array
@@ -373,7 +373,7 @@ def nanvar_selector(arr, axis):
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}
         Axis along which the variance is to be computed.
-    
+
     Returns
     -------
     func : function
@@ -389,16 +389,16 @@ def nanvar_selector(arr, axis):
     Create a numpy array:
 
     >>> arr = np.array([1.0, 2.0, 3.0])
-    
+
     Obtain the function needed to determine the variance of `arr` along
     axis=0:
 
     >>> func, a = ds.func.nanvar_selector(arr, axis=0)
     >>> func
     <function nanvar_1d_float64_axis0>
-    
+
     Use the returned function and array to determine the variance:
-    
+
     >>> func(a, ddof=0)
     0.66666666666666663
 
@@ -406,7 +406,7 @@ def nanvar_selector(arr, axis):
     cdef np.ndarray a
     if type(arr) is np.ndarray:
         a = arr
-    else:    
+    else:
         a = np.array(arr, copy=False)
     cdef int ndim = PyArray_NDIM(a)
     cdef int dtype = PyArray_TYPE(a)
@@ -425,4 +425,4 @@ def nanvar_selector(arr, axis):
             tup = (str(ndim), str(a.dtype), str(axis))
             raise TypeError("Unsupported ndim/dtype/axis (%s/%s/%s)." % tup)
     return func, a
-'''   
+'''
