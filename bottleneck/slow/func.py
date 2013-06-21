@@ -8,6 +8,7 @@ __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
 
 rankdata_func = None
 
+
 def median(arr, axis=None):
     "Slow median function used for unaccelerated ndim/dtype combinations."
     arr = np.asarray(arr)
@@ -16,6 +17,7 @@ def median(arr, axis=None):
         if issubclass(arr.dtype.type, np.inexact):
             y = y.astype(arr.dtype)
     return y
+
 
 def nansum(arr, axis=None):
     "Slow nansum function used for unaccelerated ndim/dtype combinations."
@@ -27,6 +29,7 @@ def nansum(arr, axis=None):
         if issubclass(arr.dtype.type, np.inexact):
             y = y.astype(arr.dtype)
     return y
+
 
 def nanmedian(arr, axis=None):
     "Slow nanmedian function used for unaccelerated ndim/dtype combinations."
@@ -44,6 +47,7 @@ def nanmedian(arr, axis=None):
         y = y[()]
     return y
 
+
 def nanmean(arr, axis=None):
     "Slow nanmean function used for unaccelerated ndim/dtype combinations."
     arr = np.asarray(arr)
@@ -53,11 +57,13 @@ def nanmean(arr, axis=None):
             y = y.astype(arr.dtype)
     return y
 
+
 def nanvar(arr, axis=None, ddof=0):
     "Slow nanvar function used for unaccelerated ndim/dtype combinations."
     arr = np.asarray(arr)
     y = nanstd(arr, axis=axis, ddof=ddof)
     return y * y
+
 
 def nanstd(arr, axis=None, ddof=0):
     "Slow nanstd function used for unaccelerated ndim/dtype combinations."
@@ -68,7 +74,7 @@ def nanstd(arr, axis=None, ddof=0):
         bias = False
     else:
         raise ValueError("With NaNs ddof must be 0 or 1.")
-    if axis != None:
+    if axis is not None:
         # Older versions of scipy can't handle negative axis?
         if axis < 0:
             axis += arr.ndim
@@ -84,29 +90,34 @@ def nanstd(arr, axis=None, ddof=0):
             y = y.astype(arr.dtype)
     return y
 
+
 def nanmin(arr, axis=None):
     "Slow nanmin function used for unaccelerated ndim/dtype combinations."
-    y =  np.nanmin(arr, axis=axis)
+    y = np.nanmin(arr, axis=axis)
     if not hasattr(y, "dtype"):
         # Numpy 1.5.1 doesn't return object with dtype when input is all NaN
         y = arr.dtype.type(y)
     return y
 
+
 def nanmax(arr, axis=None):
     "Slow nanmax function used for unaccelerated ndim/dtype combinations."
-    y =  np.nanmax(arr, axis=axis)
+    y = np.nanmax(arr, axis=axis)
     if not hasattr(y, "dtype"):
         # Numpy 1.5.1 doesn't return object with dtype when input is all NaN
         y = arr.dtype.type(y)
     return y
+
 
 def nanargmin(arr, axis=None):
     "Slow nanargmin function used for unaccelerated ndim/dtype combinations."
     return np.nanargmin(arr, axis=axis)
 
+
 def nanargmax(arr, axis=None):
     "Slow nanargmax function used for unaccelerated ndim/dtype combinations."
     return np.nanargmax(arr, axis=axis)
+
 
 def rankdata(arr, axis=None):
     "Slow rankdata function used for unaccelerated ndim/dtype combinations."
@@ -133,6 +144,7 @@ def rankdata(arr, axis=None):
         y[ijslice] = rankdata_func(arr[ijslice].astype('float'))
     return y
 
+
 def nanrankdata(arr, axis=None):
     "Slow nanrankdata function used for unaccelerated ndim/dtype combinations."
     arr = np.asarray(arr)
@@ -153,9 +165,11 @@ def nanrankdata(arr, axis=None):
         y[ijslice] = x1d
     return y
 
+
 def ss(arr, axis=0):
     "Slow sum of squares used for unaccelerated ndim/dtype combinations."
     return scipy_ss(arr, axis)
+
 
 def nn(arr, arr0, axis=1):
     "Slow nearest neighbor used for unaccelerated ndim/dtype combinations."
@@ -168,20 +182,23 @@ def nn(arr, arr0, axis=1):
     if axis == 1:
         d = (arr - arr0) ** 2
     elif axis == 0:
-        d = (arr - arr0.reshape(-1,1)) ** 2
+        d = (arr - arr0.reshape(-1, 1)) ** 2
     else:
         raise ValueError("`axis` must be 0 or 1.")
     d = d.sum(axis)
     idx = np.argmin(d)
-    return np.sqrt(d[idx]), idx    
+    return np.sqrt(d[idx]), idx
+
 
 def partsort(arr, n, axis=-1):
     "Slow partial sort used for unaccelerated ndim/dtype combinations."
     return np.sort(arr, axis)
 
+
 def argpartsort(arr, n, axis=-1):
     "Slow partial argsort used for unaccelerated ndim/dtype combinations."
     return np.argsort(arr, axis)
+
 
 def replace(arr, old, new):
     "Slow replace (inplace) used for unaccelerated ndim/dtype combinations."
@@ -201,9 +218,11 @@ def replace(arr, old, new):
         mask = arr == old
     np.putmask(arr, mask, new)
 
+
 def anynan(arr, axis=None):
     "Slow check for Nans used for unaccelerated ndim/dtype combinations."
     return np.isnan(arr).any(axis)
+
 
 def allnan(arr, axis=None):
     "Slow check for all Nans used for unaccelerated ndim/dtype combinations."
@@ -220,6 +239,7 @@ def allnan(arr, axis=None):
 # Code taken from scipy trunk on Dec 16, 2010.
 # nanmedian taken from scipy trunk on Dec 17, 2010.
 # rankdata taken from scipy HEAD on Mar 16, 2011.
+
 
 def scipy_nanmean(x, axis=0):
     """
@@ -253,13 +273,14 @@ def scipy_nanmean(x, axis=0):
     1.0
 
     """
-    x, axis = _chk_asarray(x,axis)
+    x, axis = _chk_asarray(x, axis)
     x = x.copy()
     Norig = x.shape[axis]
-    factor = 1.0-np.sum(np.isnan(x),axis)*1.0/Norig
+    factor = 1.0-np.sum(np.isnan(x), axis)*1.0/Norig
 
     x[np.isnan(x)] = 0
-    return np.mean(x,axis)/factor
+    return np.mean(x, axis)/factor
+
 
 def scipy_nanstd(x, axis=0, bias=False):
     """
@@ -300,27 +321,28 @@ def scipy_nanstd(x, axis=0, bias=False):
     2.9154759474226504
 
     """
-    x, axis = _chk_asarray(x,axis)
+    x, axis = _chk_asarray(x, axis)
     x = x.copy()
     Norig = x.shape[axis]
 
-    Nnan = np.sum(np.isnan(x),axis)*1.0
+    Nnan = np.sum(np.isnan(x), axis)*1.0
     n = Norig - Nnan
 
     x[np.isnan(x)] = 0.
-    m1 = np.sum(x,axis)/n
+    m1 = np.sum(x, axis)/n
 
     if axis:
         d = (x - np.expand_dims(m1, axis))**2.0
     else:
         d = (x - m1)**2.0
 
-    m2 = np.sum(d,axis)-(m1*m1)*Nnan
+    m2 = np.sum(d, axis)-(m1*m1)*Nnan
     if bias:
         m2c = m2 / n
     else:
         m2c = m2 / (n - 1.)
     return np.sqrt(m2c)
+
 
 def _nanmedian(arr1d):  # This only works on 1d arrays
     """Private function for rank a arrays. Compute the median ignoring Nan.
@@ -336,10 +358,11 @@ def _nanmedian(arr1d):  # This only works on 1d arrays
         The median.
     """
     cond = 1-np.isnan(arr1d)
-    x = np.sort(np.compress(cond,arr1d,axis=-1))
+    x = np.sort(np.compress(cond, arr1d, axis=-1))
     if x.size == 0:
         return np.nan
     return np.median(x)
+
 
 # Feb 2011: patched nanmedian to handle nanmedian(a, 1) with a = np.ones((2,0))
 def scipy_nanmedian(x, axis=0):
@@ -396,12 +419,13 @@ def scipy_nanmedian(x, axis=0):
     shape.pop(axis)
     if 0 in shape:
         x = np.empty(shape)
-    else:    
+    else:
         x = x.copy()
         x = np.apply_along_axis(_nanmedian, axis, x)
         if x.ndim == 0:
             x = float(x.item())
     return x
+
 
 def _chk_asarray(a, axis):
     if axis is None:
@@ -411,6 +435,7 @@ def _chk_asarray(a, axis):
         a = np.asarray(a)
         outaxis = axis
     return a, outaxis
+
 
 def fastsort(a):
     """
@@ -432,6 +457,7 @@ def fastsort(a):
     as_ = a[it]
     return as_, it
 
+
 def scipy_rankdata(a):
     """
     Ranks the data, dealing with ties appropriately.
@@ -452,7 +478,7 @@ def scipy_rankdata(a):
 
     Examples
     --------
-    >>> stats.rankdata([0, 2, 2, 3])
+    >>> scipy_rankdata([0, 2, 2, 3])
     array([ 1. ,  2.5,  2.5,  4. ])
 
     """
@@ -465,13 +491,14 @@ def scipy_rankdata(a):
     for i in range(n):
         sumranks += i
         dupcount += 1
-        if i==n-1 or svec[i] != svec[i+1]:
+        if i == n-1 or svec[i] != svec[i+1]:
             averank = sumranks / float(dupcount) + 1
-            for j in range(i-dupcount+1,i+1):
+            for j in range(i-dupcount+1, i+1):
                 newarray[ivec[j]] = averank
             sumranks = 0
             dupcount = 0
     return newarray
+
 
 def scipy_ss(a, axis=0):
     """
