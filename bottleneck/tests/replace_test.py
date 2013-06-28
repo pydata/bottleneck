@@ -9,11 +9,11 @@ import bottleneck as bn
 def arrays(dtypes=bn.dtypes, nans=True):
     "Iterator that yield arrays to use for unit testing."
     ss = {}
-    ss[0] = {'size':  0, 'shapes': [(0,), (0,0), (2,0), (2,0,1)]}
+    ss[0] = {'size':  0, 'shapes': [(0,), (0, 0), (2, 0), (2, 0, 1)]}
     ss[1] = {'size':  4, 'shapes': [(4,)]}
-    ss[2] = {'size':  6, 'shapes': [(1,6), (2,3)]}
-    ss[3] = {'size':  6, 'shapes': [(1,2,3)]}
-    ss[4] = {'size': 24, 'shapes': [(1,2,3,4)]}  # Unaccelerated
+    ss[2] = {'size':  6, 'shapes': [(1, 6), (2, 3)]}
+    ss[3] = {'size':  6, 'shapes': [(1, 2, 3)]}
+    ss[4] = {'size': 24, 'shapes': [(1, 2, 3, 4)]}  # Unaccelerated
     for ndim in ss:
         size = ss[ndim]['size']
         shapes = ss[ndim]['shapes']
@@ -22,7 +22,7 @@ def arrays(dtypes=bn.dtypes, nans=True):
             for shape in shapes:
                 a = a.reshape(shape)
                 yield a
-            if issubclass(a.dtype.type, np.inexact): 
+            if issubclass(a.dtype.type, np.inexact):
                 if nans:
                     for i in range(a.size):
                         a.flat[i] = np.nan
@@ -36,7 +36,8 @@ def arrays(dtypes=bn.dtypes, nans=True):
         yield a
         a = np.vstack((a, a))
         yield a
-        yield a.reshape(1,2,4)
+        yield a.reshape(1, 2, 4)
+
 
 def unit_maker(func, func0, nans=True):
     "Test that bn.xxx gives the same output as np.xxx."
@@ -68,6 +69,7 @@ def unit_maker(func, func0, nans=True):
                     dd = desired.dtype
                     assert_equal(da, dd, err_msg % (da, dd))
 
+
 def test_replace():
     "Test replace."
     yield unit_maker, bn.replace, bn.slow.replace
@@ -75,10 +77,11 @@ def test_replace():
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
 
+
 def test_replace_unsafe_cast():
     "Test replace for unsafe casts."
     dtypes = [x for x in bn.dtypes if 'int' in x]
-    shapes = [(0,), (2,0), (1,2,0)]
+    shapes = [(0,), (2, 0), (1, 2, 0)]
     for shape in shapes:
         for dtype in dtypes:
             a = np.zeros(shape, dtype=dtype)
@@ -86,6 +89,7 @@ def test_replace_unsafe_cast():
             assert_raises(ValueError, bn.replace, a, 0, 0.1)
             assert_raises(ValueError, bn.slow.replace, a, 0.1, 0)
             assert_raises(ValueError, bn.slow.replace, a, 0, 0.1)
+
 
 def test_non_array():
     "Test that non-array input raises"
@@ -98,9 +102,10 @@ def test_non_array():
 # Make sure bn.replace and bn.slow.replace can handle int arrays where
 # user wants to replace nans
 
+
 def test_replace_nan_int():
     "Test replace, int array, old=nan, new=0"
-    a = np.arange(2*3*4).reshape(2,3,4)
+    a = np.arange(2*3*4).reshape(2, 3, 4)
     actual = a.copy()
     bn.replace(actual, np.nan, 0)
     desired = a.copy()

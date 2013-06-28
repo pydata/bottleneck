@@ -4,8 +4,7 @@
 from __future__ import with_statement
 
 import numpy as np
-from numpy.testing import (assert_equal, assert_array_equal,
-                           assert_array_almost_equal)
+from numpy.testing import assert_equal, assert_array_equal
 nan = np.nan
 import bottleneck as bn
 
@@ -13,11 +12,11 @@ import bottleneck as bn
 def arrays(dtypes=bn.dtypes):
     "Iterator that yield arrays to use for unit testing."
     ss = {}
-    ss[0] = {'size':  0, 'shapes': [(0,), (0,0), (2,0), (2,0,1)]}
+    ss[0] = {'size':  0, 'shapes': [(0,), (0, 0), (2, 0), (2, 0, 1)]}
     ss[1] = {'size':  4, 'shapes': [(4,)]}
-    ss[2] = {'size':  6, 'shapes': [(1,6), (2,3)]}
-    ss[3] = {'size':  6, 'shapes': [(1,2,3)]}
-    ss[4] = {'size': 24, 'shapes': [(1,2,3,4)]}  # Unaccelerated
+    ss[2] = {'size':  6, 'shapes': [(1, 6), (2, 3)]}
+    ss[3] = {'size':  6, 'shapes': [(1, 2, 3)]}
+    ss[4] = {'size': 24, 'shapes': [(1, 2, 3, 4)]}  # Unaccelerated
     for ndim in ss:
         size = ss[ndim]['size']
         shapes = ss[ndim]['shapes']
@@ -30,6 +29,7 @@ def arrays(dtypes=bn.dtypes):
             for i in range(0, a.size, 2):
                 a.flat[i] *= -1
                 yield a
+
 
 def unit_maker(func, func0):
     "Test bn.(arg)partsort gives same output as bn.slow.(arg)partsort."
@@ -60,9 +60,11 @@ def unit_maker(func, func0):
                 dd = desired.dtype
                 assert_equal(da, dd, err_msg % (da, dd))
 
+
 def test_partsort():
     "Test partsort."
     yield unit_maker, bn.partsort, bn.slow.partsort
+
 
 def test_argpartsort():
     "Test argpartsort."

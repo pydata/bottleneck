@@ -27,9 +27,9 @@ ext_modules = [Extension("move", [os.path.join(mod_dir, "move.pyx")],
                include_dirs=[np.get_include()])]
 
 setup(
-  name = 'move',
-  cmdclass = {'build_ext': build_ext},
-  ext_modules = ext_modules
+    name='move',
+    cmdclass={'build_ext': build_ext},
+    ext_modules=ext_modules
 )
 
 os.rename("move.so", os.path.join(mod_dir, "../../move.so"))

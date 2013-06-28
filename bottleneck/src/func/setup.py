@@ -9,7 +9,7 @@ you modify nansum.pyx or nanstd.pyx or ...
 
 To convert from cython to C:
 
-$ cd bottleneck/bottleneck/src    
+$ cd bottleneck/bottleneck/src
 $ python func/setup.py build_ext --inplace
 
 """
@@ -26,9 +26,9 @@ ext_modules = [Extension("func", [os.path.join(mod_dir, "func.pyx")],
                include_dirs=[np.get_include()])]
 
 setup(
-  name = 'func',
-  cmdclass = {'build_ext': build_ext},
-  ext_modules = ext_modules
+    name='func',
+    cmdclass={'build_ext': build_ext},
+    ext_modules=ext_modules
 )
 
 os.rename("func.so", os.path.join(mod_dir, "../../func.so"))
