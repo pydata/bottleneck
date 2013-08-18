@@ -84,5 +84,6 @@ setup(name=NAME,
       ext_modules=[Extension("func", sources=["bottleneck/src/func/func.c"],
                              include_dirs=[np.get_include()]),
                    Extension("move", sources=["bottleneck/src/move/move.c"],
+                             extra_compile_args=["-std=gnu89"],
                              include_dirs=[np.get_include()])]
       )
