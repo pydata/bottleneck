@@ -9,7 +9,7 @@ see the commit log at http://github.com/kwgoodman/bottleneck
 Bottleneck 0.7.0
 ================
 
-*Release date: Not yet released, in development*
+*Release date: 2013-09-10*
 
 **Enhancements**
 
