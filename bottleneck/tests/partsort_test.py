@@ -41,7 +41,7 @@ def unit_maker(func, func0):
                 n = arr.size
             else:
                 n = arr.shape[axis]
-            n = max(n / 2, 1)
+            n = max(n // 2, 1)
             with np.errstate(invalid='ignore'):
                 actual = func(arr.copy(), n, axis=axis)
                 actual[:n] = np.sort(actual[:n], axis=axis)
