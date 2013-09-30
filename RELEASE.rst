@@ -6,8 +6,19 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
-Bottleneck 0.7.0
+Bottleneck 0.8.0
 ================
+
+*Release date: Not yet released, in development*
+
+
+Older versions
+==============
+
+Release notes from past releases.
+
+Bottleneck 0.7.0
+----------------
 
 *Release date: 2013-09-10*
 
@@ -27,11 +38,6 @@ Bottleneck 0.7.0
 - #49, #55 now works on Mac OS X 10.8 using clang compiler
 - #60 nanstd([1.0], ddof=1) and nanvar([1.0], ddof=1) crash
 
-Older versions
-==============
-
-Release notes from past releases.
-
 Bottleneck 0.6.0
 ----------------
 
@@ -43,8 +49,8 @@ Thanks to Dougal Sutherland, Bottleneck now runs on Python 3.2.
 
 - replace(arr, old, new), e.g, replace(arr, np.nan, 0)
 - nn(arr, arr0, axis) nearest neighbor and its index of 1d arr0 in 2d arr
-- anynan(arr, axis) faster alternative to np.isnan(arr).any(axis) 
-- allnan(arr, axis) faster alternative to np.isnan(arr).all(axis) 
+- anynan(arr, axis) faster alternative to np.isnan(arr).any(axis)
+- allnan(arr, axis) faster alternative to np.isnan(arr).all(axis)
 
 **Enhancements**
 
@@ -175,16 +181,16 @@ contains 10 new functions.
 
 **Faster**
 
-- All functions are faster (less overhead in selector functions) 
+- All functions are faster (less overhead in selector functions)
 
 **New functions**
 
 - nansum()
 - move_sum()
-- move_nansum()  
-- move_mean()  
+- move_nansum()
+- move_mean()
 - move_std()
-- move_nanstd()  
+- move_nanstd()
 - move_min()
 - move_nanmin()
 - move_max()
@@ -193,12 +199,12 @@ contains 10 new functions.
 **Enhancements**
 
 - You can now specify the dtype and axis to use in the benchmark timings
-- Improved documentation and more unit tests  
+- Improved documentation and more unit tests
 
 **Breaks from 0.2.0**
 
 - Moving window functions now default to axis=-1 instead of axis=0
-- Low-level moving window selector functions no longer take window as input 
+- Low-level moving window selector functions no longer take window as input
 
 **Bug fix**
 
@@ -226,10 +232,10 @@ supports more dtypes.
 **Enhancements**
 
 - Added support for float32
-- Fallback to slower, non-Cython functions for unaccelerated ndim/dtype  
+- Fallback to slower, non-Cython functions for unaccelerated ndim/dtype
 - Scipy is no longer a dependency
 - Added support for older versions of NumPy (1.4.1)
-- All functions are now templated for dtype and axis  
+- All functions are now templated for dtype and axis
 - Added a sandbox for prototyping of new Bottleneck functions
 - Rewrote benchmarking code
 
