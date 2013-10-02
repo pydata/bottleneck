@@ -2,6 +2,9 @@
 Bottleneck
 ==========
 
+.. warning::
+    This version of Bottleneck requires NumPy 1.8.
+
 Introduction
 ============
 
@@ -229,10 +232,13 @@ URLs
 Install
 =======
 
+.. warning::
+    This version of Bottleneck requires NumPy 1.8.
+
 Requirements:
 
 ======================== ====================================================
-Bottleneck               Python 2.6, 2.7, 3.3; NumPy 1.5.1, 1.6.2, 1.7.1
+Bottleneck               Python 2.6, 2.7, 3.3; NumPy 1.8
 Compile                  gcc or MinGW
 Unit tests               nose
 ======================== ====================================================
