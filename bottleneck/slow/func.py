@@ -50,45 +50,17 @@ def nanmedian(arr, axis=None):
 
 def nanmean(arr, axis=None):
     "Slow nanmean function used for unaccelerated ndim/dtype combinations."
-    arr = np.asarray(arr)
-    y = scipy_nanmean(arr, axis=axis)
-    if y.dtype != arr.dtype:
-        if issubclass(arr.dtype.type, np.inexact):
-            y = y.astype(arr.dtype)
-    return y
+    return np.nanmean(arr, axis=axis)
 
 
 def nanvar(arr, axis=None, ddof=0):
     "Slow nanvar function used for unaccelerated ndim/dtype combinations."
-    arr = np.asarray(arr)
-    y = nanstd(arr, axis=axis, ddof=ddof)
-    return y * y
+    return np.nanvar(arr, axis=axis, ddof=ddof)
 
 
 def nanstd(arr, axis=None, ddof=0):
     "Slow nanstd function used for unaccelerated ndim/dtype combinations."
-    arr = np.asarray(arr)
-    if ddof == 0:
-        bias = True
-    elif ddof == 1:
-        bias = False
-    else:
-        raise ValueError("With NaNs ddof must be 0 or 1.")
-    if axis is not None:
-        # Older versions of scipy can't handle negative axis?
-        if axis < 0:
-            axis += arr.ndim
-        if (axis < 0) or (axis >= arr.ndim):
-            raise ValueError("axis(=%d) out of bounds" % axis)
-    else:
-        # Older versions of scipy choke on axis=None
-        arr = arr.ravel()
-        axis = 0
-    y = scipy_nanstd(arr, axis=axis, bias=bias)
-    if y.dtype != arr.dtype:
-        if issubclass(arr.dtype.type, np.inexact):
-            y = y.astype(arr.dtype)
-    return y
+    return np.nanstd(arr, axis=axis, ddof=ddof)
 
 
 def nanmin(arr, axis=None):
