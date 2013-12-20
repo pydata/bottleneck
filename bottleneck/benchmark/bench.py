@@ -213,9 +213,8 @@ def benchsuite(mode, shapes, dtype, axis, nans):
         code = "bn.nanmean(a, axis=AXIS)"
     else:
         code = "func(a)"
-    run['statements'] = [code, "scipy_nanmean(a, axis=AXIS)"]
+    run['statements'] = [code, "np.nanmean(a, axis=AXIS)"]
     setup = """
-        from bottleneck.slow.func import scipy_nanmean
         func, a = bn.func.nanmean_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup, shapes, nans)
@@ -230,9 +229,8 @@ def benchsuite(mode, shapes, dtype, axis, nans):
         code = "bn.nanstd(a, axis=AXIS)"
     else:
         code = "func(a, 0)"
-    run['statements'] = [code, "scipy_nanstd(a, axis=AXIS)"]
+    run['statements'] = [code, "np.nanstd(a, axis=AXIS)"]
     setup = """
-        from bottleneck.slow.func import scipy_nanstd
         func, a = bn.func.nanstd_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup, shapes, nans)
