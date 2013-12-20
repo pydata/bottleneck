@@ -41,7 +41,7 @@ loop[1] = """\
     if allnan == 0:
         return np.intp(idx)
     else:
-        return np.intp(np.iinfo('intp').min)
+        raise ValueError("All-NaN slice encountered")
 """
 loop[2] = """\
     if nINDEX1 == 0:
@@ -59,7 +59,7 @@ loop[2] = """\
         if allnan == 0:
             y[INDEXPOP] = idx
         else:
-            y[INDEXPOP] = np.iinfo('intp').min
+            raise ValueError("All-NaN slice encountered")
     return y
 """
 loop[3] = """\
@@ -79,7 +79,7 @@ loop[3] = """\
             if allnan == 0:
                 y[INDEXPOP] = idx
             else:
-                y[INDEXPOP] = np.iinfo('intp').min
+                raise ValueError("All-NaN slice encountered")
     return y
 """
 
@@ -159,6 +159,9 @@ nanargmin['main'] = '''"nanargmin auto-generated from template"
 def nanargmin(arr, axis=None):
     """
     Indices of the minimum values along an axis, ignoring NaNs.
+
+    For all-NaN slices ``ValueError`` is raised. Unlike NumPy, the results
+    can be trusted if a slice contains only NaNs and Infs.
 
     Parameters
     ----------
