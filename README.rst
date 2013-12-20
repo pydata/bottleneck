@@ -2,8 +2,7 @@
 Bottleneck
 ==========
 
-.. warning::
-    This version of Bottleneck requires NumPy 1.8.
+.. warning:: This version of Bottleneck requires NumPy 1.8.
 
 Introduction
 ============
@@ -232,8 +231,7 @@ URLs
 Install
 =======
 
-.. warning::
-    This version of Bottleneck requires NumPy 1.8.
+.. warning:: This version of Bottleneck requires NumPy 1.8.
 
 Requirements:
 
