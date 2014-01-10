@@ -14,6 +14,7 @@ Bottleneck 0.8.0
 This version of Bottleneck requires NumPy 1.8.
 
 **Breaks from 0.7.0**
+
 - This version of Bottleneck requires NumPy 1.8
 - nanargmin and nanargmax behave like the corresponding functions in NumPy 1.8
 
