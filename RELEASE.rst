@@ -11,6 +11,9 @@ Bottleneck 0.8.0
 
 *Release date: Not yet released, in development*
 
+**Bug fixes**
+
+- nanargmax/nanargmin wrong for redundant max/min values in 1d int arrays
 
 Older versions
 ==============

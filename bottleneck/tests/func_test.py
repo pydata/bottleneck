@@ -27,6 +27,8 @@ def arrays(dtypes=bn.dtypes, nans=True):
                 a = a.reshape(shape)
                 yield a
                 yield -a
+                # nanargmax/nanargmin regression tests
+                yield np.zeros_like(a)
             if issubclass(a.dtype.type, np.inexact):
                 if nans:
                     for i in range(a.size):
