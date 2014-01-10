@@ -98,7 +98,7 @@ loop[1] = """\
     amin = MAXDTYPE
     for iINDEX0 in range(nINDEX0):
         ai = a[INDEXALL]
-        if ai <= amin:
+        if ai < amin:
             amin = ai
             idx = iINDEX0
     return np.intp(idx)

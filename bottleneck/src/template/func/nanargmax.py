@@ -98,7 +98,7 @@ loop[1] = """\
     amax = MINDTYPE
     for iINDEX0 in range(nINDEX0):
         ai = a[INDEXALL]
-        if ai >= amax:
+        if ai > amax:
             amax = ai
             idx = iINDEX0
     return np.intp(idx)

@@ -18,6 +18,10 @@ This version of Bottleneck requires NumPy 1.8.
 - This version of Bottleneck requires NumPy 1.8
 - nanargmin and nanargmax behave like the corresponding functions in NumPy 1.8
 
+**Bug fixes**
+
+- nanargmax/nanargmin wrong for redundant max/min values in 1d int arrays
+
 Older versions
 ==============
 

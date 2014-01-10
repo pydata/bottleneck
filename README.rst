@@ -237,7 +237,7 @@ Requirements:
 
 ======================== ====================================================
 Bottleneck               Python 2.6, 2.7, 3.3; NumPy 1.8
-Compile                  gcc or MinGW
+Compile                  gcc, clang, MinGW
 Unit tests               nose
 ======================== ====================================================
 
