@@ -41,7 +41,7 @@ loop[1] = """\
     if allnan == 0:
         return np.intp(idx)
     else:
-        return NAN
+        raise ValueError("All-NaN slice encountered")
 """
 loop[2] = """\
     if nINDEX1 == 0:
@@ -59,7 +59,7 @@ loop[2] = """\
         if allnan == 0:
             y[INDEXPOP] = idx
         else:
-            raise ValueError(CANNOTCONVERT)
+            raise ValueError("All-NaN slice encountered")
     return y
 """
 loop[3] = """\
@@ -79,7 +79,7 @@ loop[3] = """\
             if allnan == 0:
                 y[INDEXPOP] = idx
             else:
-                raise ValueError(CANNOTCONVERT)
+                raise ValueError("All-NaN slice encountered")
     return y
 """
 
@@ -98,7 +98,7 @@ loop[1] = """\
     amax = MINDTYPE
     for iINDEX0 in range(nINDEX0):
         ai = a[INDEXALL]
-        if ai >= amax:
+        if ai > amax:
             amax = ai
             idx = iINDEX0
     return np.intp(idx)
@@ -156,12 +156,12 @@ nanargmax['pyx_file'] = 'func/nanargmax.pyx'
 
 nanargmax['main'] = '''"nanargmax auto-generated from template"
 
-CANNOTCONVERT = "Bottleneck copies NumPy bahavior: "
-CANNOTCONVERT += "'cannot convert float NaN to integer'"
-
 def nanargmax(arr, axis=None):
     """
     Indices of the maximum values along an axis, ignoring NaNs.
+
+    For all-NaN slices ``ValueError`` is raised. Unlike NumPy, the results
+    can be trusted if a slice contains only NaNs and Infs.
 
     Parameters
     ----------
