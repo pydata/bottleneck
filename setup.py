@@ -1,10 +1,16 @@
 #!/usr/bin/env python
 
 import os
-from distutils.core import setup
-from distutils.extension import Extension
-import numpy as np
+import sys
 
+try:
+    import setuptools
+except ImportError:
+    from ez_setup import use_setuptools
+    use_setuptools()
+
+from setuptools import setup
+from setuptools.extension import Extension
 
 CLASSIFIERS = ["Development Status :: 4 - Beta",
                "Environment :: Console",
@@ -64,26 +70,37 @@ PACKAGES = ["bottleneck",
 PACKAGE_DATA = {'bottleneck': ['LICENSE']}
 REQUIRES = ["numpy"]
 
-setup(name=NAME,
-      maintainer=MAINTAINER,
-      maintainer_email=MAINTAINER_EMAIL,
-      description=DESCRIPTION,
-      long_description=LONG_DESCRIPTION,
-      url=URL,
-      download_url=DOWNLOAD_URL,
-      license=LICENSE,
-      classifiers=CLASSIFIERS,
-      author=AUTHOR,
-      author_email=AUTHOR_EMAIL,
-      platforms=PLATFORMS,
-      version=VERSION,
-      packages=PACKAGES,
-      package_data=PACKAGE_DATA,
-      requires=REQUIRES,
-      ext_package='bottleneck',
-      ext_modules=[Extension("func", sources=["bottleneck/src/func/func.c"],
-                             include_dirs=[np.get_include()]),
-                   Extension("move", sources=["bottleneck/src/move/move.c"],
-                             extra_compile_args=["-std=gnu89"],
-                             include_dirs=[np.get_include()])]
-      )
+metadata = dict(name=NAME,
+                maintainer=MAINTAINER,
+                maintainer_email=MAINTAINER_EMAIL,
+                description=DESCRIPTION,
+                long_description=LONG_DESCRIPTION,
+                url=URL,
+                download_url=DOWNLOAD_URL,
+                license=LICENSE,
+                classifiers=CLASSIFIERS,
+                author=AUTHOR,
+                author_email=AUTHOR_EMAIL,
+                platforms=PLATFORMS,
+                version=VERSION,
+                packages=PACKAGES,
+                package_data=PACKAGE_DATA,
+                requires=REQUIRES,
+                install_requires = ['numpy']
+            )
+
+# Don't attempt to import numpy when it isn't actually needed; this enables pip
+# to install numpy before bottleneck:
+if not(len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or \
+       sys.argv[1] in ('--help-commands', 'egg_info', '--version', 'clean'))):
+
+    import numpy as np
+    ext_package='bottleneck',
+    metadata['ext_modules'] = \
+                              [Extension("func", sources=["bottleneck/src/func/func.c"],
+                                         include_dirs=[np.get_include()]),
+                               Extension("move", sources=["bottleneck/src/move/move.c"],
+                                         extra_compile_args=["-std=gnu89"],
+                                         include_dirs=[np.get_include()])]
+
+setup(**metadata)
