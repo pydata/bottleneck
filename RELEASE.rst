@@ -9,7 +9,7 @@ see the commit log at http://github.com/kwgoodman/bottleneck
 Bottleneck 0.8.0
 ================
 
-*Release date: Not yet released, in development*
+*Release date: 2014-01-21*
 
 This version of Bottleneck requires NumPy 1.8.
 
