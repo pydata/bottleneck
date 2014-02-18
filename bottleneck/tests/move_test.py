@@ -44,7 +44,8 @@ def arrays(dtypes=bn.dtypes, nans=True):
 
 def unit_maker(func, func0, decimal=np.inf, nans=True):
     "Test that bn.xxx gives the same output as a reference function."
-    msg = '\nfunc %s | window %d | input %s (%s) | shape %s | axis %s\n'
+    msg = ('\nfunc %s | window %d | input %s (%s) | shape %s | axis %s | '
+           'reference_method %r\n')
     msg += '\nInput array:\n%s\n'
     for i, arr in enumerate(arrays(nans=nans)):
         for axis in range(-arr.ndim, arr.ndim):
@@ -52,22 +53,24 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
             if len(windows) == 0:
                 windows = [1]
             for window in windows:
-                with np.errstate(invalid='ignore'):
-                    actual = func(arr, window, axis=axis)
-                    desired = func0(arr, window, axis=axis, method='loop')
-                tup = (func.__name__, window, 'a'+str(i), str(arr.dtype),
-                       str(arr.shape), str(axis), arr)
-                err_msg = msg % tup
-                if (decimal < np.inf) and (np.isfinite(arr).sum() > 0):
-                    assert_array_almost_equal(actual, desired, decimal,
-                                              err_msg)
-                else:
-                    assert_array_equal(actual, desired, err_msg)
-                err_msg += '\n dtype mismatch %s %s'
-                if hasattr(actual, 'dtype') or hasattr(desired, 'dtype'):
-                    da = actual.dtype
-                    dd = desired.dtype
-                    assert_equal(da, dd, err_msg % (da, dd))
+                for reference_method in ['loop', 'strides']:
+                    with np.errstate(invalid='ignore'):
+                        actual = func(arr, window, axis=axis)
+                        desired = func0(arr, window, axis=axis,
+                                        method=reference_method)
+                    tup = (func.__name__, window, 'a'+str(i), str(arr.dtype),
+                           str(arr.shape), str(axis), reference_method, arr)
+                    err_msg = msg % tup
+                    if (decimal < np.inf) and (np.isfinite(arr).sum() > 0):
+                        assert_array_almost_equal(actual, desired, decimal,
+                                                  err_msg)
+                    else:
+                        assert_array_equal(actual, desired, err_msg)
+                    err_msg += '\n dtype mismatch %s %s'
+                    if hasattr(actual, 'dtype') or hasattr(desired, 'dtype'):
+                        da = actual.dtype
+                        dd = desired.dtype
+                        assert_equal(da, dd, err_msg % (da, dd))
 
 
 def test_move_sum():

@@ -38,7 +38,7 @@ def move_sum(arr, window, axis=-1, method='loop'):
         The following moving window methods are available:
             ==========  =====================================
             'filter'    scipy.ndimage.convolve1d
-            'strides'   strides tricks (ndim < 4)
+            'strides'   strides tricks
             'loop'      brute force python loop (default)
             ==========  =====================================
 
@@ -88,7 +88,7 @@ def move_nansum(arr, window, axis=-1, method='loop'):
         The following moving window methods are available:
             ==========  =====================================
             'filter'    scipy.ndimage.convolve1d
-            'strides'   strides tricks (ndim < 4)
+            'strides'   strides tricks
             'loop'      brute force python loop (default)
             ==========  =====================================
 
@@ -254,7 +254,7 @@ def move_mean(arr, window, axis=-1, method='loop'):
         The following moving window methods are available:
             ==========  =====================================
             'filter'    scipy.ndimage.convolve1d
-            'strides'   strides tricks (ndim < 4)
+            'strides'   strides tricks
             'loop'      brute force python loop (default)
             ==========  =====================================
 
@@ -304,7 +304,7 @@ def move_nanmean(arr, window, axis=-1, method='loop'):
         The following moving window methods are available:
             ==========  =====================================
             'filter'    scipy.ndimage.convolve1d
-            'strides'   strides tricks (ndim < 4)
+            'strides'   strides tricks
             'loop'      brute force python loop (default)
             ==========  =====================================
 
@@ -411,7 +411,7 @@ def move_var(arr, window, axis=-1, method='loop', ddof=0):
         The following moving window methods are available:
             ==========  =====================================
             'filter'    scipy.ndimage.convolve1d
-            'strides'   strides tricks (ndim < 4)
+            'strides'   strides tricks
             'loop'      brute force python loop (default)
             ==========  =====================================
 
@@ -463,7 +463,7 @@ def move_nanvar(arr, window, axis=-1, method='loop', ddof=0):
         The following moving window methods are available:
             ==========  =====================================
             'filter'    scipy.ndimage.convolve1d
-            'strides'   strides tricks (ndim < 4)
+            'strides'   strides tricks
             'loop'      brute force python loop (default)
             ==========  =====================================
 
@@ -582,7 +582,7 @@ def move_std(arr, window, axis=-1, method='loop', ddof=0):
         The following moving window methods are available:
             ==========  =====================================
             'filter'    scipy.ndimage.convolve1d
-            'strides'   strides tricks (ndim < 4)
+            'strides'   strides tricks
             'loop'      brute force python loop (default)
             ==========  =====================================
 
@@ -635,7 +635,7 @@ def move_nanstd(arr, window, axis=-1, method='loop', ddof=0):
         The following moving window methods are available:
             ==========  =====================================
             'filter'    scipy.ndimage.convolve1d
-            'strides'   strides tricks (ndim < 4)
+            'strides'   strides tricks
             'loop'      brute force python loop (default)
             ==========  =====================================
 
@@ -718,7 +718,7 @@ def move_min(arr, window, axis=-1, method='loop'):
         The following moving window methods are available:
             ==========  =========================================
             'filter'    scipy.ndimage.minimum_filter1d
-            'strides'   strides tricks (ndim < 4)
+            'strides'   strides tricks
             'loop'      brute force python loop (default)
             ==========  =========================================
 
@@ -763,7 +763,7 @@ def move_nanmin(arr, window, axis=-1, method='loop'):
         The following moving window methods are available:
             ==========  =========================================
             'filter'    scipy.ndimage.minimum_filter1d
-            'strides'   strides tricks (ndim < 4)
+            'strides'   strides tricks
             'loop'      brute force python loop (default)
             ==========  =========================================
 
@@ -904,7 +904,7 @@ def move_max(arr, window, axis=-1, method='loop'):
         The following moving window methods are available:
             ==========  =========================================
             'filter'    scipy.ndimage.minimum_filter1d
-            'strides'   strides tricks (ndim < 4)
+            'strides'   strides tricks
             'loop'      brute force python loop (default)
             ==========  =========================================
 
@@ -949,7 +949,7 @@ def move_nanmax(arr, window, axis=-1, method='loop'):
         The following moving window methods are available:
             ==========  =========================================
             'filter'    scipy.ndimage.maximum_filter1d
-            'strides'   strides tricks (ndim < 4)
+            'strides'   strides tricks
             'loop'      brute force python loop (default)
             ==========  =========================================
 
@@ -1090,7 +1090,7 @@ def move_median(arr, window, axis=-1, method='loop'):
         The following moving window methods are available:
             ==========  =====================================
             'loop'      brute force python loop (default)
-            'strides'   strides tricks (ndim < 4)
+            'strides'   strides tricks
             ==========  =====================================
 
     Returns
@@ -1142,7 +1142,7 @@ def move_func(func, arr, window, axis=-1, method='loop', **kwargs):
         The following moving window methods are available:
             ==========  =====================================
             'loop'      brute force python loop (default)
-            'strides'   strides tricks (ndim < 4)
+            'strides'   strides tricks
             ==========  =====================================
 
     Returns
@@ -1203,40 +1203,20 @@ def move_func_strides(func, arr, window, axis=-1, **kwargs):
     if window > arr.shape[axis]:
         raise ValueError("`window` is too long.")
     ndim = arr.ndim
-    as_strided = np.lib.stride_tricks.as_strided
     idx = range(ndim)
     axis = idx[axis]
     arrshape0 = tuple(arr.shape)
     if axis >= ndim:
         raise IndexError("`axis` is out of range.")
-    if ndim == 1:
-        strides = arr.strides
-        shape = (arr.size - window + 1, window)
-        strides = 2 * strides
-        z = as_strided(arr, shape=shape, strides=strides)
-        y = func(z, axis=1, **kwargs)
-    elif ndim == 2:
-        if axis == 1:
-            arr = arr.T
-        strides = arr.strides
-        shape = (arr.shape[0] - window + 1, window, arr.shape[1])
-        strides = (strides[0],) + strides
-        z = as_strided(arr, shape=shape, strides=strides)
-        y = func(z, axis=1, **kwargs)
-        if axis == 1:
-            y = y.T
-    elif ndim == 3:
-        if axis > 0:
-            arr = arr.swapaxes(0, axis)
-        strides = arr.strides
-        shape = (arr.shape[0]-window+1, window, arr.shape[1], arr.shape[2])
-        strides = (strides[0],) + strides
-        z = as_strided(arr, shape=shape, strides=strides)
-        y = func(z, axis=1, **kwargs)
-        if axis > 0:
-            y = y.swapaxes(0, axis)
-    else:
-        raise ValueError("Only 1d, 2d, and 3d input arrays are supported.")
+
+    strides = arr.strides
+    num_windows = arr.shape[axis] - window + 1
+    shape = arr.shape[:axis] + (num_windows, window) + arr.shape[axis + 1:]
+    strides = (strides[:axis] + (strides[axis], strides[axis])
+               + strides[axis + 1:])
+    z = np.lib.stride_tricks.as_strided(arr, shape=shape, strides=strides)
+    y = func(z, axis=(axis + 1), **kwargs)
+
     ynan = np.empty(arrshape0)
     ynan.fill(np.nan)
     index = [slice(None)] * ndim
