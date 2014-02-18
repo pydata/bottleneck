@@ -6,8 +6,18 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
-Bottleneck 0.8.0
+Bottleneck 0.9.0
 ================
+
+*Release date: Not yet released, in development*
+
+Older versions
+==============
+
+Release notes from past releases.
+
+Bottleneck 0.8.0
+----------------
 
 *Release date: 2014-01-21*
 
@@ -21,11 +31,6 @@ This version of Bottleneck requires NumPy 1.8.
 **Bug fixes**
 
 - nanargmax/nanargmin wrong for redundant max/min values in 1d int arrays
-
-Older versions
-==============
-
-Release notes from past releases.
 
 Bottleneck 0.7.0
 ----------------
