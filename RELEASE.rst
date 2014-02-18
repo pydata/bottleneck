@@ -11,6 +11,10 @@ Bottleneck 0.9.0
 
 *Release date: Not yet released, in development*
 
+**Enhancements**
+
+- bn.slow.move functions with method='strides' no longer limited to ndim < 4
+
 Older versions
 ==============
 
