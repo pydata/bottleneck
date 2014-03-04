@@ -95,7 +95,7 @@ if not(len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or \
        sys.argv[1] in ('--help-commands', 'egg_info', '--version', 'clean'))):
 
     import numpy as np
-    ext_package='bottleneck',
+    metadata['ext_package'] = 'bottleneck'
     metadata['ext_modules'] = \
                               [Extension("func", sources=["bottleneck/src/func/func.c"],
                                          include_dirs=[np.get_include()]),
