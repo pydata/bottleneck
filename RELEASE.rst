@@ -14,6 +14,7 @@ Bottleneck 0.9.0
 **Enhancements**
 
 - bn.slow.move functions with method='strides' no longer limited to ndim < 4
+- Use setuptools to enable automatic installation of numpy by pip
 
 Older versions
 ==============
