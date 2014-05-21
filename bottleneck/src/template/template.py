@@ -3,16 +3,23 @@
 import os.path
 
 
-def template(func):
+def template(func, ndim_max):
     "Convert template dictionary `func` to a pyx file."
     codes = []
     codes.append(func['main'])
     select = Selector(func['name'])
     for key in func['templates']:
         f = func['templates'][key]
-        code = subtemplate(name=func['name'],
+        code = subtemplate(ndim_max=ndim_max,
+                           name=func['name'],
                            top=f['top'],
-                           loop=f['loop'],
+                           # for now, allow providing "loop" or all the loop
+                           # subcomponents so we can still build everything
+                           # even if it hasn't been updated to N-dimensions
+                           loop=f.get('loop'),
+                           before_loop=f.get('before_loop'),
+                           inner_loop=f.get('inner_loop'),
+                           after_loop=f.get('after_loop'),
                            axisNone=f['axisNone'],
                            dtypes=f['dtypes'],
                            force_output_dtype=f['force_output_dtype'],
@@ -37,11 +44,11 @@ def template(func):
     fid.close()
 
 
-def subtemplate(name, top, loop, axisNone, dtypes, force_output_dtype,
-                reuse_non_nan_func, is_reducing_function, cdef_output,
-                select):
+def subtemplate(ndim_max, name, top, loop, before_loop, inner_loop, after_loop,
+                axisNone, dtypes, force_output_dtype, reuse_non_nan_func,
+                is_reducing_function, cdef_output, select):
     "Assemble template"
-    ndims = sorted(loop.keys())
+    ndims = sorted(loop.keys()) if loop is not None else range(ndim_max + 1)
     funcs = []
     for ndim in ndims:
         if axisNone:
@@ -67,7 +74,12 @@ def subtemplate(name, top, loop, axisNone, dtypes, force_output_dtype,
                         ydtype = dtype
                     func += loop_cdef(ndim, ydtype, axis, is_reducing_function,
                                       cdef_output)
-                    func += looper(loop[ndim], ndim, axis)
+                    if loop is None:
+                        loop_template = loop_construct(before_loop, inner_loop,
+                                                       after_loop, ndim)
+                    else:
+                        loop_template = loop[ndim]
+                    func += looper(loop_template, ndim, axis)
 
                     # name, ndim, dtype, axis
                     func = func.replace('NAME', name)
@@ -95,6 +107,7 @@ def looper(loop, ndim, axis):
         INDEXALL          Replace with i0, i1, i2
         INDEXPOP          If axis=1, e.g., replace with i0, i2
         INDEXN            If N=1, e.g., replace with 1
+        INDEXLAST         If ndim=1, e.g., replace with 0
         INDEXREPLACE|exp| If exp = 'k - window' and axis=1, e.g., replace
                           with i0, k - window, i2
         NREPLACE|exp|     If exp = 'n - window' and axis=1, e.g., replace
@@ -185,6 +198,9 @@ def looper(loop, ndim, axis):
         idx.pop(axis)
     INDEXPOP = ', '.join(['i' + str(i) for i in idx])
     code = code.replace('INDEXPOP', INDEXPOP)
+
+    # INDEXLAST
+    code = code.replace('INDEXLAST', 'INDEX%d' % (ndim - 1))
 
     # INDEXN
     idx = list(range(ndim))
@@ -360,6 +376,23 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
             cdefs.append(y % (tab, dtype, ndim, ndim, dtype))
 
     return '\n'.join(cdefs) + '\n'
+
+
+def loop_construct(before_loop, inner_loop, after_loop, ndim):
+    """
+    Construct a loop template for a given number of dimensions
+    """
+    tab = '    '
+    lines = []
+
+    lines.append(before_loop)
+    lines.extend(tab * (n + 1) + 'for iINDEX%d in range(nINDEX%d):' % (n, n)
+                 for n in range(ndim - 1))
+    lines.extend(tab * (ndim - 1) + line if line else ''
+                 for line in inner_loop.split('\n'))
+    lines.append(after_loop)
+
+    return '\n'.join(lines)
 
 
 class Selector(object):

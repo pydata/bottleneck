@@ -4,6 +4,6 @@ from bottleneck.src.template.func.func import funcpyx
 from bottleneck.src.template.move.move import movepyx
 
 
-def makepyx():
-    funcpyx()
-    movepyx()
+def makepyx(ndim_max=3):
+    funcpyx(ndim_max=ndim_max)
+    movepyx(ndim_max=ndim_max)
