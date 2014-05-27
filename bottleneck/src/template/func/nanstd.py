@@ -15,6 +15,7 @@ floats['dtypes'] = FLOAT_DTYPES
 floats['axisNone'] = False
 floats['force_output_dtype'] = False
 floats['reuse_non_nan_func'] = False
+floats['skip_1d'] = True
 
 floats['top'] = """
 @cython.boundscheck(False)
@@ -52,6 +53,7 @@ floats['loop'] = """\
 
 floats_None = deepcopy(floats)
 floats_None['axisNone'] = True
+floats_None['skip_1d'] = False
 
 floats_None['loop'] = """\
     for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
@@ -109,6 +111,7 @@ ints['loop'] = """\
 ints_None = deepcopy(ints)
 ints_None['top'] = ints['top'] + "    cdef Py_ssize_t size\n"
 ints_None['axisNone'] = True
+ints_None['skip_1d'] = False
 
 ints_None['loop'] = """\
     size = PyArray_SIZE(a)

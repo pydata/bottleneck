@@ -23,7 +23,8 @@ def template(func, ndim_max):
                            reuse_non_nan_func=f['reuse_non_nan_func'],
                            is_reducing_function=func['is_reducing_function'],
                            cdef_output=func['cdef_output'],
-                           select=select)
+                           select=select,
+                           skip_1d=f.get('skip_1d'))
         codes.append(code)
     codes.append('\n' + str(select))
     if 'slow' in func:
@@ -43,12 +44,12 @@ def template(func, ndim_max):
 
 def subtemplate(ndim_max, name, top, loop, axisNone, dtypes,
                 force_output_dtype, reuse_non_nan_func, is_reducing_function,
-                cdef_output, select):
+                cdef_output, select, skip_1d):
     "Assemble template"
     if isinstance(loop, dict):
         ndims = sorted(loop.keys())
     else:
-        ndims = range(1, ndim_max + 1)
+        ndims = range(2 if skip_1d else 1, ndim_max + 1)
     funcs = []
     for ndim in ndims:
         if axisNone:
