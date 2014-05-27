@@ -10,53 +10,62 @@ INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 
 # loop ----------------------------------------------------------------------
 
-inner_loop = """\
-    end = ring + window
-    last = ring
+loop = """\
+    if (window < 1) or (window > nAXIS):
+        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 
-    minpair = ring
-    ai = a[INDEXREPLACE|0|]
-    if ai == ai:
-        minpair.value = ai
-    else:
-        minpair.value = MINfloat64
-    minpair.death = window
+    ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
 
-    count = 0
-    for iINDEXLAST in range(nINDEXLAST):
-        ai = a[INDEXALL]
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
+        end = ring + window
+        last = ring
+
+        minpair = ring
+        ai = a[INDEXREPLACE|0|]
         if ai == ai:
-            count += 1
-        else:
-            ai = MINfloat64
-        if iINDEXLAST >= window:
-            aold = a[INDEXREPLACE|iINDEXLAST - window|]
-            if aold == aold:
-                count -= 1
-        if minpair.death == iINDEXLAST:
-            minpair += 1
-            if minpair >= end:
-                minpair = ring
-        if ai >= minpair.value:
             minpair.value = ai
-            minpair.death = iINDEXLAST + window
-            last = minpair
         else:
-            while last.value <= ai:
-                if last == ring:
-                    last = end
-                last -= 1
-            last += 1
-            if last == end:
-                last = ring
-            last.value = ai
-            last.death = iINDEXLAST + window
-        if count == window:
-            y[INDEXALL] = minpair.value
-        else:
+            minpair.value = MINfloat64
+        minpair.death = window
+
+        count = 0
+        for iINDEXLAST in range(nINDEXLAST):
+            ai = a[INDEXALL]
+            if ai == ai:
+                count += 1
+            else:
+                ai = MINfloat64
+            if iINDEXLAST >= window:
+                aold = a[INDEXREPLACE|iINDEXLAST - window|]
+                if aold == aold:
+                    count -= 1
+            if minpair.death == iINDEXLAST:
+                minpair += 1
+                if minpair >= end:
+                    minpair = ring
+            if ai >= minpair.value:
+                minpair.value = ai
+                minpair.death = iINDEXLAST + window
+                last = minpair
+            else:
+                while last.value <= ai:
+                    if last == ring:
+                        last = end
+                    last -= 1
+                last += 1
+                if last == end:
+                    last = ring
+                last.value = ai
+                last.death = iINDEXLAST + window
+            if count == window:
+                y[INDEXALL] = minpair.value
+            else:
+                y[INDEXALL] = NAN
+        for iINDEXLAST in range(window - 1):
             y[INDEXALL] = NAN
-    for iINDEXLAST in range(window - 1):
-        y[INDEXALL] = NAN
+
+    stdlib.free(ring)
+    return y
 """
 
 # Float dtypes (no axis=None) -----------------------------------------------
@@ -79,25 +88,15 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a, int window):
     cdef pairs* end
     cdef pairs* last
 """
-floats['before_loop'] = """\
-    if (window < 1) or (window > nAXIS):
-        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 
-    ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
-"""
-floats['after_loop'] = """\
-    stdlib.free(ring)
-    return y
-"""
-
-floats['inner_loop'] = inner_loop
+floats['loop'] = loop
 
 # Int dtypes (no axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
 ints['force_output_dtype'] = 'float64'
 ints['dtypes'] = INT_DTYPES
-ints['inner_loop'] = inner_loop
+ints['loop'] = loop
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 

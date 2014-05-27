@@ -3,6 +3,9 @@
 import os.path
 
 
+TAB = ' ' * 4
+
+
 def template(func, ndim_max):
     "Convert template dictionary `func` to a pyx file."
     codes = []
@@ -13,13 +16,7 @@ def template(func, ndim_max):
         code = subtemplate(ndim_max=ndim_max,
                            name=func['name'],
                            top=f['top'],
-                           # for now, allow providing "loop" or all the loop
-                           # subcomponents so we can still build everything
-                           # even if it hasn't been updated to N-dimensions
-                           loop=f.get('loop'),
-                           before_loop=f.get('before_loop'),
-                           inner_loop=f.get('inner_loop'),
-                           after_loop=f.get('after_loop'),
+                           loop=f['loop'],
                            axisNone=f['axisNone'],
                            dtypes=f['dtypes'],
                            force_output_dtype=f['force_output_dtype'],
@@ -44,11 +41,14 @@ def template(func, ndim_max):
     fid.close()
 
 
-def subtemplate(ndim_max, name, top, loop, before_loop, inner_loop, after_loop,
-                axisNone, dtypes, force_output_dtype, reuse_non_nan_func,
-                is_reducing_function, cdef_output, select):
+def subtemplate(ndim_max, name, top, loop, axisNone, dtypes,
+                force_output_dtype, reuse_non_nan_func, is_reducing_function,
+                cdef_output, select):
     "Assemble template"
-    ndims = sorted(loop.keys()) if loop is not None else range(ndim_max + 1)
+    if isinstance(loop, dict):
+        ndims = sorted(loop.keys())
+    else:
+        ndims = range(1, ndim_max + 1)
     funcs = []
     for ndim in ndims:
         if axisNone:
@@ -74,11 +74,11 @@ def subtemplate(ndim_max, name, top, loop, before_loop, inner_loop, after_loop,
                         ydtype = dtype
                     func += loop_cdef(ndim, ydtype, axis, is_reducing_function,
                                       cdef_output)
-                    if loop is None:
-                        loop_template = loop_construct(before_loop, inner_loop,
-                                                       after_loop, ndim)
-                    else:
+                    if isinstance(loop, dict):
                         loop_template = loop[ndim]
+                    else:
+                        loop_template = loop_expand_product_range(
+                            loop.replace('NDIM', str(ndim)))
                     func += looper(loop_template, ndim, axis)
 
                     # name, ndim, dtype, axis
@@ -327,18 +327,17 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
         elif axis >= ndim:
             raise ValueError("`axis` must be less then `ndim`")
 
-    tab = '    '
     cdefs = []
 
     # cdef loop indices
     idx = ', '.join('i'+str(i) for i in range(ndim))
-    cdefs.append(tab + 'cdef Py_ssize_t ' + idx)
+    cdefs.append(TAB + 'cdef Py_ssize_t ' + idx)
 
     # Length along each dimension
-    cdefs.append(tab + "cdef np.npy_intp *dim")
-    cdefs.append(tab + "dim = PyArray_DIMS(a)")
+    cdefs.append(TAB + "cdef np.npy_intp *dim")
+    cdefs.append(TAB + "dim = PyArray_DIMS(a)")
     for dim in range(ndim):
-        cdefs.append(tab + "cdef Py_ssize_t n%d = dim[%d]" % (dim, dim))
+        cdefs.append(TAB + "cdef Py_ssize_t n%d = dim[%d]" % (dim, dim))
 
     if not cdef_output:
         return '\n'.join(cdefs) + '\n'
@@ -349,50 +348,99 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
             idx = list(range(ndim))
             del idx[axis]
             ns = ', '.join(['n'+str(j) for j in idx])
-            cdefs.append("%scdef np.npy_intp *dims = [%s]" % (tab, ns))
+            cdefs.append("%scdef np.npy_intp *dims = [%s]" % (TAB, ns))
             if dtype == 'bool':
                 y = "%scdef np.ndarray[np.uint8_t, ndim=%d, cast=True] "
                 y += "y = PyArray_EMPTY(%d, dims,"
                 y += "\n\t\tNPY_BOOL, 0)"
-                cdefs.append(y % (tab, ndim-1, ndim-1))
+                cdefs.append(y % (TAB, ndim-1, ndim-1))
             else:
                 y = "%scdef np.ndarray[np.%s_t, ndim=%d] "
                 y += "y = PyArray_EMPTY(%d, dims,"
                 y += "\n\t\tNPY_%s, 0)"
-                cdefs.append(y % (tab, dtype, ndim-1, ndim-1, dtype))
+                cdefs.append(y % (TAB, dtype, ndim-1, ndim-1, dtype))
     else:
         idx = list(range(ndim))
         ns = ', '.join('n'+str(i) for i in idx)
-        cdefs.append("%scdef np.npy_intp *dims = [%s]" % (tab, ns))
+        cdefs.append("%scdef np.npy_intp *dims = [%s]" % (TAB, ns))
         if dtype == 'bool':
             y = "%scdef np.ndarray[np.uint8_t, ndim=%d, cast=True] "
             y += "y = PyArray_EMPTY(%d, dims,"
             y += "\n\t\tNPY_BOOL, 0)"
-            cdefs.append(y % (tab, ndim, ndim))
+            cdefs.append(y % (TAB, ndim, ndim))
         else:
             y = "%scdef np.ndarray[np.%s_t, ndim=%d] "
             y += "y = PyArray_EMPTY(%d, dims,"
             y += "\n\t\tNPY_%s, 0)"
-            cdefs.append(y % (tab, dtype, ndim, ndim, dtype))
+            cdefs.append(y % (TAB, dtype, ndim, ndim, dtype))
 
     return '\n'.join(cdefs) + '\n'
 
 
-def loop_construct(before_loop, inner_loop, after_loop, ndim):
-    """
-    Construct a loop template for a given number of dimensions
-    """
-    tab = '    '
-    lines = []
+def _parse_product_range_line(line):
+    start, range_inside, prod_inside, end = line.split('|')
+    for_statement = start + end
+    for_statement = for_statement.replace('PRODUCT_RANGE',
+                                          'range(%s)' % range_inside)
+    for_statement = for_statement.replace('INDEXN', 'INDEX%d')
+    range_list = eval('range(%s)' % prod_inside)
+    # range_list = range(*[int(n) for n in prod_inside.split(',')])
+    return [TAB * i + for_statement % (n, n)
+            for i, n in enumerate(range_list)]
 
-    lines.append(before_loop)
-    lines.extend(tab * (n + 1) + 'for iINDEX%d in range(nINDEX%d):' % (n, n)
-                 for n in range(ndim - 1))
-    lines.extend(tab * (ndim - 1) + line if line else ''
-                 for line in inner_loop.split('\n'))
-    lines.append(after_loop)
 
-    return '\n'.join(lines)
+def loop_expand_product_range(text):
+    """
+    Replace the PRODUCT_RANGE macro with an appropriate number of for loops
+
+    The first argument is inserted into the argument of range in each for loop;
+    the second argument is inserted into another range function and evaluated
+    at compile time to generate the list of axes over which the each the for
+    statements apply.
+
+    Examples
+    --------
+
+    >>> loop = '''\
+    ...     for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
+    ...         y += a[iINDEXALL]
+    ...     '''
+    >>> print(loop_expand_product_range(loop.replace('NDIM', str(0))))
+    y += a[iINDEXALL]
+    >>> print(loop_expand_product_range(loop.replace('NDIM', str(1))))
+    for iINDEX0 in range(nINDEX0):
+        y += a[iINDEXALL]
+    >>> print(loop_expand_product_range(loop.replace('NDIM', str(2))))
+    for iINDEX0 in range(nINDEX0):
+        for iINDEX1 in range(nINDEX1):
+            y += a[iINDEXALL]
+
+    """
+    while 'PRODUCT_RANGE' in text:
+        lines = text.split('\n')
+        new_lines = []
+        inside_block = False
+        for line in lines:
+            indent = len(line) - len(line.lstrip())
+            if not inside_block and 'PRODUCT_RANGE' in line:
+                inside_block = True
+                block_indent = indent
+                expanded_line = _parse_product_range_line(line)
+                further_indent = TAB * len(expanded_line)
+                new_lines.extend(expanded_line)
+            elif inside_block:
+                if indent > block_indent:
+                    assert line[:len(TAB)] == TAB
+                    new_lines.append(further_indent + line[len(TAB):])
+                elif line.strip() == '':
+                    new_lines.append('')
+                else:
+                    inside_block = False
+                    new_lines.append(line)
+            else:
+                new_lines.append(line)
+        text = '\n'.join(new_lines)
+    return text
 
 
 class Selector(object):
