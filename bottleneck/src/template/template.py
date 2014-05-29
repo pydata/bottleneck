@@ -1,31 +1,32 @@
 "Turn templates into Cython pyx files."
 
+import os
 import os.path
 import re
 
 
+NDIM_MAX = int(os.getenv('NDIM_MAX', 3))
 TAB = ' ' * 4
 
 
-def template(func, ndim_max):
+def template(func):
     "Convert template dictionary `func` to a pyx file."
     codes = []
     codes.append(func['main'])
     select = Selector(func['name'])
     for key in func['templates']:
         f = func['templates'][key]
-        code = subtemplate(ndim_max=ndim_max,
-                           name=func['name'],
+        code = subtemplate(name=func['name'],
                            top=f['top'],
                            loop=f['loop'],
+                           ndims=f.get('ndims', range(1, NDIM_MAX + 1)),
                            axisNone=f['axisNone'],
                            dtypes=f['dtypes'],
                            force_output_dtype=f['force_output_dtype'],
                            reuse_non_nan_func=f['reuse_non_nan_func'],
                            is_reducing_function=func['is_reducing_function'],
                            cdef_output=func['cdef_output'],
-                           select=select,
-                           skip_1d=f.get('skip_1d'))
+                           select=select)
         codes.append(code)
     codes.append('\n' + str(select))
     if 'slow' in func:
@@ -43,14 +44,9 @@ def template(func, ndim_max):
     fid.close()
 
 
-def subtemplate(ndim_max, name, top, loop, axisNone, dtypes,
-                force_output_dtype, reuse_non_nan_func, is_reducing_function,
-                cdef_output, select, skip_1d):
+def subtemplate(name, top, loop, ndims, axisNone, dtypes, force_output_dtype,
+                reuse_non_nan_func, is_reducing_function, cdef_output, select):
     "Assemble template"
-    if isinstance(loop, dict):
-        ndims = sorted(loop.keys())
-    else:
-        ndims = range(2 if skip_1d else 1, ndim_max + 1)
     funcs = []
     for ndim in ndims:
         if axisNone:
@@ -76,11 +72,8 @@ def subtemplate(ndim_max, name, top, loop, axisNone, dtypes,
                         ydtype = dtype
                     func += loop_cdef(ndim, ydtype, axis, is_reducing_function,
                                       cdef_output)
-                    if isinstance(loop, dict):
-                        loop_template = loop[ndim]
-                    else:
-                        loop_template = loop_expand_product_range(
-                            loop.replace('NDIM', str(ndim)))
+                    loop_template = loop_expand_product_range(
+                        loop.replace('NDIM', str(ndim)))
                     func += looper(loop_template, ndim, axis)
 
                     func = unindex_0dimensional(func, ydtype)

@@ -2,6 +2,7 @@
 
 from copy import deepcopy
 import bottleneck as bn
+from bottleneck.src.template.template import NDIM_MAX
 
 __all__ = ["allnan"]
 
@@ -12,10 +13,10 @@ INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 
 floats = {}
 floats['dtypes'] = FLOAT_DTYPES
+floats['ndims'] = range(2, NDIM_MAX + 1)
 floats['axisNone'] = False
 floats['force_output_dtype'] = 'bool'
 floats['reuse_non_nan_func'] = False
-floats['skip_1d'] = True
 
 floats['top'] = """
 @cython.boundscheck(False)
@@ -43,8 +44,8 @@ floats['loop'] = """\
 # Float dtypes (axis=None) --------------------------------------------------
 
 floats_None = deepcopy(floats)
+floats_None['ndims'] = range(1, NDIM_MAX + 1)
 floats_None['axisNone'] = True
-floats_None['skip_1d'] = False
 
 floats_None['loop'] = """\
     for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
@@ -72,8 +73,8 @@ ints['loop'] = """\
 # Int dtypes (axis=None) ----------------------------------------------------
 
 ints_None = deepcopy(ints)
+ints_None['ndims'] = range(1, NDIM_MAX + 1)
 ints_None['axisNone'] = True
-floats_None['skip_1d'] = False
 
 ints_None['loop'] = """\
     if PyArray_SIZE(a) == 0:

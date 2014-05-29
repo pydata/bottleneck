@@ -83,9 +83,9 @@ include "move_nanmax.pyx"
 """
 
 
-def movepyx(funcs=funcs, ndim_max=3):
+def movepyx(funcs=funcs):
     for func in funcs:
-        template(funcs[func], ndim_max)
+        template(funcs[func])
     template_path = os.path.dirname(tempmod.__file__)
     fid = open(os.path.join(template_path, '..', "move/move.pyx"), 'w')
     fid.write(header)

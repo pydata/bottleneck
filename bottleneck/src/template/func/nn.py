@@ -14,6 +14,7 @@ INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 floats = {}
 floats['dtypes'] = FLOAT_DTYPES
 floats['axisNone'] = False
+floats['ndims'] = [2]
 floats['force_output_dtype'] = False
 floats['reuse_non_nan_func'] = False
 
@@ -28,8 +29,7 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=2] a,
         Py_ssize_t imin = -1, n, a0size
 """
 
-loop = {}
-loop[2] = """\
+floats['loop'] = """\
     a0size = PyArray_SIZE(a0)
     if nAXIS != a0size:
         raise ValueError("`a0` must match size of `a` along specified axis")
@@ -48,7 +48,6 @@ loop[2] = """\
         dist = sqrt(xsummin)
     return dist, imin
 """
-floats['loop'] = loop
 
 # Int dtypes (not axis=None) ------------------------------------------------
 

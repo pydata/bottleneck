@@ -119,9 +119,9 @@ include "allnan.pyx"
 """
 
 
-def funcpyx(funcs=funcs, ndim_max=3):
+def funcpyx(funcs=funcs):
     for func in funcs:
-        template(funcs[func], ndim_max)
+        template(funcs[func])
     template_path = os.path.dirname(tempmod.__file__)
     fid = open(os.path.join(template_path, '..', "func/func.pyx"), 'w')
     fid.write(header)

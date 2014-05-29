@@ -27,7 +27,7 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,
     cdef double asum, a2sum, ai, ssr
 """
 
-floats['loop']  = """\
+floats['loop'] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 

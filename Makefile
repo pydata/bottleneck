@@ -4,8 +4,6 @@ PYTHON=python
 
 srcdir := bottleneck/src
 
-NDIM_MAX=3
-
 help:
 	@echo "Available tasks:"
 	@echo "help    -->  This help page"
@@ -22,7 +20,7 @@ help:
 all: clean pyx cfiles build test
 
 pyx:
-	${PYTHON} -c "from bottleneck.src.makepyx import makepyx; makepyx(${NDIM_MAX})"
+	${PYTHON} -c "from bottleneck.src.makepyx import makepyx; makepyx();"
 
 cfiles:
 	cython ${srcdir}/func/func.pyx
