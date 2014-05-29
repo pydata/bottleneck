@@ -31,42 +31,24 @@ floats['loop'] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 
-    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
-        asum = 0
-        a2sum = 0
-        count = 0
-        for iINDEXLAST in range(window - 1):
+    with nogil:
+        for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
+            asum = 0
+            a2sum = 0
+            count = 0
+            for iINDEXLAST in range(window - 1):
+                ai = a[INDEXALL]
+                if ai == ai:
+                    asum += ai
+                    a2sum += ai * ai
+                    count += 1
+                y[INDEXALL] = NAN
+            iINDEXLAST = window - 1
             ai = a[INDEXALL]
             if ai == ai:
                 asum += ai
                 a2sum += ai * ai
                 count += 1
-            y[INDEXALL] = NAN
-        iINDEXLAST = window - 1
-        ai = a[INDEXALL]
-        if ai == ai:
-            asum += ai
-            a2sum += ai * ai
-            count += 1
-        if count == window:
-            ssr = a2sum - asum * asum / count
-            if ssr < 0:
-                y[INDEXALL] = 0
-            else:
-                y[INDEXALL] = sqrt(ssr / (count - ddof))
-        else:
-           y[INDEXALL] = NAN
-        for iINDEXLAST in range(window, nINDEXLAST):
-            ai = a[INDEXALL]
-            if ai == ai:
-                asum += ai
-                a2sum += ai * ai
-                count += 1
-            ai = a[INDEXREPLACE|iAXIS - window|]
-            if ai == ai:
-                asum -= ai
-                a2sum -= ai * ai
-                count -= 1
             if count == window:
                 ssr = a2sum - asum * asum / count
                 if ssr < 0:
@@ -74,7 +56,26 @@ floats['loop'] = """\
                 else:
                     y[INDEXALL] = sqrt(ssr / (count - ddof))
             else:
-                y[INDEXALL] = NAN
+               y[INDEXALL] = NAN
+            for iINDEXLAST in range(window, nINDEXLAST):
+                ai = a[INDEXALL]
+                if ai == ai:
+                    asum += ai
+                    a2sum += ai * ai
+                    count += 1
+                ai = a[INDEXREPLACE|iAXIS - window|]
+                if ai == ai:
+                    asum -= ai
+                    a2sum -= ai * ai
+                    count -= 1
+                if count == window:
+                    ssr = a2sum - asum * asum / count
+                    if ssr < 0:
+                        y[INDEXALL] = 0
+                    else:
+                        y[INDEXALL] = sqrt(ssr / (count - ddof))
+                else:
+                    y[INDEXALL] = NAN
 
     return y
 """

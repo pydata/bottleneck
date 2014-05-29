@@ -15,25 +15,25 @@ loop = """\
         PyArray_FillWithScalar(y, NAN)
         return y
     for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
-        j = nAXIS - 1
-        flag = 1
-        for i in range(nINDEXLAST):
-            if b[INDEXREPLACE|i|] != b[INDEXREPLACE|i|]:
-                while b[INDEXREPLACE|j|] != b[INDEXREPLACE|j|]:
-                    if j <= 0:
-                        break
-                    j -= 1
-                if i >= j:
-                    flag = 0
-                    break
-                tmp = b[INDEXREPLACE|i|]
-                b[INDEXREPLACE|i|] = b[INDEXREPLACE|j|]
-                b[INDEXREPLACE|j|] = tmp
-        n = i + flag
-        k = n >> 1
-        l = 0
-        r = n - 1
         with nogil:
+            j = nAXIS - 1
+            flag = 1
+            for i in range(nINDEXLAST):
+                if b[INDEXREPLACE|i|] != b[INDEXREPLACE|i|]:
+                    while b[INDEXREPLACE|j|] != b[INDEXREPLACE|j|]:
+                        if j <= 0:
+                            break
+                        j -= 1
+                    if i >= j:
+                        flag = 0
+                        break
+                    tmp = b[INDEXREPLACE|i|]
+                    b[INDEXREPLACE|i|] = b[INDEXREPLACE|j|]
+                    b[INDEXREPLACE|j|] = tmp
+            n = i + flag
+            k = n >> 1
+            l = 0
+            r = n - 1
             while l < r:
                 x = b[INDEXREPLACE|k|]
                 i = l

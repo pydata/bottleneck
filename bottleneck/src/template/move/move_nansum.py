@@ -31,37 +31,38 @@ floats['loop'] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 
-    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
-        asum = 0
-        count = 0
-        for iINDEXLAST in range(window - 1):
-            ai = a[INDEXALL]
-            if ai == ai:
-                asum += ai
-                count += 1
-            y[INDEXALL] = NAN
-        iINDEXLAST = window - 1
-        ai = a[INDEXALL]
-        if ai == ai:
-            asum += ai
-            count += 1
-        if count > 0:
-           y[INDEXALL] = asum
-        else:
-           y[INDEXALL] = NAN
-        for iINDEXLAST in range(window, nINDEXLAST):
-            ai = a[INDEXALL]
-            if ai == ai:
-                asum += ai
-                count += 1
-            aold = a[INDEXREPLACE|iAXIS - window|]
-            if aold == aold:
-                asum -= aold
-                count -= 1
-            if count > 0:
-                y[INDEXALL] = asum
-            else:
+    with nogil:
+        for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
+            asum = 0
+            count = 0
+            for iINDEXLAST in range(window - 1):
+                ai = a[INDEXALL]
+                if ai == ai:
+                    asum += ai
+                    count += 1
                 y[INDEXALL] = NAN
+            iINDEXLAST = window - 1
+            ai = a[INDEXALL]
+            if ai == ai:
+                asum += ai
+                count += 1
+            if count > 0:
+               y[INDEXALL] = asum
+            else:
+               y[INDEXALL] = NAN
+            for iINDEXLAST in range(window, nINDEXLAST):
+                ai = a[INDEXALL]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                aold = a[INDEXREPLACE|iAXIS - window|]
+                if aold == aold:
+                    asum -= aold
+                    count -= 1
+                if count > 0:
+                    y[INDEXALL] = asum
+                else:
+                    y[INDEXALL] = NAN
 
     return y
 """

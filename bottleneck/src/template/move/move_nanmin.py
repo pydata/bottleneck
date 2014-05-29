@@ -33,58 +33,59 @@ floats['loop'] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 
-    ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+    with nogil:
+        ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
 
-    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
+        for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
 
-        end = ring + window
-        last = ring
+            end = ring + window
+            last = ring
 
-        minpair = ring
-        ai = a[INDEXREPLACE|0|]
-        if ai == ai:
-            minpair.value = ai
-        else:
-            minpair.value = MAXfloat64
-        minpair.death = window
-
-        count = 0
-        for iINDEXLAST in range(nINDEXLAST):
-            ai = a[INDEXALL]
+            minpair = ring
+            ai = a[INDEXREPLACE|0|]
             if ai == ai:
-                count += 1
-            else:
-                ai = MAXfloat64
-            if iINDEXLAST >= window:
-                aold = a[INDEXREPLACE|iINDEXLAST - window|]
-                if aold == aold:
-                    count -= 1
-            if minpair.death == iINDEXLAST:
-                minpair += 1
-                if minpair >= end:
-                    minpair = ring
-            if ai <= minpair.value:
                 minpair.value = ai
-                minpair.death = iINDEXLAST + window
-                last = minpair
             else:
-                while last.value >= ai:
-                    if last == ring:
-                        last = end
-                    last -= 1
-                last += 1
-                if last == end:
-                    last = ring
-                last.value = ai
-                last.death = iINDEXLAST + window
-            if count > 0:
-                y[INDEXALL] = minpair.value
-            else:
-                y[INDEXALL] = NAN
-        for iINDEXLAST in range(window - 1):
-            y[INDEXALL] = NAN
+                minpair.value = MAXfloat64
+            minpair.death = window
 
-    stdlib.free(ring)
+            count = 0
+            for iINDEXLAST in range(nINDEXLAST):
+                ai = a[INDEXALL]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MAXfloat64
+                if iINDEXLAST >= window:
+                    aold = a[INDEXREPLACE|iINDEXLAST - window|]
+                    if aold == aold:
+                        count -= 1
+                if minpair.death == iINDEXLAST:
+                    minpair += 1
+                    if minpair >= end:
+                        minpair = ring
+                if ai <= minpair.value:
+                    minpair.value = ai
+                    minpair.death = iINDEXLAST + window
+                    last = minpair
+                else:
+                    while last.value >= ai:
+                        if last == ring:
+                            last = end
+                        last -= 1
+                    last += 1
+                    if last == end:
+                        last = ring
+                    last.value = ai
+                    last.death = iINDEXLAST + window
+                if count > 0:
+                    y[INDEXALL] = minpair.value
+                else:
+                    y[INDEXALL] = NAN
+            for iINDEXLAST in range(window - 1):
+                y[INDEXALL] = NAN
+
+        stdlib.free(ring)
     return y
 """
 

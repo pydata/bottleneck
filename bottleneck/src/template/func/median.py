@@ -15,10 +15,10 @@ loop = """\
         PyArray_FillWithScalar(y, NAN)
         return y
     for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
-        k = nAXIS >> 1
-        l = 0
-        r = nAXIS - 1
         with nogil:
+            k = nAXIS >> 1
+            l = 0
+            r = nAXIS - 1
             while l < r:
                 x = b[INDEXREPLACE|k|]
                 i = l

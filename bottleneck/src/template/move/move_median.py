@@ -34,19 +34,20 @@ floats['loop'] = """\
             return PyArray_Copy(a)
         else:
             return a.astype(np.float64)
-    mm = mm_new(window)
-    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
-        for iINDEXLAST in range(window-1):
-            y[INDEXALL] = np.nan
-        for iINDEXLAST in range(window):
-            mm_insert_init(mm, a[INDEXALL])
-        y[INDEXREPLACE|window-1|] = mm_get_median(mm)
-        for iINDEXLAST in range(window, nINDEXLAST):
-            mm_update(mm, a[INDEXALL])
-            y[INDEXALL] = mm_get_median(mm)
-        mm.n_s = 0
-        mm.n_l = 0
-    mm_free(mm)
+    with nogil:
+        mm = mm_new(window)
+        for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
+            for iINDEXLAST in range(window-1):
+                y[INDEXALL] = NAN
+            for iINDEXLAST in range(window):
+                mm_insert_init(mm, a[INDEXALL])
+            y[INDEXREPLACE|window-1|] = mm_get_median(mm)
+            for iINDEXLAST in range(window, nINDEXLAST):
+                mm_update(mm, a[INDEXALL])
+                y[INDEXALL] = mm_get_median(mm)
+            mm.n_s = 0
+            mm.n_l = 0
+        mm_free(mm)
     return y
 """
 
@@ -97,11 +98,11 @@ cdef extern from "csrc/move_median.c":
         np.npy_uint64 s_first_leaf
         np.npy_uint64 l_first_leaf
     ctypedef _mm_handle mm_handle
-    mm_handle *mm_new(np.npy_uint64 size)
-    void mm_insert_init(mm_handle *mm, np.npy_float64 val)
-    void mm_update(mm_handle *mm, np.npy_float64 val)
-    np.npy_float64 mm_get_median(mm_handle *mm)
-    void mm_free(mm_handle *mm)
+    mm_handle *mm_new(np.npy_uint64 size) nogil
+    void mm_insert_init(mm_handle *mm, np.npy_float64 val) nogil
+    void mm_update(mm_handle *mm, np.npy_float64 val) nogil
+    np.npy_float64 mm_get_median(mm_handle *mm) nogil
+    void mm_free(mm_handle *mm) nogil
 
 def move_median(arr, int window, int axis=-1):
     """

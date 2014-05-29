@@ -31,37 +31,38 @@ floats['loop'] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 
-    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
-        asum = 0
-        count = 0
-        for iINDEXLAST in range(window - 1):
-            ai = a[INDEXALL]
-            if ai == ai:
-                asum += ai
-                count += 1
-            y[INDEXALL] = NAN
-        iINDEXLAST = window - 1
-        ai = a[INDEXALL]
-        if ai == ai:
-            asum += ai
-            count += 1
-        if count == window:
-           y[INDEXALL] = asum / count
-        else:
-           y[INDEXALL] = NAN
-        for iINDEXLAST in range(window, nINDEXLAST):
-            ai = a[INDEXALL]
-            if ai == ai:
-                asum += ai
-                count += 1
-            aold = a[INDEXREPLACE|iAXIS - window|]
-            if aold == aold:
-                asum -= aold
-                count -= 1
-            if count == window:
-                y[INDEXALL] = asum / count
-            else:
+    with nogil:
+        for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
+            asum = 0
+            count = 0
+            for iINDEXLAST in range(window - 1):
+                ai = a[INDEXALL]
+                if ai == ai:
+                    asum += ai
+                    count += 1
                 y[INDEXALL] = NAN
+            iINDEXLAST = window - 1
+            ai = a[INDEXALL]
+            if ai == ai:
+                asum += ai
+                count += 1
+            if count == window:
+               y[INDEXALL] = asum / count
+            else:
+               y[INDEXALL] = NAN
+            for iINDEXLAST in range(window, nINDEXLAST):
+                ai = a[INDEXALL]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                aold = a[INDEXREPLACE|iAXIS - window|]
+                if aold == aold:
+                    asum -= aold
+                    count -= 1
+                if count == window:
+                    y[INDEXALL] = asum / count
+                else:
+                    y[INDEXALL] = NAN
 
     return y
 """
@@ -76,19 +77,20 @@ ints['loop'] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 
-    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
-        asum = 0
-        for iINDEXLAST in range(window - 1):
+    with nogil:
+        for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
+            asum = 0
+            for iINDEXLAST in range(window - 1):
+                asum += a[INDEXALL]
+                y[INDEXALL] = NAN
+            iINDEXLAST = window - 1
             asum += a[INDEXALL]
-            y[INDEXALL] = NAN
-        iINDEXLAST = window - 1
-        asum += a[INDEXALL]
-        y[INDEXALL] = <np.float64_t> asum / window
-        for iINDEXLAST in range(window, nINDEXLAST):
-            asum += a[INDEXALL]
-            aold = a[INDEXREPLACE|iAXIS - window|]
-            asum -= aold
             y[INDEXALL] = <np.float64_t> asum / window
+            for iINDEXLAST in range(window, nINDEXLAST):
+                asum += a[INDEXALL]
+                aold = a[INDEXREPLACE|iAXIS - window|]
+                asum -= aold
+                y[INDEXALL] = <np.float64_t> asum / window
 
     return y
 """

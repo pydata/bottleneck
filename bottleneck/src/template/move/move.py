@@ -60,7 +60,7 @@ float32 = np.dtype(np.float32)
 float64 = np.dtype(np.float64)
 
 cdef extern from "math.h":
-    double sqrt(double x)
+    double sqrt(double x) nogil
 
 if np.int_ == np.int32:
     NPY_int_ = NPY_int32
