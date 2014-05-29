@@ -16,6 +16,7 @@ floats['dtypes'] = FLOAT_DTYPES
 floats['axisNone'] = False
 floats['force_output_dtype'] = False
 floats['reuse_non_nan_func'] = False
+floats['skip_1d'] = True
 
 floats['top'] = """
 @cython.boundscheck(False)
@@ -25,56 +26,28 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     cdef np.DTYPE_t ssum = 0, ai
 """
 
-loop = {}
-loop[2] = """\
-    for iINDEX0 in range(nINDEX0):
+floats['loop'] = """\
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
         ssum = 0
-        for iINDEX1 in range(nINDEX1):
+        for iINDEXLAST in range(nINDEXLAST):
             ai = a[INDEXALL]
             ssum += ai * ai
         y[INDEXPOP] = ssum
     return y
 """
-loop[3] = """\
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            ssum = 0
-            for iINDEX2 in range(nINDEX2):
-                ai = a[INDEXALL]
-                ssum += ai * ai
-            y[INDEXPOP] = ssum
-    return y
-"""
-floats['loop'] = loop
 
 # Float dtypes (axis=None) --------------------------------------------------
 
 floats_None = deepcopy(floats)
 floats_None['axisNone'] = True
+floats_None['skip_1d'] = False
 
-loop = {}
-loop[1] = """\
-    for iINDEX0 in range(nINDEX0):
+floats_None['loop'] = """\
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
         ai = a[INDEXALL]
         ssum += ai * ai
     return np.DTYPE(ssum)
 """
-loop[2] = """\
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            ai = a[INDEXALL]
-            ssum += ai * ai
-    return np.DTYPE(ssum)
-"""
-loop[3] = """\
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            for iINDEX2 in range(nINDEX2):
-                ai = a[INDEXALL]
-                ssum += ai * ai
-    return np.DTYPE(ssum)
-"""
-floats_None['loop'] = loop
 
 # Int dtypes (not axis=None) ------------------------------------------------
 

@@ -84,7 +84,7 @@ ints['top'] = """
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a, int ddof):
-    "Valriance of NDIMd array with dtype=DTYPE along axis=AXIS ignoring NaNs."
+    "Variance of NDIMd array with dtype=DTYPE along axis=AXIS ignoring NaNs."
     cdef np.float64_t asum = 0, amean, ai
 """
 

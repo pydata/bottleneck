@@ -15,6 +15,7 @@ floats['dtypes'] = FLOAT_DTYPES
 floats['axisNone'] = False
 floats['force_output_dtype'] = 'bool'
 floats['reuse_non_nan_func'] = False
+floats['skip_1d'] = True
 
 floats['top'] = """
 @cython.boundscheck(False)
@@ -25,11 +26,10 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     cdef np.DTYPE_t ai
 """
 
-loop = {}
-loop[2] = """\
-    for iINDEX0 in range(nINDEX0):
+floats['loop'] = """\
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
         f = 1
-        for iINDEX1 in range(nINDEX1):
+        for iINDEXLAST in range(nINDEXLAST):
             ai = a[INDEXALL]
             if ai == ai:
                 y[INDEXPOP] = 0
@@ -39,110 +39,48 @@ loop[2] = """\
             y[INDEXPOP] = 1
     return y
 """
-loop[3] = """\
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            f = 1
-            for iINDEX2 in range(nINDEX2):
-                ai = a[INDEXALL]
-                if ai == ai:
-                    y[INDEXPOP] = 0
-                    f = 0
-                    break
-            if f == 1:
-                y[INDEXPOP] = 1
-    return y
-"""
-
-floats['loop'] = loop
 
 # Float dtypes (axis=None) --------------------------------------------------
 
 floats_None = deepcopy(floats)
 floats_None['axisNone'] = True
+floats_None['skip_1d'] = False
 
-loop = {}
-loop[1] = """\
-    for iINDEX0 in range(nINDEX0):
+floats_None['loop'] = """\
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
         ai = a[INDEXALL]
         if ai == ai:
             return np.bool_(False)
     return np.bool_(True)
 """
-loop[2] = """\
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            ai = a[INDEXALL]
-            if ai == ai:
-                return np.bool_(False)
-    return np.bool_(True)
-"""
-loop[3] = """\
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            for iINDEX2 in range(nINDEX2):
-                ai = a[INDEXALL]
-                if ai == ai:
-                    return np.bool_(False)
-    return np.bool_(True)
-"""
-
-floats_None['loop'] = loop
 
 # Int dtypes (not axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
 ints['dtypes'] = INT_DTYPES
 
-loop = {}
-loop[2] = """\
-    if nINDEX1 == 0:
+ints['loop'] = """\
+    if nINDEXLAST == 0:
         f = 1
     else:
         f = 0
-    for iINDEX0 in range(nINDEX0):
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
         y[INDEXPOP] = f
     return y
 """
-loop[3] = """\
-    if nINDEX2 == 0:
-        f = 1
-    else:
-        f = 0
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            y[INDEXPOP] = f
-    return y
-"""
-
-ints['loop'] = loop
 
 # Int dtypes (axis=None) ----------------------------------------------------
 
 ints_None = deepcopy(ints)
 ints_None['axisNone'] = True
+floats_None['skip_1d'] = False
 
-loop = {}
-loop[1] = """\
-    if n0 == 0:
+ints_None['loop'] = """\
+    if PyArray_SIZE(a) == 0:
         return np.bool_(True)
     else:
         return np.bool_(False)
 """
-loop[2] = """\
-    if n0* n1 == 0:
-        return np.bool_(True)
-    else:
-        return np.bool_(False)
-"""
-loop[3] = """\
-    if n0* n1 * n2 == 0:
-        return np.bool_(True)
-    else:
-        return np.bool_(False)
-"""
-
-ints_None['loop'] = loop
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 

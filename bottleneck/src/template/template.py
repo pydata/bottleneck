@@ -1,6 +1,7 @@
 "Turn templates into Cython pyx files."
 
 import os.path
+import re
 
 
 TAB = ' ' * 4
@@ -78,9 +79,11 @@ def subtemplate(ndim_max, name, top, loop, axisNone, dtypes,
                     if isinstance(loop, dict):
                         loop_template = loop[ndim]
                     else:
-                        loop_template = loop_expand_product_range(
-                            loop.replace('NDIM', str(ndim)))
+                        loop_template = loop_expand_product_range(l
+                            oop.replace('NDIM', str(ndim)))
                     func += looper(loop_template, ndim, axis)
+
+                    func = unindex_0dimensional(func, ydtype)
 
                     # name, ndim, dtype, axis
                     func = func.replace('NAME', name)
@@ -441,6 +444,20 @@ def loop_expand_product_range(text):
             else:
                 new_lines.append(line)
         text = '\n'.join(new_lines)
+    return text
+
+
+def unindex_0dimensional(text, ydtype):
+    """
+    If a loop template includes assignments to 0-dimensional return variables
+    like 'y[] = ', replace them with return statemetns.
+    """
+    if '[] = ' in text:
+        text = text.replace('return y', '')
+        text = re.sub(r'PyArray_FillWithScalar\(y, (\w+)\)',
+                      r'return np.%s(\1)' % ydtype, text)
+        text = re.sub(r'y\[\] = <np.(\w+)_t> (.+)', r'return np.\1(\2)', text)
+        text = re.sub(r'y\[\] = (.+)', r'return np.%s(\1)' % ydtype, text)
     return text
 
 

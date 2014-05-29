@@ -8,49 +8,32 @@ __all__ = ["argpartsort"]
 FLOAT_DTYPES = [x for x in bn.dtypes if 'float' in x]
 INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 
-# loops ---------------------------------------------------------------------
+# Float dtypes (not axis=None) ----------------------------------------------
 
-loop = {}
-loop[1] = """\
-    for i0 in range(n0):
-        y[INDEXALL] = i0
-    if nAXIS == 0:
-        return y
-    if (n < 1) or (n > nAXIS):
-        raise ValueError(PARTSORT_ERR_MSG % (n, nAXIS))
-    l = 0
-    r = nAXIS - 1
-    with nogil:
-        while l < r:
-            x = b[k]
-            i = l
-            j = r
-            while 1:
-                while b[i] < x: i += 1
-                while x < b[j]: j -= 1
-                if i <= j:
-                    tmp = b[i]
-                    b[i] = b[j]
-                    b[j] = tmp
-                    itmp = y[i]
-                    y[i] = y[j]
-                    y[j] = itmp
-                    i += 1
-                    j -= 1
-                if i > j: break
-            if j < k: l = i
-            if k < i: r = j
-    return y
+floats = {}
+floats['dtypes'] = FLOAT_DTYPES
+floats['axisNone'] = False
+floats['force_output_dtype'] = 'intp'
+floats['reuse_non_nan_func'] = False
+
+floats['top'] = """
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a, int n):
+    "Partial sort of NDIMd array with dtype=DTYPE along axis=AXIS."
+    cdef np.npy_intp i, j = 0, l, r, k = n-1, itmp
+    cdef np.DTYPE_t x, tmp
+    cdef np.ndarray[np.DTYPE_t, ndim=NDIM] b = PyArray_Copy(a)
 """
-loop[2] = """\
-    for i0 in range(n0):
-        for i1 in range(n1):
-            y[INDEXALL] = iINDEX1
+
+floats['loop'] = """\
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
+        y[INDEXALL] = iINDEXLAST
     if nAXIS == 0:
         return y
     if (n < 1) or (n > nAXIS):
         raise ValueError(PARTSORT_ERR_MSG % (n, nAXIS))
-    for iINDEX0 in range(nINDEX0):
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
         l = 0
         r = nAXIS - 1
         while l < r:
@@ -74,60 +57,6 @@ loop[2] = """\
             if k < i: r = j
     return y
 """
-loop[3] = """\
-    for i0 in range(n0):
-        for i1 in range(n1):
-            for i2 in range(n2):
-                y[INDEXALL] = iINDEX2
-    if nAXIS == 0:
-        return y
-    if (n < 1) or (n > nAXIS):
-        raise ValueError(PARTSORT_ERR_MSG % (n, nAXIS))
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            l = 0
-            r = nAXIS - 1
-            while l < r:
-                x = b[INDEXREPLACE|k|]
-                i = l
-                j = r
-                while 1:
-                    while b[INDEXREPLACE|i|] < x: i += 1
-                    while x < b[INDEXREPLACE|j|]: j -= 1
-                    if i <= j:
-                        tmp = b[INDEXREPLACE|i|]
-                        b[INDEXREPLACE|i|] = b[INDEXREPLACE|j|]
-                        b[INDEXREPLACE|j|] = tmp
-                        itmp = y[INDEXREPLACE|i|]
-                        y[INDEXREPLACE|i|] = y[INDEXREPLACE|j|]
-                        y[INDEXREPLACE|j|] = itmp
-                        i += 1
-                        j -= 1
-                    if i > j: break
-                if j < k: l = i
-                if k < i: r = j
-    return y
-"""
-
-# Float dtypes (not axis=None) ----------------------------------------------
-
-floats = {}
-floats['dtypes'] = FLOAT_DTYPES
-floats['axisNone'] = False
-floats['force_output_dtype'] = 'intp'
-floats['reuse_non_nan_func'] = False
-
-floats['top'] = """
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a, int n):
-    "Partial sort of NDIMd array with dtype=DTYPE along axis=AXIS."
-    cdef np.npy_intp i, j = 0, l, r, k = n-1, itmp
-    cdef np.DTYPE_t x, tmp
-    cdef np.ndarray[np.DTYPE_t, ndim=NDIM] b = PyArray_Copy(a)
-"""
-
-floats['loop'] = loop
 
 # Int dtypes (not axis=None) ------------------------------------------------
 

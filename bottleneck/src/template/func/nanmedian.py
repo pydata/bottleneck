@@ -10,68 +10,14 @@ INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 
 # loops ---------------------------------------------------------------------
 
-loop = {}
-loop[1] = """\
-    if nINDEX0 == 0:
-        return np.FLOAT(NAN)
-    j = nAXIS - 1
-    flag = 1
-    for i in range(nINDEX0):
-        if b[i] != b[i]:
-            while b[j] != b[j]:
-                if j <= 0:
-                    break
-                j -= 1
-            if i >= j:
-                flag = 0
-                break
-            tmp = b[i]
-            b[i] = b[j]
-            b[j] = tmp
-    n = i + flag
-    k = n >> 1
-    l = 0
-    r = n - 1
-    with nogil:
-        while l < r:
-            x = b[k]
-            i = l
-            j = r
-            while 1:
-                while b[i] < x: i += 1
-                while x < b[j]: j -= 1
-                if i <= j:
-                    tmp = b[i]
-                    b[i] = b[j]
-                    b[j] = tmp
-                    i += 1
-                    j -= 1
-                if i > j: break
-            if j < k: l = i
-            if k < i: r = j
-    if n % 2 == 0:
-        amax = MINDTYPE
-        allnan = 1
-        for i in range(k):
-            ai = b[i]
-            if ai >= amax:
-                amax = ai
-                allnan = 0
-        if allnan == 0:
-            return np.FLOAT(0.5 * (b[k] + amax))
-        else:
-            return np.FLOAT(b[k])
-    else:
-        return np.FLOAT(b[k])
-"""
-loop[2] = """\
-    if nINDEX1 == 0:
+loop = """\
+    if nINDEXLAST == 0:
         PyArray_FillWithScalar(y, NAN)
         return y
-    for iINDEX0 in range(nINDEX0):
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
         j = nAXIS - 1
         flag = 1
-        for i in range(nINDEX1):
+        for i in range(nINDEXLAST):
             if b[INDEXREPLACE|i|] != b[INDEXREPLACE|i|]:
                 while b[INDEXREPLACE|j|] != b[INDEXREPLACE|j|]:
                     if j <= 0:
@@ -119,62 +65,6 @@ loop[2] = """\
             y[INDEXPOP] = CASTb[INDEXREPLACE|k|]
     return y
 """
-loop[3] = """\
-    if nINDEX2 == 0:
-        PyArray_FillWithScalar(y, NAN)
-        return y
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            j = nAXIS - 1
-            flag = 1
-            for i in range(nINDEX2):
-                if b[INDEXREPLACE|i|] != b[INDEXREPLACE|i|]:
-                    while b[INDEXREPLACE|j|] != b[INDEXREPLACE|j|]:
-                        if j <= 0:
-                            break
-                        j -= 1
-                    if i >= j:
-                        flag = 0
-                        break
-                    tmp = b[INDEXREPLACE|i|]
-                    b[INDEXREPLACE|i|] = b[INDEXREPLACE|j|]
-                    b[INDEXREPLACE|j|] = tmp
-            n = i + flag
-            k = n >> 1
-            l = 0
-            r = n - 1
-            while l < r:
-                x = b[INDEXREPLACE|k|]
-                i = l
-                j = r
-                while 1:
-                    while b[INDEXREPLACE|i|] < x: i += 1
-                    while x < b[INDEXREPLACE|j|]: j -= 1
-                    if i <= j:
-                        tmp = b[INDEXREPLACE|i|]
-                        b[INDEXREPLACE|i|] = b[INDEXREPLACE|j|]
-                        b[INDEXREPLACE|j|] = tmp
-                        i += 1
-                        j -= 1
-                    if i > j: break
-                if j < k: l = i
-                if k < i: r = j
-            if n % 2 == 0:
-                amax = MINDTYPE
-                allnan = 1
-                for i in range(k):
-                    ai = b[INDEXREPLACE|i|]
-                    if ai >= amax:
-                        amax = ai
-                        allnan = 0
-                if allnan == 0:
-                    y[INDEXPOP] = 0.5 * (b[INDEXREPLACE|k|] + amax)
-                else:
-                    y[INDEXPOP] = CASTb[INDEXREPLACE|k|]
-            else:
-                y[INDEXPOP] = CASTb[INDEXREPLACE|k|]
-    return y
-"""
 
 # Float dtypes (not axis=None) ----------------------------------------------
 
@@ -195,10 +85,7 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     cdef np.ndarray[np.DTYPE_t, ndim=NDIM] b = PyArray_Copy(a)
 """
 
-floats['loop'] = {}
-floats['loop'][1] = loop[1].replace('FLOAT', 'DTYPE')
-floats['loop'][2] = loop[2].replace('CAST', '')
-floats['loop'][3] = loop[3].replace('CAST', '')
+floats['loop'] = loop.replace('CAST', '')
 
 # Int dtypes (not axis=None) ------------------------------------------------
 

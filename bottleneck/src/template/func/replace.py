@@ -26,50 +26,18 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,
     cdef np.DTYPE_t ai
 """
 
-loop = {}
-loop[1] = """\
+floats['loop'] = """\
     if old == old:
-        for iINDEX0 in range(nINDEX0):
+        for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
             ai = a[INDEXALL]
             if ai == old:
                 a[INDEXALL] = new
     else:
-        for iINDEX0 in range(nINDEX0):
+        for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
             ai = a[INDEXALL]
             if ai != ai:
                 a[INDEXALL] = new
 """
-loop[2] = """\
-    if old == old:
-        for iINDEX0 in range(nINDEX0):
-            for iINDEX1 in range(nINDEX1):
-                ai = a[INDEXALL]
-                if ai == old:
-                    a[INDEXALL] = new
-    else:
-        for iINDEX0 in range(nINDEX0):
-            for iINDEX1 in range(nINDEX1):
-                ai = a[INDEXALL]
-                if ai != ai:
-                    a[INDEXALL] = new
-"""
-loop[3] = """\
-    if old == old:
-        for iINDEX0 in range(nINDEX0):
-            for iINDEX1 in range(nINDEX1):
-                for iINDEX2 in range(nINDEX2):
-                    ai = a[INDEXALL]
-                    if ai == old:
-                        a[INDEXALL] = new
-    else:
-        for iINDEX0 in range(nINDEX0):
-            for iINDEX1 in range(nINDEX1):
-                for iINDEX2 in range(nINDEX2):
-                    ai = a[INDEXALL]
-                    if ai != ai:
-                        a[INDEXALL] = new
-"""
-floats['loop'] = loop
 
 # Int dtypes (axis=None) ------------------------------------------------
 
@@ -87,8 +55,7 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,
     cdef np.DTYPE_t oldint, newint
 """
 
-loop = {}
-loop[1] = """\
+ints['loop'] = """\
     if old == old:
         oldint = <np.DTYPE_t>old
         newint = <np.DTYPE_t>new
@@ -96,41 +63,11 @@ loop[1] = """\
             raise ValueError("Cannot safely cast `old` to int.")
         if newint != new:
             raise ValueError("Cannot safely cast `new` to int.")
-        for iINDEX0 in range(nINDEX0):
+        for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
             ai = a[INDEXALL]
             if ai == oldint:
                 a[INDEXALL] = newint
 """
-loop[2] = """\
-    if old == old:
-        oldint = <np.DTYPE_t>old
-        newint = <np.DTYPE_t>new
-        if oldint != old:
-            raise ValueError("Cannot safely cast `old` to int.")
-        if newint != new:
-            raise ValueError("Cannot safely cast `new` to int.")
-        for iINDEX0 in range(nINDEX0):
-            for iINDEX1 in range(nINDEX1):
-                ai = a[INDEXALL]
-                if ai == oldint:
-                    a[INDEXALL] = newint
-"""
-loop[3] = """\
-    if old == old:
-        oldint = <np.DTYPE_t>old
-        newint = <np.DTYPE_t>new
-        if oldint != old:
-            raise ValueError("Cannot safely cast `old` to int.")
-        if newint != new:
-            raise ValueError("Cannot safely cast `new` to int.")
-        for iINDEX0 in range(nINDEX0):
-            for iINDEX1 in range(nINDEX1):
-                for iINDEX2 in range(nINDEX2):
-                    ai = a[INDEXALL]
-                    if ai == oldint:
-                        a[INDEXALL] = newint
-"""
-ints['loop'] = loop
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 

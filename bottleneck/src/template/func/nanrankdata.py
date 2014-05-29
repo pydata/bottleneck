@@ -8,119 +8,6 @@ __all__ = ["nanrankdata"]
 FLOAT_DTYPES = [x for x in bn.dtypes if 'float' in x]
 INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 
-# loops ---------------------------------------------------------------------
-
-loop = {}
-loop[1] = """\
-    if nINDEX0 == 0:
-        PyArray_FillWithScalar(y, NAN)
-        return y
-    old = a[ivec[0]]
-    for iINDEX0 in xrange(nINDEX0-1):
-        sumranks += iINDEX0
-        dupcount += 1
-        k = iINDEX0 + 1
-        new = a[INDEXREPLACE|ivec[k]|]
-        if old != new:
-            if old == old:
-                averank = sumranks / dupcount + 1
-                for j in xrange(k - dupcount, k):
-                    y[INDEXREPLACE|ivec[j]|] = averank
-            else:
-                y[INDEXREPLACE|ivec[iINDEX0]|] = NAN
-            sumranks = 0
-            dupcount = 0
-        old = new
-    sumranks += (nINDEX0 - 1)
-    dupcount += 1
-    if old == old:
-        averank = sumranks / dupcount + 1
-        for j in xrange(nINDEX0 - dupcount, nINDEX0):
-                y[INDEXREPLACE|ivec[j]|] = averank
-    else:
-        y[INDEXREPLACE|ivec[nINDEX0 - 1]|] = NAN
-    return y
-"""
-loop[2] = """\
-    if nINDEX1 == 0:
-        PyArray_FillWithScalar(y, NAN)
-        return y
-    for iINDEX0 in xrange(nINDEX0):
-        idx = ivec[INDEXREPLACE|0|]
-        old = a[INDEXREPLACE|idx|]
-        sumranks = 0
-        dupcount = 0
-        for iINDEX1 in xrange(nINDEX1-1):
-            sumranks += iINDEX1
-            dupcount += 1
-            k = iINDEX1 + 1
-            idx = ivec[INDEXREPLACE|k|]
-            new = a[INDEXREPLACE|idx|]
-            if old != new:
-                if old == old:
-                    averank = sumranks / dupcount + 1
-                    for j in xrange(k - dupcount, k):
-                        idx = ivec[INDEXREPLACE|j|]
-                        y[INDEXREPLACE|idx|] = averank
-                else:
-                    idx = ivec[INDEXALL]
-                    y[INDEXREPLACE|idx|] = NAN
-                sumranks = 0
-                dupcount = 0
-            old = new
-        sumranks += (nINDEX1 - 1)
-        dupcount += 1
-        averank = sumranks / dupcount + 1
-        if old == old:
-            for j in xrange(nINDEX1 - dupcount, nINDEX1):
-                idx = ivec[INDEXREPLACE|j|]
-                y[INDEXREPLACE|idx|] = averank
-        else:
-            idx = ivec[INDEXREPLACE|nINDEX1 - 1|]
-            y[INDEXREPLACE|idx|] = NAN
-    return y
-"""
-loop[3] = """\
-    if nINDEX2 == 0:
-        PyArray_FillWithScalar(y, NAN)
-        return y
-    for iINDEX0 in xrange(nINDEX0):
-        for iINDEX1 in xrange(nINDEX1):
-            idx = ivec[INDEXREPLACE|0|]
-            old = a[INDEXREPLACE|idx|]
-            sumranks = 0
-            dupcount = 0
-            for iINDEX2 in xrange(nINDEX2-1):
-                sumranks += iINDEX2
-                dupcount += 1
-                k = iINDEX2 + 1
-                idx = ivec[INDEXREPLACE|k|]
-                new = a[INDEXREPLACE|idx|]
-                if old != new:
-                    if old == old:
-                        averank = sumranks / dupcount + 1
-                        for j in xrange(k - dupcount, k):
-                            idx = ivec[INDEXREPLACE|j|]
-                            y[INDEXREPLACE|idx|] = averank
-                    else:
-                        idx = ivec[INDEXREPLACE|iINDEX2|]
-                        y[INDEXREPLACE|idx|] = NAN
-                    sumranks = 0
-                    dupcount = 0
-                old = new
-            sumranks += (nINDEX2 - 1)
-            dupcount += 1
-            averank = sumranks / dupcount + 1
-            if old == old:
-                for j in xrange(nINDEX2 - dupcount, nINDEX2):
-                    idx = ivec[INDEXREPLACE|j|]
-                    y[INDEXREPLACE|idx|] = averank
-            else:
-                idx = ivec[INDEXREPLACE|nINDEX2 - 1|]
-                y[INDEXREPLACE|idx|] = NAN
-    return y
-"""
-
 # Float dtypes (not axis=None) ----------------------------------------------
 
 floats = {}
@@ -140,14 +27,51 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     cdef np.float64_t old, new, averank, sumranks = 0
 """
 
-floats['loop'] = deepcopy(loop)
+floats['loop'] = """\
+    if nINDEXLAST == 0:
+        PyArray_FillWithScalar(y, NAN)
+        return y
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
+        idx = ivec[INDEXREPLACE|0|]
+        old = a[INDEXREPLACE|idx|]
+        sumranks = 0
+        dupcount = 0
+        for iINDEXLAST in xrange(nINDEXLAST-1):
+            sumranks += iINDEXLAST
+            dupcount += 1
+            k = iINDEXLAST + 1
+            idx = ivec[INDEXREPLACE|k|]
+            new = a[INDEXREPLACE|idx|]
+            if old != new:
+                if old == old:
+                    averank = sumranks / dupcount + 1
+                    for j in xrange(k - dupcount, k):
+                        idx = ivec[INDEXREPLACE|j|]
+                        y[INDEXREPLACE|idx|] = averank
+                else:
+                    idx = ivec[INDEXALL]
+                    y[INDEXREPLACE|idx|] = NAN
+                sumranks = 0
+                dupcount = 0
+            old = new
+        sumranks += (nINDEXLAST - 1)
+        dupcount += 1
+        averank = sumranks / dupcount + 1
+        if old == old:
+            for j in xrange(nINDEXLAST - dupcount, nINDEXLAST):
+                idx = ivec[INDEXREPLACE|j|]
+                y[INDEXREPLACE|idx|] = averank
+        else:
+            idx = ivec[INDEXREPLACE|nINDEXLAST - 1|]
+            y[INDEXREPLACE|idx|] = NAN
+    return y
+"""
 
 # Int dtypes (not axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
 ints['dtypes'] = INT_DTYPES
 ints['reuse_non_nan_func'] = True
-ints['loop'] = deepcopy(loop)
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 
