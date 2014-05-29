@@ -79,8 +79,8 @@ def subtemplate(ndim_max, name, top, loop, axisNone, dtypes,
                     if isinstance(loop, dict):
                         loop_template = loop[ndim]
                     else:
-                        loop_template = loop_expand_product_range(l
-                            oop.replace('NDIM', str(ndim)))
+                        loop_template = loop_expand_product_range(
+                            loop.replace('NDIM', str(ndim)))
                     func += looper(loop_template, ndim, axis)
 
                     func = unindex_0dimensional(func, ydtype)
