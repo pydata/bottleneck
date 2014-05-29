@@ -8,9 +8,28 @@ __all__ = ["move_max"]
 FLOAT_DTYPES = [x for x in bn.dtypes if 'float' in x]
 INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 
-# loop ----------------------------------------------------------------------
+# Float dtypes (no axis=None) -----------------------------------------------
 
-loop = """\
+floats = {}
+floats['dtypes'] = FLOAT_DTYPES
+floats['axisNone'] = False
+floats['force_output_dtype'] = 'float64'
+floats['reuse_non_nan_func'] = False
+
+floats['top'] = """
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a, int window):
+    "Moving max of NDIMd array of dtype=DTYPE along axis=AXIS."
+    cdef np.float64_t ai, aold
+    cdef Py_ssize_t count
+    cdef pairs* ring
+    cdef pairs* minpair
+    cdef pairs* end
+    cdef pairs* last
+"""
+
+floats['loop'] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 
@@ -68,35 +87,11 @@ loop = """\
     return y
 """
 
-# Float dtypes (no axis=None) -----------------------------------------------
-
-floats = {}
-floats['dtypes'] = FLOAT_DTYPES
-floats['axisNone'] = False
-floats['force_output_dtype'] = 'float64'
-floats['reuse_non_nan_func'] = False
-
-floats['top'] = """
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a, int window):
-    "Moving max of NDIMd array of dtype=DTYPE along axis=AXIS."
-    cdef np.float64_t ai, aold
-    cdef Py_ssize_t count
-    cdef pairs* ring
-    cdef pairs* minpair
-    cdef pairs* end
-    cdef pairs* last
-"""
-
-floats['loop'] = loop
-
 # Int dtypes (no axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
 ints['force_output_dtype'] = 'float64'
 ints['dtypes'] = INT_DTYPES
-ints['loop'] = loop
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 

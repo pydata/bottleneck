@@ -23,60 +23,24 @@ floats['top'] = """
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,
                                   int window):
     "Moving mean of NDIMd array of dtype=DTYPE along axis=AXIS ignoring NaNs."
-    cdef Py_ssize_t count = 0
-    cdef double asum = 0, aold, ai
+    cdef Py_ssize_t count
+    cdef double asum, aold, ai
 """
 
-loop = {}
-loop[1] = """\
-    if (window < 1) or (window > nINDEX0):
-        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nINDEX0))
-
-    for iINDEX0 in range(window - 1):
-        ai = a[INDEXALL]
-        if ai == ai:
-            asum += ai
-            count += 1
-        y[INDEXALL] = NAN
-    iINDEX0 = window - 1
-    ai = a[INDEXALL]
-    if ai == ai:
-        asum += ai
-        count += 1
-    if count > 0:
-       y[INDEXALL] = asum / count
-    else:
-       y[INDEXALL] = NAN
-    for iINDEX0 in range(window, nINDEX0):
-        ai = a[INDEXALL]
-        if ai == ai:
-            asum += ai
-            count += 1
-        aold = a[INDEXREPLACE|iAXIS - window|]
-        if aold == aold:
-            asum -= aold
-            count -= 1
-        if count > 0:
-            y[INDEXALL] = asum / count
-        else:
-            y[INDEXALL] = NAN
-
-    return y
-"""
-loop[2] = """\
+floats['loop'] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
 
-    for iINDEX0 in range(nINDEX0):
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
         asum = 0
         count = 0
-        for iINDEX1 in range(window - 1):
+        for iINDEXLAST in range(window - 1):
             ai = a[INDEXALL]
             if ai == ai:
                 asum += ai
                 count += 1
             y[INDEXALL] = NAN
-        iINDEX1 = window - 1
+        iINDEXLAST = window - 1
         ai = a[INDEXALL]
         if ai == ai:
             asum += ai
@@ -85,7 +49,7 @@ loop[2] = """\
            y[INDEXALL] = asum / count
         else:
            y[INDEXALL] = NAN
-        for iINDEX1 in range(window, nINDEX1):
+        for iINDEXLAST in range(window, nINDEXLAST):
             ai = a[INDEXALL]
             if ai == ai:
                 asum += ai
@@ -101,47 +65,6 @@ loop[2] = """\
 
     return y
 """
-loop[3] = """\
-    if (window < 1) or (window > nAXIS):
-        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
-
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            asum = 0
-            count = 0
-            for iINDEX2 in range(window - 1):
-                ai = a[INDEXALL]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-                y[INDEXALL] = NAN
-            iINDEX2 = window - 1
-            ai = a[INDEXALL]
-            if ai == ai:
-                asum += ai
-                count += 1
-            if count > 0:
-               y[INDEXALL] = asum / count
-            else:
-               y[INDEXALL] = NAN
-            for iINDEX2 in range(window, nINDEX2):
-                ai = a[INDEXALL]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-                aold = a[INDEXREPLACE|iAXIS - window|]
-                if aold == aold:
-                    asum -= aold
-                    count -= 1
-                if count > 0:
-                    y[INDEXALL] = asum / count
-                else:
-                    y[INDEXALL] = NAN
-
-    return y
-"""
-
-floats['loop'] = loop
 
 # Int dtypes (no axis=None) ------------------------------------------------
 

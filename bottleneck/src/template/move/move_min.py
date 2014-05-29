@@ -8,181 +8,6 @@ __all__ = ["move_min"]
 FLOAT_DTYPES = [x for x in bn.dtypes if 'float' in x]
 INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 
-# loop ----------------------------------------------------------------------
-
-loop = {}
-loop[1] = """\
-    if (window < 1) or (window > nAXIS):
-        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
-
-    ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
-    end = ring + window
-    last = ring
-
-    minpair = ring
-    ai = a[INDEXREPLACE|0|]
-    if ai == ai:
-        minpair.value = ai
-    else:
-        minpair.value = MAXfloat64
-    minpair.death = window
-
-    count = 0
-    for iINDEX0 in range(nINDEX0):
-        ai = a[INDEXALL]
-        if ai == ai:
-            count += 1
-        else:
-            ai = MAXfloat64
-        if iINDEX0 >= window:
-            aold = a[INDEXREPLACE|iINDEX0 - window|]
-            if aold == aold:
-                count -= 1
-        if minpair.death == iINDEX0:
-            minpair += 1
-            if minpair >= end:
-                minpair = ring
-        if ai <= minpair.value:
-            minpair.value = ai
-            minpair.death = iINDEX0 + window
-            last = minpair
-        else:
-            while last.value >= ai:
-                if last == ring:
-                    last = end
-                last -= 1
-            last += 1
-            if last == end:
-                last = ring
-            last.value = ai
-            last.death = iINDEX0 + window
-        if count == window:
-            y[INDEXALL] = minpair.value
-        else:
-            y[INDEXALL] = NAN
-    for iINDEX0 in range(window - 1):
-        y[INDEXALL] = NAN
-
-    stdlib.free(ring)
-    return y
-"""
-loop[2] = """\
-    if (window < 1) or (window > nAXIS):
-        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
-
-    ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
-
-    for iINDEX0 in range(nINDEX0):
-
-        end = ring + window
-        last = ring
-
-        minpair = ring
-        ai = a[INDEXREPLACE|0|]
-        if ai == ai:
-            minpair.value = ai
-        else:
-            minpair.value = MAXfloat64
-        minpair.death = window
-
-        count = 0
-        for iINDEX1 in range(nINDEX1):
-            ai = a[INDEXALL]
-            if ai == ai:
-                count += 1
-            else:
-                ai = MAXfloat64
-            if iINDEX1 >= window:
-                aold = a[INDEXREPLACE|iINDEX1 - window|]
-                if aold == aold:
-                    count -= 1
-            if minpair.death == iINDEX1:
-                minpair += 1
-                if minpair >= end:
-                    minpair = ring
-            if ai <= minpair.value:
-                minpair.value = ai
-                minpair.death = iINDEX1 + window
-                last = minpair
-            else:
-                while last.value >= ai:
-                    if last == ring:
-                        last = end
-                    last -= 1
-                last += 1
-                if last == end:
-                    last = ring
-                last.value = ai
-                last.death = iINDEX1 + window
-            if count == window:
-                y[INDEXALL] = minpair.value
-            else:
-                y[INDEXALL] = NAN
-        for iINDEX1 in range(window - 1):
-            y[INDEXALL] = NAN
-
-    stdlib.free(ring)
-    return y
-"""
-loop[3] = """\
-    if (window < 1) or (window > nAXIS):
-        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
-
-    ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
-
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            end = ring + window
-            last = ring
-
-            minpair = ring
-            ai = a[INDEXREPLACE|0|]
-            if ai == ai:
-                minpair.value = ai
-            else:
-                minpair.value = MAXfloat64
-            minpair.death = window
-
-            count = 0
-            for iINDEX2 in range(nINDEX2):
-                ai = a[INDEXALL]
-                if ai == ai:
-                    count += 1
-                else:
-                    ai = MAXfloat64
-                if iINDEX2 >= window:
-                    aold = a[INDEXREPLACE|iINDEX2 - window|]
-                    if aold == aold:
-                        count -= 1
-                if minpair.death == iINDEX2:
-                    minpair += 1
-                    if minpair >= end:
-                        minpair = ring
-                if ai <= minpair.value:
-                    minpair.value = ai
-                    minpair.death = iINDEX2 + window
-                    last = minpair
-                else:
-                    while last.value >= ai:
-                        if last == ring:
-                            last = end
-                        last -= 1
-                    last += 1
-                    if last == end:
-                        last = ring
-                    last.value = ai
-                    last.death = iINDEX2 + window
-                if count == window:
-                    y[INDEXALL] = minpair.value
-                else:
-                    y[INDEXALL] = NAN
-            for iINDEX2 in range(window - 1):
-                y[INDEXALL] = NAN
-
-    stdlib.free(ring)
-    return y
-"""
-
 # Float dtypes (no axis=None) -----------------------------------------------
 
 floats = {}
@@ -204,14 +29,70 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a, int window):
     cdef pairs* last
 """
 
-floats['loop'] = loop
+floats['loop'] = """\
+    if (window < 1) or (window > nAXIS):
+        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
+
+    ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
+
+        end = ring + window
+        last = ring
+
+        minpair = ring
+        ai = a[INDEXREPLACE|0|]
+        if ai == ai:
+            minpair.value = ai
+        else:
+            minpair.value = MAXfloat64
+        minpair.death = window
+
+        count = 0
+        for iINDEXLAST in range(nINDEXLAST):
+            ai = a[INDEXALL]
+            if ai == ai:
+                count += 1
+            else:
+                ai = MAXfloat64
+            if iINDEXLAST >= window:
+                aold = a[INDEXREPLACE|iINDEXLAST - window|]
+                if aold == aold:
+                    count -= 1
+            if minpair.death == iINDEXLAST:
+                minpair += 1
+                if minpair >= end:
+                    minpair = ring
+            if ai <= minpair.value:
+                minpair.value = ai
+                minpair.death = iINDEXLAST + window
+                last = minpair
+            else:
+                while last.value >= ai:
+                    if last == ring:
+                        last = end
+                    last -= 1
+                last += 1
+                if last == end:
+                    last = ring
+                last.value = ai
+                last.death = iINDEXLAST + window
+            if count == window:
+                y[INDEXALL] = minpair.value
+            else:
+                y[INDEXALL] = NAN
+        for iINDEXLAST in range(window - 1):
+            y[INDEXALL] = NAN
+
+    stdlib.free(ring)
+    return y
+"""
 
 # Int dtypes (no axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
 ints['force_output_dtype'] = 'float64'
 ints['dtypes'] = INT_DTYPES
-ints['loop'] = loop
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 
