@@ -33,28 +33,29 @@ floats['loop'] = """\
         return y
     if (n < 1) or (n > nAXIS):
         raise ValueError(PARTSORT_ERR_MSG % (n, nAXIS))
-    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
-        l = 0
-        r = nAXIS - 1
-        while l < r:
-            x = b[INDEXREPLACE|k|]
-            i = l
-            j = r
-            while 1:
-                while b[INDEXREPLACE|i|] < x: i += 1
-                while x < b[INDEXREPLACE|j|]: j -= 1
-                if i <= j:
-                    tmp = b[INDEXREPLACE|i|]
-                    b[INDEXREPLACE|i|] = b[INDEXREPLACE|j|]
-                    b[INDEXREPLACE|j|] = tmp
-                    itmp = y[INDEXREPLACE|i|]
-                    y[INDEXREPLACE|i|] = y[INDEXREPLACE|j|]
-                    y[INDEXREPLACE|j|] = itmp
-                    i += 1
-                    j -= 1
-                if i > j: break
-            if j < k: l = i
-            if k < i: r = j
+    with nogil:
+        for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
+            l = 0
+            r = nAXIS - 1
+            while l < r:
+                x = b[INDEXREPLACE|k|]
+                i = l
+                j = r
+                while 1:
+                    while b[INDEXREPLACE|i|] < x: i += 1
+                    while x < b[INDEXREPLACE|j|]: j -= 1
+                    if i <= j:
+                        tmp = b[INDEXREPLACE|i|]
+                        b[INDEXREPLACE|i|] = b[INDEXREPLACE|j|]
+                        b[INDEXREPLACE|j|] = tmp
+                        itmp = y[INDEXREPLACE|i|]
+                        y[INDEXREPLACE|i|] = y[INDEXREPLACE|j|]
+                        y[INDEXREPLACE|j|] = itmp
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
     return y
 """
 

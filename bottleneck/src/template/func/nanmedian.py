@@ -33,22 +33,23 @@ loop = """\
         k = n >> 1
         l = 0
         r = n - 1
-        while l < r:
-            x = b[INDEXREPLACE|k|]
-            i = l
-            j = r
-            while 1:
-                while b[INDEXREPLACE|i|] < x: i += 1
-                while x < b[INDEXREPLACE|j|]: j -= 1
-                if i <= j:
-                    tmp = b[INDEXREPLACE|i|]
-                    b[INDEXREPLACE|i|] = b[INDEXREPLACE|j|]
-                    b[INDEXREPLACE|j|] = tmp
-                    i += 1
-                    j -= 1
-                if i > j: break
-            if j < k: l = i
-            if k < i: r = j
+        with nogil:
+            while l < r:
+                x = b[INDEXREPLACE|k|]
+                i = l
+                j = r
+                while 1:
+                    while b[INDEXREPLACE|i|] < x: i += 1
+                    while x < b[INDEXREPLACE|j|]: j -= 1
+                    if i <= j:
+                        tmp = b[INDEXREPLACE|i|]
+                        b[INDEXREPLACE|i|] = b[INDEXREPLACE|j|]
+                        b[INDEXREPLACE|j|] = tmp
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
         if n % 2 == 0:
             amax = MINDTYPE
             allnan = 1
