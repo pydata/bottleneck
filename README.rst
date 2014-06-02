@@ -206,13 +206,12 @@ Benchmarks for the low-level Cython functions::
 Slow
 ====
 
-By default, only 1d, 2d, and 3d input arrays with data type (dtype)
+By default only 1d, 2d, and 3d input arrays with data type (dtype)
 int32, int64, float32, and float64 are accelerated. All other ndim/dtype
 combinations result in calls to slower, unaccelerated functions.
 
-With the development version of bottleneck, it is possible to accelerate higher
-dimensional arrays if an appropriate flag is set at compile-time (see
-`Fast functions for higher dimensions`_ below).
+It is possible to accelerate higher dimensional arrays if an appropriate flag
+is set at compile-time (see `Fast functions for higher dimensions`_ below).
 
 License
 =======
