@@ -26,8 +26,7 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a,
     cdef mm_handle *mm
 """
 
-loop = {}
-loop[1] = """\
+floats['loop'] = """\
     if (window < 1) or (window > nAXIS):
         raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
     elif (window == 1):
@@ -35,67 +34,22 @@ loop[1] = """\
             return PyArray_Copy(a)
         else:
             return a.astype(np.float64)
-    for iINDEX0 in range(window-1):
-        y[INDEXALL] = np.nan
-    mm = mm_new(window)
-    for iINDEX0 in range(window):
-        mm_insert_init(mm, a[INDEXALL])
-    y[INDEXREPLACE|window-1|] = mm_get_median(mm)
-    for iINDEX0 in range(window, nINDEX0):
-        mm_update(mm, a[INDEXALL])
-        y[INDEXALL] = mm_get_median(mm)
-    mm_free(mm)
-    return y
-"""
-loop[2] = """\
-    if (window < 1) or (window > nAXIS):
-        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
-    elif (window == 1):
-        if issubclass(a.dtype.type, np.inexact):
-            return PyArray_Copy(a)
-        else:
-            return a.astype(np.float64)
-    mm = mm_new(window)
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(window-1):
-            y[INDEXALL] = np.nan
-        for iINDEX1 in range(window):
-            mm_insert_init(mm, a[INDEXALL])
-        y[INDEXREPLACE|window-1|] = mm_get_median(mm)
-        for iINDEX1 in range(window, nINDEX1):
-            mm_update(mm, a[INDEXALL])
-            y[INDEXALL] = mm_get_median(mm)
-        mm.n_s = 0
-        mm.n_l = 0
-    mm_free(mm)
-    return y
-"""
-loop[3] = """\
-    if (window < 1) or (window > nAXIS):
-        raise ValueError(MOVE_WINDOW_ERR_MSG % (window, nAXIS))
-    elif (window == 1):
-        if issubclass(a.dtype.type, np.inexact):
-            return PyArray_Copy(a)
-        else:
-            return a.astype(np.float64)
-    mm = mm_new(window)
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            for iINDEX2 in range(window-1):
-                y[INDEXALL] = np.nan
-            for iINDEX2 in range(window):
+    with nogil:
+        mm = mm_new(window)
+        for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
+            for iINDEXLAST in range(window-1):
+                y[INDEXALL] = NAN
+            for iINDEXLAST in range(window):
                 mm_insert_init(mm, a[INDEXALL])
             y[INDEXREPLACE|window-1|] = mm_get_median(mm)
-            for iINDEX2 in range(window, nINDEX2):
+            for iINDEXLAST in range(window, nINDEXLAST):
                 mm_update(mm, a[INDEXALL])
                 y[INDEXALL] = mm_get_median(mm)
             mm.n_s = 0
             mm.n_l = 0
-    mm_free(mm)
+        mm_free(mm)
     return y
 """
-
-floats['loop'] = loop
 
 # Int dtypes (no axis=None) ------------------------------------------------
 
@@ -144,11 +98,11 @@ cdef extern from "csrc/move_median.c":
         np.npy_uint64 s_first_leaf
         np.npy_uint64 l_first_leaf
     ctypedef _mm_handle mm_handle
-    mm_handle *mm_new(np.npy_uint64 size)
-    void mm_insert_init(mm_handle *mm, np.npy_float64 val)
-    void mm_update(mm_handle *mm, np.npy_float64 val)
-    np.npy_float64 mm_get_median(mm_handle *mm)
-    void mm_free(mm_handle *mm)
+    mm_handle *mm_new(np.npy_uint64 size) nogil
+    void mm_insert_init(mm_handle *mm, np.npy_float64 val) nogil
+    void mm_update(mm_handle *mm, np.npy_float64 val) nogil
+    np.npy_float64 mm_get_median(mm_handle *mm) nogil
+    void mm_free(mm_handle *mm) nogil
 
 def move_median(arr, int window, int axis=-1):
     """

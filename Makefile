@@ -1,4 +1,4 @@
-# Bottleneck Makefile 
+# Bottleneck Makefile
 
 PYTHON=python
 
@@ -20,22 +20,22 @@ help:
 all: clean pyx cfiles build test
 
 pyx:
-	${PYTHON} -c "from bottleneck.src.makepyx import makepyx; makepyx()"
+	${PYTHON} -c "from bottleneck.src.makepyx import makepyx; makepyx();"
 
 cfiles:
 	cython ${srcdir}/func/func.pyx
 	cython ${srcdir}/move/move.pyx
 
 build: funcs moves
-	
+
 funcs:
 	rm -rf ${srcdir}/../func.so
 	${PYTHON} ${srcdir}/func/setup.py build_ext --inplace
-	
+
 moves:
 	rm -rf ${srcdir}/../move.so
 	${PYTHON} ${srcdir}/move/setup.py build_ext --inplace
-		
+
 test:
 	${PYTHON} -c "import bottleneck;bottleneck.test()"
 

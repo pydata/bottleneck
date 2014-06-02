@@ -2,6 +2,7 @@
 
 from copy import deepcopy
 import bottleneck as bn
+from bottleneck.src.template.template import NDIM_MAX
 
 __all__ = ["nanmax"]
 
@@ -13,6 +14,7 @@ INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 floats = {}
 floats['dtypes'] = FLOAT_DTYPES
 floats['axisNone'] = False
+floats['ndims'] = range(2, NDIM_MAX + 1)
 floats['force_output_dtype'] = False
 floats['reuse_non_nan_func'] = False
 
@@ -25,15 +27,14 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     cdef np.DTYPE_t amax, ai
 """
 
-loop = {}
-loop[2] = """\
-    if nINDEX1 == 0:
+floats['loop'] = """\
+    if nINDEXLAST == 0:
         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
         raise ValueError(msg)
-    for iINDEX0 in range(nINDEX0):
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
         amax = MINDTYPE
         allnan = 1
-        for iINDEX1 in range(nINDEX1):
+        for iINDEXLAST in range(nINDEXLAST):
             ai = a[INDEXALL]
             if ai >= amax:
                 amax = ai
@@ -44,40 +45,19 @@ loop[2] = """\
             y[INDEXPOP] = NAN
     return y
 """
-loop[3] = """\
-    if nINDEX2 == 0:
-        msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
-        raise ValueError(msg)
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            amax = MINDTYPE
-            allnan = 1
-            for iINDEX2 in range(nINDEX2):
-                ai = a[INDEXALL]
-                if ai >= amax:
-                    amax = ai
-                    allnan = 0
-            if allnan == 0:
-                y[INDEXPOP] = amax
-            else:
-                y[INDEXPOP] = NAN
-    return y
-"""
-
-floats['loop'] = loop
 
 # Float dtypes (axis=None) --------------------------------------------------
 
 floats_None = deepcopy(floats)
 floats_None['axisNone'] = True
+floats_None['ndims'] = range(1, NDIM_MAX + 1)
 
-loop = {}
-loop[1] = """\
-    if nINDEX0 == 0:
+floats_None['loop'] = """\
+    if PyArray_SIZE(a) == 0:
         m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
         raise ValueError(m)
     amax = MINDTYPE
-    for iINDEX0 in range(nINDEX0):
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
         ai = a[INDEXALL]
         if ai >= amax:
             amax = ai
@@ -87,122 +67,43 @@ loop[1] = """\
     else:
         return np.DTYPE(NAN)
 """
-loop[2] = """\
-    if nINDEX0 * nINDEX1 == 0:
-        m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
-        raise ValueError(m)
-    amax = MINDTYPE
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            ai = a[INDEXALL]
-            if ai >= amax:
-                amax = ai
-                allnan = 0
-    if allnan == 0:
-        return np.DTYPE(amax)
-    else:
-        return np.DTYPE(NAN)
-"""
-loop[3] = """\
-    if nINDEX0 * nINDEX1 * nINDEX2 == 0:
-        m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
-        raise ValueError(m)
-    amax = MINDTYPE
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            for iINDEX2 in range(nINDEX2):
-                ai = a[INDEXALL]
-                if ai >= amax:
-                    amax = ai
-                    allnan = 0
-    if allnan == 0:
-        return np.DTYPE(amax)
-    else:
-        return np.DTYPE(NAN)
-"""
-
-floats_None['loop'] = loop
 
 # Int dtypes (not axis=None) ------------------------------------------------
 
 ints = deepcopy(floats)
 ints['dtypes'] = INT_DTYPES
 
-loop = {}
-loop[2] = """\
-    if nINDEX1 == 0:
+ints['loop'] = """\
+    if nINDEXLAST == 0:
         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
         raise ValueError(msg)
-    for iINDEX0 in range(nINDEX0):
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
         amax = MINDTYPE
-        for iINDEX1 in range(nINDEX1):
+        for iINDEXLAST in range(nINDEXLAST):
             ai = a[INDEXALL]
             if ai >= amax:
                 amax = ai
         y[INDEXPOP] = amax
     return y
 """
-loop[3] = """\
-    if nINDEX2 == 0:
-        msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
-        raise ValueError(msg)
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            amax = MINDTYPE
-            for iINDEX2 in range(nINDEX2):
-                ai = a[INDEXALL]
-                if ai >= amax:
-                    amax = ai
-            y[INDEXPOP] = amax
-    return y
-"""
-
-ints['loop'] = loop
 
 # Int dtypes (axis=None) ----------------------------------------------------
 
 ints_None = deepcopy(ints)
 ints_None['axisNone'] = True
+ints_None['ndims'] = range(1, NDIM_MAX + 1)
 
-loop = {}
-loop[1] = """\
-    if nINDEX0 == 0:
+ints_None['loop'] = """\
+    if PyArray_SIZE(a) == 0:
         m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
         raise ValueError(m)
     amax = MINDTYPE
-    for iINDEX0 in range(nINDEX0):
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
         ai = a[INDEXALL]
         if ai >= amax:
             amax = ai
     return np.DTYPE(amax)
 """
-loop[2] = """\
-    if nINDEX0 * nINDEX1 == 0:
-        m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
-        raise ValueError(m)
-    amax = MINDTYPE
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            ai = a[INDEXALL]
-            if ai >= amax:
-                amax = ai
-    return np.DTYPE(amax)
-"""
-loop[3] = """\
-    if nINDEX0 * nINDEX1 * nINDEX2 == 0:
-        m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
-        raise ValueError(m)
-    amax = MINDTYPE
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            for iINDEX2 in range(nINDEX2):
-                ai = a[INDEXALL]
-                if ai >= amax:
-                    amax = ai
-    return np.DTYPE(amax)
-"""
-
-ints_None['loop'] = loop
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 

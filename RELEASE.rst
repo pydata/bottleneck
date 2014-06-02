@@ -15,6 +15,9 @@ Bottleneck 0.9.0
 
 - bn.slow.move functions with method='strides' no longer limited to ndim < 4
 - Use setuptools to enable automatic installation of numpy by pip
+- A new compile time option NDIM_MAX allows for adjusting the number of
+  dimensions for which fast functions are generated
+- Moving window functions now release Python's global interpreter lock
 
 Older versions
 ==============

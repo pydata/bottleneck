@@ -1,6 +1,12 @@
 "Turn templates into Cython pyx files."
 
+import os
 import os.path
+import re
+
+
+NDIM_MAX = int(os.getenv('NDIM_MAX', 3))
+TAB = ' ' * 4
 
 
 def template(func):
@@ -13,6 +19,7 @@ def template(func):
         code = subtemplate(name=func['name'],
                            top=f['top'],
                            loop=f['loop'],
+                           ndims=f.get('ndims', range(1, NDIM_MAX + 1)),
                            axisNone=f['axisNone'],
                            dtypes=f['dtypes'],
                            force_output_dtype=f['force_output_dtype'],
@@ -37,11 +44,9 @@ def template(func):
     fid.close()
 
 
-def subtemplate(name, top, loop, axisNone, dtypes, force_output_dtype,
-                reuse_non_nan_func, is_reducing_function, cdef_output,
-                select):
+def subtemplate(name, top, loop, ndims, axisNone, dtypes, force_output_dtype,
+                reuse_non_nan_func, is_reducing_function, cdef_output, select):
     "Assemble template"
-    ndims = sorted(loop.keys())
     funcs = []
     for ndim in ndims:
         if axisNone:
@@ -67,7 +72,11 @@ def subtemplate(name, top, loop, axisNone, dtypes, force_output_dtype,
                         ydtype = dtype
                     func += loop_cdef(ndim, ydtype, axis, is_reducing_function,
                                       cdef_output)
-                    func += looper(loop[ndim], ndim, axis)
+                    loop_template = loop_expand_product_range(
+                        loop.replace('NDIM', str(ndim)))
+                    func += looper(loop_template, ndim, axis)
+
+                    func = unindex_0dimensional(func, ydtype)
 
                     # name, ndim, dtype, axis
                     func = func.replace('NAME', name)
@@ -95,6 +104,7 @@ def looper(loop, ndim, axis):
         INDEXALL          Replace with i0, i1, i2
         INDEXPOP          If axis=1, e.g., replace with i0, i2
         INDEXN            If N=1, e.g., replace with 1
+        INDEXLAST         If ndim=1, e.g., replace with 0
         INDEXREPLACE|exp| If exp = 'k - window' and axis=1, e.g., replace
                           with i0, k - window, i2
         NREPLACE|exp|     If exp = 'n - window' and axis=1, e.g., replace
@@ -185,6 +195,9 @@ def looper(loop, ndim, axis):
         idx.pop(axis)
     INDEXPOP = ', '.join(['i' + str(i) for i in idx])
     code = code.replace('INDEXPOP', INDEXPOP)
+
+    # INDEXLAST
+    code = code.replace('INDEXLAST', 'INDEX%d' % (ndim - 1))
 
     # INDEXN
     idx = list(range(ndim))
@@ -311,18 +324,17 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
         elif axis >= ndim:
             raise ValueError("`axis` must be less then `ndim`")
 
-    tab = '    '
     cdefs = []
 
     # cdef loop indices
     idx = ', '.join('i'+str(i) for i in range(ndim))
-    cdefs.append(tab + 'cdef Py_ssize_t ' + idx)
+    cdefs.append(TAB + 'cdef Py_ssize_t ' + idx)
 
     # Length along each dimension
-    cdefs.append(tab + "cdef np.npy_intp *dim")
-    cdefs.append(tab + "dim = PyArray_DIMS(a)")
+    cdefs.append(TAB + "cdef np.npy_intp *dim")
+    cdefs.append(TAB + "dim = PyArray_DIMS(a)")
     for dim in range(ndim):
-        cdefs.append(tab + "cdef Py_ssize_t n%d = dim[%d]" % (dim, dim))
+        cdefs.append(TAB + "cdef Py_ssize_t n%d = dim[%d]" % (dim, dim))
 
     if not cdef_output:
         return '\n'.join(cdefs) + '\n'
@@ -333,33 +345,127 @@ def loop_cdef(ndim, dtype, axis, is_reducing_function, cdef_output=True):
             idx = list(range(ndim))
             del idx[axis]
             ns = ', '.join(['n'+str(j) for j in idx])
-            cdefs.append("%scdef np.npy_intp *dims = [%s]" % (tab, ns))
+            cdefs.append("%scdef np.npy_intp *dims = [%s]" % (TAB, ns))
             if dtype == 'bool':
                 y = "%scdef np.ndarray[np.uint8_t, ndim=%d, cast=True] "
                 y += "y = PyArray_EMPTY(%d, dims,"
                 y += "\n\t\tNPY_BOOL, 0)"
-                cdefs.append(y % (tab, ndim-1, ndim-1))
+                cdefs.append(y % (TAB, ndim-1, ndim-1))
             else:
                 y = "%scdef np.ndarray[np.%s_t, ndim=%d] "
                 y += "y = PyArray_EMPTY(%d, dims,"
                 y += "\n\t\tNPY_%s, 0)"
-                cdefs.append(y % (tab, dtype, ndim-1, ndim-1, dtype))
+                cdefs.append(y % (TAB, dtype, ndim-1, ndim-1, dtype))
     else:
         idx = list(range(ndim))
         ns = ', '.join('n'+str(i) for i in idx)
-        cdefs.append("%scdef np.npy_intp *dims = [%s]" % (tab, ns))
+        cdefs.append("%scdef np.npy_intp *dims = [%s]" % (TAB, ns))
         if dtype == 'bool':
             y = "%scdef np.ndarray[np.uint8_t, ndim=%d, cast=True] "
             y += "y = PyArray_EMPTY(%d, dims,"
             y += "\n\t\tNPY_BOOL, 0)"
-            cdefs.append(y % (tab, ndim, ndim))
+            cdefs.append(y % (TAB, ndim, ndim))
         else:
             y = "%scdef np.ndarray[np.%s_t, ndim=%d] "
             y += "y = PyArray_EMPTY(%d, dims,"
             y += "\n\t\tNPY_%s, 0)"
-            cdefs.append(y % (tab, dtype, ndim, ndim, dtype))
+            cdefs.append(y % (TAB, dtype, ndim, ndim, dtype))
 
     return '\n'.join(cdefs) + '\n'
+
+
+def _parse_product_range_line(line):
+    start, range_inside, prod_inside, end = line.split('|')
+    for_statement = start + end
+    for_statement = for_statement.replace('PRODUCT_RANGE',
+                                          'range(%s)' % range_inside)
+    for_statement = for_statement.replace('INDEXN', 'INDEX%d')
+    range_list = eval('range(%s)' % prod_inside)
+    return [TAB * i + for_statement % (n, n)
+            for i, n in enumerate(range_list)]
+
+
+def loop_expand_product_range(text):
+    """
+    Replace the PRODUCT_RANGE macro with an appropriate number of for loops
+
+    The first argument is inserted into the argument of range in each for loop;
+    the second argument is inserted into another range function and evaluated
+    at compile time to generate the list of axes over which the each the for
+    statements apply.
+
+    Examples
+    --------
+
+    >>> loop = '''\
+    ...     for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
+    ...         y += a[iINDEXALL]
+    ...     '''
+    >>> print(loop_expand_product_range(loop.replace('NDIM', str(0))))
+    y += a[iINDEXALL]
+    >>> print(loop_expand_product_range(loop.replace('NDIM', str(1))))
+    for iINDEX0 in range(nINDEX0):
+        y += a[iINDEXALL]
+    >>> print(loop_expand_product_range(loop.replace('NDIM', str(2))))
+    for iINDEX0 in range(nINDEX0):
+        for iINDEX1 in range(nINDEX1):
+            y += a[iINDEXALL]
+
+    """
+    while 'PRODUCT_RANGE' in text:
+        lines = text.split('\n')
+        new_lines = []
+        inside_block = False
+        for line in lines:
+            indent = len(line) - len(line.lstrip())
+            if not inside_block and 'PRODUCT_RANGE' in line:
+                inside_block = True
+                block_indent = indent
+                expanded_line = _parse_product_range_line(line)
+                further_indent = TAB * len(expanded_line)
+                new_lines.extend(expanded_line)
+            elif inside_block:
+                if indent > block_indent:
+                    assert line[:len(TAB)] == TAB
+                    new_lines.append(further_indent + line[len(TAB):])
+                elif line.strip() == '':
+                    new_lines.append('')
+                else:
+                    inside_block = False
+                    new_lines.append(line)
+            else:
+                new_lines.append(line)
+        text = '\n'.join(new_lines)
+    return text
+
+
+def unindex_0dimensional(text, ydtype):
+    """
+    If a loop template includes assignments to 0-dimensional return variables
+    like 'y[] = ', replace them with return statements (cast to ydtype), after
+    removing all existing return statements.
+
+    Examples
+    --------
+
+    >>> text = '''\
+    ...     if foo:
+    ...         PyArray_FillWithScalar(y, NAN)
+    ...     y[] = a
+    ...     return y
+    ...     ''''
+    >>> print(unindex_0dimensional(text, 'float64'))
+        if foo:
+            return np.float64(NAN)
+        return np.float64(a)
+    """
+    if 'y[] = ' in text:
+        text = text.replace('return y', '')
+        text = re.sub(r'PyArray_FillWithScalar\(y, (\w+)\)',
+                      r'return np.%s(\1)' % ydtype, text)
+        text = re.sub(r'y\[\] = <np.(\w+)_t> (.+)', r'return np.\1(\2)', text)
+        text = re.sub(r'y\[\] = (.+)', r'return np.%s(\1)' % ydtype, text)
+    return text
 
 
 class Selector(object):

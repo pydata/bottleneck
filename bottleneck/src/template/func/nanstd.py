@@ -2,6 +2,7 @@
 
 from copy import deepcopy
 import bottleneck as bn
+from bottleneck.src.template.template import NDIM_MAX
 
 __all__ = ["nanstd"]
 
@@ -13,6 +14,7 @@ INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 floats = {}
 floats['dtypes'] = FLOAT_DTYPES
 floats['axisNone'] = False
+floats['ndims'] = range(2, NDIM_MAX + 1)
 floats['force_output_dtype'] = False
 floats['reuse_non_nan_func'] = False
 
@@ -25,12 +27,11 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a, int ddof):
     cdef np.DTYPE_t asum = 0, amean, ai
 """
 
-loop = {}
-loop[2] = """\
-    for iINDEX0 in range(nINDEX0):
+floats['loop'] = """\
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
         asum = 0
         count = 0
-        for iINDEX1 in range(nINDEX1):
+        for iINDEXLAST in range(nINDEXLAST):
             ai = a[INDEXALL]
             if ai == ai:
                 asum += ai
@@ -38,7 +39,7 @@ loop[2] = """\
         if count > ddof:
             amean = asum / count
             asum = 0
-            for iINDEX1 in range(nINDEX1):
+            for iINDEXLAST in range(nINDEXLAST):
                 ai = a[INDEXALL]
                 if ai == ai:
                     ai -= amean
@@ -48,45 +49,15 @@ loop[2] = """\
             y[INDEXPOP] = NAN
     return y
 """
-loop[3] = """\
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            asum = 0
-            count = 0
-            for iINDEX2 in range(nINDEX2):
-                ai = a[INDEXALL]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-            if count > ddof:
-                amean = asum / count
-                asum = 0
-                for iINDEX2 in range(nINDEX2):
-                    ai = a[INDEXALL]
-                    if ai == ai:
-                        ai -= amean
-                        asum += (ai * ai)
-                y[INDEXPOP] = sqrt(asum / (count - ddof))
-            else:
-                y[INDEXPOP] = NAN
-    return y
-"""
-floats['loop'] = loop
 
 # Float dtypes (axis=None) --------------------------------------------------
 
 floats_None = deepcopy(floats)
 floats_None['axisNone'] = True
+floats_None['ndims'] = range(1, NDIM_MAX + 1)
 
-returns = """\
-        return np.DTYPE(sqrt(asum / (count - ddof)))
-    else:
-        return np.DTYPE(NAN)
-"""
-
-loop = {}
-loop[1] = """\
-    for iINDEX0 in range(nINDEX0):
+floats_None['loop'] = """\
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
         ai = a[INDEXALL]
         if ai == ai:
             asum += ai
@@ -94,49 +65,15 @@ loop[1] = """\
     if count > ddof:
         amean = asum / count
         asum = 0
-        for iINDEX0 in range(nINDEX0):
+        for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
             ai = a[INDEXALL]
             if ai == ai:
                 ai -= amean
                 asum += (ai * ai)
-""" + returns
-loop[2] = """\
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            ai = a[INDEXALL]
-            if ai == ai:
-                asum += ai
-                count += 1
-    if count > ddof:
-        amean = asum / count
-        asum = 0
-        for iINDEX0 in range(nINDEX0):
-            for iINDEX1 in range(nINDEX1):
-                ai = a[INDEXALL]
-                if ai == ai:
-                    ai -= amean
-                    asum += (ai * ai)
-""" + returns
-loop[3] = """\
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            for iINDEX2 in range(nINDEX2):
-                ai = a[INDEXALL]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-    if count > ddof:
-        amean = asum / count
-        asum = 0
-        for iINDEX0 in range(nINDEX0):
-            for iINDEX1 in range(nINDEX1):
-                for iINDEX2 in range(nINDEX2):
-                    ai = a[INDEXALL]
-                    if ai == ai:
-                        ai -= amean
-                        asum += (ai * ai)
-""" + returns
-floats_None['loop'] = loop
+        return np.DTYPE(sqrt(asum / (count - ddof)))
+    else:
+        return np.DTYPE(NAN)
+"""
 
 # Int dtypes (not axis=None) ------------------------------------------------
 
@@ -148,116 +85,52 @@ ints['top'] = """
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a, int ddof):
-    "Valriance of NDIMd array with dtype=DTYPE along axis=AXIS ignoring NaNs."
+    "Variance of NDIMd array with dtype=DTYPE along axis=AXIS ignoring NaNs."
     cdef np.float64_t asum = 0, amean, ai
 """
 
-loop = {}
-loop[2] = """\
-    if nINDEX1 == 0:
+ints['loop'] = """\
+    if nINDEXLAST == 0:
         PyArray_FillWithScalar(y, NAN)
     else:
-        for iINDEX0 in range(nINDEX0):
+        for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
             asum = 0
-            for iINDEX1 in range(nINDEX1):
+            for iINDEXLAST in range(nINDEXLAST):
                 asum += a[INDEXALL]
-            amean = asum / nINDEX1
+            amean = asum / nINDEXLAST
             asum = 0
-            for iINDEX1 in range(nINDEX1):
+            for iINDEXLAST in range(nINDEXLAST):
                 ai = a[INDEXALL]
                 ai -= amean
                 asum += (ai * ai)
-            y[INDEXPOP] = sqrt(asum / (nINDEX1 - ddof))
+            y[INDEXPOP] = sqrt(asum / (nINDEXLAST - ddof))
     return y
 """
-loop[3] = """\
-    if nINDEX2 == 0:
-        PyArray_FillWithScalar(y, NAN)
-    else:
-        for iINDEX0 in range(nINDEX0):
-            for iINDEX1 in range(nINDEX1):
-                asum = 0
-                for iINDEX2 in range(nINDEX2):
-                    asum += a[INDEXALL]
-                amean = asum / nINDEX2
-                asum = 0
-                for iINDEX2 in range(nINDEX2):
-                    ai = a[INDEXALL]
-                    ai -= amean
-                    asum += (ai * ai)
-                y[INDEXPOP] = sqrt(asum / (nINDEX2 - ddof))
-    return y
-"""
-ints['loop'] = loop
 
 # Int dtypes (axis=None) ----------------------------------------------------
 
 ints_None = deepcopy(ints)
 ints_None['top'] = ints['top'] + "    cdef Py_ssize_t size\n"
 ints_None['axisNone'] = True
+ints_None['ndims'] = range(1, NDIM_MAX + 1)
 
-loop = {}
-loop[1] = """\
-    size = nINDEX0
+ints_None['loop'] = """\
+    size = PyArray_SIZE(a)
     if size == 0:
         return np.float64(NAN)
-    for iINDEX0 in range(nINDEX0):
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
+        asum += a[INDEXALL]
+    amean = asum / size
+    asum = 0
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
         ai = a[INDEXALL]
-        if ai == ai:
-            asum += ai
-    amean = asum / size
-    asum = 0
-    for iINDEX0 in range(nINDEX0):
-        ai = a[INDEXALL]
-        if ai == ai:
-            ai -= amean
-            asum += (ai * ai)
+        ai -= amean
+        asum += (ai * ai)
     if size > ddof:
         return np.float64(sqrt(asum / (size - ddof)))
     else:
         return np.float64(NAN)
 """
-loop[2] = """\
-    size = nINDEX0 * nINDEX1
-    if size == 0:
-        return np.float64(NAN)
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            asum += a[INDEXALL]
-    amean = asum / size
-    asum = 0
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            ai = a[INDEXALL]
-            ai -= amean
-            asum += (ai * ai)
-    if size > ddof:
-        return np.float64(sqrt(asum / (size - ddof)))
-    else:
-        return np.float64(NAN)
-"""
-loop[3] = """\
-    size = nINDEX0 * nINDEX1 * nINDEX2
-    if size == 0:
-        return np.float64(NAN)
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            for iINDEX2 in range(nINDEX2):
-                asum += a[INDEXALL]
-    amean = asum / size
-    asum = 0
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            for iINDEX2 in range(nINDEX2):
-                ai = a[INDEXALL]
-                ai -= amean
-                asum += (ai * ai)
-    if size > ddof:
-        return np.float64(sqrt(asum / (size - ddof)))
-    else:
-        return np.float64(NAN)
-"""
-ints_None['loop'] = loop
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 

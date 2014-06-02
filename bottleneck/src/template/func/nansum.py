@@ -2,6 +2,7 @@
 
 from copy import deepcopy
 import bottleneck as bn
+from bottleneck.src.template.template import NDIM_MAX
 
 __all__ = ["nansum"]
 
@@ -14,6 +15,7 @@ INT_DTYPES = [x for x in bn.dtypes if 'int' in x]
 floats = {}
 floats['dtypes'] = FLOAT_DTYPES
 floats['axisNone'] = False
+floats['ndims'] = range(2, NDIM_MAX + 1)
 floats['force_output_dtype'] = False
 floats['reuse_non_nan_func'] = False
 
@@ -26,12 +28,11 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     cdef np.DTYPE_t asum = 0, ai
 """
 
-loop = {}
-loop[2] = """\
-    for iINDEX0 in range(nINDEX0):
+floats['loop'] = """\
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
         asum = 0
         allnan = 1
-        for iINDEX1 in range(nINDEX1):
+        for iINDEXLAST in range(nINDEXLAST):
             ai = a[INDEXALL]
             if ai == ai:
                 asum += ai
@@ -42,62 +43,24 @@ loop[2] = """\
             y[INDEXPOP] = NAN
     return y
 """
-loop[3] = """\
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            asum = 0
-            allnan = 1
-            for iINDEX2 in range(nINDEX2):
-                ai = a[INDEXALL]
-                if ai == ai:
-                    asum += ai
-                    allnan = 0
-            if allnan == 0:
-                y[INDEXPOP] = asum
-            else:
-                y[INDEXPOP] = NAN
-    return y
-"""
-floats['loop'] = loop
 
 # Float dtypes (axis=None) --------------------------------------------------
 
 floats_None = deepcopy(floats)
 floats_None['axisNone'] = True
+floats_None['ndims'] = range(1, NDIM_MAX + 1)
 
-returns = """\
+floats_None['loop'] = """\
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
+        ai = a[INDEXALL]
+        if ai == ai:
+            asum += ai
+            allnan = 0
     if allnan == 0:
         return np.DTYPE(asum)
     else:
         return np.DTYPE(NAN)
 """
-
-loop = {}
-loop[1] = """\
-    for iINDEX0 in range(nINDEX0):
-        ai = a[INDEXALL]
-        if ai == ai:
-            asum += ai
-            allnan = 0
-""" + returns
-loop[2] = """\
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            ai = a[INDEXALL]
-            if ai == ai:
-                asum += ai
-                allnan = 0
-""" + returns
-loop[3] = """\
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            for iINDEX2 in range(nINDEX2):
-                ai = a[INDEXALL]
-                if ai == ai:
-                    asum += ai
-                    allnan = 0
-""" + returns
-floats_None['loop'] = loop
 
 # Int dtypes (not axis=None) ------------------------------------------------
 
@@ -112,55 +75,28 @@ def NAME_NDIMd_DTYPE_axisAXIS(np.ndarray[np.DTYPE_t, ndim=NDIM] a):
     cdef np.DTYPE_t asum = 0, ai
 """
 
-loop = {}
-loop[2] = """\
-    for iINDEX0 in range(nINDEX0):
+ints['loop'] = """\
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
         asum = 0
-        for iINDEX1 in range(nINDEX1):
+        for iINDEXLAST in range(nINDEXLAST):
             asum += a[INDEXALL]
         y[INDEXPOP] = asum
     return y
 """
-loop[3] = """\
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            asum = 0
-            for iINDEX2 in range(nINDEX2):
-                asum += a[INDEXALL]
-            y[INDEXPOP] = asum
-    return y
-"""
-ints['loop'] = loop
 
 # Int dtypes (axis=None) ----------------------------------------------------
 
 ints_None = deepcopy(ints)
 ints_None['top'] = ints['top'] + "    cdef Py_ssize_t size\n"
 ints_None['axisNone'] = True
+ints_None['ndims'] = range(1, NDIM_MAX + 1)
 
-loop = {}
-loop[1] = """\
-    size = nINDEX0
-    for iINDEX0 in range(nINDEX0):
+ints_None['loop'] = """\
+    size = PyArray_SIZE(a)
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
         asum += a[INDEXALL]
     return np.DTYPE(asum)
 """
-loop[2] = """\
-    size = nINDEX0 * nINDEX1
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            asum += a[INDEXALL]
-    return np.DTYPE(asum)
-"""
-loop[3] = """\
-    size = nINDEX0 * nINDEX1 * nINDEX2
-    for iINDEX0 in range(nINDEX0):
-        for iINDEX1 in range(nINDEX1):
-            for iINDEX2 in range(nINDEX2):
-                asum += a[INDEXALL]
-    return np.DTYPE(asum)
-"""
-ints_None['loop'] = loop
 
 # Slow, unaccelerated ndim/dtype --------------------------------------------
 
