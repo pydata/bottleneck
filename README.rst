@@ -206,9 +206,13 @@ Benchmarks for the low-level Cython functions::
 Slow
 ====
 
-Currently only 1d, 2d, and 3d input arrays with data type (dtype) int32,
-int64, float32, and float64 are accelerated. All other ndim/dtype
+By default, only 1d, 2d, and 3d input arrays with data type (dtype)
+int32, int64, float32, and float64 are accelerated. All other ndim/dtype
 combinations result in calls to slower, unaccelerated functions.
+
+With the development version of bottleneck, it is possible to accelerate higher
+dimensional arrays if an appropriate flag is set at compile-time (see
+`Fast functions for higher dimensions`_ below).
 
 License
 =======
@@ -258,7 +262,8 @@ Cython.)
 Bottleneck takes a few minutes to build on newer machines. On older machines
 it can take a lot longer (one user reported 30 minutes!).
 
-**GNU/Linux, Mac OS X, et al.**
+GNU/Linux, Mac OS X, et al.
+---------------------------
 
 To install Bottleneck::
 
@@ -271,7 +276,8 @@ Or, if you wish to specify where Bottleneck is installed, for example inside
     $ python setup.py build
     $ sudo python setup.py install --prefix=/usr/local
 
-**Windows**
+Windows
+-------
 
 You can compile Bottleneck using the instructions below or you can use the
 Windows binaries created by Christoph Gohlke:
@@ -286,7 +292,21 @@ commands::
     python setup.py build --compiler=mingw32
     python setup.py install
 
-**Post install**
+Fast functions for higher dimensions
+------------------------------------
+
+If Cython is available, it is possible to adjust the number of supported
+dimensions at *compile-time* by setting the environment variable ``NDIM_MAX``,
+which defaults to 3. For example, to build 1d, 2d, 3d and 4d versions of all
+functions::
+
+    NDIM_MAX=4 make clean pyx cfiles build
+
+The size of the generated code (and the time required to compile it) scales as
+``NDIM_MAX`` squared.
+
+Post install
+------------
 
 After you have installed Bottleneck, run the suite of unit tests::
 

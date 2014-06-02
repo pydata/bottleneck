@@ -381,7 +381,6 @@ def _parse_product_range_line(line):
                                           'range(%s)' % range_inside)
     for_statement = for_statement.replace('INDEXN', 'INDEX%d')
     range_list = eval('range(%s)' % prod_inside)
-    # range_list = range(*[int(n) for n in prod_inside.split(',')])
     return [TAB * i + for_statement % (n, n)
             for i, n in enumerate(range_list)]
 
@@ -443,9 +442,24 @@ def loop_expand_product_range(text):
 def unindex_0dimensional(text, ydtype):
     """
     If a loop template includes assignments to 0-dimensional return variables
-    like 'y[] = ', replace them with return statemetns.
+    like 'y[] = ', replace them with return statements (cast to ydtype), after
+    removing all existing return statements.
+
+    Examples
+    --------
+
+    >>> text = '''\
+    ...     if foo:
+    ...         PyArray_FillWithScalar(y, NAN)
+    ...     y[] = a
+    ...     return y
+    ...     ''''
+    >>> print(unindex_0dimensional(text, 'float64'))
+        if foo:
+            return np.float64(NAN)
+        return np.float64(a)
     """
-    if '[] = ' in text:
+    if 'y[] = ' in text:
         text = text.replace('return y', '')
         text = re.sub(r'PyArray_FillWithScalar\(y, (\w+)\)',
                       r'return np.%s(\1)' % ydtype, text)
