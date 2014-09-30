@@ -207,7 +207,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
     # nanmean
     run = {}
     run['name'] = "nanmean"
-    run['ref'] = "local copy of sp.stats.nanmean"
+    run['ref'] = "np.nanmean"
     run['scipy_required'] = False
     if mode == 'fast':
         code = "bn.nanmean(a, axis=AXIS)"
@@ -223,7 +223,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
     # nanstd
     run = {}
     run['name'] = "nanstd"
-    run['ref'] = "local copy of sp.stats.nanstd"
+    run['ref'] = "np.nanstd"
     run['scipy_required'] = False
     if mode == 'fast':
         code = "bn.nanstd(a, axis=AXIS)"
