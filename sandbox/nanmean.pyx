@@ -1,14 +1,14 @@
 
 # nanmean sandbox example -----------------------------------------------
 #
-# Convert into C and compile using the setup.py file. See Development
-# section of Bottleneck's manual for an example.
+# Convert into C and compile using the bottleneck/sandbox/setup.py file.
 
 import numpy as np
 cimport numpy as np
 import cython
 
 cdef double NAN = <double> np.nan
+
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
