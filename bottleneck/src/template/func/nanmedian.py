@@ -14,7 +14,7 @@ loop = """\
     if nINDEXLAST == 0:
         PyArray_FillWithScalar(y, NAN)
         return y
-    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM|:
+    for iINDEXN in PRODUCT_RANGE|nINDEXN|NDIM - 1|:
         with nogil:
             j = nAXIS - 1
             flag = 1

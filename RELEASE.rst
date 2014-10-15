@@ -19,6 +19,10 @@ Bottleneck 0.9.0
   dimensions for which fast functions are generated
 - Moving window functions now release Python's global interpreter lock
 
+**Bug fixes**
+
+- #91 bn.nanmedian template bug causes big slowdown
+
 Older versions
 ==============
 
