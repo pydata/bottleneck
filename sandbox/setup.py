@@ -15,8 +15,10 @@ from distutils.extension import Extension
 from Cython.Distutils import build_ext
 import numpy
 
-ext_modules = [Extension("nanmean", ["nanmean.pyx"],
-               include_dirs=[numpy.get_include()])]
+ext_modules = [Extension("rewrite", ["rewrite.pyx"],
+               include_dirs=[numpy.get_include()],
+               extra_link_args=['-fopenmp'],
+               extra_compile_args=['-fopenmp'])]
 
 setup(
     name='nanmean',
