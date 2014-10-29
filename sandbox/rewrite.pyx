@@ -133,20 +133,13 @@ cdef inline np.int32_t nansum_int32_axisNone(np.ndarray a):
 
 cdef inline np.ndarray nansum_float64_axisint(np.ndarray a, int axis):
 
-    cdef int ndim = a.ndim
-    if ndim <= 1:
-        raise ValueError("`a.ndim` must be greater than 1")
-    if axis < 0:
-        axis += ndim
-    if (axis >= ndim) or (axis < 0):
-        raise ValueError("axis(=%d) out of bounds" % axis)
-
     cdef np.flatiter ita
     ita = np.PyArray_IterAllButAxis(a, &axis)
     cdef Py_ssize_t length = a.shape[axis], i
     cdef int stride = a.strides[axis]
 
     # temp python hack
+    cdef int ndim = np.PyArray_NDIM(a)
     cdef list shape = []
     for i in range(ndim):
         if i != axis:
@@ -172,20 +165,13 @@ cdef inline np.ndarray nansum_float64_axisint(np.ndarray a, int axis):
 
 cdef inline np.ndarray nansum_float32_axisint(np.ndarray a, int axis):
 
-    cdef int ndim = a.ndim
-    if ndim <= 1:
-        raise ValueError("`a.ndim` must be greater than 1")
-    if axis < 0:
-        axis += ndim
-    if (axis >= ndim) or (axis < 0):
-        raise ValueError("axis(=%d) out of bounds" % axis)
-
     cdef np.flatiter ita
     ita = np.PyArray_IterAllButAxis(a, &axis)
     cdef Py_ssize_t length = a.shape[axis], i
     cdef int stride = a.strides[axis]
 
     # temp python hack
+    cdef int ndim = np.PyArray_NDIM(a)
     cdef list shape = []
     for i in range(ndim):
         if i != axis:
@@ -211,20 +197,13 @@ cdef inline np.ndarray nansum_float32_axisint(np.ndarray a, int axis):
 
 cdef inline np.ndarray nansum_int64_axisint(np.ndarray a, int axis):
 
-    cdef int ndim = a.ndim
-    if ndim <= 1:
-        raise ValueError("`a.ndim` must be greater than 1")
-    if axis < 0:
-        axis += ndim
-    if (axis >= ndim) or (axis < 0):
-        raise ValueError("axis(=%d) out of bounds" % axis)
-
     cdef np.flatiter ita
     ita = np.PyArray_IterAllButAxis(a, &axis)
     cdef Py_ssize_t length = a.shape[axis], i
     cdef int stride = a.strides[axis]
 
     # temp python hack
+    cdef int ndim = np.PyArray_NDIM(a)
     cdef list shape = []
     for i in range(ndim):
         if i != axis:
@@ -249,20 +228,13 @@ cdef inline np.ndarray nansum_int64_axisint(np.ndarray a, int axis):
 
 cdef inline np.ndarray nansum_int32_axisint(np.ndarray a, int axis):
 
-    cdef int ndim = a.ndim
-    if ndim <= 1:
-        raise ValueError("`a.ndim` must be greater than 1")
-    if axis < 0:
-        axis += ndim
-    if (axis >= ndim) or (axis < 0):
-        raise ValueError("axis(=%d) out of bounds" % axis)
-
     cdef np.flatiter ita
     ita = np.PyArray_IterAllButAxis(a, &axis)
     cdef Py_ssize_t length = a.shape[axis], i
     cdef int stride = a.strides[axis]
 
     # temp python hack
+    cdef int ndim = np.PyArray_NDIM(a)
     cdef list shape = []
     for i in range(ndim):
         if i != axis:
