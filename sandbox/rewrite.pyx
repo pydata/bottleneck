@@ -6,11 +6,12 @@ from numpy cimport NPY_FLOAT32
 from numpy cimport NPY_INT32
 from numpy cimport NPY_INT64
 from numpy cimport PyArray_EMPTY, PyArray_DIMS, import_array
+from numpy cimport PyArray_ITER_DATA as pid
 import_array()
 cdef double NAN = <double> NAN
 
 
-ctypedef fused bnfused:
+ctypedef fused bntypes:
     np.float64_t
     np.float32_t
     np.int64_t
@@ -33,7 +34,6 @@ def nansum(arr, axis=None):
 
     cdef int dtype = np.PyArray_TYPE(a)
     cdef int ndim = np.PyArray_NDIM(a)
-
 
     # defend against 0d beings
     if ndim == 0:
@@ -88,25 +88,25 @@ def nansum(arr, axis=None):
     raise TypeError("Unsupported dtype (%s)." % a.dtype)
 
 
-cdef inline bnfused nansum_axisNone(np.ndarray a, bnfused dt):
+cdef inline bntypes nansum_axisNone(np.ndarray a, bntypes dt):
     cdef int axis=-1
     cdef np.flatiter ita
     ita = np.PyArray_IterAllButAxis(a, &axis)
     cdef Py_ssize_t stride = a.strides[axis], length = a.shape[axis], i
-    cdef bnfused asum = 0, ai
+    cdef bntypes asum = 0, ai
     while np.PyArray_ITER_NOTDONE(ita):
         for i in range(length):
-            ai = (<bnfused*>((<char*>np.PyArray_ITER_DATA(ita)) + i * stride))[0]
-            if bnfused is np.float64_t:
+            ai = (<bntypes*>((<char*>pid(ita)) + i * stride))[0]
+            if bntypes is np.float64_t:
                 if ai == ai:
                     asum += ai
-            elif bnfused is np.int64_t:
+            elif bntypes is np.int64_t:
                 asum += ai
         np.PyArray_ITER_NEXT(ita)
     return asum
 
 
-cdef inline np.ndarray nansum_axisint(np.ndarray a, int axis, bnfused dt):
+cdef inline np.ndarray nansum_axisint(np.ndarray a, int axis, bntypes dt):
 
     cdef np.flatiter ita
     ita = np.PyArray_IterAllButAxis(a, &axis)
@@ -124,15 +124,15 @@ cdef inline np.ndarray nansum_axisint(np.ndarray a, int axis, bnfused dt):
     y = np.empty(shape, )
     cdef np.flatiter ity = np.PyArray_IterNew(y)
 
-    cdef bnfused asum, ai
+    cdef bntypes asum, ai
 
     while np.PyArray_ITER_NOTDONE(ita):
         asum = 0
         for i in range(length):
-            ai = (<bnfused*>((<char*>np.PyArray_ITER_DATA(ita)) + i*stride))[0]
+            ai = (<bntypes*>((<char*>pid(ita)) + i*stride))[0]
             if ai == ai:
                 asum += ai
-        (<double*>((<char*>np.PyArray_ITER_DATA(ity))))[0] = asum
+        (<double*>((<char*>pid(ity))))[0] = asum
         np.PyArray_ITER_NEXT(ita)
         np.PyArray_ITER_NEXT(ity)
 
