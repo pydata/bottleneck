@@ -64,7 +64,7 @@ def nansum(arr, axis=None):
     # what if axis is a float or such?
     cdef int axis_int = <int>axis
 
-    # defend against the evils of negative axes
+    # defend against the axis of negativity
     if axis_int < 0:
         axis_int += ndim
         if axis_int < 0:
@@ -85,12 +85,14 @@ def nansum(arr, axis=None):
             return nansum_all(ita, stride, length, i32)
         raise TypeError("Unsupported dtype (%s)." % a.dtype)
 
-    # reduce over a single axis
+    # if we've made it this far then ndim > 1
+
+    # iterators
     ita = np.PyArray_IterAllButAxis(a, &axis_int)
     stride = a.strides[axis_int]
     length = a.shape[axis_int]
 
-    # temp python hack
+    # shape of output, y
     cdef list shape = []
     for i in range(ndim):
         if i != axis_int:
