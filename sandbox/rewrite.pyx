@@ -12,7 +12,7 @@ cdef double NAN = <double> NAN
 cdef int axis_negone = -1
 
 
-ctypedef fused bntypes:
+ctypedef fused bntype:
     np.float64_t
     np.float32_t
     np.int64_t
@@ -52,13 +52,13 @@ def nansum(arr, axis=None):
         stride = a.strides[axis_negone]
         length = a.shape[axis_negone]
         if dtype == NPY_FLOAT64:
-            return nansum_axisNone(ita, stride, length, f64)
+            return nansum_all(ita, stride, length, f64)
         if dtype == NPY_FLOAT32:
-            return nansum_axisNone(ita, stride, length, f32)
+            return nansum_all(ita, stride, length, f32)
         if dtype == NPY_INT64:
-            return nansum_axisNone(ita, stride, length, i64)
+            return nansum_all(ita, stride, length, i64)
         if dtype == NPY_INT32:
-            return nansum_axisNone(ita, stride, length, i32)
+            return nansum_all(ita, stride, length, i32)
         raise TypeError("Unsupported dtype (%s)." % a.dtype)
 
     # what if axis is a float or such?
@@ -76,13 +76,13 @@ def nansum(arr, axis=None):
         stride = a.strides[axis_negone]
         length = a.shape[axis_negone]
         if dtype == NPY_FLOAT64:
-            return nansum_axisNone(ita, stride, length, f64)
+            return nansum_all(ita, stride, length, f64)
         if dtype == NPY_FLOAT32:
-            return nansum_axisNone(ita, stride, length, f32)
+            return nansum_all(ita, stride, length, f32)
         if dtype == NPY_INT64:
-            return nansum_axisNone(ita, stride, length, i64)
+            return nansum_all(ita, stride, length, i64)
         if dtype == NPY_INT32:
-            return nansum_axisNone(ita, stride, length, i32)
+            return nansum_all(ita, stride, length, i32)
         raise TypeError("Unsupported dtype (%s)." % a.dtype)
 
     # reduce over a single axis
@@ -101,51 +101,51 @@ def nansum(arr, axis=None):
     if dtype == NPY_FLOAT64:
         y = np.empty(shape, np.float64)
         ity = np.PyArray_IterNew(y)
-        nansum_axisint(ita, ity, stride, length, f64)
+        nansum_one(ita, ity, stride, length, f64)
         return y
     if dtype == NPY_FLOAT32:
         y = np.empty(shape, np.float64)
         ity = np.PyArray_IterNew(y)
-        nansum_axisint(ita, ity, stride, length, f32)
+        nansum_one(ita, ity, stride, length, f32)
         return y
     if dtype == NPY_INT64:
         y = np.empty(shape, np.float64)
         ity = np.PyArray_IterNew(y)
-        nansum_axisint(ita, ity, stride, length, i64)
+        nansum_one(ita, ity, stride, length, i64)
         return y
     if dtype == NPY_INT32:
         y = np.empty(shape, np.float64)
         ity = np.PyArray_IterNew(y)
-        nansum_axisint(ita, ity, stride, length, i32)
+        nansum_one(ita, ity, stride, length, i32)
         return y
     raise TypeError("Unsupported dtype (%s)." % a.dtype)
 
 
-cdef inline bntypes nansum_axisNone(np.flatiter ita, Py_ssize_t stride,
-                                    Py_ssize_t length, bntypes dt):
+cdef inline bntype nansum_all(np.flatiter ita, Py_ssize_t stride,
+                                    Py_ssize_t length, bntype dt):
     cdef Py_ssize_t i
-    cdef bntypes asum = 0, ai
+    cdef bntype asum = 0, ai
     while np.PyArray_ITER_NOTDONE(ita):
         for i in range(length):
-            ai = (<bntypes*>((<char*>pid(ita)) + i * stride))[0]
-            if bntypes is np.float64_t:
+            ai = (<bntype*>((<char*>pid(ita)) + i * stride))[0]
+            if bntype is np.float64_t:
                 if ai == ai:
                     asum += ai
-            elif bntypes is np.int64_t:
+            elif bntype is np.int64_t:
                 asum += ai
         np.PyArray_ITER_NEXT(ita)
     return asum
 
 
-cdef inline np.ndarray nansum_axisint(np.flatiter ita, np.flatiter ity,
+cdef inline np.ndarray nansum_one(np.flatiter ita, np.flatiter ity,
                                        Py_ssize_t stride, Py_ssize_t length,
-                                       bntypes dt):
+                                       bntype dt):
     cdef Py_ssize_t i
-    cdef bntypes asum, ai
+    cdef bntype asum, ai
     while np.PyArray_ITER_NOTDONE(ita):
         asum = 0
         for i in range(length):
-            ai = (<bntypes*>((<char*>pid(ita)) + i*stride))[0]
+            ai = (<bntype*>((<char*>pid(ita)) + i*stride))[0]
             if ai == ai:
                 asum += ai
         (<double*>((<char*>pid(ity))))[0] = asum
