@@ -93,7 +93,7 @@ def nansum(arr, axis=None):
     # temp python hack
     cdef list shape = []
     for i in range(ndim):
-        if i != axis:
+        if i != axis_int:
             shape.append(a.shape[i])
 
     cdef np.flatiter ity
