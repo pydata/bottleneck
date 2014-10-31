@@ -122,7 +122,7 @@ def nansum(arr, axis=None):
 
 
 cdef inline bntype nansum_all(np.flatiter ita, Py_ssize_t stride,
-                                    Py_ssize_t length, bntype dt):
+                              Py_ssize_t length, bntype dt):
     cdef Py_ssize_t i
     cdef bntype asum = 0, ai
     while np.PyArray_ITER_NOTDONE(ita):
@@ -131,22 +131,35 @@ cdef inline bntype nansum_all(np.flatiter ita, Py_ssize_t stride,
             if bntype is np.float64_t:
                 if ai == ai:
                     asum += ai
-            elif bntype is np.int64_t:
+            if bntype is np.float32_t:
+                if ai == ai:
+                    asum += ai
+            if bntype is np.int64_t:
+                asum += ai
+            if bntype is np.int32_t:
                 asum += ai
         np.PyArray_ITER_NEXT(ita)
     return asum
 
 
 cdef inline np.ndarray nansum_one(np.flatiter ita, np.flatiter ity,
-                                       Py_ssize_t stride, Py_ssize_t length,
-                                       bntype dt):
+                                  Py_ssize_t stride, Py_ssize_t length,
+                                  bntype dt):
     cdef Py_ssize_t i
     cdef bntype asum, ai
     while np.PyArray_ITER_NOTDONE(ita):
         asum = 0
         for i in range(length):
             ai = (<bntype*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
+            if bntype is np.float64_t:
+                if ai == ai:
+                    asum += ai
+            if bntype is np.float32_t:
+                if ai == ai:
+                    asum += ai
+            if bntype is np.int64_t:
+                asum += ai
+            if bntype is np.int32_t:
                 asum += ai
         (<double*>((<char*>pid(ity))))[0] = asum
         np.PyArray_ITER_NEXT(ita)
