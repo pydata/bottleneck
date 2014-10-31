@@ -9,6 +9,7 @@ from numpy cimport PyArray_EMPTY, PyArray_DIMS, import_array
 from numpy cimport PyArray_ITER_DATA as pid
 import_array()
 cdef double NAN = <double> NAN
+cdef int axis_negone = -1
 
 
 ctypedef fused bntypes:
@@ -32,6 +33,8 @@ def nansum(arr, axis=None):
     else:
         a = np.array(arr, copy=False)
 
+    cdef np.flatiter ita
+    cdef Py_ssize_t stride, length, i
     cdef int dtype = np.PyArray_TYPE(a)
     cdef int ndim = np.PyArray_NDIM(a)
 
@@ -45,14 +48,17 @@ def nansum(arr, axis=None):
 
     # reduce over all axes: axis=None
     if axis is None:
+        ita = np.PyArray_IterAllButAxis(a, &axis_negone)
+        stride = a.strides[axis_negone]
+        length = a.shape[axis_negone]
         if dtype == NPY_FLOAT64:
-            return nansum_axisNone(a, f64)
+            return nansum_axisNone(ita, stride, length, f64)
         if dtype == NPY_FLOAT32:
-            return nansum_axisNone(a, f32)
+            return nansum_axisNone(ita, stride, length, f32)
         if dtype == NPY_INT64:
-            return nansum_axisNone(a, i64)
+            return nansum_axisNone(ita, stride, length, i64)
         if dtype == NPY_INT32:
-            return nansum_axisNone(a, i32)
+            return nansum_axisNone(ita, stride, length, i32)
         raise TypeError("Unsupported dtype (%s)." % a.dtype)
 
     # what if axis is a float or such?
@@ -66,33 +72,58 @@ def nansum(arr, axis=None):
 
     # reduce over all axes: 1d array, axis=0
     if ndim == 1 and axis_int == 0:
+        ita = np.PyArray_IterAllButAxis(a, &axis_negone)
+        stride = a.strides[axis_negone]
+        length = a.shape[axis_negone]
         if dtype == NPY_FLOAT64:
-            return nansum_axisNone(a, f64)
+            return nansum_axisNone(ita, stride, length, f64)
         if dtype == NPY_FLOAT32:
-            return nansum_axisNone(a, f32)
+            return nansum_axisNone(ita, stride, length, f32)
         if dtype == NPY_INT64:
-            return nansum_axisNone(a, i64)
+            return nansum_axisNone(ita, stride, length, i64)
         if dtype == NPY_INT32:
-            return nansum_axisNone(a, i32)
+            return nansum_axisNone(ita, stride, length, i32)
         raise TypeError("Unsupported dtype (%s)." % a.dtype)
 
     # reduce over a single axis
+    ita = np.PyArray_IterAllButAxis(a, &axis_int)
+    stride = a.strides[axis_int]
+    length = a.shape[axis_int]
+
+    # temp python hack
+    cdef list shape = []
+    for i in range(ndim):
+        if i != axis:
+            shape.append(a.shape[i])
+
+    cdef np.flatiter ity
+
     if dtype == NPY_FLOAT64:
-        return nansum_axisint(a, axis_int, f64)
+        y = np.empty(shape, np.float64)
+        ity = np.PyArray_IterNew(y)
+        nansum_axisint(ita, ity, stride, length, f64)
+        return y
     if dtype == NPY_FLOAT32:
-        return nansum_axisint(a, axis_int, f32)
+        y = np.empty(shape, np.float64)
+        ity = np.PyArray_IterNew(y)
+        nansum_axisint(ita, ity, stride, length, f32)
+        return y
     if dtype == NPY_INT64:
-        return nansum_axisint(a, axis_int, i64)
+        y = np.empty(shape, np.float64)
+        ity = np.PyArray_IterNew(y)
+        nansum_axisint(ita, ity, stride, length, i64)
+        return y
     if dtype == NPY_INT32:
-        return nansum_axisint(a, axis_int, i32)
+        y = np.empty(shape, np.float64)
+        ity = np.PyArray_IterNew(y)
+        nansum_axisint(ita, ity, stride, length, i32)
+        return y
     raise TypeError("Unsupported dtype (%s)." % a.dtype)
 
 
-cdef inline bntypes nansum_axisNone(np.ndarray a, bntypes dt):
-    cdef int axis=-1
-    cdef np.flatiter ita
-    ita = np.PyArray_IterAllButAxis(a, &axis)
-    cdef Py_ssize_t stride = a.strides[axis], length = a.shape[axis], i
+cdef inline bntypes nansum_axisNone(np.flatiter ita, Py_ssize_t stride,
+                                    Py_ssize_t length, bntypes dt):
+    cdef Py_ssize_t i
     cdef bntypes asum = 0, ai
     while np.PyArray_ITER_NOTDONE(ita):
         for i in range(length):
@@ -106,26 +137,11 @@ cdef inline bntypes nansum_axisNone(np.ndarray a, bntypes dt):
     return asum
 
 
-cdef inline np.ndarray nansum_axisint(np.ndarray a, int axis, bntypes dt):
-
-    cdef np.flatiter ita
-    ita = np.PyArray_IterAllButAxis(a, &axis)
-    cdef Py_ssize_t length = a.shape[axis], i
-    cdef int stride = a.strides[axis]
-
-    # temp python hack
-    cdef int ndim = np.PyArray_NDIM(a)
-    cdef list shape = []
-    for i in range(ndim):
-        if i != axis:
-            shape.append(a.shape[i])
-
-    # TODO: if tree for dtype
-    y = np.empty(shape, )
-    cdef np.flatiter ity = np.PyArray_IterNew(y)
-
+cdef inline np.ndarray nansum_axisint(np.flatiter ita, np.flatiter ity,
+                                       Py_ssize_t stride, Py_ssize_t length,
+                                       bntypes dt):
+    cdef Py_ssize_t i
     cdef bntypes asum, ai
-
     while np.PyArray_ITER_NOTDONE(ita):
         asum = 0
         for i in range(length):
@@ -135,5 +151,3 @@ cdef inline np.ndarray nansum_axisint(np.ndarray a, int axis, bntypes dt):
         (<double*>((<char*>pid(ity))))[0] = asum
         np.PyArray_ITER_NEXT(ita)
         np.PyArray_ITER_NEXT(ity)
-
-    return y
