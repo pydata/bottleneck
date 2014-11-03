@@ -144,9 +144,9 @@ cdef inline bntype nansum_all(np.flatiter ita, Py_ssize_t stride,
     return asum
 
 
-cdef inline np.ndarray nansum_one(np.flatiter ita, np.flatiter ity,
-                                  Py_ssize_t stride, Py_ssize_t length,
-                                  bntype dt):
+cdef inline void nansum_one(np.flatiter ita, np.flatiter ity,
+                            Py_ssize_t stride, Py_ssize_t length,
+                            bntype dt):
     cdef Py_ssize_t i
     cdef bntype asum, ai
     while np.PyArray_ITER_NOTDONE(ita):
