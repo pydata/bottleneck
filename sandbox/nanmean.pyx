@@ -26,21 +26,3 @@ def nanmean(np.ndarray[np.float64_t, ndim=1] a):
         return np.float64(asum / count)
     else:
         return np.float64(NAN)
-
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def nanmean2(np.ndarray[np.float64_t, ndim=1] a):
-    "nanmean of 1d numpy array with dtype=np.float64 along axis=0."
-    cdef Py_ssize_t i
-    cdef int a0 = a.size, count = 0
-    cdef np.float64_t asum = 0, ai
-    for i in range(a0):
-        ai = a.flat[i]
-        if ai == ai:
-            asum += ai
-            count += 1
-    if count > 0:
-        return np.float64(asum / count)
-    else:
-        return np.float64(NAN)
