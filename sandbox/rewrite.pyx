@@ -41,8 +41,11 @@ def nansum(arr, axis=None):
     # defend against 0d beings
     if ndim == 0:
         if axis is None or axis == 0 or axis == -1:
-            # TODO what if single element is NaN; should return 0 then
-            return a[()]
+            out = a[()]
+            if out == out:
+                return out
+            else:
+                return 0.0
         else:
             raise ValueError("axis(=%d) out of bounds" % axis)
 
