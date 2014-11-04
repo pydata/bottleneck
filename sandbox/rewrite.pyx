@@ -21,17 +21,21 @@ import_array()
 cdef double NAN = <double> NAN
 cdef int axis_negone = -1
 
-
+# dtype
 ctypedef fused bntype:
     float64_t
     float32_t
     int64_t
     int32_t
-
 cdef float64_t f64 = 1.0
 cdef float32_t f32 = 1.0
 cdef int64_t i64 = 1
 cdef int32_t i32 = 1
+cdef dict dtype_dict = {}
+dtype_dict[NPY_FLOAT64] = np.float64
+dtype_dict[NPY_FLOAT32] = np.float32
+dtype_dict[NPY_INT64] = np.int64
+dtype_dict[NPY_INT32] = np.int32
 
 
 cdef inline bntype nansum_all(np.flatiter ita, Py_ssize_t stride,
@@ -90,10 +94,16 @@ def nansum(arr, axis=None):
     else:
         a = np.array(arr, copy=False)
 
+    # input array
     cdef np.flatiter ita
     cdef Py_ssize_t stride, length, i
     cdef int dtype = PyArray_TYPE(a)
     cdef int ndim = PyArray_NDIM(a)
+
+    # output array, if needed
+    cdef list shape = []
+    cdef ndarray y
+    cdef np.flatiter ity
 
     # defend against 0d beings
     if ndim == 0:
@@ -106,78 +116,58 @@ def nansum(arr, axis=None):
         else:
             raise ValueError("axis(=%d) out of bounds" % axis)
 
-    # reduce over all axes: axis=None
+    # does user want to reduce over all axes?
+    cdef int reduce_all = 0
+    cdef int axis_int
+    cdef int axis_reduce
     if axis is None:
-        ita = PyArray_IterAllButAxis(a, &axis_negone)
-        stride = a.strides[axis_negone]
-        length = a.shape[axis_negone]
-        if dtype == NPY_FLOAT64:
-            return nansum_all(ita, stride, length, f64)
-        if dtype == NPY_FLOAT32:
-            return nansum_all(ita, stride, length, f32)
-        if dtype == NPY_INT64:
-            return nansum_all(ita, stride, length, i64)
-        if dtype == NPY_INT32:
-            return nansum_all(ita, stride, length, i32)
-        raise TypeError("Unsupported dtype (%s)." % a.dtype)
-
-    # what if axis is a float or such?
-    cdef int axis_int = <int>axis
-
-    # defend against the axis of negativity
-    if axis_int < 0:
-        axis_int += ndim
+        reduce_all = 1
+        axis_reduce = -1
+    else:
+        axis_int = <int>axis
         if axis_int < 0:
-            raise ValueError("axis(=%d) out of bounds" % axis)
+            axis_int += ndim
+            if axis_int < 0:
+                raise ValueError("axis(=%d) out of bounds" % axis)
+        if ndim == 1 and axis_int == 0:
+            reduce_all = 1
+        axis_reduce = axis_int
 
-    # reduce over all axes: 1d array, axis=0
-    if ndim == 1 and axis_int == 0:
-        ita = PyArray_IterAllButAxis(a, &axis_negone)
-        stride = a.strides[axis_negone]
-        length = a.shape[axis_negone]
+    # input iterator
+    ita = PyArray_IterAllButAxis(a, &axis_reduce)
+    stride = a.strides[axis_reduce]
+    length = a.shape[axis_reduce]
+
+    if reduce_all == 1:
+        # reduce over all axes
         if dtype == NPY_FLOAT64:
             return nansum_all(ita, stride, length, f64)
-        if dtype == NPY_FLOAT32:
+        elif dtype == NPY_FLOAT32:
             return nansum_all(ita, stride, length, f32)
-        if dtype == NPY_INT64:
+        elif dtype == NPY_INT64:
             return nansum_all(ita, stride, length, i64)
-        if dtype == NPY_INT32:
+        elif dtype == NPY_INT32:
             return nansum_all(ita, stride, length, i32)
-        raise TypeError("Unsupported dtype (%s)." % a.dtype)
-
-    # if we've made it this far then ndim > 1
-
-    # iterators
-    ita = PyArray_IterAllButAxis(a, &axis_int)
-    stride = a.strides[axis_int]
-    length = a.shape[axis_int]
-
-    # shape of output, y
-    cdef list shape = []
-    for i in range(ndim):
-        if i != axis_int:
-            shape.append(a.shape[i])
-
-    cdef np.flatiter ity
-
-    if dtype == NPY_FLOAT64:
-        y = np.empty(shape, np.float64)
+        else:
+            raise TypeError("Unsupported dtype (%s)." % a.dtype)
+    else:
+        # reduce over a single axis; ndim > 1
+        for i in range(ndim):
+            if i != axis_int:
+                shape.append(a.shape[i])
+        try:
+            y = np.empty(shape, dtype_dict[dtype])
+        except KeyError:
+            raise TypeError("Unsupported dtype (%s)." % a.dtype)
         ity = PyArray_IterNew(y)
-        nansum_one(ita, ity, stride, length, f64)
+        if dtype == NPY_FLOAT64:
+            nansum_one(ita, ity, stride, length, f64)
+        elif dtype == NPY_FLOAT32:
+            nansum_one(ita, ity, stride, length, f32)
+        elif dtype == NPY_INT64:
+            nansum_one(ita, ity, stride, length, i64)
+        elif dtype == NPY_INT32:
+            nansum_one(ita, ity, stride, length, i32)
+        else:
+            raise TypeError("Unsupported dtype (%s)." % a.dtype)
         return y
-    if dtype == NPY_FLOAT32:
-        y = np.empty(shape, np.float64)
-        ity = PyArray_IterNew(y)
-        nansum_one(ita, ity, stride, length, f32)
-        return y
-    if dtype == NPY_INT64:
-        y = np.empty(shape, np.float64)
-        ity = PyArray_IterNew(y)
-        nansum_one(ita, ity, stride, length, i64)
-        return y
-    if dtype == NPY_INT32:
-        y = np.empty(shape, np.float64)
-        ity = PyArray_IterNew(y)
-        nansum_one(ita, ity, stride, length, i32)
-        return y
-    raise TypeError("Unsupported dtype (%s)." % a.dtype)
