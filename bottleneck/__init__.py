@@ -1,9 +1,4 @@
-# flake8: noqa
-
-from __future__ import absolute_import
-
-# Supported dtypes
-dtypes = ['int32', 'int64', 'float32', 'float64']
+# flak8: noqa
 
 from . import slow
 
@@ -12,18 +7,7 @@ from . import slow
 # rebuild using the templates. So try to import the compiled Bottleneck
 # functions to the top level, but move on if not successful.
 try:
-    from .func import (nansum, nanmax, nanmin, nanmean, nanstd, nanvar, median,
-                      nanmedian, nanargmin, nanargmax, rankdata, nanrankdata,
-                      ss, nn, partsort, argpartsort, replace, anynan, allnan)
-except:
-    pass
-try:
-    from .move import (move_sum, move_nansum,
-                      move_mean, move_nanmean,
-                      move_std, move_nanstd,
-                      move_min, move_nanmin,
-                      move_max, move_nanmax,
-                      move_median)
+    from .reduce import nansum
 except:
     pass
 
