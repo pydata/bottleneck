@@ -9,6 +9,7 @@ from . import slow
 try:
     from .reduce import nansum
     from .reduce2 import nansum as nansum2
+    from .reduce3 import nansum as nansum3
 except:
     pass
 

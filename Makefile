@@ -28,6 +28,8 @@ reduce:
 	${PYTHON} ${srcdir}/reduce_setup.py build_ext --inplace
 	rm -rf ${srcdir}/../reduce2.so
 	${PYTHON} ${srcdir}/reduce2_setup.py build_ext --inplace
+	rm -rf ${srcdir}/../reduce3.so
+	${PYTHON} ${srcdir}/reduce3_setup.py build_ext --inplace
 
 test:
 	${PYTHON} -c "import bottleneck;bottleneck.test()"
