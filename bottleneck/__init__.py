@@ -8,6 +8,7 @@ from . import slow
 # functions to the top level, but move on if not successful.
 try:
     from .reduce import nansum
+    from .reduce2 import nansum as nansum2
 except:
     pass
 
