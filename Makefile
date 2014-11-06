@@ -19,13 +19,13 @@ help:
 all: clean cfiles build test
 
 cfiles:
-	cython ${srcdir}/reduce3.pyx
+	cython ${srcdir}/reduce.pyx
 
 build: reduce
 
 reduce:
-	rm -rf ${srcdir}/../reduce3.so
-	${PYTHON} ${srcdir}/reduce3_setup.py build_ext --inplace
+	rm -rf ${srcdir}/../reduce.so
+	${PYTHON} ${srcdir}/reduce_setup.py build_ext --inplace
 
 test:
 	${PYTHON} -c "import bottleneck;bottleneck.test()"

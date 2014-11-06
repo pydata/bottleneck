@@ -21,7 +21,7 @@ from distutils.extension import Extension
 from Cython.Distutils import build_ext
 import numpy as np
 
-name = 'reduce3'
+name = 'reduce'
 mod_dir = os.path.dirname(__file__)
 ext_modules = [Extension(name, [os.path.join(mod_dir, name + ".pyx")],
                include_dirs=[np.get_include()])]
