@@ -18,12 +18,6 @@ from numpy cimport ndarray
 from numpy cimport import_array
 import_array()
 
-cdef dict dtype_dict = {}
-dtype_dict[NPY_FLOAT64] = np.float64
-dtype_dict[NPY_FLOAT32] = np.float32
-dtype_dict[NPY_INT64] = np.int64
-dtype_dict[NPY_INT32] = np.int32
-
 
 cdef float64_t nansum_all_float64(np.flatiter ita, Py_ssize_t stride,
                                   Py_ssize_t length):
@@ -223,18 +217,21 @@ cdef reducer(arr, axis,
         for i in range(ndim):
             if i != axis_int:
                 shape.append(a.shape[i])
-        try:
-            y = np.empty(shape, dtype_dict[dtype])
-        except KeyError:
-            raise TypeError("Unsupported dtype (%s)." % a.dtype)
-        ity = PyArray_IterNew(y)
         if dtype == NPY_FLOAT64:
+            y = np.empty(shape, np.float64)
+            ity = PyArray_IterNew(y)
             fonef64(ita, ity, stride, length)
         elif dtype == NPY_FLOAT32:
+            y = np.empty(shape, np.float32)
+            ity = PyArray_IterNew(y)
             fonef32(ita, ity, stride, length)
         elif dtype == NPY_INT64:
+            y = np.empty(shape, np.int64)
+            ity = PyArray_IterNew(y)
             fonei64(ita, ity, stride, length)
         elif dtype == NPY_INT32:
+            y = np.empty(shape, np.int32)
+            ity = PyArray_IterNew(y)
             fonei32(ita, ity, stride, length)
         else:
             raise TypeError("Unsupported dtype (%s)." % a.dtype)
