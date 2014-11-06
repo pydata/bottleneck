@@ -1,0 +1,21 @@
+
+Reduce (arr, axis)
+
+median, nanmedian, rankdata, ss, nansum, nanmin, nanmax, nanmean, nanargmin,
+nanargmax, nanrankdata, anynan, allnan
+
+Reduce (arr, axis, int)
+
+nanstd, nanvar
+
+Nonreduce (arr, axis, int)
+
+partsort, argpartsort
+
+Nonreduce (arr, scalar, scalar)
+
+replace
+
+Weird (2d arr, 1d arr, int axis)
+
+nn
