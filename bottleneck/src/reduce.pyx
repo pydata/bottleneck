@@ -31,7 +31,6 @@ cdef float64_t nansum_all_float64(np.flatiter ita, Py_ssize_t stride,
                 asum += ai
         PyArray_ITER_NEXT(ita)
     return asum
-ctypedef float64_t (*fall_float64_t)(np.flatiter, Py_ssize_t, Py_ssize_t)
 
 
 cdef float32_t nansum_all_float32(np.flatiter ita, Py_ssize_t stride,
@@ -45,7 +44,6 @@ cdef float32_t nansum_all_float32(np.flatiter ita, Py_ssize_t stride,
                 asum += ai
         PyArray_ITER_NEXT(ita)
     return asum
-ctypedef float32_t (*fall_float32_t)(np.flatiter, Py_ssize_t, Py_ssize_t)
 
 
 cdef int64_t nansum_all_int64(np.flatiter ita, Py_ssize_t stride,
@@ -58,7 +56,6 @@ cdef int64_t nansum_all_int64(np.flatiter ita, Py_ssize_t stride,
             asum += ai
         PyArray_ITER_NEXT(ita)
     return asum
-ctypedef int64_t (*fall_int64_t)(np.flatiter, Py_ssize_t, Py_ssize_t)
 
 
 cdef int32_t nansum_all_int32(np.flatiter ita, Py_ssize_t stride,
@@ -71,12 +68,10 @@ cdef int32_t nansum_all_int32(np.flatiter ita, Py_ssize_t stride,
             asum += ai
         PyArray_ITER_NEXT(ita)
     return asum
-ctypedef int32_t (*fall_int32_t)(np.flatiter, Py_ssize_t, Py_ssize_t)
 
 
 cdef void nansum_one_float64(np.flatiter ita, np.flatiter ity,
                              Py_ssize_t stride, Py_ssize_t length):
-    "reduce along a single axis; ndim > 1"
     cdef Py_ssize_t i
     cdef float64_t asum, ai
     while PyArray_ITER_NOTDONE(ita):
@@ -88,12 +83,10 @@ cdef void nansum_one_float64(np.flatiter ita, np.flatiter ity,
         (<float64_t*>((<char*>pid(ity))))[0] = asum
         PyArray_ITER_NEXT(ita)
         PyArray_ITER_NEXT(ity)
-ctypedef void (*fone_float64_t)(np.flatiter, np.flatiter, Py_ssize_t, Py_ssize_t)
 
 
 cdef void nansum_one_float32(np.flatiter ita, np.flatiter ity,
                              Py_ssize_t stride, Py_ssize_t length):
-    "reduce along a single axis; ndim > 1"
     cdef Py_ssize_t i
     cdef float32_t asum, ai
     while PyArray_ITER_NOTDONE(ita):
@@ -105,12 +98,10 @@ cdef void nansum_one_float32(np.flatiter ita, np.flatiter ity,
         (<float32_t*>((<char*>pid(ity))))[0] = asum
         PyArray_ITER_NEXT(ita)
         PyArray_ITER_NEXT(ity)
-ctypedef void (*fone_float32_t)(np.flatiter, np.flatiter, Py_ssize_t, Py_ssize_t)
 
 
 cdef void nansum_one_int64(np.flatiter ita, np.flatiter ity,
                            Py_ssize_t stride, Py_ssize_t length):
-    "reduce along a single axis; ndim > 1"
     cdef Py_ssize_t i
     cdef int64_t asum, ai
     while PyArray_ITER_NOTDONE(ita):
@@ -121,12 +112,10 @@ cdef void nansum_one_int64(np.flatiter ita, np.flatiter ity,
         (<int64_t*>((<char*>pid(ity))))[0] = asum
         PyArray_ITER_NEXT(ita)
         PyArray_ITER_NEXT(ity)
-ctypedef void (*fone_int64_t)(np.flatiter, np.flatiter, Py_ssize_t, Py_ssize_t)
 
 
 cdef void nansum_one_int32(np.flatiter ita, np.flatiter ity,
                            Py_ssize_t stride, Py_ssize_t length):
-    "reduce along a single axis; ndim > 1"
     cdef Py_ssize_t i
     cdef int32_t asum, ai
     while PyArray_ITER_NOTDONE(ita):
@@ -137,7 +126,18 @@ cdef void nansum_one_int32(np.flatiter ita, np.flatiter ity,
         (<int32_t*>((<char*>pid(ity))))[0] = asum
         PyArray_ITER_NEXT(ita)
         PyArray_ITER_NEXT(ity)
-ctypedef void (*fone_int32_t)(np.flatiter, np.flatiter, Py_ssize_t, Py_ssize_t)
+
+
+# reducer -------------------------------------------------------------------
+
+# pointers to functions that reduce along all axes
+ctypedef float64_t (*fall_float64_t)(np.flatiter, Py_ssize_t, Py_ssize_t)
+ctypedef float32_t (*fall_float32_t)(np.flatiter, Py_ssize_t, Py_ssize_t)
+ctypedef int64_t (*fall_int64_t)(np.flatiter, Py_ssize_t, Py_ssize_t)
+ctypedef int32_t (*fall_int32_t)(np.flatiter, Py_ssize_t, Py_ssize_t)
+
+# pointer to functions that reduce along a single axis
+ctypedef void (*fone_t)(np.flatiter, np.flatiter, Py_ssize_t, Py_ssize_t)
 
 
 cdef reducer(arr, axis,
@@ -145,10 +145,10 @@ cdef reducer(arr, axis,
              fall_float32_t fall_float32,
              fall_int64_t fall_int64,
              fall_int32_t fall_int32,
-             fone_float64_t fone_float64,
-             fone_float32_t fone_float32,
-             fone_int64_t fone_int64,
-             fone_int32_t fone_int32):
+             fone_t fone_float64,
+             fone_t fone_float32,
+             fone_t fone_int64,
+             fone_t fone_int32):
 
     # convert to array if necessary
     cdef ndarray a
