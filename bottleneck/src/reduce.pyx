@@ -128,9 +128,17 @@ cdef void nansum_one_int32(np.flatiter ita, np.flatiter ity,
         PyArray_ITER_NEXT(ity)
 
 
+cdef nansum_0d(ndarray a):
+    out = a[()]
+    if out == out:
+        return out
+    else:
+        return 0.0
+
+
 # reducer -------------------------------------------------------------------
 
-# pointers to functions that reduce along all axes
+# pointer to functions that reduce along all axes
 ctypedef float64_t (*fall_float64_t)(np.flatiter, Py_ssize_t, Py_ssize_t)
 ctypedef float32_t (*fall_float32_t)(np.flatiter, Py_ssize_t, Py_ssize_t)
 ctypedef int64_t (*fall_int64_t)(np.flatiter, Py_ssize_t, Py_ssize_t)
@@ -138,6 +146,9 @@ ctypedef int32_t (*fall_int32_t)(np.flatiter, Py_ssize_t, Py_ssize_t)
 
 # pointer to functions that reduce along a single axis
 ctypedef void (*fone_t)(np.flatiter, np.flatiter, Py_ssize_t, Py_ssize_t)
+
+# pointer to functions that handle 0d arrays
+ctypedef object (*f0d_t)(ndarray)
 
 
 cdef reducer(arr, axis,
@@ -148,7 +159,8 @@ cdef reducer(arr, axis,
              fone_t fone_float64,
              fone_t fone_float32,
              fone_t fone_int64,
-             fone_t fone_int32):
+             fone_t fone_int32,
+             f0d_t f0d):
 
     # convert to array if necessary
     cdef ndarray a
@@ -172,11 +184,7 @@ cdef reducer(arr, axis,
     # defend against 0d beings
     if ndim == 0:
         if axis is None or axis == 0 or axis == -1:
-            out = a[()]
-            if out == out:
-                return out
-            else:
-                return 0.0
+            return f0d(a)
         else:
             raise ValueError("axis(=%d) out of bounds" % axis)
 
@@ -250,4 +258,5 @@ def nansum(arr, axis=None):
                    nansum_one_float64,
                    nansum_one_float32,
                    nansum_one_int64,
-                   nansum_one_int32)
+                   nansum_one_int32,
+                   nansum_0d)
