@@ -7,8 +7,6 @@ from . import slow
 # rebuild using the templates. So try to import the compiled Bottleneck
 # functions to the top level, but move on if not successful.
 try:
-    from .reduce import nansum
-    from .reduce2 import nansum as nansum2
     from .reduce3 import nansum as nansum3
 except:
     pass
