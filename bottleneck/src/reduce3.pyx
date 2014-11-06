@@ -14,6 +14,7 @@ from numpy cimport PyArray_IterNew
 from numpy cimport PyArray_TYPE
 from numpy cimport PyArray_NDIM
 
+from numpy cimport PyArray_EMPTY
 from numpy cimport ndarray
 from numpy cimport import_array
 import_array()
@@ -163,9 +164,10 @@ cdef reducer(arr, axis,
     cdef int ndim = PyArray_NDIM(a)
 
     # output array, if needed
-    cdef list shape = []
     cdef ndarray y
     cdef np.flatiter ity
+    cdef np.npy_intp *dim
+    cdef Py_ssize_t lastdim
 
     # defend against 0d beings
     if ndim == 0:
@@ -214,23 +216,24 @@ cdef reducer(arr, axis,
             raise TypeError("Unsupported dtype (%s)." % a.dtype)
     else:
         # reduce over a single axis; ndim > 1
-        for i in range(ndim):
-            if i != axis_int:
-                shape.append(a.shape[i])
+        dim = np.PyArray_DIMS(a)
+        lastdim = dim[ndim - 1]
+        dim[ndim - 1] = dim[axis_reduce]
+        dim[axis_reduce] = lastdim
         if dtype == NPY_FLOAT64:
-            y = np.empty(shape, np.float64)
+            y = PyArray_EMPTY(ndim - 1, dim, NPY_FLOAT64, 0)
             ity = PyArray_IterNew(y)
             fonef64(ita, ity, stride, length)
         elif dtype == NPY_FLOAT32:
-            y = np.empty(shape, np.float32)
+            y = PyArray_EMPTY(ndim - 1, dim, NPY_FLOAT32, 0)
             ity = PyArray_IterNew(y)
             fonef32(ita, ity, stride, length)
         elif dtype == NPY_INT64:
-            y = np.empty(shape, np.int64)
+            y = PyArray_EMPTY(ndim - 1, dim, NPY_INT64, 0)
             ity = PyArray_IterNew(y)
             fonei64(ita, ity, stride, length)
         elif dtype == NPY_INT32:
-            y = np.empty(shape, np.int32)
+            y = PyArray_EMPTY(ndim - 1, dim, NPY_INT32, 0)
             ity = PyArray_IterNew(y)
             fonei32(ita, ity, stride, length)
         else:
