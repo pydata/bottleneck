@@ -153,7 +153,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
         func, a = bn.func.median_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
+    #suite.append(run)
 
     # nanmedian
     run = {}
@@ -170,21 +170,16 @@ def benchsuite(mode, shapes, dtype, axis, nans):
         func, a = bn.func.nanmedian_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
+    #suite.append(run)
 
     # nansum
     run = {}
     run['name'] = "nansum"
     run['ref'] = "np.nansum"
     run['scipy_required'] = False
-    if mode == 'fast':
-        code = "bn.nansum(a, axis=AXIS)"
-    else:
-        code = "func(a)"
+    code = "bn.nansum(a, axis=AXIS)"
     run['statements'] = [code, "np.nansum(a, axis=AXIS)"]
-    setup = """
-        func, a = bn.func.nansum_selector(a, axis=AXIS)
-    """
+    setup = None
     run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
 
@@ -202,7 +197,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
         func, a = bn.func.nanmax_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
+    #suite.append(run)
 
     # nanmean
     run = {}
@@ -218,7 +213,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
         func, a = bn.func.nanmean_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
+    #suite.append(run)
 
     # nanstd
     run = {}
@@ -234,7 +229,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
         func, a = bn.func.nanstd_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
+    #suite.append(run)
 
     # nanargmax
     run = {}
@@ -250,7 +245,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
         func, a = bn.func.nanargmax_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
+    #suite.append(run)
 
     # ss
     run = {}
@@ -267,7 +262,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
         func, a = bn.func.ss_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
+    #suite.append(run)
 
     # rankdata
     run = {}
@@ -284,7 +279,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
         func, a = bn.func.rankdata_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
+    #suite.append(run)
 
     # partsort
     run = {}
@@ -303,7 +298,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
         func, a = bn.func.partsort_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
+    #suite.append(run)
 
     # argpartsort
     run = {}
@@ -322,7 +317,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
         func, a = bn.func.argpartsort_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
+    #suite.append(run)
 
     # replace
     run = {}
@@ -339,7 +334,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
         func = bn.func.replace_selector(a)
     """
     run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
+    #suite.append(run)
 
     # anynan
     run = {}
@@ -355,7 +350,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
         func, a = bn.func.anynan_selector(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
+    #suite.append(run)
 
     # move_sum
     run = {}
@@ -376,7 +371,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
     """
     run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':
-        suite.append(run)
+        pass#suite.append(run)
 
     # move_nansum
     run = {}
@@ -397,7 +392,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
     """
     run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':
-        suite.append(run)
+        pass#suite.append(run)
 
     # move_mean
     run = {}
@@ -418,7 +413,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
     """
     run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':
-        suite.append(run)
+        pass#suite.append(run)
 
     # move_nanmean
     run = {}
@@ -439,7 +434,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
     """
     run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':
-        suite.append(run)
+        pass#suite.append(run)
 
     # move_std
     run = {}
@@ -460,7 +455,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
     """
     run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':
-        suite.append(run)
+        pass#suite.append(run)
 
     # move_nanstd
     run = {}
@@ -481,7 +476,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
     """
     run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':
-        suite.append(run)
+        pass#suite.append(run)
 
     # move_max
     run = {}
@@ -502,7 +497,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
     """
     run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':
-        suite.append(run)
+        pass#suite.append(run)
 
     # move_nanmax
     run = {}
@@ -523,7 +518,7 @@ def benchsuite(mode, shapes, dtype, axis, nans):
     """
     run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':
-        suite.append(run)
+        pass#suite.append(run)
 
     # Strip leading spaces from setup code
     for i, run in enumerate(suite):
