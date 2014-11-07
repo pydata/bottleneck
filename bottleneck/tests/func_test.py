@@ -16,7 +16,7 @@ def arrays(dtypes=DTYPES, nans=True):
     ss[1] = {'size':  4, 'shapes': [(4,)]}
     ss[2] = {'size':  6, 'shapes': [(1, 6), (2, 3)]}
     ss[3] = {'size':  6, 'shapes': [(1, 2, 3)]}
-    ss[4] = {'size': 24, 'shapes': [(1, 2, 3, 4)]}  # Unaccelerated
+    ss[4] = {'size': 24, 'shapes': [(1, 2, 3, 4)]}
     for ndim in ss:
         size = ss[ndim]['size']
         shapes = ss[ndim]['shapes']
@@ -47,7 +47,7 @@ def arrays(dtypes=DTYPES, nans=True):
         yield a.reshape(1, 2, 4)
 
 
-def unit_maker(func, func0, decimal=np.inf, nans=True):
+def unit_maker(func, func0, decimal=np.inf, nans=True, check_dtype=True):
     "Test that bn.xxx gives the same output as bn.slow.xxx."
     msg = '\nfunc %s | input %s (%s) | shape %s | axis %s\n'
     msg += '\nInput array:\n%s\n'
@@ -78,15 +78,16 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
                 else:
                     assert_array_equal(actual, desired, err_msg)
                 err_msg += '\n dtype mismatch %s %s'
-                if hasattr(actual, 'dtype') and hasattr(desired, 'dtype'):
-                    da = actual.dtype
-                    dd = desired.dtype
-                    assert_equal(da, dd, err_msg % (da, dd))
+                if check_dtype:
+                    if hasattr(actual, 'dtype') and hasattr(desired, 'dtype'):
+                        da = actual.dtype
+                        dd = desired.dtype
+                        assert_equal(da, dd, err_msg % (da, dd))
 
 
 def test_nansum():
     "Test nansum."
-    yield unit_maker, bn.nansum, bn.slow.nansum
+    yield unit_maker, bn.nansum, bn.slow.nansum, np.inf, True, False
 
 """
 def test_nanmax():
