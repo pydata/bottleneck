@@ -21,7 +21,7 @@ import_array()
 
 
 cdef float64_t nansum_all_float64(np.flatiter ita, Py_ssize_t stride,
-                                  Py_ssize_t length):
+                                  Py_ssize_t length, int int_input):
     cdef Py_ssize_t i
     cdef float64_t asum = 0, ai
     while PyArray_ITER_NOTDONE(ita):
@@ -34,7 +34,7 @@ cdef float64_t nansum_all_float64(np.flatiter ita, Py_ssize_t stride,
 
 
 cdef float32_t nansum_all_float32(np.flatiter ita, Py_ssize_t stride,
-                                  Py_ssize_t length):
+                                  Py_ssize_t length, int int_input):
     cdef Py_ssize_t i
     cdef float32_t asum = 0, ai
     while PyArray_ITER_NOTDONE(ita):
@@ -47,7 +47,7 @@ cdef float32_t nansum_all_float32(np.flatiter ita, Py_ssize_t stride,
 
 
 cdef int64_t nansum_all_int64(np.flatiter ita, Py_ssize_t stride,
-                              Py_ssize_t length):
+                              Py_ssize_t length, int int_input):
     cdef Py_ssize_t i
     cdef int64_t asum = 0, ai
     while PyArray_ITER_NOTDONE(ita):
@@ -59,7 +59,7 @@ cdef int64_t nansum_all_int64(np.flatiter ita, Py_ssize_t stride,
 
 
 cdef int32_t nansum_all_int32(np.flatiter ita, Py_ssize_t stride,
-                              Py_ssize_t length):
+                              Py_ssize_t length, int int_input):
     cdef Py_ssize_t i
     cdef int32_t asum = 0, ai
     while PyArray_ITER_NOTDONE(ita):
@@ -71,7 +71,8 @@ cdef int32_t nansum_all_int32(np.flatiter ita, Py_ssize_t stride,
 
 
 cdef void nansum_one_float64(np.flatiter ita, np.flatiter ity,
-                             Py_ssize_t stride, Py_ssize_t length):
+                             Py_ssize_t stride, Py_ssize_t length,
+                             int int_input):
     cdef Py_ssize_t i
     cdef float64_t asum = 0, ai
     if length == 0:
@@ -91,7 +92,8 @@ cdef void nansum_one_float64(np.flatiter ita, np.flatiter ity,
 
 
 cdef void nansum_one_float32(np.flatiter ita, np.flatiter ity,
-                             Py_ssize_t stride, Py_ssize_t length):
+                             Py_ssize_t stride, Py_ssize_t length,
+                             int int_input):
     cdef Py_ssize_t i
     cdef float32_t asum = 0, ai
     if length == 0:
@@ -111,7 +113,8 @@ cdef void nansum_one_float32(np.flatiter ita, np.flatiter ity,
 
 
 cdef void nansum_one_int64(np.flatiter ita, np.flatiter ity,
-                           Py_ssize_t stride, Py_ssize_t length):
+                           Py_ssize_t stride, Py_ssize_t length,
+                           int int_input):
     cdef Py_ssize_t i
     cdef int64_t asum = 0, ai
     if length == 0:
@@ -130,7 +133,8 @@ cdef void nansum_one_int64(np.flatiter ita, np.flatiter ity,
 
 
 cdef void nansum_one_int32(np.flatiter ita, np.flatiter ity,
-                           Py_ssize_t stride, Py_ssize_t length):
+                           Py_ssize_t stride, Py_ssize_t length,
+                           int int_input):
     cdef Py_ssize_t i
     cdef int32_t asum = 0, ai
     if length == 0:
@@ -148,7 +152,7 @@ cdef void nansum_one_int32(np.flatiter ita, np.flatiter ity,
             PyArray_ITER_NEXT(ity)
 
 
-cdef nansum_0d(ndarray a):
+cdef nansum_0d(ndarray a, int int_input):
     out = a[()]
     if out == out:
         return out
@@ -159,16 +163,16 @@ cdef nansum_0d(ndarray a):
 # reducer -------------------------------------------------------------------
 
 # pointer to functions that reduce along all axes
-ctypedef float64_t (*fall_float64_t)(np.flatiter, Py_ssize_t, Py_ssize_t)
-ctypedef float32_t (*fall_float32_t)(np.flatiter, Py_ssize_t, Py_ssize_t)
-ctypedef int64_t (*fall_int64_t)(np.flatiter, Py_ssize_t, Py_ssize_t)
-ctypedef int32_t (*fall_int32_t)(np.flatiter, Py_ssize_t, Py_ssize_t)
+ctypedef float64_t (*fall_float64_t)(np.flatiter, Py_ssize_t, Py_ssize_t, int)
+ctypedef float32_t (*fall_float32_t)(np.flatiter, Py_ssize_t, Py_ssize_t, int)
+ctypedef int64_t (*fall_int64_t)(np.flatiter, Py_ssize_t, Py_ssize_t, int)
+ctypedef int32_t (*fall_int32_t)(np.flatiter, Py_ssize_t, Py_ssize_t, int)
 
 # pointer to functions that reduce along a single axis
-ctypedef void (*fone_t)(np.flatiter, np.flatiter, Py_ssize_t, Py_ssize_t)
+ctypedef void (*fone_t)(np.flatiter, np.flatiter, Py_ssize_t, Py_ssize_t, int)
 
 # pointer to functions that handle 0d arrays
-ctypedef object (*f0d_t)(ndarray)
+ctypedef object (*f0d_t)(ndarray, int)
 
 
 cdef reducer(arr, axis,
@@ -180,7 +184,8 @@ cdef reducer(arr, axis,
              fone_t fone_float32,
              fone_t fone_int64,
              fone_t fone_int32,
-             f0d_t f0d):
+             f0d_t f0d,
+             int int_input=0):
 
     # convert to array if necessary
     cdef ndarray a
@@ -204,7 +209,7 @@ cdef reducer(arr, axis,
     # defend against 0d beings
     if ndim == 0:
         if axis is None or axis == 0 or axis == -1:
-            return f0d(a)
+            return f0d(a, int_input)
         else:
             raise ValueError("axis(=%d) out of bounds" % axis)
 
@@ -233,13 +238,13 @@ cdef reducer(arr, axis,
     if reduce_all == 1:
         # reduce over all axes
         if dtype == NPY_FLOAT64:
-            return fall_float64(ita, stride, length)
+            return fall_float64(ita, stride, length, int_input)
         elif dtype == NPY_FLOAT32:
-            return fall_float32(ita, stride, length)
+            return fall_float32(ita, stride, length, int_input)
         elif dtype == NPY_INT64:
-            return fall_int64(ita, stride, length)
+            return fall_int64(ita, stride, length, int_input)
         elif dtype == NPY_INT32:
-            return fall_int32(ita, stride, length)
+            return fall_int32(ita, stride, length, int_input)
         else:
             raise TypeError("Unsupported dtype (%s)." % a.dtype)
     else:
@@ -253,19 +258,19 @@ cdef reducer(arr, axis,
         if dtype == NPY_FLOAT64:
             y = PyArray_EMPTY(ndim - 1, ydim, NPY_FLOAT64, 0)
             ity = PyArray_IterNew(y)
-            fone_float64(ita, ity, stride, length)
+            fone_float64(ita, ity, stride, length, int_input)
         elif dtype == NPY_FLOAT32:
             y = PyArray_EMPTY(ndim - 1, ydim, NPY_FLOAT32, 0)
             ity = PyArray_IterNew(y)
-            fone_float32(ita, ity, stride, length)
+            fone_float32(ita, ity, stride, length, int_input)
         elif dtype == NPY_INT64:
             y = PyArray_EMPTY(ndim - 1, ydim, NPY_INT64, 0)
             ity = PyArray_IterNew(y)
-            fone_int64(ita, ity, stride, length)
+            fone_int64(ita, ity, stride, length, int_input)
         elif dtype == NPY_INT32:
             y = PyArray_EMPTY(ndim - 1, ydim, NPY_INT32, 0)
             ity = PyArray_IterNew(y)
-            fone_int32(ita, ity, stride, length)
+            fone_int32(ita, ity, stride, length, int_input)
         else:
             raise TypeError("Unsupported dtype (%s)." % a.dtype)
         return y
