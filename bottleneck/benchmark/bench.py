@@ -157,9 +157,11 @@ def benchsuite(shapes, dtype, axis, nans):
     run['name'] = "nansum"
     run['ref'] = "np.nansum"
     run['scipy_required'] = False
-    code = "bn.nansum(a, axis=AXIS)"
-    run['statements'] = [code, "np.nansum(a, axis=AXIS)"]
-    setup = None
+    run['statements'] = ["bn_nansum(a, axis=AXIS)", "np_nansum(a, axis=AXIS)"]
+    setup = """
+        from bottleneck import nansum as bn_nansum
+        from numpy import nansum as np_nansum
+    """
     run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
 
