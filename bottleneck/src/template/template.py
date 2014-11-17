@@ -1,5 +1,6 @@
 import os
 import re
+import ast
 
 
 def make_pyx():
@@ -20,15 +21,17 @@ def template(template_filename):
         f.write(src)
 
 
-def expand_functions(src_str,
-                     dtypes=[['float64'], ['float32'], ['int64'], ['int32']]):
+def expand_functions(src_str):
+    FUNC = r'^def|cdef'
+    DTYPE = r'\s*#\s*bn.dtypes\s*=\s*'
     src_list = []
     lines = src_str.splitlines()
     nlines = len(lines)
     i = 0
     while i < nlines:
         line = lines[i]
-        if re.match(r'^def|cdef', line):
+        if re.match(FUNC, line):
+            dtypes = []
             func_list = [line]
             i += 1
             while True:
@@ -36,13 +39,18 @@ def expand_functions(src_str,
                     line = '\n'.join(func_list)
                     break
                 line = lines[i]
-                if re.match(r'^def|cdef', line):
+                if re.match(DTYPE, line):
+                    dtypes = re.sub(DTYPE, '', line)
+                    dtypes = ast.literal_eval(dtypes)
+                    line = None
+                elif re.match(FUNC, line):
                     i -= 1
                     func_str = '\n'.join(func_list)
                     line = expand_dtypes(func_str, dtypes)
                     break
                 else:
-                    func_list.append(line)
+                    if line is not None:
+                        func_list.append(line)
                 i += 1
         src_list.append(line)
         i += 1

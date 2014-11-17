@@ -37,6 +37,7 @@ def nansum(arr, axis=None):
 
 cdef DTYPE0_t nansum_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
                                 Py_ssize_t length, int int_input):
+    # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
     cdef Py_ssize_t i
     cdef DTYPE0_t asum = 0, ai
     while PyArray_ITER_NOTDONE(ita):
@@ -51,6 +52,7 @@ cdef DTYPE0_t nansum_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
 cdef void nansum_one_DTYPE0(np.flatiter ita, np.flatiter ity,
                             Py_ssize_t stride, Py_ssize_t length,
                             int int_input):
+    # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
     cdef Py_ssize_t i
     cdef DTYPE0_t asum = 0, ai
     if length == 0:

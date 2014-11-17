@@ -1,1 +1,2 @@
 *.c
+reduce.pyx
