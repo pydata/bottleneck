@@ -6,14 +6,22 @@ def make_pyx():
     template('reduce.pyx')
 
 
-def template(template_filename,
-             dtypes=[['float64'], ['float32'], ['int64'], ['int32']]):
+def template(template_filename):
 
     dirpath = os.path.dirname(__file__)
     filename = os.path.join(dirpath, template_filename)
     with open(filename, 'r') as f:
         src_str = f.read()
 
+    src = expand_functions(src_str)
+
+    filename = os.path.join(dirpath, '..', 'auto_pyx', template_filename)
+    with open(filename, 'w') as f:
+        f.write(src)
+
+
+def expand_functions(src_str,
+                     dtypes=[['float64'], ['float32'], ['int64'], ['int32']]):
     src_list = []
     lines = src_str.splitlines()
     nlines = len(lines)
@@ -38,12 +46,8 @@ def template(template_filename,
                 i += 1
         src_list.append(line)
         i += 1
-
     src = '\n'.join(src_list)
-
-    filename = os.path.join(dirpath, '..', 'auto_pyx', 'reduce.pyx')
-    with open(filename, 'w') as f:
-        f.write(src)
+    return src
 
 
 def expand_dtypes(func_str, dtypes):
