@@ -32,4 +32,4 @@ setup(
     ext_modules=ext_modules
 )
 
-os.rename(name + ".so", os.path.join(mod_dir, "../" + name + ".so"))
+os.rename(name + ".so", os.path.join(mod_dir, "../../" + name + ".so"))

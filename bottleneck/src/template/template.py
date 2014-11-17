@@ -2,7 +2,11 @@ import os
 import re
 
 
-def make_pyx(template_filename,
+def make_pyx():
+    template('reduce.pyx')
+
+
+def template(template_filename,
              dtypes=[['float64'], ['float32'], ['int64'], ['int32']]):
 
     dirpath = os.path.dirname(__file__)
@@ -37,11 +41,7 @@ def make_pyx(template_filename,
 
     src = '\n'.join(src_list)
     print src
-    if src == src_str:
-        print "passed"
-    else:
-        print "FAIL"
-    
+
     filename = os.path.join(dirpath, '..', 'auto_pyx', 'reduce.pyx')
     with open(filename, 'w') as f:
         f.write(src)
@@ -61,4 +61,4 @@ def expand_dtypes(func_str, dtypes):
 
 
 if __name__ == '__main__':
-    make_pyx('reduce.pyx')
+    make_pyx()

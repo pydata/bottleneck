@@ -2,11 +2,12 @@
 
 PYTHON=python
 
-srcdir := bottleneck/src
+srcdir := bottleneck/src/auto_pyx
 
 help:
 	@echo "Available tasks:"
 	@echo "help    -->  This help page"
+	@echo "pyx     -->  Create Cython pyx files from templates"
 	@echo "cfiles  -->  Convert pyx files to C files"
 	@echo "build   -->  Build the Cython extension modules"
 	@echo "clean   -->  Remove all the build files for a fresh start"
@@ -16,7 +17,10 @@ help:
 	@echo "bench   -->  Run performance benchmark"
 	@echo "sdist   -->  Make source distribution"
 
-all: clean cfiles build test
+all: clean pyx cfiles build test
+
+pyx:
+	${PYTHON} -c "from bottleneck.src.template.template import make_pyx; make_pyx();"
 
 cfiles:
 	cython ${srcdir}/reduce.pyx
