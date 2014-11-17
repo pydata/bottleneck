@@ -40,7 +40,6 @@ def template(template_filename,
         i += 1
 
     src = '\n'.join(src_list)
-    print src
 
     filename = os.path.join(dirpath, '..', 'auto_pyx', 'reduce.pyx')
     with open(filename, 'w') as f:
