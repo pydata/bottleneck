@@ -4,21 +4,16 @@ import ast
 
 
 def make_pyx():
-    template('reduce.pyx')
-
-
-def template(template_filename):
-
+    filenames = ['reduce.pyx']
     dirpath = os.path.dirname(__file__)
-    filename = os.path.join(dirpath, template_filename)
-    with open(filename, 'r') as f:
-        src_str = f.read()
-
-    src = expand_functions(src_str)
-
-    filename = os.path.join(dirpath, '..', 'auto_pyx', template_filename)
-    with open(filename, 'w') as f:
-        f.write(src)
+    for filename in filenames:
+        filepath = os.path.join(dirpath, filename)
+        with open(filepath, 'r') as f:
+            src = f.read()
+        src = expand_functions(src)
+        filepath = os.path.join(dirpath, '..', 'auto_pyx', filename)
+        with open(filepath, 'w') as f:
+            f.write(src)
 
 
 def expand_functions(src_str):
@@ -59,17 +54,71 @@ def expand_functions(src_str):
 
 
 def expand_dtypes(func_str, dtypes):
-    DTYPE = 'DTYPE'
-    if DTYPE not in func_str:
+    if 'DTYPE' not in func_str:
         return func_str
     func_list = []
     for dtype in dtypes:
         f = func_str[:]
         for i, dt in enumerate(dtype):
+            f = conditional_dtype(f, dtype)
             f = f.replace('DTYPE%d' % i, dt)
             func_list.append(f)
     return '\n'.join(func_list)
 
 
-if __name__ == '__main__':
-    make_pyx()
+def conditional_dtype(src, dtype):
+    IF_DTYPE = r'\s*if\s*DTYPE[0-9]\s*==\s*'
+    BIGINT = 9999999
+    ntab = 4
+    lines = src.splitlines()
+    nlines = len(lines)
+    src_out = []
+    i = 0
+    n = BIGINT
+    while i < nlines:
+        line = lines[i]
+        i += 1
+        if re.match(IF_DTYPE, line):
+            n = nindent(line)
+            if is_target_dtype(line, dtype):
+                cond = []
+                while True:
+                    if i >= nlines:
+                        line = '\n'.join(cond)
+                        break
+                    line = lines[i]
+                    if re.match(IF_DTYPE, line) or nindent(line) <= n:
+                        i -= 1
+                        line = '\n'.join(cond)
+                        src_out.append(line)
+                        break
+                    else:
+                        cond.append(line[ntab:])
+                    i += 1
+            else:
+                i += 1
+
+        else:
+            if nindent(line) <= n:
+                src_out.append(line)
+                n = BIGINT
+    src_out = '\n'.join(src_out)
+    return src_out
+
+
+def is_target_dtype(src_line, dtype):
+    if_list = re.split('if\s*', src_line)
+    cond = if_list[-1]
+    cond = re.split(':', cond)[0]
+    cond_list = re.split('\s*==\s*', cond)
+    dtype_num = cond_list[0]
+    num = int(dtype_num[-1])
+    target_dtype = re.sub(r'\'|\"', '', cond_list[1])
+    if dtype[num] == target_dtype:
+        return True
+    else:
+        return False
+
+
+def nindent(line):
+    return len(line) - len(line.lstrip(' '))

@@ -50,5 +50,4 @@ sdist: pyx
 
 .PHONY: clean
 clean:
-	rm -rf ${srcdir}/*~ ${srcdir}/*.so ${srcdir}/*.c ${srcdir}/*.o ${srcdir}/*.html ${srcdir}/build ${srcdir}/../*.so
-	rm -rf ${srcdir}/*.c
+	rm -rf ${srcdir}/*.c ${srcdir}/*.html ${srcdir}/build ${srcdir}/../../*.so

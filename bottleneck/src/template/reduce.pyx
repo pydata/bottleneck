@@ -43,7 +43,15 @@ cdef DTYPE0_t nansum_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
     while PyArray_ITER_NOTDONE(ita):
         for i in range(length):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            if ai == ai:
+            if DTYPE0 == 'float64':
+                if ai == ai:
+                    asum += ai
+            if DTYPE0 == 'float32':
+                if ai == ai:
+                    asum += ai
+            if DTYPE0 == 'int64':
+                asum += ai
+            if DTYPE0 == 'int32':
                 asum += ai
         PyArray_ITER_NEXT(ita)
     return asum
@@ -64,7 +72,15 @@ cdef void nansum_one_DTYPE0(np.flatiter ita, np.flatiter ity,
             asum = 0
             for i in range(length):
                 ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                if ai == ai:
+                if DTYPE0 == 'float64':
+                    if ai == ai:
+                        asum += ai
+                if DTYPE0 == 'float32':
+                    if ai == ai:
+                        asum += ai
+                if DTYPE0 == 'int64':
+                    asum += ai
+                if DTYPE0 == 'int32':
                     asum += ai
             (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
             PyArray_ITER_NEXT(ita)
