@@ -20,134 +20,69 @@ from numpy cimport import_array
 import_array()
 
 
-cdef float64_t nansum_all_float64(np.flatiter ita, Py_ssize_t stride,
-                                  Py_ssize_t length, int int_input):
+# nansum --------------------------------------------------------------------
+
+def nansum(arr, axis=None):
+    return reducer(arr, axis,
+                   nansum_all_float64,
+                   nansum_all_float32,
+                   nansum_all_int64,
+                   nansum_all_int32,
+                   nansum_one_float64,
+                   nansum_one_float32,
+                   nansum_one_int64,
+                   nansum_one_int32,
+                   nansum_0d)
+
+
+cdef DTYPE0_t nansum_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                                Py_ssize_t length, int int_input):
+    # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
     cdef Py_ssize_t i
-    cdef float64_t asum = 0, ai
+    cdef DTYPE0_t asum = 0, ai
     while PyArray_ITER_NOTDONE(ita):
         for i in range(length):
-            ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
-            if ai == ai:
-                asum += ai
-        PyArray_ITER_NEXT(ita)
-    return asum
-
-
-cdef float32_t nansum_all_float32(np.flatiter ita, Py_ssize_t stride,
-                                  Py_ssize_t length, int int_input):
-    cdef Py_ssize_t i
-    cdef float32_t asum = 0, ai
-    while PyArray_ITER_NOTDONE(ita):
-        for i in range(length):
-            ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
-            if ai == ai:
-                asum += ai
-        PyArray_ITER_NEXT(ita)
-    return asum
-
-
-cdef int64_t nansum_all_int64(np.flatiter ita, Py_ssize_t stride,
-                              Py_ssize_t length, int int_input):
-    cdef Py_ssize_t i
-    cdef int64_t asum = 0, ai
-    while PyArray_ITER_NOTDONE(ita):
-        for i in range(length):
-            ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
-            asum += ai
-        PyArray_ITER_NEXT(ita)
-    return asum
-
-
-cdef int32_t nansum_all_int32(np.flatiter ita, Py_ssize_t stride,
-                              Py_ssize_t length, int int_input):
-    cdef Py_ssize_t i
-    cdef int32_t asum = 0, ai
-    while PyArray_ITER_NOTDONE(ita):
-        for i in range(length):
-            ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
-            asum += ai
-        PyArray_ITER_NEXT(ita)
-    return asum
-
-
-cdef void nansum_one_float64(np.flatiter ita, np.flatiter ity,
-                             Py_ssize_t stride, Py_ssize_t length,
-                             int int_input):
-    cdef Py_ssize_t i
-    cdef float64_t asum = 0, ai
-    if length == 0:
-        while PyArray_ITER_NOTDONE(ity):
-            (<float64_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ity)
-    else:
-        while PyArray_ITER_NOTDONE(ita):
-            asum = 0
-            for i in range(length):
-                ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+            if DTYPE0 == 'float64':
                 if ai == ai:
                     asum += ai
-            (<float64_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ita)
-            PyArray_ITER_NEXT(ity)
-
-
-cdef void nansum_one_float32(np.flatiter ita, np.flatiter ity,
-                             Py_ssize_t stride, Py_ssize_t length,
-                             int int_input):
-    cdef Py_ssize_t i
-    cdef float32_t asum = 0, ai
-    if length == 0:
-        while PyArray_ITER_NOTDONE(ity):
-            (<float32_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ity)
-    else:
-        while PyArray_ITER_NOTDONE(ita):
-            asum = 0
-            for i in range(length):
-                ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+            if DTYPE0 == 'float32':
                 if ai == ai:
                     asum += ai
-            (<float32_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ita)
-            PyArray_ITER_NEXT(ity)
+            if DTYPE0 == 'int64':
+                asum += ai
+            if DTYPE0 == 'int32':
+                asum += ai
+        PyArray_ITER_NEXT(ita)
+    return asum
 
 
-cdef void nansum_one_int64(np.flatiter ita, np.flatiter ity,
-                           Py_ssize_t stride, Py_ssize_t length,
-                           int int_input):
+cdef void nansum_one_DTYPE0(np.flatiter ita, np.flatiter ity,
+                            Py_ssize_t stride, Py_ssize_t length,
+                            int int_input):
+    # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
     cdef Py_ssize_t i
-    cdef int64_t asum = 0, ai
+    cdef DTYPE0_t asum = 0, ai
     if length == 0:
         while PyArray_ITER_NOTDONE(ity):
-            (<int64_t*>((<char*>pid(ity))))[0] = asum
+            (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
             PyArray_ITER_NEXT(ity)
     else:
         while PyArray_ITER_NOTDONE(ita):
             asum = 0
             for i in range(length):
-                ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
-                asum += ai
-            (<int64_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ita)
-            PyArray_ITER_NEXT(ity)
-
-
-cdef void nansum_one_int32(np.flatiter ita, np.flatiter ity,
-                           Py_ssize_t stride, Py_ssize_t length,
-                           int int_input):
-    cdef Py_ssize_t i
-    cdef int32_t asum = 0, ai
-    if length == 0:
-        while PyArray_ITER_NOTDONE(ity):
-            (<int32_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ity)
-    else:
-        while PyArray_ITER_NOTDONE(ita):
-            asum = 0
-            for i in range(length):
-                ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
-                asum += ai
-            (<int32_t*>((<char*>pid(ity))))[0] = asum
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if DTYPE0 == 'float64':
+                    if ai == ai:
+                        asum += ai
+                if DTYPE0 == 'float32':
+                    if ai == ai:
+                        asum += ai
+                if DTYPE0 == 'int64':
+                    asum += ai
+                if DTYPE0 == 'int32':
+                    asum += ai
+            (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
             PyArray_ITER_NEXT(ita)
             PyArray_ITER_NEXT(ity)
 
@@ -274,16 +209,3 @@ cdef reducer(arr, axis,
         else:
             raise TypeError("Unsupported dtype (%s)." % a.dtype)
         return y
-
-
-def nansum(arr, axis=None):
-    return reducer(arr, axis,
-                   nansum_all_float64,
-                   nansum_all_float32,
-                   nansum_all_int64,
-                   nansum_all_int32,
-                   nansum_one_float64,
-                   nansum_one_float32,
-                   nansum_one_int64,
-                   nansum_one_int32,
-                   nansum_0d)
