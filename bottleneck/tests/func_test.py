@@ -89,6 +89,12 @@ def test_nansum():
     "Test nansum."
     yield unit_maker, bn.nansum, bn.slow.nansum, np.inf, True, False
 
+
+def test_nanmean():
+    "Test nanmean."
+    yield unit_maker, bn.nanmean, bn.slow.nanmean, 5
+    
+
 """
 def test_nanmax():
     "Test nanmax."
@@ -108,11 +114,6 @@ def test_nanargmax():
 def test_nanmin():
     "Test nanmin."
     yield unit_maker, bn.nanmin, bn.slow.nanmin
-
-
-def test_nanmean():
-    "Test nanmean."
-    yield unit_maker, bn.nanmean, bn.slow.nanmean, 5
 
 
 def test_nanstd():

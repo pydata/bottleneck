@@ -62,7 +62,7 @@ def expand_dtypes(func_str, dtypes):
         for i, dt in enumerate(dtype):
             f = conditional_dtype(f, dtype)
             f = f.replace('DTYPE%d' % i, dt)
-            func_list.append(f)
+        func_list.append(f)
     return '\n'.join(func_list)
 
 

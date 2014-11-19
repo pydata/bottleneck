@@ -127,6 +127,36 @@ def benchsuite(shapes, dtype, axis, nans):
             setups.append(template % (str(shape), str(nan), setup))
         return setups
 
+    # nansum
+    run = {}
+    run['name'] = "nansum"
+    run['ref'] = "np.nansum"
+    run['scipy_required'] = False
+    run['statements'] = ["bn_func(a, axis=AXIS)", "np_func(a, axis=AXIS)"]
+    setup = """
+        from bottleneck import nansum as bn_func
+        from numpy import nansum as np_func
+    """
+    run['setups'] = getsetups(setup, shapes, nans)
+    suite.append(run)
+
+    # nanmean
+    run = {}
+    run['name'] = "nanmean"
+    run['ref'] = "np.nanmean"
+    run['scipy_required'] = False
+    run['statements'] = ["bn_func(a, axis=AXIS)", "np_func(a, axis=AXIS)"]
+    setup = """
+        from bottleneck import nanmean as bn_func
+        from numpy import nanmean as np_func
+    """
+    run['setups'] = getsetups(setup, shapes, nans)
+    suite.append(run)
+
+    # runs
+    # -----------------------------------------------------------------------
+    # does not yet run
+
     # median
     run = {}
     run['name'] = "median"
@@ -152,19 +182,6 @@ def benchsuite(shapes, dtype, axis, nans):
     run['setups'] = getsetups(setup, shapes, nans)
     #suite.append(run)
 
-    # nansum
-    run = {}
-    run['name'] = "nansum"
-    run['ref'] = "np.nansum"
-    run['scipy_required'] = False
-    run['statements'] = ["bn_nansum(a, axis=AXIS)", "np_nansum(a, axis=AXIS)"]
-    setup = """
-        from bottleneck import nansum as bn_nansum
-        from numpy import nansum as np_nansum
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
-
     # nanmax
     run = {}
     run['name'] = "nanmax"
@@ -172,18 +189,6 @@ def benchsuite(shapes, dtype, axis, nans):
     run['scipy_required'] = False
     code = "bn.nanmax(a, axis=AXIS)"
     run['statements'] = [code, "np.nanmax(a, axis=AXIS)"]
-    setup = """
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    #suite.append(run)
-
-    # nanmean
-    run = {}
-    run['name'] = "nanmean"
-    run['ref'] = "np.nanmean"
-    run['scipy_required'] = False
-    code = "bn.nanmean(a, axis=AXIS)"
-    run['statements'] = [code, "np.nanmean(a, axis=AXIS)"]
     setup = """
     """
     run['setups'] = getsetups(setup, shapes, nans)
