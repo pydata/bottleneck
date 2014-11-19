@@ -62,11 +62,11 @@ cdef object nansum_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
 
 cdef ndarray nansum_one_DTYPE0(np.flatiter ita,
                             Py_ssize_t stride, Py_ssize_t length,
-                            int ndim, np.npy_intp* ydim, int int_input):
+                            int a_ndim, np.npy_intp* y_dims, int int_input):
     # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
     cdef Py_ssize_t i
     cdef DTYPE0_t asum = 0, ai
-    cdef ndarray y = PyArray_EMPTY(ndim - 1, ydim, NPY_DTYPE0, 0)
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
     cdef np.flatiter ity = PyArray_IterNew(y)
     if length == 0:
         while PyArray_ITER_NOTDONE(ity):
@@ -137,15 +137,15 @@ cdef reducer(arr, axis,
     cdef np.flatiter ita
     cdef Py_ssize_t stride, length, i, j
     cdef int dtype = PyArray_TYPE(a)
-    cdef int ndim = PyArray_NDIM(a)
+    cdef int a_ndim = PyArray_NDIM(a)
 
     # output array, if needed
     cdef ndarray y
     cdef np.npy_intp *adim
-    cdef np.npy_intp *ydim = [0, 0, 0, 0, 0, 0, 0, 0, 0]  # TODO max ndim=10
+    cdef np.npy_intp *y_dims = [0, 0, 0, 0, 0, 0, 0, 0, 0]  # TODO max ndim=10
 
     # defend against 0d beings
-    if ndim == 0:
+    if a_ndim == 0:
         if axis is None or axis == 0 or axis == -1:
             return f0d(a, int_input)
         else:
@@ -161,10 +161,10 @@ cdef reducer(arr, axis,
     else:
         axis_int = <int>axis
         if axis_int < 0:
-            axis_int += ndim
+            axis_int += a_ndim
             if axis_int < 0:
                 raise ValueError("axis(=%d) out of bounds" % axis)
-        if ndim == 1 and axis_int == 0:
+        if a_ndim == 1 and axis_int == 0:
             reduce_all = 1
         axis_reduce = axis_int
 
@@ -186,21 +186,21 @@ cdef reducer(arr, axis,
         else:
             raise TypeError("Unsupported dtype (%s)." % a.dtype)
     else:
-        # reduce over a single axis; ndim > 1
+        # reduce over a single axis; a_ndim > 1
         adim = np.PyArray_DIMS(a)
         j = 0
-        for i in range(ndim):
+        for i in range(a_ndim):
             if i != axis_reduce:
-                ydim[j] = adim[i]
+                y_dims[j] = adim[i]
                 j += 1
         if dtype == NPY_float64:
-            y = fone_float64(ita, stride, length, ndim, ydim, int_input)
+            y = fone_float64(ita, stride, length, a_ndim, y_dims, int_input)
         elif dtype == NPY_float32:
-            y = fone_float32(ita, stride, length, ndim, ydim, int_input)
+            y = fone_float32(ita, stride, length, a_ndim, y_dims, int_input)
         elif dtype == NPY_int64:
-            y = fone_int64(ita, stride, length, ndim, ydim, int_input)
+            y = fone_int64(ita, stride, length, a_ndim, y_dims, int_input)
         elif dtype == NPY_int32:
-            y = fone_int32(ita, stride, length, ndim, ydim, int_input)
+            y = fone_int32(ita, stride, length, a_ndim, y_dims, int_input)
         else:
             raise TypeError("Unsupported dtype (%s)." % a.dtype)
         return y
