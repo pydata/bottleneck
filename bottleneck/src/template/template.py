@@ -19,28 +19,35 @@ def make_pyx():
 def expand_functions(src_str):
     FUNC = r'^def|cdef'
     DTYPE = r'\s*#\s*bn.dtypes\s*=\s*'
+    DEC = r'^@'
     src_list = []
+    dec_list = []
     lines = src_str.splitlines()
     nlines = len(lines)
     i = 0
     while i < nlines:
         line = lines[i]
+        if re.match(DEC, line):
+            dec_list.append(line)
+            i += 1
+            continue
         if re.match(FUNC, line):
             dtypes = []
             func_list = [line]
             i += 1
             while True:
                 if i >= nlines:
-                    line = '\n'.join(func_list)
+                    line = '\n'.join(dec_list + func_list)
                     break
                 line = lines[i]
                 if re.match(DTYPE, line):
                     dtypes = re.sub(DTYPE, '', line)
                     dtypes = ast.literal_eval(dtypes)
                     line = None
-                elif re.match(FUNC, line):
+                elif re.match(FUNC, line) or re.match(DEC, line):
                     i -= 1
-                    func_str = '\n'.join(func_list)
+                    func_str = '\n'.join(dec_list + func_list)
+                    dec_list = []
                     line = expand_dtypes(func_str, dtypes)
                     break
                 else:
@@ -62,6 +69,8 @@ def expand_dtypes(func_str, dtypes):
         for i, dt in enumerate(dtype):
             f = conditional_dtype(f, dtype)
             f = f.replace('DTYPE%d' % i, dt)
+            if i > 0:
+                f = f + '\n'
         func_list.append(f)
     return '\n'.join(func_list)
 
