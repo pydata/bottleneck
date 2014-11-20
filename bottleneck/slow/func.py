@@ -9,22 +9,20 @@ __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
 rankdata_func = None
 
 
+def nansum(arr, axis=None):
+    "Slow nansum function used for unaccelerated ndim/dtype combinations."
+    return np.nansum(arr, axis=axis)
+
+
+def nanmean(arr, axis=None):
+    "Slow nanmean function used for unaccelerated ndim/dtype combinations."
+    return np.nanmean(arr, axis=axis)
+
+
 def median(arr, axis=None):
     "Slow median function used for unaccelerated ndim/dtype combinations."
     arr = np.asarray(arr)
     y = np.median(arr, axis=axis)
-    if y.dtype != arr.dtype:
-        if issubclass(arr.dtype.type, np.inexact):
-            y = y.astype(arr.dtype)
-    return y
-
-
-def nansum(arr, axis=None):
-    "Slow nansum function used for unaccelerated ndim/dtype combinations."
-    arr = np.asarray(arr)
-    y = np.nansum(arr, axis=axis)
-    if not hasattr(y, "dtype"):
-        y = arr.dtype.type(y)
     if y.dtype != arr.dtype:
         if issubclass(arr.dtype.type, np.inexact):
             y = y.astype(arr.dtype)
@@ -46,11 +44,6 @@ def nanmedian(arr, axis=None):
     if (y.size == 1) and (y.ndim == 0):
         y = y[()]
     return y
-
-
-def nanmean(arr, axis=None):
-    "Slow nanmean function used for unaccelerated ndim/dtype combinations."
-    return np.nanmean(arr, axis=axis)
 
 
 def nanvar(arr, axis=None, ddof=0):
