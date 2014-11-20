@@ -2,33 +2,35 @@
 Reduce (arr, axis)
 
     output dtype = input dtype
-        ss, nansum, nanmin, nanmax
+        ss*, nansum, nanmin*, nanmax*
 
     int --> float64
-        median, nanmedian, nanmean
+        median*, nanmedian*, nanmean
 
     output dtype = float64
-        rankdata, nanrankdata
+        rankdata*, nanrankdata*
 
     output dtype = intp
-        nanargmin, nanargmax
+        nanargmin*, nanargmax*
 
     output dtype = bool
-        anynan, allnan
+        anynan*, allnan*
 
 Reduce (arr, axis, int)
 
     int --> float64
-        nanstd, nanvar
+        nanstd*, nanvar*
 
 Nonreduce (arr, axis, int)
 
-    partsort, argpartsort
+    partsort*, argpartsort*
 
 Nonreduce (arr, scalar, scalar)
 
-    replace
+    replace*
 
 Weird (2d arr, 1d arr, int axis)
 
-    nn
+    nn*
+
+* means TODO
