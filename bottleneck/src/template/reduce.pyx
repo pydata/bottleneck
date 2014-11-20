@@ -283,6 +283,8 @@ cdef reducer(arr, axis,
             axis_int += a_ndim
             if axis_int < 0:
                 raise ValueError("axis(=%d) out of bounds" % axis)
+        elif axis_int >= a_ndim:
+            raise ValueError("axis(=%d) out of bounds" % axis)
         if a_ndim == 1 and axis_int == 0:
             reduce_all = 1
         axis_reduce = axis_int
