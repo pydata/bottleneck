@@ -6,7 +6,7 @@ from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
 nan = np.nan
 import bottleneck as bn
 
-DTYPES = [np.float64, np.float32, np.int64, np.int32]
+DTYPES = [np.float64, np.float32, np.int64, np.int32, np.float16]
 
 
 def arrays(dtypes=DTYPES, nans=True):
@@ -93,7 +93,7 @@ def test_nansum():
 def test_nanmean():
     "Test nanmean."
     yield unit_maker, bn.nanmean, bn.slow.nanmean, 5
-    
+
 
 """
 def test_nanmax():

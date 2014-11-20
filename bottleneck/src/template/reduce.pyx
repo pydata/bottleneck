@@ -22,22 +22,29 @@ from numpy cimport ndarray
 from numpy cimport import_array
 import_array()
 
+from bottleneck.slow.func import nansum as slow_nansum
+from bottleneck.slow.func import nanmean as slow_nanmean
+
 cdef double NAN = <double> np.nan
 
 
 # nansum --------------------------------------------------------------------
 
 def nansum(arr, axis=None):
-    return reducer(arr, axis,
-                   nansum_all_float64,
-                   nansum_all_float32,
-                   nansum_all_int64,
-                   nansum_all_int32,
-                   nansum_one_float64,
-                   nansum_one_float32,
-                   nansum_one_int64,
-                   nansum_one_int32,
-                   nansum_0d)
+    try:
+        return reducer(arr, axis,
+                       nansum_all_float64,
+                       nansum_all_float32,
+                       nansum_all_int64,
+                       nansum_all_int32,
+                       nansum_one_float64,
+                       nansum_one_float32,
+                       nansum_one_int64,
+                       nansum_one_int32,
+                       nansum_0d)
+    except TypeError:
+        return slow_nansum(arr, axis)
+
 
 
 cdef object nansum_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
@@ -106,16 +113,19 @@ cdef nansum_0d(ndarray a, int int_input):
 # nanmean --------------------------------------------------------------------
 
 def nanmean(arr, axis=None):
-    return reducer(arr, axis,
-                   nanmean_all_float64,
-                   nanmean_all_float32,
-                   nanmean_all_int64,
-                   nanmean_all_int32,
-                   nanmean_one_float64,
-                   nanmean_one_float32,
-                   nanmean_one_int64,
-                   nanmean_one_int32,
-                   nanmean_0d)
+    try:
+        return reducer(arr, axis,
+                       nanmean_all_float64,
+                       nanmean_all_float32,
+                       nanmean_all_int64,
+                       nanmean_all_int32,
+                       nanmean_one_float64,
+                       nanmean_one_float32,
+                       nanmean_one_int64,
+                       nanmean_one_int32,
+                       nanmean_0d)
+    except TypeError:
+        return slow_nanmean(arr, axis)
 
 
 @cython.cdivision(True)
