@@ -56,13 +56,13 @@ def unit_maker(func, nans=True):
 def test_modification():
     "Test for illegal inplace modification of input array"
     funcs = [bn.nansum,
-             bn.nanmean]
+             bn.nanmean,
+             bn.nanstd]
     """
              bn.nanmax,
              bn.nanargmin,
              bn.nanargmax,
              bn.nanmin,
-             bn.nanstd,
              bn.nanvar,
              bn.median,
              bn.nanmedian,

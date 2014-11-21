@@ -153,6 +153,19 @@ def benchsuite(shapes, dtype, axis, nans):
     run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
 
+    # nanstd
+    run = {}
+    run['name'] = "nanstd"
+    run['ref'] = "np.nanstd"
+    run['scipy_required'] = False
+    run['statements'] = ["bn_func(a, axis=AXIS)", "np_func(a, axis=AXIS)"]
+    setup = """
+        from bottleneck import nanstd as bn_func
+        from numpy import nanstd as np_func
+    """
+    run['setups'] = getsetups(setup, shapes, nans)
+    suite.append(run)
+
     # runs
     # -----------------------------------------------------------------------
     # does not yet run

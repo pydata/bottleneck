@@ -19,7 +19,7 @@ Reduce (arr, axis)
 Reduce (arr, axis, int)
 
     int --> float64
-        nanstd*, nanvar*
+        nanstd, nanvar*
 
 Nonreduce (arr, axis, int)
 
