@@ -22,13 +22,13 @@ def bench(dtype='float64', axis=-1,
         Data type string such as 'float64', which is the default.
     axis : int, optional
         Axis along which to perform the calculations that are being
-        benchmarked. The default is the second axis (axis=1).
+        benchmarked. The default is the last axis (axis=-1).
     shapes : list, optional
         A list of tuple shapes of input arrays to use in the benchmark.
     nans : list, optional
         A list of the bools (True or False), one for each tuple in the
-        `shapes` list, that tells whether the input arrays should be filled
-        with one-third NaNs.
+        `shapes` list, that tells whether the input arrays should be randomly
+        filled with one-third NaNs.
 
     Returns
     -------
