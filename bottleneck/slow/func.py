@@ -8,7 +8,7 @@ __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
 
 rankdata_func = None
 
-from numpy import nansum, nanmean, nanstd
+from numpy import nansum, nanmean, nanstd, nanvar
 
 
 def median(arr, axis=None):
@@ -36,11 +36,6 @@ def nanmedian(arr, axis=None):
     if (y.size == 1) and (y.ndim == 0):
         y = y[()]
     return y
-
-
-def nanvar(arr, axis=None, ddof=0):
-    "Slow nanvar function used for unaccelerated ndim/dtype combinations."
-    return np.nanvar(arr, axis=axis, ddof=ddof)
 
 
 def nanmin(arr, axis=None):

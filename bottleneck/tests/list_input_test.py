@@ -52,6 +52,11 @@ def test_nanstd():
     yield unit_maker, bn.nanstd, bn.slow.nanstd 
 
 
+def test_nanvar():
+    "Test nanvar."
+    yield unit_maker, bn.nanvar, bn.slow.nanvar
+
+
 """
 def test_nanmax():
     "Test nanmax."
@@ -71,11 +76,6 @@ def test_nanargmax():
 def test_nanmin():
     "Test nanmin."
     yield unit_maker, bn.nanmin, bn.slow.nanmin
-
-
-def test_nanvar():
-    "Test nanvar."
-    yield unit_maker, bn.nanvar, bn.slow.nanvar
 
 
 def test_median():

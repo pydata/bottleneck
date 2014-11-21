@@ -26,6 +26,7 @@ import_array()
 from bottleneck.slow.func import nansum as slow_nansum
 from bottleneck.slow.func import nanmean as slow_nanmean
 from bottleneck.slow.func import nanstd as slow_nanstd
+from bottleneck.slow.func import nanvar as slow_nanvar
 
 cdef double NAN = <double> np.nan
 cdef extern from "math.h":
@@ -388,6 +389,163 @@ cdef ndarray nanstd_one_DTYPE0(np.flatiter ita,
 
 
 cdef nanstd_0d(ndarray a, int int_input):
+    return a[()]
+
+
+# nanvar --------------------------------------------------------------------
+
+def nanvar(arr, axis=None, int ddof=0):
+    try:
+        return reducer(arr, axis,
+                       nanvar_all_float64,
+                       nanvar_all_float32,
+                       nanvar_all_int64,
+                       nanvar_all_int32,
+                       nanvar_one_float64,
+                       nanvar_one_float32,
+                       nanvar_one_int64,
+                       nanvar_one_int32,
+                       nanvar_0d,
+                       ddof)
+    except TypeError:
+        return slow_nanvar(arr, axis, ddof=ddof)
+
+
+@cython.cdivision(True)
+cdef object nanvar_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int ddof):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i, count = 0
+    cdef DTYPE0_t asum = 0, amean, ai
+    while PyArray_ITER_NOTDONE(ita):
+        for i in range(length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+            if ai == ai:
+                asum += ai
+                count += 1
+        PyArray_ITER_NEXT(ita)
+    if count > ddof:
+        amean = asum / count
+        asum = 0
+        PyArray_ITER_RESET(ita)
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if ai == ai:
+                    ai -= amean
+                    asum += ai * ai
+            PyArray_ITER_NEXT(ita)
+        return asum / (count - ddof)
+    else:
+        return NAN
+
+
+@cython.cdivision(True)
+cdef object nanvar_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int ddof):
+    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
+    cdef Py_ssize_t i, size = 0
+    cdef DTYPE1_t asum = 0, amean, aj
+    cdef DTYPE0_t ai
+    while PyArray_ITER_NOTDONE(ita):
+        for i in range(length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+            asum += ai
+        size += length
+        PyArray_ITER_NEXT(ita)
+    if size > ddof:
+        amean = asum / size
+        asum = 0
+        PyArray_ITER_RESET(ita)
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                aj = ai - amean
+                asum += aj * aj
+            PyArray_ITER_NEXT(ita)
+        return asum / (size - ddof)
+    else:
+        return NAN
+
+
+@cython.cdivision(True)
+cdef ndarray nanvar_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims,
+                               int ddof):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i, count = 0
+    cdef DTYPE0_t asum = 0, ai, amean
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        while PyArray_ITER_NOTDONE(ity):
+            (<DTYPE0_t*>((<char*>pid(ity))))[0] = NAN
+            PyArray_ITER_NEXT(ity)
+    else:
+        while PyArray_ITER_NOTDONE(ita):
+            asum = 0
+            count = 0
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+            if count > ddof:
+                amean = asum / count
+                asum = 0
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                    if ai == ai:
+                        ai -= amean
+                        asum += ai * ai
+                asum = asum / (count - ddof)
+            else:
+                asum = NAN
+            (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+    return y
+
+
+@cython.cdivision(True)
+cdef ndarray nanvar_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims,
+                               int ddof):
+    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
+    cdef Py_ssize_t i
+    cdef DTYPE1_t asum = 0, amean, aj
+    cdef DTYPE0_t ai
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        while PyArray_ITER_NOTDONE(ity):
+            (<DTYPE1_t*>((<char*>pid(ity))))[0] = NAN
+            PyArray_ITER_NEXT(ity)
+    else:
+        while PyArray_ITER_NOTDONE(ita):
+            asum = 0
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                asum += ai
+            if length > ddof:
+                amean = asum / length
+                asum = 0
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                    aj = ai - amean
+                    asum += aj * aj
+                asum = asum / (length - ddof)
+            else:
+                asum = NAN
+            (<DTYPE1_t*>((<char*>pid(ity))))[0] = asum
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+    return y
+
+
+cdef nanvar_0d(ndarray a, int int_input):
     return a[()]
 
 
