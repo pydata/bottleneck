@@ -9,8 +9,8 @@ from .autotimeit import autotimeit
 __all__ = ['bench']
 
 
-def bench(dtype='float64', axis=1,
-          shapes=[(10, 10), (100, 100), (1000, 1000), (10, 10), (100, 100),
+def bench(dtype='float64', axis=-1,
+          shapes=[(10,), (10, 10), (1000, 1000), (10,), (10, 10),
                   (1000, 1000)],
           nans=[False, False, False, True, True, True]):
     """
