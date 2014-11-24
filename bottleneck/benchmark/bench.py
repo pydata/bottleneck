@@ -127,57 +127,20 @@ def benchsuite(shapes, dtype, axis, nans):
             setups.append(template % (str(shape), str(nan), setup))
         return setups
 
-    # nansum
-    run = {}
-    run['name'] = "nansum"
-    run['ref'] = "np.nansum"
-    run['scipy_required'] = False
-    run['statements'] = ["bn_func(a, axis=AXIS)", "np_func(a, axis=AXIS)"]
-    setup = """
-        from bottleneck import nansum as bn_func
-        from numpy import nansum as np_func
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
-
-    # nanmean
-    run = {}
-    run['name'] = "nanmean"
-    run['ref'] = "np.nanmean"
-    run['scipy_required'] = False
-    run['statements'] = ["bn_func(a, axis=AXIS)", "np_func(a, axis=AXIS)"]
-    setup = """
-        from bottleneck import nanmean as bn_func
-        from numpy import nanmean as np_func
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
-
-    # nanstd
-    run = {}
-    run['name'] = "nanstd"
-    run['ref'] = "np.nanstd"
-    run['scipy_required'] = False
-    run['statements'] = ["bn_func(a, axis=AXIS)", "np_func(a, axis=AXIS)"]
-    setup = """
-        from bottleneck import nanstd as bn_func
-        from numpy import nanstd as np_func
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
-
-    # nanmax
-    run = {}
-    run['name'] = "nanmax"
-    run['ref'] = "np.nanmax"
-    run['scipy_required'] = False
-    run['statements'] = ["bn_func(a, axis=AXIS)", "np_func(a, axis=AXIS)"]
-    setup = """
-        from bottleneck import nanmax as bn_func
-        from numpy import nanmax as np_func
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
+    # numpy functions
+    funcs = ['nansum', 'nanmean', 'nanstd', 'nanmax']
+    for func in funcs:
+        run = {}
+        run['name'] = func
+        run['ref'] = "np.%s" % func
+        run['scipy_required'] = False
+        run['statements'] = ["bn_func(a, axis=AXIS)", "np_func(a, axis=AXIS)"]
+        setup = """
+            from bottleneck import %s as bn_func
+            from numpy import %s as np_func
+        """ % (func, func)
+        run['setups'] = getsetups(setup, shapes, nans)
+        suite.append(run)
 
     # runs
     # -----------------------------------------------------------------------
