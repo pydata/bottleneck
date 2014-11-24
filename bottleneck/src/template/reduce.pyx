@@ -23,12 +23,7 @@ from numpy cimport ndarray
 from numpy cimport import_array
 import_array()
 
-from bottleneck.slow.func import nansum as slow_nansum
-from bottleneck.slow.func import nanmean as slow_nanmean
-from bottleneck.slow.func import nanstd as slow_nanstd
-from bottleneck.slow.func import nanvar as slow_nanvar
-from bottleneck.slow.func import nanmin as slow_nanmin
-from bottleneck.slow.func import nanmax as slow_nanmax
+import bottleneck.slow.func as slow
 
 cdef double NAN = <double> np.nan
 cdef extern from "math.h":
@@ -60,7 +55,7 @@ def nansum(arr, axis=None):
                        nansum_one_int32,
                        nansum_0d)
     except TypeError:
-        return slow_nansum(arr, axis)
+        return slow.nansum(arr, axis)
 
 
 cdef object nansum_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
@@ -141,7 +136,7 @@ def nanmean(arr, axis=None):
                        nanmean_one_int32,
                        nanmean_0d)
     except TypeError:
-        return slow_nanmean(arr, axis)
+        return slow.nanmean(arr, axis)
 
 
 @cython.cdivision(True)
@@ -262,7 +257,7 @@ def nanstd(arr, axis=None, int ddof=0):
                        nanstd_0d,
                        ddof)
     except TypeError:
-        return slow_nanstd(arr, axis, ddof=ddof)
+        return slow.nanstd(arr, axis, ddof=ddof)
 
 
 @cython.cdivision(True)
@@ -419,7 +414,7 @@ def nanvar(arr, axis=None, int ddof=0):
                        nanvar_0d,
                        ddof)
     except TypeError:
-        return slow_nanvar(arr, axis, ddof=ddof)
+        return slow.nanvar(arr, axis, ddof=ddof)
 
 
 @cython.cdivision(True)
@@ -575,7 +570,7 @@ def nanmin(arr, axis=None):
                        nanmin_one_int32,
                        nanmin_0d)
     except TypeError:
-        return slow_nanmin(arr, axis)
+        return slow.nanmin(arr, axis)
 
 
 cdef object nanmin_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
@@ -691,7 +686,7 @@ def nanmax(arr, axis=None):
                        nanmax_one_int32,
                        nanmax_0d)
     except TypeError:
-        return slow_nanmax(arr, axis)
+        return slow.nanmax(arr, axis)
 
 
 cdef object nanmax_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
