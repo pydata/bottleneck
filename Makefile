@@ -24,12 +24,17 @@ pyx:
 
 cfiles:
 	cython ${srcdir}/reduce.pyx
+	cython ${srcdir}/move.pyx
 
-build: reduce
+build: reduce move
 
 reduce:
 	rm -rf ${srcdir}/../reduce.so
 	${PYTHON} ${srcdir}/reduce_setup.py build_ext --inplace
+
+move:
+	rm -rf ${srcdir}/../move.so
+	${PYTHON} ${srcdir}/move_setup.py build_ext --inplace
 
 test:
 	${PYTHON} -c "import bottleneck;bottleneck.test()"
