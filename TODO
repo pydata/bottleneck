@@ -2,7 +2,7 @@
 Reduce (arr, axis)
 
     output dtype = input dtype
-        ss*, nansum, nanmin*, nanmax*
+        ss*, nansum, nanmin, nanmax*
 
     int --> float64
         median*, nanmedian*, nanmean

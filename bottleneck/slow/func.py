@@ -8,7 +8,7 @@ __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
 
 rankdata_func = None
 
-from numpy import nansum, nanmean, nanstd, nanvar
+from numpy import nansum, nanmean, nanstd, nanvar, nanmin
 
 
 def median(arr, axis=None):
@@ -35,15 +35,6 @@ def nanmedian(arr, axis=None):
             y = y.astype(arr.dtype)
     if (y.size == 1) and (y.ndim == 0):
         y = y[()]
-    return y
-
-
-def nanmin(arr, axis=None):
-    "Slow nanmin function used for unaccelerated ndim/dtype combinations."
-    y = np.nanmin(arr, axis=axis)
-    if not hasattr(y, "dtype"):
-        # Numpy 1.5.1 doesn't return object with dtype when input is all NaN
-        y = arr.dtype.type(y)
     return y
 
 

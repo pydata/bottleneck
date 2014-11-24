@@ -59,12 +59,12 @@ def test_modification():
              bn.nanmean,
              bn.nanstd,
              bn.nanvar,
+             bn.nanmin,
              ]
     """
              bn.nanmax,
              bn.nanargmin,
              bn.nanargmax,
-             bn.nanmin,
              bn.median,
              bn.nanmedian,
              bn.rankdata,

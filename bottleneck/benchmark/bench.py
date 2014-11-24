@@ -166,6 +166,19 @@ def benchsuite(shapes, dtype, axis, nans):
     run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
 
+    # nanmin
+    run = {}
+    run['name'] = "nanmin"
+    run['ref'] = "np.nanmin"
+    run['scipy_required'] = False
+    run['statements'] = ["bn_func(a, axis=AXIS)", "np_func(a, axis=AXIS)"]
+    setup = """
+        from bottleneck import nanmin as bn_func
+        from numpy import nanmin as np_func
+    """
+    run['setups'] = getsetups(setup, shapes, nans)
+    suite.append(run)
+
     # runs
     # -----------------------------------------------------------------------
     # does not yet run
@@ -191,18 +204,6 @@ def benchsuite(shapes, dtype, axis, nans):
     run['statements'] = [code, "scipy_nanmedian(a, axis=AXIS)"]
     setup = """
         from bottleneck.slow.func import scipy_nanmedian
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    #suite.append(run)
-
-    # nanmax
-    run = {}
-    run['name'] = "nanmax"
-    run['ref'] = "np.nanmax"
-    run['scipy_required'] = False
-    code = "bn.nanmax(a, axis=AXIS)"
-    run['statements'] = [code, "np.nanmax(a, axis=AXIS)"]
-    setup = """
     """
     run['setups'] = getsetups(setup, shapes, nans)
     #suite.append(run)
