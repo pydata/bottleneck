@@ -60,9 +60,9 @@ def test_modification():
              bn.nanstd,
              bn.nanvar,
              bn.nanmin,
+             bn.nanmax,
              ]
     """
-             bn.nanmax,
              bn.nanargmin,
              bn.nanargmax,
              bn.median,

@@ -166,15 +166,15 @@ def benchsuite(shapes, dtype, axis, nans):
     run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)
 
-    # nanmin
+    # nanmax
     run = {}
-    run['name'] = "nanmin"
-    run['ref'] = "np.nanmin"
+    run['name'] = "nanmax"
+    run['ref'] = "np.nanmax"
     run['scipy_required'] = False
     run['statements'] = ["bn_func(a, axis=AXIS)", "np_func(a, axis=AXIS)"]
     setup = """
-        from bottleneck import nanmin as bn_func
-        from numpy import nanmin as np_func
+        from bottleneck import nanmax as bn_func
+        from numpy import nanmax as np_func
     """
     run['setups'] = getsetups(setup, shapes, nans)
     suite.append(run)

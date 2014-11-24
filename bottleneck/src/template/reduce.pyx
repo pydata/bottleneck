@@ -28,14 +28,21 @@ from bottleneck.slow.func import nanmean as slow_nanmean
 from bottleneck.slow.func import nanstd as slow_nanstd
 from bottleneck.slow.func import nanvar as slow_nanvar
 from bottleneck.slow.func import nanmin as slow_nanmin
+from bottleneck.slow.func import nanmax as slow_nanmax
 
 cdef double NAN = <double> np.nan
 cdef extern from "math.h":
     double sqrt(double x)
+
 cdef np.int32_t MAXint32 = np.iinfo(np.int32).max
 cdef np.int64_t MAXint64 = np.iinfo(np.int64).max
 cdef np.float32_t MAXfloat32 = np.inf
 cdef np.float64_t MAXfloat64 = np.inf
+
+cdef np.int32_t MINint32 = np.iinfo(np.int32).min
+cdef np.int64_t MINint64 = np.iinfo(np.int64).min
+cdef np.float32_t MINfloat32 = -np.inf
+cdef np.float64_t MINfloat64 = -np.inf
 
 
 # nansum --------------------------------------------------------------------
@@ -666,6 +673,122 @@ cdef ndarray nanmin_one_DTYPE0(np.flatiter ita,
 
 cdef nanmin_0d(ndarray a, int int_input):
     msg = "numpy.nanmin raises on a.ndim==0; so Bottleneck does too."
+    raise ValueError(msg)
+
+
+# nanmax --------------------------------------------------------------------
+
+def nanmax(arr, axis=None):
+    try:
+        return reducer(arr, axis,
+                       nanmax_all_float64,
+                       nanmax_all_float32,
+                       nanmax_all_int64,
+                       nanmax_all_int32,
+                       nanmax_one_float64,
+                       nanmax_one_float32,
+                       nanmax_one_int64,
+                       nanmax_one_int32,
+                       nanmax_0d)
+    except TypeError:
+        return slow_nanmax(arr, axis)
+
+
+cdef object nanmax_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int allnan = 1, is_size_0 = 1
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai, amin = MINDTYPE0
+    while PyArray_ITER_NOTDONE(ita):
+        for i in range(length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+            if ai >= amin:
+                amin = ai
+                allnan = 0
+        is_size_0 = 0
+        PyArray_ITER_NEXT(ita)
+    if is_size_0 == 1:
+        m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
+        raise ValueError(m)
+    if allnan == 0:
+        return amin
+    else:
+        return NAN
+
+
+cdef object nanmax_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef int is_size_0 = 1
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai, amin = MINDTYPE0
+    while PyArray_ITER_NOTDONE(ita):
+        for i in range(length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+            if ai >= amin:
+                amin = ai
+        is_size_0 = 0
+        PyArray_ITER_NEXT(ita)
+    if is_size_0 == 1:
+        m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
+        raise ValueError(m)
+    return amin
+
+
+cdef ndarray nanmax_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims, int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int allnan
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai, amin
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
+        raise ValueError(msg)
+    while PyArray_ITER_NOTDONE(ita):
+        amin = MINDTYPE0
+        allnan = 1
+        for i in range(length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+            if ai >= amin:
+                amin = ai
+                allnan = 0
+        if allnan != 0:
+            amin = NAN
+        (<DTYPE0_t*>((<char*>pid(ity))))[0] = amin
+        PyArray_ITER_NEXT(ita)
+        PyArray_ITER_NEXT(ity)
+    return y
+
+
+cdef ndarray nanmax_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims, int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai, amin
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
+        raise ValueError(msg)
+    while PyArray_ITER_NOTDONE(ita):
+        amin = MINDTYPE0
+        for i in range(length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+            if ai >= amin:
+                amin = ai
+        (<DTYPE0_t*>((<char*>pid(ity))))[0] = amin
+        PyArray_ITER_NEXT(ita)
+        PyArray_ITER_NEXT(ity)
+    return y
+
+
+cdef nanmax_0d(ndarray a, int int_input):
+    msg = "numpy.nanmax raises on a.ndim==0; so Bottleneck does too."
     raise ValueError(msg)
 
 
