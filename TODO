@@ -1,36 +1,61 @@
 
-Reduce (arr, axis)
+Reduce
+======
 
-    output dtype = input dtype
-        ss*, nansum, nanmin, nanmax
+    (arr, axis)
 
-    int --> float64
-        median*, nanmedian*, nanmean
+        output dtype = input dtype
+            ss*, nansum, nanmin, nanmax
 
-    output dtype = float64
-        rankdata*, nanrankdata*
+        int --> float64
+            median*, nanmedian*, nanmean
 
-    output dtype = intp
-        nanargmin*, nanargmax*
+        output dtype = float64
+            rankdata*, nanrankdata*
 
-    output dtype = bool
-        anynan*, allnan*
+        output dtype = intp
+            nanargmin*, nanargmax*
 
-Reduce (arr, axis, int)
+        output dtype = bool
+            anynan*, allnan*
 
-    int --> float64
-        nanstd, nanvar
+    (arr, axis, int)
 
-Nonreduce (arr, axis, int)
+        int --> float64
+            nanstd, nanvar
 
-    partsort*, argpartsort*
+Nonreduce
+=========
 
-Nonreduce (arr, scalar, scalar)
+    (arr, axis, int)
 
-    replace*
+        partsort*, argpartsort*
 
-Weird (2d arr, 1d arr, int axis)
+    (arr, scalar, scalar)
 
-    nn*
+        replace*
+
+Move
+====
+
+    (arr, int window, int axis)
+
+        output dtype = input dtype
+            sum*, nansum*, min*, max*, nanmin*, nanmax*
+
+        int --> float64
+            mean*, nanmean*, median*
+
+    (arr, int window, int axis, int ddof)
+
+        int --> float64
+            std*, nanstd*
+
+Weird
+=====
+
+    (2d arr, 1d arr, int axis)
+
+        nn*
 
 * means TODO
