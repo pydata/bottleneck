@@ -142,6 +142,23 @@ def benchsuite(shapes, dtype, axis, nans):
         run['setups'] = getsetups(setup, shapes, nans)
         suite.append(run)
 
+    # move_nanmean
+    run = {}
+    run['name'] = "move_nanmean"
+    run['ref'] = "sp.ndimage.convolve1d based, "
+    run['ref'] += "window=a.shape[%s] // 5" % axis
+    run['scipy_required'] = True
+    run['statements'] = ["bn_func(a, window=w, axis=AXIS)",
+                         "sp_func(a, window=w, axis=AXIS)"]
+    setup = """
+        from bottleneck.slow.move import move_nanmean as sp_func
+        from bottleneck import move_nanmean as bn_func
+        w = a.shape[AXIS] // 5
+    """
+    run['setups'] = getsetups(setup, shapes, nans)
+    if axis != 'None':
+        suite.append(run)
+
     # runs
     # -----------------------------------------------------------------------
     # does not yet run
@@ -322,23 +339,6 @@ def benchsuite(shapes, dtype, axis, nans):
         from bottleneck.slow.move import move_mean as scipy_move_mean
         w = a.shape[AXIS] // 5
         ignore = bn.slow.move_mean(a, window=w, axis=AXIS, method='filter')
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    if axis != 'None':
-        pass#suite.append(run)
-
-    # move_nanmean
-    run = {}
-    run['name'] = "move_nanmean"
-    run['ref'] = "sp.ndimage.convolve1d based, "
-    run['ref'] += "window=a.shape[%s] // 5" % axis
-    run['scipy_required'] = True
-    code = "bn.move_nanmean(a, window=w, axis=AXIS)"
-    run['statements'] = [code, "scipy_move_nanmean(a, window=w, axis=AXIS)"]
-    setup = """
-        from bottleneck.slow.move import move_nanmean as scipy_move_nanmean
-        w = a.shape[AXIS] // 5
-        ignore = bn.slow.move_nanmean(a, window=w, axis=AXIS, method='filter')
     """
     run['setups'] = getsetups(setup, shapes, nans)
     if axis != 'None':

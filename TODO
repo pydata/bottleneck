@@ -44,7 +44,7 @@ Move
             sum*, nansum*, min*, max*, nanmin*, nanmax*
 
         int --> float64
-            mean*, nanmean*, median*
+            mean*, nanmean, median*
 
     (arr, int window, int axis, int ddof)
 
