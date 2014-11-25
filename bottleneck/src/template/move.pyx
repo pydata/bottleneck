@@ -123,14 +123,14 @@ cdef ndarray move_nanmean_DTYPE0(int window, int axis, np.flatiter ita,
         i = window - 1
         ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
         asum += ai
-        yi = asum / length
+        yi = asum / window
         (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
         for i in range(window, length):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             asum += ai
             aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
             asum -= aold
-            yi = asum / length
+            yi = asum / window
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
         PyArray_ITER_NEXT(ita)
         PyArray_ITER_NEXT(ity)
