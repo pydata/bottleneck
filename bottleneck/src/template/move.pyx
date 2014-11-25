@@ -54,7 +54,7 @@ def move_nanmean(arr, int window, int axis=-1):
 
 
 @cython.cdivision(True)
-cdef ndarray move_nanmean_DTYPE0(int window, int axis, np.flatiter ita, 
+cdef ndarray move_nanmean_DTYPE0(int window, int axis, np.flatiter ita,
                                  Py_ssize_t stride, Py_ssize_t length,
                                  int a_ndim, np.npy_intp* y_dims,
                                  int int_input):
@@ -176,7 +176,7 @@ cdef ndarray mover(arr, int window, int axis,
 
     # output array info
     cdef ndarray y
-    cdef np.npy_intp *y_dims = np.PyArray_DIMS(a) 
+    cdef np.npy_intp *y_dims = np.PyArray_DIMS(a)
 
     # input iterator
     ita = PyArray_IterAllButAxis(a, &axis)
