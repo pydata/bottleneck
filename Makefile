@@ -55,4 +55,5 @@ sdist: pyx
 
 .PHONY: clean
 clean:
+	find . -name \*.pyc -delete
 	rm -rf ${srcdir}/*.c ${srcdir}/*.html ${srcdir}/build ${srcdir}/../../*.so
