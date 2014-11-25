@@ -49,7 +49,7 @@ def test_nanmean():
 
 def test_nanstd():
     "Test nanstd."
-    yield unit_maker, bn.nanstd, bn.slow.nanstd 
+    yield unit_maker, bn.nanstd, bn.slow.nanstd
 
 
 def test_nanvar():
@@ -140,15 +140,16 @@ def test_move_nansum():
     yield unit_maker, bn.move_nansum, bn.slow.move_nansum, (2,)
 
 
-def test_move_mean():
-    "Test move_mean."
-    yield unit_maker, bn.move_mean, bn.slow.move_mean, (2,)
-
-
 def test_move_median():
     "Test move_median."
     yield unit_maker, bn.move_median, bn.slow.move_median, (2,)
 """
+
+
+def test_move_mean():
+    "Test move_mean."
+    yield unit_maker, bn.move_mean, bn.slow.move_mean, (2,)
+
 
 def test_move_nanmean():
     "Test move_nanmean."

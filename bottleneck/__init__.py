@@ -11,7 +11,7 @@ try:
 except:
     pass
 try:
-    from .move import move_nanmean
+    from .move import move_mean, move_nanmean
 except:
     pass
 
