@@ -109,7 +109,8 @@ cdef ndarray move_nanmean_DTYPE0(int window, int axis, np.flatiter ita,
                                  int int_input):
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef Py_ssize_t i
-    cdef DTYPE0_t asum, ai, aold, yi
+    cdef DTYPE1_t asum, aold, yi
+    cdef DTYPE0_t ai
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
