@@ -2,11 +2,6 @@
 Bottleneck
 ==========
 
-.. warning:: This version of Bottleneck requires NumPy 1.9.1.
-
-Introduction
-============
-
 Bottleneck is a collection of fast NumPy array functions written in Cython:
 
 ===================== =======================================================
@@ -90,12 +85,10 @@ URLs
 Install
 =======
 
-.. warning:: This version of Bottleneck requires NumPy 1.9.1.
-
 Requirements:
 
 ======================== ====================================================
-Bottleneck               Python 2.6, 2.7, 3.3; NumPy 1.9.1
+Bottleneck               Python 2.6, 2.7, 3.3; NumPy **1.9.1**
 Compile                  gcc, clang, MinGW
 Unit tests               nose
 ======================== ====================================================
