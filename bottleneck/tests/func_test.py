@@ -1,5 +1,7 @@
 "Test functions."
 
+import warnings
+
 import numpy as np
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
                            assert_array_almost_equal, assert_almost_equal)
@@ -63,7 +65,9 @@ def unit_maker(func, func0, decimal=np.inf, nans=True, check_dtype=True):
                     actualraised = True
                 desiredraised = False
                 try:
-                    desired = func0(arr.copy(), axis=axis)
+                    with warnings.catch_warnings():
+                        warnings.simplefilter("ignore")
+                        desired = func0(arr.copy(), axis=axis)
                 except:
                     desiredraised = True
             if actualraised and desiredraised:
