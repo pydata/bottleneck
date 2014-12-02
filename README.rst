@@ -5,11 +5,11 @@ Bottleneck
 Bottleneck is a collection of fast NumPy array functions written in Cython:
 
 ===================== =======================================================
-NumPy/SciPy           ``median, nanmedian, rankdata, ss, nansum, nanmin,
-                      nanmax, nanmean, nanstd, nanargmin, nanargmax``
-Functions             ``nanrankdata, nanvar, partsort, argpartsort, replace,
-                      nn, anynan, allnan``
-Moving window         ``move_sum, move_nansum, move_mean, move_nanmean,
+reduce                ``nansum, nanmean, nanstd, nanvar, nanmin, nanmax,
+                      median, nanmedian, nanargmin, nanargmax, anynan, allnan,
+                      ss``
+non-reduce            ``partsort, argpartsort, replace, rankdata, nanrankdata``
+moving window         ``move_sum, move_nansum, move_mean, move_nanmean,
                       move_median, move_std, move_nanstd, move_min,
                       move_nanmin, move_max, move_nanmax``
 ===================== =======================================================
@@ -30,8 +30,8 @@ Moving window nanmean::
     >>> bn.move_nanmean(arr, window=2)
     array([ nan,  1.5,  2. ,  4. ,  4.5])
 
-Fast
-====
+Benchmark
+=========
 
 Bottleneck comes with a benchmark suite. To run the benchmark::
 
@@ -67,13 +67,11 @@ functions.
 License
 =======
 
-Bottleneck is distributed under a Simplified BSD license. Parts of NumPy,
-Scipy and numpydoc, all of which have BSD licenses, are included in
-Bottleneck. See the LICENSE file, which is distributed with Bottleneck, for
-details.
+Bottleneck is distributed under a Simplified BSD license. See the LICENSE file,
+which is distributed with Bottleneck, for details.
 
-URLs
-====
+Where
+=====
 
 ===================   ========================================================
  download             http://pypi.python.org/pypi/Bottleneck
@@ -88,8 +86,8 @@ Install
 Requirements:
 
 ======================== ====================================================
-Bottleneck               Python 2.6, 2.7, 3.3; NumPy **1.9.1**
-Compile                  gcc, clang, MinGW
+Bottleneck               Python 2.7, 3.4; **NumPy 1.9.1**
+Compile                  gcc or clang or MinGW
 Unit tests               nose
 ======================== ====================================================
 
@@ -100,39 +98,22 @@ SciPy                    portions of benchmark suite
 tox, virtualenv          run unit tests across multiple python/numpy versions
 ======================== ====================================================
 
-Directions for installing a *released* version of Bottleneck (i.e., one
-obtained from http://pypi.python.org/pypi/Bottleneck) are given below. Cython
-is not required since the Cython files have already been converted to C source
-files. (If you obtained bottleneck directly from the repository, then you will
-need to generate the C source files using the included Makefile which requires
-Cython.)
-
-GNU/Linux, Mac OS X, et al.
----------------------------
-
-To install Bottleneck::
+To install Bottleneck on GNU/Linux, Mac OS X, et al.::
 
     $ python setup.py build
     $ sudo python setup.py install
 
-Windows
--------
-
-You can compile Bottleneck using the instructions below or you can use the
-Windows binaries created by Christoph Gohlke:
-http://www.lfd.uci.edu/~gohlke/pythonlibs/#bottleneck
-
-In order to compile the C code in Bottleneck you need a Windows version of the
-gcc compiler. MinGW (Minimalist GNU for Windows) contains gcc.
-
-Install MinGW and add it to your system path. Then install Bottleneck with the
-commands::
+To install bottleneck on Windows, first install MinGW and add it to your
+system path. Then install Bottleneck with the commands::
 
     python setup.py build --compiler=mingw32
     python setup.py install
 
-Post install
-------------
+Alternatively, you can use the Windows binaries created by Christoph Gohlke:
+http://www.lfd.uci.edu/~gohlke/pythonlibs/#bottleneck
+
+Unit tests
+==========
 
 After you have installed Bottleneck, run the suite of unit tests::
 

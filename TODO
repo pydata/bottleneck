@@ -10,9 +10,6 @@ Reduce
         int --> float64
             median*, nanmedian*, nanmean
 
-        output dtype = float64
-            rankdata*, nanrankdata*
-
         output dtype = intp
             nanargmin*, nanargmax*
 
@@ -26,6 +23,11 @@ Reduce
 
 Nonreduce
 =========
+
+    (arr, axis)
+
+        output dtype = float64
+            rankdata*, nanrankdata*
 
     (arr, axis, int)
 
