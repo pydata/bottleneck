@@ -6,22 +6,19 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
-Bottleneck 0.9.0
+Bottleneck 1.0.0
 ================
 
 *Release date: Not yet released, in development*
 
-**Enhancements**
+This release is a complete rewrite of Bottleneck.
 
-- bn.slow.move functions with method='strides' no longer limited to ndim < 4
-- Use setuptools to enable automatic installation of numpy by pip
-- A new compile time option NDIM_MAX allows for adjusting the number of
-  dimensions for which fast functions are generated
-- Moving window functions now release Python's global interpreter lock
-
-**Bug fixes**
-
-- #91 bn.nanmedian template bug causes big slowdown
+- Function-call overhead cut in half---a big speed up for small input arrays
+- Arbitrary ndim input arrays accelerated; previously only 1d, 2d, and 3d
+- Single API: bn.nansum instead of bn.nansum and nansum_2d_float64_axis0
+- Can now install bottleneck with pip even if numpy is not already installed
+- Source tarball is one-xxxx the size of the previous release
+- Requires numpy 1.9.1
 
 Older versions
 ==============
