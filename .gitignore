@@ -5,3 +5,4 @@ MANIFEST
 *.so
 .tox
 .coverage
+*.egg-info

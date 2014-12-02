@@ -1,3 +1,2 @@
-*.c
 reduce.pyx
 move.pyx

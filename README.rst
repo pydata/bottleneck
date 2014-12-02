@@ -94,8 +94,9 @@ Unit tests               nose
 Optional:
 
 ======================== ====================================================
-SciPy                    portions of benchmark suite
-tox, virtualenv          run unit tests across multiple python/numpy versions
+SciPy                    Portions of benchmark suite
+tox, virtualenv          Run unit tests across multiple python/numpy versions
+Cython                   Development of bottleneck
 ======================== ====================================================
 
 To install Bottleneck on GNU/Linux, Mac OS X, et al.::

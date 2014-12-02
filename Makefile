@@ -55,5 +55,6 @@ sdist: pyx
 
 .PHONY: clean
 clean:
+	rm -rf build dist Bottleneck.egg-info
 	find . -name \*.pyc -delete
 	rm -rf ${srcdir}/*.c ${srcdir}/*.html ${srcdir}/build ${srcdir}/../../*.so
