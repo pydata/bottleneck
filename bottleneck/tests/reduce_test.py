@@ -60,7 +60,9 @@ def unit_maker(func, func0, decimal=np.inf, nans=True, check_dtype=True):
                 desired = 'Crashed'
                 actualraised = False
                 try:
-                    actual = func(arr.copy(), axis=axis)
+                    with warnings.catch_warnings():
+                        warnings.simplefilter("ignore")
+                        actual = func(arr.copy(), axis=axis)
                 except:
                     actualraised = True
                 desiredraised = False

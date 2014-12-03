@@ -1,5 +1,7 @@
 "Test moving window functions."
 
+import warnings
+
 from nose.tools import assert_true
 import numpy as np
 from numpy.testing import (assert_equal, assert_array_equal,
@@ -47,9 +49,13 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
             for window in windows:
                 for reference_method in ['loop', 'strides']:
                     with np.errstate(invalid='ignore'):
-                        actual = func(arr, window, axis=axis)
-                        desired = func0(arr, window, axis=axis,
-                                        method=reference_method)
+                        with warnings.catch_warnings():
+                            warnings.simplefilter("ignore")
+                            actual = func(arr, window, axis=axis)
+                        with warnings.catch_warnings():
+                            warnings.simplefilter("ignore")
+                            desired = func0(arr, window, axis=axis,
+                                            method=reference_method)
                     tup = (func.__name__, window, 'a'+str(i), str(arr.dtype),
                            str(arr.shape), str(axis), reference_method, arr)
                     err_msg = msg % tup

@@ -1,5 +1,7 @@
 "Test list input."
 
+import warnings
+
 import numpy as np
 from numpy.testing import assert_equal, assert_array_almost_equal
 import bottleneck as bn
@@ -30,8 +32,12 @@ def unit_maker(func, func0, args=tuple()):
     msg += '\nInput array:\n%s\n'
     for i, arr in enumerate(lists()):
         argsi = tuple([list(arr)] + list(args))
-        actual = func(*argsi)
-        desired = func0(*argsi)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            actual = func(*argsi)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            desired = func0(*argsi)
         tup = (func.__name__, 'a'+str(i), str(np.array(arr).shape), arr)
         err_msg = msg % tup
         assert_array_almost_equal(actual, desired, err_msg=err_msg)
