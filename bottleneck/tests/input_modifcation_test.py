@@ -1,5 +1,7 @@
 "Test functions."
 
+import warnings
+
 import numpy as np
 from numpy.testing import assert_equal
 nan = np.nan
@@ -44,10 +46,14 @@ def unit_maker(func, nans=True):
                 if ('move_' in func.__name__) or ('sort' in func.__name__):
                     if axis is None:
                         continue
-                    actual = func(arr1, 1, axis=axis)
+                    with warnings.catch_warnings():
+                        warnings.simplefilter("ignore")
+                        actual = func(arr1, 1, axis=axis)
                 else:
                     try:
-                        actual = func(arr1, axis=axis)
+                        with warnings.catch_warnings():
+                            warnings.simplefilter("ignore")
+                            actual = func(arr1, axis=axis)
                     except:
                         continue
                 assert_equal(arr1, arr2, msg % (func.__name__, arr1, arr2))

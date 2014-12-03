@@ -1163,7 +1163,7 @@ static char __pyx_k_ValueError[] = "ValueError";
 static char __pyx_k_RuntimeError[] = "RuntimeError";
 static char __pyx_k_Unsupported_dtype_s[] = "Unsupported dtype (%s).";
 static char __pyx_k_axis_d_out_of_bounds[] = "axis(=%d) out of bounds";
-static char __pyx_k_bottleneck_slow_func[] = "bottleneck.slow.func";
+static char __pyx_k_bottleneck_slow_reduce[] = "bottleneck.slow.reduce";
 static char __pyx_k_ndarray_is_not_C_contiguous[] = "ndarray is not C contiguous";
 static char __pyx_k_devel_bottleneck_bottleneck_src[] = "/devel/bottleneck/bottleneck/src/auto_pyx/reduce.pyx";
 static char __pyx_k_numpy_nanmax_raises_on_a_ndim_0[] = "numpy.nanmax raises on a.ndim==0; so Bottleneck does too.";
@@ -1189,7 +1189,7 @@ static PyObject *__pyx_n_s_arr;
 static PyObject *__pyx_n_s_array;
 static PyObject *__pyx_n_s_axis;
 static PyObject *__pyx_kp_s_axis_d_out_of_bounds;
-static PyObject *__pyx_n_s_bottleneck_slow_func;
+static PyObject *__pyx_n_s_bottleneck_slow_reduce;
 static PyObject *__pyx_n_s_copy;
 static PyObject *__pyx_n_s_ddof;
 static PyObject *__pyx_kp_s_devel_bottleneck_bottleneck_src;
@@ -17336,7 +17336,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_array, __pyx_k_array, sizeof(__pyx_k_array), 0, 0, 1, 1},
   {&__pyx_n_s_axis, __pyx_k_axis, sizeof(__pyx_k_axis), 0, 0, 1, 1},
   {&__pyx_kp_s_axis_d_out_of_bounds, __pyx_k_axis_d_out_of_bounds, sizeof(__pyx_k_axis_d_out_of_bounds), 0, 0, 1, 0},
-  {&__pyx_n_s_bottleneck_slow_func, __pyx_k_bottleneck_slow_func, sizeof(__pyx_k_bottleneck_slow_func), 0, 0, 1, 1},
+  {&__pyx_n_s_bottleneck_slow_reduce, __pyx_k_bottleneck_slow_reduce, sizeof(__pyx_k_bottleneck_slow_reduce), 0, 0, 1, 1},
   {&__pyx_n_s_copy, __pyx_k_copy, sizeof(__pyx_k_copy), 0, 0, 1, 1},
   {&__pyx_n_s_ddof, __pyx_k_ddof, sizeof(__pyx_k_ddof), 0, 0, 1, 1},
   {&__pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_k_devel_bottleneck_bottleneck_src, sizeof(__pyx_k_devel_bottleneck_bottleneck_src), 0, 0, 1, 0},
@@ -17662,14 +17662,14 @@ PyMODINIT_FUNC PyInit_reduce(void)
  * from numpy cimport import_array
  * import_array()             # <<<<<<<<<<<<<<
  * 
- * import bottleneck.slow.func as slow
+ * import bottleneck.slow.reduce as slow
  */
   import_array();
 
   /* "reduce.pyx":26
  * import_array()
  * 
- * import bottleneck.slow.func as slow             # <<<<<<<<<<<<<<
+ * import bottleneck.slow.reduce as slow             # <<<<<<<<<<<<<<
  * 
  * cdef double NAN = <double> np.nan
  */
@@ -17678,14 +17678,14 @@ PyMODINIT_FUNC PyInit_reduce(void)
   __Pyx_INCREF(__pyx_n_s__7);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s__7);
   __Pyx_GIVEREF(__pyx_n_s__7);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_bottleneck_slow_func, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_bottleneck_slow_reduce, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_slow, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "reduce.pyx":28
- * import bottleneck.slow.func as slow
+ * import bottleneck.slow.reduce as slow
  * 
  * cdef double NAN = <double> np.nan             # <<<<<<<<<<<<<<
  * cdef extern from "math.h":
