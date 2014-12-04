@@ -206,15 +206,15 @@ cdef ndarray move_nanmean_DTYPE0(int window, int axis, np.flatiter ita,
 
 # nonreduce_axis ------------------------------------------------------------
 
-ctypedef ndarray (*nra_t)(int, int, np.flatiter, Py_ssize_t, Py_ssize_t, int,
-                           np.npy_intp*, int)
+ctypedef ndarray (*nra_t)(ndarray, Py_ssize_t, Py_ssize_t int, np.npy_intp*,
+                          int)
 
 
 cdef ndarray nonreducer_axis(arr, axis,
-                             nr1_t nr1_float64,
-                             nr1_t nr1_float32,
-                             nr1_t nr1_int64,
-                             nr1_t nr1_int32,
+                             nra_t nra_float64,
+                             nra_t nra_float32,
+                             nra_t nra_int64,
+                             nra_t nra_int32,
                              int int_input=0):
 
     # convert to array if necessary
@@ -239,32 +239,25 @@ cdef ndarray nonreducer_axis(arr, axis,
             raise ValueError("axis(=%d) out of bounds" % axis)
 
     # input array
-    cdef np.flatiter ita
-    cdef Py_ssize_t stride, length
+    cdef Py_ssize_t stride = a.strides[axis_int]
+    cdef Py_ssize_t length = a.shape[axis_int]
     cdef int dtype = PyArray_TYPE(a)
     cdef int a_ndim = PyArray_NDIM(a)
 
-    # output array info
+    # output array
     cdef ndarray y
     cdef np.npy_intp *y_dims = np.PyArray_DIMS(a)
 
-    # input iterator
-    ita = PyArray_IterAllButAxis(a, &axis_int)
-    stride = a.strides[axis_int]
-    length = a.shape[axis_int]
-
+    # calc
     if dtype == NPY_float64:
-        y = nda_float64(axis, ita, stride, length, a_ndim, y_dims,
-                         int_input)
+        y = nra_float64(a, stride, length, a_ndim, y_dims, int_input)
     elif dtype == NPY_float32:
-        y = nda_float32(axis, ita, stride, length, a_ndim, y_dims,
-                         int_input)
+        y = nra_float32(a, stride, length, a_ndim, y_dims, int_input)
     elif dtype == NPY_int64:
-        y = nda_int64(axis, ita, stride, length, a_ndim, y_dims,
-                       int_input)
+        y = nra_int64(a, stride, length, a_ndim, y_dims, int_input)
     elif dtype == NPY_int32:
-        y = nda_int32(axis, ita, stride, length, a_ndim, y_dims,
-                       int_input)
+        y = nra_int32(a, stride, length, a_ndim, y_dims, int_input)
     else:
         raise TypeError("Unsupported dtype (%s)." % a.dtype)
+
     return y
