@@ -33,7 +33,7 @@ Nonreduce
 
         partsort*, argpartsort*
 
-    (arr, scalar, scalar)
+    (arr, double, double)
 
         replace*
 
