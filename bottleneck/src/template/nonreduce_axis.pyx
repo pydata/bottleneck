@@ -20,7 +20,7 @@ from numpy cimport PyArray_IterNew
 from numpy cimport PyArray_TYPE
 from numpy cimport PyArray_NDIM
 from numpy cimport NPY_CORDER
-
+from numpy cimport PyArray_Copy
 from numpy cimport PyArray_EMPTY
 from numpy cimport PyArray_Ravel
 
@@ -45,25 +45,60 @@ cdef np.float32_t MINfloat32 = -np.inf
 cdef np.float64_t MINfloat64 = -np.inf
 
 
-# move_mean -----------------------------------------------------------------
+# partsort ------------------------------------------------------------------
 
-def move_mean(arr, int window, int axis=-1):
+def partsort(arr, int n, axis=-1):
     try:
-        return mover(arr, window, axis,
-                     move_mean_float64,
-                     move_mean_float32,
-                     move_mean_int64,
-                     move_mean_int32)
+        return nonreducer_axis(arr, axis,
+                               partsort_float64,
+                               partsort_float32,
+                               partsort_int64,
+                               partsort_int32,
+                               n)
     except TypeError:
-        return slow.move_mean(arr, window, axis)
+        return slow.partsort(arr, n, axis)
 
 
-@cython.cdivision(True)
-cdef ndarray move_mean_DTYPE0(int window, int axis, np.flatiter ita,
-                              Py_ssize_t stride, Py_ssize_t length,
-                              int a_ndim, np.npy_intp* y_dims,
-                              int int_input):
-    # bn.dtypes = [['float64'], ['float32']]
+cdef ndarray partsort_DTYPE0(ndarray a, Py_ssize_t stride, Py_ssize_t length,
+                             int a_ndim, np.npy_intp* y_dims, int n):
+    # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
+
+    cdef np.npy_intp i, j = 0, l, r, k = n-1
+    cdef DTYPE0_t x, tmp
+    cdef ndarray y = PyArray_Copy(a)
+    if length == 0:
+        return y
+    if (n < 1) or (n > length):
+        raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
+                         (n, length))
+
+
+
+
+    for i1 in range(n1):
+        l = 0
+        r = n0 - 1
+        while l < r:
+            x = y[k, i1]
+            i = l
+            j = r
+            while 1:
+                while y[i, i1] < x: i += 1
+                while x < y[j, i1]: j -= 1
+                if i <= j:
+                    tmp = y[i, i1]
+                    y[i, i1] = y[j, i1]
+                    y[j, i1] = tmp
+                    i += 1
+                    j -= 1
+                if i > j: break
+            if j < k: l = i
+            if k < i: r = j
+    return y
+
+
+
+
     cdef Py_ssize_t i, count
     cdef DTYPE0_t asum, ai, aold, yi
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
@@ -108,7 +143,7 @@ cdef ndarray move_mean_DTYPE0(int window, int axis, np.flatiter ita,
 
 
 @cython.cdivision(True)
-cdef ndarray move_mean_DTYPE0(int window, int axis, np.flatiter ita,
+cdef ndarray partsort_DTYPE0(int window, int axis, np.flatiter ita,
                               Py_ssize_t stride, Py_ssize_t length,
                               int a_ndim, np.npy_intp* y_dims,
                               int int_input):
@@ -137,68 +172,6 @@ cdef ndarray move_mean_DTYPE0(int window, int axis, np.flatiter ita,
             asum -= aold
             yi = asum / window
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
-    return y
-
-
-# move_nanmean --------------------------------------------------------------
-
-def move_nanmean(arr, int window, int axis=-1):
-    try:
-        return mover(arr, window, axis,
-                     move_nanmean_float64,
-                     move_nanmean_float32,
-                     move_mean_int64,
-                     move_mean_int32)
-    except TypeError:
-        return slow.move_nanmean(arr, window, axis)
-
-
-@cython.cdivision(True)
-cdef ndarray move_nanmean_DTYPE0(int window, int axis, np.flatiter ita,
-                                 Py_ssize_t stride, Py_ssize_t length,
-                                 int a_ndim, np.npy_intp* y_dims,
-                                 int int_input):
-    # bn.dtypes = [['float64'], ['float32']]
-    cdef Py_ssize_t i, count
-    cdef DTYPE0_t asum, ai, aold, yi
-    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
-    cdef Py_ssize_t ystride = y.strides[axis]
-    while PyArray_ITER_NOTDONE(ita):
-        asum = 0
-        count = 0
-        for i in range(window - 1):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                asum += ai
-                count += 1
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        i = window - 1
-        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-        if ai == ai:
-            asum += ai
-            count += 1
-        if count > 0:
-            yi = asum / count
-        else:
-            yi = NAN
-        (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        for i in range(window, length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                asum += ai
-                count += 1
-            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-            if aold == aold:
-                asum -= aold
-                count -= 1
-            if count > 0:
-                yi = asum / count
-            else:
-                yi = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
         PyArray_ITER_NEXT(ita)
         PyArray_ITER_NEXT(ity)
     return y
