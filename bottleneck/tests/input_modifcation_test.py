@@ -69,6 +69,7 @@ def test_modification():
              bn.nanmax,
              bn.move_mean,
              bn.move_nanmean,
+             bn.partsort,
              ]
     """
              bn.nanargmin,
@@ -78,7 +79,6 @@ def test_modification():
              bn.rankdata,
              bn.nanrankdata,
              bn.ss,
-             bn.partsort,
              bn.argpartsort,
              bn.anynan,
              bn.allnan,

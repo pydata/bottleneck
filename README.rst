@@ -8,7 +8,8 @@ Bottleneck is a collection of fast NumPy array functions written in Cython:
 reduce                ``nansum, nanmean, nanstd, nanvar, nanmin, nanmax,
                       median, nanmedian, nanargmin, nanargmax, anynan, allnan,
                       ss``
-non-reduce            ``partsort, argpartsort, replace, rankdata, nanrankdata``
+non-reduce           ``replace``
+non-reduce (axis)    ``partsort, argpartsort, rankdata, nanrankdata``
 moving window         ``move_sum, move_nansum, move_mean, move_nanmean,
                       move_median, move_std, move_nanstd, move_min,
                       move_nanmin, move_max, move_nanmax``
@@ -37,7 +38,7 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
 
     >>> bn.bench()
     Bottleneck performance benchmark
-        Bottleneck  0.9.0dev
+        Bottleneck  1.0.0dev
         Numpy (np)  1.9.1
         Scipy (sp)  0.14.0
         Speed is NumPy or SciPy time divided by Bottleneck time
@@ -45,18 +46,20 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
 
                      no NaN     no NaN     no NaN      NaN        NaN        NaN
                      (10,)     (10,10)  (1000,1000)   (10,)     (10,10)  (1000,1000)
-    nansum           37.03      19.79       3.86      36.10      20.69       8.97
-    nanmean         145.23      77.49       5.18     127.50      67.47      10.33
-    nanstd          229.38      91.83       4.24     229.26      97.31       8.51
-    nanmax           29.79      13.67       1.07      29.49      13.80       2.84
-    move_mean        26.80      19.79      32.17      29.06      20.20      69.31
-    move_nanmean     72.88      53.14      66.42      75.15      54.80      66.57
+    nansum           40.38      22.35       3.91      40.85      23.07       8.98
+    nanmean         160.45      84.55       5.04     141.20      74.61      10.00
+    nanstd          246.13     103.54       4.37     245.02     107.45       8.45
+    nanmax           31.27      14.91       1.07      30.95      15.22       2.80
+    partsort          3.78       2.60       2.86       3.89       3.00       3.54
+    move_mean        28.72      20.28      32.19      30.66      21.09      68.96
+    move_nanmean     73.55      54.90      66.15      78.88      58.45      66.37
 
     Reference functions:
     nansum         np.nansum
     nanmean        np.nanmean
     nanstd         np.nanstd
     nanmax         np.nanmax
+    partsort       np.sort, n=max(a.shape[-1]/2,1)
     move_mean      sp.ndimage.convolve1d based, window=a.shape[-1] // 5
     move_nanmean   sp.ndimage.convolve1d based, window=a.shape[-1] // 5
 
@@ -121,6 +124,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 24 tests in 20.712s
+    Ran 27 tests in 21.712s
     OK
-    <nose.result.TextTestResult run=24 errors=0 failures=0>
+    <nose.result.TextTestResult run=27 errors=0 failures=0>
