@@ -59,36 +59,34 @@ def partsort(arr, int n, axis=-1):
         return slow.partsort(arr, n, axis)
 
 
-cdef ndarray partsort_DTYPE0(ndarray a, Py_ssize_t stride, Py_ssize_t length,
+cdef ndarray partsort_DTYPE0(ndarray a, int axis,
+                             Py_ssize_t stride, Py_ssize_t length,
                              int a_ndim, np.npy_intp* y_dims, int n):
     # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
-
     cdef np.npy_intp i, j = 0, l, r, k = n-1
-    cdef DTYPE0_t x, tmp
+    cdef DTYPE0_t x, tmpi, tmpj
     cdef ndarray y = PyArray_Copy(a)
     if length == 0:
         return y
     if (n < 1) or (n > length):
         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
                          (n, length))
-
-
-
-
-    for i1 in range(n1):
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    while PyArray_ITER_NOTDONE(ity):
         l = 0
-        r = n0 - 1
+        r = length - 1
         while l < r:
-            x = y[k, i1]
+            x = (<DTYPE0_t*>((<char*>pid(ity)) + k*stride))[0]
             i = l
             j = r
             while 1:
-                while y[i, i1] < x: i += 1
-                while x < y[j, i1]: j -= 1
+                while (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
+                while x < (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
                 if i <= j:
-                    tmp = y[i, i1]
-                    y[i, i1] = y[j, i1]
-                    y[j, i1] = tmp
+                    tmpi = (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0]
+                    tmpj = (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0]
+                    (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = tmpj
+                    (<DTYPE0_t*>((<char*>pid(ity)) + j*ystride))[0] = tmpi
                     i += 1
                     j -= 1
                 if i > j: break
@@ -97,90 +95,10 @@ cdef ndarray partsort_DTYPE0(ndarray a, Py_ssize_t stride, Py_ssize_t length,
     return y
 
 
-
-
-    cdef Py_ssize_t i, count
-    cdef DTYPE0_t asum, ai, aold, yi
-    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
-    cdef Py_ssize_t ystride = y.strides[axis]
-    while PyArray_ITER_NOTDONE(ita):
-        asum = 0
-        count = 0
-        for i in range(window - 1):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                asum += ai
-                count += 1
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        i = window - 1
-        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-        if ai == ai:
-            asum += ai
-            count += 1
-        if count == window:
-            yi = asum / count
-        else:
-            yi = NAN
-        (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        for i in range(window, length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                asum += ai
-                count += 1
-            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-            if aold == aold:
-                asum -= aold
-                count -= 1
-            if count == window:
-                yi = asum / count
-            else:
-                yi = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
-    return y
-
-
-@cython.cdivision(True)
-cdef ndarray partsort_DTYPE0(int window, int axis, np.flatiter ita,
-                              Py_ssize_t stride, Py_ssize_t length,
-                              int a_ndim, np.npy_intp* y_dims,
-                              int int_input):
-    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
-    cdef Py_ssize_t i
-    cdef DTYPE1_t asum, aold, yi
-    cdef DTYPE0_t ai
-    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
-    cdef Py_ssize_t ystride = y.strides[axis]
-    while PyArray_ITER_NOTDONE(ita):
-        asum = 0
-        for i in range(window - 1):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            asum += ai
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        i = window - 1
-        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-        asum += ai
-        yi = asum / window
-        (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        for i in range(window, length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            asum += ai
-            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-            asum -= aold
-            yi = asum / window
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
-    return y
-
-
 # nonreduce_axis ------------------------------------------------------------
 
-ctypedef ndarray (*nra_t)(ndarray, Py_ssize_t, Py_ssize_t int, np.npy_intp*,
-                          int)
+ctypedef ndarray (*nra_t)(ndarray, int, Py_ssize_t, Py_ssize_t int,
+                          np.npy_intp*, int)
 
 
 cdef ndarray nonreducer_axis(arr, axis,
@@ -223,13 +141,13 @@ cdef ndarray nonreducer_axis(arr, axis,
 
     # calc
     if dtype == NPY_float64:
-        y = nra_float64(a, stride, length, a_ndim, y_dims, int_input)
+        y = nra_float64(a, axis_int, stride, length, a_ndim, y_dims, int_input)
     elif dtype == NPY_float32:
-        y = nra_float32(a, stride, length, a_ndim, y_dims, int_input)
+        y = nra_float32(a, axis_int, stride, length, a_ndim, y_dims, int_input)
     elif dtype == NPY_int64:
-        y = nra_int64(a, stride, length, a_ndim, y_dims, int_input)
+        y = nra_int64(a, axis_int, stride, length, a_ndim, y_dims, int_input)
     elif dtype == NPY_int32:
-        y = nra_int32(a, stride, length, a_ndim, y_dims, int_input)
+        y = nra_int32(a, axis_int, stride, length, a_ndim, y_dims, int_input)
     else:
         raise TypeError("Unsupported dtype (%s)." % a.dtype)
 
