@@ -142,6 +142,23 @@ def benchsuite(shapes, dtype, axis, nans):
         run['setups'] = getsetups(setup, shapes, nans)
         suite.append(run)
 
+    # partsort
+    run = {}
+    run['name'] = "partsort"
+    run['ref'] = "np.sort, n=max(a.shape[%s]/2,1)" % axis
+    run['scipy_required'] = False
+    run['statements'] = ["bn_func(a, n=n, axis=AXIS)",
+                         "np_func(a, axis=AXIS)"]
+    setup = """
+        from bottleneck import partsort as bn_func
+        from numpy import sort as np_func
+        if AXIS is None: n = a.size
+        else: n = a.shape[AXIS]
+        n = max(n / 2, 1)
+    """
+    run['setups'] = getsetups(setup, shapes, nans)
+    suite.append(run)
+
     # moving window function that benchmark against sp.ndimage.convolve1d
     funcs = ['move_mean', 'move_nanmean']
     for func in funcs:
@@ -237,21 +254,6 @@ def benchsuite(shapes, dtype, axis, nans):
     run['statements'] = [code, "bn.slow.rankdata(a, axis=AXIS)"]
     setup = """
         ignore = bn.slow.rankdata(a, axis=AXIS)
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    #suite.append(run)
-
-    # partsort
-    run = {}
-    run['name'] = "partsort"
-    run['ref'] = "np.sort, n=max(a.shape[%s]/2,1)" % axis
-    run['scipy_required'] = False
-    code = "bn.partsort(a, n=n, axis=AXIS)"
-    run['statements'] = [code, "np.sort(a, axis=AXIS)"]
-    setup = """
-        if AXIS is None: n = a.size
-        else: n = a.shape[AXIS]
-        n = max(n / 2, 1)
     """
     run['setups'] = getsetups(setup, shapes, nans)
     #suite.append(run)
