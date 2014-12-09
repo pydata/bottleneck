@@ -115,6 +115,16 @@ cdef ndarray nonreducer_axis(arr, axis,
     else:
         a = np.array(arr, copy=False)
 
+    # input array
+    cdef Py_ssize_t stride = a.strides[axis_int]
+    cdef Py_ssize_t length = a.shape[axis_int]
+    cdef int dtype = PyArray_TYPE(a)
+    cdef int a_ndim = PyArray_NDIM(a)
+
+    # output array
+    cdef ndarray y
+    cdef np.npy_intp *y_dims = np.PyArray_DIMS(a)
+
     # axis
     cdef int axis_int
     if axis is None:
@@ -128,16 +138,6 @@ cdef ndarray nonreducer_axis(arr, axis,
                 raise ValueError("axis(=%d) out of bounds" % axis)
         elif axis_int >= a_ndim:
             raise ValueError("axis(=%d) out of bounds" % axis)
-
-    # input array
-    cdef Py_ssize_t stride = a.strides[axis_int]
-    cdef Py_ssize_t length = a.shape[axis_int]
-    cdef int dtype = PyArray_TYPE(a)
-    cdef int a_ndim = PyArray_NDIM(a)
-
-    # output array
-    cdef ndarray y
-    cdef np.npy_intp *y_dims = np.PyArray_DIMS(a)
 
     # calc
     if dtype == NPY_float64:
