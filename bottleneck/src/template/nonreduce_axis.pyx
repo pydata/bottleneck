@@ -28,7 +28,7 @@ from numpy cimport ndarray
 from numpy cimport import_array
 import_array()
 
-import bottleneck.slow.reduce as slow
+import bottleneck.slow.nonreduce_axis as slow
 
 cdef double NAN = <double> np.nan
 cdef extern from "math.h":

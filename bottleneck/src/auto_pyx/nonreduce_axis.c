@@ -1081,8 +1081,8 @@ static char __pyx_k_RuntimeError[] = "RuntimeError";
 static char __pyx_k_nonreduce_axis[] = "nonreduce_axis";
 static char __pyx_k_Unsupported_dtype_s[] = "Unsupported dtype (%s).";
 static char __pyx_k_axis_d_out_of_bounds[] = "axis(=%d) out of bounds";
-static char __pyx_k_bottleneck_slow_reduce[] = "bottleneck.slow.reduce";
 static char __pyx_k_ndarray_is_not_C_contiguous[] = "ndarray is not C contiguous";
+static char __pyx_k_bottleneck_slow_nonreduce_axis[] = "bottleneck.slow.nonreduce_axis";
 static char __pyx_k_devel_bottleneck_bottleneck_src[] = "/devel/bottleneck/bottleneck/src/auto_pyx/nonreduce_axis.pyx";
 static char __pyx_k_n_d_must_be_between_1_and_d_inc[] = "`n` (=%d) must be between 1 and %d, inclusive.";
 static char __pyx_k_unknown_dtype_code_in_numpy_pxd[] = "unknown dtype code in numpy.pxd (%d)";
@@ -1102,7 +1102,7 @@ static PyObject *__pyx_n_s_arr;
 static PyObject *__pyx_n_s_array;
 static PyObject *__pyx_n_s_axis;
 static PyObject *__pyx_kp_s_axis_d_out_of_bounds;
-static PyObject *__pyx_n_s_bottleneck_slow_reduce;
+static PyObject *__pyx_n_s_bottleneck_slow_nonreduce_axis;
 static PyObject *__pyx_n_s_copy;
 static PyObject *__pyx_kp_s_devel_bottleneck_bottleneck_src;
 static PyObject *__pyx_n_s_dtype;
@@ -5494,7 +5494,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_array, __pyx_k_array, sizeof(__pyx_k_array), 0, 0, 1, 1},
   {&__pyx_n_s_axis, __pyx_k_axis, sizeof(__pyx_k_axis), 0, 0, 1, 1},
   {&__pyx_kp_s_axis_d_out_of_bounds, __pyx_k_axis_d_out_of_bounds, sizeof(__pyx_k_axis_d_out_of_bounds), 0, 0, 1, 0},
-  {&__pyx_n_s_bottleneck_slow_reduce, __pyx_k_bottleneck_slow_reduce, sizeof(__pyx_k_bottleneck_slow_reduce), 0, 0, 1, 1},
+  {&__pyx_n_s_bottleneck_slow_nonreduce_axis, __pyx_k_bottleneck_slow_nonreduce_axis, sizeof(__pyx_k_bottleneck_slow_nonreduce_axis), 0, 0, 1, 1},
   {&__pyx_n_s_copy, __pyx_k_copy, sizeof(__pyx_k_copy), 0, 0, 1, 1},
   {&__pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_k_devel_bottleneck_bottleneck_src, sizeof(__pyx_k_devel_bottleneck_bottleneck_src), 0, 0, 1, 0},
   {&__pyx_n_s_dtype, __pyx_k_dtype, sizeof(__pyx_k_dtype), 0, 0, 1, 1},
@@ -5750,14 +5750,14 @@ PyMODINIT_FUNC PyInit_nonreduce_axis(void)
  * from numpy cimport import_array
  * import_array()             # <<<<<<<<<<<<<<
  * 
- * import bottleneck.slow.reduce as slow
+ * import bottleneck.slow.nonreduce_axis as slow
  */
   import_array();
 
   /* "nonreduce_axis.pyx":31
  * import_array()
  * 
- * import bottleneck.slow.reduce as slow             # <<<<<<<<<<<<<<
+ * import bottleneck.slow.nonreduce_axis as slow             # <<<<<<<<<<<<<<
  * 
  * cdef double NAN = <double> np.nan
  */
@@ -5766,14 +5766,14 @@ PyMODINIT_FUNC PyInit_nonreduce_axis(void)
   __Pyx_INCREF(__pyx_n_s__7);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s__7);
   __Pyx_GIVEREF(__pyx_n_s__7);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_bottleneck_slow_reduce, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_bottleneck_slow_nonreduce_axis, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_slow, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "nonreduce_axis.pyx":33
- * import bottleneck.slow.reduce as slow
+ * import bottleneck.slow.nonreduce_axis as slow
  * 
  * cdef double NAN = <double> np.nan             # <<<<<<<<<<<<<<
  * cdef extern from "math.h":
