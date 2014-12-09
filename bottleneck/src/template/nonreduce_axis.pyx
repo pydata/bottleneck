@@ -85,8 +85,8 @@ cdef ndarray partsort_DTYPE0(ndarray a, int axis,
                 if i <= j:
                     tmpi = (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0]
                     tmpj = (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0]
-                    (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = tmpj
-                    (<DTYPE0_t*>((<char*>pid(ity)) + j*ystride))[0] = tmpi
+                    (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
+                    (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
                     i += 1
                     j -= 1
                 if i > j: break
@@ -97,7 +97,7 @@ cdef ndarray partsort_DTYPE0(ndarray a, int axis,
 
 # nonreduce_axis ------------------------------------------------------------
 
-ctypedef ndarray (*nra_t)(ndarray, int, Py_ssize_t, Py_ssize_t int,
+ctypedef ndarray (*nra_t)(ndarray, int, Py_ssize_t, Py_ssize_t, int,
                           np.npy_intp*, int)
 
 

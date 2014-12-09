@@ -11,6 +11,10 @@ try:
 except:
     pass
 try:
+    from .nonreduce_axis import partsort
+except:
+    pass
+try:
     from .move import move_mean, move_nanmean
 except:
     pass
