@@ -92,6 +92,7 @@ cdef ndarray partsort_DTYPE0(ndarray a, int axis,
                 if i > j: break
             if j < k: l = i
             if k < i: r = j
+        PyArray_ITER_NEXT(ity)
     return y
 
 
