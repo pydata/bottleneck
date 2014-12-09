@@ -28,7 +28,7 @@ from numpy cimport ndarray
 from numpy cimport import_array
 import_array()
 
-import bottleneck.slow.move as slow
+import bottleneck.slow.reduce as slow
 
 cdef double NAN = <double> np.nan
 cdef extern from "math.h":
@@ -117,8 +117,6 @@ cdef ndarray nonreducer_axis(arr, axis,
         a = np.array(arr, copy=False)
 
     # input array
-    cdef Py_ssize_t stride = a.strides[axis_int]
-    cdef Py_ssize_t length = a.shape[axis_int]
     cdef int dtype = PyArray_TYPE(a)
     cdef int a_ndim = PyArray_NDIM(a)
 
@@ -139,6 +137,9 @@ cdef ndarray nonreducer_axis(arr, axis,
                 raise ValueError("axis(=%d) out of bounds" % axis)
         elif axis_int >= a_ndim:
             raise ValueError("axis(=%d) out of bounds" % axis)
+
+    cdef Py_ssize_t stride = a.strides[axis_int]
+    cdef Py_ssize_t length = a.shape[axis_int]
 
     # calc
     if dtype == NPY_float64:
