@@ -24,6 +24,13 @@ Reduce
 Nonreduce
 =========
 
+    (arr, double, double)
+
+        replace*
+
+Nonreduce (axis)
+================
+
     (arr, axis)
 
         output dtype = float64
@@ -32,10 +39,6 @@ Nonreduce
     (arr, axis, int)
 
         partsort, argpartsort
-
-    (arr, double, double)
-
-        replace*
 
 Move
 ====
