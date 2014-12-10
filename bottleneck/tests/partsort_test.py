@@ -80,4 +80,3 @@ def test_transpose():
     actual = bn.partsort(a.T, 2, -1).T
     desired = bn.slow.partsort(a.T, 2, -1).T
     assert_equal(actual, desired, 'partsort transpose test')
-
