@@ -60,12 +60,13 @@ def partsort(arr, int n, axis=-1):
 
 
 cdef ndarray partsort_DTYPE0(ndarray a, int axis,
-                             Py_ssize_t stride, Py_ssize_t length,
                              int a_ndim, np.npy_intp* y_dims, int n):
     # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
     cdef np.npy_intp i, j = 0, l, r, k = n-1
     cdef DTYPE0_t x, tmpi, tmpj
     cdef ndarray y = PyArray_Copy(a)
+    cdef Py_ssize_t stride = y.strides[axis]
+    cdef Py_ssize_t length = y.shape[axis]
     if length == 0:
         return y
     if (n < 1) or (n > length):
@@ -98,8 +99,7 @@ cdef ndarray partsort_DTYPE0(ndarray a, int axis,
 
 # nonreduce_axis ------------------------------------------------------------
 
-ctypedef ndarray (*nra_t)(ndarray, int, Py_ssize_t, Py_ssize_t, int,
-                          np.npy_intp*, int)
+ctypedef ndarray (*nra_t)(ndarray, int, int, np.npy_intp*, int)
 
 
 cdef ndarray nonreducer_axis(arr, axis,
@@ -138,18 +138,15 @@ cdef ndarray nonreducer_axis(arr, axis,
         elif axis_int >= a_ndim:
             raise ValueError("axis(=%d) out of bounds" % axis)
 
-    cdef Py_ssize_t stride = a.strides[axis_int]
-    cdef Py_ssize_t length = a.shape[axis_int]
-
     # calc
     if dtype == NPY_float64:
-        y = nra_float64(a, axis_int, stride, length, a_ndim, y_dims, int_input)
+        y = nra_float64(a, axis_int, a_ndim, y_dims, int_input)
     elif dtype == NPY_float32:
-        y = nra_float32(a, axis_int, stride, length, a_ndim, y_dims, int_input)
+        y = nra_float32(a, axis_int, a_ndim, y_dims, int_input)
     elif dtype == NPY_int64:
-        y = nra_int64(a, axis_int, stride, length, a_ndim, y_dims, int_input)
+        y = nra_int64(a, axis_int, a_ndim, y_dims, int_input)
     elif dtype == NPY_int32:
-        y = nra_int32(a, axis_int, stride, length, a_ndim, y_dims, int_input)
+        y = nra_int32(a, axis_int, a_ndim, y_dims, int_input)
     else:
         raise TypeError("Unsupported dtype (%s)." % a.dtype)
 
