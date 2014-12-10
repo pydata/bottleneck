@@ -70,3 +70,14 @@ def test_argpartsort():
     "Test argpartsort."
     yield unit_maker, bn.argpartsort, bn.slow.argpartsort
 """
+
+
+# regression test -----------------------------------------------------------
+
+def test_transpose():
+    "partsort transpose test"
+    a = np.arange(12).reshape(4, 3)
+    actual = bn.partsort(a.T, 2, -1).T
+    desired = bn.slow.partsort(a.T, 2, -1).T
+    assert_equal(actual, desired, 'partsort transpose test')
+
