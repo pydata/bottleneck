@@ -17,6 +17,8 @@ This release is a complete rewrite of Bottleneck.
 - Arbitrary ndim input arrays accelerated; previously only 1d, 2d, and 3d
 - Single API: bn.nansum instead of bn.nansum and nansum_2d_float64_axis0
 - On 64-bit systems bn.nansum(int32) returns int32 instead of int64
+- Reducing over all axes returns, e.g., 6.0; previously np.float64(6.0)
+- bn.nn() is no longer in bottleneck
 - Can now install bottleneck with pip even if numpy is not already installed
 - Compile time dropped by a factor of xxxx
 - Source tarball is one-xxxx the size of the previous release
