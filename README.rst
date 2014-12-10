@@ -8,8 +8,8 @@ Bottleneck is a collection of fast NumPy array functions written in Cython:
 reduce                ``nansum, nanmean, nanstd, nanvar, nanmin, nanmax,
                       median, nanmedian, nanargmin, nanargmax, anynan, allnan,
                       ss``
-non-reduce           ``replace``
-non-reduce (axis)    ``partsort, argpartsort, rankdata, nanrankdata``
+non-reduce            ``replace``
+non-reduce (axis)     ``partsort, argpartsort, rankdata, nanrankdata``
 moving window         ``move_sum, move_nansum, move_mean, move_nanmean,
                       move_median, move_std, move_nanstd, move_min,
                       move_nanmin, move_max, move_nanmax``
