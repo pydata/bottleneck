@@ -53,11 +53,13 @@ Move
         int --> float64
             std*, nanstd*
 
-Weird
-=====
-
-    (2d arr, 1d arr, int axis)
-
-        nn*
-
 * means TODO
+
+
+Misc
+====
+
+- after porting all functions, remove unused imports in pyx files
+- port docstrings from old bottleneck
+- get function reference in sphinx doc working
+- can nogil be used?
