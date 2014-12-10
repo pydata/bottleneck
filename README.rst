@@ -67,12 +67,6 @@ Only arrays with data type (dtype) int32, int64, float32, and float64 are
 accelerated. All other dtypes result in calls to slower, unaccelerated
 functions.
 
-License
-=======
-
-Bottleneck is distributed under a Simplified BSD license. See the LICENSE file,
-which is distributed with Bottleneck, for details.
-
 Where
 =====
 
@@ -82,6 +76,12 @@ Where
  code                 http://github.com/kwgoodman/bottleneck
  mailing list         http://groups.google.com/group/bottle-neck
 ===================   ========================================================
+
+License
+=======
+
+Bottleneck is distributed under a Simplified BSD license. See the LICENSE file
+for details.
 
 Install
 =======
