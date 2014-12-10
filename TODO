@@ -31,7 +31,7 @@ Nonreduce
 
     (arr, axis, int)
 
-        partsort, argpartsort*
+        partsort, argpartsort
 
     (arr, double, double)
 

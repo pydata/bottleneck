@@ -4,11 +4,12 @@ import numpy as np
 cimport numpy as np
 import cython
 
-from numpy cimport float64_t, float32_t, int64_t, int32_t
+from numpy cimport float64_t, float32_t, int64_t, int32_t, intp_t
 from numpy cimport NPY_FLOAT64 as NPY_float64
 from numpy cimport NPY_FLOAT32 as NPY_float32
 from numpy cimport NPY_INT64 as NPY_int64
 from numpy cimport NPY_INT32 as NPY_int32
+from numpy cimport NPY_INTP as NPY_intp
 
 from numpy cimport PyArray_ITER_DATA as pid
 from numpy cimport PyArray_ITER_NOTDONE
@@ -97,6 +98,77 @@ cdef ndarray partsort_DTYPE0(ndarray a, int axis,
     return y
 
 
+# argpartsort ---------------------------------------------------------------
+
+def argpartsort(arr, int n, axis=-1):
+    try:
+        return nonreducer_axis(arr, axis,
+                               argpartsort_float64,
+                               argpartsort_float32,
+                               argpartsort_int64,
+                               argpartsort_int32,
+                               n)
+    except TypeError:
+        return slow.argpartsort(arr, n, axis)
+
+
+cdef ndarray argpartsort_DTYPE0(ndarray a, int axis,
+                                int a_ndim, np.npy_intp* y_dims, int n):
+    # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
+
+    cdef np.npy_intp i, j = 0, l, r, k = n-1
+    cdef DTYPE0_t x, tmpi, tmpj
+    cdef intp_t itmpi, itmpj
+    cdef ndarray y = PyArray_Copy(a)
+    cdef Py_ssize_t stride = y.strides[axis]
+    cdef Py_ssize_t length = y.shape[axis]
+
+    cdef ndarray index = PyArray_EMPTY(a_ndim, y_dims, NPY_intp, 0)
+    cdef Py_ssize_t istride = index.strides[axis]
+    cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)
+    while PyArray_ITER_NOTDONE(iti):
+        for i in range(length):
+            (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = i
+        PyArray_ITER_NEXT(iti)
+    PyArray_ITER_RESET(iti)
+
+    if length == 0:
+        return index
+    if (n < 1) or (n > length):
+        raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
+                         (n, length))
+
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    while PyArray_ITER_NOTDONE(ity):
+        l = 0
+        r = length - 1
+        while l < r:
+            x = (<DTYPE0_t*>((<char*>pid(ity)) + k*stride))[0]
+            i = l
+            j = r
+            while 1:
+                while (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
+                while x < (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
+                if i <= j:
+                    tmpi = (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0]
+                    tmpj = (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0]
+                    (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
+                    (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
+                    itmpi = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]
+                    itmpj = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
+                    (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = itmpj
+                    (<intp_t*>((<char*>pid(iti)) + j*istride))[0] = itmpi
+                    i += 1
+                    j -= 1
+                if i > j: break
+            if j < k: l = i
+            if k < i: r = j
+        PyArray_ITER_NEXT(ity)
+        PyArray_ITER_NEXT(iti)
+
+    return index
+
+
 # nonreduce_axis ------------------------------------------------------------
 
 ctypedef ndarray (*nra_t)(ndarray, int, int, np.npy_intp*, int)
@@ -118,18 +190,16 @@ cdef ndarray nonreducer_axis(arr, axis,
 
     # input array
     cdef int dtype = PyArray_TYPE(a)
-    cdef int a_ndim = PyArray_NDIM(a)
-
-    # output array
-    cdef ndarray y
-    cdef np.npy_intp *y_dims = np.PyArray_DIMS(a)
+    cdef int a_ndim
 
     # axis
     cdef int axis_int
     if axis is None:
         a = PyArray_Ravel(a, NPY_CORDER)
         axis_int = 0
+        a_ndim = 1
     else:
+        a_ndim = PyArray_NDIM(a)
         axis_int = <int>axis
         if axis_int < 0:
             axis_int += a_ndim
@@ -137,6 +207,10 @@ cdef ndarray nonreducer_axis(arr, axis,
                 raise ValueError("axis(=%d) out of bounds" % axis)
         elif axis_int >= a_ndim:
             raise ValueError("axis(=%d) out of bounds" % axis)
+
+    # output array
+    cdef ndarray y
+    cdef np.npy_intp *y_dims = np.PyArray_DIMS(a)
 
     # calc
     if dtype == NPY_float64:

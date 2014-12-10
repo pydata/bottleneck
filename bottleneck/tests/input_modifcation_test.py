@@ -70,6 +70,7 @@ def test_modification():
              bn.move_mean,
              bn.move_nanmean,
              bn.partsort,
+             bn.argpartsort,
              ]
     """
              bn.nanargmin,
@@ -79,7 +80,6 @@ def test_modification():
              bn.rankdata,
              bn.nanrankdata,
              bn.ss,
-             bn.argpartsort,
              bn.anynan,
              bn.allnan,
              bn.move_sum,

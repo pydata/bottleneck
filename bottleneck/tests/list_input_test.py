@@ -78,6 +78,11 @@ def test_partsort():
     yield unit_maker, bn.partsort, bn.slow.partsort, (2,)
 
 
+def test_argpartsort():
+    "Test argpartsort."
+    yield unit_maker, bn.argpartsort, bn.slow.argpartsort, (2,)
+
+
 """
 def test_nanargmin():
     "Test nanargmin."
@@ -107,11 +112,6 @@ def test_rankdata():
 def test_nanrankdata():
     "Test nanrankdata."
     yield unit_maker, bn.nanrankdata, bn.slow.nanrankdata
-
-
-def test_argpartsort():
-    "Test argpartsort."
-    yield unit_maker, bn.argpartsort, bn.slow.argpartsort, (2,)
 
 
 def test_ss():

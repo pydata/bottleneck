@@ -1,4 +1,6 @@
-"Test functions."
+"Test partsort and argpartsort."
+
+import warnings
 
 import numpy as np
 from numpy.testing import assert_equal, assert_array_equal
@@ -42,10 +44,14 @@ def unit_maker(func, func0):
                 n = arr.shape[axis]
             n = max(n // 2, 1)
             with np.errstate(invalid='ignore'):
-                actual = func(arr.copy(), n, axis=axis)
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    actual = func(arr.copy(), n, axis=axis)
                 actual[:n] = np.sort(actual[:n], axis=axis)
                 actual[n:] = np.sort(actual[n:], axis=axis)
-                desired = func0(arr.copy(), n, axis=axis)
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    desired = func0(arr.copy(), n, axis=axis)
                 if 'arg' in func.__name__:
                     desired[:n] = np.sort(desired[:n], axis=axis)
                     desired[n:] = np.sort(desired[n:], axis=axis)
@@ -54,7 +60,7 @@ def unit_maker(func, func0):
             err_msg = msg % tup
             assert_array_equal(actual, desired, err_msg)
             err_msg += '\n dtype mismatch %s %s'
-            if hasattr(actual, 'dtype') or hasattr(desired, 'dtype'):
+            if hasattr(actual, 'dtype') and hasattr(desired, 'dtype'):
                 da = actual.dtype
                 dd = desired.dtype
                 assert_equal(da, dd, err_msg % (da, dd))
@@ -65,11 +71,9 @@ def test_partsort():
     yield unit_maker, bn.partsort, bn.slow.partsort
 
 
-"""
 def test_argpartsort():
     "Test argpartsort."
     yield unit_maker, bn.argpartsort, bn.slow.argpartsort
-"""
 
 
 # regression test -----------------------------------------------------------

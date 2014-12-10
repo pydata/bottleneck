@@ -11,7 +11,7 @@ try:
 except:
     pass
 try:
-    from .nonreduce_axis import partsort
+    from .nonreduce_axis import partsort, argpartsort
 except:
     pass
 try:
