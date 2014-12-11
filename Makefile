@@ -24,14 +24,19 @@ pyx:
 
 cfiles:
 	cython ${srcdir}/reduce.pyx
+	cython ${srcdir}/nonreduce.pyx
 	cython ${srcdir}/nonreduce_axis.pyx
 	cython ${srcdir}/move.pyx
 
-build: reduce nonreduce_axis move
+build: reduce nonreduce nonreduce_axis move
 
 reduce:
 	rm -rf ${srcdir}/../reduce.so
 	${PYTHON} ${srcdir}/reduce_setup.py build_ext --inplace
+
+nonreduce:
+	rm -rf ${srcdir}/../nonreduce.so
+	${PYTHON} ${srcdir}/nonreduce_setup.py build_ext --inplace
 
 nonreduce_axis:
 	rm -rf ${srcdir}/../nonreduce_axis.so

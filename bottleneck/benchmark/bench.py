@@ -165,6 +165,19 @@ def benchsuite(shapes, dtype, axis, nans):
         run['setups'] = getsetups(setup, shapes, nans)
         suite.append(run)
 
+    # replace
+    run = {}
+    run['name'] = "replace"
+    run['ref'] = "np.putmask based (see bn.slow.replace)"
+    run['scipy_required'] = False
+    run['statements'] = ["bn_func(a, np.nan, 0)",
+                         "slow_func(a, np.nan, 0)"]
+    setup = """
+        from bottleneck import replace as bn_func
+        from bottleneck.slow import replace as slow_func
+    """
+    run['setups'] = getsetups(setup, shapes, nans)
+    suite.append(run)
 
     # moving window function that benchmark against sp.ndimage.convolve1d
     funcs = ['move_mean', 'move_nanmean']
@@ -261,19 +274,6 @@ def benchsuite(shapes, dtype, axis, nans):
     run['statements'] = [code, "bn.slow.rankdata(a, axis=AXIS)"]
     setup = """
         ignore = bn.slow.rankdata(a, axis=AXIS)
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    #suite.append(run)
-
-    # replace
-    run = {}
-    run['name'] = "replace"
-    run['ref'] = "np.putmask based (see bn.slow.replace)"
-    run['scipy_required'] = False
-    code = "bn.replace(a, np.nan, 0)"
-    run['statements'] = [code, "replace(a, np.nan, 0)"]
-    setup = """
-        from bottleneck.slow.func import replace
     """
     run['setups'] = getsetups(setup, shapes, nans)
     #suite.append(run)

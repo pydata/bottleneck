@@ -26,7 +26,7 @@ Nonreduce
 
     (arr, double, double)
 
-        replace*
+        replace
 
 Nonreduce (axis)
 ================
