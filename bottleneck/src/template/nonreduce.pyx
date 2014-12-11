@@ -56,7 +56,8 @@ def replace(arr, double old, double new):
                    replace_int64,
                    replace_int32,
                    old,
-                   new)
+                   new,
+                   1)
     except TypeError:
         slow.replace(arr, old, new)
 
@@ -79,7 +80,7 @@ cdef ndarray replace_DTYPE0(ndarray a, np.flatiter ita,
         while PyArray_ITER_NOTDONE(ita):
             for i in range(length):
                 ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-                if ai == ai:
+                if ai != ai:
                     (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0] = new
             PyArray_ITER_NEXT(ita)
     return a
@@ -122,14 +123,19 @@ cdef ndarray nonreducer(arr,
                         nr_t nr_int64,
                         nr_t nr_int32,
                         double double_input_1,
-                        double double_input_2):
+                        double double_input_2,
+                        int inplace=0):
 
     # convert to array if necessary
     cdef ndarray a
     if type(arr) is ndarray:
         a = arr
     else:
-        a = np.array(arr, copy=False)
+        if inplace == 1:
+            # works in place so input must be an array, not (e.g.) a list
+            raise TypeError("`arr` must be a numpy array.")
+        else:
+            a = np.array(arr, copy=False)
 
     # input array
     cdef int dtype = PyArray_TYPE(a)
