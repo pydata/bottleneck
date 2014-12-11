@@ -5,15 +5,17 @@ from numpy.testing import assert_equal, assert_array_equal, assert_raises
 nan = np.nan
 import bottleneck as bn
 
+DTYPES = [np.float64, np.float32, np.int64, np.int32, np.float16]
 
-def arrays(dtypes=bn.dtypes, nans=True):
+
+def arrays(dtypes=DTYPES, nans=True):
     "Iterator that yield arrays to use for unit testing."
     ss = {}
     ss[0] = {'size':  0, 'shapes': [(0,), (0, 0), (2, 0), (2, 0, 1)]}
     ss[1] = {'size':  4, 'shapes': [(4,)]}
     ss[2] = {'size':  6, 'shapes': [(1, 6), (2, 3)]}
     ss[3] = {'size':  6, 'shapes': [(1, 2, 3)]}
-    ss[4] = {'size': 24, 'shapes': [(1, 2, 3, 4)]}  # Unaccelerated
+    ss[4] = {'size': 24, 'shapes': [(1, 2, 3, 4)]}
     for ndim in ss:
         size = ss[ndim]['size']
         shapes = ss[ndim]['shapes']
@@ -80,7 +82,7 @@ def test_replace():
 
 def test_replace_unsafe_cast():
     "Test replace for unsafe casts."
-    dtypes = [x for x in bn.dtypes if 'int' in x]
+    dtypes = ['int32', 'int64']
     shapes = [(0,), (2, 0), (1, 2, 0)]
     for shape in shapes:
         for dtype in dtypes:
