@@ -61,52 +61,91 @@ def replace(arr, double old, double new):
         slow.replace(arr, old, new)
 
 
-cdef ndarray replace_DTYPE0(ndarray a, np.flatiter ita,
+cdef ndarray replace_float64(ndarray a, np.flatiter ita,
                             Py_ssize_t stride, Py_ssize_t length,
                             int a_ndim, np.npy_intp* y_dims,
                             double old, double new):
-    # bn.dtypes = [['float64'], ['float32']]
     cdef Py_ssize_t i
-    cdef DTYPE0_t ai
+    cdef float64_t ai
     if old == old:
         while PyArray_ITER_NOTDONE(ita):
             for i in range(length):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
                 if ai == old:
-                    (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0] = new
+                    (<float64_t*>((<char*>pid(ita)) + i * stride))[0] = new
             PyArray_ITER_NEXT(ita)
     else:
         while PyArray_ITER_NOTDONE(ita):
             for i in range(length):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
                 if ai == ai:
-                    (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0] = new
+                    (<float64_t*>((<char*>pid(ita)) + i * stride))[0] = new
             PyArray_ITER_NEXT(ita)
     return a
 
-
-cdef ndarray replace_DTYPE0(ndarray a, np.flatiter ita,
+cdef ndarray replace_float32(ndarray a, np.flatiter ita,
                             Py_ssize_t stride, Py_ssize_t length,
                             int a_ndim, np.npy_intp* y_dims,
                             double old, double new):
-    # bn.dtypes = [['int64'], ['int32']]
     cdef Py_ssize_t i
-    cdef DTYPE0_t ai, oldint, newint
+    cdef float32_t ai
     if old == old:
-        oldint = <DTYPE0_t>old
-        newint = <DTYPE0_t>new
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
+                if ai == old:
+                    (<float32_t*>((<char*>pid(ita)) + i * stride))[0] = new
+            PyArray_ITER_NEXT(ita)
+    else:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
+                if ai == ai:
+                    (<float32_t*>((<char*>pid(ita)) + i * stride))[0] = new
+            PyArray_ITER_NEXT(ita)
+    return a
+
+cdef ndarray replace_int64(ndarray a, np.flatiter ita,
+                            Py_ssize_t stride, Py_ssize_t length,
+                            int a_ndim, np.npy_intp* y_dims,
+                            double old, double new):
+    cdef Py_ssize_t i
+    cdef int64_t ai, oldint, newint
+    if old == old:
+        oldint = <int64_t>old
+        newint = <int64_t>new
         if oldint != old:
             raise ValueError("Cannot safely cast `old` to int.")
         if newint != new:
             raise ValueError("Cannot safely cast `new` to int.")
         while PyArray_ITER_NOTDONE(ita):
             for i in range(length):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
                 if ai == oldint:
-                    (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0] = newint
+                    (<int64_t*>((<char*>pid(ita)) + i * stride))[0] = newint
             PyArray_ITER_NEXT(ita)
     return a
 
+cdef ndarray replace_int32(ndarray a, np.flatiter ita,
+                            Py_ssize_t stride, Py_ssize_t length,
+                            int a_ndim, np.npy_intp* y_dims,
+                            double old, double new):
+    cdef Py_ssize_t i
+    cdef int32_t ai, oldint, newint
+    if old == old:
+        oldint = <int32_t>old
+        newint = <int32_t>new
+        if oldint != old:
+            raise ValueError("Cannot safely cast `old` to int.")
+        if newint != new:
+            raise ValueError("Cannot safely cast `new` to int.")
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
+                if ai == oldint:
+                    (<int32_t*>((<char*>pid(ita)) + i * stride))[0] = newint
+            PyArray_ITER_NEXT(ita)
+    return a
 
 # nonreduce_axis ------------------------------------------------------------
 
