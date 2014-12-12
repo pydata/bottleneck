@@ -110,9 +110,9 @@ def move_nansum(arr, window, axis=-1, method='loop'):
     if method == 'filter':
         y = move_nansum_filter(arr, window, axis=axis)
     elif method == 'strides':
-        y = move_func_strides(np.nansum, arr, window, axis=axis)
+        y = move_func_strides(nansum_default_nan, arr, window, axis=axis)
     elif method == 'loop':
-        y = move_func_loop(np.nansum, arr, window, axis=axis)
+        y = move_func_loop(nansum_default_nan, arr, window, axis=axis)
     else:
         msg = "`method` must be 'filter', 'strides', or 'loop'."
         raise ValueError(msg)
@@ -120,6 +120,19 @@ def move_nansum(arr, window, axis=-1, method='loop'):
         if issubclass(arr.dtype.type, np.inexact):
             y = y.astype(arr.dtype)
     return y
+
+
+def nansum_default_nan(arr, axis=None):
+    "All nan input returns nan instead of 0."
+    a = np.nansum(arr, axis=axis)
+    idx = np.isnan(arr).all(axis=axis)
+    if a.ndim == 0:
+        if idx:
+            a = np.nan
+    else:
+        if issubclass(a.dtype.type, np.inexact):
+            a[idx] = np.nan
+    return a
 
 
 def move_sum_filter(arr, window, axis=-1):

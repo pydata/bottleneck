@@ -129,6 +129,12 @@ def test_allnan():
     yield unit_maker, bn.allnan, bn.slow.allnan
 
 
+def test_move_median():
+    "Test move_median."
+    yield unit_maker, bn.move_median, bn.slow.move_median, (2,)
+"""
+
+
 def test_move_sum():
     "Test move_sum."
     yield unit_maker, bn.move_sum, bn.slow.move_sum, (2,)
@@ -137,12 +143,6 @@ def test_move_sum():
 def test_move_nansum():
     "Test move_nansum."
     yield unit_maker, bn.move_nansum, bn.slow.move_nansum, (2,)
-
-
-def test_move_median():
-    "Test move_median."
-    yield unit_maker, bn.move_median, bn.slow.move_median, (2,)
-"""
 
 
 def test_move_mean():

@@ -44,15 +44,19 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
         Speed is NumPy or SciPy time divided by Bottleneck time
         NaN means one-third NaNs; float64 and axis=-1 are used
 
-                     no NaN     no NaN     no NaN      NaN        NaN        NaN
+                     no NaN     no NaN     no NaN      NaN        NaN        NaN    
                      (10,)     (10,10)  (1000,1000)   (10,)     (10,10)  (1000,1000)
-    nansum           40.38      22.35       3.91      40.85      23.07       8.98
-    nanmean         160.45      84.55       5.04     141.20      74.61      10.00
-    nanstd          246.13     103.54       4.37     245.02     107.45       8.45
-    nanmax           31.27      14.91       1.07      30.95      15.22       2.80
-    partsort          3.78       2.60       2.86       3.89       3.00       3.54
-    move_mean        28.72      20.28      32.19      30.66      21.09      68.96
-    move_nanmean     73.55      54.90      66.15      78.88      58.45      66.37
+    nansum           38.67      20.98       3.96      38.72      21.08       9.05
+    nanmean         146.38      73.50       5.24     149.92      74.13      10.20
+    nanstd          259.10     102.96       4.32     261.34     109.50       8.45
+    nanmax           33.37      14.48       1.01      33.45      14.69       2.81
+    partsort          3.69       2.39       2.85       3.73       2.66       3.51
+    argpartsort       0.95       0.71       2.20       0.99       0.84       1.40
+    replace           9.64       5.54       1.33      10.12       4.87       1.27
+    move_sum         32.16      22.26      65.48      31.79      21.89      67.25
+    move_nansum      63.03      47.16     135.44      66.10      49.06     137.05
+    move_mean        29.16      19.73      31.73      29.58      20.10      67.47
+    move_nanmean     70.40      53.10      65.73      72.17      54.77      65.87
 
     Reference functions:
     nansum         np.nansum
@@ -60,6 +64,10 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
     nanstd         np.nanstd
     nanmax         np.nanmax
     partsort       np.sort, n=max(a.shape[-1]/2,1)
+    argpartsort    np.argsort, n=max(a.shape[-1]/2,1)
+    replace        np.putmask based (see bn.slow.replace)
+    move_sum       sp.ndimage.convolve1d based, window=a.shape[-1] // 5
+    move_nansum    sp.ndimage.convolve1d based, window=a.shape[-1] // 5
     move_mean      sp.ndimage.convolve1d based, window=a.shape[-1] // 5
     move_nanmean   sp.ndimage.convolve1d based, window=a.shape[-1] // 5
 
@@ -124,6 +132,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 39 tests in 23.712s
+    Ran 45 tests in 28.712s
     OK
-    <nose.result.TextTestResult run=39 errors=0 failures=0>
+    <nose.result.TextTestResult run=45 errors=0 failures=0>

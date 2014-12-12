@@ -71,6 +71,16 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
                         assert_equal(da, dd, err_msg % (da, dd))
 
 
+def test_move_sum():
+    "Test move_sum."
+    yield unit_maker, bn.move_sum, bn.slow.move_sum, 5
+
+
+def test_move_nansum():
+    "Test move_nansum."
+    yield unit_maker, bn.move_nansum, bn.slow.move_nansum, 5
+
+
 def test_move_mean():
     "Test move_mean."
     yield unit_maker, bn.move_mean, bn.slow.move_mean, 5
@@ -82,16 +92,6 @@ def test_move_nanmean():
 
 
 """
-def test_move_sum():
-    "Test move_sum."
-    yield unit_maker, bn.move_sum, bn.slow.move_sum, 5
-
-
-def test_move_nansum():
-    "Test move_nansum."
-    yield unit_maker, bn.move_nansum, bn.slow.move_nansum, 5
-
-
 def test_move_median():
     "Test move_median."
     yield unit_maker, bn.move_median, bn.slow.move_median, 5, False

@@ -19,7 +19,7 @@ try:
 except:
     pass
 try:
-    from .move import move_mean, move_nanmean
+    from .move import move_sum, move_nansum, move_mean, move_nanmean
 except:
     pass
 
