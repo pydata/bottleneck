@@ -15,6 +15,7 @@ This release is a complete rewrite of Bottleneck.
 
 - Function-call overhead cut in half---a big speed up for small input arrays
 - Arbitrary ndim input arrays accelerated; previously only 1d, 2d, and 3d
+- No speed penalty for reducing along all axes when input is Fortran ordered
 - Single API: bn.nansum instead of bn.nansum and nansum_2d_float64_axis0
 - On 64-bit systems bn.nansum(int32) returns int32 instead of int64
 - Reducing over all axes returns, e.g., 6.0; previously np.float64(6.0)
