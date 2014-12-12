@@ -66,4 +66,3 @@ Misc
 - port docstrings from old bottleneck
 - get function reference in sphinx doc working
 - can nogil be used?
-- remove doc references to bn.nn()

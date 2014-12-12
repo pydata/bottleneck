@@ -2,8 +2,8 @@ import warnings
 import numpy as np
 
 __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
-           'nanmin', 'nanmax', 'nanargmin', 'nanargmax', 'ss', 'nn',
-           'anynan', 'allnan']
+           'nanmin', 'nanmax', 'nanargmin', 'nanargmax', 'ss', 'anynan',
+           'allnan']
 
 rankdata_func = None
 
@@ -54,25 +54,6 @@ def nanargmax(arr, axis=None):
 def ss(arr, axis=0):
     "Slow sum of squares used for unaccelerated ndim/dtype combinations."
     return scipy_ss(arr, axis)
-
-
-def nn(arr, arr0, axis=1):
-    "Slow nearest neighbor used for unaccelerated ndim/dtype combinations."
-    arr = np.array(arr, copy=False)
-    arr0 = np.array(arr0, copy=False)
-    if arr.ndim != 2:
-        raise ValueError("`arr` must be 2d")
-    if arr0.ndim != 1:
-        raise ValueError("`arr0` must be 1d")
-    if axis == 1:
-        d = (arr - arr0) ** 2
-    elif axis == 0:
-        d = (arr - arr0.reshape(-1, 1)) ** 2
-    else:
-        raise ValueError("`axis` must be 0 or 1.")
-    d = d.sum(axis)
-    idx = np.argmin(d)
-    return np.sqrt(d[idx]), idx
 
 
 def anynan(arr, axis=None):

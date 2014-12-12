@@ -119,13 +119,6 @@ def test_ss():
     yield unit_maker, bn.ss, bn.slow.ss
 
 
-def test_nn():
-    "Test nn."
-    a = [[1, 2], [3, 4]]
-    a0 = [1, 2]
-    assert_equal(bn.nn(a, a0), bn.slow.nn(a, a0))
-
-
 def test_anynan():
     "Test anynan."
     yield unit_maker, bn.anynan, bn.slow.anynan
