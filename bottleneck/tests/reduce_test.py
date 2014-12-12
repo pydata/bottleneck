@@ -165,12 +165,14 @@ def test_anynan():
 def test_allnan():
     "Test allnan."
     yield unit_maker, bn.allnan, bn.slow.allnan
+"""
+
 
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
 
 
-def test_nanmax_size_zero(dtypes=bn.dtypes):
+def test_nanmax_size_zero(dtypes=DTYPES):
     "Test nanmax for size zero input arrays."
     shapes = [(0,), (2, 0), (1, 2, 0)]
     for shape in shapes:
@@ -180,7 +182,7 @@ def test_nanmax_size_zero(dtypes=bn.dtypes):
             assert_raises(ValueError, bn.slow.nanmax, a)
 
 
-def test_nanmin_size_zero(dtypes=bn.dtypes):
+def test_nanmin_size_zero(dtypes=DTYPES):
     "Test nanmin for size zero input arrays."
     shapes = [(0,), (2, 0), (1, 2, 0)]
     for shape in shapes:
@@ -240,4 +242,3 @@ def test_nanvar_issue60():
     with np.errstate(invalid='ignore'):
         s = bn.slow.nanvar([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
     assert_equal(f, s, err_msg="issue #60 regression")
-"""
