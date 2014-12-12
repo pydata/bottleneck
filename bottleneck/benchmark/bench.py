@@ -10,9 +10,8 @@ __all__ = ['bench']
 
 
 def bench(dtype='float64', axis=-1,
-          shapes=[(10,), (10, 10), (1000, 1000), (10,), (10, 10),
-                  (1000, 1000)],
-          nans=[False, False, False, True, True, True]):
+          shapes=[(10,), (1000, 1000), (10,), (1000, 1000)],
+          nans=[False, False, True, True]):
     """
     Bottleneck benchmark.
 
@@ -60,7 +59,7 @@ def bench(dtype='float64', axis=-1,
         print("%sScipy (sp)  Cannot import, skipping scipy benchmarks" % tab)
     print("%sSpeed is NumPy or SciPy time divided by Bottleneck time" % tab)
     tup = (tab, dtype, axis)
-    print("%sNaN means one-third NaNs; %s and axis=%s are used" % tup)
+    print("%sNaN means approx one-third NaNs; %s and axis=%s are used" % tup)
 
     print('')
     header = [" "*14]
@@ -77,7 +76,7 @@ def bench(dtype='float64', axis=-1,
     suite = benchsuite(shapes, dtype, axis, nans)
     for test in suite:
         name = test["name"].ljust(12)
-        fmt = name + "%10.2f" + "%11.2f"*(len(shapes) - 1)
+        fmt = tab + name + "%5.1f" + "%11.1f"*(len(shapes) - 1)
         if test['scipy_required'] and not SCIPY:
             print("%s%s" % (name, "requires SciPy"))
         else:

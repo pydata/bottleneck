@@ -42,21 +42,21 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
         Numpy (np)  1.9.1
         Scipy (sp)  0.14.0
         Speed is NumPy or SciPy time divided by Bottleneck time
-        NaN means one-third NaNs; float64 and axis=-1 are used
+        NaN means approx one-third NaNs; float64 and axis=-1 are used
 
-                     no NaN     no NaN     no NaN      NaN        NaN        NaN    
-                     (10,)     (10,10)  (1000,1000)   (10,)     (10,10)  (1000,1000)
-    nansum           38.67      20.98       3.96      38.72      21.08       9.05
-    nanmean         146.38      73.50       5.24     149.92      74.13      10.20
-    nanstd          259.10     102.96       4.32     261.34     109.50       8.45
-    nanmax           33.37      14.48       1.01      33.45      14.69       2.81
-    partsort          3.69       2.39       2.85       3.73       2.66       3.51
-    argpartsort       0.95       0.71       2.20       0.99       0.84       1.40
-    replace           9.64       5.54       1.33      10.12       4.87       1.27
-    move_sum         32.16      22.26      65.48      31.79      21.89      67.25
-    move_nansum      63.03      47.16     135.44      66.10      49.06     137.05
-    move_mean        29.16      19.73      31.73      29.58      20.10      67.47
-    move_nanmean     70.40      53.10      65.73      72.17      54.77      65.87
+                     no NaN     no NaN      NaN        NaN
+                     (10,)   (1000,1000)   (10,)   (1000,1000)
+        nansum       35.9        3.9       36.2        9.1
+        nanmean     154.2        5.2      154.4       10.2
+        nanstd      266.3        4.4      252.6        8.6
+        nanmax       34.4        1.1       34.5        2.8
+        partsort      3.7        2.9        3.8        3.5
+        argpartsort   1.0        2.2        1.0        1.4
+        replace       9.8        1.3        9.8        1.3
+        move_sum     30.2       65.6       29.1       67.6
+        move_nansum  66.8      130.3       71.4      122.5
+        move_mean    28.4       31.2       28.5       66.4
+        move_nanmean 73.6       66.0       77.7       66.2
 
     Reference functions:
     nansum         np.nansum
