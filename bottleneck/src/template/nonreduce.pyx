@@ -14,36 +14,16 @@ from numpy cimport NPY_INTP as NPY_intp
 from numpy cimport PyArray_ITER_DATA as pid
 from numpy cimport PyArray_ITER_NOTDONE
 from numpy cimport PyArray_ITER_NEXT
-from numpy cimport PyArray_ITER_RESET
 from numpy cimport PyArray_IterAllButAxis
-from numpy cimport PyArray_IterNew
 
 from numpy cimport PyArray_TYPE
 from numpy cimport PyArray_NDIM
-from numpy cimport NPY_CORDER
-from numpy cimport PyArray_Copy
-from numpy cimport PyArray_EMPTY
-from numpy cimport PyArray_Ravel
 
 from numpy cimport ndarray
 from numpy cimport import_array
 import_array()
 
 import bottleneck.slow.reduce as slow
-
-cdef double NAN = <double> np.nan
-cdef extern from "math.h":
-    double sqrt(double x)
-
-cdef np.int32_t MAXint32 = np.iinfo(np.int32).max
-cdef np.int64_t MAXint64 = np.iinfo(np.int64).max
-cdef np.float32_t MAXfloat32 = np.inf
-cdef np.float64_t MAXfloat64 = np.inf
-
-cdef np.int32_t MINint32 = np.iinfo(np.int32).min
-cdef np.int64_t MINint64 = np.iinfo(np.int64).min
-cdef np.float32_t MINfloat32 = -np.inf
-cdef np.float64_t MINfloat64 = -np.inf
 
 
 # replace -------------------------------------------------------------------

@@ -238,7 +238,6 @@ void __Pyx_call_destructor(T* x) {
 #include "stdlib.h"
 #include "numpy/arrayobject.h"
 #include "numpy/ufuncobject.h"
-#include "math.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -695,7 +694,7 @@ typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
 struct __pyx_opt_args_9nonreduce_nonreducer;
 
-/* "nonreduce.pyx":153
+/* "nonreduce.pyx":133
  * # nonreduce_axis ------------------------------------------------------------
  * 
  * ctypedef ndarray (*nr_t)(ndarray, np.flatiter,             # <<<<<<<<<<<<<<
@@ -704,7 +703,7 @@ struct __pyx_opt_args_9nonreduce_nonreducer;
  */
 typedef PyArrayObject *(*__pyx_t_9nonreduce_nr_t)(PyArrayObject *, PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int, npy_intp *, double, double);
 
-/* "nonreduce.pyx":159
+/* "nonreduce.pyx":139
  * 
  * 
  * cdef ndarray nonreducer(arr,             # <<<<<<<<<<<<<<
@@ -829,12 +828,6 @@ static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index);
 
 static CYTHON_INLINE void __Pyx_RaiseNoneNotIterableError(void);
 
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg);
-#endif
-
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
-
 typedef struct {
     int code_line;
     PyCodeObject* code_object;
@@ -853,10 +846,6 @@ static void __Pyx_AddTraceback(const char *funcname, int c_line,
                                int py_line, const char *filename);
 
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
-
-static CYTHON_INLINE npy_int32 __Pyx_PyInt_As_npy_int32(PyObject *);
-
-static CYTHON_INLINE npy_int64 __Pyx_PyInt_As_npy_int64(PyObject *);
 
 #if CYTHON_CCOMPLEX
   #ifdef __cplusplus
@@ -1011,15 +1000,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *, cha
 /* Module declarations from 'cython' */
 
 /* Module declarations from 'nonreduce' */
-static double __pyx_v_9nonreduce_NAN;
-static __pyx_t_5numpy_int32_t __pyx_v_9nonreduce_MAXint32;
-static __pyx_t_5numpy_int64_t __pyx_v_9nonreduce_MAXint64;
-static __pyx_t_5numpy_float32_t __pyx_v_9nonreduce_MAXfloat32;
-static __pyx_t_5numpy_float64_t __pyx_v_9nonreduce_MAXfloat64;
-static __pyx_t_5numpy_int32_t __pyx_v_9nonreduce_MINint32;
-static __pyx_t_5numpy_int64_t __pyx_v_9nonreduce_MINint64;
-static __pyx_t_5numpy_float32_t __pyx_v_9nonreduce_MINfloat32;
-static __pyx_t_5numpy_float64_t __pyx_v_9nonreduce_MINfloat64;
 static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *, PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int, npy_intp *, double, double); /*proto*/
 static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *, PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int, npy_intp *, double, double); /*proto*/
 static PyArrayObject *__pyx_f_9nonreduce_replace_int64(PyArrayObject *, PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int, npy_intp *, double, double); /*proto*/
@@ -1056,10 +1036,6 @@ static char __pyx_k_Zg[] = "Zg";
 static char __pyx_k_np[] = "np";
 static char __pyx_k__12[] = "*";
 static char __pyx_k_arr[] = "arr";
-static char __pyx_k_inf[] = "inf";
-static char __pyx_k_max[] = "max";
-static char __pyx_k_min[] = "min";
-static char __pyx_k_nan[] = "nan";
 static char __pyx_k_new[] = "new";
 static char __pyx_k_old[] = "old";
 static char __pyx_k_copy[] = "copy";
@@ -1068,9 +1044,6 @@ static char __pyx_k_slow[] = "slow";
 static char __pyx_k_test[] = "__test__";
 static char __pyx_k_array[] = "array";
 static char __pyx_k_dtype[] = "dtype";
-static char __pyx_k_iinfo[] = "iinfo";
-static char __pyx_k_int32[] = "int32";
-static char __pyx_k_int64[] = "int64";
 static char __pyx_k_numpy[] = "numpy";
 static char __pyx_k_range[] = "range";
 static char __pyx_k_import[] = "__import__";
@@ -1108,15 +1081,8 @@ static PyObject *__pyx_n_s_bottleneck_slow_reduce;
 static PyObject *__pyx_n_s_copy;
 static PyObject *__pyx_kp_s_devel_bottleneck_bottleneck_src;
 static PyObject *__pyx_n_s_dtype;
-static PyObject *__pyx_n_s_iinfo;
 static PyObject *__pyx_n_s_import;
-static PyObject *__pyx_n_s_inf;
-static PyObject *__pyx_n_s_int32;
-static PyObject *__pyx_n_s_int64;
 static PyObject *__pyx_n_s_main;
-static PyObject *__pyx_n_s_max;
-static PyObject *__pyx_n_s_min;
-static PyObject *__pyx_n_s_nan;
 static PyObject *__pyx_kp_u_ndarray_is_not_C_contiguous;
 static PyObject *__pyx_kp_u_ndarray_is_not_Fortran_contiguou;
 static PyObject *__pyx_n_s_new;
@@ -1143,7 +1109,7 @@ static PyObject *__pyx_tuple__11;
 static PyObject *__pyx_tuple__13;
 static PyObject *__pyx_codeobj__14;
 
-/* "nonreduce.pyx":51
+/* "nonreduce.pyx":31
  * # replace -------------------------------------------------------------------
  * 
  * def replace(arr, double old, double new):             # <<<<<<<<<<<<<<
@@ -1186,16 +1152,16 @@ static PyObject *__pyx_pw_9nonreduce_1replace(PyObject *__pyx_self, PyObject *__
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_old)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("replace", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("replace", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_new)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("replace", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("replace", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "replace") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "replace") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -1205,12 +1171,12 @@ static PyObject *__pyx_pw_9nonreduce_1replace(PyObject *__pyx_self, PyObject *__
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
     __pyx_v_arr = values[0];
-    __pyx_v_old = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_old == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_new = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_new == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_old = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_old == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_new = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_new == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("replace", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("replace", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("nonreduce.replace", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1246,7 +1212,7 @@ static PyObject *__pyx_pf_9nonreduce_replace(CYTHON_UNUSED PyObject *__pyx_self,
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("replace", 0);
 
-  /* "nonreduce.pyx":52
+  /* "nonreduce.pyx":32
  * 
  * def replace(arr, double old, double new):
  *     try:             # <<<<<<<<<<<<<<
@@ -1260,7 +1226,7 @@ static PyObject *__pyx_pf_9nonreduce_replace(CYTHON_UNUSED PyObject *__pyx_self,
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "nonreduce.pyx":53
+      /* "nonreduce.pyx":33
  * def replace(arr, double old, double new):
  *     try:
  *         nonreducer(arr,             # <<<<<<<<<<<<<<
@@ -1269,7 +1235,7 @@ static PyObject *__pyx_pf_9nonreduce_replace(CYTHON_UNUSED PyObject *__pyx_self,
  */
       __pyx_t_5.__pyx_n = 1;
       __pyx_t_5.inplace = 1;
-      __pyx_t_4 = ((PyObject *)__pyx_f_9nonreduce_nonreducer(__pyx_v_arr, __pyx_f_9nonreduce_replace_float64, __pyx_f_9nonreduce_replace_float32, __pyx_f_9nonreduce_replace_int64, __pyx_f_9nonreduce_replace_int32, __pyx_v_old, __pyx_v_new, &__pyx_t_5)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_t_4 = ((PyObject *)__pyx_f_9nonreduce_nonreducer(__pyx_v_arr, __pyx_f_9nonreduce_replace_float64, __pyx_f_9nonreduce_replace_float32, __pyx_f_9nonreduce_replace_int64, __pyx_f_9nonreduce_replace_int32, __pyx_v_old, __pyx_v_new, &__pyx_t_5)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -1280,7 +1246,7 @@ static PyObject *__pyx_pf_9nonreduce_replace(CYTHON_UNUSED PyObject *__pyx_self,
     __pyx_L3_error:;
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "nonreduce.pyx":61
+    /* "nonreduce.pyx":41
  *                    new,
  *                    1)
  *     except TypeError:             # <<<<<<<<<<<<<<
@@ -1290,26 +1256,26 @@ static PyObject *__pyx_pf_9nonreduce_replace(CYTHON_UNUSED PyObject *__pyx_self,
     __pyx_t_6 = PyErr_ExceptionMatches(__pyx_builtin_TypeError);
     if (__pyx_t_6) {
       __Pyx_AddTraceback("nonreduce.replace", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_7, &__pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_7, &__pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_GOTREF(__pyx_t_8);
 
-      /* "nonreduce.pyx":62
+      /* "nonreduce.pyx":42
  *                    1)
  *     except TypeError:
  *         slow.replace(arr, old, new)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-      __pyx_t_10 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_10 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_10);
-      __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_replace); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_replace); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_11);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-      __pyx_t_10 = PyFloat_FromDouble(__pyx_v_old); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_10 = PyFloat_FromDouble(__pyx_v_old); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_10);
-      __pyx_t_12 = PyFloat_FromDouble(__pyx_v_new); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_12 = PyFloat_FromDouble(__pyx_v_new); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_12);
       __pyx_t_13 = NULL;
       __pyx_t_14 = 0;
@@ -1323,7 +1289,7 @@ static PyObject *__pyx_pf_9nonreduce_replace(CYTHON_UNUSED PyObject *__pyx_self,
           __pyx_t_14 = 1;
         }
       }
-      __pyx_t_15 = PyTuple_New(3+__pyx_t_14); if (unlikely(!__pyx_t_15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_15 = PyTuple_New(3+__pyx_t_14); if (unlikely(!__pyx_t_15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_15);
       if (__pyx_t_13) {
         PyTuple_SET_ITEM(__pyx_t_15, 0, __pyx_t_13); __Pyx_GIVEREF(__pyx_t_13); __pyx_t_13 = NULL;
@@ -1337,7 +1303,7 @@ static PyObject *__pyx_pf_9nonreduce_replace(CYTHON_UNUSED PyObject *__pyx_self,
       __Pyx_GIVEREF(__pyx_t_12);
       __pyx_t_10 = 0;
       __pyx_t_12 = 0;
-      __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_15, NULL); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_15, NULL); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
@@ -1362,7 +1328,7 @@ static PyObject *__pyx_pf_9nonreduce_replace(CYTHON_UNUSED PyObject *__pyx_self,
     __pyx_L10_try_end:;
   }
 
-  /* "nonreduce.pyx":51
+  /* "nonreduce.pyx":31
  * # replace -------------------------------------------------------------------
  * 
  * def replace(arr, double old, double new):             # <<<<<<<<<<<<<<
@@ -1391,7 +1357,7 @@ static PyObject *__pyx_pf_9nonreduce_replace(CYTHON_UNUSED PyObject *__pyx_self,
   return __pyx_r;
 }
 
-/* "nonreduce.pyx":65
+/* "nonreduce.pyx":45
  * 
  * 
  * cdef ndarray replace_float64(ndarray a, np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -1409,7 +1375,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *__pyx_v_
   Py_ssize_t __pyx_t_3;
   __Pyx_RefNannySetupContext("replace_float64", 0);
 
-  /* "nonreduce.pyx":71
+  /* "nonreduce.pyx":51
  *     cdef Py_ssize_t i
  *     cdef float64_t ai
  *     if old == old:             # <<<<<<<<<<<<<<
@@ -1419,7 +1385,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *__pyx_v_
   __pyx_t_1 = ((__pyx_v_old == __pyx_v_old) != 0);
   if (__pyx_t_1) {
 
-    /* "nonreduce.pyx":72
+    /* "nonreduce.pyx":52
  *     cdef float64_t ai
  *     if old == old:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -1430,7 +1396,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *__pyx_v_
       __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_1) break;
 
-      /* "nonreduce.pyx":73
+      /* "nonreduce.pyx":53
  *     if old == old:
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -1441,7 +1407,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *__pyx_v_
       for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
         __pyx_v_i = __pyx_t_3;
 
-        /* "nonreduce.pyx":74
+        /* "nonreduce.pyx":54
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -1450,7 +1416,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *__pyx_v_
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "nonreduce.pyx":75
+        /* "nonreduce.pyx":55
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == old:             # <<<<<<<<<<<<<<
@@ -1460,7 +1426,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *__pyx_v_
         __pyx_t_1 = ((__pyx_v_ai == __pyx_v_old) != 0);
         if (__pyx_t_1) {
 
-          /* "nonreduce.pyx":76
+          /* "nonreduce.pyx":56
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == old:
  *                     (<float64_t*>((<char*>pid(ita)) + i * stride))[0] = new             # <<<<<<<<<<<<<<
@@ -1473,7 +1439,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *__pyx_v_
         __pyx_L8:;
       }
 
-      /* "nonreduce.pyx":77
+      /* "nonreduce.pyx":57
  *                 if ai == old:
  *                     (<float64_t*>((<char*>pid(ita)) + i * stride))[0] = new
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -1486,7 +1452,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *__pyx_v_
   }
   /*else*/ {
 
-    /* "nonreduce.pyx":79
+    /* "nonreduce.pyx":59
  *             PyArray_ITER_NEXT(ita)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -1497,7 +1463,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *__pyx_v_
       __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_1) break;
 
-      /* "nonreduce.pyx":80
+      /* "nonreduce.pyx":60
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -1508,7 +1474,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *__pyx_v_
       for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
         __pyx_v_i = __pyx_t_3;
 
-        /* "nonreduce.pyx":81
+        /* "nonreduce.pyx":61
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -1517,7 +1483,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *__pyx_v_
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "nonreduce.pyx":82
+        /* "nonreduce.pyx":62
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai != ai:             # <<<<<<<<<<<<<<
@@ -1527,7 +1493,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *__pyx_v_
         __pyx_t_1 = ((__pyx_v_ai != __pyx_v_ai) != 0);
         if (__pyx_t_1) {
 
-          /* "nonreduce.pyx":83
+          /* "nonreduce.pyx":63
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai != ai:
  *                     (<float64_t*>((<char*>pid(ita)) + i * stride))[0] = new             # <<<<<<<<<<<<<<
@@ -1540,7 +1506,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *__pyx_v_
         __pyx_L13:;
       }
 
-      /* "nonreduce.pyx":84
+      /* "nonreduce.pyx":64
  *                 if ai != ai:
  *                     (<float64_t*>((<char*>pid(ita)) + i * stride))[0] = new
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -1552,7 +1518,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *__pyx_v_
   }
   __pyx_L3:;
 
-  /* "nonreduce.pyx":85
+  /* "nonreduce.pyx":65
  *                     (<float64_t*>((<char*>pid(ita)) + i * stride))[0] = new
  *             PyArray_ITER_NEXT(ita)
  *     return a             # <<<<<<<<<<<<<<
@@ -1564,7 +1530,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *__pyx_v_
   __pyx_r = __pyx_v_a;
   goto __pyx_L0;
 
-  /* "nonreduce.pyx":65
+  /* "nonreduce.pyx":45
  * 
  * 
  * cdef ndarray replace_float64(ndarray a, np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -1579,7 +1545,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float64(PyArrayObject *__pyx_v_
   return __pyx_r;
 }
 
-/* "nonreduce.pyx":87
+/* "nonreduce.pyx":67
  *     return a
  * 
  * cdef ndarray replace_float32(ndarray a, np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -1597,7 +1563,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *__pyx_v_
   Py_ssize_t __pyx_t_3;
   __Pyx_RefNannySetupContext("replace_float32", 0);
 
-  /* "nonreduce.pyx":93
+  /* "nonreduce.pyx":73
  *     cdef Py_ssize_t i
  *     cdef float32_t ai
  *     if old == old:             # <<<<<<<<<<<<<<
@@ -1607,7 +1573,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *__pyx_v_
   __pyx_t_1 = ((__pyx_v_old == __pyx_v_old) != 0);
   if (__pyx_t_1) {
 
-    /* "nonreduce.pyx":94
+    /* "nonreduce.pyx":74
  *     cdef float32_t ai
  *     if old == old:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -1618,7 +1584,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *__pyx_v_
       __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_1) break;
 
-      /* "nonreduce.pyx":95
+      /* "nonreduce.pyx":75
  *     if old == old:
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -1629,7 +1595,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *__pyx_v_
       for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
         __pyx_v_i = __pyx_t_3;
 
-        /* "nonreduce.pyx":96
+        /* "nonreduce.pyx":76
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -1638,7 +1604,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *__pyx_v_
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "nonreduce.pyx":97
+        /* "nonreduce.pyx":77
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == old:             # <<<<<<<<<<<<<<
@@ -1648,7 +1614,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *__pyx_v_
         __pyx_t_1 = ((__pyx_v_ai == __pyx_v_old) != 0);
         if (__pyx_t_1) {
 
-          /* "nonreduce.pyx":98
+          /* "nonreduce.pyx":78
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == old:
  *                     (<float32_t*>((<char*>pid(ita)) + i * stride))[0] = new             # <<<<<<<<<<<<<<
@@ -1661,7 +1627,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *__pyx_v_
         __pyx_L8:;
       }
 
-      /* "nonreduce.pyx":99
+      /* "nonreduce.pyx":79
  *                 if ai == old:
  *                     (<float32_t*>((<char*>pid(ita)) + i * stride))[0] = new
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -1674,7 +1640,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *__pyx_v_
   }
   /*else*/ {
 
-    /* "nonreduce.pyx":101
+    /* "nonreduce.pyx":81
  *             PyArray_ITER_NEXT(ita)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -1685,7 +1651,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *__pyx_v_
       __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_1) break;
 
-      /* "nonreduce.pyx":102
+      /* "nonreduce.pyx":82
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -1696,7 +1662,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *__pyx_v_
       for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
         __pyx_v_i = __pyx_t_3;
 
-        /* "nonreduce.pyx":103
+        /* "nonreduce.pyx":83
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -1705,7 +1671,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *__pyx_v_
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "nonreduce.pyx":104
+        /* "nonreduce.pyx":84
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai != ai:             # <<<<<<<<<<<<<<
@@ -1715,7 +1681,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *__pyx_v_
         __pyx_t_1 = ((__pyx_v_ai != __pyx_v_ai) != 0);
         if (__pyx_t_1) {
 
-          /* "nonreduce.pyx":105
+          /* "nonreduce.pyx":85
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai != ai:
  *                     (<float32_t*>((<char*>pid(ita)) + i * stride))[0] = new             # <<<<<<<<<<<<<<
@@ -1728,7 +1694,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *__pyx_v_
         __pyx_L13:;
       }
 
-      /* "nonreduce.pyx":106
+      /* "nonreduce.pyx":86
  *                 if ai != ai:
  *                     (<float32_t*>((<char*>pid(ita)) + i * stride))[0] = new
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -1740,7 +1706,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *__pyx_v_
   }
   __pyx_L3:;
 
-  /* "nonreduce.pyx":107
+  /* "nonreduce.pyx":87
  *                     (<float32_t*>((<char*>pid(ita)) + i * stride))[0] = new
  *             PyArray_ITER_NEXT(ita)
  *     return a             # <<<<<<<<<<<<<<
@@ -1752,7 +1718,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *__pyx_v_
   __pyx_r = __pyx_v_a;
   goto __pyx_L0;
 
-  /* "nonreduce.pyx":87
+  /* "nonreduce.pyx":67
  *     return a
  * 
  * cdef ndarray replace_float32(ndarray a, np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -1767,7 +1733,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_float32(PyArrayObject *__pyx_v_
   return __pyx_r;
 }
 
-/* "nonreduce.pyx":109
+/* "nonreduce.pyx":89
  *     return a
  * 
  * cdef ndarray replace_int64(ndarray a, np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -1791,7 +1757,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int64(PyArrayObject *__pyx_v_a,
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("replace_int64", 0);
 
-  /* "nonreduce.pyx":115
+  /* "nonreduce.pyx":95
  *     cdef Py_ssize_t i
  *     cdef int64_t ai, oldint, newint
  *     if old == old:             # <<<<<<<<<<<<<<
@@ -1801,7 +1767,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int64(PyArrayObject *__pyx_v_a,
   __pyx_t_1 = ((__pyx_v_old == __pyx_v_old) != 0);
   if (__pyx_t_1) {
 
-    /* "nonreduce.pyx":116
+    /* "nonreduce.pyx":96
  *     cdef int64_t ai, oldint, newint
  *     if old == old:
  *         oldint = <int64_t>old             # <<<<<<<<<<<<<<
@@ -1810,7 +1776,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int64(PyArrayObject *__pyx_v_a,
  */
     __pyx_v_oldint = ((__pyx_t_5numpy_int64_t)__pyx_v_old);
 
-    /* "nonreduce.pyx":117
+    /* "nonreduce.pyx":97
  *     if old == old:
  *         oldint = <int64_t>old
  *         newint = <int64_t>new             # <<<<<<<<<<<<<<
@@ -1819,7 +1785,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int64(PyArrayObject *__pyx_v_a,
  */
     __pyx_v_newint = ((__pyx_t_5numpy_int64_t)__pyx_v_new);
 
-    /* "nonreduce.pyx":118
+    /* "nonreduce.pyx":98
  *         oldint = <int64_t>old
  *         newint = <int64_t>new
  *         if oldint != old:             # <<<<<<<<<<<<<<
@@ -1829,21 +1795,21 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int64(PyArrayObject *__pyx_v_a,
     __pyx_t_1 = ((__pyx_v_oldint != __pyx_v_old) != 0);
     if (__pyx_t_1) {
 
-      /* "nonreduce.pyx":119
+      /* "nonreduce.pyx":99
  *         newint = <int64_t>new
  *         if oldint != old:
  *             raise ValueError("Cannot safely cast `old` to int.")             # <<<<<<<<<<<<<<
  *         if newint != new:
  *             raise ValueError("Cannot safely cast `new` to int.")
  */
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_Raise(__pyx_t_2, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "nonreduce.pyx":120
+    /* "nonreduce.pyx":100
  *         if oldint != old:
  *             raise ValueError("Cannot safely cast `old` to int.")
  *         if newint != new:             # <<<<<<<<<<<<<<
@@ -1853,21 +1819,21 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int64(PyArrayObject *__pyx_v_a,
     __pyx_t_1 = ((__pyx_v_newint != __pyx_v_new) != 0);
     if (__pyx_t_1) {
 
-      /* "nonreduce.pyx":121
+      /* "nonreduce.pyx":101
  *             raise ValueError("Cannot safely cast `old` to int.")
  *         if newint != new:
  *             raise ValueError("Cannot safely cast `new` to int.")             # <<<<<<<<<<<<<<
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  */
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 121; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_Raise(__pyx_t_2, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 121; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "nonreduce.pyx":122
+    /* "nonreduce.pyx":102
  *         if newint != new:
  *             raise ValueError("Cannot safely cast `new` to int.")
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -1878,7 +1844,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int64(PyArrayObject *__pyx_v_a,
       __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_1) break;
 
-      /* "nonreduce.pyx":123
+      /* "nonreduce.pyx":103
  *             raise ValueError("Cannot safely cast `new` to int.")
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -1889,7 +1855,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int64(PyArrayObject *__pyx_v_a,
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "nonreduce.pyx":124
+        /* "nonreduce.pyx":104
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -1898,7 +1864,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int64(PyArrayObject *__pyx_v_a,
  */
         __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "nonreduce.pyx":125
+        /* "nonreduce.pyx":105
  *             for i in range(length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == oldint:             # <<<<<<<<<<<<<<
@@ -1908,7 +1874,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int64(PyArrayObject *__pyx_v_a,
         __pyx_t_1 = ((__pyx_v_ai == __pyx_v_oldint) != 0);
         if (__pyx_t_1) {
 
-          /* "nonreduce.pyx":126
+          /* "nonreduce.pyx":106
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == oldint:
  *                     (<int64_t*>((<char*>pid(ita)) + i * stride))[0] = newint             # <<<<<<<<<<<<<<
@@ -1921,7 +1887,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int64(PyArrayObject *__pyx_v_a,
         __pyx_L10:;
       }
 
-      /* "nonreduce.pyx":127
+      /* "nonreduce.pyx":107
  *                 if ai == oldint:
  *                     (<int64_t*>((<char*>pid(ita)) + i * stride))[0] = newint
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -1934,7 +1900,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int64(PyArrayObject *__pyx_v_a,
   }
   __pyx_L3:;
 
-  /* "nonreduce.pyx":128
+  /* "nonreduce.pyx":108
  *                     (<int64_t*>((<char*>pid(ita)) + i * stride))[0] = newint
  *             PyArray_ITER_NEXT(ita)
  *     return a             # <<<<<<<<<<<<<<
@@ -1946,7 +1912,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int64(PyArrayObject *__pyx_v_a,
   __pyx_r = __pyx_v_a;
   goto __pyx_L0;
 
-  /* "nonreduce.pyx":109
+  /* "nonreduce.pyx":89
  *     return a
  * 
  * cdef ndarray replace_int64(ndarray a, np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -1965,7 +1931,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int64(PyArrayObject *__pyx_v_a,
   return __pyx_r;
 }
 
-/* "nonreduce.pyx":130
+/* "nonreduce.pyx":110
  *     return a
  * 
  * cdef ndarray replace_int32(ndarray a, np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -1989,7 +1955,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int32(PyArrayObject *__pyx_v_a,
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("replace_int32", 0);
 
-  /* "nonreduce.pyx":136
+  /* "nonreduce.pyx":116
  *     cdef Py_ssize_t i
  *     cdef int32_t ai, oldint, newint
  *     if old == old:             # <<<<<<<<<<<<<<
@@ -1999,7 +1965,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int32(PyArrayObject *__pyx_v_a,
   __pyx_t_1 = ((__pyx_v_old == __pyx_v_old) != 0);
   if (__pyx_t_1) {
 
-    /* "nonreduce.pyx":137
+    /* "nonreduce.pyx":117
  *     cdef int32_t ai, oldint, newint
  *     if old == old:
  *         oldint = <int32_t>old             # <<<<<<<<<<<<<<
@@ -2008,7 +1974,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int32(PyArrayObject *__pyx_v_a,
  */
     __pyx_v_oldint = ((__pyx_t_5numpy_int32_t)__pyx_v_old);
 
-    /* "nonreduce.pyx":138
+    /* "nonreduce.pyx":118
  *     if old == old:
  *         oldint = <int32_t>old
  *         newint = <int32_t>new             # <<<<<<<<<<<<<<
@@ -2017,7 +1983,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int32(PyArrayObject *__pyx_v_a,
  */
     __pyx_v_newint = ((__pyx_t_5numpy_int32_t)__pyx_v_new);
 
-    /* "nonreduce.pyx":139
+    /* "nonreduce.pyx":119
  *         oldint = <int32_t>old
  *         newint = <int32_t>new
  *         if oldint != old:             # <<<<<<<<<<<<<<
@@ -2027,21 +1993,21 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int32(PyArrayObject *__pyx_v_a,
     __pyx_t_1 = ((__pyx_v_oldint != __pyx_v_old) != 0);
     if (__pyx_t_1) {
 
-      /* "nonreduce.pyx":140
+      /* "nonreduce.pyx":120
  *         newint = <int32_t>new
  *         if oldint != old:
  *             raise ValueError("Cannot safely cast `old` to int.")             # <<<<<<<<<<<<<<
  *         if newint != new:
  *             raise ValueError("Cannot safely cast `new` to int.")
  */
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 140; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 120; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_Raise(__pyx_t_2, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 140; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 120; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "nonreduce.pyx":141
+    /* "nonreduce.pyx":121
  *         if oldint != old:
  *             raise ValueError("Cannot safely cast `old` to int.")
  *         if newint != new:             # <<<<<<<<<<<<<<
@@ -2051,21 +2017,21 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int32(PyArrayObject *__pyx_v_a,
     __pyx_t_1 = ((__pyx_v_newint != __pyx_v_new) != 0);
     if (__pyx_t_1) {
 
-      /* "nonreduce.pyx":142
+      /* "nonreduce.pyx":122
  *             raise ValueError("Cannot safely cast `old` to int.")
  *         if newint != new:
  *             raise ValueError("Cannot safely cast `new` to int.")             # <<<<<<<<<<<<<<
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  */
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_Raise(__pyx_t_2, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "nonreduce.pyx":143
+    /* "nonreduce.pyx":123
  *         if newint != new:
  *             raise ValueError("Cannot safely cast `new` to int.")
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -2076,7 +2042,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int32(PyArrayObject *__pyx_v_a,
       __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_1) break;
 
-      /* "nonreduce.pyx":144
+      /* "nonreduce.pyx":124
  *             raise ValueError("Cannot safely cast `new` to int.")
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -2087,7 +2053,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int32(PyArrayObject *__pyx_v_a,
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "nonreduce.pyx":145
+        /* "nonreduce.pyx":125
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -2096,7 +2062,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int32(PyArrayObject *__pyx_v_a,
  */
         __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "nonreduce.pyx":146
+        /* "nonreduce.pyx":126
  *             for i in range(length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == oldint:             # <<<<<<<<<<<<<<
@@ -2106,7 +2072,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int32(PyArrayObject *__pyx_v_a,
         __pyx_t_1 = ((__pyx_v_ai == __pyx_v_oldint) != 0);
         if (__pyx_t_1) {
 
-          /* "nonreduce.pyx":147
+          /* "nonreduce.pyx":127
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == oldint:
  *                     (<int32_t*>((<char*>pid(ita)) + i * stride))[0] = newint             # <<<<<<<<<<<<<<
@@ -2119,7 +2085,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int32(PyArrayObject *__pyx_v_a,
         __pyx_L10:;
       }
 
-      /* "nonreduce.pyx":148
+      /* "nonreduce.pyx":128
  *                 if ai == oldint:
  *                     (<int32_t*>((<char*>pid(ita)) + i * stride))[0] = newint
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -2132,7 +2098,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int32(PyArrayObject *__pyx_v_a,
   }
   __pyx_L3:;
 
-  /* "nonreduce.pyx":149
+  /* "nonreduce.pyx":129
  *                     (<int32_t*>((<char*>pid(ita)) + i * stride))[0] = newint
  *             PyArray_ITER_NEXT(ita)
  *     return a             # <<<<<<<<<<<<<<
@@ -2144,7 +2110,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int32(PyArrayObject *__pyx_v_a,
   __pyx_r = __pyx_v_a;
   goto __pyx_L0;
 
-  /* "nonreduce.pyx":130
+  /* "nonreduce.pyx":110
  *     return a
  * 
  * cdef ndarray replace_int32(ndarray a, np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -2163,7 +2129,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int32(PyArrayObject *__pyx_v_a,
   return __pyx_r;
 }
 
-/* "nonreduce.pyx":159
+/* "nonreduce.pyx":139
  * 
  * 
  * cdef ndarray nonreducer(arr,             # <<<<<<<<<<<<<<
@@ -2200,7 +2166,7 @@ static PyArrayObject *__pyx_f_9nonreduce_nonreducer(PyObject *__pyx_v_arr, __pyx
     }
   }
 
-  /* "nonreduce.pyx":170
+  /* "nonreduce.pyx":150
  *     # convert to array if necessary
  *     cdef ndarray a
  *     if type(arr) is ndarray:             # <<<<<<<<<<<<<<
@@ -2211,14 +2177,14 @@ static PyArrayObject *__pyx_f_9nonreduce_nonreducer(PyObject *__pyx_v_arr, __pyx
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "nonreduce.pyx":171
+    /* "nonreduce.pyx":151
  *     cdef ndarray a
  *     if type(arr) is ndarray:
  *         a = arr             # <<<<<<<<<<<<<<
  *     else:
  *         if inplace == 1:
  */
-    if (!(likely(((__pyx_v_arr) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_arr, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 171; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!(likely(((__pyx_v_arr) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_arr, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_t_3 = __pyx_v_arr;
     __Pyx_INCREF(__pyx_t_3);
     __pyx_v_a = ((PyArrayObject *)__pyx_t_3);
@@ -2227,7 +2193,7 @@ static PyArrayObject *__pyx_f_9nonreduce_nonreducer(PyObject *__pyx_v_arr, __pyx
   }
   /*else*/ {
 
-    /* "nonreduce.pyx":173
+    /* "nonreduce.pyx":153
  *         a = arr
  *     else:
  *         if inplace == 1:             # <<<<<<<<<<<<<<
@@ -2237,54 +2203,54 @@ static PyArrayObject *__pyx_f_9nonreduce_nonreducer(PyObject *__pyx_v_arr, __pyx
     __pyx_t_2 = ((__pyx_v_inplace == 1) != 0);
     if (__pyx_t_2) {
 
-      /* "nonreduce.pyx":175
+      /* "nonreduce.pyx":155
  *         if inplace == 1:
  *             # works in place so input must be an array, not (e.g.) a list
  *             raise TypeError("`arr` must be a numpy array.")             # <<<<<<<<<<<<<<
  *         else:
  *             a = np.array(arr, copy=False)
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 175; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 175; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     /*else*/ {
 
-      /* "nonreduce.pyx":177
+      /* "nonreduce.pyx":157
  *             raise TypeError("`arr` must be a numpy array.")
  *         else:
  *             a = np.array(arr, copy=False)             # <<<<<<<<<<<<<<
  * 
  *     # input array
  */
-      __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 177; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 177; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 177; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_INCREF(__pyx_v_arr);
       PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_arr);
       __Pyx_GIVEREF(__pyx_v_arr);
-      __pyx_t_5 = PyDict_New(); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 177; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PyDict_New(); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
-      if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_copy, Py_False) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 177; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 177; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_copy, Py_False) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 177; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_v_a = ((PyArrayObject *)__pyx_t_6);
       __pyx_t_6 = 0;
     }
   }
   __pyx_L3:;
 
-  /* "nonreduce.pyx":180
+  /* "nonreduce.pyx":160
  * 
  *     # input array
  *     cdef int dtype = PyArray_TYPE(a)             # <<<<<<<<<<<<<<
@@ -2293,7 +2259,7 @@ static PyArrayObject *__pyx_f_9nonreduce_nonreducer(PyObject *__pyx_v_arr, __pyx
  */
   __pyx_v_dtype = PyArray_TYPE(__pyx_v_a);
 
-  /* "nonreduce.pyx":181
+  /* "nonreduce.pyx":161
  *     # input array
  *     cdef int dtype = PyArray_TYPE(a)
  *     cdef int a_ndim = PyArray_NDIM(a)             # <<<<<<<<<<<<<<
@@ -2302,7 +2268,7 @@ static PyArrayObject *__pyx_f_9nonreduce_nonreducer(PyObject *__pyx_v_arr, __pyx
  */
   __pyx_v_a_ndim = PyArray_NDIM(__pyx_v_a);
 
-  /* "nonreduce.pyx":184
+  /* "nonreduce.pyx":164
  * 
  *     # input iterator
  *     cdef int axis = -1             # <<<<<<<<<<<<<<
@@ -2311,20 +2277,20 @@ static PyArrayObject *__pyx_f_9nonreduce_nonreducer(PyObject *__pyx_v_arr, __pyx
  */
   __pyx_v_axis = -1;
 
-  /* "nonreduce.pyx":185
+  /* "nonreduce.pyx":165
  *     # input iterator
  *     cdef int axis = -1
  *     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t stride = a.strides[axis]
  *     cdef Py_ssize_t length = a.shape[axis]
  */
-  __pyx_t_6 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 185; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
-  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 185; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ita = ((PyArrayIterObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "nonreduce.pyx":186
+  /* "nonreduce.pyx":166
  *     cdef int axis = -1
  *     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)
  *     cdef Py_ssize_t stride = a.strides[axis]             # <<<<<<<<<<<<<<
@@ -2333,7 +2299,7 @@ static PyArrayObject *__pyx_f_9nonreduce_nonreducer(PyObject *__pyx_v_arr, __pyx
  */
   __pyx_v_stride = (__pyx_v_a->strides[__pyx_v_axis]);
 
-  /* "nonreduce.pyx":187
+  /* "nonreduce.pyx":167
  *     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)
  *     cdef Py_ssize_t stride = a.strides[axis]
  *     cdef Py_ssize_t length = a.shape[axis]             # <<<<<<<<<<<<<<
@@ -2342,7 +2308,7 @@ static PyArrayObject *__pyx_f_9nonreduce_nonreducer(PyObject *__pyx_v_arr, __pyx
  */
   __pyx_v_length = (__pyx_v_a->dimensions[__pyx_v_axis]);
 
-  /* "nonreduce.pyx":191
+  /* "nonreduce.pyx":171
  *     # output array
  *     cdef ndarray y
  *     cdef np.npy_intp *y_dims = np.PyArray_DIMS(a)             # <<<<<<<<<<<<<<
@@ -2351,7 +2317,7 @@ static PyArrayObject *__pyx_f_9nonreduce_nonreducer(PyObject *__pyx_v_arr, __pyx
  */
   __pyx_v_y_dims = PyArray_DIMS(__pyx_v_a);
 
-  /* "nonreduce.pyx":200
+  /* "nonreduce.pyx":180
  *     elif dtype == NPY_int64:
  *         y = nr_int64(a, ita, stride, length, a_ndim, y_dims, double_input_1, double_input_2)
  *     elif dtype == NPY_int32:             # <<<<<<<<<<<<<<
@@ -2360,7 +2326,7 @@ static PyArrayObject *__pyx_f_9nonreduce_nonreducer(PyObject *__pyx_v_arr, __pyx
  */
   switch (__pyx_v_dtype) {
 
-    /* "nonreduce.pyx":194
+    /* "nonreduce.pyx":174
  * 
  *     # calc
  *     if dtype == NPY_float64:             # <<<<<<<<<<<<<<
@@ -2369,20 +2335,20 @@ static PyArrayObject *__pyx_f_9nonreduce_nonreducer(PyObject *__pyx_v_arr, __pyx
  */
     case NPY_FLOAT64:
 
-    /* "nonreduce.pyx":195
+    /* "nonreduce.pyx":175
  *     # calc
  *     if dtype == NPY_float64:
  *         y = nr_float64(a, ita, stride, length, a_ndim, y_dims, double_input_1, double_input_2)             # <<<<<<<<<<<<<<
  *     elif dtype == NPY_float32:
  *         y = nr_float32(a, ita, stride, length, a_ndim, y_dims, double_input_1, double_input_2)
  */
-    __pyx_t_6 = ((PyObject *)__pyx_v_nr_float64(__pyx_v_a, __pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_double_input_1, __pyx_v_double_input_2)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 195; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = ((PyObject *)__pyx_v_nr_float64(__pyx_v_a, __pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_double_input_1, __pyx_v_double_input_2)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 175; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_v_y = ((PyArrayObject *)__pyx_t_6);
     __pyx_t_6 = 0;
     break;
 
-    /* "nonreduce.pyx":196
+    /* "nonreduce.pyx":176
  *     if dtype == NPY_float64:
  *         y = nr_float64(a, ita, stride, length, a_ndim, y_dims, double_input_1, double_input_2)
  *     elif dtype == NPY_float32:             # <<<<<<<<<<<<<<
@@ -2391,20 +2357,20 @@ static PyArrayObject *__pyx_f_9nonreduce_nonreducer(PyObject *__pyx_v_arr, __pyx
  */
     case NPY_FLOAT32:
 
-    /* "nonreduce.pyx":197
+    /* "nonreduce.pyx":177
  *         y = nr_float64(a, ita, stride, length, a_ndim, y_dims, double_input_1, double_input_2)
  *     elif dtype == NPY_float32:
  *         y = nr_float32(a, ita, stride, length, a_ndim, y_dims, double_input_1, double_input_2)             # <<<<<<<<<<<<<<
  *     elif dtype == NPY_int64:
  *         y = nr_int64(a, ita, stride, length, a_ndim, y_dims, double_input_1, double_input_2)
  */
-    __pyx_t_6 = ((PyObject *)__pyx_v_nr_float32(__pyx_v_a, __pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_double_input_1, __pyx_v_double_input_2)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = ((PyObject *)__pyx_v_nr_float32(__pyx_v_a, __pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_double_input_1, __pyx_v_double_input_2)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 177; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_v_y = ((PyArrayObject *)__pyx_t_6);
     __pyx_t_6 = 0;
     break;
 
-    /* "nonreduce.pyx":198
+    /* "nonreduce.pyx":178
  *     elif dtype == NPY_float32:
  *         y = nr_float32(a, ita, stride, length, a_ndim, y_dims, double_input_1, double_input_2)
  *     elif dtype == NPY_int64:             # <<<<<<<<<<<<<<
@@ -2413,20 +2379,20 @@ static PyArrayObject *__pyx_f_9nonreduce_nonreducer(PyObject *__pyx_v_arr, __pyx
  */
     case NPY_INT64:
 
-    /* "nonreduce.pyx":199
+    /* "nonreduce.pyx":179
  *         y = nr_float32(a, ita, stride, length, a_ndim, y_dims, double_input_1, double_input_2)
  *     elif dtype == NPY_int64:
  *         y = nr_int64(a, ita, stride, length, a_ndim, y_dims, double_input_1, double_input_2)             # <<<<<<<<<<<<<<
  *     elif dtype == NPY_int32:
  *         y = nr_int32(a, ita, stride, length, a_ndim, y_dims, double_input_1, double_input_2)
  */
-    __pyx_t_6 = ((PyObject *)__pyx_v_nr_int64(__pyx_v_a, __pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_double_input_1, __pyx_v_double_input_2)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = ((PyObject *)__pyx_v_nr_int64(__pyx_v_a, __pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_double_input_1, __pyx_v_double_input_2)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 179; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_v_y = ((PyArrayObject *)__pyx_t_6);
     __pyx_t_6 = 0;
     break;
 
-    /* "nonreduce.pyx":200
+    /* "nonreduce.pyx":180
  *     elif dtype == NPY_int64:
  *         y = nr_int64(a, ita, stride, length, a_ndim, y_dims, double_input_1, double_input_2)
  *     elif dtype == NPY_int32:             # <<<<<<<<<<<<<<
@@ -2435,47 +2401,47 @@ static PyArrayObject *__pyx_f_9nonreduce_nonreducer(PyObject *__pyx_v_arr, __pyx
  */
     case NPY_INT32:
 
-    /* "nonreduce.pyx":201
+    /* "nonreduce.pyx":181
  *         y = nr_int64(a, ita, stride, length, a_ndim, y_dims, double_input_1, double_input_2)
  *     elif dtype == NPY_int32:
  *         y = nr_int32(a, ita, stride, length, a_ndim, y_dims, double_input_1, double_input_2)             # <<<<<<<<<<<<<<
  *     else:
  *         raise TypeError("Unsupported dtype (%s)." % a.dtype)
  */
-    __pyx_t_6 = ((PyObject *)__pyx_v_nr_int32(__pyx_v_a, __pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_double_input_1, __pyx_v_double_input_2)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = ((PyObject *)__pyx_v_nr_int32(__pyx_v_a, __pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_double_input_1, __pyx_v_double_input_2)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_v_y = ((PyArrayObject *)__pyx_t_6);
     __pyx_t_6 = 0;
     break;
     default:
 
-    /* "nonreduce.pyx":203
+    /* "nonreduce.pyx":183
  *         y = nr_int32(a, ita, stride, length, a_ndim, y_dims, double_input_1, double_input_2)
  *     else:
  *         raise TypeError("Unsupported dtype (%s)." % a.dtype)             # <<<<<<<<<<<<<<
  * 
  *     return y
  */
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_5 = __Pyx_PyString_Format(__pyx_kp_s_Unsupported_dtype_s, __pyx_t_6); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyString_Format(__pyx_kp_s_Unsupported_dtype_s, __pyx_t_6); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_5);
     __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_6, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_6, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     break;
   }
 
-  /* "nonreduce.pyx":205
+  /* "nonreduce.pyx":185
  *         raise TypeError("Unsupported dtype (%s)." % a.dtype)
  * 
  *     return y             # <<<<<<<<<<<<<<
@@ -2485,7 +2451,7 @@ static PyArrayObject *__pyx_f_9nonreduce_nonreducer(PyObject *__pyx_v_arr, __pyx
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "nonreduce.pyx":159
+  /* "nonreduce.pyx":139
  * 
  * 
  * cdef ndarray nonreducer(arr,             # <<<<<<<<<<<<<<
@@ -4548,15 +4514,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_copy, __pyx_k_copy, sizeof(__pyx_k_copy), 0, 0, 1, 1},
   {&__pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_k_devel_bottleneck_bottleneck_src, sizeof(__pyx_k_devel_bottleneck_bottleneck_src), 0, 0, 1, 0},
   {&__pyx_n_s_dtype, __pyx_k_dtype, sizeof(__pyx_k_dtype), 0, 0, 1, 1},
-  {&__pyx_n_s_iinfo, __pyx_k_iinfo, sizeof(__pyx_k_iinfo), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
-  {&__pyx_n_s_inf, __pyx_k_inf, sizeof(__pyx_k_inf), 0, 0, 1, 1},
-  {&__pyx_n_s_int32, __pyx_k_int32, sizeof(__pyx_k_int32), 0, 0, 1, 1},
-  {&__pyx_n_s_int64, __pyx_k_int64, sizeof(__pyx_k_int64), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
-  {&__pyx_n_s_max, __pyx_k_max, sizeof(__pyx_k_max), 0, 0, 1, 1},
-  {&__pyx_n_s_min, __pyx_k_min, sizeof(__pyx_k_min), 0, 0, 1, 1},
-  {&__pyx_n_s_nan, __pyx_k_nan, sizeof(__pyx_k_nan), 0, 0, 1, 1},
   {&__pyx_kp_u_ndarray_is_not_C_contiguous, __pyx_k_ndarray_is_not_C_contiguous, sizeof(__pyx_k_ndarray_is_not_C_contiguous), 0, 1, 0, 0},
   {&__pyx_kp_u_ndarray_is_not_Fortran_contiguou, __pyx_k_ndarray_is_not_Fortran_contiguou, sizeof(__pyx_k_ndarray_is_not_Fortran_contiguou), 0, 1, 0, 0},
   {&__pyx_n_s_new, __pyx_k_new, sizeof(__pyx_k_new), 0, 0, 1, 1},
@@ -4572,9 +4531,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 799; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
@@ -4585,58 +4544,58 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "nonreduce.pyx":119
+  /* "nonreduce.pyx":99
  *         newint = <int64_t>new
  *         if oldint != old:
  *             raise ValueError("Cannot safely cast `old` to int.")             # <<<<<<<<<<<<<<
  *         if newint != new:
  *             raise ValueError("Cannot safely cast `new` to int.")
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_Cannot_safely_cast_old_to_int); if (unlikely(!__pyx_tuple_)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_Cannot_safely_cast_old_to_int); if (unlikely(!__pyx_tuple_)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "nonreduce.pyx":121
+  /* "nonreduce.pyx":101
  *             raise ValueError("Cannot safely cast `old` to int.")
  *         if newint != new:
  *             raise ValueError("Cannot safely cast `new` to int.")             # <<<<<<<<<<<<<<
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_Cannot_safely_cast_new_to_int); if (unlikely(!__pyx_tuple__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 121; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_Cannot_safely_cast_new_to_int); if (unlikely(!__pyx_tuple__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "nonreduce.pyx":140
+  /* "nonreduce.pyx":120
  *         newint = <int32_t>new
  *         if oldint != old:
  *             raise ValueError("Cannot safely cast `old` to int.")             # <<<<<<<<<<<<<<
  *         if newint != new:
  *             raise ValueError("Cannot safely cast `new` to int.")
  */
-  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_Cannot_safely_cast_old_to_int); if (unlikely(!__pyx_tuple__3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 140; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_Cannot_safely_cast_old_to_int); if (unlikely(!__pyx_tuple__3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 120; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
-  /* "nonreduce.pyx":142
+  /* "nonreduce.pyx":122
  *             raise ValueError("Cannot safely cast `old` to int.")
  *         if newint != new:
  *             raise ValueError("Cannot safely cast `new` to int.")             # <<<<<<<<<<<<<<
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  */
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_Cannot_safely_cast_new_to_int); if (unlikely(!__pyx_tuple__4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_Cannot_safely_cast_new_to_int); if (unlikely(!__pyx_tuple__4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "nonreduce.pyx":175
+  /* "nonreduce.pyx":155
  *         if inplace == 1:
  *             # works in place so input must be an array, not (e.g.) a list
  *             raise TypeError("`arr` must be a numpy array.")             # <<<<<<<<<<<<<<
  *         else:
  *             a = np.array(arr, copy=False)
  */
-  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_s_arr_must_be_a_numpy_array); if (unlikely(!__pyx_tuple__5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 175; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_s_arr_must_be_a_numpy_array); if (unlikely(!__pyx_tuple__5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
 
@@ -4706,17 +4665,17 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
 
-  /* "nonreduce.pyx":51
+  /* "nonreduce.pyx":31
  * # replace -------------------------------------------------------------------
  * 
  * def replace(arr, double old, double new):             # <<<<<<<<<<<<<<
  *     try:
  *         nonreducer(arr,
  */
-  __pyx_tuple__13 = PyTuple_Pack(3, __pyx_n_s_arr, __pyx_n_s_old, __pyx_n_s_new); if (unlikely(!__pyx_tuple__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__13 = PyTuple_Pack(3, __pyx_n_s_arr, __pyx_n_s_old, __pyx_n_s_new); if (unlikely(!__pyx_tuple__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_replace, 51, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_replace, 31, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -4741,14 +4700,6 @@ PyMODINIT_FUNC PyInit_nonreduce(void)
 {
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
-  double __pyx_t_3;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  PyObject *__pyx_t_6 = NULL;
-  __pyx_t_5numpy_int32_t __pyx_t_7;
-  __pyx_t_5numpy_int64_t __pyx_t_8;
-  __pyx_t_5numpy_float32_t __pyx_t_9;
-  __pyx_t_5numpy_float64_t __pyx_t_10;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -4849,7 +4800,7 @@ PyMODINIT_FUNC PyInit_nonreduce(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 3; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "nonreduce.pyx":30
+  /* "nonreduce.pyx":24
  * from numpy cimport ndarray
  * from numpy cimport import_array
  * import_array()             # <<<<<<<<<<<<<<
@@ -4858,331 +4809,45 @@ PyMODINIT_FUNC PyInit_nonreduce(void)
  */
   import_array();
 
-  /* "nonreduce.pyx":32
+  /* "nonreduce.pyx":26
  * import_array()
  * 
  * import bottleneck.slow.reduce as slow             # <<<<<<<<<<<<<<
  * 
- * cdef double NAN = <double> np.nan
+ * 
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s__12);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s__12);
   __Pyx_GIVEREF(__pyx_n_s__12);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_bottleneck_slow_reduce, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_bottleneck_slow_reduce, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_slow, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_slow, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "nonreduce.pyx":34
- * import bottleneck.slow.reduce as slow
- * 
- * cdef double NAN = <double> np.nan             # <<<<<<<<<<<<<<
- * cdef extern from "math.h":
- *     double sqrt(double x)
- */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_nan); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_9nonreduce_NAN = ((double)__pyx_t_3);
-
-  /* "nonreduce.pyx":38
- *     double sqrt(double x)
- * 
- * cdef np.int32_t MAXint32 = np.iinfo(np.int32).max             # <<<<<<<<<<<<<<
- * cdef np.int64_t MAXint64 = np.iinfo(np.int64).max
- * cdef np.float32_t MAXfloat32 = np.inf
- */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = NULL;
-  if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
-    if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-      __Pyx_INCREF(__pyx_t_2);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
-    }
-  }
-  if (!__pyx_t_2) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_GOTREF(__pyx_t_1);
-  } else {
-    __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_6);
-    PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_2); __Pyx_GIVEREF(__pyx_t_2); __pyx_t_2 = NULL;
-    PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_5);
-    __Pyx_GIVEREF(__pyx_t_5);
-    __pyx_t_5 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_max); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_7 = __Pyx_PyInt_As_npy_int32(__pyx_t_4); if (unlikely((__pyx_t_7 == (npy_int32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_v_9nonreduce_MAXint32 = __pyx_t_7;
-
-  /* "nonreduce.pyx":39
- * 
- * cdef np.int32_t MAXint32 = np.iinfo(np.int32).max
- * cdef np.int64_t MAXint64 = np.iinfo(np.int64).max             # <<<<<<<<<<<<<<
- * cdef np.float32_t MAXfloat32 = np.inf
- * cdef np.float64_t MAXfloat64 = np.inf
- */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_int64); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = NULL;
-  if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_6))) {
-    __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_6);
-    if (likely(__pyx_t_1)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-      __Pyx_INCREF(__pyx_t_1);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_6, function);
-    }
-  }
-  if (!__pyx_t_1) {
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_GOTREF(__pyx_t_4);
-  } else {
-    __pyx_t_2 = PyTuple_New(1+1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_2);
-    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1); __Pyx_GIVEREF(__pyx_t_1); __pyx_t_1 = NULL;
-    PyTuple_SET_ITEM(__pyx_t_2, 0+1, __pyx_t_5);
-    __Pyx_GIVEREF(__pyx_t_5);
-    __pyx_t_5 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_2, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_max); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_8 = __Pyx_PyInt_As_npy_int64(__pyx_t_6); if (unlikely((__pyx_t_8 == (npy_int64)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_v_9nonreduce_MAXint64 = __pyx_t_8;
-
-  /* "nonreduce.pyx":40
- * cdef np.int32_t MAXint32 = np.iinfo(np.int32).max
- * cdef np.int64_t MAXint64 = np.iinfo(np.int64).max
- * cdef np.float32_t MAXfloat32 = np.inf             # <<<<<<<<<<<<<<
- * cdef np.float64_t MAXfloat64 = np.inf
- * 
- */
-  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_inf); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_4); if (unlikely((__pyx_t_9 == (npy_float32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_v_9nonreduce_MAXfloat32 = __pyx_t_9;
-
-  /* "nonreduce.pyx":41
- * cdef np.int64_t MAXint64 = np.iinfo(np.int64).max
- * cdef np.float32_t MAXfloat32 = np.inf
- * cdef np.float64_t MAXfloat64 = np.inf             # <<<<<<<<<<<<<<
- * 
- * cdef np.int32_t MINint32 = np.iinfo(np.int32).min
- */
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_inf); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_10 = __pyx_PyFloat_AsDouble(__pyx_t_6); if (unlikely((__pyx_t_10 == (npy_float64)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_v_9nonreduce_MAXfloat64 = __pyx_t_10;
-
-  /* "nonreduce.pyx":43
- * cdef np.float64_t MAXfloat64 = np.inf
- * 
- * cdef np.int32_t MINint32 = np.iinfo(np.int32).min             # <<<<<<<<<<<<<<
- * cdef np.int64_t MINint64 = np.iinfo(np.int64).min
- * cdef np.float32_t MINfloat32 = -np.inf
- */
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = NULL;
-  if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  if (!__pyx_t_4) {
-    __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_GOTREF(__pyx_t_6);
-  } else {
-    __pyx_t_1 = PyTuple_New(1+1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_1);
-    PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_4); __Pyx_GIVEREF(__pyx_t_4); __pyx_t_4 = NULL;
-    PyTuple_SET_ITEM(__pyx_t_1, 0+1, __pyx_t_5);
-    __Pyx_GIVEREF(__pyx_t_5);
-    __pyx_t_5 = 0;
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_min); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_7 = __Pyx_PyInt_As_npy_int32(__pyx_t_2); if (unlikely((__pyx_t_7 == (npy_int32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_v_9nonreduce_MINint32 = __pyx_t_7;
-
-  /* "nonreduce.pyx":44
- * 
- * cdef np.int32_t MINint32 = np.iinfo(np.int32).min
- * cdef np.int64_t MINint64 = np.iinfo(np.int64).min             # <<<<<<<<<<<<<<
- * cdef np.float32_t MINfloat32 = -np.inf
- * cdef np.float64_t MINfloat64 = -np.inf
- */
-  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_int64); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = NULL;
-  if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_1))) {
-    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_1);
-    if (likely(__pyx_t_6)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-      __Pyx_INCREF(__pyx_t_6);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_1, function);
-    }
-  }
-  if (!__pyx_t_6) {
-    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_GOTREF(__pyx_t_2);
-  } else {
-    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_6); __Pyx_GIVEREF(__pyx_t_6); __pyx_t_6 = NULL;
-    PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_t_5);
-    __Pyx_GIVEREF(__pyx_t_5);
-    __pyx_t_5 = 0;
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_min); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_8 = __Pyx_PyInt_As_npy_int64(__pyx_t_1); if (unlikely((__pyx_t_8 == (npy_int64)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_9nonreduce_MINint64 = __pyx_t_8;
-
-  /* "nonreduce.pyx":45
- * cdef np.int32_t MINint32 = np.iinfo(np.int32).min
- * cdef np.int64_t MINint64 = np.iinfo(np.int64).min
- * cdef np.float32_t MINfloat32 = -np.inf             # <<<<<<<<<<<<<<
- * cdef np.float64_t MINfloat64 = -np.inf
- * 
- */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_inf); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyNumber_Negative(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_9 == (npy_float32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_9nonreduce_MINfloat32 = __pyx_t_9;
-
-  /* "nonreduce.pyx":46
- * cdef np.int64_t MINint64 = np.iinfo(np.int64).min
- * cdef np.float32_t MINfloat32 = -np.inf
- * cdef np.float64_t MINfloat64 = -np.inf             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_inf); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyNumber_Negative(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_10 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_10 == (npy_float64)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_9nonreduce_MINfloat64 = __pyx_t_10;
-
-  /* "nonreduce.pyx":51
+  /* "nonreduce.pyx":31
  * # replace -------------------------------------------------------------------
  * 
  * def replace(arr, double old, double new):             # <<<<<<<<<<<<<<
  *     try:
  *         nonreducer(arr,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_9nonreduce_1replace, NULL, __pyx_n_s_nonreduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_replace, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9nonreduce_1replace, NULL, __pyx_n_s_nonreduce); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_replace, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "nonreduce.pyx":1
  * #cython: embedsignature=True             # <<<<<<<<<<<<<<
  * 
  * import numpy as np
  */
-  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":976
  *      arr.base = baseptr
@@ -5198,9 +4863,6 @@ PyMODINIT_FUNC PyInit_nonreduce(void)
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_6);
   if (__pyx_m) {
     if (__pyx_d) {
       __Pyx_AddTraceback("init nonreduce", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -5726,55 +5388,6 @@ static CYTHON_INLINE void __Pyx_RaiseNoneNotIterableError(void) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
 }
 
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg) {
-    PyObject *self, *result;
-    PyCFunction cfunc;
-    cfunc = PyCFunction_GET_FUNCTION(func);
-    self = PyCFunction_GET_SELF(func);
-    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
-        return NULL;
-    result = cfunc(self, arg);
-    Py_LeaveRecursiveCall();
-    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
-        PyErr_SetString(
-            PyExc_SystemError,
-            "NULL result without error in PyObject_Call");
-    }
-    return result;
-}
-#endif
-
-#if CYTHON_COMPILING_IN_CPYTHON
-static PyObject* __Pyx__PyObject_CallOneArg(PyObject *func, PyObject *arg) {
-    PyObject *result;
-    PyObject *args = PyTuple_New(1);
-    if (unlikely(!args)) return NULL;
-    Py_INCREF(arg);
-    PyTuple_SET_ITEM(args, 0, arg);
-    result = __Pyx_PyObject_Call(func, args, NULL);
-    Py_DECREF(args);
-    return result;
-}
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg) {
-#ifdef __Pyx_CyFunction_USED
-    if (likely(PyCFunction_Check(func) || PyObject_TypeCheck(func, __pyx_CyFunctionType))) {
-#else
-    if (likely(PyCFunction_Check(func))) {
-#endif
-        if (likely(PyCFunction_GET_FLAGS(func) & METH_O)) {
-            return __Pyx_PyObject_CallMethO(func, arg);
-        }
-    }
-    return __Pyx__PyObject_CallOneArg(func, arg);
-}
-#else
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg) {
-    PyObject* args = PyTuple_Pack(1, arg);
-    return (likely(args)) ? __Pyx_PyObject_Call(func, args, NULL) : NULL;
-}
-#endif
-
 static int __pyx_bisect_code_objects(__Pyx_CodeObjectCacheEntry* entries, int count, int code_line) {
     int start = 0, mid = 0, end = count - 1;
     if (end >= 0 && code_line > entries[end].code_line) {
@@ -6005,217 +5618,6 @@ bad:
     Py_XDECREF(empty_list);
     Py_XDECREF(empty_dict);
     return module;
-}
-
-#define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)       \
-    {                                                                     \
-        func_type value = func_value;                                     \
-        if (sizeof(target_type) < sizeof(func_type)) {                    \
-            if (unlikely(value != (func_type) (target_type) value)) {     \
-                func_type zero = 0;                                       \
-                if (is_unsigned && unlikely(value < zero))                \
-                    goto raise_neg_overflow;                              \
-                else                                                      \
-                    goto raise_overflow;                                  \
-            }                                                             \
-        }                                                                 \
-        return (target_type) value;                                       \
-    }
-
-#if CYTHON_COMPILING_IN_CPYTHON && PY_MAJOR_VERSION >= 3
- #if CYTHON_USE_PYLONG_INTERNALS
-  #include "longintrepr.h"
- #endif
-#endif
-
-static CYTHON_INLINE npy_int32 __Pyx_PyInt_As_npy_int32(PyObject *x) {
-    const npy_int32 neg_one = (npy_int32) -1, const_zero = 0;
-    const int is_unsigned = neg_one > const_zero;
-#if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_Check(x))) {
-        if (sizeof(npy_int32) < sizeof(long)) {
-            __PYX_VERIFY_RETURN_INT(npy_int32, long, PyInt_AS_LONG(x))
-        } else {
-            long val = PyInt_AS_LONG(x);
-            if (is_unsigned && unlikely(val < 0)) {
-                goto raise_neg_overflow;
-            }
-            return (npy_int32) val;
-        }
-    } else
-#endif
-    if (likely(PyLong_Check(x))) {
-        if (is_unsigned) {
-#if CYTHON_COMPILING_IN_CPYTHON && PY_MAJOR_VERSION >= 3
- #if CYTHON_USE_PYLONG_INTERNALS
-            switch (Py_SIZE(x)) {
-                case  0: return 0;
-                case  1: __PYX_VERIFY_RETURN_INT(npy_int32, digit, ((PyLongObject*)x)->ob_digit[0]);
-            }
- #endif
-#endif
-            if (unlikely(Py_SIZE(x) < 0)) {
-                goto raise_neg_overflow;
-            }
-            if (sizeof(npy_int32) <= sizeof(unsigned long)) {
-                __PYX_VERIFY_RETURN_INT(npy_int32, unsigned long, PyLong_AsUnsignedLong(x))
-            } else if (sizeof(npy_int32) <= sizeof(unsigned long long)) {
-                __PYX_VERIFY_RETURN_INT(npy_int32, unsigned long long, PyLong_AsUnsignedLongLong(x))
-            }
-        } else {
-#if CYTHON_COMPILING_IN_CPYTHON && PY_MAJOR_VERSION >= 3
- #if CYTHON_USE_PYLONG_INTERNALS
-            switch (Py_SIZE(x)) {
-                case  0: return 0;
-                case  1: __PYX_VERIFY_RETURN_INT(npy_int32,  digit, +(((PyLongObject*)x)->ob_digit[0]));
-                case -1: __PYX_VERIFY_RETURN_INT(npy_int32, sdigit, -(sdigit) ((PyLongObject*)x)->ob_digit[0]);
-            }
- #endif
-#endif
-            if (sizeof(npy_int32) <= sizeof(long)) {
-                __PYX_VERIFY_RETURN_INT(npy_int32, long, PyLong_AsLong(x))
-            } else if (sizeof(npy_int32) <= sizeof(long long)) {
-                __PYX_VERIFY_RETURN_INT(npy_int32, long long, PyLong_AsLongLong(x))
-            }
-        }
-        {
-#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
-            PyErr_SetString(PyExc_RuntimeError,
-                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
-#else
-            npy_int32 val;
-            PyObject *v = __Pyx_PyNumber_Int(x);
- #if PY_MAJOR_VERSION < 3
-            if (likely(v) && !PyLong_Check(v)) {
-                PyObject *tmp = v;
-                v = PyNumber_Long(tmp);
-                Py_DECREF(tmp);
-            }
- #endif
-            if (likely(v)) {
-                int one = 1; int is_little = (int)*(unsigned char *)&one;
-                unsigned char *bytes = (unsigned char *)&val;
-                int ret = _PyLong_AsByteArray((PyLongObject *)v,
-                                              bytes, sizeof(val),
-                                              is_little, !is_unsigned);
-                Py_DECREF(v);
-                if (likely(!ret))
-                    return val;
-            }
-#endif
-            return (npy_int32) -1;
-        }
-    } else {
-        npy_int32 val;
-        PyObject *tmp = __Pyx_PyNumber_Int(x);
-        if (!tmp) return (npy_int32) -1;
-        val = __Pyx_PyInt_As_npy_int32(tmp);
-        Py_DECREF(tmp);
-        return val;
-    }
-raise_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "value too large to convert to npy_int32");
-    return (npy_int32) -1;
-raise_neg_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "can't convert negative value to npy_int32");
-    return (npy_int32) -1;
-}
-
-static CYTHON_INLINE npy_int64 __Pyx_PyInt_As_npy_int64(PyObject *x) {
-    const npy_int64 neg_one = (npy_int64) -1, const_zero = 0;
-    const int is_unsigned = neg_one > const_zero;
-#if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_Check(x))) {
-        if (sizeof(npy_int64) < sizeof(long)) {
-            __PYX_VERIFY_RETURN_INT(npy_int64, long, PyInt_AS_LONG(x))
-        } else {
-            long val = PyInt_AS_LONG(x);
-            if (is_unsigned && unlikely(val < 0)) {
-                goto raise_neg_overflow;
-            }
-            return (npy_int64) val;
-        }
-    } else
-#endif
-    if (likely(PyLong_Check(x))) {
-        if (is_unsigned) {
-#if CYTHON_COMPILING_IN_CPYTHON && PY_MAJOR_VERSION >= 3
- #if CYTHON_USE_PYLONG_INTERNALS
-            switch (Py_SIZE(x)) {
-                case  0: return 0;
-                case  1: __PYX_VERIFY_RETURN_INT(npy_int64, digit, ((PyLongObject*)x)->ob_digit[0]);
-            }
- #endif
-#endif
-            if (unlikely(Py_SIZE(x) < 0)) {
-                goto raise_neg_overflow;
-            }
-            if (sizeof(npy_int64) <= sizeof(unsigned long)) {
-                __PYX_VERIFY_RETURN_INT(npy_int64, unsigned long, PyLong_AsUnsignedLong(x))
-            } else if (sizeof(npy_int64) <= sizeof(unsigned long long)) {
-                __PYX_VERIFY_RETURN_INT(npy_int64, unsigned long long, PyLong_AsUnsignedLongLong(x))
-            }
-        } else {
-#if CYTHON_COMPILING_IN_CPYTHON && PY_MAJOR_VERSION >= 3
- #if CYTHON_USE_PYLONG_INTERNALS
-            switch (Py_SIZE(x)) {
-                case  0: return 0;
-                case  1: __PYX_VERIFY_RETURN_INT(npy_int64,  digit, +(((PyLongObject*)x)->ob_digit[0]));
-                case -1: __PYX_VERIFY_RETURN_INT(npy_int64, sdigit, -(sdigit) ((PyLongObject*)x)->ob_digit[0]);
-            }
- #endif
-#endif
-            if (sizeof(npy_int64) <= sizeof(long)) {
-                __PYX_VERIFY_RETURN_INT(npy_int64, long, PyLong_AsLong(x))
-            } else if (sizeof(npy_int64) <= sizeof(long long)) {
-                __PYX_VERIFY_RETURN_INT(npy_int64, long long, PyLong_AsLongLong(x))
-            }
-        }
-        {
-#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
-            PyErr_SetString(PyExc_RuntimeError,
-                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
-#else
-            npy_int64 val;
-            PyObject *v = __Pyx_PyNumber_Int(x);
- #if PY_MAJOR_VERSION < 3
-            if (likely(v) && !PyLong_Check(v)) {
-                PyObject *tmp = v;
-                v = PyNumber_Long(tmp);
-                Py_DECREF(tmp);
-            }
- #endif
-            if (likely(v)) {
-                int one = 1; int is_little = (int)*(unsigned char *)&one;
-                unsigned char *bytes = (unsigned char *)&val;
-                int ret = _PyLong_AsByteArray((PyLongObject *)v,
-                                              bytes, sizeof(val),
-                                              is_little, !is_unsigned);
-                Py_DECREF(v);
-                if (likely(!ret))
-                    return val;
-            }
-#endif
-            return (npy_int64) -1;
-        }
-    } else {
-        npy_int64 val;
-        PyObject *tmp = __Pyx_PyNumber_Int(x);
-        if (!tmp) return (npy_int64) -1;
-        val = __Pyx_PyInt_As_npy_int64(tmp);
-        Py_DECREF(tmp);
-        return val;
-    }
-raise_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "value too large to convert to npy_int64");
-    return (npy_int64) -1;
-raise_neg_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "can't convert negative value to npy_int64");
-    return (npy_int64) -1;
 }
 
 #if CYTHON_CCOMPLEX
@@ -6483,6 +5885,27 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
                                      little, !is_unsigned);
     }
 }
+
+#define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)       \
+    {                                                                     \
+        func_type value = func_value;                                     \
+        if (sizeof(target_type) < sizeof(func_type)) {                    \
+            if (unlikely(value != (func_type) (target_type) value)) {     \
+                func_type zero = 0;                                       \
+                if (is_unsigned && unlikely(value < zero))                \
+                    goto raise_neg_overflow;                              \
+                else                                                      \
+                    goto raise_overflow;                                  \
+            }                                                             \
+        }                                                                 \
+        return (target_type) value;                                       \
+    }
+
+#if CYTHON_COMPILING_IN_CPYTHON && PY_MAJOR_VERSION >= 3
+ #if CYTHON_USE_PYLONG_INTERNALS
+  #include "longintrepr.h"
+ #endif
+#endif
 
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *x) {
     const int neg_one = (int) -1, const_zero = 0;
