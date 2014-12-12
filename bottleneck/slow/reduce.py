@@ -2,7 +2,7 @@ import warnings
 import numpy as np
 
 __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
-           'nanmin', 'nanmax', 'nanargmin', 'nanargmax', 'ss', 'nn', 'replace',
+           'nanmin', 'nanmax', 'nanargmin', 'nanargmax', 'ss', 'nn',
            'anynan', 'allnan']
 
 rankdata_func = None
@@ -73,25 +73,6 @@ def nn(arr, arr0, axis=1):
     d = d.sum(axis)
     idx = np.argmin(d)
     return np.sqrt(d[idx]), idx
-
-
-def replace(arr, old, new):
-    "Slow replace (inplace) used for unaccelerated ndim/dtype combinations."
-    if type(arr) is not np.ndarray:
-        raise TypeError("`arr` must be a numpy array.")
-    if not issubclass(arr.dtype.type, np.inexact):
-        if old != old:
-            # int arrays do not contain NaN
-            return
-        if int(old) != old:
-            raise ValueError("Cannot safely cast `old` to int.")
-        if int(new) != new:
-            raise ValueError("Cannot safely cast `new` to int.")
-    if old != old:
-        mask = np.isnan(arr)
-    else:
-        mask = arr == old
-    np.putmask(arr, mask, new)
 
 
 def anynan(arr, axis=None):

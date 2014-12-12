@@ -23,7 +23,7 @@ from numpy cimport ndarray
 from numpy cimport import_array
 import_array()
 
-import bottleneck.slow.reduce as slow
+import bottleneck.slow.nonreduce as slow
 
 
 # replace -------------------------------------------------------------------
