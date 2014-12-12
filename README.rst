@@ -45,18 +45,18 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
         NaN means approx one-third NaNs; float64 and axis=-1 are used
 
                      no NaN     no NaN      NaN        NaN
-                     (10,)   (1000,1000)   (10,)   (1000,1000)
-        nansum       35.9        3.9       36.2        9.1
-        nanmean     154.2        5.2      154.4       10.2
-        nanstd      266.3        4.4      252.6        8.6
-        nanmax       34.4        1.1       34.5        2.8
-        partsort      3.7        2.9        3.8        3.5
-        argpartsort   1.0        2.2        1.0        1.4
-        replace       9.8        1.3        9.8        1.3
-        move_sum     30.2       65.6       29.1       67.6
-        move_nansum  66.8      130.3       71.4      122.5
-        move_mean    28.4       31.2       28.5       66.4
-        move_nanmean 73.6       66.0       77.7       66.2
+                       (10,)   (1000,1000)   (10,)   (1000,1000)
+        nansum         41.0        3.9       41.2        9.0
+        nanmean       154.0        5.2      154.1       10.1
+        nanstd        241.8        4.3      241.1        8.5
+        nanmax         33.6        1.1       30.1        2.8
+        partsort        3.3        2.9        3.4        3.5
+        argpartsort     0.8        2.2        0.8        1.4
+        replace        10.9        1.3       10.9        1.3
+        move_sum       31.4       65.8       31.0       67.8
+        move_nansum    68.6      135.0       72.6      137.9
+        move_mean      27.7       31.8       28.9       67.9
+        move_nanmean   77.1       66.1       80.3       66.3
 
     Reference functions:
     nansum         np.nansum

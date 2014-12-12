@@ -70,13 +70,13 @@ def bench(dtype='float64', axis=-1,
             header.append("no NaN".center(11))
     print("".join(header))
     header = ["".join(str(shape).split(" ")).center(11) for shape in shapes]
-    header = [" "*14] + header
+    header = [" "*16] + header
     print("".join(header))
 
     suite = benchsuite(shapes, dtype, axis, nans)
     for test in suite:
         name = test["name"].ljust(12)
-        fmt = tab + name + "%5.1f" + "%11.1f"*(len(shapes) - 1)
+        fmt = tab + name + "%7.1f" + "%11.1f"*(len(shapes) - 1)
         if test['scipy_required'] and not SCIPY:
             print("%s%s" % (name, "requires SciPy"))
         else:
