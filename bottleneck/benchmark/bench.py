@@ -179,7 +179,8 @@ def benchsuite(shapes, dtype, axis, nans):
     suite.append(run)
 
     # moving window function that benchmark against sp.ndimage.convolve1d
-    funcs = ['move_sum', 'move_nansum', 'move_mean', 'move_nanmean']
+    funcs = ['move_sum', 'move_nansum', 'move_mean', 'move_nanmean',
+             'move_std', 'move_nanstd']
     for func in funcs:
         run = {}
         run['name'] = func

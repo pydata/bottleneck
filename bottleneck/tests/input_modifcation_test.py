@@ -73,6 +73,8 @@ def test_modification():
              bn.move_nansum,
              bn.move_mean,
              bn.move_nanmean,
+             bn.move_std,
+             bn.move_nanstd,
              ]
     """
              bn.nanargmin,
@@ -85,8 +87,6 @@ def test_modification():
              bn.anynan,
              bn.allnan,
              bn.move_median,
-             bn.move_std,
-             bn.move_nanstd,
              bn.move_min,
              bn.move_max,
              bn.move_nanmin,

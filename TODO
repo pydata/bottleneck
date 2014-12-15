@@ -54,7 +54,7 @@ Move
     (arr, int window, int axis, int ddof)
 
         int --> float64
-            std*, nanstd*
+            std, nanstd
 
 * means TODO
 

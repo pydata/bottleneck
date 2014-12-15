@@ -44,19 +44,21 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
         Speed is NumPy or SciPy time divided by Bottleneck time
         NaN means approx one-third NaNs; float64 and axis=-1 are used
 
-                     no NaN     no NaN      NaN        NaN
+                     no NaN     no NaN      NaN        NaN    
                        (10,)   (1000,1000)   (10,)   (1000,1000)
-        nansum         41.0        3.9       41.2        9.0
-        nanmean       154.0        5.2      154.1       10.1
-        nanstd        241.8        4.3      241.1        8.5
-        nanmax         33.6        1.1       30.1        2.8
-        partsort        3.3        2.9        3.4        3.5
-        argpartsort     0.8        2.2        0.8        1.4
-        replace        10.9        1.3       10.9        1.3
-        move_sum       31.4       65.8       31.0       67.8
-        move_nansum    68.6      135.0       72.6      137.9
-        move_mean      27.7       31.8       28.9       67.9
-        move_nanmean   77.1       66.1       80.3       66.3
+        nansum         36.1        4.0       36.7        9.2
+        nanmean       137.8        5.2      141.3       10.3
+        nanstd        243.5        4.2      244.2        8.3
+        nanmax         32.1        1.1       32.2        2.8
+        partsort        3.2        2.9        3.2        3.4
+        argpartsort     0.9        2.4        1.0        1.7
+        replace        10.4        1.2       10.4        1.3
+        move_sum       31.0       66.9       28.7       67.9
+        move_nansum    61.7      135.7       62.2      136.4
+        move_mean      27.0       32.1       27.3       65.3
+        move_nanmean   66.5       65.6       68.9       65.7
+        move_std       51.3       22.1       55.6      135.5
+        move_nanstd    94.1       34.5       97.3       34.8
 
     Reference functions:
     nansum         np.nansum
@@ -70,6 +72,8 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
     move_nansum    sp.ndimage.convolve1d based, window=a.shape[-1] // 5
     move_mean      sp.ndimage.convolve1d based, window=a.shape[-1] // 5
     move_nanmean   sp.ndimage.convolve1d based, window=a.shape[-1] // 5
+    move_std       sp.ndimage.convolve1d based, window=a.shape[-1] // 5
+    move_nanstd    sp.ndimage.convolve1d based, window=a.shape[-1] // 5
 
 Only arrays with data type (dtype) int32, int64, float32, and float64 are
 accelerated. All other dtypes result in calls to slower, unaccelerated
@@ -132,6 +136,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 45 tests in 28.712s
+    Ran 51 tests in 36.712s
     OK
-    <nose.result.TextTestResult run=45 errors=0 failures=0>
+    <nose.result.TextTestResult run=51 errors=0 failures=0>

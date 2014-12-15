@@ -357,6 +357,200 @@ cdef ndarray move_nanmean_DTYPE0(int window, int axis, np.flatiter ita,
     return y
 
 
+# move_std -----------------------------------------------------------------
+
+def move_std(arr, int window, int axis=-1, int ddof=0):
+    try:
+        return mover(arr, window, axis,
+                     move_std_float64,
+                     move_std_float32,
+                     move_std_int64,
+                     move_std_int32,
+                     ddof)
+    except TypeError:
+        return slow.move_std(arr, window, axis, ddof)
+
+
+@cython.cdivision(True)
+cdef ndarray move_std_DTYPE0(int window, int axis, np.flatiter ita,
+                             Py_ssize_t stride, Py_ssize_t length,
+                             int a_ndim, np.npy_intp* y_dims,
+                             int ddof):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i, count
+    cdef DTYPE0_t asum, a2sum, ai, ssr, aold, yi
+    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef Py_ssize_t ystride = y.strides[axis]
+    while PyArray_ITER_NOTDONE(ita):
+        asum = 0
+        a2sum = 0
+        count = 0
+        for i in range(window - 1):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai == ai:
+                asum += ai
+                a2sum += ai * ai
+                count += 1
+            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+        i = window - 1
+        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+        if ai == ai:
+            asum += ai
+            a2sum += ai * ai
+            count += 1
+        if count == window:
+            ssr = a2sum - asum * asum / count
+            if ssr < 0:
+                yi = 0
+            else:
+                yi = sqrt(ssr / (count - ddof))
+        else:
+            yi = NAN
+        (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+        for i in range(window, length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai == ai:
+                asum += ai
+                a2sum += ai * ai
+                count += 1
+            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+            if aold == aold:
+                asum -= aold
+                a2sum -= aold * aold
+                count -= 1
+            if count == window:
+                ssr = a2sum - asum * asum / count
+                if ssr < 0:
+                    yi = 0
+                else:
+                    yi = sqrt(ssr / (count - ddof))
+            else:
+                yi = NAN
+            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+        PyArray_ITER_NEXT(ita)
+        PyArray_ITER_NEXT(ity)
+    return y
+
+
+@cython.cdivision(True)
+cdef ndarray move_std_DTYPE0(int window, int axis, np.flatiter ita,
+                             Py_ssize_t stride, Py_ssize_t length,
+                             int a_ndim, np.npy_intp* y_dims,
+                             int ddof):
+    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
+    cdef Py_ssize_t i
+    cdef int winddof
+    cdef DTYPE0_t ai, aold
+    cdef DTYPE1_t yi, asum, a2sum
+    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef Py_ssize_t ystride = y.strides[axis]
+    winddof = window - ddof
+    while PyArray_ITER_NOTDONE(ita):
+        asum = 0
+        a2sum = 0
+        for i in range(window - 1):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            asum += ai
+            a2sum += ai * ai
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+        i = window - 1
+        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+        asum += ai
+        a2sum += ai * ai
+        yi = sqrt((a2sum - asum * asum / window) / winddof)
+        (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+        for i in range(window, length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            asum += ai
+            a2sum += ai * ai
+            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+            asum -= aold
+            a2sum -= aold * aold
+            yi = sqrt((a2sum - asum * asum / window) / winddof)
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+        PyArray_ITER_NEXT(ita)
+        PyArray_ITER_NEXT(ity)
+    return y
+
+
+# move_nanstd --------------------------------------------------------------
+
+def move_nanstd(arr, int window, int axis=-1, int ddof=0):
+    try:
+        return mover(arr, window, axis,
+                     move_nanstd_float64,
+                     move_nanstd_float32,
+                     move_std_int64,
+                     move_std_int32,
+                     ddof)
+    except TypeError:
+        return slow.move_nanstd(arr, window, axis, ddof)
+
+
+@cython.cdivision(True)
+cdef ndarray move_nanstd_DTYPE0(int window, int axis, np.flatiter ita,
+                                Py_ssize_t stride, Py_ssize_t length,
+                                int a_ndim, np.npy_intp* y_dims,
+                                int ddof):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i, count
+    cdef DTYPE0_t asum, a2sum, ai, ssr, aold, yi
+    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef Py_ssize_t ystride = y.strides[axis]
+    while PyArray_ITER_NOTDONE(ita):
+        asum = 0
+        a2sum = 0
+        count = 0
+        for i in range(window - 1):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai == ai:
+                asum += ai
+                a2sum += ai * ai
+                count += 1
+            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+        i = window - 1
+        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+        if ai == ai:
+            asum += ai
+            a2sum += ai * ai
+            count += 1
+        if count > 0:
+            ssr = a2sum - asum * asum / count
+            if ssr < 0:
+                yi = 0
+            else:
+                yi = sqrt(ssr / (count - ddof))
+        else:
+            yi = NAN
+        (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+        for i in range(window, length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai == ai:
+                asum += ai
+                a2sum += ai * ai
+                count += 1
+            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+            if aold == aold:
+                asum -= aold
+                a2sum -= aold * aold
+                count -= 1
+            if count > 0:
+                ssr = a2sum - asum * asum / count
+                if ssr < 0:
+                    yi = 0
+                else:
+                    yi = sqrt(ssr / (count - ddof))
+            else:
+                yi = NAN
+            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+        PyArray_ITER_NEXT(ita)
+        PyArray_ITER_NEXT(ity)
+    return y
+
+
 # mover ---------------------------------------------------------------------
 
 ctypedef ndarray (*move_t)(int, int, np.flatiter, Py_ssize_t, Py_ssize_t, int,

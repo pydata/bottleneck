@@ -154,7 +154,7 @@ def test_move_nanmean():
     "Test move_nanmean."
     yield unit_maker, bn.move_nanmean, bn.slow.move_nanmean, (2,)
 
-"""
+
 def test_move_std():
     "Test move_std."
     yield unit_maker, bn.move_std, bn.slow.move_std, (2,)
@@ -165,6 +165,7 @@ def test_move_nanstd():
     yield unit_maker, bn.move_nanstd, bn.slow.move_nanstd, (2,)
 
 
+"""
 def test_move_min():
     "Test move_min."
     yield unit_maker, bn.move_min, bn.slow.move_min, (2,)

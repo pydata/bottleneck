@@ -91,12 +91,6 @@ def test_move_nanmean():
     yield unit_maker, bn.move_nanmean, bn.slow.move_nanmean, 5
 
 
-"""
-def test_move_median():
-    "Test move_median."
-    yield unit_maker, bn.move_median, bn.slow.move_median, 5, False
-
-
 def test_move_std():
     "Test move_std."
     yield unit_maker, bn.move_std, bn.slow.move_std, 5
@@ -105,6 +99,12 @@ def test_move_std():
 def test_move_nanstd():
     "Test move_nanstd."
     yield unit_maker, bn.move_nanstd, bn.slow.move_nanstd, 5
+
+
+"""
+def test_move_median():
+    "Test move_median."
+    yield unit_maker, bn.move_median, bn.slow.move_median, 5, False
 
 
 def test_move_min():
