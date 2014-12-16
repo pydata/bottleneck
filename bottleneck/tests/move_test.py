@@ -125,6 +125,8 @@ def test_move_nanmin():
 def test_move_nanmax():
     "Test move_nanmax."
     yield unit_maker, bn.move_nanmax, bn.slow.move_nanmax, 5
+"""
+
 
 # ----------------------------------------------------------------------------
 # Regression test for square roots of negative numbers
@@ -170,4 +172,3 @@ def test_move_nanstd_sqrt():
     a3 = np.array([[a, a], [a, a]])
     b = bn.move_nanstd(a3, window=3, axis=2)
     assert_true(np.isfinite(b[:, :, 2:]).all(), err_msg % 3)
-"""
