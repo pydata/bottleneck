@@ -20,7 +20,7 @@ except:
     pass
 try:
     from .move import (move_sum, move_nansum, move_mean, move_nanmean,
-                       move_std, move_nanstd)
+                       move_std, move_nanstd, move_median)
 except:
     pass
 

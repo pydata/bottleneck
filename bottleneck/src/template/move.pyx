@@ -551,6 +551,79 @@ cdef ndarray move_nanstd_DTYPE0(int window, int axis, np.flatiter ita,
     return y
 
 
+# move_median ---------------------------------------------------------------
+
+cdef extern from "csrc/move_median.c":
+    struct _mm_node:
+        np.npy_uint32   small
+        np.npy_uint64   idx
+        np.npy_float64  val
+        _mm_node         *next
+    ctypedef _mm_node mm_node
+    struct _mm_handle:
+        int              odd
+        np.npy_uint64    n_s
+        np.npy_uint64    n_l
+        mm_node          **s_heap
+        mm_node          **l_heap
+        mm_node          **nodes
+        mm_node           *node_data
+        mm_node           *first
+        mm_node           *last
+        np.npy_uint64 s_first_leaf
+        np.npy_uint64 l_first_leaf
+    ctypedef _mm_handle mm_handle
+    mm_handle *mm_new(np.npy_uint64 size) nogil
+    void mm_insert_init(mm_handle *mm, np.npy_float64 val) nogil
+    void mm_update(mm_handle *mm, np.npy_float64 val) nogil
+    np.npy_float64 mm_get_median(mm_handle *mm) nogil
+    void mm_free(mm_handle *mm) nogil
+
+
+def move_median(arr, int window, int axis=-1):
+    try:
+        return mover(arr, window, axis,
+                     move_median_float64,
+                     move_median_float32,
+                     move_median_int64,
+                     move_median_int32)
+    except TypeError:
+        return slow.move_median(arr, window, axis)
+
+
+@cython.cdivision(True)
+cdef ndarray move_median_DTYPE0(int window, int axis, np.flatiter ita,
+                                Py_ssize_t stride, Py_ssize_t length,
+                                int a_ndim, np.npy_intp* y_dims,
+                                int ignore):
+    # bn.dtypes = [['float64', 'float64'], ['float32', 'float32'], ['int64', 'float64'], ['int32', 'float64']]
+    cdef mm_handle *mm
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai
+    cdef DTYPE1_t yi
+    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef Py_ssize_t ystride = y.strides[axis]
+    mm = mm_new(window)
+    while PyArray_ITER_NOTDONE(ita):
+        for i in range(window - 1):
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+        for i in range(window):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            mm_insert_init(mm, ai)
+        yi = mm_get_median(mm)
+        (<DTYPE1_t*>((<char*>pid(ity)) + (window - 1)*ystride))[0] = yi
+        for i in range(window, length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            mm_update(mm, ai)
+            yi = mm_get_median(mm)
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+        mm.n_s = 0
+        mm.n_l = 0
+        mm_free(mm)
+    return y
+
+
 # mover ---------------------------------------------------------------------
 
 ctypedef ndarray (*move_t)(int, int, np.flatiter, Py_ssize_t, Py_ssize_t, int,
