@@ -2326,8 +2326,8 @@ static PyArrayObject *__pyx_f_4move_move_sum_float32(CYTHON_UNUSED PyArrayObject
  *     return y
  * 
  * cdef ndarray move_sum_int64(ndarray a, int window, int axis, np.flatiter ita,             # <<<<<<<<<<<<<<
- *                               Py_ssize_t stride, Py_ssize_t length,
- *                               int a_ndim, np.npy_intp* y_dims,
+ *                              Py_ssize_t stride, Py_ssize_t length,
+ *                              int a_ndim, np.npy_intp* y_dims,
  */
 
 static PyArrayObject *__pyx_f_4move_move_sum_int64(CYTHON_UNUSED PyArrayObject *__pyx_v_a, int __pyx_v_window, int __pyx_v_axis, PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, int __pyx_v_a_ndim, npy_intp *__pyx_v_y_dims, CYTHON_UNUSED int __pyx_v_int_input) {
@@ -2591,8 +2591,8 @@ static PyArrayObject *__pyx_f_4move_move_sum_int64(CYTHON_UNUSED PyArrayObject *
  *     return y
  * 
  * cdef ndarray move_sum_int64(ndarray a, int window, int axis, np.flatiter ita,             # <<<<<<<<<<<<<<
- *                               Py_ssize_t stride, Py_ssize_t length,
- *                               int a_ndim, np.npy_intp* y_dims,
+ *                              Py_ssize_t stride, Py_ssize_t length,
+ *                              int a_ndim, np.npy_intp* y_dims,
  */
 
   /* function exit code */
@@ -2612,8 +2612,8 @@ static PyArrayObject *__pyx_f_4move_move_sum_int64(CYTHON_UNUSED PyArrayObject *
  *     return y
  * 
  * cdef ndarray move_sum_int32(ndarray a, int window, int axis, np.flatiter ita,             # <<<<<<<<<<<<<<
- *                               Py_ssize_t stride, Py_ssize_t length,
- *                               int a_ndim, np.npy_intp* y_dims,
+ *                              Py_ssize_t stride, Py_ssize_t length,
+ *                              int a_ndim, np.npy_intp* y_dims,
  */
 
 static PyArrayObject *__pyx_f_4move_move_sum_int32(CYTHON_UNUSED PyArrayObject *__pyx_v_a, int __pyx_v_window, int __pyx_v_axis, PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, int __pyx_v_a_ndim, npy_intp *__pyx_v_y_dims, CYTHON_UNUSED int __pyx_v_int_input) {
@@ -2877,8 +2877,8 @@ static PyArrayObject *__pyx_f_4move_move_sum_int32(CYTHON_UNUSED PyArrayObject *
  *     return y
  * 
  * cdef ndarray move_sum_int32(ndarray a, int window, int axis, np.flatiter ita,             # <<<<<<<<<<<<<<
- *                               Py_ssize_t stride, Py_ssize_t length,
- *                               int a_ndim, np.npy_intp* y_dims,
+ *                              Py_ssize_t stride, Py_ssize_t length,
+ *                              int a_ndim, np.npy_intp* y_dims,
  */
 
   /* function exit code */
@@ -3162,8 +3162,8 @@ static PyObject *__pyx_pf_4move_2move_nansum(CYTHON_UNUSED PyObject *__pyx_self,
  * 
  * 
  * cdef ndarray move_nansum_float64(ndarray a, int window, int axis, np.flatiter ita,             # <<<<<<<<<<<<<<
- *                                  Py_ssize_t stride, Py_ssize_t length,
- *                                  int a_ndim, np.npy_intp* y_dims,
+ *                                 Py_ssize_t stride, Py_ssize_t length,
+ *                                 int a_ndim, np.npy_intp* y_dims,
  */
 
 static PyArrayObject *__pyx_f_4move_move_nansum_float64(CYTHON_UNUSED PyArrayObject *__pyx_v_a, int __pyx_v_window, int __pyx_v_axis, PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, int __pyx_v_a_ndim, npy_intp *__pyx_v_y_dims, CYTHON_UNUSED int __pyx_v_int_input) {
@@ -3573,8 +3573,8 @@ static PyArrayObject *__pyx_f_4move_move_nansum_float64(CYTHON_UNUSED PyArrayObj
  * 
  * 
  * cdef ndarray move_nansum_float64(ndarray a, int window, int axis, np.flatiter ita,             # <<<<<<<<<<<<<<
- *                                  Py_ssize_t stride, Py_ssize_t length,
- *                                  int a_ndim, np.npy_intp* y_dims,
+ *                                 Py_ssize_t stride, Py_ssize_t length,
+ *                                 int a_ndim, np.npy_intp* y_dims,
  */
 
   /* function exit code */
@@ -3594,8 +3594,8 @@ static PyArrayObject *__pyx_f_4move_move_nansum_float64(CYTHON_UNUSED PyArrayObj
  *     return y
  * 
  * cdef ndarray move_nansum_float32(ndarray a, int window, int axis, np.flatiter ita,             # <<<<<<<<<<<<<<
- *                                  Py_ssize_t stride, Py_ssize_t length,
- *                                  int a_ndim, np.npy_intp* y_dims,
+ *                                 Py_ssize_t stride, Py_ssize_t length,
+ *                                 int a_ndim, np.npy_intp* y_dims,
  */
 
 static PyArrayObject *__pyx_f_4move_move_nansum_float32(CYTHON_UNUSED PyArrayObject *__pyx_v_a, int __pyx_v_window, int __pyx_v_axis, PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, int __pyx_v_a_ndim, npy_intp *__pyx_v_y_dims, CYTHON_UNUSED int __pyx_v_int_input) {
@@ -4005,8 +4005,8 @@ static PyArrayObject *__pyx_f_4move_move_nansum_float32(CYTHON_UNUSED PyArrayObj
  *     return y
  * 
  * cdef ndarray move_nansum_float32(ndarray a, int window, int axis, np.flatiter ita,             # <<<<<<<<<<<<<<
- *                                  Py_ssize_t stride, Py_ssize_t length,
- *                                  int a_ndim, np.npy_intp* y_dims,
+ *                                 Py_ssize_t stride, Py_ssize_t length,
+ *                                 int a_ndim, np.npy_intp* y_dims,
  */
 
   /* function exit code */
