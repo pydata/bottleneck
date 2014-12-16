@@ -20,6 +20,7 @@ from numpy cimport PyArray_IterNew
 from numpy cimport PyArray_TYPE
 from numpy cimport PyArray_NDIM
 
+from numpy cimport PyArray_Copy
 from numpy cimport PyArray_EMPTY
 from numpy cimport ndarray
 from numpy cimport import_array
@@ -55,7 +56,7 @@ def move_sum(arr, int window, int axis=-1):
         return slow.move_sum(arr, window, axis)
 
 
-cdef ndarray move_sum_DTYPE0(int window, int axis, np.flatiter ita,
+cdef ndarray move_sum_DTYPE0(ndarray a, int window, int axis, np.flatiter ita,
                              Py_ssize_t stride, Py_ssize_t length,
                              int a_ndim, np.npy_intp* y_dims,
                              int int_input):
@@ -103,10 +104,10 @@ cdef ndarray move_sum_DTYPE0(int window, int axis, np.flatiter ita,
     return y
 
 
-cdef ndarray move_sum_DTYPE0(int window, int axis, np.flatiter ita,
-                              Py_ssize_t stride, Py_ssize_t length,
-                              int a_ndim, np.npy_intp* y_dims,
-                              int int_input):
+cdef ndarray move_sum_DTYPE0(ndarray a, int window, int axis, np.flatiter ita,
+                             Py_ssize_t stride, Py_ssize_t length,
+                             int a_ndim, np.npy_intp* y_dims,
+                             int int_input):
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef Py_ssize_t i
     cdef DTYPE1_t asum, aold, yi
@@ -150,10 +151,10 @@ def move_nansum(arr, int window, int axis=-1):
         return slow.move_nansum(arr, window, axis)
 
 
-cdef ndarray move_nansum_DTYPE0(int window, int axis, np.flatiter ita,
-                                 Py_ssize_t stride, Py_ssize_t length,
-                                 int a_ndim, np.npy_intp* y_dims,
-                                 int int_input):
+cdef ndarray move_nansum_DTYPE0(ndarray a, int window, int axis, np.flatiter ita,
+                                Py_ssize_t stride, Py_ssize_t length,
+                                int a_ndim, np.npy_intp* y_dims,
+                                int int_input):
     # bn.dtypes = [['float64'], ['float32']]
     cdef Py_ssize_t i, count
     cdef DTYPE0_t asum, ai, aold, yi
@@ -212,7 +213,7 @@ def move_mean(arr, int window, int axis=-1):
 
 
 @cython.cdivision(True)
-cdef ndarray move_mean_DTYPE0(int window, int axis, np.flatiter ita,
+cdef ndarray move_mean_DTYPE0(ndarray a, int window, int axis, np.flatiter ita,
                               Py_ssize_t stride, Py_ssize_t length,
                               int a_ndim, np.npy_intp* y_dims,
                               int int_input):
@@ -261,7 +262,7 @@ cdef ndarray move_mean_DTYPE0(int window, int axis, np.flatiter ita,
 
 
 @cython.cdivision(True)
-cdef ndarray move_mean_DTYPE0(int window, int axis, np.flatiter ita,
+cdef ndarray move_mean_DTYPE0(ndarray a, int window, int axis, np.flatiter ita,
                               Py_ssize_t stride, Py_ssize_t length,
                               int a_ndim, np.npy_intp* y_dims,
                               int int_input):
@@ -309,7 +310,7 @@ def move_nanmean(arr, int window, int axis=-1):
 
 
 @cython.cdivision(True)
-cdef ndarray move_nanmean_DTYPE0(int window, int axis, np.flatiter ita,
+cdef ndarray move_nanmean_DTYPE0(ndarray a, int window, int axis, np.flatiter ita,
                                  Py_ssize_t stride, Py_ssize_t length,
                                  int a_ndim, np.npy_intp* y_dims,
                                  int int_input):
@@ -372,7 +373,7 @@ def move_std(arr, int window, int axis=-1, int ddof=0):
 
 
 @cython.cdivision(True)
-cdef ndarray move_std_DTYPE0(int window, int axis, np.flatiter ita,
+cdef ndarray move_std_DTYPE0(ndarray a, int window, int axis, np.flatiter ita,
                              Py_ssize_t stride, Py_ssize_t length,
                              int a_ndim, np.npy_intp* y_dims,
                              int ddof):
@@ -434,7 +435,7 @@ cdef ndarray move_std_DTYPE0(int window, int axis, np.flatiter ita,
 
 
 @cython.cdivision(True)
-cdef ndarray move_std_DTYPE0(int window, int axis, np.flatiter ita,
+cdef ndarray move_std_DTYPE0(ndarray a, int window, int axis, np.flatiter ita,
                              Py_ssize_t stride, Py_ssize_t length,
                              int a_ndim, np.npy_intp* y_dims,
                              int ddof):
@@ -490,7 +491,7 @@ def move_nanstd(arr, int window, int axis=-1, int ddof=0):
 
 
 @cython.cdivision(True)
-cdef ndarray move_nanstd_DTYPE0(int window, int axis, np.flatiter ita,
+cdef ndarray move_nanstd_DTYPE0(ndarray a, int window, int axis, np.flatiter ita,
                                 Py_ssize_t stride, Py_ssize_t length,
                                 int a_ndim, np.npy_intp* y_dims,
                                 int ddof):
@@ -592,7 +593,7 @@ def move_median(arr, int window, int axis=-1):
 
 
 @cython.cdivision(True)
-cdef ndarray move_median_DTYPE0(int window, int axis, np.flatiter ita,
+cdef ndarray move_median_DTYPE0(ndarray a, int window, int axis, np.flatiter ita,
                                 Py_ssize_t stride, Py_ssize_t length,
                                 int a_ndim, np.npy_intp* y_dims,
                                 int ignore):
@@ -601,6 +602,15 @@ cdef ndarray move_median_DTYPE0(int window, int axis, np.flatiter ita,
     cdef Py_ssize_t i
     cdef DTYPE0_t ai
     cdef DTYPE1_t yi
+    if window == 1:
+        if DTYPE0 == 'float64':
+            return PyArray_Copy(a)
+        if DTYPE0 == 'float32':
+            return PyArray_Copy(a)
+        if DTYPE0 == 'int64':
+            return a.astype(np.float64)
+        if DTYPE0 == 'int32':
+            return a.astype(np.float64)
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
@@ -620,16 +630,16 @@ cdef ndarray move_median_DTYPE0(int window, int axis, np.flatiter ita,
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
         mm.n_s = 0
         mm.n_l = 0
-        mm_free(mm)
         PyArray_ITER_NEXT(ita)
         PyArray_ITER_NEXT(ity)
+    mm_free(mm)
     return y
 
 
 # mover ---------------------------------------------------------------------
 
-ctypedef ndarray (*move_t)(int, int, np.flatiter, Py_ssize_t, Py_ssize_t, int,
-                           np.npy_intp*, int)
+ctypedef ndarray (*move_t)(ndarray, int, int, np.flatiter, Py_ssize_t,
+                           Py_ssize_t, int, np.npy_intp*, int)
 
 
 cdef ndarray mover(arr, int window, int axis,
@@ -678,16 +688,16 @@ cdef ndarray mover(arr, int window, int axis,
         raise ValueError(msg % (window, length))
 
     if dtype == NPY_float64:
-        y = move_float64(window, axis, ita, stride, length, a_ndim, y_dims,
+        y = move_float64(a, window, axis, ita, stride, length, a_ndim, y_dims,
                          int_input)
     elif dtype == NPY_float32:
-        y = move_float32(window, axis, ita, stride, length, a_ndim, y_dims,
+        y = move_float32(a, window, axis, ita, stride, length, a_ndim, y_dims,
                          int_input)
     elif dtype == NPY_int64:
-        y = move_int64(window, axis, ita, stride, length, a_ndim, y_dims,
+        y = move_int64(a, window, axis, ita, stride, length, a_ndim, y_dims,
                        int_input)
     elif dtype == NPY_int32:
-        y = move_int32(window, axis, ita, stride, length, a_ndim, y_dims,
+        y = move_int32(a, window, axis, ita, stride, length, a_ndim, y_dims,
                        int_input)
     else:
         raise TypeError("Unsupported dtype (%s)." % a.dtype)

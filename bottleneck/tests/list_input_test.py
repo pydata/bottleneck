@@ -165,6 +165,11 @@ def test_move_nanstd():
     yield unit_maker, bn.move_nanstd, bn.slow.move_nanstd, (2,)
 
 
+def test_move_median():
+    "Test move_median."
+    yield unit_maker, bn.move_median, bn.slow.move_median, (2,)
+
+
 """
 def test_move_min():
     "Test move_min."
