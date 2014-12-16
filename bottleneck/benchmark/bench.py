@@ -199,6 +199,24 @@ def benchsuite(shapes, dtype, axis, nans):
         if axis != 'None':
             suite.append(run)
 
+    # move_median
+    run = {}
+    func = 'move_median'
+    run['name'] = func
+    run['ref'] = "for loop with np.median"
+    run['scipy_required'] = False
+    code = ["bn_func(a, window=w, axis=AXIS)",
+            "sl_func(a, window=w, axis=AXIS, method='loop')"]
+    run['statements'] = code
+    setup = """
+        from bottleneck.slow.move import %s as sl_func
+        from bottleneck import %s as bn_func
+        w = a.shape[AXIS] // 5
+    """ % (func, func)
+    run['setups'] = getsetups(setup, shapes, nans)
+    if axis != 'None':
+        suite.append(run)
+
     # runs
     # -----------------------------------------------------------------------
     # does not yet run
@@ -224,18 +242,6 @@ def benchsuite(shapes, dtype, axis, nans):
     run['statements'] = [code, "scipy_nanmedian(a, axis=AXIS)"]
     setup = """
         from bottleneck.slow.func import scipy_nanmedian
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    #suite.append(run)
-
-    # nanstd
-    run = {}
-    run['name'] = "nanstd"
-    run['ref'] = "np.nanstd"
-    run['scipy_required'] = False
-    code = "bn.nanstd(a, axis=AXIS)"
-    run['statements'] = [code, "np.nanstd(a, axis=AXIS)"]
-    setup = """
     """
     run['setups'] = getsetups(setup, shapes, nans)
     #suite.append(run)
@@ -289,74 +295,6 @@ def benchsuite(shapes, dtype, axis, nans):
     """
     run['setups'] = getsetups(setup, shapes, nans)
     #suite.append(run)
-
-    # move_sum
-    run = {}
-    run['name'] = "move_sum"
-    run['ref'] = "sp.ndimage.convolve1d based, "
-    run['ref'] += "window=a.shape[%s] // 5" % axis
-    run['scipy_required'] = True
-    code = "bn.move_sum(a, window=w, axis=AXIS)"
-    run['statements'] = [code, "scipy_move_sum(a, window=w, axis=AXIS)"]
-    setup = """
-        from bottleneck.slow.move import move_sum as scipy_move_sum
-        w = a.shape[AXIS] // 5
-        ignore = bn.slow.move_sum(a, window=w, axis=AXIS, method='filter')
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    if axis != 'None':
-        pass#suite.append(run)
-
-    # move_nansum
-    run = {}
-    run['name'] = "move_nansum"
-    run['ref'] = "sp.ndimage.convolve1d based, "
-    run['ref'] += "window=a.shape[%s] // 5" % axis
-    run['scipy_required'] = True
-    code = "bn.move_nansum(a, window=w, axis=AXIS)"
-    run['statements'] = [code, "scipy_move_nansum(a, window=w, axis=AXIS)"]
-    setup = """
-        from bottleneck.slow.move import move_nansum as scipy_move_nansum
-        w = a.shape[AXIS] // 5
-        ignore = bn.slow.move_nansum(a, window=w, axis=AXIS, method='filter')
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    if axis != 'None':
-        pass#suite.append(run)
-
-    # move_std
-    run = {}
-    run['name'] = "move_std"
-    run['ref'] = "sp.ndimage.convolve1d based, "
-    run['ref'] += "window=a.shape[%s] // 5" % axis
-    run['scipy_required'] = True
-    code = "bn.move_std(a, window=w, axis=AXIS)"
-    run['statements'] = [code, "scipy_move_std(a, window=w, axis=AXIS)"]
-    setup = """
-        from bottleneck.slow.move import move_std as scipy_move_std
-        w = a.shape[AXIS] // 5
-        ignore = bn.slow.move_std(a, window=w, axis=AXIS, method='filter')
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    if axis != 'None':
-        pass#suite.append(run)
-
-    # move_nanstd
-    run = {}
-    run['name'] = "move_nanstd"
-    run['ref'] = "sp.ndimage.convolve1d based, "
-    run['ref'] += "window=a.shape[%s] // 5" % axis
-    run['scipy_required'] = True
-    code = "bn.move_nanstd(a, window=w, axis=AXIS)"
-    run['statements'] = [code, "scipy_move_nanstd(a, window=w, axis=AXIS)"]
-    setup = """
-        from bottleneck.slow.move import move_nanstd as scipy_move_nanstd
-        w = a.shape[AXIS] // 5
-        ignore = bn.slow.move_nanstd(a, window=w, axis=AXIS, method='filter')
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    if axis != 'None':
-        pass#suite.append(run)
 
     # move_max
     run = {}
