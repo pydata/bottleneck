@@ -621,6 +621,8 @@ cdef ndarray move_median_DTYPE0(int window, int axis, np.flatiter ita,
         mm.n_s = 0
         mm.n_l = 0
         mm_free(mm)
+        PyArray_ITER_NEXT(ita)
+        PyArray_ITER_NEXT(ity)
     return y
 
 
