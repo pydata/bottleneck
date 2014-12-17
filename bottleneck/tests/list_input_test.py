@@ -180,7 +180,6 @@ def test_move_median():
     yield unit_maker, bn.move_median, bn.slow.move_median, (2,)
 
 
-"""
 def test_move_min():
     "Test move_min."
     yield unit_maker, bn.move_min, bn.slow.move_min, (2,)
@@ -189,5 +188,3 @@ def test_move_min():
 def test_move_nanmin():
     "Test move_nanmin."
     yield unit_maker, bn.move_nanmin, bn.slow.move_nanmin, (2,)
-
-"""

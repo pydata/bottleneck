@@ -75,6 +75,8 @@ def test_modification():
              bn.move_nanmean,
              bn.move_std,
              bn.move_nanstd,
+             bn.move_min,
+             bn.move_nanmin,
              bn.move_max,
              bn.move_nanmax,
              bn.move_median,
@@ -89,8 +91,6 @@ def test_modification():
              bn.ss,
              bn.anynan,
              bn.allnan,
-             bn.move_min,
-             bn.move_nanmin,
              ]
     """
     for func in funcs:

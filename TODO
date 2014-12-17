@@ -46,7 +46,7 @@ Move
     (arr, int window, int axis)
 
         output dtype = input dtype
-            sum, nansum, min*, max, nanmin*, nanmax
+            sum, nansum, min, max, nanmin, nanmax
 
         int --> float64
             mean, nanmean, median

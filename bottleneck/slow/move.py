@@ -847,7 +847,10 @@ def move_nanmin_filter(arr, window, axis=-1):
         raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
         raise ValueError("`window` is too long.")
-    arr = arr.astype(float)
+    if issubclass(arr.dtype.type, np.inexact):
+        arr = arr.copy()
+    else:
+        arr = arr.astype(np.float64) 
     nrr = np.isnan(arr)
     arr[nrr] = np.inf
     x0 = (window - 1) // 2
@@ -871,7 +874,10 @@ def move_nanmin_loop(arr, window, axis=-1):
         raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
         raise ValueError("`window` is too long.")
-    arr = arr.astype(float)
+    if issubclass(arr.dtype.type, np.inexact):
+        arr = arr.copy()
+    else:
+        arr = arr.astype(np.float64) 
     nrr = np.isnan(arr)
     arr[nrr] = np.inf
     y = move_func_loop(np.min, arr, window, axis=axis)
@@ -889,7 +895,10 @@ def move_nanmin_strides(arr, window, axis=-1):
         raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
         raise ValueError("`window` is too long.")
-    arr = arr.astype(float)
+    if issubclass(arr.dtype.type, np.inexact):
+        arr = arr.copy()
+    else:
+        arr = arr.astype(np.float64) 
     nrr = np.isnan(arr)
     arr[nrr] = np.inf
     y = move_func_strides(np.min, arr, window, axis=axis)
