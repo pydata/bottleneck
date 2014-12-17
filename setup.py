@@ -96,6 +96,10 @@ if not(len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or \
     metadata['ext_modules'] = \
                               [Extension("reduce", sources=["bottleneck/src/auto_pyx/reduce.c"],
                                          include_dirs=[np.get_include()]),
+                               Extension("nonreduce", sources=["bottleneck/src/auto_pyx/nonreduce.c"],
+                                         include_dirs=[np.get_include()]),
+                               Extension("nonreduce_axis", sources=["bottleneck/src/auto_pyx/nonreduce_axis.c"],
+                                         include_dirs=[np.get_include()]),
                                Extension("move", sources=["bottleneck/src/auto_pyx/move.c"],
                                          extra_compile_args=["-std=gnu89"],
                                          include_dirs=[np.get_include()])]
