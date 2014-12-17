@@ -1033,7 +1033,10 @@ def move_nanmax_filter(arr, window, axis=-1):
         raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
         raise ValueError("`window` is too long.")
-    arr = arr.astype(float)
+    if issubclass(arr.dtype.type, np.inexact):
+        arr = arr.copy()
+    else:
+        arr = arr.astype(np.float64) 
     nrr = np.isnan(arr)
     arr[nrr] = -np.inf
     x0 = (window - 1) // 2
@@ -1057,7 +1060,10 @@ def move_nanmax_loop(arr, window, axis=-1):
         raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
         raise ValueError("`window` is too long.")
-    arr = arr.astype(float)
+    if issubclass(arr.dtype.type, np.inexact):
+        arr = arr.copy()
+    else:
+        arr = arr.astype(np.float64) 
     nrr = np.isnan(arr)
     arr[nrr] = -np.inf
     y = move_func_loop(np.max, arr, window, axis=axis)
@@ -1075,7 +1081,10 @@ def move_nanmax_strides(arr, window, axis=-1):
         raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
         raise ValueError("`window` is too long.")
-    arr = arr.astype(float)
+    if issubclass(arr.dtype.type, np.inexact):
+        arr = arr.copy()
+    else:
+        arr = arr.astype(np.float64) 
     nrr = np.isnan(arr)
     arr[nrr] = -np.inf
     y = move_func_strides(np.max, arr, window, axis=axis)
@@ -1195,7 +1204,10 @@ def move_func_loop(func, arr, window, axis=-1, **kwargs):
         raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
         raise ValueError("`window` is too long.")
-    y = np.empty(arr.shape)
+    if issubclass(arr.dtype.type, np.inexact):
+        y = np.empty_like(arr)
+    else:
+        y = np.empty(arr.shape)
     y.fill(np.nan)
     idx1 = [slice(None)] * arr.ndim
     idx2 = list(idx1)
@@ -1230,7 +1242,10 @@ def move_func_strides(func, arr, window, axis=-1, **kwargs):
     z = np.lib.stride_tricks.as_strided(arr, shape=shape, strides=strides)
     y = func(z, axis=(axis + 1), **kwargs)
 
-    ynan = np.empty(arrshape0)
+    if issubclass(arr.dtype.type, np.inexact):
+        ynan = np.empty(arrshape0, dtype=arr.dtype)
+    else:
+        ynan = np.empty(arrshape0)
     ynan.fill(np.nan)
     index = [slice(None)] * ndim
     index[axis] = slice(window - 1, None)

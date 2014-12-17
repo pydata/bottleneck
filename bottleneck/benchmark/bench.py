@@ -199,6 +199,25 @@ def benchsuite(shapes, dtype, axis, nans):
         if axis != 'None':
             suite.append(run)
 
+    funcs = ['move_max', 'move_nanmax']
+    for func in funcs:
+        run = {}
+        run['name'] = func
+        run['ref'] = "sp.ndimage.maximum_filter1d based, "
+        run['ref'] += "window=a.shape[%s] // 5" % axis
+        run['scipy_required'] = True
+        code = ["bn_func(a, window=w, axis=AXIS)",
+                "sp_func(a, window=w, axis=AXIS, method='filter')"]
+        run['statements'] = code
+        setup = """
+            from bottleneck.slow.move import %s as sp_func
+            from bottleneck import %s as bn_func
+            w = a.shape[AXIS] // 5
+        """ % (func, func)
+        run['setups'] = getsetups(setup, shapes, nans)
+        if axis != 'None':
+            suite.append(run)
+
     # move_median
     run = {}
     func = 'move_median'
@@ -295,40 +314,6 @@ def benchsuite(shapes, dtype, axis, nans):
     """
     run['setups'] = getsetups(setup, shapes, nans)
     #suite.append(run)
-
-    # move_max
-    run = {}
-    run['name'] = "move_max"
-    run['ref'] = "sp.ndimage.maximum_filter1d based, "
-    run['ref'] += "window=a.shape[%s] // 5" % axis
-    run['scipy_required'] = True
-    code = "bn.move_max(a, window=w, axis=AXIS)"
-    run['statements'] = [code, "scipy_move_max(a, window=w, axis=AXIS)"]
-    setup = """
-        from bottleneck.slow.move import move_max as scipy_move_max
-        w = a.shape[AXIS] // 5
-        ignore = bn.slow.move_max(a, window=w, axis=AXIS, method='filter')
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    if axis != 'None':
-        pass#suite.append(run)
-
-    # move_nanmax
-    run = {}
-    run['name'] = "move_nanmax"
-    run['ref'] = "sp.ndimage.maximum_filter1d based, "
-    run['ref'] += "window=a.shape[%s] // 5" % axis
-    run['scipy_required'] = True
-    code = "bn.move_nanmax(a, window=w, axis=AXIS)"
-    run['statements'] = [code, "scipy_move_nanmax(a, window=w, axis=AXIS)"]
-    setup = """
-        from bottleneck.slow.move import move_nanmax as scipy_move_nanmax
-        w = a.shape[AXIS] // 5
-        ignore = bn.slow.move_nanmax(a, window=w, axis=AXIS, method='filter')
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    if axis != 'None':
-        pass#suite.append(run)
 
     # Strip leading spaces from setup code
     for i, run in enumerate(suite):

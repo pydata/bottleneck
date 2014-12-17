@@ -44,22 +44,24 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
         Speed is NumPy or SciPy time divided by Bottleneck time
         NaN means approx one-third NaNs; float64 and axis=-1 are used
 
-                     no NaN     no NaN      NaN        NaN    
+                     no NaN     no NaN      NaN        NaN
                        (10,)   (1000,1000)   (10,)   (1000,1000)
-        nansum         32.4        4.1       32.6        9.4
-        nanmean       105.4        5.2      105.7       10.6
-        nanstd        191.9        4.2      192.9        8.6
-        nanmax         23.8        1.1       23.9        2.9
-        partsort        3.3        2.8        3.3        3.5
-        argpartsort     0.9        2.5        0.9        1.7
-        replace         9.6        1.2        9.5        1.2
-        move_sum       30.4       67.5       33.5       68.4
-        move_nansum    70.1      136.7       73.6      138.6
-        move_mean      29.5       31.8       29.9       68.6
-        move_nanmean   79.6       65.6       79.5       66.0
-        move_std       58.2       22.1       63.7      135.1
-        move_nanstd   104.3       34.5      107.4       34.8
-        move_median   309.9       34.1      310.0       22.0
+        nansum         39.8        4.1       40.2        9.3
+        nanmean       152.3        5.3      159.6       10.4
+        nanstd        273.6        4.2      258.4        8.4
+        nanmax         35.4        1.1       35.1        2.9
+        partsort        3.9        2.9        4.0        3.5
+        argpartsort     0.9        2.4        1.0        1.7
+        replace        11.0        1.3       10.9        1.3
+        move_sum       37.6       66.5       35.0       67.7
+        move_nansum    71.9      135.3       74.7      137.5
+        move_mean      31.9       31.8       32.0       68.1
+        move_nanmean   76.1       65.6       79.0       65.9
+        move_std       57.0       22.1       60.5      132.5
+        move_nanstd    99.0       34.6      100.8       34.9
+        move_max       14.5       20.2       14.5       60.6
+        move_nanmax    49.3       37.8       51.4      105.4
+        move_median   358.9       34.4      363.0       22.2
 
     Reference functions:
     nansum         np.nansum
@@ -75,6 +77,8 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
     move_nanmean   sp.ndimage.convolve1d based, window=a.shape[-1] // 5
     move_std       sp.ndimage.convolve1d based, window=a.shape[-1] // 5
     move_nanstd    sp.ndimage.convolve1d based, window=a.shape[-1] // 5
+    move_max       sp.ndimage.maximum_filter1d based, window=a.shape[-1] // 5
+    move_nanmax    sp.ndimage.maximum_filter1d based, window=a.shape[-1] // 5
     move_median    for loop with np.median
 
 Only arrays with data type (dtype) int32, int64, float32, and float64 are
@@ -138,6 +142,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 56 tests in 36.712s
+    Ran 62 tests in 43.712s
     OK
-    <nose.result.TextTestResult run=56 errors=0 failures=0>
+    <nose.result.TextTestResult run=62 errors=0 failures=0>
