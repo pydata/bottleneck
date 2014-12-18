@@ -139,7 +139,7 @@ def test_move_sum():
     "Test move_sum."
     yield unit_maker, bn.move_sum, bn.slow.move_sum, (2,)
 
-
+"""
 def test_move_nansum():
     "Test move_nansum."
     yield unit_maker, bn.move_nansum, bn.slow.move_nansum, (2,)
@@ -188,3 +188,4 @@ def test_move_min():
 def test_move_nanmin():
     "Test move_nanmin."
     yield unit_maker, bn.move_nanmin, bn.slow.move_nanmin, (2,)
+"""

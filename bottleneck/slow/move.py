@@ -11,7 +11,7 @@ convolve1d = None
 minimum_filter1d = None
 maximum_filter1d = None
 
-__all__ = ['move_sum', 'move_nansum',
+__all__ = ['move_sum',
            'move_mean', 'move_nanmean',
            'move_std', 'move_nanstd',
            'move_min', 'move_nanmin',
@@ -21,7 +21,7 @@ __all__ = ['move_sum', 'move_nansum',
 # SUM -----------------------------------------------------------------------
 
 
-def move_sum(arr, window, axis=-1, method='loop'):
+def move_sum(arr, window, nmin=-1, axis=-1):
     """
     Slow move_sum for unaccelerated ndim/dtype combinations.
 
@@ -34,13 +34,6 @@ def move_sum(arr, window, axis=-1, method='loop'):
     axis : int, optional
         The axis over which to perform the moving sum. By default the moving
         sum is taken over the last axis (-1).
-    method : str, optional
-        The following moving window methods are available:
-            ==========  =====================================
-            'filter'    scipy.ndimage.convolve1d
-            'strides'   strides tricks
-            'loop'      brute force python loop (default)
-            ==========  =====================================
 
     Returns
     -------
@@ -55,197 +48,24 @@ def move_sum(arr, window, axis=-1, method='loop'):
        array([ NaN,   3.,   5.,   7.])
 
     """
-    arr = np.array(arr, copy=False)
-    if method == 'filter':
-        y = move_sum_filter(arr, window, axis=axis)
-    elif method == 'strides':
-        y = move_func_strides(np.sum, arr, window, axis=axis)
-    elif method == 'loop':
-        y = move_func_loop(np.sum, arr, window, axis=axis)
-    else:
-        msg = "`method` must be 'filter', 'strides', or 'loop'."
-        raise ValueError(msg)
-    if y.dtype != arr.dtype:
-        if issubclass(arr.dtype.type, np.inexact):
-            y = y.astype(arr.dtype)
+    y = move_func(_nansum_default_nan, arr, window, nmin, axis=axis)
     return y
 
 
-def move_nansum(arr, window, axis=-1, method='loop'):
-    """
-    Slow move_nansum for unaccelerated ndim/dtype combinations.
-
-    Parameters
-    ----------
-    arr : array_like
-        Input array.
-    window : int
-        The number of elements in the moving window.
-    axis : int, optional
-        The axis over which to perform the moving sum. By default the moving
-        sum is taken over the last axis (-1).
-    method : str, optional
-        The following moving window methods are available:
-            ==========  =====================================
-            'filter'    scipy.ndimage.convolve1d
-            'strides'   strides tricks
-            'loop'      brute force python loop (default)
-            ==========  =====================================
-
-    Returns
-    -------
-    y : ndarray
-        The moving sum of the input array along the specified axis, ignoring
-        NaNs. (A window with all NaNs returns NaN for the window sum.) The
-        output has the same shape as the input.
-
-    Examples
-    --------
-    >>> arr = np.array([1, 2, np.nan, 4])
-    >>> bn.slow.move_nansum(arr, window=2, axis=0)
-    array([ NaN,   3.,   2.,   4.])
-
-    """
-    arr = np.array(arr, copy=False)
-    if method == 'filter':
-        y = move_nansum_filter(arr, window, axis=axis)
-    elif method == 'strides':
-        y = move_func_strides(nansum_default_nan, arr, window, axis=axis)
-    elif method == 'loop':
-        y = move_func_loop(nansum_default_nan, arr, window, axis=axis)
-    else:
-        msg = "`method` must be 'filter', 'strides', or 'loop'."
-        raise ValueError(msg)
-    if y.dtype != arr.dtype:
-        if issubclass(arr.dtype.type, np.inexact):
-            y = y.astype(arr.dtype)
-    return y
-
-
-def nansum_default_nan(arr, axis=None):
-    "All nan input returns nan instead of 0."
+def _nansum_default_nan(arr, axis=None):
+    "All nan input returns nan instead of 0. Int input converted to float64"
     a = np.nansum(arr, axis=axis)
     idx = np.isnan(arr).all(axis=axis)
     if a.ndim == 0:
         if idx:
-            a = np.nan
+            a = np.float64(np.nan)
     else:
         if issubclass(a.dtype.type, np.inexact):
             a[idx] = np.nan
+        else:
+            a = a.astype(np.float64)
     return a
 
-
-def move_sum_filter(arr, window, axis=-1):
-    """
-    Moving window sum along the specified axis using the filter method.
-
-    Parameters
-    ----------
-    arr : array_like
-        Input array.
-    window : int
-        The number of elements in the moving window.
-    axis : int, optional
-        The axis over which to perform the moving sum. By default the moving
-        sum is taken over the last axis (-1).
-
-    Returns
-    -------
-    y : ndarray
-        The moving sum of the input array along the specified axis. The output
-        has the same shape as the input.
-
-    Notes
-    -----
-    The calculation of the sums uses scipy.ndimage.convolve1d.
-
-    Examples
-    --------
-    >>> from bottleneck.slow.move import move_sum_filter
-    >>> arr = np.array([1, 2, 3, 4])
-    >>> move_sum_filter(arr, window=2, axis=0)
-    array([ NaN,   3.,   5.,   7.])
-
-    """
-    arr = np.array(arr, copy=False)
-    global convolve1d
-    if convolve1d is None:
-        try:
-            from scipy.ndimage import convolve1d
-        except ImportError:
-            raise ValueError("'filter' method requires SciPy.")
-    if axis is None:
-        raise ValueError("An `axis` value of None is not supported.")
-    if window < 1:
-        raise ValueError("`window` must be at least 1.")
-    if window > arr.shape[axis]:
-        raise ValueError("`window` is too long.")
-    arr = arr.astype(float)
-    w = np.ones(window, dtype=int)
-    x0 = (1 - window) // 2
-    convolve1d(arr, w, axis=axis, mode='constant', cval=np.nan, origin=x0,
-               output=arr)
-    return arr
-
-
-def move_nansum_filter(arr, window, axis=-1):
-    """
-    Moving sum (ignoring NaNs) along specified axis using the filter method.
-
-    Parameters
-    ----------
-    arr : array_like
-        Input array.
-    window : int
-        The number of elements in the moving window.
-    axis : int, optional
-        The axis over which to perform the moving sum. By default the moving
-        sum is taken over the last axis (-1).
-
-    Returns
-    -------
-    y : ndarray
-        The moving sum (ignoring NaNs) of the input array along the specified
-        axis.(A window with all NaNs returns NaN for the window sum.) The
-        output has the same shape as the input.
-
-    Notes
-    -----
-    The calculation of the sums uses scipy.ndimage.convolve1d.
-
-    Examples
-    --------
-    >>> from bottleneck.slow.move import move_nansum_filter
-    >>> arr = np.array([1, 2, np.nan, 4, 5, 6, 7])
-    >>> move_nansum_filter(arr, window=2, axis=0)
-    array([ NaN,   3.,   2.,   4.,   9.,  11.,  13.])
-
-    """
-    arr = np.array(arr, copy=False)
-    global convolve1d
-    if convolve1d is None:
-        try:
-            from scipy.ndimage import convolve1d
-        except ImportError:
-            raise ValueError("'filter' method requires SciPy.")
-    if axis is None:
-        raise ValueError("An `axis` value of None is not supported.")
-    if window < 1:
-        raise ValueError("`window` must be at least 1.")
-    if window > arr.shape[axis]:
-        raise ValueError("`window` is too long.")
-    arr = arr.astype(float)
-    nrr = np.isnan(arr)
-    arr[nrr] = 0
-    nrr = nrr.astype(int)
-    w = np.ones(window, dtype=int)
-    x0 = (1 - window) // 2
-    convolve1d(arr, w, axis=axis, mode='constant', cval=np.nan, origin=x0,
-               output=arr)
-    convolve1d(nrr, w, axis=axis, mode='constant', cval=0, origin=x0,
-               output=nrr)
-    arr[nrr == window] = np.nan
-    return arr
 
 # MEAN -------------------------------------------------------------------
 
@@ -850,7 +670,7 @@ def move_nanmin_filter(arr, window, axis=-1):
     if issubclass(arr.dtype.type, np.inexact):
         arr = arr.copy()
     else:
-        arr = arr.astype(np.float64) 
+        arr = arr.astype(np.float64)
     nrr = np.isnan(arr)
     arr[nrr] = np.inf
     x0 = (window - 1) // 2
@@ -877,7 +697,7 @@ def move_nanmin_loop(arr, window, axis=-1):
     if issubclass(arr.dtype.type, np.inexact):
         arr = arr.copy()
     else:
-        arr = arr.astype(np.float64) 
+        arr = arr.astype(np.float64)
     nrr = np.isnan(arr)
     arr[nrr] = np.inf
     y = move_func_loop(np.min, arr, window, axis=axis)
@@ -898,7 +718,7 @@ def move_nanmin_strides(arr, window, axis=-1):
     if issubclass(arr.dtype.type, np.inexact):
         arr = arr.copy()
     else:
-        arr = arr.astype(np.float64) 
+        arr = arr.astype(np.float64)
     nrr = np.isnan(arr)
     arr[nrr] = np.inf
     y = move_func_strides(np.min, arr, window, axis=axis)
@@ -1045,7 +865,7 @@ def move_nanmax_filter(arr, window, axis=-1):
     if issubclass(arr.dtype.type, np.inexact):
         arr = arr.copy()
     else:
-        arr = arr.astype(np.float64) 
+        arr = arr.astype(np.float64)
     nrr = np.isnan(arr)
     arr[nrr] = -np.inf
     x0 = (window - 1) // 2
@@ -1072,7 +892,7 @@ def move_nanmax_loop(arr, window, axis=-1):
     if issubclass(arr.dtype.type, np.inexact):
         arr = arr.copy()
     else:
-        arr = arr.astype(np.float64) 
+        arr = arr.astype(np.float64)
     nrr = np.isnan(arr)
     arr[nrr] = -np.inf
     y = move_func_loop(np.max, arr, window, axis=axis)
@@ -1093,7 +913,7 @@ def move_nanmax_strides(arr, window, axis=-1):
     if issubclass(arr.dtype.type, np.inexact):
         arr = arr.copy()
     else:
-        arr = arr.astype(np.float64) 
+        arr = arr.astype(np.float64)
     nrr = np.isnan(arr)
     arr[nrr] = -np.inf
     y = move_func_strides(np.max, arr, window, axis=axis)
@@ -1153,58 +973,7 @@ def move_median(arr, window, axis=-1, method='loop'):
 # GENERAL --------------------------------------------------------------------
 
 
-def move_func(func, arr, window, axis=-1, method='loop', **kwargs):
-    """
-    Generic moving window function along the specified axis.
-
-    Parameters
-    ----------
-    func : function
-        A reducing function such as np.sum, np.max, or np.median that takes
-        a Numpy array and axis and, optionally, key word arguments as input.
-    arr : array_like
-        Input array.
-    window : int
-        The number of elements in the moving window.
-    axis : int, optional
-        The axis over which to evaluate `func`. By default the window moves
-        along the last axis (-1).
-    method : str, optional
-        The following moving window methods are available:
-            ==========  =====================================
-            'loop'      brute force python loop (default)
-            'strides'   strides tricks
-            ==========  =====================================
-
-    Returns
-    -------
-    y : ndarray
-        A moving window evaluation of `func` along the specified axis of the
-        input array. The output has the same shape as the input.
-
-    Examples
-    --------
-    >>> arr = np.arange(4)
-    >>> bn.slow.move_func(np.sum, arr, window=2)
-    array([ NaN,   1.,   3.,   5.])
-
-    which give the same result as:
-
-    >>> bn.slow.move_sum(arr, window=2)
-    array([ NaN,   1.,   3.,   5.])
-
-    """
-    if method == 'strides':
-        y = move_func_strides(func, arr, window, axis=axis, **kwargs)
-    elif method == 'loop':
-        y = move_func_loop(func, arr, window, axis=axis)
-    else:
-        msg = "`method` must be 'strides' or 'loop'."
-        raise ValueError(msg)
-    return y
-
-
-def move_func_loop(func, arr, window, axis=-1, **kwargs):
+def move_func(func, arr, window, nmin=-1, axis=-1, **kwargs):
     "Generic moving window function implemented with a python loop."
     arr = np.array(arr, copy=False)
     if axis is None:
@@ -1213,50 +982,34 @@ def move_func_loop(func, arr, window, axis=-1, **kwargs):
         raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
         raise ValueError("`window` is too long.")
+    if nmin < 0:
+        nmin = window
+    elif nmin > window:
+        msg = "nmin (%d) cannot be greater than window (%d)"
+        raise ValueError(msg % (nmin, window))
+    elif nmin == 0:
+        raise ValueError("`nmin` cannot be zero")
     if issubclass(arr.dtype.type, np.inexact):
         y = np.empty_like(arr)
     else:
         y = np.empty(arr.shape)
-    y.fill(np.nan)
     idx1 = [slice(None)] * arr.ndim
     idx2 = list(idx1)
-    for i in range(window - 1, arr.shape[axis]):
-        idx1[axis] = slice(i + 1 - window, i + 1)
+    for i in range(arr.shape[axis]):
+        win = min(window, i + 1)
+        idx1[axis] = slice(i + 1 - win, i + 1)
         idx2[axis] = i
-        y[idx2] = func(arr[idx1], axis=axis, **kwargs)
+        a = arr[idx1]
+        yi = func(a, axis=axis, **kwargs)
+        c = _count(a, axis)
+        if yi.ndim == 0:
+            if c < nmin:
+                yi = np.nan
+        else:
+            yi[c < nmin] = np.nan
+        y[idx2] = yi
     return y
 
 
-def move_func_strides(func, arr, window, axis=-1, **kwargs):
-    "Generic moving window function implemented with strides."
-    arr = np.array(arr, copy=False)
-    if axis is None:
-        raise ValueError("An `axis` value of None is not supported.")
-    if window < 1:
-        raise ValueError("`window` must be at least 1.")
-    if window > arr.shape[axis]:
-        raise ValueError("`window` is too long.")
-    ndim = arr.ndim
-    idx = range(ndim)
-    axis = idx[axis]
-    arrshape0 = tuple(arr.shape)
-    if axis >= ndim:
-        raise IndexError("`axis` is out of range.")
-
-    strides = arr.strides
-    num_windows = arr.shape[axis] - window + 1
-    shape = arr.shape[:axis] + (num_windows, window) + arr.shape[axis + 1:]
-    strides = (strides[:axis] + (strides[axis], strides[axis])
-               + strides[axis + 1:])
-    z = np.lib.stride_tricks.as_strided(arr, shape=shape, strides=strides)
-    y = func(z, axis=(axis + 1), **kwargs)
-
-    if issubclass(arr.dtype.type, np.inexact):
-        ynan = np.empty(arrshape0, dtype=arr.dtype)
-    else:
-        ynan = np.empty(arrshape0)
-    ynan.fill(np.nan)
-    index = [slice(None)] * ndim
-    index[axis] = slice(window - 1, None)
-    ynan[index] = y
-    return ynan
+def _count(a, axis=None):
+    return np.sum(~np.isnan(a), axis)

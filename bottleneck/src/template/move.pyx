@@ -147,15 +147,13 @@ cdef ndarray move_sum_DTYPE0(ndarray a, int window, int nmin, int axis, np.flati
     cdef Py_ssize_t ystride = y.strides[axis]
     while PyArray_ITER_NOTDONE(ita):
         asum = 0
-        for i in range(window - 1):
+        for i in range(nmin - 1):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             asum += ai
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(window, length):
+        for i in range(nmin - 1, window - 1):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             asum += ai
-            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-            asum -= aold
             yi = <DTYPE1_t>asum
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
         i = window - 1
@@ -170,67 +168,6 @@ cdef ndarray move_sum_DTYPE0(ndarray a, int window, int nmin, int axis, np.flati
             asum -= aold
             yi = <DTYPE1_t>asum
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
-    return y
-
-
-# move_nansum --------------------------------------------------------------
-
-def move_nansum(arr, int window, int nmin=-1, int axis=-1):
-    try:
-        return mover(arr, window, nmin, axis,
-                     move_nansum_float64,
-                     move_nansum_float32,
-                     move_sum_int64,
-                     move_sum_int32)
-    except TypeError:
-        return slow.move_nansum(arr, window, axis)
-
-
-cdef ndarray move_nansum_DTYPE0(ndarray a, int window, int nmin, int axis, np.flatiter ita,
-                                Py_ssize_t stride, Py_ssize_t length,
-                                int a_ndim, np.npy_intp* y_dims,
-                                int int_input):
-    # bn.dtypes = [['float64'], ['float32']]
-    cdef Py_ssize_t i, count
-    cdef DTYPE0_t asum, ai, aold, yi
-    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
-    cdef Py_ssize_t ystride = y.strides[axis]
-    while PyArray_ITER_NOTDONE(ita):
-        asum = 0
-        count = 0
-        for i in range(window - 1):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                asum += ai
-                count += 1
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        i = window - 1
-        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-        if ai == ai:
-            asum += ai
-            count += 1
-        if count > 0:
-            yi = asum
-        else:
-            yi = NAN
-        (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        for i in range(window, length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                asum += ai
-                count += 1
-            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-            if aold == aold:
-                asum -= aold
-                count -= 1
-            if count > 0:
-                yi = asum
-            else:
-                yi = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
         PyArray_ITER_NEXT(ita)
         PyArray_ITER_NEXT(ity)
     return y
@@ -1190,7 +1127,9 @@ cdef ndarray mover(arr, int window, int nmin, int axis,
     elif nmin > window:
         msg = "nmin (%d) cannot be greater than window (%d)"
         raise ValueError(msg % (nmin, window))
- 
+    elif nmin == 0:
+        raise ValueError("`nmin` cannot be zero")
+
     if dtype == NPY_float64:
         y = move_float64(a, window, nmin, axis, ita, stride, length, a_ndim,
                          y_dims, int_input)

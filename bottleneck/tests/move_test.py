@@ -38,8 +38,8 @@ def arrays(dtypes=DTYPES, nans=True):
 
 def unit_maker(func, func0, decimal=np.inf, nans=True):
     "Test that bn.xxx gives the same output as a reference function."
-    msg = ('\nfunc %s | window %d | input %s (%s) | shape %s | axis %s | '
-           'reference_method %r\n')
+    msg = ('\nfunc %s | window %d | nmin %d | input %s (%s) | shape %s | '
+           'axis %s\n')
     msg += '\nInput array:\n%s\n'
     for i, arr in enumerate(arrays(nans=nans)):
         for axis in range(-arr.ndim, arr.ndim):
@@ -47,17 +47,17 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
             if len(windows) == 0:
                 windows = [1]
             for window in windows:
-                for reference_method in ['loop', 'strides']:
+                nmins = [w for w in windows if w <= window]
+                for nmin in nmins:
                     with np.errstate(invalid='ignore'):
                         with warnings.catch_warnings():
                             warnings.simplefilter("ignore")
-                            actual = func(arr, window, axis=axis)
+                            actual = func(arr, window, nmin, axis=axis)
                         with warnings.catch_warnings():
                             warnings.simplefilter("ignore")
-                            desired = func0(arr, window, axis=axis,
-                                            method=reference_method)
-                    tup = (func.__name__, window, 'a'+str(i), str(arr.dtype),
-                           str(arr.shape), str(axis), reference_method, arr)
+                            desired = func0(arr, window, nmin, axis=axis)
+                    tup = (func.__name__, window, nmin, 'a'+str(i),
+                           str(arr.dtype), str(arr.shape), str(axis), arr)
                     err_msg = msg % tup
                     if (decimal < np.inf) and (np.isfinite(arr).sum() > 0):
                         assert_array_almost_equal(actual, desired, decimal,
@@ -74,12 +74,7 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
 def test_move_sum():
     "Test move_sum."
     yield unit_maker, bn.move_sum, bn.slow.move_sum, 5
-
-
-def test_move_nansum():
-    "Test move_nansum."
-    yield unit_maker, bn.move_nansum, bn.slow.move_nansum, 5
-
+"""
 
 def test_move_mean():
     "Test move_mean."
@@ -170,3 +165,4 @@ def test_move_nanstd_sqrt():
     a3 = np.array([[a, a], [a, a]])
     b = bn.move_nanstd(a3, window=3, axis=2)
     assert_true(np.isfinite(b[:, :, 2:]).all(), err_msg % 3)
+"""
