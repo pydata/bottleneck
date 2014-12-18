@@ -25,9 +25,7 @@ from numpy cimport NPY_INT32 as NPY_int32
 from numpy cimport PyArray_ITER_DATA as pid
 from numpy cimport PyArray_ITER_NOTDONE
 from numpy cimport PyArray_ITER_NEXT
-from numpy cimport PyArray_ITER_RESET
 from numpy cimport PyArray_IterAllButAxis
-from numpy cimport PyArray_IterNew
 
 from numpy cimport PyArray_TYPE
 from numpy cimport PyArray_NDIM
