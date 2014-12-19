@@ -95,7 +95,7 @@ cdef ndarray move_sum_DTYPE0(ndarray a, int window, int nmin, int axis, np.flati
                 asum += ai
                 count += 1
             (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(nmin - 1, window - 1):
+        for i in range(nmin - 1, window):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             if ai == ai:
                 asum += ai
@@ -105,16 +105,6 @@ cdef ndarray move_sum_DTYPE0(ndarray a, int window, int nmin, int axis, np.flati
             else:
                 yi = NAN
             (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        i = window - 1
-        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-        if ai == ai:
-            asum += ai
-            count += 1
-        if count >= nmin:
-            yi = asum
-        else:
-            yi = NAN
-        (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
         for i in range(window, length):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             if ai == ai:
