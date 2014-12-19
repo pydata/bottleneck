@@ -68,7 +68,7 @@ def move_sum(arr, int window, int nmin=-1, int axis=-1):
                      move_sum_int64,
                      move_sum_int32)
     except TypeError:
-        return slow.move_sum(arr, window, axis)
+        return slow.move_sum(arr, window, nmin, axis)
 
 
 cdef ndarray move_sum_DTYPE0(ndarray a, int window, int nmin, int axis,
@@ -163,7 +163,7 @@ def move_mean(arr, int window, int nmin=-1, int axis=-1):
                      move_mean_int64,
                      move_mean_int32)
     except TypeError:
-        return slow.move_mean(arr, window, axis)
+        return slow.move_mean(arr, window, nmin, axis)
 
 
 @cython.cdivision(True)
@@ -261,7 +261,7 @@ def move_std(arr, int window, int nmin=-1, int axis=-1, int ddof=0):
                      move_std_int32,
                      ddof)
     except TypeError:
-        return slow.move_std(arr, window, axis, ddof)
+        return slow.move_std(arr, window, nmin, axis, ddof)
 
 
 @cython.cdivision(True)
@@ -378,7 +378,7 @@ def move_min(arr, int window, int nmin=-1, int axis=-1):
                      move_min_int64,
                      move_min_int32)
     except TypeError:
-        return slow.move_min(arr, window, axis)
+        return slow.move_min(arr, window, nmin, axis)
 
 
 cdef ndarray move_min_DTYPE0(ndarray a, int window, int nmin, int axis,
@@ -522,7 +522,7 @@ def move_max(arr, int window, int nmin=-1, int axis=-1):
                      move_max_int64,
                      move_max_int32)
     except TypeError:
-        return slow.move_max(arr, window, axis)
+        return slow.move_max(arr, window, nmin, axis)
 
 
 cdef ndarray move_max_DTYPE0(ndarray a, int window, int nmin, int axis,
