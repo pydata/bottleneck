@@ -71,21 +71,16 @@ def move_sum(arr, int window, int nmin=-1, int axis=-1):
         return slow.move_sum(arr, window, axis)
 
 
-cdef ndarray move_sum_DTYPE0(ndarray a, int window, int nmin, int axis, np.flatiter ita,
-                             Py_ssize_t stride, Py_ssize_t length,
-                             int a_ndim, np.npy_intp* y_dims,
-                             int ignore):
+cdef ndarray move_sum_DTYPE0(ndarray a, int window, int nmin, int axis,
+                             np.flatiter ita, Py_ssize_t stride,
+                             Py_ssize_t length, int a_ndim,
+                             np.npy_intp* y_dims, int ignore):
     # bn.dtypes = [['float64'], ['float32']]
     cdef Py_ssize_t i, count
     cdef DTYPE0_t asum, ai, aold, yi
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
-    if nmin < 0:
-        nmin = window
-    elif nmin > window:
-        fmt = "nmin (%d) cannot be greater than window (%d)"
-        raise ValueError(fmt % (nmin, window))
     while PyArray_ITER_NOTDONE(ita):
         asum = 0
         count = 0
