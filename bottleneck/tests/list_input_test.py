@@ -145,16 +145,10 @@ def test_move_mean():
     yield unit_maker, bn.move_mean, bn.slow.move_mean, (2,)
 
 
-"""
-
 def test_move_std():
     "Test move_std."
     yield unit_maker, bn.move_std, bn.slow.move_std, (2,)
-
-
-def test_move_nanstd():
-    "Test move_nanstd."
-    yield unit_maker, bn.move_nanstd, bn.slow.move_nanstd, (2,)
+"""
 
 
 def test_move_max():

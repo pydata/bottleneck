@@ -10,8 +10,7 @@ reduce                ``nansum, nanmean, nanstd, nanvar, nanmin, nanmax,
                       ss``
 non-reduce            ``replace``
 non-reduce (axis)     ``partsort, argpartsort, rankdata, nanrankdata``
-moving window         ``move_sum, move_nansum, move_mean, move_nanmean,
-                      move_median, move_std, move_nanstd, move_min,
+moving window         ``move_sum, move_mean, move_std, move_median, move_min,
                       move_nanmin, move_max, move_nanmax``
 ===================== =======================================================
 

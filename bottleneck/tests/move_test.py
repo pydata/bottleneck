@@ -80,18 +80,14 @@ def test_move_sum():
 def test_move_mean():
     "Test move_mean."
     yield unit_maker, bn.move_mean, bn.slow.move_mean, 5
-"""
-
-
-def test_move_nanmean():
-    "Test move_nanmean."
-    yield unit_maker, bn.move_nanmean, bn.slow.move_nanmean, 5
 
 
 def test_move_std():
     "Test move_std."
     yield unit_maker, bn.move_std, bn.slow.move_std, 5
 
+
+"""
 
 def test_move_nanstd():
     "Test move_nanstd."
