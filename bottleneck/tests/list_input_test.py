@@ -148,6 +148,12 @@ def test_move_mean():
 def test_move_std():
     "Test move_std."
     yield unit_maker, bn.move_std, bn.slow.move_std, (2,)
+
+
+def test_move_min():
+    "Test move_min."
+    yield unit_maker, bn.move_min, bn.slow.move_min, (2,)
+    
 """
 
 
@@ -164,14 +170,4 @@ def test_move_nanmax():
 def test_move_median():
     "Test move_median."
     yield unit_maker, bn.move_median, bn.slow.move_median, (2,)
-
-
-def test_move_min():
-    "Test move_min."
-    yield unit_maker, bn.move_min, bn.slow.move_min, (2,)
-
-
-def test_move_nanmin():
-    "Test move_nanmin."
-    yield unit_maker, bn.move_nanmin, bn.slow.move_nanmin, (2,)
 """

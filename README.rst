@@ -11,7 +11,7 @@ reduce                ``nansum, nanmean, nanstd, nanvar, nanmin, nanmax,
 non-reduce            ``replace``
 non-reduce (axis)     ``partsort, argpartsort, rankdata, nanrankdata``
 moving window         ``move_sum, move_mean, move_std, move_median, move_min,
-                      move_nanmin, move_max, move_nanmax``
+                      move_max, move_nanmax``
 ===================== =======================================================
 
 Let's give it a try. Create a NumPy array::
