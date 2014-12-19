@@ -119,10 +119,10 @@ cdef ndarray move_sum_DTYPE0(ndarray a, int window, int nmin, int axis,
     return y
 
 
-cdef ndarray move_sum_DTYPE0(ndarray a, int window, int nmin, int axis, np.flatiter ita,
-                             Py_ssize_t stride, Py_ssize_t length,
-                             int a_ndim, np.npy_intp* y_dims,
-                             int int_input):
+cdef ndarray move_sum_DTYPE0(ndarray a, int window, int nmin, int axis,
+                             np.flatiter ita, Py_ssize_t stride,
+                             Py_ssize_t length, int a_ndim,
+                             np.npy_intp* y_dims, int int_input):
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef Py_ssize_t i
     cdef DTYPE1_t asum, aold, yi
@@ -136,16 +136,11 @@ cdef ndarray move_sum_DTYPE0(ndarray a, int window, int nmin, int axis, np.flati
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             asum += ai
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(nmin - 1, window - 1):
+        for i in range(nmin - 1, window):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             asum += ai
             yi = <DTYPE1_t>asum
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        i = window - 1
-        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-        asum += ai
-        yi = <DTYPE1_t>asum
-        (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
         for i in range(window, length):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             asum += ai
