@@ -48,6 +48,7 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
                 windows = [1]
             for window in windows:
                 nmins = [w for w in windows if w <= window]
+                nmins.append(-1)
                 for nmin in nmins:
                     with np.errstate(invalid='ignore'):
                         with warnings.catch_warnings():
