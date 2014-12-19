@@ -75,11 +75,12 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
 def test_move_sum():
     "Test move_sum."
     yield unit_maker, bn.move_sum, bn.slow.move_sum, 5
-"""
+
 
 def test_move_mean():
     "Test move_mean."
     yield unit_maker, bn.move_mean, bn.slow.move_mean, 5
+"""
 
 
 def test_move_nanmean():

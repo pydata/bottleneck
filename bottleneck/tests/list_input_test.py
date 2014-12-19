@@ -139,21 +139,13 @@ def test_move_sum():
     "Test move_sum."
     yield unit_maker, bn.move_sum, bn.slow.move_sum, (2,)
 
-"""
-def test_move_nansum():
-    "Test move_nansum."
-    yield unit_maker, bn.move_nansum, bn.slow.move_nansum, (2,)
-
 
 def test_move_mean():
     "Test move_mean."
     yield unit_maker, bn.move_mean, bn.slow.move_mean, (2,)
 
 
-def test_move_nanmean():
-    "Test move_nanmean."
-    yield unit_maker, bn.move_nanmean, bn.slow.move_nanmean, (2,)
-
+"""
 
 def test_move_std():
     "Test move_std."
