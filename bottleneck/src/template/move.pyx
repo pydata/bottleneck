@@ -525,15 +525,15 @@ def move_max(arr, int window, int nmin=-1, int axis=-1):
         return slow.move_max(arr, window, axis)
 
 
-cdef ndarray move_max_DTYPE0(ndarray a, int window, int nmin, int axis, np.flatiter ita,
-                             Py_ssize_t stride, Py_ssize_t length,
-                             int a_ndim, np.npy_intp* y_dims,
-                             int ignore):
+cdef ndarray move_max_DTYPE0(ndarray a, int window, int nmin, int axis,
+                             np.flatiter ita, Py_ssize_t stride,
+                             Py_ssize_t length, int a_ndim,
+                             np.npy_intp* y_dims, int ignore):
     # bn.dtypes = [['float64'], ['float32']]
     cdef DTYPE0_t ai, aold, yi
     cdef Py_ssize_t i, count
     cdef pairs* ring
-    cdef pairs* minpair
+    cdef pairs* maxpair
     cdef pairs* end
     cdef pairs* last
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
@@ -547,13 +547,13 @@ cdef ndarray move_max_DTYPE0(ndarray a, int window, int nmin, int axis, np.flati
         end = ring + window
         last = ring
 
-        minpair = ring
+        maxpair = ring
         ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
         if ai == ai:
-            minpair.value = ai
+            maxpair.value = ai
         else:
-            minpair.value = MINDTYPE0
-        minpair.death = window
+            maxpair.value = MINDTYPE0
+        maxpair.death = window
 
         count = 0
         for i in range(length):
@@ -566,14 +566,14 @@ cdef ndarray move_max_DTYPE0(ndarray a, int window, int nmin, int axis, np.flati
                 aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
                 if aold == aold:
                     count -= 1
-            if minpair.death == i:
-                minpair += 1
-                if minpair >= end:
-                    minpair = ring
-            if ai >= minpair.value:
-                minpair.value = ai
-                minpair.death = i + window
-                last = minpair
+            if maxpair.death == i:
+                maxpair += 1
+                if maxpair >= end:
+                    maxpair = ring
+            if ai >= maxpair.value:
+                maxpair.value = ai
+                maxpair.death = i + window
+                last = maxpair
             else:
                 while last.value <= ai:
                     if last == ring:
@@ -584,13 +584,11 @@ cdef ndarray move_max_DTYPE0(ndarray a, int window, int nmin, int axis, np.flati
                     last = ring
                 last.value = ai
                 last.death = i + window
-            if count == window:
-                yi= minpair.value
+            if count >= nmin:
+                yi = maxpair.value
             else:
-                yi= NAN
+                yi = NAN
             (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        for i in range(window - 1):
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
         PyArray_ITER_NEXT(ita)
         PyArray_ITER_NEXT(ity)
 
@@ -598,16 +596,16 @@ cdef ndarray move_max_DTYPE0(ndarray a, int window, int nmin, int axis, np.flati
     return y
 
 
-cdef ndarray move_max_DTYPE0(ndarray a, int window, int nmin, int axis, np.flatiter ita,
-                             Py_ssize_t stride, Py_ssize_t length,
-                             int a_ndim, np.npy_intp* y_dims,
-                             int ignore):
+cdef ndarray move_max_DTYPE0(ndarray a, int window, int nmin, int axis,
+                             np.flatiter ita, Py_ssize_t stride,
+                             Py_ssize_t length, int a_ndim,
+                             np.npy_intp* y_dims, int ignore):
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef DTYPE0_t ai
     cdef DTYPE1_t yi
     cdef Py_ssize_t i
     cdef pairs* ring
-    cdef pairs* minpair
+    cdef pairs* maxpair
     cdef pairs* end
     cdef pairs* last
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
@@ -621,21 +619,21 @@ cdef ndarray move_max_DTYPE0(ndarray a, int window, int nmin, int axis, np.flati
         end = ring + window
         last = ring
 
-        minpair = ring
+        maxpair = ring
         ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
-        minpair.value = ai
-        minpair.death = window
+        maxpair.value = ai
+        maxpair.death = window
 
         for i in range(length):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if minpair.death == i:
-                minpair += 1
-                if minpair >= end:
-                    minpair = ring
-            if ai >= minpair.value:
-                minpair.value = ai
-                minpair.death = i + window
-                last = minpair
+            if maxpair.death == i:
+                maxpair += 1
+                if maxpair >= end:
+                    maxpair = ring
+            if ai >= maxpair.value:
+                maxpair.value = ai
+                maxpair.death = i + window
+                last = maxpair
             else:
                 while last.value <= ai:
                     if last == ring:
@@ -646,96 +644,11 @@ cdef ndarray move_max_DTYPE0(ndarray a, int window, int nmin, int axis, np.flati
                     last = ring
                 last.value = ai
                 last.death = i + window
-            yi = minpair.value
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        for i in range(window - 1):
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
-
-    stdlib.free(ring)
-    return y
-
-
-# move_nanmax ---------------------------------------------------------------
-
-def move_nanmax(arr, int window, int nmin=-1, int axis=-1):
-    try:
-        return mover(arr, window, nmin, axis,
-                     move_nanmax_float64,
-                     move_nanmax_float32,
-                     move_max_int64,
-                     move_max_int32)
-    except TypeError:
-        return slow.move_nanmax(arr, window, axis)
-
-
-cdef ndarray move_nanmax_DTYPE0(ndarray a, int window, int nmin, int axis, np.flatiter ita,
-                                Py_ssize_t stride, Py_ssize_t length,
-                                int a_ndim, np.npy_intp* y_dims,
-                                int ignore):
-    # bn.dtypes = [['float64'], ['float32']]
-    cdef DTYPE0_t ai, aold, yi
-    cdef Py_ssize_t i, count
-    cdef pairs* ring
-    cdef pairs* minpair
-    cdef pairs* end
-    cdef pairs* last
-    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
-    cdef Py_ssize_t ystride = y.strides[axis]
-
-    ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
-
-    while PyArray_ITER_NOTDONE(ita):
-
-        end = ring + window
-        last = ring
-
-        minpair = ring
-        ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
-        if ai == ai:
-            minpair.value = ai
-        else:
-            minpair.value = MINDTYPE0
-        minpair.death = window
-
-        count = 0
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                count += 1
-            else:
-                ai = MINDTYPE0
-            if i >= window:
-                aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-                if aold == aold:
-                    count -= 1
-            if minpair.death == i:
-                minpair += 1
-                if minpair >= end:
-                    minpair = ring
-            if ai >= minpair.value:
-                minpair.value = ai
-                minpair.death = i + window
-                last = minpair
-            else:
-                while last.value <= ai:
-                    if last == ring:
-                        last = end
-                    last -= 1
-                last += 1
-                if last == end:
-                    last = ring
-                last.value = ai
-                last.death = i + window
-            if count > 0:
-                yi = minpair.value
+            if i + 1 >= nmin:
+                yi = maxpair.value
             else:
                 yi = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        for i in range(window - 1):
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
         PyArray_ITER_NEXT(ita)
         PyArray_ITER_NEXT(ity)
 

@@ -158,16 +158,14 @@ def benchsuite(shapes, dtype, axis, nans):
     #suite.append(run)
 
     # moving window function that benchmark against sp.ndimage.convolve1d
-    funcs = ['move_sum', 'move_mean']
+    funcs = ['move_sum', 'move_mean', 'move_max']
     for func in funcs:
         run = {}
         run['name'] = func
-        run['scipy_required'] = True
-        code = ["bn_func(a, window=w, axis=AXIS)",
-                "sp_func(a, window=w, axis=AXIS)"]
-        run['statements'] = code
+        run['statements'] = ["bn_func(a, window=w, axis=AXIS)",
+                             "sw_func(a, window=w, axis=AXIS)"]
         setup = """
-            from bottleneck.slow.move import %s as sp_func
+            from bottleneck.slow.move import %s as sw_func
             from bottleneck import %s as bn_func
             w = a.shape[AXIS] // 5
         """ % (func, func)
