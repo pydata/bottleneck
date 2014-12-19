@@ -933,6 +933,8 @@ def move_median(arr, window, axis=-1, method='loop'):
 def move_func(func, arr, window, nmin=-1, axis=-1, **kwargs):
     "Generic moving window function implemented with a python loop."
     arr = np.array(arr, copy=False)
+    if arr.ndim == 0:
+        raise ValueError("moving window functions require ndim > 0")
     if axis is None:
         raise ValueError("An `axis` value of None is not supported.")
     if window < 1:
