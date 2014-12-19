@@ -18,53 +18,10 @@ __all__ = ['move_sum',
            'move_max', 'move_nanmax',
            'move_median']
 
-# SUM -----------------------------------------------------------------------
-
 
 def move_sum(arr, window, nmin=-1, axis=-1):
-    """
-    Slow move_sum for unaccelerated ndim/dtype combinations.
-
-    Parameters
-    ----------
-    arr : array_like
-        Input array.
-    window : int
-        The number of elements in the moving window.
-    axis : int, optional
-        The axis over which to perform the moving sum. By default the moving
-        sum is taken over the last axis (-1).
-
-    Returns
-    -------
-    y : array_like
-        The moving sum of the input array along the specified axis. The output
-        has the same shape as the input.
-
-    Examples
-    --------
-    >>> arr = np.array([1, 2, 3, 4])
-    >>> bn.slow.move_sum(arr, window=2, axis=0)
-       array([ NaN,   3.,   5.,   7.])
-
-    """
-    y = move_func(_nansum_default_nan, arr, window, nmin, axis=axis)
-    return y
-
-
-def _nansum_default_nan(arr, axis=None):
-    "All nan input returns nan instead of 0. Int input converted to float64"
-    a = np.nansum(arr, axis=axis)
-    idx = np.isnan(arr).all(axis=axis)
-    if a.ndim == 0:
-        if idx:
-            a = np.float64(np.nan)
-    else:
-        if issubclass(a.dtype.type, np.inexact):
-            a[idx] = np.nan
-        else:
-            a = a.astype(np.float64)
-    return a
+    "Slow move_sum for unaccelerated dtype"
+    return move_func(np.nansum, arr, window, nmin, axis=axis)
 
 
 # MEAN -------------------------------------------------------------------
@@ -1000,16 +957,18 @@ def move_func(func, arr, window, nmin=-1, axis=-1, **kwargs):
         idx1[axis] = slice(i + 1 - win, i + 1)
         idx2[axis] = i
         a = arr[idx1]
-        yi = func(a, axis=axis, **kwargs)
-        c = _count(a, axis)
-        if yi.ndim == 0:
-            if c < nmin:
-                yi = np.nan
-        else:
-            yi[c < nmin] = np.nan
-        y[idx2] = yi
+        y[idx2] = func(a, axis=axis, **kwargs)
+    idx = _mask(arr, window, nmin, axis)
+    y[idx] = np.nan
     return y
 
 
-def _count(a, axis=None):
-    return np.sum(~np.isnan(a), axis)
+def _mask(arr, window, nmin, axis):
+    n = (~np.isnan(arr)).cumsum(axis)
+    idx1 = [slice(None)] * arr.ndim
+    idx2 = list(idx1)
+    idx1[axis] = slice(window, None)
+    idx2[axis] = slice(None, -window)
+    n[idx1] = n[idx1] - n[idx2]
+    idx = n <  nmin
+    return idx
