@@ -106,19 +106,17 @@ def benchsuite(shapes, dtype, axis, nans):
         return setups
 
     # numpy functions
-    funcs = ['nansum', 'nanmean', 'nanstd', 'nanmax']
+    funcs = ['nansum', 'nanmean', 'nanstd', 'nanmin', 'nanmax']
     for func in funcs:
         run = {}
         run['name'] = func
-        run['ref'] = "np.%s" % func
-        run['scipy_required'] = False
         run['statements'] = ["bn_func(a, axis=AXIS)", "np_func(a, axis=AXIS)"]
         setup = """
             from bottleneck import %s as bn_func
             from numpy import %s as np_func
         """ % (func, func)
         run['setups'] = getsetups(setup, shapes, nans)
-        #suite.append(run)
+        suite.append(run)
 
     # partsort, argpartsort
     funcs = ['partsort', 'argpartsort']
@@ -129,8 +127,6 @@ def benchsuite(shapes, dtype, axis, nans):
             pre = 'arg'
         else:
             pre = ''
-        run['ref'] = "np.%ssort, n=max(a.shape[%s]/2,1)" % (pre, axis)
-        run['scipy_required'] = False
         run['statements'] = ["bn_func(a, n=n, axis=AXIS)",
                              "np_func(a, axis=AXIS)"]
         setup = """
@@ -141,13 +137,11 @@ def benchsuite(shapes, dtype, axis, nans):
             n = max(n / 2, 1)
         """ % (func, pre)
         run['setups'] = getsetups(setup, shapes, nans)
-        #suite.append(run)
+        suite.append(run)
 
     # replace
     run = {}
     run['name'] = "replace"
-    run['ref'] = "np.putmask based (see bn.slow.replace)"
-    run['scipy_required'] = False
     run['statements'] = ["bn_func(a, np.nan, 0)",
                          "slow_func(a, np.nan, 0)"]
     setup = """
@@ -155,10 +149,11 @@ def benchsuite(shapes, dtype, axis, nans):
         from bottleneck.slow import replace as slow_func
     """
     run['setups'] = getsetups(setup, shapes, nans)
-    #suite.append(run)
+    suite.append(run)
 
     # moving window function that benchmark against sp.ndimage.convolve1d
-    funcs = ['move_sum', 'move_mean', 'move_max']
+    funcs = ['move_sum', 'move_mean', 'move_std', 'move_min', 'move_max',
+             'move_median']
     for func in funcs:
         run = {}
         run['name'] = func
@@ -172,45 +167,6 @@ def benchsuite(shapes, dtype, axis, nans):
         run['setups'] = getsetups(setup, shapes, nans)
         if axis != 'None':
             suite.append(run)
-
-    funcs = ['move_max', 'move_nanmax']
-    for func in funcs:
-        run = {}
-        run['name'] = func
-        run['ref'] = "sp.ndimage.maximum_filter1d based, "
-        run['ref'] += "window=a.shape[%s] // 5" % axis
-        run['scipy_required'] = True
-        code = ["bn_func(a, window=w, axis=AXIS)",
-                "sp_func(a, window=w, axis=AXIS, method='filter')"]
-        run['statements'] = code
-        setup = """
-            from bottleneck.slow.move import %s as sp_func
-            from bottleneck import %s as bn_func
-            w = a.shape[AXIS] // 5
-        """ % (func, func)
-        run['setups'] = getsetups(setup, shapes, nans)
-        if axis != 'None':
-            pass
-            #suite.append(run)
-
-    # move_median
-    run = {}
-    func = 'move_median'
-    run['name'] = func
-    run['ref'] = "for loop with np.median"
-    run['scipy_required'] = False
-    code = ["bn_func(a, window=w, axis=AXIS)",
-            "sl_func(a, window=w, axis=AXIS, method='loop')"]
-    run['statements'] = code
-    setup = """
-        from bottleneck.slow.move import %s as sl_func
-        from bottleneck import %s as bn_func
-        w = a.shape[AXIS] // 5
-    """ % (func, func)
-    run['setups'] = getsetups(setup, shapes, nans)
-    if axis != 'None':
-        pass
-        #suite.append(run)
 
     # runs
     # -----------------------------------------------------------------------
