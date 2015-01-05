@@ -53,10 +53,16 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
                     with np.errstate(invalid='ignore'):
                         with warnings.catch_warnings():
                             warnings.simplefilter("ignore")
-                            actual = func(arr, window, nmin, axis=axis)
+                            if func.__name__ == 'move_median':
+                                actual = func(arr, window, axis=axis)
+                            else:
+                                actual = func(arr, window, nmin, axis=axis)
                         with warnings.catch_warnings():
                             warnings.simplefilter("ignore")
-                            desired = func0(arr, window, nmin, axis=axis)
+                            if func.__name__ == 'move_median':
+                                desired = func0(arr, window, axis=axis)
+                            else:
+                                desired = func0(arr, window, nmin, axis=axis)
                     tup = (func.__name__, window, nmin, 'a'+str(i),
                            str(arr.dtype), str(arr.shape), str(axis), arr)
                     err_msg = msg % tup
@@ -95,7 +101,6 @@ def test_move_min():
 def test_move_max():
     "Test move_max."
     yield unit_maker, bn.move_max, bn.slow.move_max, 5
-"""
 
 def test_move_median():
     "Test move_median."
@@ -104,7 +109,6 @@ def test_move_median():
 
 # ----------------------------------------------------------------------------
 # Regression test for square roots of negative numbers
-
 
 def test_move_std_sqrt():
     "Test move_std for neg sqrt."
@@ -125,25 +129,3 @@ def test_move_std_sqrt():
     a3 = np.array([[a, a], [a, a]])
     b = bn.move_std(a3, window=3, axis=2)
     assert_true(np.isfinite(b[:, :, 2:]).all(), err_msg % 3)
-
-
-def test_move_nanstd_sqrt():
-    "Test move_nanstd for neg sqrt."
-
-    a = [0.0011448196318903589,
-         0.00028718669878572767,
-         0.00028718669878572767,
-         0.00028718669878572767,
-         0.00028718669878572767]
-    err_msg = "Square root of negative number. ndim = %d"
-    b = bn.move_nanstd(a, window=3)
-    assert_true(np.isfinite(b[2:]).all(), err_msg % 1)
-
-    a2 = np.array([a, a])
-    b = bn.move_nanstd(a2, window=3, axis=1)
-    assert_true(np.isfinite(b[:, 2:]).all(), err_msg % 2)
-
-    a3 = np.array([[a, a], [a, a]])
-    b = bn.move_nanstd(a3, window=3, axis=2)
-    assert_true(np.isfinite(b[:, :, 2:]).all(), err_msg % 3)
-"""

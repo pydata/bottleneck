@@ -1074,7 +1074,7 @@ static PyObject *__pyx_pf_4move_2move_mean(CYTHON_UNUSED PyObject *__pyx_self, P
 static PyObject *__pyx_pf_4move_4move_std(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arr, int __pyx_v_window, int __pyx_v_nmin, int __pyx_v_axis, int __pyx_v_ddof); /* proto */
 static PyObject *__pyx_pf_4move_6move_min(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arr, int __pyx_v_window, int __pyx_v_nmin, int __pyx_v_axis); /* proto */
 static PyObject *__pyx_pf_4move_8move_max(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arr, int __pyx_v_window, int __pyx_v_nmin, int __pyx_v_axis); /* proto */
-static PyObject *__pyx_pf_4move_10move_median(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arr, int __pyx_v_window, int __pyx_v_nmin, int __pyx_v_axis); /* proto */
+static PyObject *__pyx_pf_4move_10move_median(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arr, int __pyx_v_window, int __pyx_v_axis); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static char __pyx_k_B[] = "B";
@@ -11345,19 +11345,18 @@ static PyArrayObject *__pyx_f_4move_move_max_int32(CYTHON_UNUSED PyArrayObject *
 /* "move.pyx":1180
  * 
  * 
- * def move_median(arr, int window, int nmin=-1, int axis=-1):             # <<<<<<<<<<<<<<
+ * def move_median(arr, int window, int axis=-1):             # <<<<<<<<<<<<<<
  *     try:
- *         return mover(arr, window, nmin, axis,
+ *         return mover(arr, window, window, axis,
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_4move_11move_median(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4move_10move_median[] = "move_median(arr, int window, int nmin=-1, int axis=-1)";
+static char __pyx_doc_4move_10move_median[] = "move_median(arr, int window, int axis=-1)";
 static PyMethodDef __pyx_mdef_4move_11move_median = {"move_median", (PyCFunction)__pyx_pw_4move_11move_median, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4move_10move_median};
 static PyObject *__pyx_pw_4move_11move_median(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_arr = 0;
   int __pyx_v_window;
-  int __pyx_v_nmin;
   int __pyx_v_axis;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -11366,13 +11365,12 @@ static PyObject *__pyx_pw_4move_11move_median(PyObject *__pyx_self, PyObject *__
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("move_median (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_arr,&__pyx_n_s_window,&__pyx_n_s_nmin,&__pyx_n_s_axis,0};
-    PyObject* values[4] = {0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_arr,&__pyx_n_s_window,&__pyx_n_s_axis,0};
+    PyObject* values[3] = {0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
-        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
         case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
         case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
         case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -11387,17 +11385,12 @@ static PyObject *__pyx_pw_4move_11move_median(PyObject *__pyx_self, PyObject *__
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_window)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("move_median", 0, 2, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1180; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("move_median", 0, 2, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1180; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (kw_args > 0) {
-          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_nmin);
-          if (value) { values[2] = value; kw_args--; }
-        }
-        case  3:
-        if (kw_args > 0) {
           PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_axis);
-          if (value) { values[3] = value; kw_args--; }
+          if (value) { values[2] = value; kw_args--; }
         }
       }
       if (unlikely(kw_args > 0)) {
@@ -11405,7 +11398,6 @@ static PyObject *__pyx_pw_4move_11move_median(PyObject *__pyx_self, PyObject *__
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
-        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
         case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
         case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
         values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -11416,32 +11408,27 @@ static PyObject *__pyx_pw_4move_11move_median(PyObject *__pyx_self, PyObject *__
     __pyx_v_arr = values[0];
     __pyx_v_window = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_window == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1180; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     if (values[2]) {
-      __pyx_v_nmin = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_nmin == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1180; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    } else {
-      __pyx_v_nmin = ((int)-1);
-    }
-    if (values[3]) {
-      __pyx_v_axis = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_axis == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1180; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_v_axis = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_axis == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1180; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     } else {
       __pyx_v_axis = ((int)-1);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("move_median", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1180; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("move_median", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1180; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("move.move_median", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_4move_10move_median(__pyx_self, __pyx_v_arr, __pyx_v_window, __pyx_v_nmin, __pyx_v_axis);
+  __pyx_r = __pyx_pf_4move_10move_median(__pyx_self, __pyx_v_arr, __pyx_v_window, __pyx_v_axis);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4move_10move_median(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arr, int __pyx_v_window, int __pyx_v_nmin, int __pyx_v_axis) {
+static PyObject *__pyx_pf_4move_10move_median(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arr, int __pyx_v_window, int __pyx_v_axis) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -11465,9 +11452,9 @@ static PyObject *__pyx_pf_4move_10move_median(CYTHON_UNUSED PyObject *__pyx_self
 
   /* "move.pyx":1181
  * 
- * def move_median(arr, int window, int nmin=-1, int axis=-1):
+ * def move_median(arr, int window, int axis=-1):
  *     try:             # <<<<<<<<<<<<<<
- *         return mover(arr, window, nmin, axis,
+ *         return mover(arr, window, window, axis,
  *                      move_median_float64,
  */
   {
@@ -11478,9 +11465,9 @@ static PyObject *__pyx_pf_4move_10move_median(CYTHON_UNUSED PyObject *__pyx_self
     /*try:*/ {
 
       /* "move.pyx":1182
- * def move_median(arr, int window, int nmin=-1, int axis=-1):
+ * def move_median(arr, int window, int axis=-1):
  *     try:
- *         return mover(arr, window, nmin, axis,             # <<<<<<<<<<<<<<
+ *         return mover(arr, window, window, axis,             # <<<<<<<<<<<<<<
  *                      move_median_float64,
  *                      move_median_float32,
  */
@@ -11493,7 +11480,7 @@ static PyObject *__pyx_pf_4move_10move_median(CYTHON_UNUSED PyObject *__pyx_self
  *     except TypeError:
  *         return slow.move_median(arr, window, axis)
  */
-      __pyx_t_4 = ((PyObject *)__pyx_f_4move_mover(__pyx_v_arr, __pyx_v_window, __pyx_v_nmin, __pyx_v_axis, __pyx_f_4move_move_median_float64, __pyx_f_4move_move_median_float32, __pyx_f_4move_move_median_int64, __pyx_f_4move_move_median_int32, NULL)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1182; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_t_4 = ((PyObject *)__pyx_f_4move_mover(__pyx_v_arr, __pyx_v_window, __pyx_v_window, __pyx_v_axis, __pyx_f_4move_move_median_float64, __pyx_f_4move_move_median_float32, __pyx_f_4move_move_median_int64, __pyx_f_4move_move_median_int32, NULL)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1182; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
@@ -11595,9 +11582,9 @@ static PyObject *__pyx_pf_4move_10move_median(CYTHON_UNUSED PyObject *__pyx_self
   /* "move.pyx":1180
  * 
  * 
- * def move_median(arr, int window, int nmin=-1, int axis=-1):             # <<<<<<<<<<<<<<
+ * def move_median(arr, int window, int axis=-1):             # <<<<<<<<<<<<<<
  *     try:
- *         return mover(arr, window, nmin, axis,
+ *         return mover(arr, window, window, axis,
  */
 
   /* function exit code */
@@ -11622,9 +11609,9 @@ static PyObject *__pyx_pf_4move_10move_median(CYTHON_UNUSED PyObject *__pyx_self
 /* "move.pyx":1192
  * 
  * @cython.cdivision(True)
- * cdef ndarray move_median_float64(ndarray a, int window, int nmin, int axis, np.flatiter ita,             # <<<<<<<<<<<<<<
- *                                 Py_ssize_t stride, Py_ssize_t length,
- *                                 int a_ndim, np.npy_intp* y_dims,
+ * cdef ndarray move_median_float64(ndarray a, int window, int nmin, int axis,             # <<<<<<<<<<<<<<
+ *                                 np.flatiter ita, Py_ssize_t stride,
+ *                                 Py_ssize_t length, int a_ndim,
  */
 
 static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a, int __pyx_v_window, CYTHON_UNUSED int __pyx_v_nmin, int __pyx_v_axis, PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, int __pyx_v_a_ndim, npy_intp *__pyx_v_y_dims, CYTHON_UNUSED int __pyx_v_ignore) {
@@ -11907,9 +11894,9 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
   /* "move.pyx":1192
  * 
  * @cython.cdivision(True)
- * cdef ndarray move_median_float64(ndarray a, int window, int nmin, int axis, np.flatiter ita,             # <<<<<<<<<<<<<<
- *                                 Py_ssize_t stride, Py_ssize_t length,
- *                                 int a_ndim, np.npy_intp* y_dims,
+ * cdef ndarray move_median_float64(ndarray a, int window, int nmin, int axis,             # <<<<<<<<<<<<<<
+ *                                 np.flatiter ita, Py_ssize_t stride,
+ *                                 Py_ssize_t length, int a_ndim,
  */
 
   /* function exit code */
@@ -11928,9 +11915,9 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
 /* "move.pyx":1227
  * 
  * @cython.cdivision(True)
- * cdef ndarray move_median_float32(ndarray a, int window, int nmin, int axis, np.flatiter ita,             # <<<<<<<<<<<<<<
- *                                 Py_ssize_t stride, Py_ssize_t length,
- *                                 int a_ndim, np.npy_intp* y_dims,
+ * cdef ndarray move_median_float32(ndarray a, int window, int nmin, int axis,             # <<<<<<<<<<<<<<
+ *                                 np.flatiter ita, Py_ssize_t stride,
+ *                                 Py_ssize_t length, int a_ndim,
  */
 
 static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a, int __pyx_v_window, CYTHON_UNUSED int __pyx_v_nmin, int __pyx_v_axis, PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, int __pyx_v_a_ndim, npy_intp *__pyx_v_y_dims, CYTHON_UNUSED int __pyx_v_ignore) {
@@ -12213,9 +12200,9 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
   /* "move.pyx":1227
  * 
  * @cython.cdivision(True)
- * cdef ndarray move_median_float32(ndarray a, int window, int nmin, int axis, np.flatiter ita,             # <<<<<<<<<<<<<<
- *                                 Py_ssize_t stride, Py_ssize_t length,
- *                                 int a_ndim, np.npy_intp* y_dims,
+ * cdef ndarray move_median_float32(ndarray a, int window, int nmin, int axis,             # <<<<<<<<<<<<<<
+ *                                 np.flatiter ita, Py_ssize_t stride,
+ *                                 Py_ssize_t length, int a_ndim,
  */
 
   /* function exit code */
@@ -12234,9 +12221,9 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
 /* "move.pyx":1262
  * 
  * @cython.cdivision(True)
- * cdef ndarray move_median_int64(ndarray a, int window, int nmin, int axis, np.flatiter ita,             # <<<<<<<<<<<<<<
- *                                 Py_ssize_t stride, Py_ssize_t length,
- *                                 int a_ndim, np.npy_intp* y_dims,
+ * cdef ndarray move_median_int64(ndarray a, int window, int nmin, int axis,             # <<<<<<<<<<<<<<
+ *                                 np.flatiter ita, Py_ssize_t stride,
+ *                                 Py_ssize_t length, int a_ndim,
  */
 
 static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, int __pyx_v_window, CYTHON_UNUSED int __pyx_v_nmin, int __pyx_v_axis, PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, int __pyx_v_a_ndim, npy_intp *__pyx_v_y_dims, CYTHON_UNUSED int __pyx_v_ignore) {
@@ -12554,9 +12541,9 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
   /* "move.pyx":1262
  * 
  * @cython.cdivision(True)
- * cdef ndarray move_median_int64(ndarray a, int window, int nmin, int axis, np.flatiter ita,             # <<<<<<<<<<<<<<
- *                                 Py_ssize_t stride, Py_ssize_t length,
- *                                 int a_ndim, np.npy_intp* y_dims,
+ * cdef ndarray move_median_int64(ndarray a, int window, int nmin, int axis,             # <<<<<<<<<<<<<<
+ *                                 np.flatiter ita, Py_ssize_t stride,
+ *                                 Py_ssize_t length, int a_ndim,
  */
 
   /* function exit code */
@@ -12579,9 +12566,9 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
 /* "move.pyx":1297
  * 
  * @cython.cdivision(True)
- * cdef ndarray move_median_int32(ndarray a, int window, int nmin, int axis, np.flatiter ita,             # <<<<<<<<<<<<<<
- *                                 Py_ssize_t stride, Py_ssize_t length,
- *                                 int a_ndim, np.npy_intp* y_dims,
+ * cdef ndarray move_median_int32(ndarray a, int window, int nmin, int axis,             # <<<<<<<<<<<<<<
+ *                                 np.flatiter ita, Py_ssize_t stride,
+ *                                 Py_ssize_t length, int a_ndim,
  */
 
 static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, int __pyx_v_window, CYTHON_UNUSED int __pyx_v_nmin, int __pyx_v_axis, PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, int __pyx_v_a_ndim, npy_intp *__pyx_v_y_dims, CYTHON_UNUSED int __pyx_v_ignore) {
@@ -12899,9 +12886,9 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
   /* "move.pyx":1297
  * 
  * @cython.cdivision(True)
- * cdef ndarray move_median_int32(ndarray a, int window, int nmin, int axis, np.flatiter ita,             # <<<<<<<<<<<<<<
- *                                 Py_ssize_t stride, Py_ssize_t length,
- *                                 int a_ndim, np.npy_intp* y_dims,
+ * cdef ndarray move_median_int32(ndarray a, int window, int nmin, int axis,             # <<<<<<<<<<<<<<
+ *                                 np.flatiter ita, Py_ssize_t stride,
+ *                                 Py_ssize_t length, int a_ndim,
  */
 
   /* function exit code */
@@ -15750,14 +15737,14 @@ static int __Pyx_InitCachedConstants(void) {
   /* "move.pyx":1180
  * 
  * 
- * def move_median(arr, int window, int nmin=-1, int axis=-1):             # <<<<<<<<<<<<<<
+ * def move_median(arr, int window, int axis=-1):             # <<<<<<<<<<<<<<
  *     try:
- *         return mover(arr, window, nmin, axis,
+ *         return mover(arr, window, window, axis,
  */
-  __pyx_tuple__20 = PyTuple_Pack(4, __pyx_n_s_arr, __pyx_n_s_window, __pyx_n_s_nmin, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__20)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1180; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__20 = PyTuple_Pack(3, __pyx_n_s_arr, __pyx_n_s_window, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__20)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1180; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__20);
   __Pyx_GIVEREF(__pyx_tuple__20);
-  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(4, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_move_median, 1180, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1180; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_move_median, 1180, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1180; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -16266,9 +16253,9 @@ PyMODINIT_FUNC PyInit_move(void)
   /* "move.pyx":1180
  * 
  * 
- * def move_median(arr, int window, int nmin=-1, int axis=-1):             # <<<<<<<<<<<<<<
+ * def move_median(arr, int window, int axis=-1):             # <<<<<<<<<<<<<<
  *     try:
- *         return mover(arr, window, nmin, axis,
+ *         return mover(arr, window, window, axis,
  */
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4move_11move_median, NULL, __pyx_n_s_move); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1180; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);

@@ -10,8 +10,8 @@ reduce                ``nansum, nanmean, nanstd, nanvar, nanmin, nanmax,
                       ss``
 non-reduce            ``replace``
 non-reduce (axis)     ``partsort, argpartsort, rankdata, nanrankdata``
-moving window         ``move_sum, move_mean, move_std, move_median, move_min,
-                      move_max``
+moving window         ``move_sum, move_mean, move_std, move_min,
+                      move_max, move_median``
 ===================== =======================================================
 
 Let's give it a try. Create a NumPy array::
@@ -114,7 +114,6 @@ Unit tests               nose
 Optional:
 
 ======================== ====================================================
-SciPy                    Portions of benchmark suite
 tox, virtualenv          Run unit tests across multiple python/numpy versions
 Cython                   Development of bottleneck
 ======================== ====================================================
@@ -141,6 +140,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 68 tests in 47.712s
+    Ran 52 tests in 47.712s
     OK
-    <nose.result.TextTestResult run=68 errors=0 failures=0>
+    <nose.result.TextTestResult run=52 errors=0 failures=0>

@@ -685,9 +685,9 @@ cdef extern from "csrc/move_median.c":
     void mm_free(mm_handle *mm) nogil
 
 
-def move_median(arr, int window, int nmin=-1, int axis=-1):
+def move_median(arr, int window, int axis=-1):
     try:
-        return mover(arr, window, nmin, axis,
+        return mover(arr, window, window, axis,
                      move_median_float64,
                      move_median_float32,
                      move_median_int64,
@@ -697,10 +697,10 @@ def move_median(arr, int window, int nmin=-1, int axis=-1):
 
 
 @cython.cdivision(True)
-cdef ndarray move_median_DTYPE0(ndarray a, int window, int nmin, int axis, np.flatiter ita,
-                                Py_ssize_t stride, Py_ssize_t length,
-                                int a_ndim, np.npy_intp* y_dims,
-                                int ignore):
+cdef ndarray move_median_DTYPE0(ndarray a, int window, int nmin, int axis,
+                                np.flatiter ita, Py_ssize_t stride,
+                                Py_ssize_t length, int a_ndim,
+                                np.npy_intp* y_dims, int ignore):
     # bn.dtypes = [['float64', 'float64'], ['float32', 'float32'], ['int64', 'float64'], ['int32', 'float64']]
     cdef mm_handle *mm
     cdef Py_ssize_t i

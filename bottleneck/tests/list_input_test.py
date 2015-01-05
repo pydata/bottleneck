@@ -129,9 +129,6 @@ def test_allnan():
     yield unit_maker, bn.allnan, bn.slow.allnan
 
 
-def test_move_median():
-    "Test move_median."
-    yield unit_maker, bn.move_median, bn.slow.move_median, (2,)
 """
 
 
@@ -154,20 +151,12 @@ def test_move_min():
     "Test move_min."
     yield unit_maker, bn.move_min, bn.slow.move_min, (2,)
     
-"""
-
 
 def test_move_max():
     "Test move_max."
     yield unit_maker, bn.move_max, bn.slow.move_max, (2,)
 
 
-def test_move_nanmax():
-    "Test move_nanmax."
-    yield unit_maker, bn.move_nanmax, bn.slow.move_nanmax, (2,)
-
-
 def test_move_median():
     "Test move_median."
     yield unit_maker, bn.move_median, bn.slow.move_median, (2,)
-"""

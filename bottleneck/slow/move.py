@@ -28,67 +28,22 @@ def move_std(arr, window, nmin=-1, axis=-1, ddof=0):
     return move_func(np.nanstd, arr, window, nmin, axis=axis)
 
 
-def move_min(arr, window, nmin=-1, axis=-1, ddof=0):
+def move_min(arr, window, nmin=-1, axis=-1):
     "Slow move_min for unaccelerated dtype"
     return move_func(np.nanmin, arr, window, nmin, axis=axis)
 
 
-def move_max(arr, window, nmax=-1, axis=-1, ddof=0):
+def move_max(arr, window, nmin=-1, axis=-1):
     "Slow move_max for unaccelerated dtype"
-    return move_func(np.nanmax, arr, window, nmax, axis=axis)
+    return move_func(np.nanmax, arr, window, nmin, axis=axis)
 
 
-# MEDIAN --------------------------------------------------------------------
+def move_median(arr, window, axis=-1):
+    "Slow move_median for unaccelerated dtype"
+    return move_func(np.nanmedian, arr, window, window, axis=axis)
 
 
-def move_median(arr, window, axis=-1, method='loop'):
-    """
-    Slow moving window median along the specified axis.
-
-    Parameters
-    ----------
-    arr : array_like
-        Input array.
-    window : int
-        The number of elements in the moving window.
-    axis : int, optional
-        The axis over which to perform the moving median. By default the
-        moving median is taken over the last axis (-1).
-    method : str, optional
-        The following moving window methods are available:
-            ==========  =====================================
-            'loop'      brute force python loop (default)
-            'strides'   strides tricks
-            ==========  =====================================
-
-    Returns
-    -------
-    y : ndarray
-        The moving median of the input array along the specified axis. The
-        output has the same shape as the input.
-
-    Examples
-    --------
-    >>> arr = np.array([1, 2, 3, 4, 5])
-    >>> bn.move_median(arr, window=2)
-    array([ NaN,  1.5,  2.5,  3.5,  4.5])
-
-    """
-    arr = np.array(arr, copy=False)
-    if method == 'strides':
-        y = move_func_strides(np.median, arr, window, axis=axis)
-    elif method == 'loop':
-        y = move_func_loop(np.median, arr, window, axis=axis)
-    else:
-        msg = "`method` must be 'strides' or 'loop'."
-        raise ValueError(msg)
-    if y.dtype != arr.dtype:
-        if issubclass(arr.dtype.type, np.inexact):
-            y = y.astype(arr.dtype)
-    return y
-
-# GENERAL --------------------------------------------------------------------
-
+# magic utility functions ---------------------------------------------------
 
 def move_func(func, arr, window, nmin=-1, axis=-1, **kwargs):
     "Generic moving window function implemented with a python loop."
