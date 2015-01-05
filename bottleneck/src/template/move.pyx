@@ -60,18 +60,18 @@ cdef np.float64_t MINfloat64 = -np.inf
 
 # move_sum -----------------------------------------------------------------
 
-def move_sum(arr, int window, int minc=-1, int axis=-1):
+def move_sum(arr, int window, int min_count=-1, int axis=-1):
     try:
-        return mover(arr, window, minc, axis,
+        return mover(arr, window, min_count, axis,
                      move_sum_float64,
                      move_sum_float32,
                      move_sum_int64,
                      move_sum_int32)
     except TypeError:
-        return slow.move_sum(arr, window, minc, axis)
+        return slow.move_sum(arr, window, min_count, axis)
 
 
-cdef ndarray move_sum_DTYPE0(ndarray a, int window, int minc, int axis,
+cdef ndarray move_sum_DTYPE0(ndarray a, int window, int min_count, int axis,
                              np.flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
                              np.npy_intp* y_dims, int ignore):
@@ -84,18 +84,18 @@ cdef ndarray move_sum_DTYPE0(ndarray a, int window, int minc, int axis,
     while PyArray_ITER_NOTDONE(ita):
         asum = 0
         count = 0
-        for i in range(minc - 1):
+        for i in range(min_count - 1):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             if ai == ai:
                 asum += ai
                 count += 1
             (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(minc - 1, window):
+        for i in range(min_count - 1, window):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             if ai == ai:
                 asum += ai
                 count += 1
-            if count >= minc:
+            if count >= min_count:
                 yi = asum
             else:
                 yi = NAN
@@ -109,7 +109,7 @@ cdef ndarray move_sum_DTYPE0(ndarray a, int window, int minc, int axis,
             if aold == aold:
                 asum -= aold
                 count -= 1
-            if count >= minc:
+            if count >= min_count:
                 yi = asum
             else:
                 yi = NAN
@@ -119,7 +119,7 @@ cdef ndarray move_sum_DTYPE0(ndarray a, int window, int minc, int axis,
     return y
 
 
-cdef ndarray move_sum_DTYPE0(ndarray a, int window, int minc, int axis,
+cdef ndarray move_sum_DTYPE0(ndarray a, int window, int min_count, int axis,
                              np.flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
                              np.npy_intp* y_dims, int int_input):
@@ -132,11 +132,11 @@ cdef ndarray move_sum_DTYPE0(ndarray a, int window, int minc, int axis,
     cdef Py_ssize_t ystride = y.strides[axis]
     while PyArray_ITER_NOTDONE(ita):
         asum = 0
-        for i in range(minc - 1):
+        for i in range(min_count - 1):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             asum += ai
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(minc - 1, window):
+        for i in range(min_count - 1, window):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             asum += ai
             yi = <DTYPE1_t>asum
@@ -155,19 +155,19 @@ cdef ndarray move_sum_DTYPE0(ndarray a, int window, int minc, int axis,
 
 # move_mean -----------------------------------------------------------------
 
-def move_mean(arr, int window, int minc=-1, int axis=-1):
+def move_mean(arr, int window, int min_count=-1, int axis=-1):
     try:
-        return mover(arr, window, minc, axis,
+        return mover(arr, window, min_count, axis,
                      move_mean_float64,
                      move_mean_float32,
                      move_mean_int64,
                      move_mean_int32)
     except TypeError:
-        return slow.move_mean(arr, window, minc, axis)
+        return slow.move_mean(arr, window, min_count, axis)
 
 
 @cython.cdivision(True)
-cdef ndarray move_mean_DTYPE0(ndarray a, int window, int minc, int axis,
+cdef ndarray move_mean_DTYPE0(ndarray a, int window, int min_count, int axis,
                               np.flatiter ita, Py_ssize_t stride,
                               Py_ssize_t length, int a_ndim,
                               np.npy_intp* y_dims, int int_input):
@@ -180,18 +180,18 @@ cdef ndarray move_mean_DTYPE0(ndarray a, int window, int minc, int axis,
     while PyArray_ITER_NOTDONE(ita):
         asum = 0
         count = 0
-        for i in range(minc - 1):
+        for i in range(min_count - 1):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             if ai == ai:
                 asum += ai
                 count += 1
             (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(minc - 1, window):
+        for i in range(min_count - 1, window):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             if ai == ai:
                 asum += ai
                 count += 1
-            if count >= minc:
+            if count >= min_count:
                 yi = asum / count
             else:
                 yi = NAN
@@ -205,7 +205,7 @@ cdef ndarray move_mean_DTYPE0(ndarray a, int window, int minc, int axis,
             if aold == aold:
                 asum -= aold
                 count -= 1
-            if count >= minc:
+            if count >= min_count:
                 yi = asum / count
             else:
                 yi = NAN
@@ -216,7 +216,7 @@ cdef ndarray move_mean_DTYPE0(ndarray a, int window, int minc, int axis,
 
 
 @cython.cdivision(True)
-cdef ndarray move_mean_DTYPE0(ndarray a, int window, int minc, int axis,
+cdef ndarray move_mean_DTYPE0(ndarray a, int window, int min_count, int axis,
                               np.flatiter ita, Py_ssize_t stride,
                               Py_ssize_t length, int a_ndim,
                               np.npy_intp* y_dims, int int_input):
@@ -229,11 +229,11 @@ cdef ndarray move_mean_DTYPE0(ndarray a, int window, int minc, int axis,
     cdef Py_ssize_t ystride = y.strides[axis]
     while PyArray_ITER_NOTDONE(ita):
         asum = 0
-        for i in range(minc - 1):
+        for i in range(min_count - 1):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             asum += ai
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(minc - 1, window):
+        for i in range(min_count - 1, window):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             asum += ai
             yi = asum / (i + 1)
@@ -252,20 +252,20 @@ cdef ndarray move_mean_DTYPE0(ndarray a, int window, int minc, int axis,
 
 # move_std -----------------------------------------------------------------
 
-def move_std(arr, int window, int minc=-1, int axis=-1, int ddof=0):
+def move_std(arr, int window, int min_count=-1, int axis=-1, int ddof=0):
     try:
-        return mover(arr, window, minc, axis,
+        return mover(arr, window, min_count, axis,
                      move_std_float64,
                      move_std_float32,
                      move_std_int64,
                      move_std_int32,
                      ddof)
     except TypeError:
-        return slow.move_std(arr, window, minc, axis, ddof)
+        return slow.move_std(arr, window, min_count, axis, ddof)
 
 
 @cython.cdivision(True)
-cdef ndarray move_std_DTYPE0(ndarray a, int window, int minc, int axis,
+cdef ndarray move_std_DTYPE0(ndarray a, int window, int min_count, int axis,
                              np.flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
                              np.npy_intp* y_dims, int ddof):
@@ -279,20 +279,20 @@ cdef ndarray move_std_DTYPE0(ndarray a, int window, int minc, int axis,
         asum = 0
         a2sum = 0
         count = 0
-        for i in range(minc - 1):
+        for i in range(min_count - 1):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             if ai == ai:
                 asum += ai
                 a2sum += ai * ai
                 count += 1
             (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(minc - 1, window):
+        for i in range(min_count - 1, window):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             if ai == ai:
                 asum += ai
                 a2sum += ai * ai
                 count += 1
-            if count >= minc:
+            if count >= min_count:
                 ssr = a2sum - asum * asum / count
                 if ssr < 0:
                     yi = 0
@@ -312,7 +312,7 @@ cdef ndarray move_std_DTYPE0(ndarray a, int window, int minc, int axis,
                 asum -= aold
                 a2sum -= aold * aold
                 count -= 1
-            if count >= minc:
+            if count >= min_count:
                 ssr = a2sum - asum * asum / count
                 if ssr < 0:
                     yi = 0
@@ -327,7 +327,7 @@ cdef ndarray move_std_DTYPE0(ndarray a, int window, int minc, int axis,
 
 
 @cython.cdivision(True)
-cdef ndarray move_std_DTYPE0(ndarray a, int window, int minc, int axis,
+cdef ndarray move_std_DTYPE0(ndarray a, int window, int min_count, int axis,
                              np.flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
                              np.npy_intp* y_dims, int ddof):
@@ -343,12 +343,12 @@ cdef ndarray move_std_DTYPE0(ndarray a, int window, int minc, int axis,
     while PyArray_ITER_NOTDONE(ita):
         asum = 0
         a2sum = 0
-        for i in range(minc - 1):
+        for i in range(min_count - 1):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             asum += ai
             a2sum += ai * ai
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(minc - 1, window):
+        for i in range(min_count - 1, window):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             asum += ai
             a2sum += ai * ai
@@ -370,18 +370,18 @@ cdef ndarray move_std_DTYPE0(ndarray a, int window, int minc, int axis,
 
 # move_min ---------------------------------------------------------------
 
-def move_min(arr, int window, int minc=-1, int axis=-1):
+def move_min(arr, int window, int min_count=-1, int axis=-1):
     try:
-        return mover(arr, window, minc, axis,
+        return mover(arr, window, min_count, axis,
                      move_min_float64,
                      move_min_float32,
                      move_min_int64,
                      move_min_int32)
     except TypeError:
-        return slow.move_min(arr, window, minc, axis)
+        return slow.move_min(arr, window, min_count, axis)
 
 
-cdef ndarray move_min_DTYPE0(ndarray a, int window, int minc, int axis,
+cdef ndarray move_min_DTYPE0(ndarray a, int window, int min_count, int axis,
                              np.flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
                              np.npy_intp* y_dims, int ignore):
@@ -440,7 +440,7 @@ cdef ndarray move_min_DTYPE0(ndarray a, int window, int minc, int axis,
                     last = ring
                 last.value = ai
                 last.death = i + window
-            if count >= minc:
+            if count >= min_count:
                 yi = minpair.value
             else:
                 yi = NAN
@@ -452,7 +452,7 @@ cdef ndarray move_min_DTYPE0(ndarray a, int window, int minc, int axis,
     return y
 
 
-cdef ndarray move_min_DTYPE0(ndarray a, int window, int minc, int axis,
+cdef ndarray move_min_DTYPE0(ndarray a, int window, int min_count, int axis,
                              np.flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
                              np.npy_intp* y_dims, int ignore):
@@ -500,7 +500,7 @@ cdef ndarray move_min_DTYPE0(ndarray a, int window, int minc, int axis,
                     last = ring
                 last.value = ai
                 last.death = i + window
-            if i + 1 >= minc:
+            if i + 1 >= min_count:
                 yi = minpair.value
             else:
                 yi = NAN
@@ -514,18 +514,18 @@ cdef ndarray move_min_DTYPE0(ndarray a, int window, int minc, int axis,
 
 # move_max ---------------------------------------------------------------
 
-def move_max(arr, int window, int minc=-1, int axis=-1):
+def move_max(arr, int window, int min_count=-1, int axis=-1):
     try:
-        return mover(arr, window, minc, axis,
+        return mover(arr, window, min_count, axis,
                      move_max_float64,
                      move_max_float32,
                      move_max_int64,
                      move_max_int32)
     except TypeError:
-        return slow.move_max(arr, window, minc, axis)
+        return slow.move_max(arr, window, min_count, axis)
 
 
-cdef ndarray move_max_DTYPE0(ndarray a, int window, int minc, int axis,
+cdef ndarray move_max_DTYPE0(ndarray a, int window, int min_count, int axis,
                              np.flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
                              np.npy_intp* y_dims, int ignore):
@@ -584,7 +584,7 @@ cdef ndarray move_max_DTYPE0(ndarray a, int window, int minc, int axis,
                     last = ring
                 last.value = ai
                 last.death = i + window
-            if count >= minc:
+            if count >= min_count:
                 yi = maxpair.value
             else:
                 yi = NAN
@@ -596,7 +596,7 @@ cdef ndarray move_max_DTYPE0(ndarray a, int window, int minc, int axis,
     return y
 
 
-cdef ndarray move_max_DTYPE0(ndarray a, int window, int minc, int axis,
+cdef ndarray move_max_DTYPE0(ndarray a, int window, int min_count, int axis,
                              np.flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
                              np.npy_intp* y_dims, int ignore):
@@ -644,7 +644,7 @@ cdef ndarray move_max_DTYPE0(ndarray a, int window, int minc, int axis,
                     last = ring
                 last.value = ai
                 last.death = i + window
-            if i + 1 >= minc:
+            if i + 1 >= min_count:
                 yi = maxpair.value
             else:
                 yi = NAN
@@ -697,7 +697,7 @@ def move_median(arr, int window, int axis=-1):
 
 
 @cython.cdivision(True)
-cdef ndarray move_median_DTYPE0(ndarray a, int window, int minc, int axis,
+cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
                                 np.flatiter ita, Py_ssize_t stride,
                                 Py_ssize_t length, int a_ndim,
                                 np.npy_intp* y_dims, int ignore):
@@ -746,7 +746,7 @@ ctypedef ndarray (*move_t)(ndarray, int, int, int, np.flatiter, Py_ssize_t,
                            Py_ssize_t, int, np.npy_intp*, int)
 
 
-cdef ndarray mover(arr, int window, int minc, int axis,
+cdef ndarray mover(arr, int window, int min_count, int axis,
                    move_t move_float64,
                    move_t move_float32,
                    move_t move_int64,
@@ -790,27 +790,26 @@ cdef ndarray mover(arr, int window, int minc, int axis,
     if (window < 1) or (window > length):
         msg = "Moving window (=%d) must between 1 and %d, inclusive"
         raise ValueError(msg % (window, length))
-    if minc < 0:
-        minc = window
-    elif minc > window:
-        msg = "minc (%d) cannot be greater than window (%d)"
-        raise ValueError(msg % (minc, window))
-    elif minc == 0:
-        raise ValueError("`minc` cannot be zero")
+    if min_count < 0:
+        min_count = window
+    elif min_count > window:
+        msg = "min_count (%d) cannot be greater than window (%d)"
+        raise ValueError(msg % (min_count, window))
+    elif min_count == 0:
+        raise ValueError("`min_count` cannot be zero")
 
     if dtype == NPY_float64:
-        y = move_float64(a, window, minc, axis, ita, stride, length, a_ndim,
-                         y_dims, int_input)
+        y = move_float64(a, window, min_count, axis, ita, stride, length,
+                         a_ndim, y_dims, int_input)
     elif dtype == NPY_float32:
-        y = move_float32(a, window, minc, axis, ita, stride, length, a_ndim,
-                         y_dims,
-                         int_input)
+        y = move_float32(a, window, min_count, axis, ita, stride, length,
+                         a_ndim, y_dims, int_input)
     elif dtype == NPY_int64:
-        y = move_int64(a, window, minc, axis, ita, stride, length, a_ndim,
-                       y_dims, int_input)
+        y = move_int64(a, window, min_count, axis, ita, stride, length,
+                       a_ndim, y_dims, int_input)
     elif dtype == NPY_int32:
-        y = move_int32(a, window, minc, axis, ita, stride, length, a_ndim,
-                       y_dims, int_input)
+        y = move_int32(a, window, min_count, axis, ita, stride, length,
+                       a_ndim, y_dims, int_input)
     else:
         raise TypeError("Unsupported dtype (%s)." % a.dtype)
     return y

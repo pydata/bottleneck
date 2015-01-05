@@ -38,7 +38,7 @@ def arrays(dtypes=DTYPES, nans=True):
 
 def unit_maker(func, func0, decimal=np.inf, nans=True):
     "Test that bn.xxx gives the same output as a reference function."
-    msg = ('\nfunc %s | window %d | minc %d | input %s (%s) | shape %s | '
+    msg = ('\nfunc %s | window %d | min_count %d | input %s (%s) | shape %s | '
            'axis %s\n')
     msg += '\nInput array:\n%s\n'
     for i, arr in enumerate(arrays(nans=nans)):
@@ -47,23 +47,25 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
             if len(windows) == 0:
                 windows = [1]
             for window in windows:
-                mincs = [w for w in windows if w <= window]
-                mincs.append(-1)
-                for minc in mincs:
+                min_counts = [w for w in windows if w <= window]
+                min_counts.append(-1)
+                for min_count in min_counts:
                     with np.errstate(invalid='ignore'):
                         with warnings.catch_warnings():
                             warnings.simplefilter("ignore")
                             if func.__name__ == 'move_median':
                                 actual = func(arr, window, axis=axis)
                             else:
-                                actual = func(arr, window, minc, axis=axis)
+                                actual = func(arr, window, min_count,
+                                              axis=axis)
                         with warnings.catch_warnings():
                             warnings.simplefilter("ignore")
                             if func.__name__ == 'move_median':
                                 desired = func0(arr, window, axis=axis)
                             else:
-                                desired = func0(arr, window, minc, axis=axis)
-                    tup = (func.__name__, window, minc, 'a'+str(i),
+                                desired = func0(arr, window, min_count,
+                                                axis=axis)
+                    tup = (func.__name__, window, min_count, 'a'+str(i),
                            str(arr.dtype), str(arr.shape), str(axis), arr)
                     err_msg = msg % tup
                     if (decimal < np.inf) and (np.isfinite(arr).sum() > 0):
