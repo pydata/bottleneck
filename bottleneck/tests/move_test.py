@@ -38,7 +38,7 @@ def arrays(dtypes=DTYPES, nans=True):
 
 def unit_maker(func, func0, decimal=np.inf, nans=True):
     "Test that bn.xxx gives the same output as a reference function."
-    msg = ('\nfunc %s | window %d | min_count %d | input %s (%s) | shape %s | '
+    msg = ('\nfunc %s | window %d | min_count %s | input %s (%s) | shape %s | '
            'axis %s\n')
     msg += '\nInput array:\n%s\n'
     for i, arr in enumerate(arrays(nans=nans)):
@@ -48,7 +48,7 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
                 windows = [1]
             for window in windows:
                 min_counts = [w for w in windows if w <= window]
-                min_counts.append(-1)
+                min_counts.append(None)
                 for min_count in min_counts:
                     with np.errstate(invalid='ignore'):
                         with warnings.catch_warnings():
@@ -65,7 +65,7 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
                             else:
                                 desired = func0(arr, window, min_count,
                                                 axis=axis)
-                    tup = (func.__name__, window, min_count, 'a'+str(i),
+                    tup = (func.__name__, window, str(min_count), 'a'+str(i),
                            str(arr.dtype), str(arr.shape), str(axis), arr)
                     err_msg = msg % tup
                     if (decimal < np.inf) and (np.isfinite(arr).sum() > 0):

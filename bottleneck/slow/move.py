@@ -13,27 +13,27 @@ __all__ = ['move_sum', 'move_mean', 'move_std', 'move_min', 'move_max',
            'move_median']
 
 
-def move_sum(arr, window, min_count=-1, axis=-1):
+def move_sum(arr, window, min_count=None, axis=-1):
     "Slow move_sum for unaccelerated dtype"
     return move_func(np.nansum, arr, window, min_count, axis=axis)
 
 
-def move_mean(arr, window, min_count=-1, axis=-1):
+def move_mean(arr, window, min_count=None, axis=-1):
     "Slow move_mean for unaccelerated dtype"
     return move_func(np.nanmean, arr, window, min_count, axis=axis)
 
 
-def move_std(arr, window, min_count=-1, axis=-1, ddof=0):
+def move_std(arr, window, min_count=None, axis=-1, ddof=0):
     "Slow move_std for unaccelerated dtype"
     return move_func(np.nanstd, arr, window, min_count, axis=axis)
 
 
-def move_min(arr, window, min_count=-1, axis=-1):
+def move_min(arr, window, min_count=None, axis=-1):
     "Slow move_min for unaccelerated dtype"
     return move_func(np.nanmin, arr, window, min_count, axis=axis)
 
 
-def move_max(arr, window, min_count=-1, axis=-1):
+def move_max(arr, window, min_count=None, axis=-1):
     "Slow move_max for unaccelerated dtype"
     return move_func(np.nanmax, arr, window, min_count, axis=axis)
 
@@ -45,9 +45,18 @@ def move_median(arr, window, axis=-1):
 
 # magic utility functions ---------------------------------------------------
 
-def move_func(func, arr, window, min_count=-1, axis=-1, **kwargs):
+def move_func(func, arr, window, min_count=None, axis=-1, **kwargs):
     "Generic moving window function implemented with a python loop."
     arr = np.array(arr, copy=False)
+    if min_count is None:
+        mc = window
+    else:
+        mc = min_count
+        if mc > window:
+            msg = "min_count (%d) cannot be greater than window (%d)"
+            raise ValueError(msg % (mc, window))
+        elif mc <= 0:
+            raise ValueError("`min_count` must be greater than zero.")
     if arr.ndim == 0:
         raise ValueError("moving window functions require ndim > 0")
     if axis is None:
@@ -56,13 +65,6 @@ def move_func(func, arr, window, min_count=-1, axis=-1, **kwargs):
         raise ValueError("`window` must be at least 1.")
     if window > arr.shape[axis]:
         raise ValueError("`window` is too long.")
-    if min_count < 0:
-        min_count = window
-    elif min_count > window:
-        msg = "min_count (%d) cannot be greater than window (%d)"
-        raise ValueError(msg % (min_count, window))
-    elif min_count == 0:
-        raise ValueError("`min_count` cannot be zero")
     if issubclass(arr.dtype.type, np.inexact):
         y = np.empty_like(arr)
     else:
@@ -77,7 +79,7 @@ def move_func(func, arr, window, min_count=-1, axis=-1, **kwargs):
             idx2[axis] = i
             a = arr[idx1]
             y[idx2] = func(a, axis=axis, **kwargs)
-    idx = _mask(arr, window, min_count, axis)
+    idx = _mask(arr, window, mc, axis)
     y[idx] = np.nan
     return y
 
