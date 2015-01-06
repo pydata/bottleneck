@@ -43,18 +43,18 @@ Nonreduce (axis)
 Move
 ====
 
-    (arr, int window, int axis)
+    (arr, int window, min_count, int axis)
 
         output dtype = input dtype
-            sum, nansum, min, max, nanmin, nanmax
+            sum, min, max
 
         int --> float64
-            mean, nanmean, median
+            mean, median
 
-    (arr, int window, int axis, int ddof)
+    (arr, int window, min_count, int axis, int ddof)
 
         int --> float64
-            std, nanstd
+            std
 
 * means TODO
 
@@ -66,3 +66,5 @@ Misc
 - port docstrings from old bottleneck
 - get function reference in sphinx doc working
 - can nogil be used?
+- why does the benchmark say that nanmax and move_max are twice as fast as
+  nanmin and move_min for (1000, 1000) arrays with NaNs in them?
