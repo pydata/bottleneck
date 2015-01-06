@@ -9,7 +9,7 @@ from numpy.testing import (assert_equal, assert_array_equal,
 nan = np.nan
 import bottleneck as bn
 
-DTYPES = [np.float64, np.float32, np.int64, np.int32]
+DTYPES = [np.float64, np.float32, np.int64, np.int32, np.float16]
 
 
 def arrays(dtypes=DTYPES, nans=True):
@@ -38,8 +38,8 @@ def arrays(dtypes=DTYPES, nans=True):
 
 def unit_maker(func, func0, decimal=np.inf, nans=True):
     "Test that bn.xxx gives the same output as a reference function."
-    msg = ('\nfunc %s | window %d | input %s (%s) | shape %s | axis %s | '
-           'reference_method %r\n')
+    msg = ('\nfunc %s | window %d | min_count %s | input %s (%s) | shape %s | '
+           'axis %s\n')
     msg += '\nInput array:\n%s\n'
     for i, arr in enumerate(arrays(nans=nans)):
         for axis in range(-arr.ndim, arr.ndim):
@@ -47,17 +47,26 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
             if len(windows) == 0:
                 windows = [1]
             for window in windows:
-                for reference_method in ['loop', 'strides']:
+                min_counts = [w for w in windows if w <= window]
+                min_counts.append(None)
+                for min_count in min_counts:
                     with np.errstate(invalid='ignore'):
                         with warnings.catch_warnings():
                             warnings.simplefilter("ignore")
-                            actual = func(arr, window, axis=axis)
+                            if func.__name__ == 'move_median':
+                                actual = func(arr, window, axis=axis)
+                            else:
+                                actual = func(arr, window, min_count,
+                                              axis=axis)
                         with warnings.catch_warnings():
                             warnings.simplefilter("ignore")
-                            desired = func0(arr, window, axis=axis,
-                                            method=reference_method)
-                    tup = (func.__name__, window, 'a'+str(i), str(arr.dtype),
-                           str(arr.shape), str(axis), reference_method, arr)
+                            if func.__name__ == 'move_median':
+                                desired = func0(arr, window, axis=axis)
+                            else:
+                                desired = func0(arr, window, min_count,
+                                                axis=axis)
+                    tup = (func.__name__, window, str(min_count), 'a'+str(i),
+                           str(arr.dtype), str(arr.shape), str(axis), arr)
                     err_msg = msg % tup
                     if (decimal < np.inf) and (np.isfinite(arr).sum() > 0):
                         assert_array_almost_equal(actual, desired, decimal,
@@ -76,19 +85,9 @@ def test_move_sum():
     yield unit_maker, bn.move_sum, bn.slow.move_sum, 5
 
 
-def test_move_nansum():
-    "Test move_nansum."
-    yield unit_maker, bn.move_nansum, bn.slow.move_nansum, 5
-
-
 def test_move_mean():
     "Test move_mean."
     yield unit_maker, bn.move_mean, bn.slow.move_mean, 5
-
-
-def test_move_nanmean():
-    "Test move_nanmean."
-    yield unit_maker, bn.move_nanmean, bn.slow.move_nanmean, 5
 
 
 def test_move_std():
@@ -96,39 +95,22 @@ def test_move_std():
     yield unit_maker, bn.move_std, bn.slow.move_std, 5
 
 
-def test_move_nanstd():
-    "Test move_nanstd."
-    yield unit_maker, bn.move_nanstd, bn.slow.move_nanstd, 5
+def test_move_min():
+    "Test move_min."
+    yield unit_maker, bn.move_min, bn.slow.move_min, 5
 
 
 def test_move_max():
     "Test move_max."
     yield unit_maker, bn.move_max, bn.slow.move_max, 5
 
-
-def test_move_nanmax():
-    "Test move_nanmax."
-    yield unit_maker, bn.move_nanmax, bn.slow.move_nanmax, 5
-
-
 def test_move_median():
     "Test move_median."
     yield unit_maker, bn.move_median, bn.slow.move_median, 5, False
 
 
-def test_move_min():
-    "Test move_min."
-    yield unit_maker, bn.move_min, bn.slow.move_min, 5
-
-
-def test_move_nanmin():
-    "Test move_nanmin."
-    yield unit_maker, bn.move_nanmin, bn.slow.move_nanmin, 5
-
-
 # ----------------------------------------------------------------------------
 # Regression test for square roots of negative numbers
-
 
 def test_move_std_sqrt():
     "Test move_std for neg sqrt."
@@ -148,25 +130,4 @@ def test_move_std_sqrt():
 
     a3 = np.array([[a, a], [a, a]])
     b = bn.move_std(a3, window=3, axis=2)
-    assert_true(np.isfinite(b[:, :, 2:]).all(), err_msg % 3)
-
-
-def test_move_nanstd_sqrt():
-    "Test move_nanstd for neg sqrt."
-
-    a = [0.0011448196318903589,
-         0.00028718669878572767,
-         0.00028718669878572767,
-         0.00028718669878572767,
-         0.00028718669878572767]
-    err_msg = "Square root of negative number. ndim = %d"
-    b = bn.move_nanstd(a, window=3)
-    assert_true(np.isfinite(b[2:]).all(), err_msg % 1)
-
-    a2 = np.array([a, a])
-    b = bn.move_nanstd(a2, window=3, axis=1)
-    assert_true(np.isfinite(b[:, 2:]).all(), err_msg % 2)
-
-    a3 = np.array([[a, a], [a, a]])
-    b = bn.move_nanstd(a3, window=3, axis=2)
     assert_true(np.isfinite(b[:, :, 2:]).all(), err_msg % 3)

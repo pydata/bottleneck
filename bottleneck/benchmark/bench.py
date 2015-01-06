@@ -1,7 +1,4 @@
 
-# For support of python 2.5
-from __future__ import absolute_import, with_statement
-
 import numpy as np
 import bottleneck as bn
 from .autotimeit import autotimeit
@@ -35,12 +32,6 @@ def bench(dtype='float64', axis=-1,
 
     """
 
-    try:
-        import scipy as sp
-        SCIPY = True
-    except ImportError:
-        SCIPY = False
-
     if len(shapes) != len(nans):
         raise ValueError("`shapes` and `nans` must have the same length")
 
@@ -53,11 +44,7 @@ def bench(dtype='float64', axis=-1,
     print('Bottleneck performance benchmark')
     print("%sBottleneck  %s" % (tab, bn.__version__))
     print("%sNumpy (np)  %s" % (tab, np.__version__))
-    if SCIPY:
-        print("%sScipy (sp)  %s" % (tab, sp.__version__))
-    else:
-        print("%sScipy (sp)  Cannot import, skipping scipy benchmarks" % tab)
-    print("%sSpeed is NumPy or SciPy time divided by Bottleneck time" % tab)
+    print("%sSpeed is NumPy time divided by Bottleneck time" % tab)
     tup = (tab, dtype, axis)
     print("%sNaN means approx one-third NaNs; %s and axis=%s are used" % tup)
 
@@ -77,16 +64,8 @@ def bench(dtype='float64', axis=-1,
     for test in suite:
         name = test["name"].ljust(12)
         fmt = tab + name + "%7.1f" + "%11.1f"*(len(shapes) - 1)
-        if test['scipy_required'] and not SCIPY:
-            print("%s%s" % (name, "requires SciPy"))
-        else:
-            speed = timer(test['statements'], test['setups'])
-            print(fmt % tuple(speed))
-
-    print('')
-    print('Reference functions:')
-    for test in suite:
-        print("%s%s" % (test["name"].ljust(15), test['ref']))
+        speed = timer(test['statements'], test['setups'])
+        print(fmt % tuple(speed))
 
 
 def timer(statements, setups):
@@ -127,12 +106,10 @@ def benchsuite(shapes, dtype, axis, nans):
         return setups
 
     # numpy functions
-    funcs = ['nansum', 'nanmean', 'nanstd', 'nanmax']
+    funcs = ['nansum', 'nanmean', 'nanstd', 'nanmin', 'nanmax']
     for func in funcs:
         run = {}
         run['name'] = func
-        run['ref'] = "np.%s" % func
-        run['scipy_required'] = False
         run['statements'] = ["bn_func(a, axis=AXIS)", "np_func(a, axis=AXIS)"]
         setup = """
             from bottleneck import %s as bn_func
@@ -150,8 +127,6 @@ def benchsuite(shapes, dtype, axis, nans):
             pre = 'arg'
         else:
             pre = ''
-        run['ref'] = "np.%ssort, n=max(a.shape[%s]/2,1)" % (pre, axis)
-        run['scipy_required'] = False
         run['statements'] = ["bn_func(a, n=n, axis=AXIS)",
                              "np_func(a, axis=AXIS)"]
         setup = """
@@ -167,8 +142,6 @@ def benchsuite(shapes, dtype, axis, nans):
     # replace
     run = {}
     run['name'] = "replace"
-    run['ref'] = "np.putmask based (see bn.slow.replace)"
-    run['scipy_required'] = False
     run['statements'] = ["bn_func(a, np.nan, 0)",
                          "slow_func(a, np.nan, 0)"]
     setup = """
@@ -179,62 +152,21 @@ def benchsuite(shapes, dtype, axis, nans):
     suite.append(run)
 
     # moving window function that benchmark against sp.ndimage.convolve1d
-    funcs = ['move_sum', 'move_nansum', 'move_mean', 'move_nanmean',
-             'move_std', 'move_nanstd']
+    funcs = ['move_sum', 'move_mean', 'move_std', 'move_min', 'move_max',
+             'move_median']
     for func in funcs:
         run = {}
         run['name'] = func
-        run['ref'] = "sp.ndimage.convolve1d based, "
-        run['ref'] += "window=a.shape[%s] // 5" % axis
-        run['scipy_required'] = True
-        code = ["bn_func(a, window=w, axis=AXIS)",
-                "sp_func(a, window=w, axis=AXIS, method='filter')"]
-        run['statements'] = code
+        run['statements'] = ["bn_func(a, window=w, axis=AXIS)",
+                             "sw_func(a, window=w, axis=AXIS)"]
         setup = """
-            from bottleneck.slow.move import %s as sp_func
+            from bottleneck.slow.move import %s as sw_func
             from bottleneck import %s as bn_func
             w = a.shape[AXIS] // 5
         """ % (func, func)
         run['setups'] = getsetups(setup, shapes, nans)
         if axis != 'None':
             suite.append(run)
-
-    funcs = ['move_max', 'move_nanmax']
-    for func in funcs:
-        run = {}
-        run['name'] = func
-        run['ref'] = "sp.ndimage.maximum_filter1d based, "
-        run['ref'] += "window=a.shape[%s] // 5" % axis
-        run['scipy_required'] = True
-        code = ["bn_func(a, window=w, axis=AXIS)",
-                "sp_func(a, window=w, axis=AXIS, method='filter')"]
-        run['statements'] = code
-        setup = """
-            from bottleneck.slow.move import %s as sp_func
-            from bottleneck import %s as bn_func
-            w = a.shape[AXIS] // 5
-        """ % (func, func)
-        run['setups'] = getsetups(setup, shapes, nans)
-        if axis != 'None':
-            suite.append(run)
-
-    # move_median
-    run = {}
-    func = 'move_median'
-    run['name'] = func
-    run['ref'] = "for loop with np.median"
-    run['scipy_required'] = False
-    code = ["bn_func(a, window=w, axis=AXIS)",
-            "sl_func(a, window=w, axis=AXIS, method='loop')"]
-    run['statements'] = code
-    setup = """
-        from bottleneck.slow.move import %s as sl_func
-        from bottleneck import %s as bn_func
-        w = a.shape[AXIS] // 5
-    """ % (func, func)
-    run['setups'] = getsetups(setup, shapes, nans)
-    if axis != 'None':
-        suite.append(run)
 
     # runs
     # -----------------------------------------------------------------------

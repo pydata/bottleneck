@@ -10,9 +10,8 @@ reduce                ``nansum, nanmean, nanstd, nanvar, nanmin, nanmax,
                       ss``
 non-reduce            ``replace``
 non-reduce (axis)     ``partsort, argpartsort, rankdata, nanrankdata``
-moving window         ``move_sum, move_nansum, move_mean, move_nanmean,
-                      move_median, move_std, move_nanstd, move_min,
-                      move_nanmin, move_max, move_nanmax``
+moving window         ``move_sum, move_mean, move_std, move_min,
+                      move_max, move_median``
 ===================== =======================================================
 
 Let's give it a try. Create a NumPy array::
@@ -40,46 +39,25 @@ Bottleneck comes with a benchmark suite. To run the benchmark::
     Bottleneck performance benchmark
         Bottleneck  1.0.0dev
         Numpy (np)  1.9.1
-        Scipy (sp)  0.14.0
-        Speed is NumPy or SciPy time divided by Bottleneck time
+        Speed is NumPy time divided by Bottleneck time
         NaN means approx one-third NaNs; float64 and axis=-1 are used
 
                      no NaN     no NaN      NaN        NaN
                        (10,)   (1000,1000)   (10,)   (1000,1000)
-        nansum         39.8        4.1       40.2        9.3
-        nanmean       152.3        5.3      159.6       10.4
-        nanstd        273.6        4.2      258.4        8.4
-        nanmax         35.4        1.1       35.1        2.9
-        partsort        3.9        2.9        4.0        3.5
+        nansum         36.9        4.0       41.4        9.2
+        nanmean       153.4        5.3      151.1       10.5
+        nanstd        260.0        4.2      261.4        8.4
+        nanmin         33.8        1.1       33.9        1.7
+        nanmax         30.1        1.1       30.3        2.9
+        partsort        3.8        2.9        3.8        3.6
         argpartsort     0.9        2.4        1.0        1.7
-        replace        11.0        1.3       10.9        1.3
-        move_sum       37.6       66.5       35.0       67.7
-        move_nansum    71.9      135.3       74.7      137.5
-        move_mean      31.9       31.8       32.0       68.1
-        move_nanmean   76.1       65.6       79.0       65.9
-        move_std       57.0       22.1       60.5      132.5
-        move_nanstd    99.0       34.6      100.8       34.9
-        move_max       14.5       20.2       14.5       60.6
-        move_nanmax    49.3       37.8       51.4      105.4
-        move_median   358.9       34.4      363.0       22.2
-
-    Reference functions:
-    nansum         np.nansum
-    nanmean        np.nanmean
-    nanstd         np.nanstd
-    nanmax         np.nanmax
-    partsort       np.sort, n=max(a.shape[-1]/2,1)
-    argpartsort    np.argsort, n=max(a.shape[-1]/2,1)
-    replace        np.putmask based (see bn.slow.replace)
-    move_sum       sp.ndimage.convolve1d based, window=a.shape[-1] // 5
-    move_nansum    sp.ndimage.convolve1d based, window=a.shape[-1] // 5
-    move_mean      sp.ndimage.convolve1d based, window=a.shape[-1] // 5
-    move_nanmean   sp.ndimage.convolve1d based, window=a.shape[-1] // 5
-    move_std       sp.ndimage.convolve1d based, window=a.shape[-1] // 5
-    move_nanstd    sp.ndimage.convolve1d based, window=a.shape[-1] // 5
-    move_max       sp.ndimage.maximum_filter1d based, window=a.shape[-1] // 5
-    move_nanmax    sp.ndimage.maximum_filter1d based, window=a.shape[-1] // 5
-    move_median    for loop with np.median
+        replace         9.8        1.3        9.8        1.3
+        move_sum      375.5      118.7      333.0      334.9
+        move_mean     990.9       93.6     1008.7      410.0
+        move_std     1498.4       55.5     1690.2      754.1
+        move_min      257.6       20.9      261.2       53.2
+        move_max      277.5       21.1      285.1      121.4
+        move_median   533.1       42.3      503.8      196.5
 
 Only arrays with data type (dtype) int32, int64, float32, and float64 are
 accelerated. All other dtypes result in calls to slower, unaccelerated
@@ -115,7 +93,6 @@ Unit tests               nose
 Optional:
 
 ======================== ====================================================
-SciPy                    Portions of benchmark suite
 tox, virtualenv          Run unit tests across multiple python/numpy versions
 Cython                   Development of bottleneck
 ======================== ====================================================
@@ -142,6 +119,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 68 tests in 47.712s
+    Ran 52 tests in 47.712s
     OK
-    <nose.result.TextTestResult run=68 errors=0 failures=0>
+    <nose.result.TextTestResult run=52 errors=0 failures=0>
