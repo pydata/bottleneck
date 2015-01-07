@@ -2,17 +2,7 @@
 Bottleneck
 ==========
 
-Bottleneck is a collection of fast NumPy array functions written in Cython:
-
-===================== =======================================================
-reduce                ``nansum, nanmean, nanstd, nanvar, nanmin, nanmax,
-                      median, nanmedian, nanargmin, nanargmax, anynan, allnan,
-                      ss``
-non-reduce            ``replace``
-non-reduce (axis)     ``partsort, argpartsort, rankdata, nanrankdata``
-moving window         ``move_sum, move_mean, move_std, move_min,
-                      move_max, move_median``
-===================== =======================================================
+Bottleneck is a collection of fast NumPy array functions written in Cython.
 
 Let's give it a try. Create a NumPy array::
 
@@ -25,15 +15,15 @@ Find the nanmean::
     >>> bn.nanmean(arr)
     3.0
 
-Moving window nanmean::
+Moving window mean::
 
-    >>> bn.move_nanmean(arr, window=2)
-    array([ nan,  1.5,  2. ,  4. ,  4.5])
+    >>> bn.move_mean(arr, window=2, min_count=1)
+    array([ 1. ,  1.5,  2. ,  4. ,  4.5])
 
 Benchmark
 =========
 
-Bottleneck comes with a benchmark suite. To run the benchmark::
+Bottleneck comes with a benchmark suite::
 
     >>> bn.bench()
     Bottleneck performance benchmark
