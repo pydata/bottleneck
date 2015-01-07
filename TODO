@@ -34,7 +34,7 @@ Nonreduce (axis)
     (arr, axis)
 
         output dtype = float64
-            rankdata*, nanrankdata*
+            rankdata, nanrankdata
 
     (arr, axis, int)
 

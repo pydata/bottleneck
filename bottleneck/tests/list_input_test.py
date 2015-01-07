@@ -83,6 +83,16 @@ def test_argpartsort():
     yield unit_maker, bn.argpartsort, bn.slow.argpartsort, (2,)
 
 
+def test_rankdata():
+    "Test rankdata."
+    yield unit_maker, bn.rankdata, bn.slow.rankdata
+
+
+def test_nanrankdata():
+    "Test nanrankdata."
+    yield unit_maker, bn.nanrankdata, bn.slow.nanrankdata
+
+
 """
 def test_nanargmin():
     "Test nanargmin."
@@ -102,16 +112,6 @@ def test_median():
 def test_nanmedian():
     "Test nanmedian."
     yield unit_maker, bn.nanmedian, bn.slow.nanmedian
-
-
-def test_rankdata():
-    "Test rankdata."
-    yield unit_maker, bn.rankdata, bn.slow.rankdata
-
-
-def test_nanrankdata():
-    "Test nanrankdata."
-    yield unit_maker, bn.nanrankdata, bn.slow.nanrankdata
 
 
 def test_ss():
@@ -150,7 +150,7 @@ def test_move_std():
 def test_move_min():
     "Test move_min."
     yield unit_maker, bn.move_min, bn.slow.move_min, (2,)
-    
+
 
 def test_move_max():
     "Test move_max."

@@ -24,6 +24,9 @@ from numpy cimport NPY_CORDER
 from numpy cimport PyArray_Copy
 from numpy cimport PyArray_EMPTY
 from numpy cimport PyArray_Ravel
+from numpy cimport PyArray_ArgSort
+from numpy cimport NPY_QUICKSORT
+from numpy cimport PyArray_FillWithScalar
 
 from numpy cimport ndarray
 from numpy cimport import_array
@@ -167,6 +170,148 @@ cdef ndarray argpartsort_DTYPE0(ndarray a, int axis,
         PyArray_ITER_NEXT(iti)
 
     return index
+
+
+# nanrankdata ---------------------------------------------------------------
+
+def nanrankdata(arr, axis=None):
+    try:
+        return nonreducer_axis(arr, axis,
+                               nanrankdata_float64,
+                               nanrankdata_float32,
+                               rankdata_int64,
+                               rankdata_int32)
+    except TypeError:
+        return slow.nanrankdata(arr, axis)
+
+
+cdef ndarray nanrankdata_DTYPE0(ndarray a, int axis,
+                                int a_ndim, np.npy_intp* y_dims, int ignore):
+    # bn.dtypes = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp']]
+
+    cdef Py_ssize_t j=0, k, idx, dupcount=0, i
+    cdef DTYPE1_t old, new, averank, sumranks = 0
+    cdef Py_ssize_t length = a.shape[axis]
+
+    cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)
+    cdef Py_ssize_t astride = a.strides[axis]
+
+    cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)
+    cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
+    cdef Py_ssize_t istride = ivec.strides[axis]
+
+    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef Py_ssize_t ystride = y.strides[axis]
+
+    if length == 0:
+        PyArray_FillWithScalar(y, NAN)
+        return y
+
+    while PyArray_ITER_NOTDONE(ita):
+        idx = (<DTYPE2_t*>((<char*>pid(iti)) + 0*istride))[0]
+        old = (<DTYPE0_t*>((<char*>pid(ita)) + idx*astride))[0]
+        sumranks = 0
+        dupcount = 0
+        for i in range(length - 1):
+            sumranks += i
+            dupcount += 1
+            k = i + 1
+            idx = (<DTYPE2_t*>((<char*>pid(iti)) + k*istride))[0]
+            new = (<DTYPE0_t*>((<char*>pid(ita)) + idx*astride))[0]
+            if old != new:
+                if old == old:
+                    averank = sumranks / dupcount + 1
+                    for j in range(k - dupcount, k):
+                        idx = (<DTYPE2_t*>((<char*>pid(iti)) + j*istride))[0]
+                        (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
+                else:
+                    idx = (<DTYPE2_t*>((<char*>pid(iti)) + i*istride))[0]
+                    (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN
+                sumranks = 0
+                dupcount = 0
+            old = new
+        sumranks += (length - 1)
+        dupcount += 1
+        averank = sumranks / dupcount + 1
+        if old == old:
+            for j in range(length - dupcount, length):
+                idx = (<DTYPE2_t*>((<char*>pid(iti)) + j*istride))[0]
+                (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
+        else:
+            idx = (<DTYPE2_t*>((<char*>pid(iti)) + (length - 1)*istride))[0]
+            (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN
+        PyArray_ITER_NEXT(ita)
+        PyArray_ITER_NEXT(ity)
+        PyArray_ITER_NEXT(iti)
+    return y
+
+
+# rankdata ------------------------------------------------------------------
+
+def rankdata(arr, axis=None):
+    try:
+        return nonreducer_axis(arr, axis,
+                               rankdata_float64,
+                               rankdata_float32,
+                               rankdata_int64,
+                               rankdata_int32)
+    except TypeError:
+        return slow.rankdata(arr, axis)
+
+
+cdef ndarray rankdata_DTYPE0(ndarray a, int axis,
+                             int a_ndim, np.npy_intp* y_dims, int ignore):
+    # bn.dtypes = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp'], ['int64', 'float64', 'intp'], ['int32', 'float64', 'intp']]
+
+    cdef Py_ssize_t j=0, k, idx, dupcount=0, i
+    cdef DTYPE1_t old, new, averank, sumranks = 0
+    cdef Py_ssize_t length = a.shape[axis]
+
+    cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)
+    cdef Py_ssize_t astride = a.strides[axis]
+
+    cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)
+    cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
+    cdef Py_ssize_t istride = ivec.strides[axis]
+
+    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef Py_ssize_t ystride = y.strides[axis]
+
+    if length == 0:
+        PyArray_FillWithScalar(y, NAN)
+        return y
+
+    while PyArray_ITER_NOTDONE(ita):
+        idx = (<DTYPE2_t*>((<char*>pid(iti)) + 0*istride))[0]
+        old = (<DTYPE0_t*>((<char*>pid(ita)) + idx*astride))[0]
+        sumranks = 0
+        dupcount = 0
+        for i in range(length - 1):
+            sumranks += i
+            dupcount += 1
+            k = i + 1
+            idx = (<DTYPE2_t*>((<char*>pid(iti)) + k*istride))[0]
+            new = (<DTYPE0_t*>((<char*>pid(ita)) + idx*astride))[0]
+            if old != new:
+                averank = sumranks / dupcount + 1
+                for j in range(k - dupcount, k):
+                    idx = (<DTYPE2_t*>((<char*>pid(iti)) + j*istride))[0]
+                    (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
+                sumranks = 0
+                dupcount = 0
+            old = new
+        sumranks += (length - 1)
+        dupcount += 1
+        averank = sumranks / dupcount + 1
+        for j in range(length - dupcount, length):
+            idx = (<DTYPE2_t*>((<char*>pid(iti)) + j*istride))[0]
+            (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
+        PyArray_ITER_NEXT(ita)
+        PyArray_ITER_NEXT(ity)
+        PyArray_ITER_NEXT(iti)
+    return y
 
 
 # nonreduce_axis ------------------------------------------------------------

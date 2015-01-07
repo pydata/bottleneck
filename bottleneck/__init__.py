@@ -15,7 +15,7 @@ try:
 except:
     pass
 try:
-    from .nonreduce_axis import partsort, argpartsort
+    from .nonreduce_axis import partsort, argpartsort, rankdata, nanrankdata
 except:
     pass
 try:

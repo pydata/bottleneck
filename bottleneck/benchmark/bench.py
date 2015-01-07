@@ -106,15 +106,17 @@ def benchsuite(shapes, dtype, axis, nans):
         return setups
 
     # numpy functions
-    funcs = ['nansum', 'nanmean', 'nanstd', 'nanmin', 'nanmax']
+    funcs = ['nansum', 'nanmean', 'nanstd', 'nanmin', 'nanmax', 'rankdata',
+            'nanrankdata']
     for func in funcs:
         run = {}
         run['name'] = func
-        run['statements'] = ["bn_func(a, axis=AXIS)", "np_func(a, axis=AXIS)"]
+        run['statements'] = ["bn_func(a, axis=AXIS)", "sl_func(a, axis=AXIS)"]
         setup = """
             from bottleneck import %s as bn_func
-            from numpy import %s as np_func
-        """ % (func, func)
+            try: from numpy import %s as sl_func
+            except ImportError: from bottleneck.slow import %s as sl_func
+        """ % (func, func, func)
         run['setups'] = getsetups(setup, shapes, nans)
         suite.append(run)
 
@@ -218,19 +220,6 @@ def benchsuite(shapes, dtype, axis, nans):
     run['statements'] = [code, "scipy_ss(a, axis=AXIS)"]
     setup = """
         from bottleneck.slow.func import scipy_ss
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    #suite.append(run)
-
-    # rankdata
-    run = {}
-    run['name'] = "rankdata"
-    run['ref'] = "scipy.stats.rankdata based (axis support added)"
-    run['scipy_required'] = True
-    code = "bn.rankdata(a, axis=AXIS)"
-    run['statements'] = [code, "bn.slow.rankdata(a, axis=AXIS)"]
-    setup = """
-        ignore = bn.slow.rankdata(a, axis=AXIS)
     """
     run['setups'] = getsetups(setup, shapes, nans)
     #suite.append(run)
