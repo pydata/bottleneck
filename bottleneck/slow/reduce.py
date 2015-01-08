@@ -11,7 +11,7 @@ from numpy import nansum, nanmean, nanstd, nanvar, nanmin, nanmax
 
 
 def median(arr, axis=None):
-    "Slow median function used for unaccelerated ndim/dtype combinations."
+    "Slow median function used for unaccelerated dtypes."
     arr = np.asarray(arr)
     y = np.median(arr, axis=axis)
     if y.dtype != arr.dtype:
@@ -21,7 +21,7 @@ def median(arr, axis=None):
 
 
 def nanmedian(arr, axis=None):
-    "Slow nanmedian function used for unaccelerated ndim/dtype combinations."
+    "Slow nanmedian function used for unaccelerated dtypes."
     arr = np.asarray(arr)
     y = scipy_nanmedian(arr, axis=axis)
     if not hasattr(y, "dtype"):
@@ -38,32 +38,33 @@ def nanmedian(arr, axis=None):
 
 
 def nanargmin(arr, axis=None):
-    "Slow nanargmin function used for unaccelerated ndim/dtype combinations."
+    "Slow nanargmin function used for unaccelerated dtypes."
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         return np.nanargmin(arr, axis=axis)
 
 
 def nanargmax(arr, axis=None):
-    "Slow nanargmax function used for unaccelerated ndim/dtype combinations."
+    "Slow nanargmax function used for unaccelerated dtypes."
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         return np.nanargmax(arr, axis=axis)
 
 
 def ss(arr, axis=None):
-    "Slow sum of squares used for unaccelerated ndim/dtype combinations."
+    "Slow sum of squares used for unaccelerated dtypes."
     return np.multiply(arr, arr).sum(axis)
 
 
 def anynan(arr, axis=None):
-    "Slow check for Nans used for unaccelerated ndim/dtype combinations."
+    "Slow check for Nans used for unaccelerated dtypes."
     return np.isnan(arr).any(axis)
 
 
 def allnan(arr, axis=None):
-    "Slow check for all Nans used for unaccelerated ndim/dtype combinations."
+    "Slow check for all Nans used for unaccelerated dtypes."
     return np.isnan(arr).all(axis)
+
 
 # ---------------------------------------------------------------------------
 #
