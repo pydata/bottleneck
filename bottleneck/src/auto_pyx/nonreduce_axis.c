@@ -238,7 +238,6 @@ void __Pyx_call_destructor(T* x) {
 #include "stdlib.h"
 #include "numpy/arrayobject.h"
 #include "numpy/ufuncobject.h"
-#include "math.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -695,7 +694,7 @@ typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
 struct __pyx_opt_args_14nonreduce_axis_nonreducer_axis;
 
-/* "nonreduce_axis.pyx":800
+/* "nonreduce_axis.pyx":787
  * # nonreduce_axis ------------------------------------------------------------
  * 
  * ctypedef ndarray (*nra_t)(ndarray, int, int, np.npy_intp*, int)             # <<<<<<<<<<<<<<
@@ -704,7 +703,7 @@ struct __pyx_opt_args_14nonreduce_axis_nonreducer_axis;
  */
 typedef PyArrayObject *(*__pyx_t_14nonreduce_axis_nra_t)(PyArrayObject *, int, int, npy_intp *, int);
 
-/* "nonreduce_axis.pyx":803
+/* "nonreduce_axis.pyx":790
  * 
  * 
  * cdef ndarray nonreducer_axis(arr, axis,             # <<<<<<<<<<<<<<
@@ -833,12 +832,6 @@ static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index);
 
 static CYTHON_INLINE void __Pyx_RaiseNoneNotIterableError(void);
 
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg);
-#endif
-
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
-
 typedef struct {
     int code_line;
     PyCodeObject* code_object;
@@ -857,10 +850,6 @@ static void __Pyx_AddTraceback(const char *funcname, int c_line,
                                int py_line, const char *filename);
 
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
-
-static CYTHON_INLINE npy_int32 __Pyx_PyInt_As_npy_int32(PyObject *);
-
-static CYTHON_INLINE npy_int64 __Pyx_PyInt_As_npy_int64(PyObject *);
 
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 
@@ -1018,14 +1007,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *, cha
 
 /* Module declarations from 'nonreduce_axis' */
 static double __pyx_v_14nonreduce_axis_NAN;
-static __pyx_t_5numpy_int32_t __pyx_v_14nonreduce_axis_MAXint32;
-static __pyx_t_5numpy_int64_t __pyx_v_14nonreduce_axis_MAXint64;
-static __pyx_t_5numpy_float32_t __pyx_v_14nonreduce_axis_MAXfloat32;
-static __pyx_t_5numpy_float64_t __pyx_v_14nonreduce_axis_MAXfloat64;
-static __pyx_t_5numpy_int32_t __pyx_v_14nonreduce_axis_MINint32;
-static __pyx_t_5numpy_int64_t __pyx_v_14nonreduce_axis_MINint64;
-static __pyx_t_5numpy_float32_t __pyx_v_14nonreduce_axis_MINfloat32;
-static __pyx_t_5numpy_float64_t __pyx_v_14nonreduce_axis_MINfloat64;
 static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *, int, int, npy_intp *, int); /*proto*/
 static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *, int, int, npy_intp *, int); /*proto*/
 static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *, int, int, npy_intp *, int); /*proto*/
@@ -1076,9 +1057,6 @@ static char __pyx_k_Zg[] = "Zg";
 static char __pyx_k__7[] = "*";
 static char __pyx_k_np[] = "np";
 static char __pyx_k_arr[] = "arr";
-static char __pyx_k_inf[] = "inf";
-static char __pyx_k_max[] = "max";
-static char __pyx_k_min[] = "min";
 static char __pyx_k_nan[] = "nan";
 static char __pyx_k_axis[] = "axis";
 static char __pyx_k_copy[] = "copy";
@@ -1087,9 +1065,6 @@ static char __pyx_k_slow[] = "slow";
 static char __pyx_k_test[] = "__test__";
 static char __pyx_k_array[] = "array";
 static char __pyx_k_dtype[] = "dtype";
-static char __pyx_k_iinfo[] = "iinfo";
-static char __pyx_k_int32[] = "int32";
-static char __pyx_k_int64[] = "int64";
 static char __pyx_k_numpy[] = "numpy";
 static char __pyx_k_range[] = "range";
 static char __pyx_k_import[] = "__import__";
@@ -1129,14 +1104,8 @@ static PyObject *__pyx_n_s_bottleneck_slow_nonreduce_axis;
 static PyObject *__pyx_n_s_copy;
 static PyObject *__pyx_kp_s_devel_bottleneck_bottleneck_src;
 static PyObject *__pyx_n_s_dtype;
-static PyObject *__pyx_n_s_iinfo;
 static PyObject *__pyx_n_s_import;
-static PyObject *__pyx_n_s_inf;
-static PyObject *__pyx_n_s_int32;
-static PyObject *__pyx_n_s_int64;
 static PyObject *__pyx_n_s_main;
-static PyObject *__pyx_n_s_max;
-static PyObject *__pyx_n_s_min;
 static PyObject *__pyx_n_s_n;
 static PyObject *__pyx_kp_s_n_d_must_be_between_1_and_d_inc;
 static PyObject *__pyx_n_s_nan;
@@ -1168,7 +1137,7 @@ static PyObject *__pyx_codeobj__11;
 static PyObject *__pyx_codeobj__13;
 static PyObject *__pyx_codeobj__15;
 
-/* "nonreduce_axis.pyx":54
+/* "nonreduce_axis.pyx":41
  * # partsort ------------------------------------------------------------------
  * 
  * def partsort(arr, int n, axis=-1):             # <<<<<<<<<<<<<<
@@ -1212,7 +1181,7 @@ static PyObject *__pyx_pw_14nonreduce_axis_1partsort(PyObject *__pyx_self, PyObj
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_n)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("partsort", 0, 2, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("partsort", 0, 2, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (kw_args > 0) {
@@ -1221,7 +1190,7 @@ static PyObject *__pyx_pw_14nonreduce_axis_1partsort(PyObject *__pyx_self, PyObj
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "partsort") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "partsort") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -1233,12 +1202,12 @@ static PyObject *__pyx_pw_14nonreduce_axis_1partsort(PyObject *__pyx_self, PyObj
       }
     }
     __pyx_v_arr = values[0];
-    __pyx_v_n = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_n == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_n = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_n == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     __pyx_v_axis = values[2];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("partsort", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("partsort", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("nonreduce_axis.partsort", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1273,7 +1242,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_partsort(CYTHON_UNUSED PyObject *__py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("partsort", 0);
 
-  /* "nonreduce_axis.pyx":55
+  /* "nonreduce_axis.pyx":42
  * 
  * def partsort(arr, int n, axis=-1):
  *     try:             # <<<<<<<<<<<<<<
@@ -1287,7 +1256,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_partsort(CYTHON_UNUSED PyObject *__py
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "nonreduce_axis.pyx":56
+      /* "nonreduce_axis.pyx":43
  * def partsort(arr, int n, axis=-1):
  *     try:
  *         return nonreducer_axis(arr, axis,             # <<<<<<<<<<<<<<
@@ -1296,7 +1265,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_partsort(CYTHON_UNUSED PyObject *__py
  */
       __Pyx_XDECREF(__pyx_r);
 
-      /* "nonreduce_axis.pyx":61
+      /* "nonreduce_axis.pyx":48
  *                                partsort_int64,
  *                                partsort_int32,
  *                                n)             # <<<<<<<<<<<<<<
@@ -1305,7 +1274,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_partsort(CYTHON_UNUSED PyObject *__py
  */
       __pyx_t_5.__pyx_n = 1;
       __pyx_t_5.int_input = __pyx_v_n;
-      __pyx_t_4 = ((PyObject *)__pyx_f_14nonreduce_axis_nonreducer_axis(__pyx_v_arr, __pyx_v_axis, __pyx_f_14nonreduce_axis_partsort_float64, __pyx_f_14nonreduce_axis_partsort_float32, __pyx_f_14nonreduce_axis_partsort_int64, __pyx_f_14nonreduce_axis_partsort_int32, &__pyx_t_5)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 56; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_t_4 = ((PyObject *)__pyx_f_14nonreduce_axis_nonreducer_axis(__pyx_v_arr, __pyx_v_axis, __pyx_f_14nonreduce_axis_partsort_float64, __pyx_f_14nonreduce_axis_partsort_float32, __pyx_f_14nonreduce_axis_partsort_int64, __pyx_f_14nonreduce_axis_partsort_int32, &__pyx_t_5)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
@@ -1314,7 +1283,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_partsort(CYTHON_UNUSED PyObject *__py
     __pyx_L3_error:;
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "nonreduce_axis.pyx":62
+    /* "nonreduce_axis.pyx":49
  *                                partsort_int32,
  *                                n)
  *     except TypeError:             # <<<<<<<<<<<<<<
@@ -1324,12 +1293,12 @@ static PyObject *__pyx_pf_14nonreduce_axis_partsort(CYTHON_UNUSED PyObject *__py
     __pyx_t_6 = PyErr_ExceptionMatches(__pyx_builtin_TypeError);
     if (__pyx_t_6) {
       __Pyx_AddTraceback("nonreduce_axis.partsort", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_7, &__pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_7, &__pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_GOTREF(__pyx_t_8);
 
-      /* "nonreduce_axis.pyx":63
+      /* "nonreduce_axis.pyx":50
  *                                n)
  *     except TypeError:
  *         return slow.partsort(arr, n, axis)             # <<<<<<<<<<<<<<
@@ -1337,12 +1306,12 @@ static PyObject *__pyx_pf_14nonreduce_axis_partsort(CYTHON_UNUSED PyObject *__py
  * 
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_10 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_10 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_10);
-      __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_partsort); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_partsort); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_11);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-      __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __pyx_t_12 = NULL;
       __pyx_t_13 = 0;
@@ -1356,7 +1325,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_partsort(CYTHON_UNUSED PyObject *__py
           __pyx_t_13 = 1;
         }
       }
-      __pyx_t_14 = PyTuple_New(3+__pyx_t_13); if (unlikely(!__pyx_t_14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_14 = PyTuple_New(3+__pyx_t_13); if (unlikely(!__pyx_t_14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_14);
       if (__pyx_t_12) {
         PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_12); __Pyx_GIVEREF(__pyx_t_12); __pyx_t_12 = NULL;
@@ -1370,7 +1339,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_partsort(CYTHON_UNUSED PyObject *__py
       PyTuple_SET_ITEM(__pyx_t_14, 2+__pyx_t_13, __pyx_v_axis);
       __Pyx_GIVEREF(__pyx_v_axis);
       __pyx_t_10 = 0;
-      __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_14, NULL); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_14, NULL); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
@@ -1402,7 +1371,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_partsort(CYTHON_UNUSED PyObject *__py
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":54
+  /* "nonreduce_axis.pyx":41
  * # partsort ------------------------------------------------------------------
  * 
  * def partsort(arr, int n, axis=-1):             # <<<<<<<<<<<<<<
@@ -1428,7 +1397,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_partsort(CYTHON_UNUSED PyObject *__py
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":66
+/* "nonreduce_axis.pyx":53
  * 
  * 
  * cdef ndarray partsort_float64(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -1461,7 +1430,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("partsort_float64", 0);
 
-  /* "nonreduce_axis.pyx":68
+  /* "nonreduce_axis.pyx":55
  * cdef ndarray partsort_float64(ndarray a, int axis,
  *                              int a_ndim, np.npy_intp* y_dims, int n):
  *     cdef np.npy_intp i, j = 0, l, r, k = n-1             # <<<<<<<<<<<<<<
@@ -1471,20 +1440,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
   __pyx_v_j = 0;
   __pyx_v_k = (__pyx_v_n - 1);
 
-  /* "nonreduce_axis.pyx":70
+  /* "nonreduce_axis.pyx":57
  *     cdef np.npy_intp i, j = 0, l, r, k = n-1
  *     cdef float64_t x, tmpi, tmpj
  *     cdef ndarray y = PyArray_Copy(a)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]
  */
-  __pyx_t_1 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":71
+  /* "nonreduce_axis.pyx":58
  *     cdef float64_t x, tmpi, tmpj
  *     cdef ndarray y = PyArray_Copy(a)
  *     cdef Py_ssize_t stride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -1493,7 +1462,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
  */
   __pyx_v_stride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":72
+  /* "nonreduce_axis.pyx":59
  *     cdef ndarray y = PyArray_Copy(a)
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]             # <<<<<<<<<<<<<<
@@ -1502,7 +1471,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
  */
   __pyx_v_length = (__pyx_v_y->dimensions[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":73
+  /* "nonreduce_axis.pyx":60
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -1512,7 +1481,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":74
+    /* "nonreduce_axis.pyx":61
  *     cdef Py_ssize_t length = y.shape[axis]
  *     if length == 0:
  *         return y             # <<<<<<<<<<<<<<
@@ -1525,7 +1494,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":75
+  /* "nonreduce_axis.pyx":62
  *     if length == 0:
  *         return y
  *     if (n < 1) or (n > length):             # <<<<<<<<<<<<<<
@@ -1543,18 +1512,18 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
   __pyx_L5_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":77
+    /* "nonreduce_axis.pyx":64
  *     if (n < 1) or (n > length):
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
  *                          (n, length))             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):
  */
-    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
@@ -1563,43 +1532,43 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
     __pyx_t_1 = 0;
     __pyx_t_4 = 0;
 
-    /* "nonreduce_axis.pyx":76
+    /* "nonreduce_axis.pyx":63
  *         return y
  *     if (n < 1) or (n > length):
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %             # <<<<<<<<<<<<<<
  *                          (n, length))
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  */
-    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_4);
     __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "nonreduce_axis.pyx":78
+  /* "nonreduce_axis.pyx":65
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
  *                          (n, length))
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0
  */
-  __pyx_t_4 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "nonreduce_axis.pyx":79
+  /* "nonreduce_axis.pyx":66
  *                          (n, length))
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -1610,7 +1579,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":80
+    /* "nonreduce_axis.pyx":67
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0             # <<<<<<<<<<<<<<
@@ -1619,7 +1588,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
  */
     __pyx_v_l = 0;
 
-    /* "nonreduce_axis.pyx":81
+    /* "nonreduce_axis.pyx":68
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0
  *         r = length - 1             # <<<<<<<<<<<<<<
@@ -1628,7 +1597,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
  */
     __pyx_v_r = (__pyx_v_length - 1);
 
-    /* "nonreduce_axis.pyx":82
+    /* "nonreduce_axis.pyx":69
  *         l = 0
  *         r = length - 1
  *         while l < r:             # <<<<<<<<<<<<<<
@@ -1639,7 +1608,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
       __pyx_t_2 = ((__pyx_v_l < __pyx_v_r) != 0);
       if (!__pyx_t_2) break;
 
-      /* "nonreduce_axis.pyx":83
+      /* "nonreduce_axis.pyx":70
  *         r = length - 1
  *         while l < r:
  *             x = (<float64_t*>((<char*>pid(ity)) + k*stride))[0]             # <<<<<<<<<<<<<<
@@ -1648,7 +1617,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
  */
       __pyx_v_x = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_k * __pyx_v_stride)))[0]);
 
-      /* "nonreduce_axis.pyx":84
+      /* "nonreduce_axis.pyx":71
  *         while l < r:
  *             x = (<float64_t*>((<char*>pid(ity)) + k*stride))[0]
  *             i = l             # <<<<<<<<<<<<<<
@@ -1657,7 +1626,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
  */
       __pyx_v_i = __pyx_v_l;
 
-      /* "nonreduce_axis.pyx":85
+      /* "nonreduce_axis.pyx":72
  *             x = (<float64_t*>((<char*>pid(ity)) + k*stride))[0]
  *             i = l
  *             j = r             # <<<<<<<<<<<<<<
@@ -1666,7 +1635,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
  */
       __pyx_v_j = __pyx_v_r;
 
-      /* "nonreduce_axis.pyx":86
+      /* "nonreduce_axis.pyx":73
  *             i = l
  *             j = r
  *             while 1:             # <<<<<<<<<<<<<<
@@ -1675,7 +1644,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
  */
       while (1) {
 
-        /* "nonreduce_axis.pyx":87
+        /* "nonreduce_axis.pyx":74
  *             j = r
  *             while 1:
  *                 while (<float64_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
@@ -1688,7 +1657,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
           __pyx_v_i = (__pyx_v_i + 1);
         }
 
-        /* "nonreduce_axis.pyx":88
+        /* "nonreduce_axis.pyx":75
  *             while 1:
  *                 while (<float64_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
  *                 while x < (<float64_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
@@ -1701,7 +1670,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
           __pyx_v_j = (__pyx_v_j - 1);
         }
 
-        /* "nonreduce_axis.pyx":89
+        /* "nonreduce_axis.pyx":76
  *                 while (<float64_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
  *                 while x < (<float64_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
  *                 if i <= j:             # <<<<<<<<<<<<<<
@@ -1711,7 +1680,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
         __pyx_t_2 = ((__pyx_v_i <= __pyx_v_j) != 0);
         if (__pyx_t_2) {
 
-          /* "nonreduce_axis.pyx":90
+          /* "nonreduce_axis.pyx":77
  *                 while x < (<float64_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
  *                 if i <= j:
  *                     tmpi = (<float64_t*>((<char*>pid(ity)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -1720,7 +1689,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
  */
           __pyx_v_tmpi = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-          /* "nonreduce_axis.pyx":91
+          /* "nonreduce_axis.pyx":78
  *                 if i <= j:
  *                     tmpi = (<float64_t*>((<char*>pid(ity)) + i*stride))[0]
  *                     tmpj = (<float64_t*>((<char*>pid(ity)) + j*stride))[0]             # <<<<<<<<<<<<<<
@@ -1729,7 +1698,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
  */
           __pyx_v_tmpj = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_j * __pyx_v_stride)))[0]);
 
-          /* "nonreduce_axis.pyx":92
+          /* "nonreduce_axis.pyx":79
  *                     tmpi = (<float64_t*>((<char*>pid(ity)) + i*stride))[0]
  *                     tmpj = (<float64_t*>((<char*>pid(ity)) + j*stride))[0]
  *                     (<float64_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj             # <<<<<<<<<<<<<<
@@ -1738,7 +1707,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
  */
           (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_stride)))[0]) = __pyx_v_tmpj;
 
-          /* "nonreduce_axis.pyx":93
+          /* "nonreduce_axis.pyx":80
  *                     tmpj = (<float64_t*>((<char*>pid(ity)) + j*stride))[0]
  *                     (<float64_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
  *                     (<float64_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi             # <<<<<<<<<<<<<<
@@ -1747,7 +1716,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
  */
           (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmpi;
 
-          /* "nonreduce_axis.pyx":94
+          /* "nonreduce_axis.pyx":81
  *                     (<float64_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
  *                     (<float64_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
  *                     i += 1             # <<<<<<<<<<<<<<
@@ -1756,7 +1725,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
  */
           __pyx_v_i = (__pyx_v_i + 1);
 
-          /* "nonreduce_axis.pyx":95
+          /* "nonreduce_axis.pyx":82
  *                     (<float64_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
  *                     i += 1
  *                     j -= 1             # <<<<<<<<<<<<<<
@@ -1768,7 +1737,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
         }
         __pyx_L17:;
 
-        /* "nonreduce_axis.pyx":96
+        /* "nonreduce_axis.pyx":83
  *                     i += 1
  *                     j -= 1
  *                 if i > j: break             # <<<<<<<<<<<<<<
@@ -1782,7 +1751,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
       }
       __pyx_L12_break:;
 
-      /* "nonreduce_axis.pyx":97
+      /* "nonreduce_axis.pyx":84
  *                     j -= 1
  *                 if i > j: break
  *             if j < k: l = i             # <<<<<<<<<<<<<<
@@ -1796,7 +1765,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
       }
       __pyx_L19:;
 
-      /* "nonreduce_axis.pyx":98
+      /* "nonreduce_axis.pyx":85
  *                 if i > j: break
  *             if j < k: l = i
  *             if k < i: r = j             # <<<<<<<<<<<<<<
@@ -1811,7 +1780,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
       __pyx_L20:;
     }
 
-    /* "nonreduce_axis.pyx":99
+    /* "nonreduce_axis.pyx":86
  *             if j < k: l = i
  *             if k < i: r = j
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -1821,7 +1790,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
     PyArray_ITER_NEXT(__pyx_v_ity);
   }
 
-  /* "nonreduce_axis.pyx":100
+  /* "nonreduce_axis.pyx":87
  *             if k < i: r = j
  *         PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -1833,7 +1802,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "nonreduce_axis.pyx":66
+  /* "nonreduce_axis.pyx":53
  * 
  * 
  * cdef ndarray partsort_float64(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -1856,7 +1825,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float64(PyArrayObject *_
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":102
+/* "nonreduce_axis.pyx":89
  *     return y
  * 
  * cdef ndarray partsort_float32(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -1889,7 +1858,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("partsort_float32", 0);
 
-  /* "nonreduce_axis.pyx":104
+  /* "nonreduce_axis.pyx":91
  * cdef ndarray partsort_float32(ndarray a, int axis,
  *                              int a_ndim, np.npy_intp* y_dims, int n):
  *     cdef np.npy_intp i, j = 0, l, r, k = n-1             # <<<<<<<<<<<<<<
@@ -1899,20 +1868,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
   __pyx_v_j = 0;
   __pyx_v_k = (__pyx_v_n - 1);
 
-  /* "nonreduce_axis.pyx":106
+  /* "nonreduce_axis.pyx":93
  *     cdef np.npy_intp i, j = 0, l, r, k = n-1
  *     cdef float32_t x, tmpi, tmpj
  *     cdef ndarray y = PyArray_Copy(a)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]
  */
-  __pyx_t_1 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":107
+  /* "nonreduce_axis.pyx":94
  *     cdef float32_t x, tmpi, tmpj
  *     cdef ndarray y = PyArray_Copy(a)
  *     cdef Py_ssize_t stride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -1921,7 +1890,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
  */
   __pyx_v_stride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":108
+  /* "nonreduce_axis.pyx":95
  *     cdef ndarray y = PyArray_Copy(a)
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]             # <<<<<<<<<<<<<<
@@ -1930,7 +1899,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
  */
   __pyx_v_length = (__pyx_v_y->dimensions[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":109
+  /* "nonreduce_axis.pyx":96
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -1940,7 +1909,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":110
+    /* "nonreduce_axis.pyx":97
  *     cdef Py_ssize_t length = y.shape[axis]
  *     if length == 0:
  *         return y             # <<<<<<<<<<<<<<
@@ -1953,7 +1922,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":111
+  /* "nonreduce_axis.pyx":98
  *     if length == 0:
  *         return y
  *     if (n < 1) or (n > length):             # <<<<<<<<<<<<<<
@@ -1971,18 +1940,18 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
   __pyx_L5_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":113
+    /* "nonreduce_axis.pyx":100
  *     if (n < 1) or (n > length):
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
  *                          (n, length))             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):
  */
-    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 113; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 113; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 113; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
@@ -1991,43 +1960,43 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
     __pyx_t_1 = 0;
     __pyx_t_4 = 0;
 
-    /* "nonreduce_axis.pyx":112
+    /* "nonreduce_axis.pyx":99
  *         return y
  *     if (n < 1) or (n > length):
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %             # <<<<<<<<<<<<<<
  *                          (n, length))
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  */
-    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_4);
     __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "nonreduce_axis.pyx":114
+  /* "nonreduce_axis.pyx":101
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
  *                          (n, length))
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0
  */
-  __pyx_t_4 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "nonreduce_axis.pyx":115
+  /* "nonreduce_axis.pyx":102
  *                          (n, length))
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -2038,7 +2007,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":116
+    /* "nonreduce_axis.pyx":103
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0             # <<<<<<<<<<<<<<
@@ -2047,7 +2016,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
  */
     __pyx_v_l = 0;
 
-    /* "nonreduce_axis.pyx":117
+    /* "nonreduce_axis.pyx":104
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0
  *         r = length - 1             # <<<<<<<<<<<<<<
@@ -2056,7 +2025,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
  */
     __pyx_v_r = (__pyx_v_length - 1);
 
-    /* "nonreduce_axis.pyx":118
+    /* "nonreduce_axis.pyx":105
  *         l = 0
  *         r = length - 1
  *         while l < r:             # <<<<<<<<<<<<<<
@@ -2067,7 +2036,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
       __pyx_t_2 = ((__pyx_v_l < __pyx_v_r) != 0);
       if (!__pyx_t_2) break;
 
-      /* "nonreduce_axis.pyx":119
+      /* "nonreduce_axis.pyx":106
  *         r = length - 1
  *         while l < r:
  *             x = (<float32_t*>((<char*>pid(ity)) + k*stride))[0]             # <<<<<<<<<<<<<<
@@ -2076,7 +2045,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
  */
       __pyx_v_x = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_k * __pyx_v_stride)))[0]);
 
-      /* "nonreduce_axis.pyx":120
+      /* "nonreduce_axis.pyx":107
  *         while l < r:
  *             x = (<float32_t*>((<char*>pid(ity)) + k*stride))[0]
  *             i = l             # <<<<<<<<<<<<<<
@@ -2085,7 +2054,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
  */
       __pyx_v_i = __pyx_v_l;
 
-      /* "nonreduce_axis.pyx":121
+      /* "nonreduce_axis.pyx":108
  *             x = (<float32_t*>((<char*>pid(ity)) + k*stride))[0]
  *             i = l
  *             j = r             # <<<<<<<<<<<<<<
@@ -2094,7 +2063,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
  */
       __pyx_v_j = __pyx_v_r;
 
-      /* "nonreduce_axis.pyx":122
+      /* "nonreduce_axis.pyx":109
  *             i = l
  *             j = r
  *             while 1:             # <<<<<<<<<<<<<<
@@ -2103,7 +2072,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
  */
       while (1) {
 
-        /* "nonreduce_axis.pyx":123
+        /* "nonreduce_axis.pyx":110
  *             j = r
  *             while 1:
  *                 while (<float32_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
@@ -2116,7 +2085,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
           __pyx_v_i = (__pyx_v_i + 1);
         }
 
-        /* "nonreduce_axis.pyx":124
+        /* "nonreduce_axis.pyx":111
  *             while 1:
  *                 while (<float32_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
  *                 while x < (<float32_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
@@ -2129,7 +2098,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
           __pyx_v_j = (__pyx_v_j - 1);
         }
 
-        /* "nonreduce_axis.pyx":125
+        /* "nonreduce_axis.pyx":112
  *                 while (<float32_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
  *                 while x < (<float32_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
  *                 if i <= j:             # <<<<<<<<<<<<<<
@@ -2139,7 +2108,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
         __pyx_t_2 = ((__pyx_v_i <= __pyx_v_j) != 0);
         if (__pyx_t_2) {
 
-          /* "nonreduce_axis.pyx":126
+          /* "nonreduce_axis.pyx":113
  *                 while x < (<float32_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
  *                 if i <= j:
  *                     tmpi = (<float32_t*>((<char*>pid(ity)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -2148,7 +2117,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
  */
           __pyx_v_tmpi = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-          /* "nonreduce_axis.pyx":127
+          /* "nonreduce_axis.pyx":114
  *                 if i <= j:
  *                     tmpi = (<float32_t*>((<char*>pid(ity)) + i*stride))[0]
  *                     tmpj = (<float32_t*>((<char*>pid(ity)) + j*stride))[0]             # <<<<<<<<<<<<<<
@@ -2157,7 +2126,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
  */
           __pyx_v_tmpj = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_j * __pyx_v_stride)))[0]);
 
-          /* "nonreduce_axis.pyx":128
+          /* "nonreduce_axis.pyx":115
  *                     tmpi = (<float32_t*>((<char*>pid(ity)) + i*stride))[0]
  *                     tmpj = (<float32_t*>((<char*>pid(ity)) + j*stride))[0]
  *                     (<float32_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj             # <<<<<<<<<<<<<<
@@ -2166,7 +2135,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
  */
           (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_stride)))[0]) = __pyx_v_tmpj;
 
-          /* "nonreduce_axis.pyx":129
+          /* "nonreduce_axis.pyx":116
  *                     tmpj = (<float32_t*>((<char*>pid(ity)) + j*stride))[0]
  *                     (<float32_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
  *                     (<float32_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi             # <<<<<<<<<<<<<<
@@ -2175,7 +2144,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
  */
           (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmpi;
 
-          /* "nonreduce_axis.pyx":130
+          /* "nonreduce_axis.pyx":117
  *                     (<float32_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
  *                     (<float32_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
  *                     i += 1             # <<<<<<<<<<<<<<
@@ -2184,7 +2153,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
  */
           __pyx_v_i = (__pyx_v_i + 1);
 
-          /* "nonreduce_axis.pyx":131
+          /* "nonreduce_axis.pyx":118
  *                     (<float32_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
  *                     i += 1
  *                     j -= 1             # <<<<<<<<<<<<<<
@@ -2196,7 +2165,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
         }
         __pyx_L17:;
 
-        /* "nonreduce_axis.pyx":132
+        /* "nonreduce_axis.pyx":119
  *                     i += 1
  *                     j -= 1
  *                 if i > j: break             # <<<<<<<<<<<<<<
@@ -2210,7 +2179,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
       }
       __pyx_L12_break:;
 
-      /* "nonreduce_axis.pyx":133
+      /* "nonreduce_axis.pyx":120
  *                     j -= 1
  *                 if i > j: break
  *             if j < k: l = i             # <<<<<<<<<<<<<<
@@ -2224,7 +2193,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
       }
       __pyx_L19:;
 
-      /* "nonreduce_axis.pyx":134
+      /* "nonreduce_axis.pyx":121
  *                 if i > j: break
  *             if j < k: l = i
  *             if k < i: r = j             # <<<<<<<<<<<<<<
@@ -2239,7 +2208,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
       __pyx_L20:;
     }
 
-    /* "nonreduce_axis.pyx":135
+    /* "nonreduce_axis.pyx":122
  *             if j < k: l = i
  *             if k < i: r = j
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -2249,7 +2218,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
     PyArray_ITER_NEXT(__pyx_v_ity);
   }
 
-  /* "nonreduce_axis.pyx":136
+  /* "nonreduce_axis.pyx":123
  *             if k < i: r = j
  *         PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -2261,7 +2230,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "nonreduce_axis.pyx":102
+  /* "nonreduce_axis.pyx":89
  *     return y
  * 
  * cdef ndarray partsort_float32(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -2284,7 +2253,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_float32(PyArrayObject *_
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":138
+/* "nonreduce_axis.pyx":125
  *     return y
  * 
  * cdef ndarray partsort_int64(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -2317,7 +2286,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("partsort_int64", 0);
 
-  /* "nonreduce_axis.pyx":140
+  /* "nonreduce_axis.pyx":127
  * cdef ndarray partsort_int64(ndarray a, int axis,
  *                              int a_ndim, np.npy_intp* y_dims, int n):
  *     cdef np.npy_intp i, j = 0, l, r, k = n-1             # <<<<<<<<<<<<<<
@@ -2327,20 +2296,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
   __pyx_v_j = 0;
   __pyx_v_k = (__pyx_v_n - 1);
 
-  /* "nonreduce_axis.pyx":142
+  /* "nonreduce_axis.pyx":129
  *     cdef np.npy_intp i, j = 0, l, r, k = n-1
  *     cdef int64_t x, tmpi, tmpj
  *     cdef ndarray y = PyArray_Copy(a)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]
  */
-  __pyx_t_1 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 129; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 129; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":143
+  /* "nonreduce_axis.pyx":130
  *     cdef int64_t x, tmpi, tmpj
  *     cdef ndarray y = PyArray_Copy(a)
  *     cdef Py_ssize_t stride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -2349,7 +2318,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
  */
   __pyx_v_stride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":144
+  /* "nonreduce_axis.pyx":131
  *     cdef ndarray y = PyArray_Copy(a)
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]             # <<<<<<<<<<<<<<
@@ -2358,7 +2327,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
  */
   __pyx_v_length = (__pyx_v_y->dimensions[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":145
+  /* "nonreduce_axis.pyx":132
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -2368,7 +2337,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":146
+    /* "nonreduce_axis.pyx":133
  *     cdef Py_ssize_t length = y.shape[axis]
  *     if length == 0:
  *         return y             # <<<<<<<<<<<<<<
@@ -2381,7 +2350,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":147
+  /* "nonreduce_axis.pyx":134
  *     if length == 0:
  *         return y
  *     if (n < 1) or (n > length):             # <<<<<<<<<<<<<<
@@ -2399,18 +2368,18 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
   __pyx_L5_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":149
+    /* "nonreduce_axis.pyx":136
  *     if (n < 1) or (n > length):
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
  *                          (n, length))             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):
  */
-    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
@@ -2419,43 +2388,43 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
     __pyx_t_1 = 0;
     __pyx_t_4 = 0;
 
-    /* "nonreduce_axis.pyx":148
+    /* "nonreduce_axis.pyx":135
  *         return y
  *     if (n < 1) or (n > length):
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %             # <<<<<<<<<<<<<<
  *                          (n, length))
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  */
-    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 135; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 135; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_4);
     __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 135; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 135; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "nonreduce_axis.pyx":150
+  /* "nonreduce_axis.pyx":137
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
  *                          (n, length))
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0
  */
-  __pyx_t_4 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "nonreduce_axis.pyx":151
+  /* "nonreduce_axis.pyx":138
  *                          (n, length))
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -2466,7 +2435,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":152
+    /* "nonreduce_axis.pyx":139
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0             # <<<<<<<<<<<<<<
@@ -2475,7 +2444,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
  */
     __pyx_v_l = 0;
 
-    /* "nonreduce_axis.pyx":153
+    /* "nonreduce_axis.pyx":140
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0
  *         r = length - 1             # <<<<<<<<<<<<<<
@@ -2484,7 +2453,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
  */
     __pyx_v_r = (__pyx_v_length - 1);
 
-    /* "nonreduce_axis.pyx":154
+    /* "nonreduce_axis.pyx":141
  *         l = 0
  *         r = length - 1
  *         while l < r:             # <<<<<<<<<<<<<<
@@ -2495,7 +2464,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
       __pyx_t_2 = ((__pyx_v_l < __pyx_v_r) != 0);
       if (!__pyx_t_2) break;
 
-      /* "nonreduce_axis.pyx":155
+      /* "nonreduce_axis.pyx":142
  *         r = length - 1
  *         while l < r:
  *             x = (<int64_t*>((<char*>pid(ity)) + k*stride))[0]             # <<<<<<<<<<<<<<
@@ -2504,7 +2473,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
  */
       __pyx_v_x = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_k * __pyx_v_stride)))[0]);
 
-      /* "nonreduce_axis.pyx":156
+      /* "nonreduce_axis.pyx":143
  *         while l < r:
  *             x = (<int64_t*>((<char*>pid(ity)) + k*stride))[0]
  *             i = l             # <<<<<<<<<<<<<<
@@ -2513,7 +2482,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
  */
       __pyx_v_i = __pyx_v_l;
 
-      /* "nonreduce_axis.pyx":157
+      /* "nonreduce_axis.pyx":144
  *             x = (<int64_t*>((<char*>pid(ity)) + k*stride))[0]
  *             i = l
  *             j = r             # <<<<<<<<<<<<<<
@@ -2522,7 +2491,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
  */
       __pyx_v_j = __pyx_v_r;
 
-      /* "nonreduce_axis.pyx":158
+      /* "nonreduce_axis.pyx":145
  *             i = l
  *             j = r
  *             while 1:             # <<<<<<<<<<<<<<
@@ -2531,7 +2500,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
  */
       while (1) {
 
-        /* "nonreduce_axis.pyx":159
+        /* "nonreduce_axis.pyx":146
  *             j = r
  *             while 1:
  *                 while (<int64_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
@@ -2544,7 +2513,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
           __pyx_v_i = (__pyx_v_i + 1);
         }
 
-        /* "nonreduce_axis.pyx":160
+        /* "nonreduce_axis.pyx":147
  *             while 1:
  *                 while (<int64_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
  *                 while x < (<int64_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
@@ -2557,7 +2526,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
           __pyx_v_j = (__pyx_v_j - 1);
         }
 
-        /* "nonreduce_axis.pyx":161
+        /* "nonreduce_axis.pyx":148
  *                 while (<int64_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
  *                 while x < (<int64_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
  *                 if i <= j:             # <<<<<<<<<<<<<<
@@ -2567,7 +2536,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
         __pyx_t_2 = ((__pyx_v_i <= __pyx_v_j) != 0);
         if (__pyx_t_2) {
 
-          /* "nonreduce_axis.pyx":162
+          /* "nonreduce_axis.pyx":149
  *                 while x < (<int64_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
  *                 if i <= j:
  *                     tmpi = (<int64_t*>((<char*>pid(ity)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -2576,7 +2545,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
  */
           __pyx_v_tmpi = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-          /* "nonreduce_axis.pyx":163
+          /* "nonreduce_axis.pyx":150
  *                 if i <= j:
  *                     tmpi = (<int64_t*>((<char*>pid(ity)) + i*stride))[0]
  *                     tmpj = (<int64_t*>((<char*>pid(ity)) + j*stride))[0]             # <<<<<<<<<<<<<<
@@ -2585,7 +2554,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
  */
           __pyx_v_tmpj = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_j * __pyx_v_stride)))[0]);
 
-          /* "nonreduce_axis.pyx":164
+          /* "nonreduce_axis.pyx":151
  *                     tmpi = (<int64_t*>((<char*>pid(ity)) + i*stride))[0]
  *                     tmpj = (<int64_t*>((<char*>pid(ity)) + j*stride))[0]
  *                     (<int64_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj             # <<<<<<<<<<<<<<
@@ -2594,7 +2563,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
  */
           (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_stride)))[0]) = __pyx_v_tmpj;
 
-          /* "nonreduce_axis.pyx":165
+          /* "nonreduce_axis.pyx":152
  *                     tmpj = (<int64_t*>((<char*>pid(ity)) + j*stride))[0]
  *                     (<int64_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
  *                     (<int64_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi             # <<<<<<<<<<<<<<
@@ -2603,7 +2572,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
  */
           (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmpi;
 
-          /* "nonreduce_axis.pyx":166
+          /* "nonreduce_axis.pyx":153
  *                     (<int64_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
  *                     (<int64_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
  *                     i += 1             # <<<<<<<<<<<<<<
@@ -2612,7 +2581,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
  */
           __pyx_v_i = (__pyx_v_i + 1);
 
-          /* "nonreduce_axis.pyx":167
+          /* "nonreduce_axis.pyx":154
  *                     (<int64_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
  *                     i += 1
  *                     j -= 1             # <<<<<<<<<<<<<<
@@ -2624,7 +2593,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
         }
         __pyx_L17:;
 
-        /* "nonreduce_axis.pyx":168
+        /* "nonreduce_axis.pyx":155
  *                     i += 1
  *                     j -= 1
  *                 if i > j: break             # <<<<<<<<<<<<<<
@@ -2638,7 +2607,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
       }
       __pyx_L12_break:;
 
-      /* "nonreduce_axis.pyx":169
+      /* "nonreduce_axis.pyx":156
  *                     j -= 1
  *                 if i > j: break
  *             if j < k: l = i             # <<<<<<<<<<<<<<
@@ -2652,7 +2621,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
       }
       __pyx_L19:;
 
-      /* "nonreduce_axis.pyx":170
+      /* "nonreduce_axis.pyx":157
  *                 if i > j: break
  *             if j < k: l = i
  *             if k < i: r = j             # <<<<<<<<<<<<<<
@@ -2667,7 +2636,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
       __pyx_L20:;
     }
 
-    /* "nonreduce_axis.pyx":171
+    /* "nonreduce_axis.pyx":158
  *             if j < k: l = i
  *             if k < i: r = j
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -2677,7 +2646,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
     PyArray_ITER_NEXT(__pyx_v_ity);
   }
 
-  /* "nonreduce_axis.pyx":172
+  /* "nonreduce_axis.pyx":159
  *             if k < i: r = j
  *         PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -2689,7 +2658,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "nonreduce_axis.pyx":138
+  /* "nonreduce_axis.pyx":125
  *     return y
  * 
  * cdef ndarray partsort_int64(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -2712,7 +2681,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int64(PyArrayObject *__p
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":174
+/* "nonreduce_axis.pyx":161
  *     return y
  * 
  * cdef ndarray partsort_int32(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -2745,7 +2714,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("partsort_int32", 0);
 
-  /* "nonreduce_axis.pyx":176
+  /* "nonreduce_axis.pyx":163
  * cdef ndarray partsort_int32(ndarray a, int axis,
  *                              int a_ndim, np.npy_intp* y_dims, int n):
  *     cdef np.npy_intp i, j = 0, l, r, k = n-1             # <<<<<<<<<<<<<<
@@ -2755,20 +2724,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
   __pyx_v_j = 0;
   __pyx_v_k = (__pyx_v_n - 1);
 
-  /* "nonreduce_axis.pyx":178
+  /* "nonreduce_axis.pyx":165
  *     cdef np.npy_intp i, j = 0, l, r, k = n-1
  *     cdef int32_t x, tmpi, tmpj
  *     cdef ndarray y = PyArray_Copy(a)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]
  */
-  __pyx_t_1 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 178; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 178; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":179
+  /* "nonreduce_axis.pyx":166
  *     cdef int32_t x, tmpi, tmpj
  *     cdef ndarray y = PyArray_Copy(a)
  *     cdef Py_ssize_t stride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -2777,7 +2746,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
  */
   __pyx_v_stride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":180
+  /* "nonreduce_axis.pyx":167
  *     cdef ndarray y = PyArray_Copy(a)
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]             # <<<<<<<<<<<<<<
@@ -2786,7 +2755,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
  */
   __pyx_v_length = (__pyx_v_y->dimensions[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":181
+  /* "nonreduce_axis.pyx":168
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -2796,7 +2765,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":182
+    /* "nonreduce_axis.pyx":169
  *     cdef Py_ssize_t length = y.shape[axis]
  *     if length == 0:
  *         return y             # <<<<<<<<<<<<<<
@@ -2809,7 +2778,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":183
+  /* "nonreduce_axis.pyx":170
  *     if length == 0:
  *         return y
  *     if (n < 1) or (n > length):             # <<<<<<<<<<<<<<
@@ -2827,18 +2796,18 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
   __pyx_L5_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":185
+    /* "nonreduce_axis.pyx":172
  *     if (n < 1) or (n > length):
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
  *                          (n, length))             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):
  */
-    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 185; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 185; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 185; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
@@ -2847,43 +2816,43 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
     __pyx_t_1 = 0;
     __pyx_t_4 = 0;
 
-    /* "nonreduce_axis.pyx":184
+    /* "nonreduce_axis.pyx":171
  *         return y
  *     if (n < 1) or (n > length):
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %             # <<<<<<<<<<<<<<
  *                          (n, length))
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  */
-    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 184; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 171; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 184; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 171; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_4);
     __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 184; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 171; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 184; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 171; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "nonreduce_axis.pyx":186
+  /* "nonreduce_axis.pyx":173
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
  *                          (n, length))
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0
  */
-  __pyx_t_4 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 186; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 186; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "nonreduce_axis.pyx":187
+  /* "nonreduce_axis.pyx":174
  *                          (n, length))
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -2894,7 +2863,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":188
+    /* "nonreduce_axis.pyx":175
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0             # <<<<<<<<<<<<<<
@@ -2903,7 +2872,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
  */
     __pyx_v_l = 0;
 
-    /* "nonreduce_axis.pyx":189
+    /* "nonreduce_axis.pyx":176
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0
  *         r = length - 1             # <<<<<<<<<<<<<<
@@ -2912,7 +2881,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
  */
     __pyx_v_r = (__pyx_v_length - 1);
 
-    /* "nonreduce_axis.pyx":190
+    /* "nonreduce_axis.pyx":177
  *         l = 0
  *         r = length - 1
  *         while l < r:             # <<<<<<<<<<<<<<
@@ -2923,7 +2892,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
       __pyx_t_2 = ((__pyx_v_l < __pyx_v_r) != 0);
       if (!__pyx_t_2) break;
 
-      /* "nonreduce_axis.pyx":191
+      /* "nonreduce_axis.pyx":178
  *         r = length - 1
  *         while l < r:
  *             x = (<int32_t*>((<char*>pid(ity)) + k*stride))[0]             # <<<<<<<<<<<<<<
@@ -2932,7 +2901,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
  */
       __pyx_v_x = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_k * __pyx_v_stride)))[0]);
 
-      /* "nonreduce_axis.pyx":192
+      /* "nonreduce_axis.pyx":179
  *         while l < r:
  *             x = (<int32_t*>((<char*>pid(ity)) + k*stride))[0]
  *             i = l             # <<<<<<<<<<<<<<
@@ -2941,7 +2910,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
  */
       __pyx_v_i = __pyx_v_l;
 
-      /* "nonreduce_axis.pyx":193
+      /* "nonreduce_axis.pyx":180
  *             x = (<int32_t*>((<char*>pid(ity)) + k*stride))[0]
  *             i = l
  *             j = r             # <<<<<<<<<<<<<<
@@ -2950,7 +2919,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
  */
       __pyx_v_j = __pyx_v_r;
 
-      /* "nonreduce_axis.pyx":194
+      /* "nonreduce_axis.pyx":181
  *             i = l
  *             j = r
  *             while 1:             # <<<<<<<<<<<<<<
@@ -2959,7 +2928,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
  */
       while (1) {
 
-        /* "nonreduce_axis.pyx":195
+        /* "nonreduce_axis.pyx":182
  *             j = r
  *             while 1:
  *                 while (<int32_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
@@ -2972,7 +2941,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
           __pyx_v_i = (__pyx_v_i + 1);
         }
 
-        /* "nonreduce_axis.pyx":196
+        /* "nonreduce_axis.pyx":183
  *             while 1:
  *                 while (<int32_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
  *                 while x < (<int32_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
@@ -2985,7 +2954,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
           __pyx_v_j = (__pyx_v_j - 1);
         }
 
-        /* "nonreduce_axis.pyx":197
+        /* "nonreduce_axis.pyx":184
  *                 while (<int32_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
  *                 while x < (<int32_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
  *                 if i <= j:             # <<<<<<<<<<<<<<
@@ -2995,7 +2964,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
         __pyx_t_2 = ((__pyx_v_i <= __pyx_v_j) != 0);
         if (__pyx_t_2) {
 
-          /* "nonreduce_axis.pyx":198
+          /* "nonreduce_axis.pyx":185
  *                 while x < (<int32_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
  *                 if i <= j:
  *                     tmpi = (<int32_t*>((<char*>pid(ity)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -3004,7 +2973,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
  */
           __pyx_v_tmpi = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-          /* "nonreduce_axis.pyx":199
+          /* "nonreduce_axis.pyx":186
  *                 if i <= j:
  *                     tmpi = (<int32_t*>((<char*>pid(ity)) + i*stride))[0]
  *                     tmpj = (<int32_t*>((<char*>pid(ity)) + j*stride))[0]             # <<<<<<<<<<<<<<
@@ -3013,7 +2982,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
  */
           __pyx_v_tmpj = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_j * __pyx_v_stride)))[0]);
 
-          /* "nonreduce_axis.pyx":200
+          /* "nonreduce_axis.pyx":187
  *                     tmpi = (<int32_t*>((<char*>pid(ity)) + i*stride))[0]
  *                     tmpj = (<int32_t*>((<char*>pid(ity)) + j*stride))[0]
  *                     (<int32_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj             # <<<<<<<<<<<<<<
@@ -3022,7 +2991,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
  */
           (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_stride)))[0]) = __pyx_v_tmpj;
 
-          /* "nonreduce_axis.pyx":201
+          /* "nonreduce_axis.pyx":188
  *                     tmpj = (<int32_t*>((<char*>pid(ity)) + j*stride))[0]
  *                     (<int32_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
  *                     (<int32_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi             # <<<<<<<<<<<<<<
@@ -3031,7 +3000,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
  */
           (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmpi;
 
-          /* "nonreduce_axis.pyx":202
+          /* "nonreduce_axis.pyx":189
  *                     (<int32_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
  *                     (<int32_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
  *                     i += 1             # <<<<<<<<<<<<<<
@@ -3040,7 +3009,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
  */
           __pyx_v_i = (__pyx_v_i + 1);
 
-          /* "nonreduce_axis.pyx":203
+          /* "nonreduce_axis.pyx":190
  *                     (<int32_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
  *                     i += 1
  *                     j -= 1             # <<<<<<<<<<<<<<
@@ -3052,7 +3021,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
         }
         __pyx_L17:;
 
-        /* "nonreduce_axis.pyx":204
+        /* "nonreduce_axis.pyx":191
  *                     i += 1
  *                     j -= 1
  *                 if i > j: break             # <<<<<<<<<<<<<<
@@ -3066,7 +3035,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
       }
       __pyx_L12_break:;
 
-      /* "nonreduce_axis.pyx":205
+      /* "nonreduce_axis.pyx":192
  *                     j -= 1
  *                 if i > j: break
  *             if j < k: l = i             # <<<<<<<<<<<<<<
@@ -3080,7 +3049,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
       }
       __pyx_L19:;
 
-      /* "nonreduce_axis.pyx":206
+      /* "nonreduce_axis.pyx":193
  *                 if i > j: break
  *             if j < k: l = i
  *             if k < i: r = j             # <<<<<<<<<<<<<<
@@ -3095,7 +3064,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
       __pyx_L20:;
     }
 
-    /* "nonreduce_axis.pyx":207
+    /* "nonreduce_axis.pyx":194
  *             if j < k: l = i
  *             if k < i: r = j
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -3105,7 +3074,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
     PyArray_ITER_NEXT(__pyx_v_ity);
   }
 
-  /* "nonreduce_axis.pyx":208
+  /* "nonreduce_axis.pyx":195
  *             if k < i: r = j
  *         PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -3117,7 +3086,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "nonreduce_axis.pyx":174
+  /* "nonreduce_axis.pyx":161
  *     return y
  * 
  * cdef ndarray partsort_int32(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -3140,7 +3109,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_partsort_int32(PyArrayObject *__p
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":212
+/* "nonreduce_axis.pyx":199
  * # argpartsort ---------------------------------------------------------------
  * 
  * def argpartsort(arr, int n, axis=-1):             # <<<<<<<<<<<<<<
@@ -3184,7 +3153,7 @@ static PyObject *__pyx_pw_14nonreduce_axis_3argpartsort(PyObject *__pyx_self, Py
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_n)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("argpartsort", 0, 2, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("argpartsort", 0, 2, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (kw_args > 0) {
@@ -3193,7 +3162,7 @@ static PyObject *__pyx_pw_14nonreduce_axis_3argpartsort(PyObject *__pyx_self, Py
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "argpartsort") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "argpartsort") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3205,12 +3174,12 @@ static PyObject *__pyx_pw_14nonreduce_axis_3argpartsort(PyObject *__pyx_self, Py
       }
     }
     __pyx_v_arr = values[0];
-    __pyx_v_n = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_n == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_n = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_n == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     __pyx_v_axis = values[2];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("argpartsort", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("argpartsort", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("nonreduce_axis.argpartsort", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3245,7 +3214,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_2argpartsort(CYTHON_UNUSED PyObject *
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("argpartsort", 0);
 
-  /* "nonreduce_axis.pyx":213
+  /* "nonreduce_axis.pyx":200
  * 
  * def argpartsort(arr, int n, axis=-1):
  *     try:             # <<<<<<<<<<<<<<
@@ -3259,7 +3228,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_2argpartsort(CYTHON_UNUSED PyObject *
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "nonreduce_axis.pyx":214
+      /* "nonreduce_axis.pyx":201
  * def argpartsort(arr, int n, axis=-1):
  *     try:
  *         return nonreducer_axis(arr, axis,             # <<<<<<<<<<<<<<
@@ -3268,7 +3237,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_2argpartsort(CYTHON_UNUSED PyObject *
  */
       __Pyx_XDECREF(__pyx_r);
 
-      /* "nonreduce_axis.pyx":219
+      /* "nonreduce_axis.pyx":206
  *                                argpartsort_int64,
  *                                argpartsort_int32,
  *                                n)             # <<<<<<<<<<<<<<
@@ -3277,7 +3246,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_2argpartsort(CYTHON_UNUSED PyObject *
  */
       __pyx_t_5.__pyx_n = 1;
       __pyx_t_5.int_input = __pyx_v_n;
-      __pyx_t_4 = ((PyObject *)__pyx_f_14nonreduce_axis_nonreducer_axis(__pyx_v_arr, __pyx_v_axis, __pyx_f_14nonreduce_axis_argpartsort_float64, __pyx_f_14nonreduce_axis_argpartsort_float32, __pyx_f_14nonreduce_axis_argpartsort_int64, __pyx_f_14nonreduce_axis_argpartsort_int32, &__pyx_t_5)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_t_4 = ((PyObject *)__pyx_f_14nonreduce_axis_nonreducer_axis(__pyx_v_arr, __pyx_v_axis, __pyx_f_14nonreduce_axis_argpartsort_float64, __pyx_f_14nonreduce_axis_argpartsort_float32, __pyx_f_14nonreduce_axis_argpartsort_int64, __pyx_f_14nonreduce_axis_argpartsort_int32, &__pyx_t_5)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
@@ -3286,7 +3255,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_2argpartsort(CYTHON_UNUSED PyObject *
     __pyx_L3_error:;
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "nonreduce_axis.pyx":220
+    /* "nonreduce_axis.pyx":207
  *                                argpartsort_int32,
  *                                n)
  *     except TypeError:             # <<<<<<<<<<<<<<
@@ -3296,12 +3265,12 @@ static PyObject *__pyx_pf_14nonreduce_axis_2argpartsort(CYTHON_UNUSED PyObject *
     __pyx_t_6 = PyErr_ExceptionMatches(__pyx_builtin_TypeError);
     if (__pyx_t_6) {
       __Pyx_AddTraceback("nonreduce_axis.argpartsort", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_7, &__pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 220; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_7, &__pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 207; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_GOTREF(__pyx_t_8);
 
-      /* "nonreduce_axis.pyx":221
+      /* "nonreduce_axis.pyx":208
  *                                n)
  *     except TypeError:
  *         return slow.argpartsort(arr, n, axis)             # <<<<<<<<<<<<<<
@@ -3309,12 +3278,12 @@ static PyObject *__pyx_pf_14nonreduce_axis_2argpartsort(CYTHON_UNUSED PyObject *
  * 
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_10 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 221; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_10 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 208; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_10);
-      __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_argpartsort); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 221; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_argpartsort); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 208; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_11);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-      __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 221; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 208; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __pyx_t_12 = NULL;
       __pyx_t_13 = 0;
@@ -3328,7 +3297,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_2argpartsort(CYTHON_UNUSED PyObject *
           __pyx_t_13 = 1;
         }
       }
-      __pyx_t_14 = PyTuple_New(3+__pyx_t_13); if (unlikely(!__pyx_t_14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 221; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_14 = PyTuple_New(3+__pyx_t_13); if (unlikely(!__pyx_t_14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 208; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_14);
       if (__pyx_t_12) {
         PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_12); __Pyx_GIVEREF(__pyx_t_12); __pyx_t_12 = NULL;
@@ -3342,7 +3311,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_2argpartsort(CYTHON_UNUSED PyObject *
       PyTuple_SET_ITEM(__pyx_t_14, 2+__pyx_t_13, __pyx_v_axis);
       __Pyx_GIVEREF(__pyx_v_axis);
       __pyx_t_10 = 0;
-      __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_14, NULL); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 221; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_14, NULL); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 208; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
@@ -3374,7 +3343,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_2argpartsort(CYTHON_UNUSED PyObject *
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":212
+  /* "nonreduce_axis.pyx":199
  * # argpartsort ---------------------------------------------------------------
  * 
  * def argpartsort(arr, int n, axis=-1):             # <<<<<<<<<<<<<<
@@ -3400,7 +3369,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_2argpartsort(CYTHON_UNUSED PyObject *
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":224
+/* "nonreduce_axis.pyx":211
  * 
  * 
  * cdef ndarray argpartsort_float64(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -3440,7 +3409,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("argpartsort_float64", 0);
 
-  /* "nonreduce_axis.pyx":227
+  /* "nonreduce_axis.pyx":214
  *                                 int a_ndim, np.npy_intp* y_dims, int n):
  * 
  *     cdef np.npy_intp i, j = 0, l, r, k = n-1             # <<<<<<<<<<<<<<
@@ -3450,20 +3419,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
   __pyx_v_j = 0;
   __pyx_v_k = (__pyx_v_n - 1);
 
-  /* "nonreduce_axis.pyx":230
+  /* "nonreduce_axis.pyx":217
  *     cdef float64_t x, tmpi, tmpj
  *     cdef intp_t itmpi, itmpj
  *     cdef ndarray y = PyArray_Copy(a)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]
  */
-  __pyx_t_1 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 230; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 230; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":231
+  /* "nonreduce_axis.pyx":218
  *     cdef intp_t itmpi, itmpj
  *     cdef ndarray y = PyArray_Copy(a)
  *     cdef Py_ssize_t stride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -3472,7 +3441,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
   __pyx_v_stride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":232
+  /* "nonreduce_axis.pyx":219
  *     cdef ndarray y = PyArray_Copy(a)
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]             # <<<<<<<<<<<<<<
@@ -3481,20 +3450,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
   __pyx_v_length = (__pyx_v_y->dimensions[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":234
+  /* "nonreduce_axis.pyx":221
  *     cdef Py_ssize_t length = y.shape[axis]
  * 
  *     cdef ndarray index = PyArray_EMPTY(a_ndim, y_dims, NPY_intp, 0)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t istride = index.strides[axis]
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)
  */
-  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_INTP, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 234; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_INTP, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 221; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 234; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 221; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_index = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":235
+  /* "nonreduce_axis.pyx":222
  * 
  *     cdef ndarray index = PyArray_EMPTY(a_ndim, y_dims, NPY_intp, 0)
  *     cdef Py_ssize_t istride = index.strides[axis]             # <<<<<<<<<<<<<<
@@ -3503,20 +3472,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
   __pyx_v_istride = (__pyx_v_index->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":236
+  /* "nonreduce_axis.pyx":223
  *     cdef ndarray index = PyArray_EMPTY(a_ndim, y_dims, NPY_intp, 0)
  *     cdef Py_ssize_t istride = index.strides[axis]
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(iti):
  *         for i in range(length):
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_index), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 236; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_index), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 223; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 236; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 223; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_iti = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":237
+  /* "nonreduce_axis.pyx":224
  *     cdef Py_ssize_t istride = index.strides[axis]
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)
  *     while PyArray_ITER_NOTDONE(iti):             # <<<<<<<<<<<<<<
@@ -3527,7 +3496,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_iti) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":238
+    /* "nonreduce_axis.pyx":225
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)
  *     while PyArray_ITER_NOTDONE(iti):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -3538,7 +3507,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "nonreduce_axis.pyx":239
+      /* "nonreduce_axis.pyx":226
  *     while PyArray_ITER_NOTDONE(iti):
  *         for i in range(length):
  *             (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = i             # <<<<<<<<<<<<<<
@@ -3548,7 +3517,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
       (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_i * __pyx_v_istride)))[0]) = __pyx_v_i;
     }
 
-    /* "nonreduce_axis.pyx":240
+    /* "nonreduce_axis.pyx":227
  *         for i in range(length):
  *             (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = i
  *         PyArray_ITER_NEXT(iti)             # <<<<<<<<<<<<<<
@@ -3558,7 +3527,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
     PyArray_ITER_NEXT(__pyx_v_iti);
   }
 
-  /* "nonreduce_axis.pyx":241
+  /* "nonreduce_axis.pyx":228
  *             (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = i
  *         PyArray_ITER_NEXT(iti)
  *     PyArray_ITER_RESET(iti)             # <<<<<<<<<<<<<<
@@ -3567,7 +3536,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
   PyArray_ITER_RESET(__pyx_v_iti);
 
-  /* "nonreduce_axis.pyx":243
+  /* "nonreduce_axis.pyx":230
  *     PyArray_ITER_RESET(iti)
  * 
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -3577,7 +3546,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":244
+    /* "nonreduce_axis.pyx":231
  * 
  *     if length == 0:
  *         return index             # <<<<<<<<<<<<<<
@@ -3590,7 +3559,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":245
+  /* "nonreduce_axis.pyx":232
  *     if length == 0:
  *         return index
  *     if (n < 1) or (n > length):             # <<<<<<<<<<<<<<
@@ -3608,18 +3577,18 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
   __pyx_L9_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":247
+    /* "nonreduce_axis.pyx":234
  *     if (n < 1) or (n > length):
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
  *                          (n, length))             # <<<<<<<<<<<<<<
  * 
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  */
-    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 247; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 234; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 247; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 234; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 247; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 234; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
     PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
@@ -3628,43 +3597,43 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
     __pyx_t_1 = 0;
     __pyx_t_6 = 0;
 
-    /* "nonreduce_axis.pyx":246
+    /* "nonreduce_axis.pyx":233
  *         return index
  *     if (n < 1) or (n > length):
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %             # <<<<<<<<<<<<<<
  *                          (n, length))
  * 
  */
-    __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 246; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 233; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 246; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 233; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
     PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_6);
     __Pyx_GIVEREF(__pyx_t_6);
     __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_7, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 246; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_7, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 233; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 246; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 233; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "nonreduce_axis.pyx":249
+  /* "nonreduce_axis.pyx":236
  *                          (n, length))
  * 
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0
  */
-  __pyx_t_6 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 236; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
-  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 236; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "nonreduce_axis.pyx":250
+  /* "nonreduce_axis.pyx":237
  * 
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -3675,7 +3644,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":251
+    /* "nonreduce_axis.pyx":238
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0             # <<<<<<<<<<<<<<
@@ -3684,7 +3653,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
     __pyx_v_l = 0;
 
-    /* "nonreduce_axis.pyx":252
+    /* "nonreduce_axis.pyx":239
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0
  *         r = length - 1             # <<<<<<<<<<<<<<
@@ -3693,7 +3662,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
     __pyx_v_r = (__pyx_v_length - 1);
 
-    /* "nonreduce_axis.pyx":253
+    /* "nonreduce_axis.pyx":240
  *         l = 0
  *         r = length - 1
  *         while l < r:             # <<<<<<<<<<<<<<
@@ -3704,7 +3673,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
       __pyx_t_2 = ((__pyx_v_l < __pyx_v_r) != 0);
       if (!__pyx_t_2) break;
 
-      /* "nonreduce_axis.pyx":254
+      /* "nonreduce_axis.pyx":241
  *         r = length - 1
  *         while l < r:
  *             x = (<float64_t*>((<char*>pid(ity)) + k*stride))[0]             # <<<<<<<<<<<<<<
@@ -3713,7 +3682,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
       __pyx_v_x = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_k * __pyx_v_stride)))[0]);
 
-      /* "nonreduce_axis.pyx":255
+      /* "nonreduce_axis.pyx":242
  *         while l < r:
  *             x = (<float64_t*>((<char*>pid(ity)) + k*stride))[0]
  *             i = l             # <<<<<<<<<<<<<<
@@ -3722,7 +3691,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
       __pyx_v_i = __pyx_v_l;
 
-      /* "nonreduce_axis.pyx":256
+      /* "nonreduce_axis.pyx":243
  *             x = (<float64_t*>((<char*>pid(ity)) + k*stride))[0]
  *             i = l
  *             j = r             # <<<<<<<<<<<<<<
@@ -3731,7 +3700,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
       __pyx_v_j = __pyx_v_r;
 
-      /* "nonreduce_axis.pyx":257
+      /* "nonreduce_axis.pyx":244
  *             i = l
  *             j = r
  *             while 1:             # <<<<<<<<<<<<<<
@@ -3740,7 +3709,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
       while (1) {
 
-        /* "nonreduce_axis.pyx":258
+        /* "nonreduce_axis.pyx":245
  *             j = r
  *             while 1:
  *                 while (<float64_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
@@ -3753,7 +3722,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
           __pyx_v_i = (__pyx_v_i + 1);
         }
 
-        /* "nonreduce_axis.pyx":259
+        /* "nonreduce_axis.pyx":246
  *             while 1:
  *                 while (<float64_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
  *                 while x < (<float64_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
@@ -3766,7 +3735,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
           __pyx_v_j = (__pyx_v_j - 1);
         }
 
-        /* "nonreduce_axis.pyx":260
+        /* "nonreduce_axis.pyx":247
  *                 while (<float64_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
  *                 while x < (<float64_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
  *                 if i <= j:             # <<<<<<<<<<<<<<
@@ -3776,7 +3745,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
         __pyx_t_2 = ((__pyx_v_i <= __pyx_v_j) != 0);
         if (__pyx_t_2) {
 
-          /* "nonreduce_axis.pyx":261
+          /* "nonreduce_axis.pyx":248
  *                 while x < (<float64_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
  *                 if i <= j:
  *                     tmpi = (<float64_t*>((<char*>pid(ity)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -3785,7 +3754,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
           __pyx_v_tmpi = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-          /* "nonreduce_axis.pyx":262
+          /* "nonreduce_axis.pyx":249
  *                 if i <= j:
  *                     tmpi = (<float64_t*>((<char*>pid(ity)) + i*stride))[0]
  *                     tmpj = (<float64_t*>((<char*>pid(ity)) + j*stride))[0]             # <<<<<<<<<<<<<<
@@ -3794,7 +3763,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
           __pyx_v_tmpj = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_j * __pyx_v_stride)))[0]);
 
-          /* "nonreduce_axis.pyx":263
+          /* "nonreduce_axis.pyx":250
  *                     tmpi = (<float64_t*>((<char*>pid(ity)) + i*stride))[0]
  *                     tmpj = (<float64_t*>((<char*>pid(ity)) + j*stride))[0]
  *                     (<float64_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj             # <<<<<<<<<<<<<<
@@ -3803,7 +3772,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
           (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_stride)))[0]) = __pyx_v_tmpj;
 
-          /* "nonreduce_axis.pyx":264
+          /* "nonreduce_axis.pyx":251
  *                     tmpj = (<float64_t*>((<char*>pid(ity)) + j*stride))[0]
  *                     (<float64_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
  *                     (<float64_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi             # <<<<<<<<<<<<<<
@@ -3812,7 +3781,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
           (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmpi;
 
-          /* "nonreduce_axis.pyx":265
+          /* "nonreduce_axis.pyx":252
  *                     (<float64_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
  *                     (<float64_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
  *                     itmpi = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]             # <<<<<<<<<<<<<<
@@ -3821,7 +3790,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
           __pyx_v_itmpi = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_i * __pyx_v_istride)))[0]);
 
-          /* "nonreduce_axis.pyx":266
+          /* "nonreduce_axis.pyx":253
  *                     (<float64_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
  *                     itmpi = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]
  *                     itmpj = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]             # <<<<<<<<<<<<<<
@@ -3830,7 +3799,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
           __pyx_v_itmpj = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]);
 
-          /* "nonreduce_axis.pyx":267
+          /* "nonreduce_axis.pyx":254
  *                     itmpi = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]
  *                     itmpj = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                     (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = itmpj             # <<<<<<<<<<<<<<
@@ -3839,7 +3808,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
           (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_i * __pyx_v_istride)))[0]) = __pyx_v_itmpj;
 
-          /* "nonreduce_axis.pyx":268
+          /* "nonreduce_axis.pyx":255
  *                     itmpj = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                     (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = itmpj
  *                     (<intp_t*>((<char*>pid(iti)) + j*istride))[0] = itmpi             # <<<<<<<<<<<<<<
@@ -3848,7 +3817,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
           (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]) = __pyx_v_itmpi;
 
-          /* "nonreduce_axis.pyx":269
+          /* "nonreduce_axis.pyx":256
  *                     (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = itmpj
  *                     (<intp_t*>((<char*>pid(iti)) + j*istride))[0] = itmpi
  *                     i += 1             # <<<<<<<<<<<<<<
@@ -3857,7 +3826,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
           __pyx_v_i = (__pyx_v_i + 1);
 
-          /* "nonreduce_axis.pyx":270
+          /* "nonreduce_axis.pyx":257
  *                     (<intp_t*>((<char*>pid(iti)) + j*istride))[0] = itmpi
  *                     i += 1
  *                     j -= 1             # <<<<<<<<<<<<<<
@@ -3869,7 +3838,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
         }
         __pyx_L21:;
 
-        /* "nonreduce_axis.pyx":271
+        /* "nonreduce_axis.pyx":258
  *                     i += 1
  *                     j -= 1
  *                 if i > j: break             # <<<<<<<<<<<<<<
@@ -3883,7 +3852,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
       }
       __pyx_L16_break:;
 
-      /* "nonreduce_axis.pyx":272
+      /* "nonreduce_axis.pyx":259
  *                     j -= 1
  *                 if i > j: break
  *             if j < k: l = i             # <<<<<<<<<<<<<<
@@ -3897,7 +3866,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
       }
       __pyx_L23:;
 
-      /* "nonreduce_axis.pyx":273
+      /* "nonreduce_axis.pyx":260
  *                 if i > j: break
  *             if j < k: l = i
  *             if k < i: r = j             # <<<<<<<<<<<<<<
@@ -3912,7 +3881,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
       __pyx_L24:;
     }
 
-    /* "nonreduce_axis.pyx":274
+    /* "nonreduce_axis.pyx":261
  *             if j < k: l = i
  *             if k < i: r = j
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -3921,7 +3890,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
  */
     PyArray_ITER_NEXT(__pyx_v_ity);
 
-    /* "nonreduce_axis.pyx":275
+    /* "nonreduce_axis.pyx":262
  *             if k < i: r = j
  *         PyArray_ITER_NEXT(ity)
  *         PyArray_ITER_NEXT(iti)             # <<<<<<<<<<<<<<
@@ -3931,7 +3900,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
     PyArray_ITER_NEXT(__pyx_v_iti);
   }
 
-  /* "nonreduce_axis.pyx":277
+  /* "nonreduce_axis.pyx":264
  *         PyArray_ITER_NEXT(iti)
  * 
  *     return index             # <<<<<<<<<<<<<<
@@ -3943,7 +3912,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
   __pyx_r = __pyx_v_index;
   goto __pyx_L0;
 
-  /* "nonreduce_axis.pyx":224
+  /* "nonreduce_axis.pyx":211
  * 
  * 
  * cdef ndarray argpartsort_float64(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -3968,7 +3937,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float64(PyArrayObject
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":279
+/* "nonreduce_axis.pyx":266
  *     return index
  * 
  * cdef ndarray argpartsort_float32(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -4008,7 +3977,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("argpartsort_float32", 0);
 
-  /* "nonreduce_axis.pyx":282
+  /* "nonreduce_axis.pyx":269
  *                                 int a_ndim, np.npy_intp* y_dims, int n):
  * 
  *     cdef np.npy_intp i, j = 0, l, r, k = n-1             # <<<<<<<<<<<<<<
@@ -4018,20 +3987,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
   __pyx_v_j = 0;
   __pyx_v_k = (__pyx_v_n - 1);
 
-  /* "nonreduce_axis.pyx":285
+  /* "nonreduce_axis.pyx":272
  *     cdef float32_t x, tmpi, tmpj
  *     cdef intp_t itmpi, itmpj
  *     cdef ndarray y = PyArray_Copy(a)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]
  */
-  __pyx_t_1 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":286
+  /* "nonreduce_axis.pyx":273
  *     cdef intp_t itmpi, itmpj
  *     cdef ndarray y = PyArray_Copy(a)
  *     cdef Py_ssize_t stride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -4040,7 +4009,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
   __pyx_v_stride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":287
+  /* "nonreduce_axis.pyx":274
  *     cdef ndarray y = PyArray_Copy(a)
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]             # <<<<<<<<<<<<<<
@@ -4049,20 +4018,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
   __pyx_v_length = (__pyx_v_y->dimensions[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":289
+  /* "nonreduce_axis.pyx":276
  *     cdef Py_ssize_t length = y.shape[axis]
  * 
  *     cdef ndarray index = PyArray_EMPTY(a_ndim, y_dims, NPY_intp, 0)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t istride = index.strides[axis]
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)
  */
-  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_INTP, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_INTP, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 276; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 276; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_index = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":290
+  /* "nonreduce_axis.pyx":277
  * 
  *     cdef ndarray index = PyArray_EMPTY(a_ndim, y_dims, NPY_intp, 0)
  *     cdef Py_ssize_t istride = index.strides[axis]             # <<<<<<<<<<<<<<
@@ -4071,20 +4040,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
   __pyx_v_istride = (__pyx_v_index->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":291
+  /* "nonreduce_axis.pyx":278
  *     cdef ndarray index = PyArray_EMPTY(a_ndim, y_dims, NPY_intp, 0)
  *     cdef Py_ssize_t istride = index.strides[axis]
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(iti):
  *         for i in range(length):
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_index), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_index), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_iti = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":292
+  /* "nonreduce_axis.pyx":279
  *     cdef Py_ssize_t istride = index.strides[axis]
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)
  *     while PyArray_ITER_NOTDONE(iti):             # <<<<<<<<<<<<<<
@@ -4095,7 +4064,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_iti) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":293
+    /* "nonreduce_axis.pyx":280
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)
  *     while PyArray_ITER_NOTDONE(iti):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -4106,7 +4075,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "nonreduce_axis.pyx":294
+      /* "nonreduce_axis.pyx":281
  *     while PyArray_ITER_NOTDONE(iti):
  *         for i in range(length):
  *             (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = i             # <<<<<<<<<<<<<<
@@ -4116,7 +4085,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
       (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_i * __pyx_v_istride)))[0]) = __pyx_v_i;
     }
 
-    /* "nonreduce_axis.pyx":295
+    /* "nonreduce_axis.pyx":282
  *         for i in range(length):
  *             (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = i
  *         PyArray_ITER_NEXT(iti)             # <<<<<<<<<<<<<<
@@ -4126,7 +4095,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
     PyArray_ITER_NEXT(__pyx_v_iti);
   }
 
-  /* "nonreduce_axis.pyx":296
+  /* "nonreduce_axis.pyx":283
  *             (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = i
  *         PyArray_ITER_NEXT(iti)
  *     PyArray_ITER_RESET(iti)             # <<<<<<<<<<<<<<
@@ -4135,7 +4104,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
   PyArray_ITER_RESET(__pyx_v_iti);
 
-  /* "nonreduce_axis.pyx":298
+  /* "nonreduce_axis.pyx":285
  *     PyArray_ITER_RESET(iti)
  * 
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -4145,7 +4114,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":299
+    /* "nonreduce_axis.pyx":286
  * 
  *     if length == 0:
  *         return index             # <<<<<<<<<<<<<<
@@ -4158,7 +4127,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":300
+  /* "nonreduce_axis.pyx":287
  *     if length == 0:
  *         return index
  *     if (n < 1) or (n > length):             # <<<<<<<<<<<<<<
@@ -4176,18 +4145,18 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
   __pyx_L9_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":302
+    /* "nonreduce_axis.pyx":289
  *     if (n < 1) or (n > length):
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
  *                          (n, length))             # <<<<<<<<<<<<<<
  * 
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  */
-    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
     PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
@@ -4196,43 +4165,43 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
     __pyx_t_1 = 0;
     __pyx_t_6 = 0;
 
-    /* "nonreduce_axis.pyx":301
+    /* "nonreduce_axis.pyx":288
  *         return index
  *     if (n < 1) or (n > length):
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %             # <<<<<<<<<<<<<<
  *                          (n, length))
  * 
  */
-    __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
     PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_6);
     __Pyx_GIVEREF(__pyx_t_6);
     __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_7, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_7, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "nonreduce_axis.pyx":304
+  /* "nonreduce_axis.pyx":291
  *                          (n, length))
  * 
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0
  */
-  __pyx_t_6 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
-  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "nonreduce_axis.pyx":305
+  /* "nonreduce_axis.pyx":292
  * 
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -4243,7 +4212,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":306
+    /* "nonreduce_axis.pyx":293
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0             # <<<<<<<<<<<<<<
@@ -4252,7 +4221,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
     __pyx_v_l = 0;
 
-    /* "nonreduce_axis.pyx":307
+    /* "nonreduce_axis.pyx":294
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0
  *         r = length - 1             # <<<<<<<<<<<<<<
@@ -4261,7 +4230,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
     __pyx_v_r = (__pyx_v_length - 1);
 
-    /* "nonreduce_axis.pyx":308
+    /* "nonreduce_axis.pyx":295
  *         l = 0
  *         r = length - 1
  *         while l < r:             # <<<<<<<<<<<<<<
@@ -4272,7 +4241,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
       __pyx_t_2 = ((__pyx_v_l < __pyx_v_r) != 0);
       if (!__pyx_t_2) break;
 
-      /* "nonreduce_axis.pyx":309
+      /* "nonreduce_axis.pyx":296
  *         r = length - 1
  *         while l < r:
  *             x = (<float32_t*>((<char*>pid(ity)) + k*stride))[0]             # <<<<<<<<<<<<<<
@@ -4281,7 +4250,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
       __pyx_v_x = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_k * __pyx_v_stride)))[0]);
 
-      /* "nonreduce_axis.pyx":310
+      /* "nonreduce_axis.pyx":297
  *         while l < r:
  *             x = (<float32_t*>((<char*>pid(ity)) + k*stride))[0]
  *             i = l             # <<<<<<<<<<<<<<
@@ -4290,7 +4259,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
       __pyx_v_i = __pyx_v_l;
 
-      /* "nonreduce_axis.pyx":311
+      /* "nonreduce_axis.pyx":298
  *             x = (<float32_t*>((<char*>pid(ity)) + k*stride))[0]
  *             i = l
  *             j = r             # <<<<<<<<<<<<<<
@@ -4299,7 +4268,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
       __pyx_v_j = __pyx_v_r;
 
-      /* "nonreduce_axis.pyx":312
+      /* "nonreduce_axis.pyx":299
  *             i = l
  *             j = r
  *             while 1:             # <<<<<<<<<<<<<<
@@ -4308,7 +4277,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
       while (1) {
 
-        /* "nonreduce_axis.pyx":313
+        /* "nonreduce_axis.pyx":300
  *             j = r
  *             while 1:
  *                 while (<float32_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
@@ -4321,7 +4290,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
           __pyx_v_i = (__pyx_v_i + 1);
         }
 
-        /* "nonreduce_axis.pyx":314
+        /* "nonreduce_axis.pyx":301
  *             while 1:
  *                 while (<float32_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
  *                 while x < (<float32_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
@@ -4334,7 +4303,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
           __pyx_v_j = (__pyx_v_j - 1);
         }
 
-        /* "nonreduce_axis.pyx":315
+        /* "nonreduce_axis.pyx":302
  *                 while (<float32_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
  *                 while x < (<float32_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
  *                 if i <= j:             # <<<<<<<<<<<<<<
@@ -4344,7 +4313,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
         __pyx_t_2 = ((__pyx_v_i <= __pyx_v_j) != 0);
         if (__pyx_t_2) {
 
-          /* "nonreduce_axis.pyx":316
+          /* "nonreduce_axis.pyx":303
  *                 while x < (<float32_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
  *                 if i <= j:
  *                     tmpi = (<float32_t*>((<char*>pid(ity)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -4353,7 +4322,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
           __pyx_v_tmpi = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-          /* "nonreduce_axis.pyx":317
+          /* "nonreduce_axis.pyx":304
  *                 if i <= j:
  *                     tmpi = (<float32_t*>((<char*>pid(ity)) + i*stride))[0]
  *                     tmpj = (<float32_t*>((<char*>pid(ity)) + j*stride))[0]             # <<<<<<<<<<<<<<
@@ -4362,7 +4331,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
           __pyx_v_tmpj = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_j * __pyx_v_stride)))[0]);
 
-          /* "nonreduce_axis.pyx":318
+          /* "nonreduce_axis.pyx":305
  *                     tmpi = (<float32_t*>((<char*>pid(ity)) + i*stride))[0]
  *                     tmpj = (<float32_t*>((<char*>pid(ity)) + j*stride))[0]
  *                     (<float32_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj             # <<<<<<<<<<<<<<
@@ -4371,7 +4340,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
           (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_stride)))[0]) = __pyx_v_tmpj;
 
-          /* "nonreduce_axis.pyx":319
+          /* "nonreduce_axis.pyx":306
  *                     tmpj = (<float32_t*>((<char*>pid(ity)) + j*stride))[0]
  *                     (<float32_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
  *                     (<float32_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi             # <<<<<<<<<<<<<<
@@ -4380,7 +4349,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
           (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmpi;
 
-          /* "nonreduce_axis.pyx":320
+          /* "nonreduce_axis.pyx":307
  *                     (<float32_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
  *                     (<float32_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
  *                     itmpi = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]             # <<<<<<<<<<<<<<
@@ -4389,7 +4358,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
           __pyx_v_itmpi = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_i * __pyx_v_istride)))[0]);
 
-          /* "nonreduce_axis.pyx":321
+          /* "nonreduce_axis.pyx":308
  *                     (<float32_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
  *                     itmpi = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]
  *                     itmpj = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]             # <<<<<<<<<<<<<<
@@ -4398,7 +4367,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
           __pyx_v_itmpj = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]);
 
-          /* "nonreduce_axis.pyx":322
+          /* "nonreduce_axis.pyx":309
  *                     itmpi = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]
  *                     itmpj = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                     (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = itmpj             # <<<<<<<<<<<<<<
@@ -4407,7 +4376,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
           (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_i * __pyx_v_istride)))[0]) = __pyx_v_itmpj;
 
-          /* "nonreduce_axis.pyx":323
+          /* "nonreduce_axis.pyx":310
  *                     itmpj = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                     (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = itmpj
  *                     (<intp_t*>((<char*>pid(iti)) + j*istride))[0] = itmpi             # <<<<<<<<<<<<<<
@@ -4416,7 +4385,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
           (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]) = __pyx_v_itmpi;
 
-          /* "nonreduce_axis.pyx":324
+          /* "nonreduce_axis.pyx":311
  *                     (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = itmpj
  *                     (<intp_t*>((<char*>pid(iti)) + j*istride))[0] = itmpi
  *                     i += 1             # <<<<<<<<<<<<<<
@@ -4425,7 +4394,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
           __pyx_v_i = (__pyx_v_i + 1);
 
-          /* "nonreduce_axis.pyx":325
+          /* "nonreduce_axis.pyx":312
  *                     (<intp_t*>((<char*>pid(iti)) + j*istride))[0] = itmpi
  *                     i += 1
  *                     j -= 1             # <<<<<<<<<<<<<<
@@ -4437,7 +4406,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
         }
         __pyx_L21:;
 
-        /* "nonreduce_axis.pyx":326
+        /* "nonreduce_axis.pyx":313
  *                     i += 1
  *                     j -= 1
  *                 if i > j: break             # <<<<<<<<<<<<<<
@@ -4451,7 +4420,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
       }
       __pyx_L16_break:;
 
-      /* "nonreduce_axis.pyx":327
+      /* "nonreduce_axis.pyx":314
  *                     j -= 1
  *                 if i > j: break
  *             if j < k: l = i             # <<<<<<<<<<<<<<
@@ -4465,7 +4434,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
       }
       __pyx_L23:;
 
-      /* "nonreduce_axis.pyx":328
+      /* "nonreduce_axis.pyx":315
  *                 if i > j: break
  *             if j < k: l = i
  *             if k < i: r = j             # <<<<<<<<<<<<<<
@@ -4480,7 +4449,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
       __pyx_L24:;
     }
 
-    /* "nonreduce_axis.pyx":329
+    /* "nonreduce_axis.pyx":316
  *             if j < k: l = i
  *             if k < i: r = j
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -4489,7 +4458,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
  */
     PyArray_ITER_NEXT(__pyx_v_ity);
 
-    /* "nonreduce_axis.pyx":330
+    /* "nonreduce_axis.pyx":317
  *             if k < i: r = j
  *         PyArray_ITER_NEXT(ity)
  *         PyArray_ITER_NEXT(iti)             # <<<<<<<<<<<<<<
@@ -4499,7 +4468,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
     PyArray_ITER_NEXT(__pyx_v_iti);
   }
 
-  /* "nonreduce_axis.pyx":332
+  /* "nonreduce_axis.pyx":319
  *         PyArray_ITER_NEXT(iti)
  * 
  *     return index             # <<<<<<<<<<<<<<
@@ -4511,7 +4480,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
   __pyx_r = __pyx_v_index;
   goto __pyx_L0;
 
-  /* "nonreduce_axis.pyx":279
+  /* "nonreduce_axis.pyx":266
  *     return index
  * 
  * cdef ndarray argpartsort_float32(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -4536,7 +4505,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_float32(PyArrayObject
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":334
+/* "nonreduce_axis.pyx":321
  *     return index
  * 
  * cdef ndarray argpartsort_int64(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -4576,7 +4545,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("argpartsort_int64", 0);
 
-  /* "nonreduce_axis.pyx":337
+  /* "nonreduce_axis.pyx":324
  *                                 int a_ndim, np.npy_intp* y_dims, int n):
  * 
  *     cdef np.npy_intp i, j = 0, l, r, k = n-1             # <<<<<<<<<<<<<<
@@ -4586,20 +4555,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
   __pyx_v_j = 0;
   __pyx_v_k = (__pyx_v_n - 1);
 
-  /* "nonreduce_axis.pyx":340
+  /* "nonreduce_axis.pyx":327
  *     cdef int64_t x, tmpi, tmpj
  *     cdef intp_t itmpi, itmpj
  *     cdef ndarray y = PyArray_Copy(a)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]
  */
-  __pyx_t_1 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 340; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 327; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 340; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 327; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":341
+  /* "nonreduce_axis.pyx":328
  *     cdef intp_t itmpi, itmpj
  *     cdef ndarray y = PyArray_Copy(a)
  *     cdef Py_ssize_t stride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -4608,7 +4577,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
   __pyx_v_stride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":342
+  /* "nonreduce_axis.pyx":329
  *     cdef ndarray y = PyArray_Copy(a)
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]             # <<<<<<<<<<<<<<
@@ -4617,20 +4586,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
   __pyx_v_length = (__pyx_v_y->dimensions[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":344
+  /* "nonreduce_axis.pyx":331
  *     cdef Py_ssize_t length = y.shape[axis]
  * 
  *     cdef ndarray index = PyArray_EMPTY(a_ndim, y_dims, NPY_intp, 0)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t istride = index.strides[axis]
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)
  */
-  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_INTP, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 344; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_INTP, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 344; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_index = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":345
+  /* "nonreduce_axis.pyx":332
  * 
  *     cdef ndarray index = PyArray_EMPTY(a_ndim, y_dims, NPY_intp, 0)
  *     cdef Py_ssize_t istride = index.strides[axis]             # <<<<<<<<<<<<<<
@@ -4639,20 +4608,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
   __pyx_v_istride = (__pyx_v_index->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":346
+  /* "nonreduce_axis.pyx":333
  *     cdef ndarray index = PyArray_EMPTY(a_ndim, y_dims, NPY_intp, 0)
  *     cdef Py_ssize_t istride = index.strides[axis]
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(iti):
  *         for i in range(length):
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_index), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 346; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_index), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 333; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 346; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 333; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_iti = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":347
+  /* "nonreduce_axis.pyx":334
  *     cdef Py_ssize_t istride = index.strides[axis]
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)
  *     while PyArray_ITER_NOTDONE(iti):             # <<<<<<<<<<<<<<
@@ -4663,7 +4632,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_iti) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":348
+    /* "nonreduce_axis.pyx":335
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)
  *     while PyArray_ITER_NOTDONE(iti):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -4674,7 +4643,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "nonreduce_axis.pyx":349
+      /* "nonreduce_axis.pyx":336
  *     while PyArray_ITER_NOTDONE(iti):
  *         for i in range(length):
  *             (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = i             # <<<<<<<<<<<<<<
@@ -4684,7 +4653,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
       (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_i * __pyx_v_istride)))[0]) = __pyx_v_i;
     }
 
-    /* "nonreduce_axis.pyx":350
+    /* "nonreduce_axis.pyx":337
  *         for i in range(length):
  *             (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = i
  *         PyArray_ITER_NEXT(iti)             # <<<<<<<<<<<<<<
@@ -4694,7 +4663,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
     PyArray_ITER_NEXT(__pyx_v_iti);
   }
 
-  /* "nonreduce_axis.pyx":351
+  /* "nonreduce_axis.pyx":338
  *             (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = i
  *         PyArray_ITER_NEXT(iti)
  *     PyArray_ITER_RESET(iti)             # <<<<<<<<<<<<<<
@@ -4703,7 +4672,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
   PyArray_ITER_RESET(__pyx_v_iti);
 
-  /* "nonreduce_axis.pyx":353
+  /* "nonreduce_axis.pyx":340
  *     PyArray_ITER_RESET(iti)
  * 
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -4713,7 +4682,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":354
+    /* "nonreduce_axis.pyx":341
  * 
  *     if length == 0:
  *         return index             # <<<<<<<<<<<<<<
@@ -4726,7 +4695,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":355
+  /* "nonreduce_axis.pyx":342
  *     if length == 0:
  *         return index
  *     if (n < 1) or (n > length):             # <<<<<<<<<<<<<<
@@ -4744,18 +4713,18 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
   __pyx_L9_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":357
+    /* "nonreduce_axis.pyx":344
  *     if (n < 1) or (n > length):
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
  *                          (n, length))             # <<<<<<<<<<<<<<
  * 
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  */
-    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 357; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 344; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 357; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 344; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 357; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 344; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
     PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
@@ -4764,43 +4733,43 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
     __pyx_t_1 = 0;
     __pyx_t_6 = 0;
 
-    /* "nonreduce_axis.pyx":356
+    /* "nonreduce_axis.pyx":343
  *         return index
  *     if (n < 1) or (n > length):
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %             # <<<<<<<<<<<<<<
  *                          (n, length))
  * 
  */
-    __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 356; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 343; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 356; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 343; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
     PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_6);
     __Pyx_GIVEREF(__pyx_t_6);
     __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_7, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 356; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_7, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 343; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 356; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 343; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "nonreduce_axis.pyx":359
+  /* "nonreduce_axis.pyx":346
  *                          (n, length))
  * 
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0
  */
-  __pyx_t_6 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 359; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 346; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
-  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 359; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 346; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "nonreduce_axis.pyx":360
+  /* "nonreduce_axis.pyx":347
  * 
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -4811,7 +4780,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":361
+    /* "nonreduce_axis.pyx":348
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0             # <<<<<<<<<<<<<<
@@ -4820,7 +4789,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
     __pyx_v_l = 0;
 
-    /* "nonreduce_axis.pyx":362
+    /* "nonreduce_axis.pyx":349
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0
  *         r = length - 1             # <<<<<<<<<<<<<<
@@ -4829,7 +4798,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
     __pyx_v_r = (__pyx_v_length - 1);
 
-    /* "nonreduce_axis.pyx":363
+    /* "nonreduce_axis.pyx":350
  *         l = 0
  *         r = length - 1
  *         while l < r:             # <<<<<<<<<<<<<<
@@ -4840,7 +4809,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
       __pyx_t_2 = ((__pyx_v_l < __pyx_v_r) != 0);
       if (!__pyx_t_2) break;
 
-      /* "nonreduce_axis.pyx":364
+      /* "nonreduce_axis.pyx":351
  *         r = length - 1
  *         while l < r:
  *             x = (<int64_t*>((<char*>pid(ity)) + k*stride))[0]             # <<<<<<<<<<<<<<
@@ -4849,7 +4818,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
       __pyx_v_x = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_k * __pyx_v_stride)))[0]);
 
-      /* "nonreduce_axis.pyx":365
+      /* "nonreduce_axis.pyx":352
  *         while l < r:
  *             x = (<int64_t*>((<char*>pid(ity)) + k*stride))[0]
  *             i = l             # <<<<<<<<<<<<<<
@@ -4858,7 +4827,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
       __pyx_v_i = __pyx_v_l;
 
-      /* "nonreduce_axis.pyx":366
+      /* "nonreduce_axis.pyx":353
  *             x = (<int64_t*>((<char*>pid(ity)) + k*stride))[0]
  *             i = l
  *             j = r             # <<<<<<<<<<<<<<
@@ -4867,7 +4836,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
       __pyx_v_j = __pyx_v_r;
 
-      /* "nonreduce_axis.pyx":367
+      /* "nonreduce_axis.pyx":354
  *             i = l
  *             j = r
  *             while 1:             # <<<<<<<<<<<<<<
@@ -4876,7 +4845,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
       while (1) {
 
-        /* "nonreduce_axis.pyx":368
+        /* "nonreduce_axis.pyx":355
  *             j = r
  *             while 1:
  *                 while (<int64_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
@@ -4889,7 +4858,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
           __pyx_v_i = (__pyx_v_i + 1);
         }
 
-        /* "nonreduce_axis.pyx":369
+        /* "nonreduce_axis.pyx":356
  *             while 1:
  *                 while (<int64_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
  *                 while x < (<int64_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
@@ -4902,7 +4871,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
           __pyx_v_j = (__pyx_v_j - 1);
         }
 
-        /* "nonreduce_axis.pyx":370
+        /* "nonreduce_axis.pyx":357
  *                 while (<int64_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
  *                 while x < (<int64_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
  *                 if i <= j:             # <<<<<<<<<<<<<<
@@ -4912,7 +4881,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
         __pyx_t_2 = ((__pyx_v_i <= __pyx_v_j) != 0);
         if (__pyx_t_2) {
 
-          /* "nonreduce_axis.pyx":371
+          /* "nonreduce_axis.pyx":358
  *                 while x < (<int64_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
  *                 if i <= j:
  *                     tmpi = (<int64_t*>((<char*>pid(ity)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -4921,7 +4890,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
           __pyx_v_tmpi = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-          /* "nonreduce_axis.pyx":372
+          /* "nonreduce_axis.pyx":359
  *                 if i <= j:
  *                     tmpi = (<int64_t*>((<char*>pid(ity)) + i*stride))[0]
  *                     tmpj = (<int64_t*>((<char*>pid(ity)) + j*stride))[0]             # <<<<<<<<<<<<<<
@@ -4930,7 +4899,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
           __pyx_v_tmpj = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_j * __pyx_v_stride)))[0]);
 
-          /* "nonreduce_axis.pyx":373
+          /* "nonreduce_axis.pyx":360
  *                     tmpi = (<int64_t*>((<char*>pid(ity)) + i*stride))[0]
  *                     tmpj = (<int64_t*>((<char*>pid(ity)) + j*stride))[0]
  *                     (<int64_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj             # <<<<<<<<<<<<<<
@@ -4939,7 +4908,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
           (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_stride)))[0]) = __pyx_v_tmpj;
 
-          /* "nonreduce_axis.pyx":374
+          /* "nonreduce_axis.pyx":361
  *                     tmpj = (<int64_t*>((<char*>pid(ity)) + j*stride))[0]
  *                     (<int64_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
  *                     (<int64_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi             # <<<<<<<<<<<<<<
@@ -4948,7 +4917,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
           (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmpi;
 
-          /* "nonreduce_axis.pyx":375
+          /* "nonreduce_axis.pyx":362
  *                     (<int64_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
  *                     (<int64_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
  *                     itmpi = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]             # <<<<<<<<<<<<<<
@@ -4957,7 +4926,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
           __pyx_v_itmpi = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_i * __pyx_v_istride)))[0]);
 
-          /* "nonreduce_axis.pyx":376
+          /* "nonreduce_axis.pyx":363
  *                     (<int64_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
  *                     itmpi = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]
  *                     itmpj = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]             # <<<<<<<<<<<<<<
@@ -4966,7 +4935,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
           __pyx_v_itmpj = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]);
 
-          /* "nonreduce_axis.pyx":377
+          /* "nonreduce_axis.pyx":364
  *                     itmpi = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]
  *                     itmpj = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                     (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = itmpj             # <<<<<<<<<<<<<<
@@ -4975,7 +4944,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
           (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_i * __pyx_v_istride)))[0]) = __pyx_v_itmpj;
 
-          /* "nonreduce_axis.pyx":378
+          /* "nonreduce_axis.pyx":365
  *                     itmpj = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                     (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = itmpj
  *                     (<intp_t*>((<char*>pid(iti)) + j*istride))[0] = itmpi             # <<<<<<<<<<<<<<
@@ -4984,7 +4953,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
           (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]) = __pyx_v_itmpi;
 
-          /* "nonreduce_axis.pyx":379
+          /* "nonreduce_axis.pyx":366
  *                     (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = itmpj
  *                     (<intp_t*>((<char*>pid(iti)) + j*istride))[0] = itmpi
  *                     i += 1             # <<<<<<<<<<<<<<
@@ -4993,7 +4962,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
           __pyx_v_i = (__pyx_v_i + 1);
 
-          /* "nonreduce_axis.pyx":380
+          /* "nonreduce_axis.pyx":367
  *                     (<intp_t*>((<char*>pid(iti)) + j*istride))[0] = itmpi
  *                     i += 1
  *                     j -= 1             # <<<<<<<<<<<<<<
@@ -5005,7 +4974,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
         }
         __pyx_L21:;
 
-        /* "nonreduce_axis.pyx":381
+        /* "nonreduce_axis.pyx":368
  *                     i += 1
  *                     j -= 1
  *                 if i > j: break             # <<<<<<<<<<<<<<
@@ -5019,7 +4988,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
       }
       __pyx_L16_break:;
 
-      /* "nonreduce_axis.pyx":382
+      /* "nonreduce_axis.pyx":369
  *                     j -= 1
  *                 if i > j: break
  *             if j < k: l = i             # <<<<<<<<<<<<<<
@@ -5033,7 +5002,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
       }
       __pyx_L23:;
 
-      /* "nonreduce_axis.pyx":383
+      /* "nonreduce_axis.pyx":370
  *                 if i > j: break
  *             if j < k: l = i
  *             if k < i: r = j             # <<<<<<<<<<<<<<
@@ -5048,7 +5017,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
       __pyx_L24:;
     }
 
-    /* "nonreduce_axis.pyx":384
+    /* "nonreduce_axis.pyx":371
  *             if j < k: l = i
  *             if k < i: r = j
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -5057,7 +5026,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
  */
     PyArray_ITER_NEXT(__pyx_v_ity);
 
-    /* "nonreduce_axis.pyx":385
+    /* "nonreduce_axis.pyx":372
  *             if k < i: r = j
  *         PyArray_ITER_NEXT(ity)
  *         PyArray_ITER_NEXT(iti)             # <<<<<<<<<<<<<<
@@ -5067,7 +5036,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
     PyArray_ITER_NEXT(__pyx_v_iti);
   }
 
-  /* "nonreduce_axis.pyx":387
+  /* "nonreduce_axis.pyx":374
  *         PyArray_ITER_NEXT(iti)
  * 
  *     return index             # <<<<<<<<<<<<<<
@@ -5079,7 +5048,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
   __pyx_r = __pyx_v_index;
   goto __pyx_L0;
 
-  /* "nonreduce_axis.pyx":334
+  /* "nonreduce_axis.pyx":321
  *     return index
  * 
  * cdef ndarray argpartsort_int64(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -5104,7 +5073,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int64(PyArrayObject *
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":389
+/* "nonreduce_axis.pyx":376
  *     return index
  * 
  * cdef ndarray argpartsort_int32(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -5144,7 +5113,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("argpartsort_int32", 0);
 
-  /* "nonreduce_axis.pyx":392
+  /* "nonreduce_axis.pyx":379
  *                                 int a_ndim, np.npy_intp* y_dims, int n):
  * 
  *     cdef np.npy_intp i, j = 0, l, r, k = n-1             # <<<<<<<<<<<<<<
@@ -5154,20 +5123,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
   __pyx_v_j = 0;
   __pyx_v_k = (__pyx_v_n - 1);
 
-  /* "nonreduce_axis.pyx":395
+  /* "nonreduce_axis.pyx":382
  *     cdef int32_t x, tmpi, tmpj
  *     cdef intp_t itmpi, itmpj
  *     cdef ndarray y = PyArray_Copy(a)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]
  */
-  __pyx_t_1 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 382; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 382; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":396
+  /* "nonreduce_axis.pyx":383
  *     cdef intp_t itmpi, itmpj
  *     cdef ndarray y = PyArray_Copy(a)
  *     cdef Py_ssize_t stride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -5176,7 +5145,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
   __pyx_v_stride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":397
+  /* "nonreduce_axis.pyx":384
  *     cdef ndarray y = PyArray_Copy(a)
  *     cdef Py_ssize_t stride = y.strides[axis]
  *     cdef Py_ssize_t length = y.shape[axis]             # <<<<<<<<<<<<<<
@@ -5185,20 +5154,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
   __pyx_v_length = (__pyx_v_y->dimensions[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":399
+  /* "nonreduce_axis.pyx":386
  *     cdef Py_ssize_t length = y.shape[axis]
  * 
  *     cdef ndarray index = PyArray_EMPTY(a_ndim, y_dims, NPY_intp, 0)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t istride = index.strides[axis]
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)
  */
-  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_INTP, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 399; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_INTP, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 399; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_index = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":400
+  /* "nonreduce_axis.pyx":387
  * 
  *     cdef ndarray index = PyArray_EMPTY(a_ndim, y_dims, NPY_intp, 0)
  *     cdef Py_ssize_t istride = index.strides[axis]             # <<<<<<<<<<<<<<
@@ -5207,20 +5176,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
   __pyx_v_istride = (__pyx_v_index->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":401
+  /* "nonreduce_axis.pyx":388
  *     cdef ndarray index = PyArray_EMPTY(a_ndim, y_dims, NPY_intp, 0)
  *     cdef Py_ssize_t istride = index.strides[axis]
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(iti):
  *         for i in range(length):
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_index), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 401; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_index), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 388; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 401; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 388; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_iti = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":402
+  /* "nonreduce_axis.pyx":389
  *     cdef Py_ssize_t istride = index.strides[axis]
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)
  *     while PyArray_ITER_NOTDONE(iti):             # <<<<<<<<<<<<<<
@@ -5231,7 +5200,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_iti) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":403
+    /* "nonreduce_axis.pyx":390
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)
  *     while PyArray_ITER_NOTDONE(iti):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -5242,7 +5211,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "nonreduce_axis.pyx":404
+      /* "nonreduce_axis.pyx":391
  *     while PyArray_ITER_NOTDONE(iti):
  *         for i in range(length):
  *             (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = i             # <<<<<<<<<<<<<<
@@ -5252,7 +5221,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
       (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_i * __pyx_v_istride)))[0]) = __pyx_v_i;
     }
 
-    /* "nonreduce_axis.pyx":405
+    /* "nonreduce_axis.pyx":392
  *         for i in range(length):
  *             (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = i
  *         PyArray_ITER_NEXT(iti)             # <<<<<<<<<<<<<<
@@ -5262,7 +5231,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
     PyArray_ITER_NEXT(__pyx_v_iti);
   }
 
-  /* "nonreduce_axis.pyx":406
+  /* "nonreduce_axis.pyx":393
  *             (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = i
  *         PyArray_ITER_NEXT(iti)
  *     PyArray_ITER_RESET(iti)             # <<<<<<<<<<<<<<
@@ -5271,7 +5240,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
   PyArray_ITER_RESET(__pyx_v_iti);
 
-  /* "nonreduce_axis.pyx":408
+  /* "nonreduce_axis.pyx":395
  *     PyArray_ITER_RESET(iti)
  * 
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -5281,7 +5250,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":409
+    /* "nonreduce_axis.pyx":396
  * 
  *     if length == 0:
  *         return index             # <<<<<<<<<<<<<<
@@ -5294,7 +5263,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":410
+  /* "nonreduce_axis.pyx":397
  *     if length == 0:
  *         return index
  *     if (n < 1) or (n > length):             # <<<<<<<<<<<<<<
@@ -5312,18 +5281,18 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
   __pyx_L9_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":412
+    /* "nonreduce_axis.pyx":399
  *     if (n < 1) or (n > length):
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
  *                          (n, length))             # <<<<<<<<<<<<<<
  * 
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  */
-    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 412; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 399; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 412; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 399; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 412; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 399; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
     PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
@@ -5332,43 +5301,43 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
     __pyx_t_1 = 0;
     __pyx_t_6 = 0;
 
-    /* "nonreduce_axis.pyx":411
+    /* "nonreduce_axis.pyx":398
  *         return index
  *     if (n < 1) or (n > length):
  *         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %             # <<<<<<<<<<<<<<
  *                          (n, length))
  * 
  */
-    __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 411; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 398; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 411; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 398; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
     PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_6);
     __Pyx_GIVEREF(__pyx_t_6);
     __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_7, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 411; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_7, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 398; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 411; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 398; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "nonreduce_axis.pyx":414
+  /* "nonreduce_axis.pyx":401
  *                          (n, length))
  * 
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0
  */
-  __pyx_t_6 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 414; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 401; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
-  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 414; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 401; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "nonreduce_axis.pyx":415
+  /* "nonreduce_axis.pyx":402
  * 
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -5379,7 +5348,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":416
+    /* "nonreduce_axis.pyx":403
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0             # <<<<<<<<<<<<<<
@@ -5388,7 +5357,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
     __pyx_v_l = 0;
 
-    /* "nonreduce_axis.pyx":417
+    /* "nonreduce_axis.pyx":404
  *     while PyArray_ITER_NOTDONE(ity):
  *         l = 0
  *         r = length - 1             # <<<<<<<<<<<<<<
@@ -5397,7 +5366,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
     __pyx_v_r = (__pyx_v_length - 1);
 
-    /* "nonreduce_axis.pyx":418
+    /* "nonreduce_axis.pyx":405
  *         l = 0
  *         r = length - 1
  *         while l < r:             # <<<<<<<<<<<<<<
@@ -5408,7 +5377,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
       __pyx_t_2 = ((__pyx_v_l < __pyx_v_r) != 0);
       if (!__pyx_t_2) break;
 
-      /* "nonreduce_axis.pyx":419
+      /* "nonreduce_axis.pyx":406
  *         r = length - 1
  *         while l < r:
  *             x = (<int32_t*>((<char*>pid(ity)) + k*stride))[0]             # <<<<<<<<<<<<<<
@@ -5417,7 +5386,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
       __pyx_v_x = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_k * __pyx_v_stride)))[0]);
 
-      /* "nonreduce_axis.pyx":420
+      /* "nonreduce_axis.pyx":407
  *         while l < r:
  *             x = (<int32_t*>((<char*>pid(ity)) + k*stride))[0]
  *             i = l             # <<<<<<<<<<<<<<
@@ -5426,7 +5395,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
       __pyx_v_i = __pyx_v_l;
 
-      /* "nonreduce_axis.pyx":421
+      /* "nonreduce_axis.pyx":408
  *             x = (<int32_t*>((<char*>pid(ity)) + k*stride))[0]
  *             i = l
  *             j = r             # <<<<<<<<<<<<<<
@@ -5435,7 +5404,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
       __pyx_v_j = __pyx_v_r;
 
-      /* "nonreduce_axis.pyx":422
+      /* "nonreduce_axis.pyx":409
  *             i = l
  *             j = r
  *             while 1:             # <<<<<<<<<<<<<<
@@ -5444,7 +5413,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
       while (1) {
 
-        /* "nonreduce_axis.pyx":423
+        /* "nonreduce_axis.pyx":410
  *             j = r
  *             while 1:
  *                 while (<int32_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
@@ -5457,7 +5426,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
           __pyx_v_i = (__pyx_v_i + 1);
         }
 
-        /* "nonreduce_axis.pyx":424
+        /* "nonreduce_axis.pyx":411
  *             while 1:
  *                 while (<int32_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
  *                 while x < (<int32_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
@@ -5470,7 +5439,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
           __pyx_v_j = (__pyx_v_j - 1);
         }
 
-        /* "nonreduce_axis.pyx":425
+        /* "nonreduce_axis.pyx":412
  *                 while (<int32_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
  *                 while x < (<int32_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
  *                 if i <= j:             # <<<<<<<<<<<<<<
@@ -5480,7 +5449,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
         __pyx_t_2 = ((__pyx_v_i <= __pyx_v_j) != 0);
         if (__pyx_t_2) {
 
-          /* "nonreduce_axis.pyx":426
+          /* "nonreduce_axis.pyx":413
  *                 while x < (<int32_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
  *                 if i <= j:
  *                     tmpi = (<int32_t*>((<char*>pid(ity)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -5489,7 +5458,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
           __pyx_v_tmpi = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-          /* "nonreduce_axis.pyx":427
+          /* "nonreduce_axis.pyx":414
  *                 if i <= j:
  *                     tmpi = (<int32_t*>((<char*>pid(ity)) + i*stride))[0]
  *                     tmpj = (<int32_t*>((<char*>pid(ity)) + j*stride))[0]             # <<<<<<<<<<<<<<
@@ -5498,7 +5467,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
           __pyx_v_tmpj = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_j * __pyx_v_stride)))[0]);
 
-          /* "nonreduce_axis.pyx":428
+          /* "nonreduce_axis.pyx":415
  *                     tmpi = (<int32_t*>((<char*>pid(ity)) + i*stride))[0]
  *                     tmpj = (<int32_t*>((<char*>pid(ity)) + j*stride))[0]
  *                     (<int32_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj             # <<<<<<<<<<<<<<
@@ -5507,7 +5476,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
           (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_stride)))[0]) = __pyx_v_tmpj;
 
-          /* "nonreduce_axis.pyx":429
+          /* "nonreduce_axis.pyx":416
  *                     tmpj = (<int32_t*>((<char*>pid(ity)) + j*stride))[0]
  *                     (<int32_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
  *                     (<int32_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi             # <<<<<<<<<<<<<<
@@ -5516,7 +5485,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
           (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmpi;
 
-          /* "nonreduce_axis.pyx":430
+          /* "nonreduce_axis.pyx":417
  *                     (<int32_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
  *                     (<int32_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
  *                     itmpi = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]             # <<<<<<<<<<<<<<
@@ -5525,7 +5494,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
           __pyx_v_itmpi = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_i * __pyx_v_istride)))[0]);
 
-          /* "nonreduce_axis.pyx":431
+          /* "nonreduce_axis.pyx":418
  *                     (<int32_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
  *                     itmpi = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]
  *                     itmpj = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]             # <<<<<<<<<<<<<<
@@ -5534,7 +5503,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
           __pyx_v_itmpj = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]);
 
-          /* "nonreduce_axis.pyx":432
+          /* "nonreduce_axis.pyx":419
  *                     itmpi = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]
  *                     itmpj = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                     (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = itmpj             # <<<<<<<<<<<<<<
@@ -5543,7 +5512,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
           (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_i * __pyx_v_istride)))[0]) = __pyx_v_itmpj;
 
-          /* "nonreduce_axis.pyx":433
+          /* "nonreduce_axis.pyx":420
  *                     itmpj = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                     (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = itmpj
  *                     (<intp_t*>((<char*>pid(iti)) + j*istride))[0] = itmpi             # <<<<<<<<<<<<<<
@@ -5552,7 +5521,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
           (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]) = __pyx_v_itmpi;
 
-          /* "nonreduce_axis.pyx":434
+          /* "nonreduce_axis.pyx":421
  *                     (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = itmpj
  *                     (<intp_t*>((<char*>pid(iti)) + j*istride))[0] = itmpi
  *                     i += 1             # <<<<<<<<<<<<<<
@@ -5561,7 +5530,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
           __pyx_v_i = (__pyx_v_i + 1);
 
-          /* "nonreduce_axis.pyx":435
+          /* "nonreduce_axis.pyx":422
  *                     (<intp_t*>((<char*>pid(iti)) + j*istride))[0] = itmpi
  *                     i += 1
  *                     j -= 1             # <<<<<<<<<<<<<<
@@ -5573,7 +5542,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
         }
         __pyx_L21:;
 
-        /* "nonreduce_axis.pyx":436
+        /* "nonreduce_axis.pyx":423
  *                     i += 1
  *                     j -= 1
  *                 if i > j: break             # <<<<<<<<<<<<<<
@@ -5587,7 +5556,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
       }
       __pyx_L16_break:;
 
-      /* "nonreduce_axis.pyx":437
+      /* "nonreduce_axis.pyx":424
  *                     j -= 1
  *                 if i > j: break
  *             if j < k: l = i             # <<<<<<<<<<<<<<
@@ -5601,7 +5570,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
       }
       __pyx_L23:;
 
-      /* "nonreduce_axis.pyx":438
+      /* "nonreduce_axis.pyx":425
  *                 if i > j: break
  *             if j < k: l = i
  *             if k < i: r = j             # <<<<<<<<<<<<<<
@@ -5616,7 +5585,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
       __pyx_L24:;
     }
 
-    /* "nonreduce_axis.pyx":439
+    /* "nonreduce_axis.pyx":426
  *             if j < k: l = i
  *             if k < i: r = j
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -5625,7 +5594,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
  */
     PyArray_ITER_NEXT(__pyx_v_ity);
 
-    /* "nonreduce_axis.pyx":440
+    /* "nonreduce_axis.pyx":427
  *             if k < i: r = j
  *         PyArray_ITER_NEXT(ity)
  *         PyArray_ITER_NEXT(iti)             # <<<<<<<<<<<<<<
@@ -5635,7 +5604,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
     PyArray_ITER_NEXT(__pyx_v_iti);
   }
 
-  /* "nonreduce_axis.pyx":442
+  /* "nonreduce_axis.pyx":429
  *         PyArray_ITER_NEXT(iti)
  * 
  *     return index             # <<<<<<<<<<<<<<
@@ -5647,7 +5616,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
   __pyx_r = __pyx_v_index;
   goto __pyx_L0;
 
-  /* "nonreduce_axis.pyx":389
+  /* "nonreduce_axis.pyx":376
  *     return index
  * 
  * cdef ndarray argpartsort_int32(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -5672,7 +5641,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_argpartsort_int32(PyArrayObject *
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":446
+/* "nonreduce_axis.pyx":433
  * # nanrankdata ---------------------------------------------------------------
  * 
  * def nanrankdata(arr, axis=None):             # <<<<<<<<<<<<<<
@@ -5718,7 +5687,7 @@ static PyObject *__pyx_pw_14nonreduce_axis_5nanrankdata(PyObject *__pyx_self, Py
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nanrankdata") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 446; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nanrankdata") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 433; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5733,7 +5702,7 @@ static PyObject *__pyx_pw_14nonreduce_axis_5nanrankdata(PyObject *__pyx_self, Py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("nanrankdata", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 446; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("nanrankdata", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 433; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("nonreduce_axis.nanrankdata", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -5766,7 +5735,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_4nanrankdata(CYTHON_UNUSED PyObject *
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanrankdata", 0);
 
-  /* "nonreduce_axis.pyx":447
+  /* "nonreduce_axis.pyx":434
  * 
  * def nanrankdata(arr, axis=None):
  *     try:             # <<<<<<<<<<<<<<
@@ -5780,7 +5749,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_4nanrankdata(CYTHON_UNUSED PyObject *
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "nonreduce_axis.pyx":448
+      /* "nonreduce_axis.pyx":435
  * def nanrankdata(arr, axis=None):
  *     try:
  *         return nonreducer_axis(arr, axis,             # <<<<<<<<<<<<<<
@@ -5789,14 +5758,14 @@ static PyObject *__pyx_pf_14nonreduce_axis_4nanrankdata(CYTHON_UNUSED PyObject *
  */
       __Pyx_XDECREF(__pyx_r);
 
-      /* "nonreduce_axis.pyx":452
+      /* "nonreduce_axis.pyx":439
  *                                nanrankdata_float32,
  *                                rankdata_int64,
  *                                rankdata_int32)             # <<<<<<<<<<<<<<
  *     except TypeError:
  *         return slow.nanrankdata(arr, axis)
  */
-      __pyx_t_4 = ((PyObject *)__pyx_f_14nonreduce_axis_nonreducer_axis(__pyx_v_arr, __pyx_v_axis, __pyx_f_14nonreduce_axis_nanrankdata_float64, __pyx_f_14nonreduce_axis_nanrankdata_float32, __pyx_f_14nonreduce_axis_rankdata_int64, __pyx_f_14nonreduce_axis_rankdata_int32, NULL)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 448; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_t_4 = ((PyObject *)__pyx_f_14nonreduce_axis_nonreducer_axis(__pyx_v_arr, __pyx_v_axis, __pyx_f_14nonreduce_axis_nanrankdata_float64, __pyx_f_14nonreduce_axis_nanrankdata_float32, __pyx_f_14nonreduce_axis_rankdata_int64, __pyx_f_14nonreduce_axis_rankdata_int32, NULL)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 435; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
@@ -5805,7 +5774,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_4nanrankdata(CYTHON_UNUSED PyObject *
     __pyx_L3_error:;
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "nonreduce_axis.pyx":453
+    /* "nonreduce_axis.pyx":440
  *                                rankdata_int64,
  *                                rankdata_int32)
  *     except TypeError:             # <<<<<<<<<<<<<<
@@ -5815,12 +5784,12 @@ static PyObject *__pyx_pf_14nonreduce_axis_4nanrankdata(CYTHON_UNUSED PyObject *
     __pyx_t_5 = PyErr_ExceptionMatches(__pyx_builtin_TypeError);
     if (__pyx_t_5) {
       __Pyx_AddTraceback("nonreduce_axis.nanrankdata", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_7) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 453; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_7) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 440; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_7);
 
-      /* "nonreduce_axis.pyx":454
+      /* "nonreduce_axis.pyx":441
  *                                rankdata_int32)
  *     except TypeError:
  *         return slow.nanrankdata(arr, axis)             # <<<<<<<<<<<<<<
@@ -5828,9 +5797,9 @@ static PyObject *__pyx_pf_14nonreduce_axis_4nanrankdata(CYTHON_UNUSED PyObject *
  * 
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 454; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 441; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_nanrankdata); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 454; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_nanrankdata); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 441; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_t_9 = NULL;
@@ -5845,7 +5814,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_4nanrankdata(CYTHON_UNUSED PyObject *
           __pyx_t_11 = 1;
         }
       }
-      __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 454; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 441; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_12);
       if (__pyx_t_9) {
         PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_9); __Pyx_GIVEREF(__pyx_t_9); __pyx_t_9 = NULL;
@@ -5856,7 +5825,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_4nanrankdata(CYTHON_UNUSED PyObject *
       __Pyx_INCREF(__pyx_v_axis);
       PyTuple_SET_ITEM(__pyx_t_12, 1+__pyx_t_11, __pyx_v_axis);
       __Pyx_GIVEREF(__pyx_v_axis);
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_12, NULL); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 454; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_12, NULL); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 441; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -5888,7 +5857,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_4nanrankdata(CYTHON_UNUSED PyObject *
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":446
+  /* "nonreduce_axis.pyx":433
  * # nanrankdata ---------------------------------------------------------------
  * 
  * def nanrankdata(arr, axis=None):             # <<<<<<<<<<<<<<
@@ -5913,7 +5882,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_4nanrankdata(CYTHON_UNUSED PyObject *
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":457
+/* "nonreduce_axis.pyx":444
  * 
  * 
  * cdef ndarray nanrankdata_float64(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -5953,7 +5922,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanrankdata_float64", 0);
 
-  /* "nonreduce_axis.pyx":460
+  /* "nonreduce_axis.pyx":447
  *                                 int a_ndim, np.npy_intp* y_dims, int ignore):
  * 
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i             # <<<<<<<<<<<<<<
@@ -5963,7 +5932,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
   __pyx_v_j = 0;
   __pyx_v_dupcount = 0;
 
-  /* "nonreduce_axis.pyx":461
+  /* "nonreduce_axis.pyx":448
  * 
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i
  *     cdef float64_t old, new, averank, sumranks = 0             # <<<<<<<<<<<<<<
@@ -5972,7 +5941,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
   __pyx_v_sumranks = 0.0;
 
-  /* "nonreduce_axis.pyx":462
+  /* "nonreduce_axis.pyx":449
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i
  *     cdef float64_t old, new, averank, sumranks = 0
  *     cdef Py_ssize_t length = a.shape[axis]             # <<<<<<<<<<<<<<
@@ -5981,20 +5950,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
   __pyx_v_length = (__pyx_v_a->dimensions[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":464
+  /* "nonreduce_axis.pyx":451
  *     cdef Py_ssize_t length = a.shape[axis]
  * 
  *     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t astride = a.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 464; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 451; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 464; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 451; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ita = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":465
+  /* "nonreduce_axis.pyx":452
  * 
  *     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)
  *     cdef Py_ssize_t astride = a.strides[axis]             # <<<<<<<<<<<<<<
@@ -6003,33 +5972,33 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
   __pyx_v_astride = (__pyx_v_a->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":467
+  /* "nonreduce_axis.pyx":454
  *     cdef Py_ssize_t astride = a.strides[axis]
  * 
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  */
-  __pyx_t_1 = PyArray_ArgSort(__pyx_v_a, __pyx_v_axis, NPY_QUICKSORT); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 467; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_ArgSort(__pyx_v_a, __pyx_v_axis, NPY_QUICKSORT); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 454; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 467; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 454; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ivec = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":468
+  /* "nonreduce_axis.pyx":455
  * 
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_ivec), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 468; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_ivec), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 455; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 468; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 455; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_iti = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":469
+  /* "nonreduce_axis.pyx":456
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
  *     cdef Py_ssize_t istride = ivec.strides[axis]             # <<<<<<<<<<<<<<
@@ -6038,33 +6007,33 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
   __pyx_v_istride = (__pyx_v_ivec->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":471
+  /* "nonreduce_axis.pyx":458
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  * 
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  */
-  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 471; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 458; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 471; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 458; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":472
+  /* "nonreduce_axis.pyx":459
  * 
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t ystride = y.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 472; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 459; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 472; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 459; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":473
+  /* "nonreduce_axis.pyx":460
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -6073,7 +6042,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
   __pyx_v_ystride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":475
+  /* "nonreduce_axis.pyx":462
  *     cdef Py_ssize_t ystride = y.strides[axis]
  * 
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -6083,19 +6052,19 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":476
+    /* "nonreduce_axis.pyx":463
  * 
  *     if length == 0:
  *         PyArray_FillWithScalar(y, NAN)             # <<<<<<<<<<<<<<
  *         return y
  * 
  */
-    __pyx_t_1 = PyFloat_FromDouble(__pyx_v_14nonreduce_axis_NAN); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 476; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyFloat_FromDouble(__pyx_v_14nonreduce_axis_NAN); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 463; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     PyArray_FillWithScalar(__pyx_v_y, __pyx_t_1);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "nonreduce_axis.pyx":477
+    /* "nonreduce_axis.pyx":464
  *     if length == 0:
  *         PyArray_FillWithScalar(y, NAN)
  *         return y             # <<<<<<<<<<<<<<
@@ -6108,7 +6077,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":479
+  /* "nonreduce_axis.pyx":466
  *         return y
  * 
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -6119,7 +6088,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":480
+    /* "nonreduce_axis.pyx":467
  * 
  *     while PyArray_ITER_NOTDONE(ita):
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]             # <<<<<<<<<<<<<<
@@ -6128,7 +6097,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
     __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (0 * __pyx_v_istride)))[0]);
 
-    /* "nonreduce_axis.pyx":481
+    /* "nonreduce_axis.pyx":468
  *     while PyArray_ITER_NOTDONE(ita):
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]
  *         old = (<float64_t*>((<char*>pid(ita)) + idx*astride))[0]             # <<<<<<<<<<<<<<
@@ -6137,7 +6106,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
     __pyx_v_old = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_idx * __pyx_v_astride)))[0]);
 
-    /* "nonreduce_axis.pyx":482
+    /* "nonreduce_axis.pyx":469
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]
  *         old = (<float64_t*>((<char*>pid(ita)) + idx*astride))[0]
  *         sumranks = 0             # <<<<<<<<<<<<<<
@@ -6146,7 +6115,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
     __pyx_v_sumranks = 0.0;
 
-    /* "nonreduce_axis.pyx":483
+    /* "nonreduce_axis.pyx":470
  *         old = (<float64_t*>((<char*>pid(ita)) + idx*astride))[0]
  *         sumranks = 0
  *         dupcount = 0             # <<<<<<<<<<<<<<
@@ -6155,7 +6124,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
     __pyx_v_dupcount = 0;
 
-    /* "nonreduce_axis.pyx":484
+    /* "nonreduce_axis.pyx":471
  *         sumranks = 0
  *         dupcount = 0
  *         for i in range(length - 1):             # <<<<<<<<<<<<<<
@@ -6166,7 +6135,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "nonreduce_axis.pyx":485
+      /* "nonreduce_axis.pyx":472
  *         dupcount = 0
  *         for i in range(length - 1):
  *             sumranks += i             # <<<<<<<<<<<<<<
@@ -6175,7 +6144,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
       __pyx_v_sumranks = (__pyx_v_sumranks + __pyx_v_i);
 
-      /* "nonreduce_axis.pyx":486
+      /* "nonreduce_axis.pyx":473
  *         for i in range(length - 1):
  *             sumranks += i
  *             dupcount += 1             # <<<<<<<<<<<<<<
@@ -6184,7 +6153,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
       __pyx_v_dupcount = (__pyx_v_dupcount + 1);
 
-      /* "nonreduce_axis.pyx":487
+      /* "nonreduce_axis.pyx":474
  *             sumranks += i
  *             dupcount += 1
  *             k = i + 1             # <<<<<<<<<<<<<<
@@ -6193,7 +6162,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
       __pyx_v_k = (__pyx_v_i + 1);
 
-      /* "nonreduce_axis.pyx":488
+      /* "nonreduce_axis.pyx":475
  *             dupcount += 1
  *             k = i + 1
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]             # <<<<<<<<<<<<<<
@@ -6202,7 +6171,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
       __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_k * __pyx_v_istride)))[0]);
 
-      /* "nonreduce_axis.pyx":489
+      /* "nonreduce_axis.pyx":476
  *             k = i + 1
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]
  *             new = (<float64_t*>((<char*>pid(ita)) + idx*astride))[0]             # <<<<<<<<<<<<<<
@@ -6211,7 +6180,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
       __pyx_v_new = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_idx * __pyx_v_astride)))[0]);
 
-      /* "nonreduce_axis.pyx":490
+      /* "nonreduce_axis.pyx":477
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]
  *             new = (<float64_t*>((<char*>pid(ita)) + idx*astride))[0]
  *             if old != new:             # <<<<<<<<<<<<<<
@@ -6221,7 +6190,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
       __pyx_t_2 = ((__pyx_v_old != __pyx_v_new) != 0);
       if (__pyx_t_2) {
 
-        /* "nonreduce_axis.pyx":491
+        /* "nonreduce_axis.pyx":478
  *             new = (<float64_t*>((<char*>pid(ita)) + idx*astride))[0]
  *             if old != new:
  *                 if old == old:             # <<<<<<<<<<<<<<
@@ -6231,7 +6200,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
         __pyx_t_2 = ((__pyx_v_old == __pyx_v_old) != 0);
         if (__pyx_t_2) {
 
-          /* "nonreduce_axis.pyx":492
+          /* "nonreduce_axis.pyx":479
  *             if old != new:
  *                 if old == old:
  *                     averank = sumranks / dupcount + 1             # <<<<<<<<<<<<<<
@@ -6246,11 +6215,11 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
             #ifdef WITH_THREAD
             PyGILState_Release(__pyx_gilstate_save);
             #endif
-            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 492; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 479; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
           __pyx_v_averank = ((__pyx_v_sumranks / __pyx_v_dupcount) + 1.0);
 
-          /* "nonreduce_axis.pyx":493
+          /* "nonreduce_axis.pyx":480
  *                 if old == old:
  *                     averank = sumranks / dupcount + 1
  *                     for j in range(k - dupcount, k):             # <<<<<<<<<<<<<<
@@ -6261,7 +6230,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
           for (__pyx_t_6 = (__pyx_v_k - __pyx_v_dupcount); __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
             __pyx_v_j = __pyx_t_6;
 
-            /* "nonreduce_axis.pyx":494
+            /* "nonreduce_axis.pyx":481
  *                     averank = sumranks / dupcount + 1
  *                     for j in range(k - dupcount, k):
  *                         idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]             # <<<<<<<<<<<<<<
@@ -6270,7 +6239,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
             __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]);
 
-            /* "nonreduce_axis.pyx":495
+            /* "nonreduce_axis.pyx":482
  *                     for j in range(k - dupcount, k):
  *                         idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                         (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank             # <<<<<<<<<<<<<<
@@ -6283,7 +6252,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
         }
         /*else*/ {
 
-          /* "nonreduce_axis.pyx":497
+          /* "nonreduce_axis.pyx":484
  *                         (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *                 else:
  *                     idx = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]             # <<<<<<<<<<<<<<
@@ -6292,7 +6261,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
           __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_i * __pyx_v_istride)))[0]);
 
-          /* "nonreduce_axis.pyx":498
+          /* "nonreduce_axis.pyx":485
  *                 else:
  *                     idx = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN             # <<<<<<<<<<<<<<
@@ -6303,7 +6272,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
         }
         __pyx_L9:;
 
-        /* "nonreduce_axis.pyx":499
+        /* "nonreduce_axis.pyx":486
  *                     idx = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN
  *                 sumranks = 0             # <<<<<<<<<<<<<<
@@ -6312,7 +6281,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
         __pyx_v_sumranks = 0.0;
 
-        /* "nonreduce_axis.pyx":500
+        /* "nonreduce_axis.pyx":487
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN
  *                 sumranks = 0
  *                 dupcount = 0             # <<<<<<<<<<<<<<
@@ -6324,7 +6293,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
       }
       __pyx_L8:;
 
-      /* "nonreduce_axis.pyx":501
+      /* "nonreduce_axis.pyx":488
  *                 sumranks = 0
  *                 dupcount = 0
  *             old = new             # <<<<<<<<<<<<<<
@@ -6334,7 +6303,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
       __pyx_v_old = __pyx_v_new;
     }
 
-    /* "nonreduce_axis.pyx":502
+    /* "nonreduce_axis.pyx":489
  *                 dupcount = 0
  *             old = new
  *         sumranks += (length - 1)             # <<<<<<<<<<<<<<
@@ -6343,7 +6312,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
     __pyx_v_sumranks = (__pyx_v_sumranks + (__pyx_v_length - 1));
 
-    /* "nonreduce_axis.pyx":503
+    /* "nonreduce_axis.pyx":490
  *             old = new
  *         sumranks += (length - 1)
  *         dupcount += 1             # <<<<<<<<<<<<<<
@@ -6352,7 +6321,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
     __pyx_v_dupcount = (__pyx_v_dupcount + 1);
 
-    /* "nonreduce_axis.pyx":504
+    /* "nonreduce_axis.pyx":491
  *         sumranks += (length - 1)
  *         dupcount += 1
  *         averank = sumranks / dupcount + 1             # <<<<<<<<<<<<<<
@@ -6367,11 +6336,11 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
       #ifdef WITH_THREAD
       PyGILState_Release(__pyx_gilstate_save);
       #endif
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 504; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 491; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __pyx_v_averank = ((__pyx_v_sumranks / __pyx_v_dupcount) + 1.0);
 
-    /* "nonreduce_axis.pyx":505
+    /* "nonreduce_axis.pyx":492
  *         dupcount += 1
  *         averank = sumranks / dupcount + 1
  *         if old == old:             # <<<<<<<<<<<<<<
@@ -6381,7 +6350,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
     __pyx_t_2 = ((__pyx_v_old == __pyx_v_old) != 0);
     if (__pyx_t_2) {
 
-      /* "nonreduce_axis.pyx":506
+      /* "nonreduce_axis.pyx":493
  *         averank = sumranks / dupcount + 1
  *         if old == old:
  *             for j in range(length - dupcount, length):             # <<<<<<<<<<<<<<
@@ -6392,7 +6361,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
       for (__pyx_t_4 = (__pyx_v_length - __pyx_v_dupcount); __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_j = __pyx_t_4;
 
-        /* "nonreduce_axis.pyx":507
+        /* "nonreduce_axis.pyx":494
  *         if old == old:
  *             for j in range(length - dupcount, length):
  *                 idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]             # <<<<<<<<<<<<<<
@@ -6401,7 +6370,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
         __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]);
 
-        /* "nonreduce_axis.pyx":508
+        /* "nonreduce_axis.pyx":495
  *             for j in range(length - dupcount, length):
  *                 idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                 (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank             # <<<<<<<<<<<<<<
@@ -6414,7 +6383,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
     }
     /*else*/ {
 
-      /* "nonreduce_axis.pyx":510
+      /* "nonreduce_axis.pyx":497
  *                 (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *         else:
  *             idx = (<intp_t*>((<char*>pid(iti)) + (length - 1)*istride))[0]             # <<<<<<<<<<<<<<
@@ -6423,7 +6392,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
       __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + ((__pyx_v_length - 1) * __pyx_v_istride)))[0]);
 
-      /* "nonreduce_axis.pyx":511
+      /* "nonreduce_axis.pyx":498
  *         else:
  *             idx = (<intp_t*>((<char*>pid(iti)) + (length - 1)*istride))[0]
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN             # <<<<<<<<<<<<<<
@@ -6434,7 +6403,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
     }
     __pyx_L12:;
 
-    /* "nonreduce_axis.pyx":512
+    /* "nonreduce_axis.pyx":499
  *             idx = (<intp_t*>((<char*>pid(iti)) + (length - 1)*istride))[0]
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -6443,7 +6412,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "nonreduce_axis.pyx":513
+    /* "nonreduce_axis.pyx":500
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -6452,7 +6421,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
  */
     PyArray_ITER_NEXT(__pyx_v_ity);
 
-    /* "nonreduce_axis.pyx":514
+    /* "nonreduce_axis.pyx":501
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *         PyArray_ITER_NEXT(iti)             # <<<<<<<<<<<<<<
@@ -6462,7 +6431,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
     PyArray_ITER_NEXT(__pyx_v_iti);
   }
 
-  /* "nonreduce_axis.pyx":515
+  /* "nonreduce_axis.pyx":502
  *         PyArray_ITER_NEXT(ity)
  *         PyArray_ITER_NEXT(iti)
  *     return y             # <<<<<<<<<<<<<<
@@ -6474,7 +6443,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "nonreduce_axis.pyx":457
+  /* "nonreduce_axis.pyx":444
  * 
  * 
  * cdef ndarray nanrankdata_float64(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -6498,7 +6467,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float64(PyArrayObject
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":517
+/* "nonreduce_axis.pyx":504
  *     return y
  * 
  * cdef ndarray nanrankdata_float32(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -6538,7 +6507,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanrankdata_float32", 0);
 
-  /* "nonreduce_axis.pyx":520
+  /* "nonreduce_axis.pyx":507
  *                                 int a_ndim, np.npy_intp* y_dims, int ignore):
  * 
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i             # <<<<<<<<<<<<<<
@@ -6548,7 +6517,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
   __pyx_v_j = 0;
   __pyx_v_dupcount = 0;
 
-  /* "nonreduce_axis.pyx":521
+  /* "nonreduce_axis.pyx":508
  * 
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i
  *     cdef float64_t old, new, averank, sumranks = 0             # <<<<<<<<<<<<<<
@@ -6557,7 +6526,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
   __pyx_v_sumranks = 0.0;
 
-  /* "nonreduce_axis.pyx":522
+  /* "nonreduce_axis.pyx":509
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i
  *     cdef float64_t old, new, averank, sumranks = 0
  *     cdef Py_ssize_t length = a.shape[axis]             # <<<<<<<<<<<<<<
@@ -6566,20 +6535,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
   __pyx_v_length = (__pyx_v_a->dimensions[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":524
+  /* "nonreduce_axis.pyx":511
  *     cdef Py_ssize_t length = a.shape[axis]
  * 
  *     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t astride = a.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 524; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 511; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 524; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 511; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ita = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":525
+  /* "nonreduce_axis.pyx":512
  * 
  *     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)
  *     cdef Py_ssize_t astride = a.strides[axis]             # <<<<<<<<<<<<<<
@@ -6588,33 +6557,33 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
   __pyx_v_astride = (__pyx_v_a->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":527
+  /* "nonreduce_axis.pyx":514
  *     cdef Py_ssize_t astride = a.strides[axis]
  * 
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  */
-  __pyx_t_1 = PyArray_ArgSort(__pyx_v_a, __pyx_v_axis, NPY_QUICKSORT); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 527; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_ArgSort(__pyx_v_a, __pyx_v_axis, NPY_QUICKSORT); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 514; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 527; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 514; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ivec = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":528
+  /* "nonreduce_axis.pyx":515
  * 
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_ivec), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 528; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_ivec), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 515; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 528; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 515; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_iti = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":529
+  /* "nonreduce_axis.pyx":516
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
  *     cdef Py_ssize_t istride = ivec.strides[axis]             # <<<<<<<<<<<<<<
@@ -6623,33 +6592,33 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
   __pyx_v_istride = (__pyx_v_ivec->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":531
+  /* "nonreduce_axis.pyx":518
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  * 
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  */
-  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 531; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 518; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 531; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 518; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":532
+  /* "nonreduce_axis.pyx":519
  * 
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t ystride = y.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 532; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 519; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 532; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 519; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":533
+  /* "nonreduce_axis.pyx":520
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -6658,7 +6627,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
   __pyx_v_ystride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":535
+  /* "nonreduce_axis.pyx":522
  *     cdef Py_ssize_t ystride = y.strides[axis]
  * 
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -6668,19 +6637,19 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":536
+    /* "nonreduce_axis.pyx":523
  * 
  *     if length == 0:
  *         PyArray_FillWithScalar(y, NAN)             # <<<<<<<<<<<<<<
  *         return y
  * 
  */
-    __pyx_t_1 = PyFloat_FromDouble(__pyx_v_14nonreduce_axis_NAN); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 536; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyFloat_FromDouble(__pyx_v_14nonreduce_axis_NAN); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 523; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     PyArray_FillWithScalar(__pyx_v_y, __pyx_t_1);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "nonreduce_axis.pyx":537
+    /* "nonreduce_axis.pyx":524
  *     if length == 0:
  *         PyArray_FillWithScalar(y, NAN)
  *         return y             # <<<<<<<<<<<<<<
@@ -6693,7 +6662,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":539
+  /* "nonreduce_axis.pyx":526
  *         return y
  * 
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -6704,7 +6673,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":540
+    /* "nonreduce_axis.pyx":527
  * 
  *     while PyArray_ITER_NOTDONE(ita):
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]             # <<<<<<<<<<<<<<
@@ -6713,7 +6682,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
     __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (0 * __pyx_v_istride)))[0]);
 
-    /* "nonreduce_axis.pyx":541
+    /* "nonreduce_axis.pyx":528
  *     while PyArray_ITER_NOTDONE(ita):
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]
  *         old = (<float32_t*>((<char*>pid(ita)) + idx*astride))[0]             # <<<<<<<<<<<<<<
@@ -6722,7 +6691,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
     __pyx_v_old = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_idx * __pyx_v_astride)))[0]);
 
-    /* "nonreduce_axis.pyx":542
+    /* "nonreduce_axis.pyx":529
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]
  *         old = (<float32_t*>((<char*>pid(ita)) + idx*astride))[0]
  *         sumranks = 0             # <<<<<<<<<<<<<<
@@ -6731,7 +6700,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
     __pyx_v_sumranks = 0.0;
 
-    /* "nonreduce_axis.pyx":543
+    /* "nonreduce_axis.pyx":530
  *         old = (<float32_t*>((<char*>pid(ita)) + idx*astride))[0]
  *         sumranks = 0
  *         dupcount = 0             # <<<<<<<<<<<<<<
@@ -6740,7 +6709,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
     __pyx_v_dupcount = 0;
 
-    /* "nonreduce_axis.pyx":544
+    /* "nonreduce_axis.pyx":531
  *         sumranks = 0
  *         dupcount = 0
  *         for i in range(length - 1):             # <<<<<<<<<<<<<<
@@ -6751,7 +6720,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "nonreduce_axis.pyx":545
+      /* "nonreduce_axis.pyx":532
  *         dupcount = 0
  *         for i in range(length - 1):
  *             sumranks += i             # <<<<<<<<<<<<<<
@@ -6760,7 +6729,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
       __pyx_v_sumranks = (__pyx_v_sumranks + __pyx_v_i);
 
-      /* "nonreduce_axis.pyx":546
+      /* "nonreduce_axis.pyx":533
  *         for i in range(length - 1):
  *             sumranks += i
  *             dupcount += 1             # <<<<<<<<<<<<<<
@@ -6769,7 +6738,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
       __pyx_v_dupcount = (__pyx_v_dupcount + 1);
 
-      /* "nonreduce_axis.pyx":547
+      /* "nonreduce_axis.pyx":534
  *             sumranks += i
  *             dupcount += 1
  *             k = i + 1             # <<<<<<<<<<<<<<
@@ -6778,7 +6747,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
       __pyx_v_k = (__pyx_v_i + 1);
 
-      /* "nonreduce_axis.pyx":548
+      /* "nonreduce_axis.pyx":535
  *             dupcount += 1
  *             k = i + 1
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]             # <<<<<<<<<<<<<<
@@ -6787,7 +6756,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
       __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_k * __pyx_v_istride)))[0]);
 
-      /* "nonreduce_axis.pyx":549
+      /* "nonreduce_axis.pyx":536
  *             k = i + 1
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]
  *             new = (<float32_t*>((<char*>pid(ita)) + idx*astride))[0]             # <<<<<<<<<<<<<<
@@ -6796,7 +6765,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
       __pyx_v_new = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_idx * __pyx_v_astride)))[0]);
 
-      /* "nonreduce_axis.pyx":550
+      /* "nonreduce_axis.pyx":537
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]
  *             new = (<float32_t*>((<char*>pid(ita)) + idx*astride))[0]
  *             if old != new:             # <<<<<<<<<<<<<<
@@ -6806,7 +6775,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
       __pyx_t_2 = ((__pyx_v_old != __pyx_v_new) != 0);
       if (__pyx_t_2) {
 
-        /* "nonreduce_axis.pyx":551
+        /* "nonreduce_axis.pyx":538
  *             new = (<float32_t*>((<char*>pid(ita)) + idx*astride))[0]
  *             if old != new:
  *                 if old == old:             # <<<<<<<<<<<<<<
@@ -6816,7 +6785,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
         __pyx_t_2 = ((__pyx_v_old == __pyx_v_old) != 0);
         if (__pyx_t_2) {
 
-          /* "nonreduce_axis.pyx":552
+          /* "nonreduce_axis.pyx":539
  *             if old != new:
  *                 if old == old:
  *                     averank = sumranks / dupcount + 1             # <<<<<<<<<<<<<<
@@ -6831,11 +6800,11 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
             #ifdef WITH_THREAD
             PyGILState_Release(__pyx_gilstate_save);
             #endif
-            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 552; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 539; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
           __pyx_v_averank = ((__pyx_v_sumranks / __pyx_v_dupcount) + 1.0);
 
-          /* "nonreduce_axis.pyx":553
+          /* "nonreduce_axis.pyx":540
  *                 if old == old:
  *                     averank = sumranks / dupcount + 1
  *                     for j in range(k - dupcount, k):             # <<<<<<<<<<<<<<
@@ -6846,7 +6815,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
           for (__pyx_t_6 = (__pyx_v_k - __pyx_v_dupcount); __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
             __pyx_v_j = __pyx_t_6;
 
-            /* "nonreduce_axis.pyx":554
+            /* "nonreduce_axis.pyx":541
  *                     averank = sumranks / dupcount + 1
  *                     for j in range(k - dupcount, k):
  *                         idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]             # <<<<<<<<<<<<<<
@@ -6855,7 +6824,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
             __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]);
 
-            /* "nonreduce_axis.pyx":555
+            /* "nonreduce_axis.pyx":542
  *                     for j in range(k - dupcount, k):
  *                         idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                         (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank             # <<<<<<<<<<<<<<
@@ -6868,7 +6837,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
         }
         /*else*/ {
 
-          /* "nonreduce_axis.pyx":557
+          /* "nonreduce_axis.pyx":544
  *                         (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *                 else:
  *                     idx = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]             # <<<<<<<<<<<<<<
@@ -6877,7 +6846,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
           __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_i * __pyx_v_istride)))[0]);
 
-          /* "nonreduce_axis.pyx":558
+          /* "nonreduce_axis.pyx":545
  *                 else:
  *                     idx = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN             # <<<<<<<<<<<<<<
@@ -6888,7 +6857,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
         }
         __pyx_L9:;
 
-        /* "nonreduce_axis.pyx":559
+        /* "nonreduce_axis.pyx":546
  *                     idx = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN
  *                 sumranks = 0             # <<<<<<<<<<<<<<
@@ -6897,7 +6866,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
         __pyx_v_sumranks = 0.0;
 
-        /* "nonreduce_axis.pyx":560
+        /* "nonreduce_axis.pyx":547
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN
  *                 sumranks = 0
  *                 dupcount = 0             # <<<<<<<<<<<<<<
@@ -6909,7 +6878,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
       }
       __pyx_L8:;
 
-      /* "nonreduce_axis.pyx":561
+      /* "nonreduce_axis.pyx":548
  *                 sumranks = 0
  *                 dupcount = 0
  *             old = new             # <<<<<<<<<<<<<<
@@ -6919,7 +6888,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
       __pyx_v_old = __pyx_v_new;
     }
 
-    /* "nonreduce_axis.pyx":562
+    /* "nonreduce_axis.pyx":549
  *                 dupcount = 0
  *             old = new
  *         sumranks += (length - 1)             # <<<<<<<<<<<<<<
@@ -6928,7 +6897,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
     __pyx_v_sumranks = (__pyx_v_sumranks + (__pyx_v_length - 1));
 
-    /* "nonreduce_axis.pyx":563
+    /* "nonreduce_axis.pyx":550
  *             old = new
  *         sumranks += (length - 1)
  *         dupcount += 1             # <<<<<<<<<<<<<<
@@ -6937,7 +6906,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
     __pyx_v_dupcount = (__pyx_v_dupcount + 1);
 
-    /* "nonreduce_axis.pyx":564
+    /* "nonreduce_axis.pyx":551
  *         sumranks += (length - 1)
  *         dupcount += 1
  *         averank = sumranks / dupcount + 1             # <<<<<<<<<<<<<<
@@ -6952,11 +6921,11 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
       #ifdef WITH_THREAD
       PyGILState_Release(__pyx_gilstate_save);
       #endif
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 564; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 551; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __pyx_v_averank = ((__pyx_v_sumranks / __pyx_v_dupcount) + 1.0);
 
-    /* "nonreduce_axis.pyx":565
+    /* "nonreduce_axis.pyx":552
  *         dupcount += 1
  *         averank = sumranks / dupcount + 1
  *         if old == old:             # <<<<<<<<<<<<<<
@@ -6966,7 +6935,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
     __pyx_t_2 = ((__pyx_v_old == __pyx_v_old) != 0);
     if (__pyx_t_2) {
 
-      /* "nonreduce_axis.pyx":566
+      /* "nonreduce_axis.pyx":553
  *         averank = sumranks / dupcount + 1
  *         if old == old:
  *             for j in range(length - dupcount, length):             # <<<<<<<<<<<<<<
@@ -6977,7 +6946,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
       for (__pyx_t_4 = (__pyx_v_length - __pyx_v_dupcount); __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_j = __pyx_t_4;
 
-        /* "nonreduce_axis.pyx":567
+        /* "nonreduce_axis.pyx":554
  *         if old == old:
  *             for j in range(length - dupcount, length):
  *                 idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]             # <<<<<<<<<<<<<<
@@ -6986,7 +6955,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
         __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]);
 
-        /* "nonreduce_axis.pyx":568
+        /* "nonreduce_axis.pyx":555
  *             for j in range(length - dupcount, length):
  *                 idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                 (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank             # <<<<<<<<<<<<<<
@@ -6999,7 +6968,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
     }
     /*else*/ {
 
-      /* "nonreduce_axis.pyx":570
+      /* "nonreduce_axis.pyx":557
  *                 (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *         else:
  *             idx = (<intp_t*>((<char*>pid(iti)) + (length - 1)*istride))[0]             # <<<<<<<<<<<<<<
@@ -7008,7 +6977,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
       __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + ((__pyx_v_length - 1) * __pyx_v_istride)))[0]);
 
-      /* "nonreduce_axis.pyx":571
+      /* "nonreduce_axis.pyx":558
  *         else:
  *             idx = (<intp_t*>((<char*>pid(iti)) + (length - 1)*istride))[0]
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN             # <<<<<<<<<<<<<<
@@ -7019,7 +6988,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
     }
     __pyx_L12:;
 
-    /* "nonreduce_axis.pyx":572
+    /* "nonreduce_axis.pyx":559
  *             idx = (<intp_t*>((<char*>pid(iti)) + (length - 1)*istride))[0]
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -7028,7 +6997,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "nonreduce_axis.pyx":573
+    /* "nonreduce_axis.pyx":560
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -7037,7 +7006,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
  */
     PyArray_ITER_NEXT(__pyx_v_ity);
 
-    /* "nonreduce_axis.pyx":574
+    /* "nonreduce_axis.pyx":561
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *         PyArray_ITER_NEXT(iti)             # <<<<<<<<<<<<<<
@@ -7047,7 +7016,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
     PyArray_ITER_NEXT(__pyx_v_iti);
   }
 
-  /* "nonreduce_axis.pyx":575
+  /* "nonreduce_axis.pyx":562
  *         PyArray_ITER_NEXT(ity)
  *         PyArray_ITER_NEXT(iti)
  *     return y             # <<<<<<<<<<<<<<
@@ -7059,7 +7028,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "nonreduce_axis.pyx":517
+  /* "nonreduce_axis.pyx":504
  *     return y
  * 
  * cdef ndarray nanrankdata_float32(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -7083,7 +7052,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nanrankdata_float32(PyArrayObject
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":579
+/* "nonreduce_axis.pyx":566
  * # rankdata ------------------------------------------------------------------
  * 
  * def rankdata(arr, axis=None):             # <<<<<<<<<<<<<<
@@ -7129,7 +7098,7 @@ static PyObject *__pyx_pw_14nonreduce_axis_7rankdata(PyObject *__pyx_self, PyObj
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "rankdata") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 579; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "rankdata") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 566; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -7144,7 +7113,7 @@ static PyObject *__pyx_pw_14nonreduce_axis_7rankdata(PyObject *__pyx_self, PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("rankdata", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 579; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("rankdata", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 566; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("nonreduce_axis.rankdata", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -7177,7 +7146,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_6rankdata(CYTHON_UNUSED PyObject *__p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("rankdata", 0);
 
-  /* "nonreduce_axis.pyx":580
+  /* "nonreduce_axis.pyx":567
  * 
  * def rankdata(arr, axis=None):
  *     try:             # <<<<<<<<<<<<<<
@@ -7191,7 +7160,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_6rankdata(CYTHON_UNUSED PyObject *__p
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "nonreduce_axis.pyx":581
+      /* "nonreduce_axis.pyx":568
  * def rankdata(arr, axis=None):
  *     try:
  *         return nonreducer_axis(arr, axis,             # <<<<<<<<<<<<<<
@@ -7200,14 +7169,14 @@ static PyObject *__pyx_pf_14nonreduce_axis_6rankdata(CYTHON_UNUSED PyObject *__p
  */
       __Pyx_XDECREF(__pyx_r);
 
-      /* "nonreduce_axis.pyx":585
+      /* "nonreduce_axis.pyx":572
  *                                rankdata_float32,
  *                                rankdata_int64,
  *                                rankdata_int32)             # <<<<<<<<<<<<<<
  *     except TypeError:
  *         return slow.rankdata(arr, axis)
  */
-      __pyx_t_4 = ((PyObject *)__pyx_f_14nonreduce_axis_nonreducer_axis(__pyx_v_arr, __pyx_v_axis, __pyx_f_14nonreduce_axis_rankdata_float64, __pyx_f_14nonreduce_axis_rankdata_float32, __pyx_f_14nonreduce_axis_rankdata_int64, __pyx_f_14nonreduce_axis_rankdata_int32, NULL)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 581; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_t_4 = ((PyObject *)__pyx_f_14nonreduce_axis_nonreducer_axis(__pyx_v_arr, __pyx_v_axis, __pyx_f_14nonreduce_axis_rankdata_float64, __pyx_f_14nonreduce_axis_rankdata_float32, __pyx_f_14nonreduce_axis_rankdata_int64, __pyx_f_14nonreduce_axis_rankdata_int32, NULL)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 568; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
@@ -7216,7 +7185,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_6rankdata(CYTHON_UNUSED PyObject *__p
     __pyx_L3_error:;
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "nonreduce_axis.pyx":586
+    /* "nonreduce_axis.pyx":573
  *                                rankdata_int64,
  *                                rankdata_int32)
  *     except TypeError:             # <<<<<<<<<<<<<<
@@ -7226,12 +7195,12 @@ static PyObject *__pyx_pf_14nonreduce_axis_6rankdata(CYTHON_UNUSED PyObject *__p
     __pyx_t_5 = PyErr_ExceptionMatches(__pyx_builtin_TypeError);
     if (__pyx_t_5) {
       __Pyx_AddTraceback("nonreduce_axis.rankdata", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_7) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 586; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_7) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 573; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_7);
 
-      /* "nonreduce_axis.pyx":587
+      /* "nonreduce_axis.pyx":574
  *                                rankdata_int32)
  *     except TypeError:
  *         return slow.rankdata(arr, axis)             # <<<<<<<<<<<<<<
@@ -7239,9 +7208,9 @@ static PyObject *__pyx_pf_14nonreduce_axis_6rankdata(CYTHON_UNUSED PyObject *__p
  * 
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 574; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_rankdata); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_rankdata); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 574; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_t_9 = NULL;
@@ -7256,7 +7225,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_6rankdata(CYTHON_UNUSED PyObject *__p
           __pyx_t_11 = 1;
         }
       }
-      __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 574; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_12);
       if (__pyx_t_9) {
         PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_9); __Pyx_GIVEREF(__pyx_t_9); __pyx_t_9 = NULL;
@@ -7267,7 +7236,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_6rankdata(CYTHON_UNUSED PyObject *__p
       __Pyx_INCREF(__pyx_v_axis);
       PyTuple_SET_ITEM(__pyx_t_12, 1+__pyx_t_11, __pyx_v_axis);
       __Pyx_GIVEREF(__pyx_v_axis);
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_12, NULL); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_12, NULL); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 574; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -7299,7 +7268,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_6rankdata(CYTHON_UNUSED PyObject *__p
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":579
+  /* "nonreduce_axis.pyx":566
  * # rankdata ------------------------------------------------------------------
  * 
  * def rankdata(arr, axis=None):             # <<<<<<<<<<<<<<
@@ -7324,7 +7293,7 @@ static PyObject *__pyx_pf_14nonreduce_axis_6rankdata(CYTHON_UNUSED PyObject *__p
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":590
+/* "nonreduce_axis.pyx":577
  * 
  * 
  * cdef ndarray rankdata_float64(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -7364,7 +7333,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("rankdata_float64", 0);
 
-  /* "nonreduce_axis.pyx":593
+  /* "nonreduce_axis.pyx":580
  *                              int a_ndim, np.npy_intp* y_dims, int ignore):
  * 
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i             # <<<<<<<<<<<<<<
@@ -7374,7 +7343,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
   __pyx_v_j = 0;
   __pyx_v_dupcount = 0;
 
-  /* "nonreduce_axis.pyx":594
+  /* "nonreduce_axis.pyx":581
  * 
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i
  *     cdef float64_t old, new, averank, sumranks = 0             # <<<<<<<<<<<<<<
@@ -7383,7 +7352,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
   __pyx_v_sumranks = 0.0;
 
-  /* "nonreduce_axis.pyx":595
+  /* "nonreduce_axis.pyx":582
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i
  *     cdef float64_t old, new, averank, sumranks = 0
  *     cdef Py_ssize_t length = a.shape[axis]             # <<<<<<<<<<<<<<
@@ -7392,20 +7361,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
   __pyx_v_length = (__pyx_v_a->dimensions[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":597
+  /* "nonreduce_axis.pyx":584
  *     cdef Py_ssize_t length = a.shape[axis]
  * 
  *     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t astride = a.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 597; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 584; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 597; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 584; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ita = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":598
+  /* "nonreduce_axis.pyx":585
  * 
  *     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)
  *     cdef Py_ssize_t astride = a.strides[axis]             # <<<<<<<<<<<<<<
@@ -7414,33 +7383,33 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
   __pyx_v_astride = (__pyx_v_a->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":600
+  /* "nonreduce_axis.pyx":587
  *     cdef Py_ssize_t astride = a.strides[axis]
  * 
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  */
-  __pyx_t_1 = PyArray_ArgSort(__pyx_v_a, __pyx_v_axis, NPY_QUICKSORT); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 600; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_ArgSort(__pyx_v_a, __pyx_v_axis, NPY_QUICKSORT); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 600; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ivec = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":601
+  /* "nonreduce_axis.pyx":588
  * 
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_ivec), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 601; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_ivec), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 588; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 601; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 588; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_iti = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":602
+  /* "nonreduce_axis.pyx":589
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
  *     cdef Py_ssize_t istride = ivec.strides[axis]             # <<<<<<<<<<<<<<
@@ -7449,33 +7418,33 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
   __pyx_v_istride = (__pyx_v_ivec->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":604
+  /* "nonreduce_axis.pyx":591
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  * 
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  */
-  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 604; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 591; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 604; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 591; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":605
+  /* "nonreduce_axis.pyx":592
  * 
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t ystride = y.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 605; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 592; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 605; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 592; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":606
+  /* "nonreduce_axis.pyx":593
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -7484,7 +7453,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
   __pyx_v_ystride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":608
+  /* "nonreduce_axis.pyx":595
  *     cdef Py_ssize_t ystride = y.strides[axis]
  * 
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -7494,19 +7463,19 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":609
+    /* "nonreduce_axis.pyx":596
  * 
  *     if length == 0:
  *         PyArray_FillWithScalar(y, NAN)             # <<<<<<<<<<<<<<
  *         return y
  * 
  */
-    __pyx_t_1 = PyFloat_FromDouble(__pyx_v_14nonreduce_axis_NAN); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 609; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyFloat_FromDouble(__pyx_v_14nonreduce_axis_NAN); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 596; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     PyArray_FillWithScalar(__pyx_v_y, __pyx_t_1);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "nonreduce_axis.pyx":610
+    /* "nonreduce_axis.pyx":597
  *     if length == 0:
  *         PyArray_FillWithScalar(y, NAN)
  *         return y             # <<<<<<<<<<<<<<
@@ -7519,7 +7488,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":612
+  /* "nonreduce_axis.pyx":599
  *         return y
  * 
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -7530,7 +7499,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":613
+    /* "nonreduce_axis.pyx":600
  * 
  *     while PyArray_ITER_NOTDONE(ita):
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]             # <<<<<<<<<<<<<<
@@ -7539,7 +7508,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
     __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (0 * __pyx_v_istride)))[0]);
 
-    /* "nonreduce_axis.pyx":614
+    /* "nonreduce_axis.pyx":601
  *     while PyArray_ITER_NOTDONE(ita):
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]
  *         old = (<float64_t*>((<char*>pid(ita)) + idx*astride))[0]             # <<<<<<<<<<<<<<
@@ -7548,7 +7517,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
     __pyx_v_old = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_idx * __pyx_v_astride)))[0]);
 
-    /* "nonreduce_axis.pyx":615
+    /* "nonreduce_axis.pyx":602
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]
  *         old = (<float64_t*>((<char*>pid(ita)) + idx*astride))[0]
  *         sumranks = 0             # <<<<<<<<<<<<<<
@@ -7557,7 +7526,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
     __pyx_v_sumranks = 0.0;
 
-    /* "nonreduce_axis.pyx":616
+    /* "nonreduce_axis.pyx":603
  *         old = (<float64_t*>((<char*>pid(ita)) + idx*astride))[0]
  *         sumranks = 0
  *         dupcount = 0             # <<<<<<<<<<<<<<
@@ -7566,7 +7535,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
     __pyx_v_dupcount = 0;
 
-    /* "nonreduce_axis.pyx":617
+    /* "nonreduce_axis.pyx":604
  *         sumranks = 0
  *         dupcount = 0
  *         for i in range(length - 1):             # <<<<<<<<<<<<<<
@@ -7577,7 +7546,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "nonreduce_axis.pyx":618
+      /* "nonreduce_axis.pyx":605
  *         dupcount = 0
  *         for i in range(length - 1):
  *             sumranks += i             # <<<<<<<<<<<<<<
@@ -7586,7 +7555,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
       __pyx_v_sumranks = (__pyx_v_sumranks + __pyx_v_i);
 
-      /* "nonreduce_axis.pyx":619
+      /* "nonreduce_axis.pyx":606
  *         for i in range(length - 1):
  *             sumranks += i
  *             dupcount += 1             # <<<<<<<<<<<<<<
@@ -7595,7 +7564,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
       __pyx_v_dupcount = (__pyx_v_dupcount + 1);
 
-      /* "nonreduce_axis.pyx":620
+      /* "nonreduce_axis.pyx":607
  *             sumranks += i
  *             dupcount += 1
  *             k = i + 1             # <<<<<<<<<<<<<<
@@ -7604,7 +7573,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
       __pyx_v_k = (__pyx_v_i + 1);
 
-      /* "nonreduce_axis.pyx":621
+      /* "nonreduce_axis.pyx":608
  *             dupcount += 1
  *             k = i + 1
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]             # <<<<<<<<<<<<<<
@@ -7613,7 +7582,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
       __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_k * __pyx_v_istride)))[0]);
 
-      /* "nonreduce_axis.pyx":622
+      /* "nonreduce_axis.pyx":609
  *             k = i + 1
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]
  *             new = (<float64_t*>((<char*>pid(ita)) + idx*astride))[0]             # <<<<<<<<<<<<<<
@@ -7622,7 +7591,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
       __pyx_v_new = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_idx * __pyx_v_astride)))[0]);
 
-      /* "nonreduce_axis.pyx":623
+      /* "nonreduce_axis.pyx":610
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]
  *             new = (<float64_t*>((<char*>pid(ita)) + idx*astride))[0]
  *             if old != new:             # <<<<<<<<<<<<<<
@@ -7632,7 +7601,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
       __pyx_t_2 = ((__pyx_v_old != __pyx_v_new) != 0);
       if (__pyx_t_2) {
 
-        /* "nonreduce_axis.pyx":624
+        /* "nonreduce_axis.pyx":611
  *             new = (<float64_t*>((<char*>pid(ita)) + idx*astride))[0]
  *             if old != new:
  *                 averank = sumranks / dupcount + 1             # <<<<<<<<<<<<<<
@@ -7647,11 +7616,11 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
           #ifdef WITH_THREAD
           PyGILState_Release(__pyx_gilstate_save);
           #endif
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 624; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 611; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         __pyx_v_averank = ((__pyx_v_sumranks / __pyx_v_dupcount) + 1.0);
 
-        /* "nonreduce_axis.pyx":625
+        /* "nonreduce_axis.pyx":612
  *             if old != new:
  *                 averank = sumranks / dupcount + 1
  *                 for j in range(k - dupcount, k):             # <<<<<<<<<<<<<<
@@ -7662,7 +7631,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
         for (__pyx_t_6 = (__pyx_v_k - __pyx_v_dupcount); __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
           __pyx_v_j = __pyx_t_6;
 
-          /* "nonreduce_axis.pyx":626
+          /* "nonreduce_axis.pyx":613
  *                 averank = sumranks / dupcount + 1
  *                 for j in range(k - dupcount, k):
  *                     idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]             # <<<<<<<<<<<<<<
@@ -7671,7 +7640,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
           __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]);
 
-          /* "nonreduce_axis.pyx":627
+          /* "nonreduce_axis.pyx":614
  *                 for j in range(k - dupcount, k):
  *                     idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank             # <<<<<<<<<<<<<<
@@ -7681,7 +7650,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
           (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_idx * __pyx_v_ystride)))[0]) = __pyx_v_averank;
         }
 
-        /* "nonreduce_axis.pyx":628
+        /* "nonreduce_axis.pyx":615
  *                     idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *                 sumranks = 0             # <<<<<<<<<<<<<<
@@ -7690,7 +7659,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
         __pyx_v_sumranks = 0.0;
 
-        /* "nonreduce_axis.pyx":629
+        /* "nonreduce_axis.pyx":616
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *                 sumranks = 0
  *                 dupcount = 0             # <<<<<<<<<<<<<<
@@ -7702,7 +7671,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
       }
       __pyx_L8:;
 
-      /* "nonreduce_axis.pyx":630
+      /* "nonreduce_axis.pyx":617
  *                 sumranks = 0
  *                 dupcount = 0
  *             old = new             # <<<<<<<<<<<<<<
@@ -7712,7 +7681,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
       __pyx_v_old = __pyx_v_new;
     }
 
-    /* "nonreduce_axis.pyx":631
+    /* "nonreduce_axis.pyx":618
  *                 dupcount = 0
  *             old = new
  *         sumranks += (length - 1)             # <<<<<<<<<<<<<<
@@ -7721,7 +7690,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
     __pyx_v_sumranks = (__pyx_v_sumranks + (__pyx_v_length - 1));
 
-    /* "nonreduce_axis.pyx":632
+    /* "nonreduce_axis.pyx":619
  *             old = new
  *         sumranks += (length - 1)
  *         dupcount += 1             # <<<<<<<<<<<<<<
@@ -7730,7 +7699,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
     __pyx_v_dupcount = (__pyx_v_dupcount + 1);
 
-    /* "nonreduce_axis.pyx":633
+    /* "nonreduce_axis.pyx":620
  *         sumranks += (length - 1)
  *         dupcount += 1
  *         averank = sumranks / dupcount + 1             # <<<<<<<<<<<<<<
@@ -7745,11 +7714,11 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
       #ifdef WITH_THREAD
       PyGILState_Release(__pyx_gilstate_save);
       #endif
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 633; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 620; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __pyx_v_averank = ((__pyx_v_sumranks / __pyx_v_dupcount) + 1.0);
 
-    /* "nonreduce_axis.pyx":634
+    /* "nonreduce_axis.pyx":621
  *         dupcount += 1
  *         averank = sumranks / dupcount + 1
  *         for j in range(length - dupcount, length):             # <<<<<<<<<<<<<<
@@ -7760,7 +7729,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
     for (__pyx_t_4 = (__pyx_v_length - __pyx_v_dupcount); __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "nonreduce_axis.pyx":635
+      /* "nonreduce_axis.pyx":622
  *         averank = sumranks / dupcount + 1
  *         for j in range(length - dupcount, length):
  *             idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]             # <<<<<<<<<<<<<<
@@ -7769,7 +7738,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
       __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]);
 
-      /* "nonreduce_axis.pyx":636
+      /* "nonreduce_axis.pyx":623
  *         for j in range(length - dupcount, length):
  *             idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank             # <<<<<<<<<<<<<<
@@ -7779,7 +7748,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
       (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_idx * __pyx_v_ystride)))[0]) = __pyx_v_averank;
     }
 
-    /* "nonreduce_axis.pyx":637
+    /* "nonreduce_axis.pyx":624
  *             idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -7788,7 +7757,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "nonreduce_axis.pyx":638
+    /* "nonreduce_axis.pyx":625
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -7797,7 +7766,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
  */
     PyArray_ITER_NEXT(__pyx_v_ity);
 
-    /* "nonreduce_axis.pyx":639
+    /* "nonreduce_axis.pyx":626
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *         PyArray_ITER_NEXT(iti)             # <<<<<<<<<<<<<<
@@ -7807,7 +7776,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
     PyArray_ITER_NEXT(__pyx_v_iti);
   }
 
-  /* "nonreduce_axis.pyx":640
+  /* "nonreduce_axis.pyx":627
  *         PyArray_ITER_NEXT(ity)
  *         PyArray_ITER_NEXT(iti)
  *     return y             # <<<<<<<<<<<<<<
@@ -7819,7 +7788,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "nonreduce_axis.pyx":590
+  /* "nonreduce_axis.pyx":577
  * 
  * 
  * cdef ndarray rankdata_float64(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -7843,7 +7812,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float64(PyArrayObject *_
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":642
+/* "nonreduce_axis.pyx":629
  *     return y
  * 
  * cdef ndarray rankdata_float32(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -7883,7 +7852,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("rankdata_float32", 0);
 
-  /* "nonreduce_axis.pyx":645
+  /* "nonreduce_axis.pyx":632
  *                              int a_ndim, np.npy_intp* y_dims, int ignore):
  * 
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i             # <<<<<<<<<<<<<<
@@ -7893,7 +7862,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
   __pyx_v_j = 0;
   __pyx_v_dupcount = 0;
 
-  /* "nonreduce_axis.pyx":646
+  /* "nonreduce_axis.pyx":633
  * 
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i
  *     cdef float64_t old, new, averank, sumranks = 0             # <<<<<<<<<<<<<<
@@ -7902,7 +7871,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
   __pyx_v_sumranks = 0.0;
 
-  /* "nonreduce_axis.pyx":647
+  /* "nonreduce_axis.pyx":634
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i
  *     cdef float64_t old, new, averank, sumranks = 0
  *     cdef Py_ssize_t length = a.shape[axis]             # <<<<<<<<<<<<<<
@@ -7911,20 +7880,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
   __pyx_v_length = (__pyx_v_a->dimensions[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":649
+  /* "nonreduce_axis.pyx":636
  *     cdef Py_ssize_t length = a.shape[axis]
  * 
  *     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t astride = a.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 649; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 636; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 649; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 636; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ita = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":650
+  /* "nonreduce_axis.pyx":637
  * 
  *     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)
  *     cdef Py_ssize_t astride = a.strides[axis]             # <<<<<<<<<<<<<<
@@ -7933,33 +7902,33 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
   __pyx_v_astride = (__pyx_v_a->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":652
+  /* "nonreduce_axis.pyx":639
  *     cdef Py_ssize_t astride = a.strides[axis]
  * 
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  */
-  __pyx_t_1 = PyArray_ArgSort(__pyx_v_a, __pyx_v_axis, NPY_QUICKSORT); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 652; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_ArgSort(__pyx_v_a, __pyx_v_axis, NPY_QUICKSORT); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 639; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 652; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 639; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ivec = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":653
+  /* "nonreduce_axis.pyx":640
  * 
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_ivec), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 653; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_ivec), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 640; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 653; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 640; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_iti = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":654
+  /* "nonreduce_axis.pyx":641
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
  *     cdef Py_ssize_t istride = ivec.strides[axis]             # <<<<<<<<<<<<<<
@@ -7968,33 +7937,33 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
   __pyx_v_istride = (__pyx_v_ivec->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":656
+  /* "nonreduce_axis.pyx":643
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  * 
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  */
-  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 656; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 643; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 656; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 643; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":657
+  /* "nonreduce_axis.pyx":644
  * 
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t ystride = y.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 657; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 657; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":658
+  /* "nonreduce_axis.pyx":645
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -8003,7 +7972,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
   __pyx_v_ystride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":660
+  /* "nonreduce_axis.pyx":647
  *     cdef Py_ssize_t ystride = y.strides[axis]
  * 
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -8013,19 +7982,19 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":661
+    /* "nonreduce_axis.pyx":648
  * 
  *     if length == 0:
  *         PyArray_FillWithScalar(y, NAN)             # <<<<<<<<<<<<<<
  *         return y
  * 
  */
-    __pyx_t_1 = PyFloat_FromDouble(__pyx_v_14nonreduce_axis_NAN); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 661; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyFloat_FromDouble(__pyx_v_14nonreduce_axis_NAN); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 648; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     PyArray_FillWithScalar(__pyx_v_y, __pyx_t_1);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "nonreduce_axis.pyx":662
+    /* "nonreduce_axis.pyx":649
  *     if length == 0:
  *         PyArray_FillWithScalar(y, NAN)
  *         return y             # <<<<<<<<<<<<<<
@@ -8038,7 +8007,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":664
+  /* "nonreduce_axis.pyx":651
  *         return y
  * 
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -8049,7 +8018,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":665
+    /* "nonreduce_axis.pyx":652
  * 
  *     while PyArray_ITER_NOTDONE(ita):
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]             # <<<<<<<<<<<<<<
@@ -8058,7 +8027,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
     __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (0 * __pyx_v_istride)))[0]);
 
-    /* "nonreduce_axis.pyx":666
+    /* "nonreduce_axis.pyx":653
  *     while PyArray_ITER_NOTDONE(ita):
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]
  *         old = (<float32_t*>((<char*>pid(ita)) + idx*astride))[0]             # <<<<<<<<<<<<<<
@@ -8067,7 +8036,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
     __pyx_v_old = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_idx * __pyx_v_astride)))[0]);
 
-    /* "nonreduce_axis.pyx":667
+    /* "nonreduce_axis.pyx":654
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]
  *         old = (<float32_t*>((<char*>pid(ita)) + idx*astride))[0]
  *         sumranks = 0             # <<<<<<<<<<<<<<
@@ -8076,7 +8045,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
     __pyx_v_sumranks = 0.0;
 
-    /* "nonreduce_axis.pyx":668
+    /* "nonreduce_axis.pyx":655
  *         old = (<float32_t*>((<char*>pid(ita)) + idx*astride))[0]
  *         sumranks = 0
  *         dupcount = 0             # <<<<<<<<<<<<<<
@@ -8085,7 +8054,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
     __pyx_v_dupcount = 0;
 
-    /* "nonreduce_axis.pyx":669
+    /* "nonreduce_axis.pyx":656
  *         sumranks = 0
  *         dupcount = 0
  *         for i in range(length - 1):             # <<<<<<<<<<<<<<
@@ -8096,7 +8065,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "nonreduce_axis.pyx":670
+      /* "nonreduce_axis.pyx":657
  *         dupcount = 0
  *         for i in range(length - 1):
  *             sumranks += i             # <<<<<<<<<<<<<<
@@ -8105,7 +8074,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
       __pyx_v_sumranks = (__pyx_v_sumranks + __pyx_v_i);
 
-      /* "nonreduce_axis.pyx":671
+      /* "nonreduce_axis.pyx":658
  *         for i in range(length - 1):
  *             sumranks += i
  *             dupcount += 1             # <<<<<<<<<<<<<<
@@ -8114,7 +8083,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
       __pyx_v_dupcount = (__pyx_v_dupcount + 1);
 
-      /* "nonreduce_axis.pyx":672
+      /* "nonreduce_axis.pyx":659
  *             sumranks += i
  *             dupcount += 1
  *             k = i + 1             # <<<<<<<<<<<<<<
@@ -8123,7 +8092,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
       __pyx_v_k = (__pyx_v_i + 1);
 
-      /* "nonreduce_axis.pyx":673
+      /* "nonreduce_axis.pyx":660
  *             dupcount += 1
  *             k = i + 1
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]             # <<<<<<<<<<<<<<
@@ -8132,7 +8101,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
       __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_k * __pyx_v_istride)))[0]);
 
-      /* "nonreduce_axis.pyx":674
+      /* "nonreduce_axis.pyx":661
  *             k = i + 1
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]
  *             new = (<float32_t*>((<char*>pid(ita)) + idx*astride))[0]             # <<<<<<<<<<<<<<
@@ -8141,7 +8110,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
       __pyx_v_new = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_idx * __pyx_v_astride)))[0]);
 
-      /* "nonreduce_axis.pyx":675
+      /* "nonreduce_axis.pyx":662
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]
  *             new = (<float32_t*>((<char*>pid(ita)) + idx*astride))[0]
  *             if old != new:             # <<<<<<<<<<<<<<
@@ -8151,7 +8120,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
       __pyx_t_2 = ((__pyx_v_old != __pyx_v_new) != 0);
       if (__pyx_t_2) {
 
-        /* "nonreduce_axis.pyx":676
+        /* "nonreduce_axis.pyx":663
  *             new = (<float32_t*>((<char*>pid(ita)) + idx*astride))[0]
  *             if old != new:
  *                 averank = sumranks / dupcount + 1             # <<<<<<<<<<<<<<
@@ -8166,11 +8135,11 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
           #ifdef WITH_THREAD
           PyGILState_Release(__pyx_gilstate_save);
           #endif
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 676; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 663; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         __pyx_v_averank = ((__pyx_v_sumranks / __pyx_v_dupcount) + 1.0);
 
-        /* "nonreduce_axis.pyx":677
+        /* "nonreduce_axis.pyx":664
  *             if old != new:
  *                 averank = sumranks / dupcount + 1
  *                 for j in range(k - dupcount, k):             # <<<<<<<<<<<<<<
@@ -8181,7 +8150,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
         for (__pyx_t_6 = (__pyx_v_k - __pyx_v_dupcount); __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
           __pyx_v_j = __pyx_t_6;
 
-          /* "nonreduce_axis.pyx":678
+          /* "nonreduce_axis.pyx":665
  *                 averank = sumranks / dupcount + 1
  *                 for j in range(k - dupcount, k):
  *                     idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]             # <<<<<<<<<<<<<<
@@ -8190,7 +8159,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
           __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]);
 
-          /* "nonreduce_axis.pyx":679
+          /* "nonreduce_axis.pyx":666
  *                 for j in range(k - dupcount, k):
  *                     idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank             # <<<<<<<<<<<<<<
@@ -8200,7 +8169,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
           (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_idx * __pyx_v_ystride)))[0]) = __pyx_v_averank;
         }
 
-        /* "nonreduce_axis.pyx":680
+        /* "nonreduce_axis.pyx":667
  *                     idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *                 sumranks = 0             # <<<<<<<<<<<<<<
@@ -8209,7 +8178,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
         __pyx_v_sumranks = 0.0;
 
-        /* "nonreduce_axis.pyx":681
+        /* "nonreduce_axis.pyx":668
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *                 sumranks = 0
  *                 dupcount = 0             # <<<<<<<<<<<<<<
@@ -8221,7 +8190,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
       }
       __pyx_L8:;
 
-      /* "nonreduce_axis.pyx":682
+      /* "nonreduce_axis.pyx":669
  *                 sumranks = 0
  *                 dupcount = 0
  *             old = new             # <<<<<<<<<<<<<<
@@ -8231,7 +8200,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
       __pyx_v_old = __pyx_v_new;
     }
 
-    /* "nonreduce_axis.pyx":683
+    /* "nonreduce_axis.pyx":670
  *                 dupcount = 0
  *             old = new
  *         sumranks += (length - 1)             # <<<<<<<<<<<<<<
@@ -8240,7 +8209,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
     __pyx_v_sumranks = (__pyx_v_sumranks + (__pyx_v_length - 1));
 
-    /* "nonreduce_axis.pyx":684
+    /* "nonreduce_axis.pyx":671
  *             old = new
  *         sumranks += (length - 1)
  *         dupcount += 1             # <<<<<<<<<<<<<<
@@ -8249,7 +8218,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
     __pyx_v_dupcount = (__pyx_v_dupcount + 1);
 
-    /* "nonreduce_axis.pyx":685
+    /* "nonreduce_axis.pyx":672
  *         sumranks += (length - 1)
  *         dupcount += 1
  *         averank = sumranks / dupcount + 1             # <<<<<<<<<<<<<<
@@ -8264,11 +8233,11 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
       #ifdef WITH_THREAD
       PyGILState_Release(__pyx_gilstate_save);
       #endif
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 685; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 672; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __pyx_v_averank = ((__pyx_v_sumranks / __pyx_v_dupcount) + 1.0);
 
-    /* "nonreduce_axis.pyx":686
+    /* "nonreduce_axis.pyx":673
  *         dupcount += 1
  *         averank = sumranks / dupcount + 1
  *         for j in range(length - dupcount, length):             # <<<<<<<<<<<<<<
@@ -8279,7 +8248,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
     for (__pyx_t_4 = (__pyx_v_length - __pyx_v_dupcount); __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "nonreduce_axis.pyx":687
+      /* "nonreduce_axis.pyx":674
  *         averank = sumranks / dupcount + 1
  *         for j in range(length - dupcount, length):
  *             idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]             # <<<<<<<<<<<<<<
@@ -8288,7 +8257,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
       __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]);
 
-      /* "nonreduce_axis.pyx":688
+      /* "nonreduce_axis.pyx":675
  *         for j in range(length - dupcount, length):
  *             idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank             # <<<<<<<<<<<<<<
@@ -8298,7 +8267,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
       (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_idx * __pyx_v_ystride)))[0]) = __pyx_v_averank;
     }
 
-    /* "nonreduce_axis.pyx":689
+    /* "nonreduce_axis.pyx":676
  *             idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -8307,7 +8276,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "nonreduce_axis.pyx":690
+    /* "nonreduce_axis.pyx":677
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -8316,7 +8285,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
  */
     PyArray_ITER_NEXT(__pyx_v_ity);
 
-    /* "nonreduce_axis.pyx":691
+    /* "nonreduce_axis.pyx":678
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *         PyArray_ITER_NEXT(iti)             # <<<<<<<<<<<<<<
@@ -8326,7 +8295,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
     PyArray_ITER_NEXT(__pyx_v_iti);
   }
 
-  /* "nonreduce_axis.pyx":692
+  /* "nonreduce_axis.pyx":679
  *         PyArray_ITER_NEXT(ity)
  *         PyArray_ITER_NEXT(iti)
  *     return y             # <<<<<<<<<<<<<<
@@ -8338,7 +8307,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "nonreduce_axis.pyx":642
+  /* "nonreduce_axis.pyx":629
  *     return y
  * 
  * cdef ndarray rankdata_float32(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -8362,7 +8331,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_float32(PyArrayObject *_
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":694
+/* "nonreduce_axis.pyx":681
  *     return y
  * 
  * cdef ndarray rankdata_int64(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -8402,7 +8371,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("rankdata_int64", 0);
 
-  /* "nonreduce_axis.pyx":697
+  /* "nonreduce_axis.pyx":684
  *                              int a_ndim, np.npy_intp* y_dims, int ignore):
  * 
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i             # <<<<<<<<<<<<<<
@@ -8412,7 +8381,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
   __pyx_v_j = 0;
   __pyx_v_dupcount = 0;
 
-  /* "nonreduce_axis.pyx":698
+  /* "nonreduce_axis.pyx":685
  * 
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i
  *     cdef float64_t old, new, averank, sumranks = 0             # <<<<<<<<<<<<<<
@@ -8421,7 +8390,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
   __pyx_v_sumranks = 0.0;
 
-  /* "nonreduce_axis.pyx":699
+  /* "nonreduce_axis.pyx":686
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i
  *     cdef float64_t old, new, averank, sumranks = 0
  *     cdef Py_ssize_t length = a.shape[axis]             # <<<<<<<<<<<<<<
@@ -8430,20 +8399,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
   __pyx_v_length = (__pyx_v_a->dimensions[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":701
+  /* "nonreduce_axis.pyx":688
  *     cdef Py_ssize_t length = a.shape[axis]
  * 
  *     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t astride = a.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 701; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 688; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 701; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 688; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ita = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":702
+  /* "nonreduce_axis.pyx":689
  * 
  *     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)
  *     cdef Py_ssize_t astride = a.strides[axis]             # <<<<<<<<<<<<<<
@@ -8452,33 +8421,33 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
   __pyx_v_astride = (__pyx_v_a->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":704
+  /* "nonreduce_axis.pyx":691
  *     cdef Py_ssize_t astride = a.strides[axis]
  * 
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  */
-  __pyx_t_1 = PyArray_ArgSort(__pyx_v_a, __pyx_v_axis, NPY_QUICKSORT); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 704; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_ArgSort(__pyx_v_a, __pyx_v_axis, NPY_QUICKSORT); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 691; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 704; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 691; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ivec = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":705
+  /* "nonreduce_axis.pyx":692
  * 
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_ivec), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 705; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_ivec), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 692; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 705; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 692; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_iti = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":706
+  /* "nonreduce_axis.pyx":693
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
  *     cdef Py_ssize_t istride = ivec.strides[axis]             # <<<<<<<<<<<<<<
@@ -8487,33 +8456,33 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
   __pyx_v_istride = (__pyx_v_ivec->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":708
+  /* "nonreduce_axis.pyx":695
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  * 
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  */
-  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 708; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 695; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 708; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 695; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":709
+  /* "nonreduce_axis.pyx":696
  * 
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t ystride = y.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 709; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 696; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 709; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 696; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":710
+  /* "nonreduce_axis.pyx":697
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -8522,7 +8491,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
   __pyx_v_ystride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":712
+  /* "nonreduce_axis.pyx":699
  *     cdef Py_ssize_t ystride = y.strides[axis]
  * 
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -8532,19 +8501,19 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":713
+    /* "nonreduce_axis.pyx":700
  * 
  *     if length == 0:
  *         PyArray_FillWithScalar(y, NAN)             # <<<<<<<<<<<<<<
  *         return y
  * 
  */
-    __pyx_t_1 = PyFloat_FromDouble(__pyx_v_14nonreduce_axis_NAN); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 713; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyFloat_FromDouble(__pyx_v_14nonreduce_axis_NAN); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 700; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     PyArray_FillWithScalar(__pyx_v_y, __pyx_t_1);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "nonreduce_axis.pyx":714
+    /* "nonreduce_axis.pyx":701
  *     if length == 0:
  *         PyArray_FillWithScalar(y, NAN)
  *         return y             # <<<<<<<<<<<<<<
@@ -8557,7 +8526,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":716
+  /* "nonreduce_axis.pyx":703
  *         return y
  * 
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -8568,7 +8537,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":717
+    /* "nonreduce_axis.pyx":704
  * 
  *     while PyArray_ITER_NOTDONE(ita):
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]             # <<<<<<<<<<<<<<
@@ -8577,7 +8546,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
     __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (0 * __pyx_v_istride)))[0]);
 
-    /* "nonreduce_axis.pyx":718
+    /* "nonreduce_axis.pyx":705
  *     while PyArray_ITER_NOTDONE(ita):
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]
  *         old = (<int64_t*>((<char*>pid(ita)) + idx*astride))[0]             # <<<<<<<<<<<<<<
@@ -8586,7 +8555,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
     __pyx_v_old = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_idx * __pyx_v_astride)))[0]);
 
-    /* "nonreduce_axis.pyx":719
+    /* "nonreduce_axis.pyx":706
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]
  *         old = (<int64_t*>((<char*>pid(ita)) + idx*astride))[0]
  *         sumranks = 0             # <<<<<<<<<<<<<<
@@ -8595,7 +8564,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
     __pyx_v_sumranks = 0.0;
 
-    /* "nonreduce_axis.pyx":720
+    /* "nonreduce_axis.pyx":707
  *         old = (<int64_t*>((<char*>pid(ita)) + idx*astride))[0]
  *         sumranks = 0
  *         dupcount = 0             # <<<<<<<<<<<<<<
@@ -8604,7 +8573,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
     __pyx_v_dupcount = 0;
 
-    /* "nonreduce_axis.pyx":721
+    /* "nonreduce_axis.pyx":708
  *         sumranks = 0
  *         dupcount = 0
  *         for i in range(length - 1):             # <<<<<<<<<<<<<<
@@ -8615,7 +8584,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "nonreduce_axis.pyx":722
+      /* "nonreduce_axis.pyx":709
  *         dupcount = 0
  *         for i in range(length - 1):
  *             sumranks += i             # <<<<<<<<<<<<<<
@@ -8624,7 +8593,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
       __pyx_v_sumranks = (__pyx_v_sumranks + __pyx_v_i);
 
-      /* "nonreduce_axis.pyx":723
+      /* "nonreduce_axis.pyx":710
  *         for i in range(length - 1):
  *             sumranks += i
  *             dupcount += 1             # <<<<<<<<<<<<<<
@@ -8633,7 +8602,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
       __pyx_v_dupcount = (__pyx_v_dupcount + 1);
 
-      /* "nonreduce_axis.pyx":724
+      /* "nonreduce_axis.pyx":711
  *             sumranks += i
  *             dupcount += 1
  *             k = i + 1             # <<<<<<<<<<<<<<
@@ -8642,7 +8611,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
       __pyx_v_k = (__pyx_v_i + 1);
 
-      /* "nonreduce_axis.pyx":725
+      /* "nonreduce_axis.pyx":712
  *             dupcount += 1
  *             k = i + 1
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]             # <<<<<<<<<<<<<<
@@ -8651,7 +8620,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
       __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_k * __pyx_v_istride)))[0]);
 
-      /* "nonreduce_axis.pyx":726
+      /* "nonreduce_axis.pyx":713
  *             k = i + 1
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]
  *             new = (<int64_t*>((<char*>pid(ita)) + idx*astride))[0]             # <<<<<<<<<<<<<<
@@ -8660,7 +8629,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
       __pyx_v_new = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_idx * __pyx_v_astride)))[0]);
 
-      /* "nonreduce_axis.pyx":727
+      /* "nonreduce_axis.pyx":714
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]
  *             new = (<int64_t*>((<char*>pid(ita)) + idx*astride))[0]
  *             if old != new:             # <<<<<<<<<<<<<<
@@ -8670,7 +8639,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
       __pyx_t_2 = ((__pyx_v_old != __pyx_v_new) != 0);
       if (__pyx_t_2) {
 
-        /* "nonreduce_axis.pyx":728
+        /* "nonreduce_axis.pyx":715
  *             new = (<int64_t*>((<char*>pid(ita)) + idx*astride))[0]
  *             if old != new:
  *                 averank = sumranks / dupcount + 1             # <<<<<<<<<<<<<<
@@ -8685,11 +8654,11 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
           #ifdef WITH_THREAD
           PyGILState_Release(__pyx_gilstate_save);
           #endif
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 728; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 715; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         __pyx_v_averank = ((__pyx_v_sumranks / __pyx_v_dupcount) + 1.0);
 
-        /* "nonreduce_axis.pyx":729
+        /* "nonreduce_axis.pyx":716
  *             if old != new:
  *                 averank = sumranks / dupcount + 1
  *                 for j in range(k - dupcount, k):             # <<<<<<<<<<<<<<
@@ -8700,7 +8669,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
         for (__pyx_t_6 = (__pyx_v_k - __pyx_v_dupcount); __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
           __pyx_v_j = __pyx_t_6;
 
-          /* "nonreduce_axis.pyx":730
+          /* "nonreduce_axis.pyx":717
  *                 averank = sumranks / dupcount + 1
  *                 for j in range(k - dupcount, k):
  *                     idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]             # <<<<<<<<<<<<<<
@@ -8709,7 +8678,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
           __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]);
 
-          /* "nonreduce_axis.pyx":731
+          /* "nonreduce_axis.pyx":718
  *                 for j in range(k - dupcount, k):
  *                     idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank             # <<<<<<<<<<<<<<
@@ -8719,7 +8688,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
           (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_idx * __pyx_v_ystride)))[0]) = __pyx_v_averank;
         }
 
-        /* "nonreduce_axis.pyx":732
+        /* "nonreduce_axis.pyx":719
  *                     idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *                 sumranks = 0             # <<<<<<<<<<<<<<
@@ -8728,7 +8697,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
         __pyx_v_sumranks = 0.0;
 
-        /* "nonreduce_axis.pyx":733
+        /* "nonreduce_axis.pyx":720
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *                 sumranks = 0
  *                 dupcount = 0             # <<<<<<<<<<<<<<
@@ -8740,7 +8709,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
       }
       __pyx_L8:;
 
-      /* "nonreduce_axis.pyx":734
+      /* "nonreduce_axis.pyx":721
  *                 sumranks = 0
  *                 dupcount = 0
  *             old = new             # <<<<<<<<<<<<<<
@@ -8750,7 +8719,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
       __pyx_v_old = __pyx_v_new;
     }
 
-    /* "nonreduce_axis.pyx":735
+    /* "nonreduce_axis.pyx":722
  *                 dupcount = 0
  *             old = new
  *         sumranks += (length - 1)             # <<<<<<<<<<<<<<
@@ -8759,7 +8728,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
     __pyx_v_sumranks = (__pyx_v_sumranks + (__pyx_v_length - 1));
 
-    /* "nonreduce_axis.pyx":736
+    /* "nonreduce_axis.pyx":723
  *             old = new
  *         sumranks += (length - 1)
  *         dupcount += 1             # <<<<<<<<<<<<<<
@@ -8768,7 +8737,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
     __pyx_v_dupcount = (__pyx_v_dupcount + 1);
 
-    /* "nonreduce_axis.pyx":737
+    /* "nonreduce_axis.pyx":724
  *         sumranks += (length - 1)
  *         dupcount += 1
  *         averank = sumranks / dupcount + 1             # <<<<<<<<<<<<<<
@@ -8783,11 +8752,11 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
       #ifdef WITH_THREAD
       PyGILState_Release(__pyx_gilstate_save);
       #endif
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 737; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 724; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __pyx_v_averank = ((__pyx_v_sumranks / __pyx_v_dupcount) + 1.0);
 
-    /* "nonreduce_axis.pyx":738
+    /* "nonreduce_axis.pyx":725
  *         dupcount += 1
  *         averank = sumranks / dupcount + 1
  *         for j in range(length - dupcount, length):             # <<<<<<<<<<<<<<
@@ -8798,7 +8767,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
     for (__pyx_t_4 = (__pyx_v_length - __pyx_v_dupcount); __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "nonreduce_axis.pyx":739
+      /* "nonreduce_axis.pyx":726
  *         averank = sumranks / dupcount + 1
  *         for j in range(length - dupcount, length):
  *             idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]             # <<<<<<<<<<<<<<
@@ -8807,7 +8776,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
       __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]);
 
-      /* "nonreduce_axis.pyx":740
+      /* "nonreduce_axis.pyx":727
  *         for j in range(length - dupcount, length):
  *             idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank             # <<<<<<<<<<<<<<
@@ -8817,7 +8786,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
       (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_idx * __pyx_v_ystride)))[0]) = __pyx_v_averank;
     }
 
-    /* "nonreduce_axis.pyx":741
+    /* "nonreduce_axis.pyx":728
  *             idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -8826,7 +8795,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "nonreduce_axis.pyx":742
+    /* "nonreduce_axis.pyx":729
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -8835,7 +8804,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
  */
     PyArray_ITER_NEXT(__pyx_v_ity);
 
-    /* "nonreduce_axis.pyx":743
+    /* "nonreduce_axis.pyx":730
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *         PyArray_ITER_NEXT(iti)             # <<<<<<<<<<<<<<
@@ -8845,7 +8814,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
     PyArray_ITER_NEXT(__pyx_v_iti);
   }
 
-  /* "nonreduce_axis.pyx":744
+  /* "nonreduce_axis.pyx":731
  *         PyArray_ITER_NEXT(ity)
  *         PyArray_ITER_NEXT(iti)
  *     return y             # <<<<<<<<<<<<<<
@@ -8857,7 +8826,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "nonreduce_axis.pyx":694
+  /* "nonreduce_axis.pyx":681
  *     return y
  * 
  * cdef ndarray rankdata_int64(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -8881,7 +8850,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int64(PyArrayObject *__p
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":746
+/* "nonreduce_axis.pyx":733
  *     return y
  * 
  * cdef ndarray rankdata_int32(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -8921,7 +8890,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("rankdata_int32", 0);
 
-  /* "nonreduce_axis.pyx":749
+  /* "nonreduce_axis.pyx":736
  *                              int a_ndim, np.npy_intp* y_dims, int ignore):
  * 
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i             # <<<<<<<<<<<<<<
@@ -8931,7 +8900,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
   __pyx_v_j = 0;
   __pyx_v_dupcount = 0;
 
-  /* "nonreduce_axis.pyx":750
+  /* "nonreduce_axis.pyx":737
  * 
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i
  *     cdef float64_t old, new, averank, sumranks = 0             # <<<<<<<<<<<<<<
@@ -8940,7 +8909,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
   __pyx_v_sumranks = 0.0;
 
-  /* "nonreduce_axis.pyx":751
+  /* "nonreduce_axis.pyx":738
  *     cdef Py_ssize_t j=0, k, idx, dupcount=0, i
  *     cdef float64_t old, new, averank, sumranks = 0
  *     cdef Py_ssize_t length = a.shape[axis]             # <<<<<<<<<<<<<<
@@ -8949,20 +8918,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
   __pyx_v_length = (__pyx_v_a->dimensions[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":753
+  /* "nonreduce_axis.pyx":740
  *     cdef Py_ssize_t length = a.shape[axis]
  * 
  *     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t astride = a.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 753; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 740; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 753; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 740; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ita = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":754
+  /* "nonreduce_axis.pyx":741
  * 
  *     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)
  *     cdef Py_ssize_t astride = a.strides[axis]             # <<<<<<<<<<<<<<
@@ -8971,33 +8940,33 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
   __pyx_v_astride = (__pyx_v_a->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":756
+  /* "nonreduce_axis.pyx":743
  *     cdef Py_ssize_t astride = a.strides[axis]
  * 
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  */
-  __pyx_t_1 = PyArray_ArgSort(__pyx_v_a, __pyx_v_axis, NPY_QUICKSORT); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 756; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_ArgSort(__pyx_v_a, __pyx_v_axis, NPY_QUICKSORT); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 743; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 756; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 743; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ivec = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":757
+  /* "nonreduce_axis.pyx":744
  * 
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_ivec), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 757; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_ivec), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 744; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 757; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 744; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_iti = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":758
+  /* "nonreduce_axis.pyx":745
  *     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)
  *     cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
  *     cdef Py_ssize_t istride = ivec.strides[axis]             # <<<<<<<<<<<<<<
@@ -9006,33 +8975,33 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
   __pyx_v_istride = (__pyx_v_ivec->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":760
+  /* "nonreduce_axis.pyx":747
  *     cdef Py_ssize_t istride = ivec.strides[axis]
  * 
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  */
-  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 760; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 747; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 760; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 747; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":761
+  /* "nonreduce_axis.pyx":748
  * 
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t ystride = y.strides[axis]
  * 
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 761; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 748; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 761; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 748; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":762
+  /* "nonreduce_axis.pyx":749
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -9041,7 +9010,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
   __pyx_v_ystride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "nonreduce_axis.pyx":764
+  /* "nonreduce_axis.pyx":751
  *     cdef Py_ssize_t ystride = y.strides[axis]
  * 
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -9051,19 +9020,19 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":765
+    /* "nonreduce_axis.pyx":752
  * 
  *     if length == 0:
  *         PyArray_FillWithScalar(y, NAN)             # <<<<<<<<<<<<<<
  *         return y
  * 
  */
-    __pyx_t_1 = PyFloat_FromDouble(__pyx_v_14nonreduce_axis_NAN); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 765; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyFloat_FromDouble(__pyx_v_14nonreduce_axis_NAN); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 752; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     PyArray_FillWithScalar(__pyx_v_y, __pyx_t_1);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "nonreduce_axis.pyx":766
+    /* "nonreduce_axis.pyx":753
  *     if length == 0:
  *         PyArray_FillWithScalar(y, NAN)
  *         return y             # <<<<<<<<<<<<<<
@@ -9076,7 +9045,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
     goto __pyx_L0;
   }
 
-  /* "nonreduce_axis.pyx":768
+  /* "nonreduce_axis.pyx":755
  *         return y
  * 
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -9087,7 +9056,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "nonreduce_axis.pyx":769
+    /* "nonreduce_axis.pyx":756
  * 
  *     while PyArray_ITER_NOTDONE(ita):
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]             # <<<<<<<<<<<<<<
@@ -9096,7 +9065,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
     __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (0 * __pyx_v_istride)))[0]);
 
-    /* "nonreduce_axis.pyx":770
+    /* "nonreduce_axis.pyx":757
  *     while PyArray_ITER_NOTDONE(ita):
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]
  *         old = (<int32_t*>((<char*>pid(ita)) + idx*astride))[0]             # <<<<<<<<<<<<<<
@@ -9105,7 +9074,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
     __pyx_v_old = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_idx * __pyx_v_astride)))[0]);
 
-    /* "nonreduce_axis.pyx":771
+    /* "nonreduce_axis.pyx":758
  *         idx = (<intp_t*>((<char*>pid(iti)) + 0*istride))[0]
  *         old = (<int32_t*>((<char*>pid(ita)) + idx*astride))[0]
  *         sumranks = 0             # <<<<<<<<<<<<<<
@@ -9114,7 +9083,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
     __pyx_v_sumranks = 0.0;
 
-    /* "nonreduce_axis.pyx":772
+    /* "nonreduce_axis.pyx":759
  *         old = (<int32_t*>((<char*>pid(ita)) + idx*astride))[0]
  *         sumranks = 0
  *         dupcount = 0             # <<<<<<<<<<<<<<
@@ -9123,7 +9092,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
     __pyx_v_dupcount = 0;
 
-    /* "nonreduce_axis.pyx":773
+    /* "nonreduce_axis.pyx":760
  *         sumranks = 0
  *         dupcount = 0
  *         for i in range(length - 1):             # <<<<<<<<<<<<<<
@@ -9134,7 +9103,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "nonreduce_axis.pyx":774
+      /* "nonreduce_axis.pyx":761
  *         dupcount = 0
  *         for i in range(length - 1):
  *             sumranks += i             # <<<<<<<<<<<<<<
@@ -9143,7 +9112,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
       __pyx_v_sumranks = (__pyx_v_sumranks + __pyx_v_i);
 
-      /* "nonreduce_axis.pyx":775
+      /* "nonreduce_axis.pyx":762
  *         for i in range(length - 1):
  *             sumranks += i
  *             dupcount += 1             # <<<<<<<<<<<<<<
@@ -9152,7 +9121,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
       __pyx_v_dupcount = (__pyx_v_dupcount + 1);
 
-      /* "nonreduce_axis.pyx":776
+      /* "nonreduce_axis.pyx":763
  *             sumranks += i
  *             dupcount += 1
  *             k = i + 1             # <<<<<<<<<<<<<<
@@ -9161,7 +9130,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
       __pyx_v_k = (__pyx_v_i + 1);
 
-      /* "nonreduce_axis.pyx":777
+      /* "nonreduce_axis.pyx":764
  *             dupcount += 1
  *             k = i + 1
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]             # <<<<<<<<<<<<<<
@@ -9170,7 +9139,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
       __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_k * __pyx_v_istride)))[0]);
 
-      /* "nonreduce_axis.pyx":778
+      /* "nonreduce_axis.pyx":765
  *             k = i + 1
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]
  *             new = (<int32_t*>((<char*>pid(ita)) + idx*astride))[0]             # <<<<<<<<<<<<<<
@@ -9179,7 +9148,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
       __pyx_v_new = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_idx * __pyx_v_astride)))[0]);
 
-      /* "nonreduce_axis.pyx":779
+      /* "nonreduce_axis.pyx":766
  *             idx = (<intp_t*>((<char*>pid(iti)) + k*istride))[0]
  *             new = (<int32_t*>((<char*>pid(ita)) + idx*astride))[0]
  *             if old != new:             # <<<<<<<<<<<<<<
@@ -9189,7 +9158,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
       __pyx_t_2 = ((__pyx_v_old != __pyx_v_new) != 0);
       if (__pyx_t_2) {
 
-        /* "nonreduce_axis.pyx":780
+        /* "nonreduce_axis.pyx":767
  *             new = (<int32_t*>((<char*>pid(ita)) + idx*astride))[0]
  *             if old != new:
  *                 averank = sumranks / dupcount + 1             # <<<<<<<<<<<<<<
@@ -9204,11 +9173,11 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
           #ifdef WITH_THREAD
           PyGILState_Release(__pyx_gilstate_save);
           #endif
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 780; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 767; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         __pyx_v_averank = ((__pyx_v_sumranks / __pyx_v_dupcount) + 1.0);
 
-        /* "nonreduce_axis.pyx":781
+        /* "nonreduce_axis.pyx":768
  *             if old != new:
  *                 averank = sumranks / dupcount + 1
  *                 for j in range(k - dupcount, k):             # <<<<<<<<<<<<<<
@@ -9219,7 +9188,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
         for (__pyx_t_6 = (__pyx_v_k - __pyx_v_dupcount); __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
           __pyx_v_j = __pyx_t_6;
 
-          /* "nonreduce_axis.pyx":782
+          /* "nonreduce_axis.pyx":769
  *                 averank = sumranks / dupcount + 1
  *                 for j in range(k - dupcount, k):
  *                     idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]             # <<<<<<<<<<<<<<
@@ -9228,7 +9197,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
           __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]);
 
-          /* "nonreduce_axis.pyx":783
+          /* "nonreduce_axis.pyx":770
  *                 for j in range(k - dupcount, k):
  *                     idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank             # <<<<<<<<<<<<<<
@@ -9238,7 +9207,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
           (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_idx * __pyx_v_ystride)))[0]) = __pyx_v_averank;
         }
 
-        /* "nonreduce_axis.pyx":784
+        /* "nonreduce_axis.pyx":771
  *                     idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *                 sumranks = 0             # <<<<<<<<<<<<<<
@@ -9247,7 +9216,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
         __pyx_v_sumranks = 0.0;
 
-        /* "nonreduce_axis.pyx":785
+        /* "nonreduce_axis.pyx":772
  *                     (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *                 sumranks = 0
  *                 dupcount = 0             # <<<<<<<<<<<<<<
@@ -9259,7 +9228,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
       }
       __pyx_L8:;
 
-      /* "nonreduce_axis.pyx":786
+      /* "nonreduce_axis.pyx":773
  *                 sumranks = 0
  *                 dupcount = 0
  *             old = new             # <<<<<<<<<<<<<<
@@ -9269,7 +9238,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
       __pyx_v_old = __pyx_v_new;
     }
 
-    /* "nonreduce_axis.pyx":787
+    /* "nonreduce_axis.pyx":774
  *                 dupcount = 0
  *             old = new
  *         sumranks += (length - 1)             # <<<<<<<<<<<<<<
@@ -9278,7 +9247,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
     __pyx_v_sumranks = (__pyx_v_sumranks + (__pyx_v_length - 1));
 
-    /* "nonreduce_axis.pyx":788
+    /* "nonreduce_axis.pyx":775
  *             old = new
  *         sumranks += (length - 1)
  *         dupcount += 1             # <<<<<<<<<<<<<<
@@ -9287,7 +9256,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
     __pyx_v_dupcount = (__pyx_v_dupcount + 1);
 
-    /* "nonreduce_axis.pyx":789
+    /* "nonreduce_axis.pyx":776
  *         sumranks += (length - 1)
  *         dupcount += 1
  *         averank = sumranks / dupcount + 1             # <<<<<<<<<<<<<<
@@ -9302,11 +9271,11 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
       #ifdef WITH_THREAD
       PyGILState_Release(__pyx_gilstate_save);
       #endif
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 789; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 776; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __pyx_v_averank = ((__pyx_v_sumranks / __pyx_v_dupcount) + 1.0);
 
-    /* "nonreduce_axis.pyx":790
+    /* "nonreduce_axis.pyx":777
  *         dupcount += 1
  *         averank = sumranks / dupcount + 1
  *         for j in range(length - dupcount, length):             # <<<<<<<<<<<<<<
@@ -9317,7 +9286,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
     for (__pyx_t_4 = (__pyx_v_length - __pyx_v_dupcount); __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "nonreduce_axis.pyx":791
+      /* "nonreduce_axis.pyx":778
  *         averank = sumranks / dupcount + 1
  *         for j in range(length - dupcount, length):
  *             idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]             # <<<<<<<<<<<<<<
@@ -9326,7 +9295,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
       __pyx_v_idx = (((__pyx_t_5numpy_intp_t *)(((char *)PyArray_ITER_DATA(__pyx_v_iti)) + (__pyx_v_j * __pyx_v_istride)))[0]);
 
-      /* "nonreduce_axis.pyx":792
+      /* "nonreduce_axis.pyx":779
  *         for j in range(length - dupcount, length):
  *             idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank             # <<<<<<<<<<<<<<
@@ -9336,7 +9305,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
       (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_idx * __pyx_v_ystride)))[0]) = __pyx_v_averank;
     }
 
-    /* "nonreduce_axis.pyx":793
+    /* "nonreduce_axis.pyx":780
  *             idx = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -9345,7 +9314,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "nonreduce_axis.pyx":794
+    /* "nonreduce_axis.pyx":781
  *             (<float64_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -9354,7 +9323,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
  */
     PyArray_ITER_NEXT(__pyx_v_ity);
 
-    /* "nonreduce_axis.pyx":795
+    /* "nonreduce_axis.pyx":782
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *         PyArray_ITER_NEXT(iti)             # <<<<<<<<<<<<<<
@@ -9364,7 +9333,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
     PyArray_ITER_NEXT(__pyx_v_iti);
   }
 
-  /* "nonreduce_axis.pyx":796
+  /* "nonreduce_axis.pyx":783
  *         PyArray_ITER_NEXT(ity)
  *         PyArray_ITER_NEXT(iti)
  *     return y             # <<<<<<<<<<<<<<
@@ -9376,7 +9345,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "nonreduce_axis.pyx":746
+  /* "nonreduce_axis.pyx":733
  *     return y
  * 
  * cdef ndarray rankdata_int32(ndarray a, int axis,             # <<<<<<<<<<<<<<
@@ -9400,7 +9369,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_rankdata_int32(PyArrayObject *__p
   return __pyx_r;
 }
 
-/* "nonreduce_axis.pyx":803
+/* "nonreduce_axis.pyx":790
  * 
  * 
  * cdef ndarray nonreducer_axis(arr, axis,             # <<<<<<<<<<<<<<
@@ -9435,7 +9404,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
     }
   }
 
-  /* "nonreduce_axis.pyx":812
+  /* "nonreduce_axis.pyx":799
  *     # convert to array if necessary
  *     cdef ndarray a
  *     if type(arr) is ndarray:             # <<<<<<<<<<<<<<
@@ -9446,14 +9415,14 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "nonreduce_axis.pyx":813
+    /* "nonreduce_axis.pyx":800
  *     cdef ndarray a
  *     if type(arr) is ndarray:
  *         a = arr             # <<<<<<<<<<<<<<
  *     else:
  *         a = np.array(arr, copy=False)
  */
-    if (!(likely(((__pyx_v_arr) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_arr, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 813; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!(likely(((__pyx_v_arr) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_arr, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 800; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_t_3 = __pyx_v_arr;
     __Pyx_INCREF(__pyx_t_3);
     __pyx_v_a = ((PyArrayObject *)__pyx_t_3);
@@ -9462,38 +9431,38 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
   }
   /*else*/ {
 
-    /* "nonreduce_axis.pyx":815
+    /* "nonreduce_axis.pyx":802
  *         a = arr
  *     else:
  *         a = np.array(arr, copy=False)             # <<<<<<<<<<<<<<
  * 
  *     # input array
  */
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 815; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 802; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 815; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 802; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 815; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 802; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_v_arr);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_arr);
     __Pyx_GIVEREF(__pyx_v_arr);
-    __pyx_t_5 = PyDict_New(); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 815; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyDict_New(); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 802; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_copy, Py_False) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 815; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 815; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_copy, Py_False) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 802; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 802; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 815; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 802; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_v_a = ((PyArrayObject *)__pyx_t_6);
     __pyx_t_6 = 0;
   }
   __pyx_L3:;
 
-  /* "nonreduce_axis.pyx":818
+  /* "nonreduce_axis.pyx":805
  * 
  *     # input array
  *     cdef int dtype = PyArray_TYPE(a)             # <<<<<<<<<<<<<<
@@ -9502,7 +9471,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
  */
   __pyx_v_dtype = PyArray_TYPE(__pyx_v_a);
 
-  /* "nonreduce_axis.pyx":823
+  /* "nonreduce_axis.pyx":810
  *     # axis
  *     cdef int axis_int
  *     if axis is None:             # <<<<<<<<<<<<<<
@@ -9513,20 +9482,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
   __pyx_t_1 = (__pyx_t_2 != 0);
   if (__pyx_t_1) {
 
-    /* "nonreduce_axis.pyx":824
+    /* "nonreduce_axis.pyx":811
  *     cdef int axis_int
  *     if axis is None:
  *         a = PyArray_Ravel(a, NPY_CORDER)             # <<<<<<<<<<<<<<
  *         axis_int = 0
  *         a_ndim = 1
  */
-    __pyx_t_6 = PyArray_Ravel(__pyx_v_a, NPY_CORDER); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 824; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = PyArray_Ravel(__pyx_v_a, NPY_CORDER); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 811; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
-    if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 824; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 811; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF_SET(__pyx_v_a, ((PyArrayObject *)__pyx_t_6));
     __pyx_t_6 = 0;
 
-    /* "nonreduce_axis.pyx":825
+    /* "nonreduce_axis.pyx":812
  *     if axis is None:
  *         a = PyArray_Ravel(a, NPY_CORDER)
  *         axis_int = 0             # <<<<<<<<<<<<<<
@@ -9535,7 +9504,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
  */
     __pyx_v_axis_int = 0;
 
-    /* "nonreduce_axis.pyx":826
+    /* "nonreduce_axis.pyx":813
  *         a = PyArray_Ravel(a, NPY_CORDER)
  *         axis_int = 0
  *         a_ndim = 1             # <<<<<<<<<<<<<<
@@ -9547,7 +9516,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
   }
   /*else*/ {
 
-    /* "nonreduce_axis.pyx":828
+    /* "nonreduce_axis.pyx":815
  *         a_ndim = 1
  *     else:
  *         a_ndim = PyArray_NDIM(a)             # <<<<<<<<<<<<<<
@@ -9556,17 +9525,17 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
  */
     __pyx_v_a_ndim = PyArray_NDIM(__pyx_v_a);
 
-    /* "nonreduce_axis.pyx":829
+    /* "nonreduce_axis.pyx":816
  *     else:
  *         a_ndim = PyArray_NDIM(a)
  *         axis_int = <int>axis             # <<<<<<<<<<<<<<
  *         if axis_int < 0:
  *             axis_int += a_ndim
  */
-    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_axis); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 829; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_axis); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 816; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_v_axis_int = ((int)__pyx_t_7);
 
-    /* "nonreduce_axis.pyx":830
+    /* "nonreduce_axis.pyx":817
  *         a_ndim = PyArray_NDIM(a)
  *         axis_int = <int>axis
  *         if axis_int < 0:             # <<<<<<<<<<<<<<
@@ -9576,7 +9545,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
     __pyx_t_1 = ((__pyx_v_axis_int < 0) != 0);
     if (__pyx_t_1) {
 
-      /* "nonreduce_axis.pyx":831
+      /* "nonreduce_axis.pyx":818
  *         axis_int = <int>axis
  *         if axis_int < 0:
  *             axis_int += a_ndim             # <<<<<<<<<<<<<<
@@ -9585,7 +9554,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
  */
       __pyx_v_axis_int = (__pyx_v_axis_int + __pyx_v_a_ndim);
 
-      /* "nonreduce_axis.pyx":832
+      /* "nonreduce_axis.pyx":819
  *         if axis_int < 0:
  *             axis_int += a_ndim
  *             if axis_int < 0:             # <<<<<<<<<<<<<<
@@ -9595,31 +9564,31 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
       __pyx_t_1 = ((__pyx_v_axis_int < 0) != 0);
       if (__pyx_t_1) {
 
-        /* "nonreduce_axis.pyx":833
+        /* "nonreduce_axis.pyx":820
  *             axis_int += a_ndim
  *             if axis_int < 0:
  *                 raise ValueError("axis(=%d) out of bounds" % axis)             # <<<<<<<<<<<<<<
  *         elif axis_int >= a_ndim:
  *             raise ValueError("axis(=%d) out of bounds" % axis)
  */
-        __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_axis_d_out_of_bounds, __pyx_v_axis); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 833; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_axis_d_out_of_bounds, __pyx_v_axis); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 820; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 833; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 820; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_5);
         PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
         __Pyx_GIVEREF(__pyx_t_6);
         __pyx_t_6 = 0;
-        __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 833; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 820; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_Raise(__pyx_t_6, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 833; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 820; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       goto __pyx_L5;
     }
 
-    /* "nonreduce_axis.pyx":834
+    /* "nonreduce_axis.pyx":821
  *             if axis_int < 0:
  *                 raise ValueError("axis(=%d) out of bounds" % axis)
  *         elif axis_int >= a_ndim:             # <<<<<<<<<<<<<<
@@ -9629,32 +9598,32 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
     __pyx_t_1 = ((__pyx_v_axis_int >= __pyx_v_a_ndim) != 0);
     if (__pyx_t_1) {
 
-      /* "nonreduce_axis.pyx":835
+      /* "nonreduce_axis.pyx":822
  *                 raise ValueError("axis(=%d) out of bounds" % axis)
  *         elif axis_int >= a_ndim:
  *             raise ValueError("axis(=%d) out of bounds" % axis)             # <<<<<<<<<<<<<<
  * 
  *     # output array
  */
-      __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_axis_d_out_of_bounds, __pyx_v_axis); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 835; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_axis_d_out_of_bounds, __pyx_v_axis); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 822; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 835; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 822; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
       __Pyx_GIVEREF(__pyx_t_6);
       __pyx_t_6 = 0;
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 835; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 822; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_Raise(__pyx_t_6, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 835; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 822; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __pyx_L5:;
   }
   __pyx_L4:;
 
-  /* "nonreduce_axis.pyx":839
+  /* "nonreduce_axis.pyx":826
  *     # output array
  *     cdef ndarray y
  *     cdef np.npy_intp *y_dims = np.PyArray_DIMS(a)             # <<<<<<<<<<<<<<
@@ -9663,7 +9632,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
  */
   __pyx_v_y_dims = PyArray_DIMS(__pyx_v_a);
 
-  /* "nonreduce_axis.pyx":848
+  /* "nonreduce_axis.pyx":835
  *     elif dtype == NPY_int64:
  *         y = nra_int64(a, axis_int, a_ndim, y_dims, int_input)
  *     elif dtype == NPY_int32:             # <<<<<<<<<<<<<<
@@ -9672,7 +9641,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
  */
   switch (__pyx_v_dtype) {
 
-    /* "nonreduce_axis.pyx":842
+    /* "nonreduce_axis.pyx":829
  * 
  *     # calc
  *     if dtype == NPY_float64:             # <<<<<<<<<<<<<<
@@ -9681,20 +9650,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
  */
     case NPY_FLOAT64:
 
-    /* "nonreduce_axis.pyx":843
+    /* "nonreduce_axis.pyx":830
  *     # calc
  *     if dtype == NPY_float64:
  *         y = nra_float64(a, axis_int, a_ndim, y_dims, int_input)             # <<<<<<<<<<<<<<
  *     elif dtype == NPY_float32:
  *         y = nra_float32(a, axis_int, a_ndim, y_dims, int_input)
  */
-    __pyx_t_6 = ((PyObject *)__pyx_v_nra_float64(__pyx_v_a, __pyx_v_axis_int, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 843; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = ((PyObject *)__pyx_v_nra_float64(__pyx_v_a, __pyx_v_axis_int, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 830; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_v_y = ((PyArrayObject *)__pyx_t_6);
     __pyx_t_6 = 0;
     break;
 
-    /* "nonreduce_axis.pyx":844
+    /* "nonreduce_axis.pyx":831
  *     if dtype == NPY_float64:
  *         y = nra_float64(a, axis_int, a_ndim, y_dims, int_input)
  *     elif dtype == NPY_float32:             # <<<<<<<<<<<<<<
@@ -9703,20 +9672,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
  */
     case NPY_FLOAT32:
 
-    /* "nonreduce_axis.pyx":845
+    /* "nonreduce_axis.pyx":832
  *         y = nra_float64(a, axis_int, a_ndim, y_dims, int_input)
  *     elif dtype == NPY_float32:
  *         y = nra_float32(a, axis_int, a_ndim, y_dims, int_input)             # <<<<<<<<<<<<<<
  *     elif dtype == NPY_int64:
  *         y = nra_int64(a, axis_int, a_ndim, y_dims, int_input)
  */
-    __pyx_t_6 = ((PyObject *)__pyx_v_nra_float32(__pyx_v_a, __pyx_v_axis_int, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 845; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = ((PyObject *)__pyx_v_nra_float32(__pyx_v_a, __pyx_v_axis_int, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 832; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_v_y = ((PyArrayObject *)__pyx_t_6);
     __pyx_t_6 = 0;
     break;
 
-    /* "nonreduce_axis.pyx":846
+    /* "nonreduce_axis.pyx":833
  *     elif dtype == NPY_float32:
  *         y = nra_float32(a, axis_int, a_ndim, y_dims, int_input)
  *     elif dtype == NPY_int64:             # <<<<<<<<<<<<<<
@@ -9725,20 +9694,20 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
  */
     case NPY_INT64:
 
-    /* "nonreduce_axis.pyx":847
+    /* "nonreduce_axis.pyx":834
  *         y = nra_float32(a, axis_int, a_ndim, y_dims, int_input)
  *     elif dtype == NPY_int64:
  *         y = nra_int64(a, axis_int, a_ndim, y_dims, int_input)             # <<<<<<<<<<<<<<
  *     elif dtype == NPY_int32:
  *         y = nra_int32(a, axis_int, a_ndim, y_dims, int_input)
  */
-    __pyx_t_6 = ((PyObject *)__pyx_v_nra_int64(__pyx_v_a, __pyx_v_axis_int, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 847; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = ((PyObject *)__pyx_v_nra_int64(__pyx_v_a, __pyx_v_axis_int, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 834; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_v_y = ((PyArrayObject *)__pyx_t_6);
     __pyx_t_6 = 0;
     break;
 
-    /* "nonreduce_axis.pyx":848
+    /* "nonreduce_axis.pyx":835
  *     elif dtype == NPY_int64:
  *         y = nra_int64(a, axis_int, a_ndim, y_dims, int_input)
  *     elif dtype == NPY_int32:             # <<<<<<<<<<<<<<
@@ -9747,47 +9716,47 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
  */
     case NPY_INT32:
 
-    /* "nonreduce_axis.pyx":849
+    /* "nonreduce_axis.pyx":836
  *         y = nra_int64(a, axis_int, a_ndim, y_dims, int_input)
  *     elif dtype == NPY_int32:
  *         y = nra_int32(a, axis_int, a_ndim, y_dims, int_input)             # <<<<<<<<<<<<<<
  *     else:
  *         raise TypeError("Unsupported dtype (%s)." % a.dtype)
  */
-    __pyx_t_6 = ((PyObject *)__pyx_v_nra_int32(__pyx_v_a, __pyx_v_axis_int, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 849; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = ((PyObject *)__pyx_v_nra_int32(__pyx_v_a, __pyx_v_axis_int, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 836; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_v_y = ((PyArrayObject *)__pyx_t_6);
     __pyx_t_6 = 0;
     break;
     default:
 
-    /* "nonreduce_axis.pyx":851
+    /* "nonreduce_axis.pyx":838
  *         y = nra_int32(a, axis_int, a_ndim, y_dims, int_input)
  *     else:
  *         raise TypeError("Unsupported dtype (%s)." % a.dtype)             # <<<<<<<<<<<<<<
  * 
  *     return y
  */
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 851; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 838; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_5 = __Pyx_PyString_Format(__pyx_kp_s_Unsupported_dtype_s, __pyx_t_6); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 851; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyString_Format(__pyx_kp_s_Unsupported_dtype_s, __pyx_t_6); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 838; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 851; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 838; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_5);
     __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_6, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 851; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_6, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 838; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 851; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 838; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     break;
   }
 
-  /* "nonreduce_axis.pyx":853
+  /* "nonreduce_axis.pyx":840
  *         raise TypeError("Unsupported dtype (%s)." % a.dtype)
  * 
  *     return y             # <<<<<<<<<<<<<<
@@ -9797,7 +9766,7 @@ static PyArrayObject *__pyx_f_14nonreduce_axis_nonreducer_axis(PyObject *__pyx_v
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "nonreduce_axis.pyx":803
+  /* "nonreduce_axis.pyx":790
  * 
  * 
  * cdef ndarray nonreducer_axis(arr, axis,             # <<<<<<<<<<<<<<
@@ -11859,14 +11828,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_copy, __pyx_k_copy, sizeof(__pyx_k_copy), 0, 0, 1, 1},
   {&__pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_k_devel_bottleneck_bottleneck_src, sizeof(__pyx_k_devel_bottleneck_bottleneck_src), 0, 0, 1, 0},
   {&__pyx_n_s_dtype, __pyx_k_dtype, sizeof(__pyx_k_dtype), 0, 0, 1, 1},
-  {&__pyx_n_s_iinfo, __pyx_k_iinfo, sizeof(__pyx_k_iinfo), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
-  {&__pyx_n_s_inf, __pyx_k_inf, sizeof(__pyx_k_inf), 0, 0, 1, 1},
-  {&__pyx_n_s_int32, __pyx_k_int32, sizeof(__pyx_k_int32), 0, 0, 1, 1},
-  {&__pyx_n_s_int64, __pyx_k_int64, sizeof(__pyx_k_int64), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
-  {&__pyx_n_s_max, __pyx_k_max, sizeof(__pyx_k_max), 0, 0, 1, 1},
-  {&__pyx_n_s_min, __pyx_k_min, sizeof(__pyx_k_min), 0, 0, 1, 1},
   {&__pyx_n_s_n, __pyx_k_n, sizeof(__pyx_k_n), 0, 0, 1, 1},
   {&__pyx_kp_s_n_d_must_be_between_1_and_d_inc, __pyx_k_n_d_must_be_between_1_and_d_inc, sizeof(__pyx_k_n_d_must_be_between_1_and_d_inc), 0, 0, 1, 0},
   {&__pyx_n_s_nan, __pyx_k_nan, sizeof(__pyx_k_nan), 0, 0, 1, 1},
@@ -11885,9 +11848,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 238; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 225; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 799; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
@@ -11964,53 +11927,53 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
-  /* "nonreduce_axis.pyx":54
+  /* "nonreduce_axis.pyx":41
  * # partsort ------------------------------------------------------------------
  * 
  * def partsort(arr, int n, axis=-1):             # <<<<<<<<<<<<<<
  *     try:
  *         return nonreducer_axis(arr, axis,
  */
-  __pyx_tuple__8 = PyTuple_Pack(3, __pyx_n_s_arr, __pyx_n_s_n, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__8 = PyTuple_Pack(3, __pyx_n_s_arr, __pyx_n_s_n, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
-  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_partsort, 54, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_partsort, 41, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "nonreduce_axis.pyx":212
+  /* "nonreduce_axis.pyx":199
  * # argpartsort ---------------------------------------------------------------
  * 
  * def argpartsort(arr, int n, axis=-1):             # <<<<<<<<<<<<<<
  *     try:
  *         return nonreducer_axis(arr, axis,
  */
-  __pyx_tuple__10 = PyTuple_Pack(3, __pyx_n_s_arr, __pyx_n_s_n, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__10 = PyTuple_Pack(3, __pyx_n_s_arr, __pyx_n_s_n, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__10);
   __Pyx_GIVEREF(__pyx_tuple__10);
-  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_argpartsort, 212, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_argpartsort, 199, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "nonreduce_axis.pyx":446
+  /* "nonreduce_axis.pyx":433
  * # nanrankdata ---------------------------------------------------------------
  * 
  * def nanrankdata(arr, axis=None):             # <<<<<<<<<<<<<<
  *     try:
  *         return nonreducer_axis(arr, axis,
  */
-  __pyx_tuple__12 = PyTuple_Pack(2, __pyx_n_s_arr, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 446; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__12 = PyTuple_Pack(2, __pyx_n_s_arr, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 433; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
-  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_nanrankdata, 446, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 446; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_nanrankdata, 433, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 433; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "nonreduce_axis.pyx":579
+  /* "nonreduce_axis.pyx":566
  * # rankdata ------------------------------------------------------------------
  * 
  * def rankdata(arr, axis=None):             # <<<<<<<<<<<<<<
  *     try:
  *         return nonreducer_axis(arr, axis,
  */
-  __pyx_tuple__14 = PyTuple_Pack(2, __pyx_n_s_arr, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 579; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__14 = PyTuple_Pack(2, __pyx_n_s_arr, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 566; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__14);
   __Pyx_GIVEREF(__pyx_tuple__14);
-  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_rankdata, 579, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 579; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_rankdata, 566, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 566; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -12037,13 +12000,6 @@ PyMODINIT_FUNC PyInit_nonreduce_axis(void)
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   double __pyx_t_3;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  PyObject *__pyx_t_6 = NULL;
-  __pyx_t_5numpy_int32_t __pyx_t_7;
-  __pyx_t_5numpy_int64_t __pyx_t_8;
-  __pyx_t_5numpy_float32_t __pyx_t_9;
-  __pyx_t_5numpy_float64_t __pyx_t_10;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -12144,7 +12100,7 @@ PyMODINIT_FUNC PyInit_nonreduce_axis(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 3; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":33
+  /* "nonreduce_axis.pyx":32
  * from numpy cimport ndarray
  * from numpy cimport import_array
  * import_array()             # <<<<<<<<<<<<<<
@@ -12153,356 +12109,86 @@ PyMODINIT_FUNC PyInit_nonreduce_axis(void)
  */
   import_array();
 
-  /* "nonreduce_axis.pyx":35
+  /* "nonreduce_axis.pyx":34
  * import_array()
  * 
  * import bottleneck.slow.nonreduce_axis as slow             # <<<<<<<<<<<<<<
  * 
  * cdef double NAN = <double> np.nan
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s__7);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s__7);
   __Pyx_GIVEREF(__pyx_n_s__7);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_bottleneck_slow_nonreduce_axis, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_bottleneck_slow_nonreduce_axis, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_slow, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_slow, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "nonreduce_axis.pyx":37
+  /* "nonreduce_axis.pyx":36
  * import bottleneck.slow.nonreduce_axis as slow
  * 
  * cdef double NAN = <double> np.nan             # <<<<<<<<<<<<<<
- * cdef extern from "math.h":
- *     double sqrt(double x)
+ * 
+ * 
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_nan); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_nan); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_14nonreduce_axis_NAN = ((double)__pyx_t_3);
 
   /* "nonreduce_axis.pyx":41
- *     double sqrt(double x)
- * 
- * cdef np.int32_t MAXint32 = np.iinfo(np.int32).max             # <<<<<<<<<<<<<<
- * cdef np.int64_t MAXint64 = np.iinfo(np.int64).max
- * cdef np.float32_t MAXfloat32 = np.inf
- */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = NULL;
-  if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
-    if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-      __Pyx_INCREF(__pyx_t_2);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
-    }
-  }
-  if (!__pyx_t_2) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_GOTREF(__pyx_t_1);
-  } else {
-    __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_6);
-    PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_2); __Pyx_GIVEREF(__pyx_t_2); __pyx_t_2 = NULL;
-    PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_5);
-    __Pyx_GIVEREF(__pyx_t_5);
-    __pyx_t_5 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_max); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_7 = __Pyx_PyInt_As_npy_int32(__pyx_t_4); if (unlikely((__pyx_t_7 == (npy_int32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_v_14nonreduce_axis_MAXint32 = __pyx_t_7;
-
-  /* "nonreduce_axis.pyx":42
- * 
- * cdef np.int32_t MAXint32 = np.iinfo(np.int32).max
- * cdef np.int64_t MAXint64 = np.iinfo(np.int64).max             # <<<<<<<<<<<<<<
- * cdef np.float32_t MAXfloat32 = np.inf
- * cdef np.float64_t MAXfloat64 = np.inf
- */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_int64); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = NULL;
-  if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_6))) {
-    __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_6);
-    if (likely(__pyx_t_1)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-      __Pyx_INCREF(__pyx_t_1);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_6, function);
-    }
-  }
-  if (!__pyx_t_1) {
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_GOTREF(__pyx_t_4);
-  } else {
-    __pyx_t_2 = PyTuple_New(1+1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_2);
-    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1); __Pyx_GIVEREF(__pyx_t_1); __pyx_t_1 = NULL;
-    PyTuple_SET_ITEM(__pyx_t_2, 0+1, __pyx_t_5);
-    __Pyx_GIVEREF(__pyx_t_5);
-    __pyx_t_5 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_2, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_max); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_8 = __Pyx_PyInt_As_npy_int64(__pyx_t_6); if (unlikely((__pyx_t_8 == (npy_int64)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_v_14nonreduce_axis_MAXint64 = __pyx_t_8;
-
-  /* "nonreduce_axis.pyx":43
- * cdef np.int32_t MAXint32 = np.iinfo(np.int32).max
- * cdef np.int64_t MAXint64 = np.iinfo(np.int64).max
- * cdef np.float32_t MAXfloat32 = np.inf             # <<<<<<<<<<<<<<
- * cdef np.float64_t MAXfloat64 = np.inf
- * 
- */
-  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_inf); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_4); if (unlikely((__pyx_t_9 == (npy_float32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_v_14nonreduce_axis_MAXfloat32 = __pyx_t_9;
-
-  /* "nonreduce_axis.pyx":44
- * cdef np.int64_t MAXint64 = np.iinfo(np.int64).max
- * cdef np.float32_t MAXfloat32 = np.inf
- * cdef np.float64_t MAXfloat64 = np.inf             # <<<<<<<<<<<<<<
- * 
- * cdef np.int32_t MINint32 = np.iinfo(np.int32).min
- */
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_inf); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_10 = __pyx_PyFloat_AsDouble(__pyx_t_6); if (unlikely((__pyx_t_10 == (npy_float64)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_v_14nonreduce_axis_MAXfloat64 = __pyx_t_10;
-
-  /* "nonreduce_axis.pyx":46
- * cdef np.float64_t MAXfloat64 = np.inf
- * 
- * cdef np.int32_t MINint32 = np.iinfo(np.int32).min             # <<<<<<<<<<<<<<
- * cdef np.int64_t MINint64 = np.iinfo(np.int64).min
- * cdef np.float32_t MINfloat32 = -np.inf
- */
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = NULL;
-  if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  if (!__pyx_t_4) {
-    __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_GOTREF(__pyx_t_6);
-  } else {
-    __pyx_t_1 = PyTuple_New(1+1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_1);
-    PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_4); __Pyx_GIVEREF(__pyx_t_4); __pyx_t_4 = NULL;
-    PyTuple_SET_ITEM(__pyx_t_1, 0+1, __pyx_t_5);
-    __Pyx_GIVEREF(__pyx_t_5);
-    __pyx_t_5 = 0;
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_min); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_7 = __Pyx_PyInt_As_npy_int32(__pyx_t_2); if (unlikely((__pyx_t_7 == (npy_int32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_v_14nonreduce_axis_MINint32 = __pyx_t_7;
-
-  /* "nonreduce_axis.pyx":47
- * 
- * cdef np.int32_t MINint32 = np.iinfo(np.int32).min
- * cdef np.int64_t MINint64 = np.iinfo(np.int64).min             # <<<<<<<<<<<<<<
- * cdef np.float32_t MINfloat32 = -np.inf
- * cdef np.float64_t MINfloat64 = -np.inf
- */
-  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_int64); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = NULL;
-  if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_1))) {
-    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_1);
-    if (likely(__pyx_t_6)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-      __Pyx_INCREF(__pyx_t_6);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_1, function);
-    }
-  }
-  if (!__pyx_t_6) {
-    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_GOTREF(__pyx_t_2);
-  } else {
-    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_6); __Pyx_GIVEREF(__pyx_t_6); __pyx_t_6 = NULL;
-    PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_t_5);
-    __Pyx_GIVEREF(__pyx_t_5);
-    __pyx_t_5 = 0;
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_min); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_8 = __Pyx_PyInt_As_npy_int64(__pyx_t_1); if (unlikely((__pyx_t_8 == (npy_int64)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_14nonreduce_axis_MINint64 = __pyx_t_8;
-
-  /* "nonreduce_axis.pyx":48
- * cdef np.int32_t MINint32 = np.iinfo(np.int32).min
- * cdef np.int64_t MINint64 = np.iinfo(np.int64).min
- * cdef np.float32_t MINfloat32 = -np.inf             # <<<<<<<<<<<<<<
- * cdef np.float64_t MINfloat64 = -np.inf
- * 
- */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_inf); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyNumber_Negative(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_9 == (npy_float32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_14nonreduce_axis_MINfloat32 = __pyx_t_9;
-
-  /* "nonreduce_axis.pyx":49
- * cdef np.int64_t MINint64 = np.iinfo(np.int64).min
- * cdef np.float32_t MINfloat32 = -np.inf
- * cdef np.float64_t MINfloat64 = -np.inf             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_inf); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyNumber_Negative(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_10 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_10 == (npy_float64)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_14nonreduce_axis_MINfloat64 = __pyx_t_10;
-
-  /* "nonreduce_axis.pyx":54
  * # partsort ------------------------------------------------------------------
  * 
  * def partsort(arr, int n, axis=-1):             # <<<<<<<<<<<<<<
  *     try:
  *         return nonreducer_axis(arr, axis,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_14nonreduce_axis_1partsort, NULL, __pyx_n_s_nonreduce_axis); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_14nonreduce_axis_1partsort, NULL, __pyx_n_s_nonreduce_axis); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_partsort, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_partsort, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":212
+  /* "nonreduce_axis.pyx":199
  * # argpartsort ---------------------------------------------------------------
  * 
  * def argpartsort(arr, int n, axis=-1):             # <<<<<<<<<<<<<<
  *     try:
  *         return nonreducer_axis(arr, axis,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_14nonreduce_axis_3argpartsort, NULL, __pyx_n_s_nonreduce_axis); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_14nonreduce_axis_3argpartsort, NULL, __pyx_n_s_nonreduce_axis); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_argpartsort, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_argpartsort, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":446
+  /* "nonreduce_axis.pyx":433
  * # nanrankdata ---------------------------------------------------------------
  * 
  * def nanrankdata(arr, axis=None):             # <<<<<<<<<<<<<<
  *     try:
  *         return nonreducer_axis(arr, axis,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_14nonreduce_axis_5nanrankdata, NULL, __pyx_n_s_nonreduce_axis); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 446; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_14nonreduce_axis_5nanrankdata, NULL, __pyx_n_s_nonreduce_axis); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 433; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nanrankdata, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 446; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nanrankdata, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 433; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "nonreduce_axis.pyx":579
+  /* "nonreduce_axis.pyx":566
  * # rankdata ------------------------------------------------------------------
  * 
  * def rankdata(arr, axis=None):             # <<<<<<<<<<<<<<
  *     try:
  *         return nonreducer_axis(arr, axis,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_14nonreduce_axis_7rankdata, NULL, __pyx_n_s_nonreduce_axis); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 579; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_14nonreduce_axis_7rankdata, NULL, __pyx_n_s_nonreduce_axis); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 566; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_rankdata, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 579; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_rankdata, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 566; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "nonreduce_axis.pyx":1
@@ -12529,9 +12215,6 @@ PyMODINIT_FUNC PyInit_nonreduce_axis(void)
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_6);
   if (__pyx_m) {
     if (__pyx_d) {
       __Pyx_AddTraceback("init nonreduce_axis", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -13057,55 +12740,6 @@ static CYTHON_INLINE void __Pyx_RaiseNoneNotIterableError(void) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
 }
 
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg) {
-    PyObject *self, *result;
-    PyCFunction cfunc;
-    cfunc = PyCFunction_GET_FUNCTION(func);
-    self = PyCFunction_GET_SELF(func);
-    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
-        return NULL;
-    result = cfunc(self, arg);
-    Py_LeaveRecursiveCall();
-    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
-        PyErr_SetString(
-            PyExc_SystemError,
-            "NULL result without error in PyObject_Call");
-    }
-    return result;
-}
-#endif
-
-#if CYTHON_COMPILING_IN_CPYTHON
-static PyObject* __Pyx__PyObject_CallOneArg(PyObject *func, PyObject *arg) {
-    PyObject *result;
-    PyObject *args = PyTuple_New(1);
-    if (unlikely(!args)) return NULL;
-    Py_INCREF(arg);
-    PyTuple_SET_ITEM(args, 0, arg);
-    result = __Pyx_PyObject_Call(func, args, NULL);
-    Py_DECREF(args);
-    return result;
-}
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg) {
-#ifdef __Pyx_CyFunction_USED
-    if (likely(PyCFunction_Check(func) || PyObject_TypeCheck(func, __pyx_CyFunctionType))) {
-#else
-    if (likely(PyCFunction_Check(func))) {
-#endif
-        if (likely(PyCFunction_GET_FLAGS(func) & METH_O)) {
-            return __Pyx_PyObject_CallMethO(func, arg);
-        }
-    }
-    return __Pyx__PyObject_CallOneArg(func, arg);
-}
-#else
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg) {
-    PyObject* args = PyTuple_Pack(1, arg);
-    return (likely(args)) ? __Pyx_PyObject_Call(func, args, NULL) : NULL;
-}
-#endif
-
 static int __pyx_bisect_code_objects(__Pyx_CodeObjectCacheEntry* entries, int count, int code_line) {
     int start = 0, mid = 0, end = count - 1;
     if (end >= 0 && code_line > entries[end].code_line) {
@@ -13358,196 +12992,6 @@ bad:
   #include "longintrepr.h"
  #endif
 #endif
-
-static CYTHON_INLINE npy_int32 __Pyx_PyInt_As_npy_int32(PyObject *x) {
-    const npy_int32 neg_one = (npy_int32) -1, const_zero = 0;
-    const int is_unsigned = neg_one > const_zero;
-#if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_Check(x))) {
-        if (sizeof(npy_int32) < sizeof(long)) {
-            __PYX_VERIFY_RETURN_INT(npy_int32, long, PyInt_AS_LONG(x))
-        } else {
-            long val = PyInt_AS_LONG(x);
-            if (is_unsigned && unlikely(val < 0)) {
-                goto raise_neg_overflow;
-            }
-            return (npy_int32) val;
-        }
-    } else
-#endif
-    if (likely(PyLong_Check(x))) {
-        if (is_unsigned) {
-#if CYTHON_COMPILING_IN_CPYTHON && PY_MAJOR_VERSION >= 3
- #if CYTHON_USE_PYLONG_INTERNALS
-            switch (Py_SIZE(x)) {
-                case  0: return 0;
-                case  1: __PYX_VERIFY_RETURN_INT(npy_int32, digit, ((PyLongObject*)x)->ob_digit[0]);
-            }
- #endif
-#endif
-            if (unlikely(Py_SIZE(x) < 0)) {
-                goto raise_neg_overflow;
-            }
-            if (sizeof(npy_int32) <= sizeof(unsigned long)) {
-                __PYX_VERIFY_RETURN_INT(npy_int32, unsigned long, PyLong_AsUnsignedLong(x))
-            } else if (sizeof(npy_int32) <= sizeof(unsigned long long)) {
-                __PYX_VERIFY_RETURN_INT(npy_int32, unsigned long long, PyLong_AsUnsignedLongLong(x))
-            }
-        } else {
-#if CYTHON_COMPILING_IN_CPYTHON && PY_MAJOR_VERSION >= 3
- #if CYTHON_USE_PYLONG_INTERNALS
-            switch (Py_SIZE(x)) {
-                case  0: return 0;
-                case  1: __PYX_VERIFY_RETURN_INT(npy_int32,  digit, +(((PyLongObject*)x)->ob_digit[0]));
-                case -1: __PYX_VERIFY_RETURN_INT(npy_int32, sdigit, -(sdigit) ((PyLongObject*)x)->ob_digit[0]);
-            }
- #endif
-#endif
-            if (sizeof(npy_int32) <= sizeof(long)) {
-                __PYX_VERIFY_RETURN_INT(npy_int32, long, PyLong_AsLong(x))
-            } else if (sizeof(npy_int32) <= sizeof(long long)) {
-                __PYX_VERIFY_RETURN_INT(npy_int32, long long, PyLong_AsLongLong(x))
-            }
-        }
-        {
-#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
-            PyErr_SetString(PyExc_RuntimeError,
-                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
-#else
-            npy_int32 val;
-            PyObject *v = __Pyx_PyNumber_Int(x);
- #if PY_MAJOR_VERSION < 3
-            if (likely(v) && !PyLong_Check(v)) {
-                PyObject *tmp = v;
-                v = PyNumber_Long(tmp);
-                Py_DECREF(tmp);
-            }
- #endif
-            if (likely(v)) {
-                int one = 1; int is_little = (int)*(unsigned char *)&one;
-                unsigned char *bytes = (unsigned char *)&val;
-                int ret = _PyLong_AsByteArray((PyLongObject *)v,
-                                              bytes, sizeof(val),
-                                              is_little, !is_unsigned);
-                Py_DECREF(v);
-                if (likely(!ret))
-                    return val;
-            }
-#endif
-            return (npy_int32) -1;
-        }
-    } else {
-        npy_int32 val;
-        PyObject *tmp = __Pyx_PyNumber_Int(x);
-        if (!tmp) return (npy_int32) -1;
-        val = __Pyx_PyInt_As_npy_int32(tmp);
-        Py_DECREF(tmp);
-        return val;
-    }
-raise_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "value too large to convert to npy_int32");
-    return (npy_int32) -1;
-raise_neg_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "can't convert negative value to npy_int32");
-    return (npy_int32) -1;
-}
-
-static CYTHON_INLINE npy_int64 __Pyx_PyInt_As_npy_int64(PyObject *x) {
-    const npy_int64 neg_one = (npy_int64) -1, const_zero = 0;
-    const int is_unsigned = neg_one > const_zero;
-#if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_Check(x))) {
-        if (sizeof(npy_int64) < sizeof(long)) {
-            __PYX_VERIFY_RETURN_INT(npy_int64, long, PyInt_AS_LONG(x))
-        } else {
-            long val = PyInt_AS_LONG(x);
-            if (is_unsigned && unlikely(val < 0)) {
-                goto raise_neg_overflow;
-            }
-            return (npy_int64) val;
-        }
-    } else
-#endif
-    if (likely(PyLong_Check(x))) {
-        if (is_unsigned) {
-#if CYTHON_COMPILING_IN_CPYTHON && PY_MAJOR_VERSION >= 3
- #if CYTHON_USE_PYLONG_INTERNALS
-            switch (Py_SIZE(x)) {
-                case  0: return 0;
-                case  1: __PYX_VERIFY_RETURN_INT(npy_int64, digit, ((PyLongObject*)x)->ob_digit[0]);
-            }
- #endif
-#endif
-            if (unlikely(Py_SIZE(x) < 0)) {
-                goto raise_neg_overflow;
-            }
-            if (sizeof(npy_int64) <= sizeof(unsigned long)) {
-                __PYX_VERIFY_RETURN_INT(npy_int64, unsigned long, PyLong_AsUnsignedLong(x))
-            } else if (sizeof(npy_int64) <= sizeof(unsigned long long)) {
-                __PYX_VERIFY_RETURN_INT(npy_int64, unsigned long long, PyLong_AsUnsignedLongLong(x))
-            }
-        } else {
-#if CYTHON_COMPILING_IN_CPYTHON && PY_MAJOR_VERSION >= 3
- #if CYTHON_USE_PYLONG_INTERNALS
-            switch (Py_SIZE(x)) {
-                case  0: return 0;
-                case  1: __PYX_VERIFY_RETURN_INT(npy_int64,  digit, +(((PyLongObject*)x)->ob_digit[0]));
-                case -1: __PYX_VERIFY_RETURN_INT(npy_int64, sdigit, -(sdigit) ((PyLongObject*)x)->ob_digit[0]);
-            }
- #endif
-#endif
-            if (sizeof(npy_int64) <= sizeof(long)) {
-                __PYX_VERIFY_RETURN_INT(npy_int64, long, PyLong_AsLong(x))
-            } else if (sizeof(npy_int64) <= sizeof(long long)) {
-                __PYX_VERIFY_RETURN_INT(npy_int64, long long, PyLong_AsLongLong(x))
-            }
-        }
-        {
-#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
-            PyErr_SetString(PyExc_RuntimeError,
-                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
-#else
-            npy_int64 val;
-            PyObject *v = __Pyx_PyNumber_Int(x);
- #if PY_MAJOR_VERSION < 3
-            if (likely(v) && !PyLong_Check(v)) {
-                PyObject *tmp = v;
-                v = PyNumber_Long(tmp);
-                Py_DECREF(tmp);
-            }
- #endif
-            if (likely(v)) {
-                int one = 1; int is_little = (int)*(unsigned char *)&one;
-                unsigned char *bytes = (unsigned char *)&val;
-                int ret = _PyLong_AsByteArray((PyLongObject *)v,
-                                              bytes, sizeof(val),
-                                              is_little, !is_unsigned);
-                Py_DECREF(v);
-                if (likely(!ret))
-                    return val;
-            }
-#endif
-            return (npy_int64) -1;
-        }
-    } else {
-        npy_int64 val;
-        PyObject *tmp = __Pyx_PyNumber_Int(x);
-        if (!tmp) return (npy_int64) -1;
-        val = __Pyx_PyInt_As_npy_int64(tmp);
-        Py_DECREF(tmp);
-        return val;
-    }
-raise_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "value too large to convert to npy_int64");
-    return (npy_int64) -1;
-raise_neg_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "can't convert negative value to npy_int64");
-    return (npy_int64) -1;
-}
 
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *x) {
     const int neg_one = (int) -1, const_zero = 0;
