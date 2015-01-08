@@ -121,6 +121,11 @@ def test_nanmax():
     yield unit_maker, bn.nanmax, bn.slow.nanmax
 
 
+def test_ss():
+    "Test ss."
+    yield unit_maker, bn.ss, bn.slow.ss, np.inf, True, False
+
+
 def test_rankdata():
     "Test rankdata."
     yield unit_maker, bn.rankdata, bn.slow.rankdata
@@ -150,11 +155,6 @@ def test_median():
 def test_nanmedian():
     "Test nanmedian."
     yield unit_maker, bn.nanmedian, bn.slow.nanmedian
-
-
-def test_ss():
-    "Test ss."
-    yield unit_maker, bn.ss, bn.slow.ss
 
 
 def test_anynan():

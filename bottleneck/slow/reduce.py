@@ -51,9 +51,9 @@ def nanargmax(arr, axis=None):
         return np.nanargmax(arr, axis=axis)
 
 
-def ss(arr, axis=0):
+def ss(arr, axis=None):
     "Slow sum of squares used for unaccelerated ndim/dtype combinations."
-    return scipy_ss(arr, axis)
+    return np.multiply(arr, arr).sum(axis)
 
 
 def anynan(arr, axis=None):
@@ -169,42 +169,3 @@ def _chk_asarray(a, axis):
         a = np.asarray(a)
         outaxis = axis
     return a, outaxis
-
-
-def scipy_ss(a, axis=0):
-    """
-    Squares each element of the input array, and returns the square(s) of that.
-
-    Parameters
-    ----------
-    a : array_like
-        Input array.
-    axis : int or None, optional
-        The axis along which to calculate. If None, use whole array.
-        Default is 0, i.e. along the first axis.
-
-    Returns
-    -------
-    ss : ndarray
-        The sum along the given axis for (a**2).
-
-    See also
-    --------
-    square_of_sums : The square(s) of the sum(s) (the opposite of `ss`).
-
-    Examples
-    --------
-    >>> from scipy import stats
-    >>> a = np.array([1., 2., 5.])
-    >>> stats.ss(a)
-    30.0
-
-    And calculating along an axis:
-
-    >>> b = np.array([[1., 2., 5.], [2., 5., 6.]])
-    >>> stats.ss(b, axis=1)
-    array([ 30., 65.])
-
-    """
-    a, axis = _chk_asarray(a, axis)
-    return np.sum(a*a, axis)

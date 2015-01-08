@@ -106,8 +106,8 @@ def benchsuite(shapes, dtype, axis, nans):
         return setups
 
     # numpy functions
-    funcs = ['nansum', 'nanmean', 'nanstd', 'nanmin', 'nanmax', 'rankdata',
-            'nanrankdata']
+    funcs = ['nansum', 'nanmean', 'nanstd', 'nanmin', 'nanmax', 'ss',
+             'rankdata', 'nanrankdata']
     for func in funcs:
         run = {}
         run['name'] = func
@@ -207,19 +207,6 @@ def benchsuite(shapes, dtype, axis, nans):
     code = "bn.nanargmax(a, axis=AXIS)"
     run['statements'] = [code, "np.nanargmax(a, axis=AXIS)"]
     setup = """
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    #suite.append(run)
-
-    # ss
-    run = {}
-    run['name'] = "ss"
-    run['ref'] = "scipy.stats.ss"
-    run['scipy_required'] = False
-    code = "bn.ss(a, axis=AXIS)"
-    run['statements'] = [code, "scipy_ss(a, axis=AXIS)"]
-    setup = """
-        from bottleneck.slow.func import scipy_ss
     """
     run['setups'] = getsetups(setup, shapes, nans)
     #suite.append(run)
