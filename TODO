@@ -8,7 +8,7 @@ Reduce
             ss, nansum, nanmin, nanmax
 
         int --> float64
-            median*, nanmedian*, nanmean
+            median, nanmedian, nanmean
 
         output dtype = intp
             nanargmin*, nanargmax*

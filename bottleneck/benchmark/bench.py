@@ -105,9 +105,9 @@ def benchsuite(shapes, dtype, axis, nans):
             setups.append(template % (str(shape), str(nan), setup))
         return setups
 
-    # numpy functions
-    funcs = ['nansum', 'nanmean', 'nanstd', 'nanmin', 'nanmax', 'ss',
-             'rankdata', 'nanrankdata']
+    # non-moving window functions
+    funcs = ['nansum', 'nanmean', 'nanstd', 'nanmin', 'nanmax', 'median',
+             'nanmedian', 'ss', 'rankdata', 'nanrankdata']
     for func in funcs:
         run = {}
         run['name'] = func

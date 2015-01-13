@@ -7,7 +7,8 @@ from . import slow
 # rebuild using the templates. So try to import the compiled Bottleneck
 # functions to the top level, but move on if not successful.
 try:
-    from .reduce import nansum, nanmean, nanstd, nanvar, nanmin, nanmax, ss
+    from .reduce import (nansum, nanmean, nanstd, nanvar, nanmin, nanmax,
+                         median, nanmedian, ss)
 except:
     pass
 try:

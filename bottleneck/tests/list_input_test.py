@@ -73,6 +73,16 @@ def test_nanmax():
     yield unit_maker, bn.nanmax, bn.slow.nanmax
 
 
+def test_median():
+    "Test median."
+    yield unit_maker, bn.median, bn.slow.median
+
+
+def test_nanmedian():
+    "Test nanmedian."
+    yield unit_maker, bn.nanmedian, bn.slow.nanmedian
+
+
 def test_ss():
     "Test ss."
     yield unit_maker, bn.ss, bn.slow.ss
@@ -107,16 +117,6 @@ def test_nanargmin():
 def test_nanargmax():
     "Test nanargmax."
     yield unit_maker, bn.nanargmax, bn.slow.nanargmax
-
-
-def test_median():
-    "Test median."
-    yield unit_maker, bn.median, bn.slow.median
-
-
-def test_nanmedian():
-    "Test nanmedian."
-    yield unit_maker, bn.nanmedian, bn.slow.nanmedian
 
 
 def test_anynan():

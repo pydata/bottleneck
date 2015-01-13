@@ -695,7 +695,7 @@ typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
 struct __pyx_opt_args_6reduce_reducer;
 
-/* "reduce.pyx":1503
+/* "reduce.pyx":2165
  * 
  * # pointer to functions that reduce along ALL axes
  * ctypedef object (*fall_t)(np.flatiter, Py_ssize_t, Py_ssize_t, int)             # <<<<<<<<<<<<<<
@@ -704,7 +704,7 @@ struct __pyx_opt_args_6reduce_reducer;
  */
 typedef PyObject *(*__pyx_t_6reduce_fall_t)(PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int);
 
-/* "reduce.pyx":1506
+/* "reduce.pyx":2168
  * 
  * # pointer to functions that reduce along ONE axis
  * ctypedef ndarray (*fone_t)(np.flatiter, Py_ssize_t, Py_ssize_t, int,             # <<<<<<<<<<<<<<
@@ -713,7 +713,7 @@ typedef PyObject *(*__pyx_t_6reduce_fall_t)(PyArrayIterObject *, Py_ssize_t, Py_
  */
 typedef PyArrayObject *(*__pyx_t_6reduce_fone_t)(PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int, npy_intp *, int);
 
-/* "reduce.pyx":1510
+/* "reduce.pyx":2172
  * 
  * # pointer to functions that handle 0d arrays
  * ctypedef object (*f0d_t)(ndarray, int)             # <<<<<<<<<<<<<<
@@ -722,7 +722,7 @@ typedef PyArrayObject *(*__pyx_t_6reduce_fone_t)(PyArrayIterObject *, Py_ssize_t
  */
 typedef PyObject *(*__pyx_t_6reduce_f0d_t)(PyArrayObject *, int);
 
-/* "reduce.pyx":1513
+/* "reduce.pyx":2175
  * 
  * 
  * cdef reducer(arr, axis,             # <<<<<<<<<<<<<<
@@ -732,6 +732,8 @@ typedef PyObject *(*__pyx_t_6reduce_f0d_t)(PyArrayObject *, int);
 struct __pyx_opt_args_6reduce_reducer {
   int __pyx_n;
   int int_input;
+  int ravel;
+  int copy;
 };
 #ifndef CYTHON_REFNANNY
   #define CYTHON_REFNANNY 0
@@ -841,6 +843,10 @@ static CYTHON_INLINE void __Pyx_ErrFetch(PyObject **type, PyObject **value, PyOb
 
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
 
+static CYTHON_INLINE long __Pyx_mod_long(long, long); /* proto */
+
+static CYTHON_INLINE Py_ssize_t __Pyx_mod_Py_ssize_t(Py_ssize_t, Py_ssize_t); /* proto */
+
 static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected);
 
 static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index);
@@ -883,6 +889,10 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_npy_int64(npy_int64 value);
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_npy_int32(npy_int32 value);
 
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
+
+static CYTHON_INLINE Py_intptr_t __Pyx_PyInt_As_Py_intptr_t(PyObject *);
+
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_Py_intptr_t(Py_intptr_t value);
 
 #if CYTHON_CCOMPLEX
   #ifdef __cplusplus
@@ -1105,6 +1115,20 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *, Py_ssi
 static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int, npy_intp *, int); /*proto*/
 static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int, npy_intp *, int); /*proto*/
 static PyObject *__pyx_f_6reduce_ss_0d(PyArrayObject *, int); /*proto*/
+static PyObject *__pyx_f_6reduce_nanmedian_all_float64(PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int); /*proto*/
+static PyObject *__pyx_f_6reduce_nanmedian_all_float32(PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int); /*proto*/
+static PyArrayObject *__pyx_f_6reduce_nanmedian_one_float64(PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int, npy_intp *, int); /*proto*/
+static PyArrayObject *__pyx_f_6reduce_nanmedian_one_float32(PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int, npy_intp *, int); /*proto*/
+static PyObject *__pyx_f_6reduce_nanmedian_0d(PyArrayObject *, int); /*proto*/
+static PyObject *__pyx_f_6reduce_median_all_float64(PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int); /*proto*/
+static PyObject *__pyx_f_6reduce_median_all_float32(PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int); /*proto*/
+static PyObject *__pyx_f_6reduce_median_all_int64(PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int); /*proto*/
+static PyObject *__pyx_f_6reduce_median_all_int32(PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int); /*proto*/
+static PyArrayObject *__pyx_f_6reduce_median_one_float64(PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int, npy_intp *, int); /*proto*/
+static PyArrayObject *__pyx_f_6reduce_median_one_float32(PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int, npy_intp *, int); /*proto*/
+static PyArrayObject *__pyx_f_6reduce_median_one_int64(PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int, npy_intp *, int); /*proto*/
+static PyArrayObject *__pyx_f_6reduce_median_one_int32(PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int, npy_intp *, int); /*proto*/
+static PyObject *__pyx_f_6reduce_median_0d(PyArrayObject *, int); /*proto*/
 static PyObject *__pyx_f_6reduce_reducer(PyObject *, PyObject *, __pyx_t_6reduce_fall_t, __pyx_t_6reduce_fall_t, __pyx_t_6reduce_fall_t, __pyx_t_6reduce_fall_t, __pyx_t_6reduce_fone_t, __pyx_t_6reduce_fone_t, __pyx_t_6reduce_fone_t, __pyx_t_6reduce_fone_t, __pyx_t_6reduce_f0d_t, struct __pyx_opt_args_6reduce_reducer *__pyx_optional_args); /*proto*/
 #define __Pyx_MODULE_NAME "reduce"
 int __pyx_module_is_main_reduce = 0;
@@ -1121,6 +1145,8 @@ static PyObject *__pyx_pf_6reduce_6nanvar(CYTHON_UNUSED PyObject *__pyx_self, Py
 static PyObject *__pyx_pf_6reduce_8nanmin(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arr, PyObject *__pyx_v_axis); /* proto */
 static PyObject *__pyx_pf_6reduce_10nanmax(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arr, PyObject *__pyx_v_axis); /* proto */
 static PyObject *__pyx_pf_6reduce_12ss(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arr, PyObject *__pyx_v_axis); /* proto */
+static PyObject *__pyx_pf_6reduce_14nanmedian(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arr, PyObject *__pyx_v_axis); /* proto */
+static PyObject *__pyx_pf_6reduce_16median(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arr, PyObject *__pyx_v_axis); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static char __pyx_k_B[] = "B";
@@ -1161,7 +1187,9 @@ static char __pyx_k_int32[] = "int32";
 static char __pyx_k_int64[] = "int64";
 static char __pyx_k_numpy[] = "numpy";
 static char __pyx_k_range[] = "range";
+static char __pyx_k_ravel[] = "ravel";
 static char __pyx_k_import[] = "__import__";
+static char __pyx_k_median[] = "median";
 static char __pyx_k_nanmax[] = "nanmax";
 static char __pyx_k_nanmin[] = "nanmin";
 static char __pyx_k_nanstd[] = "nanstd";
@@ -1170,6 +1198,8 @@ static char __pyx_k_nanvar[] = "nanvar";
 static char __pyx_k_reduce[] = "reduce";
 static char __pyx_k_nanmean[] = "nanmean";
 static char __pyx_k_TypeError[] = "TypeError";
+static char __pyx_k_int_input[] = "int_input";
+static char __pyx_k_nanmedian[] = "nanmedian";
 static char __pyx_k_ValueError[] = "ValueError";
 static char __pyx_k_RuntimeError[] = "RuntimeError";
 static char __pyx_k_Unsupported_dtype_s[] = "Unsupported dtype (%s).";
@@ -1210,12 +1240,15 @@ static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_inf;
 static PyObject *__pyx_n_s_int32;
 static PyObject *__pyx_n_s_int64;
+static PyObject *__pyx_n_s_int_input;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_max;
+static PyObject *__pyx_n_s_median;
 static PyObject *__pyx_n_s_min;
 static PyObject *__pyx_n_s_nan;
 static PyObject *__pyx_n_s_nanmax;
 static PyObject *__pyx_n_s_nanmean;
+static PyObject *__pyx_n_s_nanmedian;
 static PyObject *__pyx_n_s_nanmin;
 static PyObject *__pyx_n_s_nanstd;
 static PyObject *__pyx_n_s_nansum;
@@ -1231,6 +1264,7 @@ static PyObject *__pyx_kp_s_numpy_nanmin_raises_on_a_ndim_0;
 static PyObject *__pyx_kp_s_numpy_nanmin_raises_on_a_shape_a;
 static PyObject *__pyx_kp_s_numpy_nanmin_raises_on_a_size_0;
 static PyObject *__pyx_n_s_range;
+static PyObject *__pyx_n_s_ravel;
 static PyObject *__pyx_n_s_reduce;
 static PyObject *__pyx_n_s_slow;
 static PyObject *__pyx_n_s_ss;
@@ -1252,6 +1286,8 @@ static PyObject *__pyx_tuple__14;
 static PyObject *__pyx_tuple__16;
 static PyObject *__pyx_tuple__18;
 static PyObject *__pyx_tuple__20;
+static PyObject *__pyx_tuple__22;
+static PyObject *__pyx_tuple__24;
 static PyObject *__pyx_codeobj__9;
 static PyObject *__pyx_codeobj__11;
 static PyObject *__pyx_codeobj__13;
@@ -1259,8 +1295,10 @@ static PyObject *__pyx_codeobj__15;
 static PyObject *__pyx_codeobj__17;
 static PyObject *__pyx_codeobj__19;
 static PyObject *__pyx_codeobj__21;
+static PyObject *__pyx_codeobj__23;
+static PyObject *__pyx_codeobj__25;
 
-/* "reduce.pyx":47
+/* "reduce.pyx":67
  * # nansum --------------------------------------------------------------------
  * 
  * def nansum(arr, axis=None):             # <<<<<<<<<<<<<<
@@ -1306,7 +1344,7 @@ static PyObject *__pyx_pw_6reduce_1nansum(PyObject *__pyx_self, PyObject *__pyx_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nansum") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nansum") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -1321,7 +1359,7 @@ static PyObject *__pyx_pw_6reduce_1nansum(PyObject *__pyx_self, PyObject *__pyx_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("nansum", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("nansum", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("reduce.nansum", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1354,7 +1392,7 @@ static PyObject *__pyx_pf_6reduce_nansum(CYTHON_UNUSED PyObject *__pyx_self, PyO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nansum", 0);
 
-  /* "reduce.pyx":48
+  /* "reduce.pyx":68
  * 
  * def nansum(arr, axis=None):
  *     try:             # <<<<<<<<<<<<<<
@@ -1368,7 +1406,7 @@ static PyObject *__pyx_pf_6reduce_nansum(CYTHON_UNUSED PyObject *__pyx_self, PyO
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "reduce.pyx":49
+      /* "reduce.pyx":69
  * def nansum(arr, axis=None):
  *     try:
  *         return reducer(arr, axis,             # <<<<<<<<<<<<<<
@@ -1377,14 +1415,14 @@ static PyObject *__pyx_pf_6reduce_nansum(CYTHON_UNUSED PyObject *__pyx_self, PyO
  */
       __Pyx_XDECREF(__pyx_r);
 
-      /* "reduce.pyx":58
+      /* "reduce.pyx":78
  *                        nansum_one_int64,
  *                        nansum_one_int32,
  *                        nansum_0d)             # <<<<<<<<<<<<<<
  *     except TypeError:
  *         return slow.nansum(arr, axis)
  */
-      __pyx_t_4 = __pyx_f_6reduce_reducer(__pyx_v_arr, __pyx_v_axis, __pyx_f_6reduce_nansum_all_float64, __pyx_f_6reduce_nansum_all_float32, __pyx_f_6reduce_nansum_all_int64, __pyx_f_6reduce_nansum_all_int32, __pyx_f_6reduce_nansum_one_float64, __pyx_f_6reduce_nansum_one_float32, __pyx_f_6reduce_nansum_one_int64, __pyx_f_6reduce_nansum_one_int32, __pyx_f_6reduce_nansum_0d, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_t_4 = __pyx_f_6reduce_reducer(__pyx_v_arr, __pyx_v_axis, __pyx_f_6reduce_nansum_all_float64, __pyx_f_6reduce_nansum_all_float32, __pyx_f_6reduce_nansum_all_int64, __pyx_f_6reduce_nansum_all_int32, __pyx_f_6reduce_nansum_one_float64, __pyx_f_6reduce_nansum_one_float32, __pyx_f_6reduce_nansum_one_int64, __pyx_f_6reduce_nansum_one_int32, __pyx_f_6reduce_nansum_0d, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
@@ -1393,7 +1431,7 @@ static PyObject *__pyx_pf_6reduce_nansum(CYTHON_UNUSED PyObject *__pyx_self, PyO
     __pyx_L3_error:;
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "reduce.pyx":59
+    /* "reduce.pyx":79
  *                        nansum_one_int32,
  *                        nansum_0d)
  *     except TypeError:             # <<<<<<<<<<<<<<
@@ -1403,12 +1441,12 @@ static PyObject *__pyx_pf_6reduce_nansum(CYTHON_UNUSED PyObject *__pyx_self, PyO
     __pyx_t_5 = PyErr_ExceptionMatches(__pyx_builtin_TypeError);
     if (__pyx_t_5) {
       __Pyx_AddTraceback("reduce.nansum", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_7) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 59; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_7) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_7);
 
-      /* "reduce.pyx":60
+      /* "reduce.pyx":80
  *                        nansum_0d)
  *     except TypeError:
  *         return slow.nansum(arr, axis)             # <<<<<<<<<<<<<<
@@ -1416,9 +1454,9 @@ static PyObject *__pyx_pf_6reduce_nansum(CYTHON_UNUSED PyObject *__pyx_self, PyO
  * 
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_nansum); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_nansum); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_t_9 = NULL;
@@ -1433,7 +1471,7 @@ static PyObject *__pyx_pf_6reduce_nansum(CYTHON_UNUSED PyObject *__pyx_self, PyO
           __pyx_t_11 = 1;
         }
       }
-      __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_12);
       if (__pyx_t_9) {
         PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_9); __Pyx_GIVEREF(__pyx_t_9); __pyx_t_9 = NULL;
@@ -1444,7 +1482,7 @@ static PyObject *__pyx_pf_6reduce_nansum(CYTHON_UNUSED PyObject *__pyx_self, PyO
       __Pyx_INCREF(__pyx_v_axis);
       PyTuple_SET_ITEM(__pyx_t_12, 1+__pyx_t_11, __pyx_v_axis);
       __Pyx_GIVEREF(__pyx_v_axis);
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_12, NULL); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_12, NULL); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -1476,7 +1514,7 @@ static PyObject *__pyx_pf_6reduce_nansum(CYTHON_UNUSED PyObject *__pyx_self, PyO
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":47
+  /* "reduce.pyx":67
  * # nansum --------------------------------------------------------------------
  * 
  * def nansum(arr, axis=None):             # <<<<<<<<<<<<<<
@@ -1501,7 +1539,7 @@ static PyObject *__pyx_pf_6reduce_nansum(CYTHON_UNUSED PyObject *__pyx_self, PyO
   return __pyx_r;
 }
 
-/* "reduce.pyx":63
+/* "reduce.pyx":83
  * 
  * 
  * cdef object nansum_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -1524,7 +1562,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float64(PyArrayIterObject *__pyx_v_i
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nansum_all_float64", 0);
 
-  /* "reduce.pyx":66
+  /* "reduce.pyx":86
  *                               Py_ssize_t length, int int_input):
  *     cdef Py_ssize_t i
  *     cdef float64_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -1533,7 +1571,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float64(PyArrayIterObject *__pyx_v_i
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":67
+  /* "reduce.pyx":87
  *     cdef Py_ssize_t i
  *     cdef float64_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -1544,7 +1582,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float64(PyArrayIterObject *__pyx_v_i
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":68
+    /* "reduce.pyx":88
  *     cdef float64_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -1555,7 +1593,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float64(PyArrayIterObject *__pyx_v_i
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":69
+      /* "reduce.pyx":89
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -1564,7 +1602,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float64(PyArrayIterObject *__pyx_v_i
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":70
+      /* "reduce.pyx":90
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai == ai:             # <<<<<<<<<<<<<<
@@ -1574,7 +1612,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float64(PyArrayIterObject *__pyx_v_i
       __pyx_t_1 = ((__pyx_v_ai == __pyx_v_ai) != 0);
       if (__pyx_t_1) {
 
-        /* "reduce.pyx":71
+        /* "reduce.pyx":91
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai == ai:
  *                 asum += ai             # <<<<<<<<<<<<<<
@@ -1587,7 +1625,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float64(PyArrayIterObject *__pyx_v_i
       __pyx_L7:;
     }
 
-    /* "reduce.pyx":72
+    /* "reduce.pyx":92
  *             if ai == ai:
  *                 asum += ai
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -1597,7 +1635,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float64(PyArrayIterObject *__pyx_v_i
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":73
+  /* "reduce.pyx":93
  *                 asum += ai
  *         PyArray_ITER_NEXT(ita)
  *     return asum             # <<<<<<<<<<<<<<
@@ -1605,13 +1643,13 @@ static PyObject *__pyx_f_6reduce_nansum_all_float64(PyArrayIterObject *__pyx_v_i
  * cdef object nansum_all_float32(np.flatiter ita, Py_ssize_t stride,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_asum); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_asum); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "reduce.pyx":63
+  /* "reduce.pyx":83
  * 
  * 
  * cdef object nansum_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -1630,7 +1668,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float64(PyArrayIterObject *__pyx_v_i
   return __pyx_r;
 }
 
-/* "reduce.pyx":75
+/* "reduce.pyx":95
  *     return asum
  * 
  * cdef object nansum_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -1653,7 +1691,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float32(PyArrayIterObject *__pyx_v_i
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nansum_all_float32", 0);
 
-  /* "reduce.pyx":78
+  /* "reduce.pyx":98
  *                               Py_ssize_t length, int int_input):
  *     cdef Py_ssize_t i
  *     cdef float32_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -1662,7 +1700,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float32(PyArrayIterObject *__pyx_v_i
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":79
+  /* "reduce.pyx":99
  *     cdef Py_ssize_t i
  *     cdef float32_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -1673,7 +1711,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float32(PyArrayIterObject *__pyx_v_i
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":80
+    /* "reduce.pyx":100
  *     cdef float32_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -1684,7 +1722,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float32(PyArrayIterObject *__pyx_v_i
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":81
+      /* "reduce.pyx":101
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -1693,7 +1731,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float32(PyArrayIterObject *__pyx_v_i
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":82
+      /* "reduce.pyx":102
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai == ai:             # <<<<<<<<<<<<<<
@@ -1703,7 +1741,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float32(PyArrayIterObject *__pyx_v_i
       __pyx_t_1 = ((__pyx_v_ai == __pyx_v_ai) != 0);
       if (__pyx_t_1) {
 
-        /* "reduce.pyx":83
+        /* "reduce.pyx":103
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai == ai:
  *                 asum += ai             # <<<<<<<<<<<<<<
@@ -1716,7 +1754,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float32(PyArrayIterObject *__pyx_v_i
       __pyx_L7:;
     }
 
-    /* "reduce.pyx":84
+    /* "reduce.pyx":104
  *             if ai == ai:
  *                 asum += ai
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -1726,7 +1764,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float32(PyArrayIterObject *__pyx_v_i
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":85
+  /* "reduce.pyx":105
  *                 asum += ai
  *         PyArray_ITER_NEXT(ita)
  *     return asum             # <<<<<<<<<<<<<<
@@ -1734,13 +1772,13 @@ static PyObject *__pyx_f_6reduce_nansum_all_float32(PyArrayIterObject *__pyx_v_i
  * cdef object nansum_all_int64(np.flatiter ita, Py_ssize_t stride,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_asum); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_asum); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "reduce.pyx":75
+  /* "reduce.pyx":95
  *     return asum
  * 
  * cdef object nansum_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -1759,7 +1797,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_float32(PyArrayIterObject *__pyx_v_i
   return __pyx_r;
 }
 
-/* "reduce.pyx":87
+/* "reduce.pyx":107
  *     return asum
  * 
  * cdef object nansum_all_int64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -1782,7 +1820,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_int64(PyArrayIterObject *__pyx_v_ita
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nansum_all_int64", 0);
 
-  /* "reduce.pyx":90
+  /* "reduce.pyx":110
  *                               Py_ssize_t length, int int_input):
  *     cdef Py_ssize_t i
  *     cdef int64_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -1791,7 +1829,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_int64(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_asum = 0;
 
-  /* "reduce.pyx":91
+  /* "reduce.pyx":111
  *     cdef Py_ssize_t i
  *     cdef int64_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -1802,7 +1840,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_int64(PyArrayIterObject *__pyx_v_ita
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":92
+    /* "reduce.pyx":112
  *     cdef int64_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -1813,7 +1851,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_int64(PyArrayIterObject *__pyx_v_ita
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":93
+      /* "reduce.pyx":113
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -1822,7 +1860,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_int64(PyArrayIterObject *__pyx_v_ita
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":94
+      /* "reduce.pyx":114
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai             # <<<<<<<<<<<<<<
@@ -1832,7 +1870,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_int64(PyArrayIterObject *__pyx_v_ita
       __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
     }
 
-    /* "reduce.pyx":95
+    /* "reduce.pyx":115
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -1842,7 +1880,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_int64(PyArrayIterObject *__pyx_v_ita
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":96
+  /* "reduce.pyx":116
  *             asum += ai
  *         PyArray_ITER_NEXT(ita)
  *     return asum             # <<<<<<<<<<<<<<
@@ -1850,13 +1888,13 @@ static PyObject *__pyx_f_6reduce_nansum_all_int64(PyArrayIterObject *__pyx_v_ita
  * cdef object nansum_all_int32(np.flatiter ita, Py_ssize_t stride,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __Pyx_PyInt_From_npy_int64(__pyx_v_asum); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyInt_From_npy_int64(__pyx_v_asum); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 116; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "reduce.pyx":87
+  /* "reduce.pyx":107
  *     return asum
  * 
  * cdef object nansum_all_int64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -1875,7 +1913,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_int64(PyArrayIterObject *__pyx_v_ita
   return __pyx_r;
 }
 
-/* "reduce.pyx":98
+/* "reduce.pyx":118
  *     return asum
  * 
  * cdef object nansum_all_int32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -1898,7 +1936,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_int32(PyArrayIterObject *__pyx_v_ita
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nansum_all_int32", 0);
 
-  /* "reduce.pyx":101
+  /* "reduce.pyx":121
  *                               Py_ssize_t length, int int_input):
  *     cdef Py_ssize_t i
  *     cdef int32_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -1907,7 +1945,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_int32(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_asum = 0;
 
-  /* "reduce.pyx":102
+  /* "reduce.pyx":122
  *     cdef Py_ssize_t i
  *     cdef int32_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -1918,7 +1956,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_int32(PyArrayIterObject *__pyx_v_ita
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":103
+    /* "reduce.pyx":123
  *     cdef int32_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -1929,7 +1967,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_int32(PyArrayIterObject *__pyx_v_ita
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":104
+      /* "reduce.pyx":124
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -1938,7 +1976,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_int32(PyArrayIterObject *__pyx_v_ita
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":105
+      /* "reduce.pyx":125
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai             # <<<<<<<<<<<<<<
@@ -1948,7 +1986,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_int32(PyArrayIterObject *__pyx_v_ita
       __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
     }
 
-    /* "reduce.pyx":106
+    /* "reduce.pyx":126
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -1958,7 +1996,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_int32(PyArrayIterObject *__pyx_v_ita
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":107
+  /* "reduce.pyx":127
  *             asum += ai
  *         PyArray_ITER_NEXT(ita)
  *     return asum             # <<<<<<<<<<<<<<
@@ -1966,13 +2004,13 @@ static PyObject *__pyx_f_6reduce_nansum_all_int32(PyArrayIterObject *__pyx_v_ita
  * cdef ndarray nansum_one_float64(np.flatiter ita,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __Pyx_PyInt_From_npy_int32(__pyx_v_asum); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyInt_From_npy_int32(__pyx_v_asum); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "reduce.pyx":98
+  /* "reduce.pyx":118
  *     return asum
  * 
  * cdef object nansum_all_int32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -1991,7 +2029,7 @@ static PyObject *__pyx_f_6reduce_nansum_all_int32(PyArrayIterObject *__pyx_v_ita
   return __pyx_r;
 }
 
-/* "reduce.pyx":109
+/* "reduce.pyx":129
  *     return asum
  * 
  * cdef ndarray nansum_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -2016,7 +2054,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nansum_one_float64", 0);
 
-  /* "reduce.pyx":113
+  /* "reduce.pyx":133
  *                                int a_ndim, np.npy_intp* y_dims, int int_input):
  *     cdef Py_ssize_t i
  *     cdef float64_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -2025,33 +2063,33 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":114
+  /* "reduce.pyx":134
  *     cdef Py_ssize_t i
  *     cdef float64_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 134; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 134; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":115
+  /* "reduce.pyx":135
  *     cdef float64_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 135; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 135; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":116
+  /* "reduce.pyx":136
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -2061,7 +2099,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":117
+    /* "reduce.pyx":137
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -2072,7 +2110,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":118
+      /* "reduce.pyx":138
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -2081,7 +2119,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":119
+      /* "reduce.pyx":139
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -2094,7 +2132,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
   }
   /*else*/ {
 
-    /* "reduce.pyx":121
+    /* "reduce.pyx":141
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -2105,7 +2143,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":122
+      /* "reduce.pyx":142
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -2114,7 +2152,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
  */
       __pyx_v_asum = 0.0;
 
-      /* "reduce.pyx":123
+      /* "reduce.pyx":143
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -2125,7 +2163,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":124
+        /* "reduce.pyx":144
  *             asum = 0
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -2134,7 +2172,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":125
+        /* "reduce.pyx":145
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 if ai == ai:             # <<<<<<<<<<<<<<
@@ -2144,7 +2182,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
         __pyx_t_2 = ((__pyx_v_ai == __pyx_v_ai) != 0);
         if (__pyx_t_2) {
 
-          /* "reduce.pyx":126
+          /* "reduce.pyx":146
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 if ai == ai:
  *                     asum += ai             # <<<<<<<<<<<<<<
@@ -2157,7 +2195,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
         __pyx_L10:;
       }
 
-      /* "reduce.pyx":127
+      /* "reduce.pyx":147
  *                 if ai == ai:
  *                     asum += ai
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -2166,7 +2204,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":128
+      /* "reduce.pyx":148
  *                     asum += ai
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -2175,7 +2213,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":129
+      /* "reduce.pyx":149
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -2187,7 +2225,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":130
+  /* "reduce.pyx":150
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -2199,7 +2237,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":109
+  /* "reduce.pyx":129
  *     return asum
  * 
  * cdef ndarray nansum_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -2220,7 +2258,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float64(PyArrayIterObject *__py
   return __pyx_r;
 }
 
-/* "reduce.pyx":132
+/* "reduce.pyx":152
  *     return y
  * 
  * cdef ndarray nansum_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -2245,7 +2283,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nansum_one_float32", 0);
 
-  /* "reduce.pyx":136
+  /* "reduce.pyx":156
  *                                int a_ndim, np.npy_intp* y_dims, int int_input):
  *     cdef Py_ssize_t i
  *     cdef float32_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -2254,33 +2292,33 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":137
+  /* "reduce.pyx":157
  *     cdef Py_ssize_t i
  *     cdef float32_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":138
+  /* "reduce.pyx":158
  *     cdef float32_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 158; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 158; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":139
+  /* "reduce.pyx":159
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -2290,7 +2328,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":140
+    /* "reduce.pyx":160
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -2301,7 +2339,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":141
+      /* "reduce.pyx":161
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -2310,7 +2348,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
  */
       (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":142
+      /* "reduce.pyx":162
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -2323,7 +2361,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
   }
   /*else*/ {
 
-    /* "reduce.pyx":144
+    /* "reduce.pyx":164
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -2334,7 +2372,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":145
+      /* "reduce.pyx":165
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -2343,7 +2381,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
  */
       __pyx_v_asum = 0.0;
 
-      /* "reduce.pyx":146
+      /* "reduce.pyx":166
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -2354,7 +2392,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":147
+        /* "reduce.pyx":167
  *             asum = 0
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -2363,7 +2401,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":148
+        /* "reduce.pyx":168
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 if ai == ai:             # <<<<<<<<<<<<<<
@@ -2373,7 +2411,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
         __pyx_t_2 = ((__pyx_v_ai == __pyx_v_ai) != 0);
         if (__pyx_t_2) {
 
-          /* "reduce.pyx":149
+          /* "reduce.pyx":169
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 if ai == ai:
  *                     asum += ai             # <<<<<<<<<<<<<<
@@ -2386,7 +2424,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
         __pyx_L10:;
       }
 
-      /* "reduce.pyx":150
+      /* "reduce.pyx":170
  *                 if ai == ai:
  *                     asum += ai
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -2395,7 +2433,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
  */
       (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":151
+      /* "reduce.pyx":171
  *                     asum += ai
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -2404,7 +2442,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":152
+      /* "reduce.pyx":172
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -2416,7 +2454,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":153
+  /* "reduce.pyx":173
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -2428,7 +2466,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":132
+  /* "reduce.pyx":152
  *     return y
  * 
  * cdef ndarray nansum_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -2449,7 +2487,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_float32(PyArrayIterObject *__py
   return __pyx_r;
 }
 
-/* "reduce.pyx":155
+/* "reduce.pyx":175
  *     return y
  * 
  * cdef ndarray nansum_one_int64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -2474,7 +2512,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int64(PyArrayIterObject *__pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nansum_one_int64", 0);
 
-  /* "reduce.pyx":159
+  /* "reduce.pyx":179
  *                                int a_ndim, np.npy_intp* y_dims, int int_input):
  *     cdef Py_ssize_t i
  *     cdef int64_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -2483,33 +2521,33 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int64(PyArrayIterObject *__pyx_
  */
   __pyx_v_asum = 0;
 
-  /* "reduce.pyx":160
+  /* "reduce.pyx":180
  *     cdef Py_ssize_t i
  *     cdef int64_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_INT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_INT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 180; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 180; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":161
+  /* "reduce.pyx":181
  *     cdef int64_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":162
+  /* "reduce.pyx":182
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -2519,7 +2557,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int64(PyArrayIterObject *__pyx_
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":163
+    /* "reduce.pyx":183
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -2530,7 +2568,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int64(PyArrayIterObject *__pyx_
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":164
+      /* "reduce.pyx":184
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<int64_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -2539,7 +2577,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int64(PyArrayIterObject *__pyx_
  */
       (((__pyx_t_5numpy_int64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":165
+      /* "reduce.pyx":185
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<int64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -2552,7 +2590,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int64(PyArrayIterObject *__pyx_
   }
   /*else*/ {
 
-    /* "reduce.pyx":167
+    /* "reduce.pyx":187
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -2563,7 +2601,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int64(PyArrayIterObject *__pyx_
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":168
+      /* "reduce.pyx":188
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -2572,7 +2610,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int64(PyArrayIterObject *__pyx_
  */
       __pyx_v_asum = 0;
 
-      /* "reduce.pyx":169
+      /* "reduce.pyx":189
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -2583,7 +2621,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int64(PyArrayIterObject *__pyx_
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":170
+        /* "reduce.pyx":190
  *             asum = 0
  *             for i in range(length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -2592,7 +2630,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int64(PyArrayIterObject *__pyx_
  */
         __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":171
+        /* "reduce.pyx":191
  *             for i in range(length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 asum += ai             # <<<<<<<<<<<<<<
@@ -2602,7 +2640,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int64(PyArrayIterObject *__pyx_
         __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
       }
 
-      /* "reduce.pyx":172
+      /* "reduce.pyx":192
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 asum += ai
  *             (<int64_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -2611,7 +2649,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int64(PyArrayIterObject *__pyx_
  */
       (((__pyx_t_5numpy_int64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":173
+      /* "reduce.pyx":193
  *                 asum += ai
  *             (<int64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -2620,7 +2658,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int64(PyArrayIterObject *__pyx_
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":174
+      /* "reduce.pyx":194
  *             (<int64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -2632,7 +2670,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int64(PyArrayIterObject *__pyx_
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":175
+  /* "reduce.pyx":195
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -2644,7 +2682,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int64(PyArrayIterObject *__pyx_
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":155
+  /* "reduce.pyx":175
  *     return y
  * 
  * cdef ndarray nansum_one_int64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -2665,7 +2703,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int64(PyArrayIterObject *__pyx_
   return __pyx_r;
 }
 
-/* "reduce.pyx":177
+/* "reduce.pyx":197
  *     return y
  * 
  * cdef ndarray nansum_one_int32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -2690,7 +2728,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int32(PyArrayIterObject *__pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nansum_one_int32", 0);
 
-  /* "reduce.pyx":181
+  /* "reduce.pyx":201
  *                                int a_ndim, np.npy_intp* y_dims, int int_input):
  *     cdef Py_ssize_t i
  *     cdef int32_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -2699,33 +2737,33 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int32(PyArrayIterObject *__pyx_
  */
   __pyx_v_asum = 0;
 
-  /* "reduce.pyx":182
+  /* "reduce.pyx":202
  *     cdef Py_ssize_t i
  *     cdef int32_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int32, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_INT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 182; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_INT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 202; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 182; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 202; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":183
+  /* "reduce.pyx":203
  *     cdef int32_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":184
+  /* "reduce.pyx":204
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -2735,7 +2773,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int32(PyArrayIterObject *__pyx_
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":185
+    /* "reduce.pyx":205
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -2746,7 +2784,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int32(PyArrayIterObject *__pyx_
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":186
+      /* "reduce.pyx":206
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<int32_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -2755,7 +2793,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int32(PyArrayIterObject *__pyx_
  */
       (((__pyx_t_5numpy_int32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":187
+      /* "reduce.pyx":207
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<int32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -2768,7 +2806,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int32(PyArrayIterObject *__pyx_
   }
   /*else*/ {
 
-    /* "reduce.pyx":189
+    /* "reduce.pyx":209
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -2779,7 +2817,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int32(PyArrayIterObject *__pyx_
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":190
+      /* "reduce.pyx":210
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -2788,7 +2826,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int32(PyArrayIterObject *__pyx_
  */
       __pyx_v_asum = 0;
 
-      /* "reduce.pyx":191
+      /* "reduce.pyx":211
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -2799,7 +2837,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int32(PyArrayIterObject *__pyx_
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":192
+        /* "reduce.pyx":212
  *             asum = 0
  *             for i in range(length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -2808,7 +2846,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int32(PyArrayIterObject *__pyx_
  */
         __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":193
+        /* "reduce.pyx":213
  *             for i in range(length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 asum += ai             # <<<<<<<<<<<<<<
@@ -2818,7 +2856,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int32(PyArrayIterObject *__pyx_
         __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
       }
 
-      /* "reduce.pyx":194
+      /* "reduce.pyx":214
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 asum += ai
  *             (<int32_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -2827,7 +2865,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int32(PyArrayIterObject *__pyx_
  */
       (((__pyx_t_5numpy_int32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":195
+      /* "reduce.pyx":215
  *                 asum += ai
  *             (<int32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -2836,7 +2874,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int32(PyArrayIterObject *__pyx_
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":196
+      /* "reduce.pyx":216
  *             (<int32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -2848,7 +2886,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int32(PyArrayIterObject *__pyx_
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":197
+  /* "reduce.pyx":217
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -2860,7 +2898,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int32(PyArrayIterObject *__pyx_
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":177
+  /* "reduce.pyx":197
  *     return y
  * 
  * cdef ndarray nansum_one_int32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -2881,7 +2919,7 @@ static PyArrayObject *__pyx_f_6reduce_nansum_one_int32(PyArrayIterObject *__pyx_
   return __pyx_r;
 }
 
-/* "reduce.pyx":199
+/* "reduce.pyx":219
  *     return y
  * 
  * cdef nansum_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
@@ -2900,31 +2938,31 @@ static PyObject *__pyx_f_6reduce_nansum_0d(PyArrayObject *__pyx_v_a, CYTHON_UNUS
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nansum_0d", 0);
 
-  /* "reduce.pyx":200
+  /* "reduce.pyx":220
  * 
  * cdef nansum_0d(ndarray a, int int_input):
  *     out = a[()]             # <<<<<<<<<<<<<<
  *     if out == out:
  *         return out
  */
-  __pyx_t_1 = PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_empty_tuple); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_empty_tuple); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 220; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_out = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":201
+  /* "reduce.pyx":221
  * cdef nansum_0d(ndarray a, int int_input):
  *     out = a[()]
  *     if out == out:             # <<<<<<<<<<<<<<
  *         return out
  *     else:
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_out, __pyx_v_out, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_out, __pyx_v_out, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 221; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 221; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":202
+    /* "reduce.pyx":222
  *     out = a[()]
  *     if out == out:
  *         return out             # <<<<<<<<<<<<<<
@@ -2938,7 +2976,7 @@ static PyObject *__pyx_f_6reduce_nansum_0d(PyArrayObject *__pyx_v_a, CYTHON_UNUS
   }
   /*else*/ {
 
-    /* "reduce.pyx":204
+    /* "reduce.pyx":224
  *         return out
  *     else:
  *         return 0.0             # <<<<<<<<<<<<<<
@@ -2951,7 +2989,7 @@ static PyObject *__pyx_f_6reduce_nansum_0d(PyArrayObject *__pyx_v_a, CYTHON_UNUS
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":199
+  /* "reduce.pyx":219
  *     return y
  * 
  * cdef nansum_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
@@ -2971,7 +3009,7 @@ static PyObject *__pyx_f_6reduce_nansum_0d(PyArrayObject *__pyx_v_a, CYTHON_UNUS
   return __pyx_r;
 }
 
-/* "reduce.pyx":209
+/* "reduce.pyx":229
  * # nanmean --------------------------------------------------------------------
  * 
  * def nanmean(arr, axis=None):             # <<<<<<<<<<<<<<
@@ -3017,7 +3055,7 @@ static PyObject *__pyx_pw_6reduce_3nanmean(PyObject *__pyx_self, PyObject *__pyx
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nanmean") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nanmean") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3032,7 +3070,7 @@ static PyObject *__pyx_pw_6reduce_3nanmean(PyObject *__pyx_self, PyObject *__pyx
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("nanmean", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("nanmean", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("reduce.nanmean", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3065,7 +3103,7 @@ static PyObject *__pyx_pf_6reduce_2nanmean(CYTHON_UNUSED PyObject *__pyx_self, P
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmean", 0);
 
-  /* "reduce.pyx":210
+  /* "reduce.pyx":230
  * 
  * def nanmean(arr, axis=None):
  *     try:             # <<<<<<<<<<<<<<
@@ -3079,7 +3117,7 @@ static PyObject *__pyx_pf_6reduce_2nanmean(CYTHON_UNUSED PyObject *__pyx_self, P
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "reduce.pyx":211
+      /* "reduce.pyx":231
  * def nanmean(arr, axis=None):
  *     try:
  *         return reducer(arr, axis,             # <<<<<<<<<<<<<<
@@ -3088,14 +3126,14 @@ static PyObject *__pyx_pf_6reduce_2nanmean(CYTHON_UNUSED PyObject *__pyx_self, P
  */
       __Pyx_XDECREF(__pyx_r);
 
-      /* "reduce.pyx":220
+      /* "reduce.pyx":240
  *                        nanmean_one_int64,
  *                        nanmean_one_int32,
  *                        nanmean_0d)             # <<<<<<<<<<<<<<
  *     except TypeError:
  *         return slow.nanmean(arr, axis)
  */
-      __pyx_t_4 = __pyx_f_6reduce_reducer(__pyx_v_arr, __pyx_v_axis, __pyx_f_6reduce_nanmean_all_float64, __pyx_f_6reduce_nanmean_all_float32, __pyx_f_6reduce_nanmean_all_int64, __pyx_f_6reduce_nanmean_all_int32, __pyx_f_6reduce_nanmean_one_float64, __pyx_f_6reduce_nanmean_one_float32, __pyx_f_6reduce_nanmean_one_int64, __pyx_f_6reduce_nanmean_one_int32, __pyx_f_6reduce_nanmean_0d, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 211; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_t_4 = __pyx_f_6reduce_reducer(__pyx_v_arr, __pyx_v_axis, __pyx_f_6reduce_nanmean_all_float64, __pyx_f_6reduce_nanmean_all_float32, __pyx_f_6reduce_nanmean_all_int64, __pyx_f_6reduce_nanmean_all_int32, __pyx_f_6reduce_nanmean_one_float64, __pyx_f_6reduce_nanmean_one_float32, __pyx_f_6reduce_nanmean_one_int64, __pyx_f_6reduce_nanmean_one_int32, __pyx_f_6reduce_nanmean_0d, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
@@ -3104,7 +3142,7 @@ static PyObject *__pyx_pf_6reduce_2nanmean(CYTHON_UNUSED PyObject *__pyx_self, P
     __pyx_L3_error:;
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "reduce.pyx":221
+    /* "reduce.pyx":241
  *                        nanmean_one_int32,
  *                        nanmean_0d)
  *     except TypeError:             # <<<<<<<<<<<<<<
@@ -3114,12 +3152,12 @@ static PyObject *__pyx_pf_6reduce_2nanmean(CYTHON_UNUSED PyObject *__pyx_self, P
     __pyx_t_5 = PyErr_ExceptionMatches(__pyx_builtin_TypeError);
     if (__pyx_t_5) {
       __Pyx_AddTraceback("reduce.nanmean", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_7) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 221; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_7) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_7);
 
-      /* "reduce.pyx":222
+      /* "reduce.pyx":242
  *                        nanmean_0d)
  *     except TypeError:
  *         return slow.nanmean(arr, axis)             # <<<<<<<<<<<<<<
@@ -3127,9 +3165,9 @@ static PyObject *__pyx_pf_6reduce_2nanmean(CYTHON_UNUSED PyObject *__pyx_self, P
  * 
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 222; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 242; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_nanmean); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 222; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_nanmean); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 242; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_t_9 = NULL;
@@ -3144,7 +3182,7 @@ static PyObject *__pyx_pf_6reduce_2nanmean(CYTHON_UNUSED PyObject *__pyx_self, P
           __pyx_t_11 = 1;
         }
       }
-      __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 222; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 242; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_12);
       if (__pyx_t_9) {
         PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_9); __Pyx_GIVEREF(__pyx_t_9); __pyx_t_9 = NULL;
@@ -3155,7 +3193,7 @@ static PyObject *__pyx_pf_6reduce_2nanmean(CYTHON_UNUSED PyObject *__pyx_self, P
       __Pyx_INCREF(__pyx_v_axis);
       PyTuple_SET_ITEM(__pyx_t_12, 1+__pyx_t_11, __pyx_v_axis);
       __Pyx_GIVEREF(__pyx_v_axis);
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_12, NULL); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 222; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_12, NULL); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 242; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -3187,7 +3225,7 @@ static PyObject *__pyx_pf_6reduce_2nanmean(CYTHON_UNUSED PyObject *__pyx_self, P
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":209
+  /* "reduce.pyx":229
  * # nanmean --------------------------------------------------------------------
  * 
  * def nanmean(arr, axis=None):             # <<<<<<<<<<<<<<
@@ -3212,7 +3250,7 @@ static PyObject *__pyx_pf_6reduce_2nanmean(CYTHON_UNUSED PyObject *__pyx_self, P
   return __pyx_r;
 }
 
-/* "reduce.pyx":226
+/* "reduce.pyx":246
  * 
  * @cython.cdivision(True)
  * cdef object nanmean_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -3236,7 +3274,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float64(PyArrayIterObject *__pyx_v_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmean_all_float64", 0);
 
-  /* "reduce.pyx":228
+  /* "reduce.pyx":248
  * cdef object nanmean_all_float64(np.flatiter ita, Py_ssize_t stride,
  *                                Py_ssize_t length, int int_input):
  *     cdef Py_ssize_t i, count = 0             # <<<<<<<<<<<<<<
@@ -3245,7 +3283,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float64(PyArrayIterObject *__pyx_v_
  */
   __pyx_v_count = 0;
 
-  /* "reduce.pyx":229
+  /* "reduce.pyx":249
  *                                Py_ssize_t length, int int_input):
  *     cdef Py_ssize_t i, count = 0
  *     cdef float64_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -3254,7 +3292,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float64(PyArrayIterObject *__pyx_v_
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":230
+  /* "reduce.pyx":250
  *     cdef Py_ssize_t i, count = 0
  *     cdef float64_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -3265,7 +3303,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float64(PyArrayIterObject *__pyx_v_
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":231
+    /* "reduce.pyx":251
  *     cdef float64_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -3276,7 +3314,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float64(PyArrayIterObject *__pyx_v_
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":232
+      /* "reduce.pyx":252
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -3285,7 +3323,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float64(PyArrayIterObject *__pyx_v_
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":233
+      /* "reduce.pyx":253
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai == ai:             # <<<<<<<<<<<<<<
@@ -3295,7 +3333,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float64(PyArrayIterObject *__pyx_v_
       __pyx_t_1 = ((__pyx_v_ai == __pyx_v_ai) != 0);
       if (__pyx_t_1) {
 
-        /* "reduce.pyx":234
+        /* "reduce.pyx":254
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai == ai:
  *                 asum += ai             # <<<<<<<<<<<<<<
@@ -3304,7 +3342,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float64(PyArrayIterObject *__pyx_v_
  */
         __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
 
-        /* "reduce.pyx":235
+        /* "reduce.pyx":255
  *             if ai == ai:
  *                 asum += ai
  *                 count += 1             # <<<<<<<<<<<<<<
@@ -3317,7 +3355,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float64(PyArrayIterObject *__pyx_v_
       __pyx_L7:;
     }
 
-    /* "reduce.pyx":236
+    /* "reduce.pyx":256
  *                 asum += ai
  *                 count += 1
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -3327,7 +3365,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float64(PyArrayIterObject *__pyx_v_
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":237
+  /* "reduce.pyx":257
  *                 count += 1
  *         PyArray_ITER_NEXT(ita)
  *     if count > 0:             # <<<<<<<<<<<<<<
@@ -3337,7 +3375,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float64(PyArrayIterObject *__pyx_v_
   __pyx_t_1 = ((__pyx_v_count > 0) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":238
+    /* "reduce.pyx":258
  *         PyArray_ITER_NEXT(ita)
  *     if count > 0:
  *         return asum / count             # <<<<<<<<<<<<<<
@@ -3345,7 +3383,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float64(PyArrayIterObject *__pyx_v_
  *         return NAN
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_asum / __pyx_v_count)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 238; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_asum / __pyx_v_count)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 258; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
@@ -3353,7 +3391,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float64(PyArrayIterObject *__pyx_v_
   }
   /*else*/ {
 
-    /* "reduce.pyx":240
+    /* "reduce.pyx":260
  *         return asum / count
  *     else:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -3361,14 +3399,14 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float64(PyArrayIterObject *__pyx_v_
  * @cython.cdivision(True)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 240; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 260; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":226
+  /* "reduce.pyx":246
  * 
  * @cython.cdivision(True)
  * cdef object nanmean_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -3387,7 +3425,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float64(PyArrayIterObject *__pyx_v_
   return __pyx_r;
 }
 
-/* "reduce.pyx":243
+/* "reduce.pyx":263
  * 
  * @cython.cdivision(True)
  * cdef object nanmean_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -3411,7 +3449,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float32(PyArrayIterObject *__pyx_v_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmean_all_float32", 0);
 
-  /* "reduce.pyx":245
+  /* "reduce.pyx":265
  * cdef object nanmean_all_float32(np.flatiter ita, Py_ssize_t stride,
  *                                Py_ssize_t length, int int_input):
  *     cdef Py_ssize_t i, count = 0             # <<<<<<<<<<<<<<
@@ -3420,7 +3458,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float32(PyArrayIterObject *__pyx_v_
  */
   __pyx_v_count = 0;
 
-  /* "reduce.pyx":246
+  /* "reduce.pyx":266
  *                                Py_ssize_t length, int int_input):
  *     cdef Py_ssize_t i, count = 0
  *     cdef float32_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -3429,7 +3467,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float32(PyArrayIterObject *__pyx_v_
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":247
+  /* "reduce.pyx":267
  *     cdef Py_ssize_t i, count = 0
  *     cdef float32_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -3440,7 +3478,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float32(PyArrayIterObject *__pyx_v_
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":248
+    /* "reduce.pyx":268
  *     cdef float32_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -3451,7 +3489,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float32(PyArrayIterObject *__pyx_v_
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":249
+      /* "reduce.pyx":269
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -3460,7 +3498,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float32(PyArrayIterObject *__pyx_v_
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":250
+      /* "reduce.pyx":270
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai == ai:             # <<<<<<<<<<<<<<
@@ -3470,7 +3508,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float32(PyArrayIterObject *__pyx_v_
       __pyx_t_1 = ((__pyx_v_ai == __pyx_v_ai) != 0);
       if (__pyx_t_1) {
 
-        /* "reduce.pyx":251
+        /* "reduce.pyx":271
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai == ai:
  *                 asum += ai             # <<<<<<<<<<<<<<
@@ -3479,7 +3517,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float32(PyArrayIterObject *__pyx_v_
  */
         __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
 
-        /* "reduce.pyx":252
+        /* "reduce.pyx":272
  *             if ai == ai:
  *                 asum += ai
  *                 count += 1             # <<<<<<<<<<<<<<
@@ -3492,7 +3530,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float32(PyArrayIterObject *__pyx_v_
       __pyx_L7:;
     }
 
-    /* "reduce.pyx":253
+    /* "reduce.pyx":273
  *                 asum += ai
  *                 count += 1
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -3502,7 +3540,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float32(PyArrayIterObject *__pyx_v_
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":254
+  /* "reduce.pyx":274
  *                 count += 1
  *         PyArray_ITER_NEXT(ita)
  *     if count > 0:             # <<<<<<<<<<<<<<
@@ -3512,7 +3550,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float32(PyArrayIterObject *__pyx_v_
   __pyx_t_1 = ((__pyx_v_count > 0) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":255
+    /* "reduce.pyx":275
  *         PyArray_ITER_NEXT(ita)
  *     if count > 0:
  *         return asum / count             # <<<<<<<<<<<<<<
@@ -3520,7 +3558,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float32(PyArrayIterObject *__pyx_v_
  *         return NAN
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_asum / __pyx_v_count)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 255; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_asum / __pyx_v_count)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 275; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
@@ -3528,7 +3566,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float32(PyArrayIterObject *__pyx_v_
   }
   /*else*/ {
 
-    /* "reduce.pyx":257
+    /* "reduce.pyx":277
  *         return asum / count
  *     else:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -3536,14 +3574,14 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float32(PyArrayIterObject *__pyx_v_
  * @cython.cdivision(True)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 277; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":243
+  /* "reduce.pyx":263
  * 
  * @cython.cdivision(True)
  * cdef object nanmean_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -3562,7 +3600,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_float32(PyArrayIterObject *__pyx_v_
   return __pyx_r;
 }
 
-/* "reduce.pyx":260
+/* "reduce.pyx":280
  * 
  * @cython.cdivision(True)
  * cdef object nanmean_all_int64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -3586,7 +3624,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int64(PyArrayIterObject *__pyx_v_it
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmean_all_int64", 0);
 
-  /* "reduce.pyx":262
+  /* "reduce.pyx":282
  * cdef object nanmean_all_int64(np.flatiter ita, Py_ssize_t stride,
  *                                Py_ssize_t length, int int_input):
  *     cdef Py_ssize_t i, size = 0             # <<<<<<<<<<<<<<
@@ -3595,7 +3633,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int64(PyArrayIterObject *__pyx_v_it
  */
   __pyx_v_size = 0;
 
-  /* "reduce.pyx":263
+  /* "reduce.pyx":283
  *                                Py_ssize_t length, int int_input):
  *     cdef Py_ssize_t i, size = 0
  *     cdef float64_t asum = 0             # <<<<<<<<<<<<<<
@@ -3604,7 +3642,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int64(PyArrayIterObject *__pyx_v_it
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":265
+  /* "reduce.pyx":285
  *     cdef float64_t asum = 0
  *     cdef int64_t ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -3615,7 +3653,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int64(PyArrayIterObject *__pyx_v_it
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":266
+    /* "reduce.pyx":286
  *     cdef int64_t ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -3626,7 +3664,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int64(PyArrayIterObject *__pyx_v_it
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":267
+      /* "reduce.pyx":287
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -3635,7 +3673,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int64(PyArrayIterObject *__pyx_v_it
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":268
+      /* "reduce.pyx":288
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai             # <<<<<<<<<<<<<<
@@ -3645,7 +3683,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int64(PyArrayIterObject *__pyx_v_it
       __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
     }
 
-    /* "reduce.pyx":269
+    /* "reduce.pyx":289
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai
  *         size += length             # <<<<<<<<<<<<<<
@@ -3654,7 +3692,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int64(PyArrayIterObject *__pyx_v_it
  */
     __pyx_v_size = (__pyx_v_size + __pyx_v_length);
 
-    /* "reduce.pyx":270
+    /* "reduce.pyx":290
  *             asum += ai
  *         size += length
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -3664,7 +3702,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int64(PyArrayIterObject *__pyx_v_it
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":271
+  /* "reduce.pyx":291
  *         size += length
  *         PyArray_ITER_NEXT(ita)
  *     if size == 0:             # <<<<<<<<<<<<<<
@@ -3674,7 +3712,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int64(PyArrayIterObject *__pyx_v_it
   __pyx_t_1 = ((__pyx_v_size == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":272
+    /* "reduce.pyx":292
  *         PyArray_ITER_NEXT(ita)
  *     if size == 0:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -3682,7 +3720,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int64(PyArrayIterObject *__pyx_v_it
  *         return asum / size
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 292; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
@@ -3690,7 +3728,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int64(PyArrayIterObject *__pyx_v_it
   }
   /*else*/ {
 
-    /* "reduce.pyx":274
+    /* "reduce.pyx":294
  *         return NAN
  *     else:
  *         return asum / size             # <<<<<<<<<<<<<<
@@ -3698,14 +3736,14 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int64(PyArrayIterObject *__pyx_v_it
  * @cython.cdivision(True)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_asum / __pyx_v_size)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 274; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_asum / __pyx_v_size)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":260
+  /* "reduce.pyx":280
  * 
  * @cython.cdivision(True)
  * cdef object nanmean_all_int64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -3724,7 +3762,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int64(PyArrayIterObject *__pyx_v_it
   return __pyx_r;
 }
 
-/* "reduce.pyx":277
+/* "reduce.pyx":297
  * 
  * @cython.cdivision(True)
  * cdef object nanmean_all_int32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -3748,7 +3786,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int32(PyArrayIterObject *__pyx_v_it
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmean_all_int32", 0);
 
-  /* "reduce.pyx":279
+  /* "reduce.pyx":299
  * cdef object nanmean_all_int32(np.flatiter ita, Py_ssize_t stride,
  *                                Py_ssize_t length, int int_input):
  *     cdef Py_ssize_t i, size = 0             # <<<<<<<<<<<<<<
@@ -3757,7 +3795,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int32(PyArrayIterObject *__pyx_v_it
  */
   __pyx_v_size = 0;
 
-  /* "reduce.pyx":280
+  /* "reduce.pyx":300
  *                                Py_ssize_t length, int int_input):
  *     cdef Py_ssize_t i, size = 0
  *     cdef float64_t asum = 0             # <<<<<<<<<<<<<<
@@ -3766,7 +3804,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int32(PyArrayIterObject *__pyx_v_it
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":282
+  /* "reduce.pyx":302
  *     cdef float64_t asum = 0
  *     cdef int32_t ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -3777,7 +3815,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int32(PyArrayIterObject *__pyx_v_it
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":283
+    /* "reduce.pyx":303
  *     cdef int32_t ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -3788,7 +3826,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int32(PyArrayIterObject *__pyx_v_it
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":284
+      /* "reduce.pyx":304
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -3797,7 +3835,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int32(PyArrayIterObject *__pyx_v_it
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":285
+      /* "reduce.pyx":305
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai             # <<<<<<<<<<<<<<
@@ -3807,7 +3845,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int32(PyArrayIterObject *__pyx_v_it
       __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
     }
 
-    /* "reduce.pyx":286
+    /* "reduce.pyx":306
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai
  *         size += length             # <<<<<<<<<<<<<<
@@ -3816,7 +3854,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int32(PyArrayIterObject *__pyx_v_it
  */
     __pyx_v_size = (__pyx_v_size + __pyx_v_length);
 
-    /* "reduce.pyx":287
+    /* "reduce.pyx":307
  *             asum += ai
  *         size += length
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -3826,7 +3864,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int32(PyArrayIterObject *__pyx_v_it
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":288
+  /* "reduce.pyx":308
  *         size += length
  *         PyArray_ITER_NEXT(ita)
  *     if size == 0:             # <<<<<<<<<<<<<<
@@ -3836,7 +3874,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int32(PyArrayIterObject *__pyx_v_it
   __pyx_t_1 = ((__pyx_v_size == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":289
+    /* "reduce.pyx":309
  *         PyArray_ITER_NEXT(ita)
  *     if size == 0:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -3844,7 +3882,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int32(PyArrayIterObject *__pyx_v_it
  *         return asum / size
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 309; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
@@ -3852,7 +3890,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int32(PyArrayIterObject *__pyx_v_it
   }
   /*else*/ {
 
-    /* "reduce.pyx":291
+    /* "reduce.pyx":311
  *         return NAN
  *     else:
  *         return asum / size             # <<<<<<<<<<<<<<
@@ -3860,14 +3898,14 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int32(PyArrayIterObject *__pyx_v_it
  * @cython.cdivision(True)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_asum / __pyx_v_size)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_asum / __pyx_v_size)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 311; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":277
+  /* "reduce.pyx":297
  * 
  * @cython.cdivision(True)
  * cdef object nanmean_all_int32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -3886,7 +3924,7 @@ static PyObject *__pyx_f_6reduce_nanmean_all_int32(PyArrayIterObject *__pyx_v_it
   return __pyx_r;
 }
 
-/* "reduce.pyx":294
+/* "reduce.pyx":314
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanmean_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -3912,7 +3950,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmean_one_float64", 0);
 
-  /* "reduce.pyx":299
+  /* "reduce.pyx":319
  *                                 int int_input):
  *     cdef Py_ssize_t i, count
  *     cdef float64_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -3921,33 +3959,33 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":300
+  /* "reduce.pyx":320
  *     cdef Py_ssize_t i, count
  *     cdef float64_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 320; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 320; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":301
+  /* "reduce.pyx":321
  *     cdef float64_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 321; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 321; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":302
+  /* "reduce.pyx":322
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -3957,7 +3995,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":303
+    /* "reduce.pyx":323
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -3968,7 +4006,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":304
+      /* "reduce.pyx":324
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
@@ -3977,7 +4015,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
 
-      /* "reduce.pyx":305
+      /* "reduce.pyx":325
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -3990,7 +4028,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
   }
   /*else*/ {
 
-    /* "reduce.pyx":307
+    /* "reduce.pyx":327
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -4001,7 +4039,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":308
+      /* "reduce.pyx":328
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -4010,7 +4048,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
  */
       __pyx_v_asum = 0.0;
 
-      /* "reduce.pyx":309
+      /* "reduce.pyx":329
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             count = 0             # <<<<<<<<<<<<<<
@@ -4019,7 +4057,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
  */
       __pyx_v_count = 0;
 
-      /* "reduce.pyx":310
+      /* "reduce.pyx":330
  *             asum = 0
  *             count = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -4030,7 +4068,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":311
+        /* "reduce.pyx":331
  *             count = 0
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -4039,7 +4077,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":312
+        /* "reduce.pyx":332
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 if ai == ai:             # <<<<<<<<<<<<<<
@@ -4049,7 +4087,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
         __pyx_t_2 = ((__pyx_v_ai == __pyx_v_ai) != 0);
         if (__pyx_t_2) {
 
-          /* "reduce.pyx":313
+          /* "reduce.pyx":333
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 if ai == ai:
  *                     asum += ai             # <<<<<<<<<<<<<<
@@ -4058,7 +4096,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
  */
           __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
 
-          /* "reduce.pyx":314
+          /* "reduce.pyx":334
  *                 if ai == ai:
  *                     asum += ai
  *                     count += 1             # <<<<<<<<<<<<<<
@@ -4071,7 +4109,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
         __pyx_L10:;
       }
 
-      /* "reduce.pyx":315
+      /* "reduce.pyx":335
  *                     asum += ai
  *                     count += 1
  *             if count > 0:             # <<<<<<<<<<<<<<
@@ -4081,7 +4119,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
       __pyx_t_2 = ((__pyx_v_count > 0) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":316
+        /* "reduce.pyx":336
  *                     count += 1
  *             if count > 0:
  *                 asum = asum / count             # <<<<<<<<<<<<<<
@@ -4093,7 +4131,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
       }
       /*else*/ {
 
-        /* "reduce.pyx":318
+        /* "reduce.pyx":338
  *                 asum = asum / count
  *             else:
  *                 asum = NAN             # <<<<<<<<<<<<<<
@@ -4104,7 +4142,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
       }
       __pyx_L11:;
 
-      /* "reduce.pyx":319
+      /* "reduce.pyx":339
  *             else:
  *                 asum = NAN
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -4113,7 +4151,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":320
+      /* "reduce.pyx":340
  *                 asum = NAN
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -4122,7 +4160,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":321
+      /* "reduce.pyx":341
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -4134,7 +4172,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":322
+  /* "reduce.pyx":342
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -4146,7 +4184,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":294
+  /* "reduce.pyx":314
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanmean_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -4167,7 +4205,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float64(PyArrayIterObject *__p
   return __pyx_r;
 }
 
-/* "reduce.pyx":325
+/* "reduce.pyx":345
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanmean_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -4193,7 +4231,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmean_one_float32", 0);
 
-  /* "reduce.pyx":330
+  /* "reduce.pyx":350
  *                                 int int_input):
  *     cdef Py_ssize_t i, count
  *     cdef float32_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -4202,33 +4240,33 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":331
+  /* "reduce.pyx":351
  *     cdef Py_ssize_t i, count
  *     cdef float32_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 351; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 351; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":332
+  /* "reduce.pyx":352
  *     cdef float32_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 332; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 332; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":333
+  /* "reduce.pyx":353
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -4238,7 +4276,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":334
+    /* "reduce.pyx":354
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -4249,7 +4287,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":335
+      /* "reduce.pyx":355
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float32_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
@@ -4258,7 +4296,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
  */
       (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
 
-      /* "reduce.pyx":336
+      /* "reduce.pyx":356
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float32_t*>((<char*>pid(ity))))[0] = NAN
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -4271,7 +4309,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
   }
   /*else*/ {
 
-    /* "reduce.pyx":338
+    /* "reduce.pyx":358
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -4282,7 +4320,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":339
+      /* "reduce.pyx":359
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -4291,7 +4329,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
  */
       __pyx_v_asum = 0.0;
 
-      /* "reduce.pyx":340
+      /* "reduce.pyx":360
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             count = 0             # <<<<<<<<<<<<<<
@@ -4300,7 +4338,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
  */
       __pyx_v_count = 0;
 
-      /* "reduce.pyx":341
+      /* "reduce.pyx":361
  *             asum = 0
  *             count = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -4311,7 +4349,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":342
+        /* "reduce.pyx":362
  *             count = 0
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -4320,7 +4358,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":343
+        /* "reduce.pyx":363
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 if ai == ai:             # <<<<<<<<<<<<<<
@@ -4330,7 +4368,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
         __pyx_t_2 = ((__pyx_v_ai == __pyx_v_ai) != 0);
         if (__pyx_t_2) {
 
-          /* "reduce.pyx":344
+          /* "reduce.pyx":364
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 if ai == ai:
  *                     asum += ai             # <<<<<<<<<<<<<<
@@ -4339,7 +4377,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
  */
           __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
 
-          /* "reduce.pyx":345
+          /* "reduce.pyx":365
  *                 if ai == ai:
  *                     asum += ai
  *                     count += 1             # <<<<<<<<<<<<<<
@@ -4352,7 +4390,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
         __pyx_L10:;
       }
 
-      /* "reduce.pyx":346
+      /* "reduce.pyx":366
  *                     asum += ai
  *                     count += 1
  *             if count > 0:             # <<<<<<<<<<<<<<
@@ -4362,7 +4400,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
       __pyx_t_2 = ((__pyx_v_count > 0) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":347
+        /* "reduce.pyx":367
  *                     count += 1
  *             if count > 0:
  *                 asum = asum / count             # <<<<<<<<<<<<<<
@@ -4374,7 +4412,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
       }
       /*else*/ {
 
-        /* "reduce.pyx":349
+        /* "reduce.pyx":369
  *                 asum = asum / count
  *             else:
  *                 asum = NAN             # <<<<<<<<<<<<<<
@@ -4385,7 +4423,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
       }
       __pyx_L11:;
 
-      /* "reduce.pyx":350
+      /* "reduce.pyx":370
  *             else:
  *                 asum = NAN
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -4394,7 +4432,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
  */
       (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":351
+      /* "reduce.pyx":371
  *                 asum = NAN
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -4403,7 +4441,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":352
+      /* "reduce.pyx":372
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -4415,7 +4453,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":353
+  /* "reduce.pyx":373
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -4427,7 +4465,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":325
+  /* "reduce.pyx":345
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanmean_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -4448,7 +4486,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_float32(PyArrayIterObject *__p
   return __pyx_r;
 }
 
-/* "reduce.pyx":356
+/* "reduce.pyx":376
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanmean_one_int64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -4473,7 +4511,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int64(PyArrayIterObject *__pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmean_one_int64", 0);
 
-  /* "reduce.pyx":361
+  /* "reduce.pyx":381
  *                                 int int_input):
  *     cdef Py_ssize_t i
  *     cdef float64_t asum = 0             # <<<<<<<<<<<<<<
@@ -4482,33 +4520,33 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int64(PyArrayIterObject *__pyx
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":363
+  /* "reduce.pyx":383
  *     cdef float64_t asum = 0
  *     cdef int64_t ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 363; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 363; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":364
+  /* "reduce.pyx":384
  *     cdef int64_t ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 364; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 384; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 364; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 384; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":365
+  /* "reduce.pyx":385
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -4518,7 +4556,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int64(PyArrayIterObject *__pyx
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":366
+    /* "reduce.pyx":386
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -4529,7 +4567,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int64(PyArrayIterObject *__pyx
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":367
+      /* "reduce.pyx":387
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
@@ -4538,7 +4576,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int64(PyArrayIterObject *__pyx
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
 
-      /* "reduce.pyx":368
+      /* "reduce.pyx":388
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -4551,7 +4589,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int64(PyArrayIterObject *__pyx
   }
   /*else*/ {
 
-    /* "reduce.pyx":370
+    /* "reduce.pyx":390
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -4562,7 +4600,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int64(PyArrayIterObject *__pyx
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":371
+      /* "reduce.pyx":391
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -4571,7 +4609,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int64(PyArrayIterObject *__pyx
  */
       __pyx_v_asum = 0.0;
 
-      /* "reduce.pyx":372
+      /* "reduce.pyx":392
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -4582,7 +4620,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int64(PyArrayIterObject *__pyx
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":373
+        /* "reduce.pyx":393
  *             asum = 0
  *             for i in range(length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -4591,7 +4629,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int64(PyArrayIterObject *__pyx
  */
         __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":374
+        /* "reduce.pyx":394
  *             for i in range(length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 asum += ai             # <<<<<<<<<<<<<<
@@ -4601,7 +4639,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int64(PyArrayIterObject *__pyx
         __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
       }
 
-      /* "reduce.pyx":375
+      /* "reduce.pyx":395
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 asum += ai
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum / length             # <<<<<<<<<<<<<<
@@ -4610,7 +4648,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int64(PyArrayIterObject *__pyx
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = (__pyx_v_asum / __pyx_v_length);
 
-      /* "reduce.pyx":376
+      /* "reduce.pyx":396
  *                 asum += ai
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum / length
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -4619,7 +4657,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int64(PyArrayIterObject *__pyx
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":377
+      /* "reduce.pyx":397
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum / length
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -4631,7 +4669,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int64(PyArrayIterObject *__pyx
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":378
+  /* "reduce.pyx":398
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -4643,7 +4681,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int64(PyArrayIterObject *__pyx
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":356
+  /* "reduce.pyx":376
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanmean_one_int64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -4664,7 +4702,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int64(PyArrayIterObject *__pyx
   return __pyx_r;
 }
 
-/* "reduce.pyx":381
+/* "reduce.pyx":401
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanmean_one_int32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -4689,7 +4727,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int32(PyArrayIterObject *__pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmean_one_int32", 0);
 
-  /* "reduce.pyx":386
+  /* "reduce.pyx":406
  *                                 int int_input):
  *     cdef Py_ssize_t i
  *     cdef float64_t asum = 0             # <<<<<<<<<<<<<<
@@ -4698,33 +4736,33 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int32(PyArrayIterObject *__pyx
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":388
+  /* "reduce.pyx":408
  *     cdef float64_t asum = 0
  *     cdef int32_t ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 388; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 408; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 388; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 408; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":389
+  /* "reduce.pyx":409
  *     cdef int32_t ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 389; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 409; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 389; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 409; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":390
+  /* "reduce.pyx":410
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -4734,7 +4772,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int32(PyArrayIterObject *__pyx
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":391
+    /* "reduce.pyx":411
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -4745,7 +4783,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int32(PyArrayIterObject *__pyx
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":392
+      /* "reduce.pyx":412
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
@@ -4754,7 +4792,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int32(PyArrayIterObject *__pyx
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
 
-      /* "reduce.pyx":393
+      /* "reduce.pyx":413
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -4767,7 +4805,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int32(PyArrayIterObject *__pyx
   }
   /*else*/ {
 
-    /* "reduce.pyx":395
+    /* "reduce.pyx":415
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -4778,7 +4816,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int32(PyArrayIterObject *__pyx
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":396
+      /* "reduce.pyx":416
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -4787,7 +4825,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int32(PyArrayIterObject *__pyx
  */
       __pyx_v_asum = 0.0;
 
-      /* "reduce.pyx":397
+      /* "reduce.pyx":417
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -4798,7 +4836,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int32(PyArrayIterObject *__pyx
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":398
+        /* "reduce.pyx":418
  *             asum = 0
  *             for i in range(length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -4807,7 +4845,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int32(PyArrayIterObject *__pyx
  */
         __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":399
+        /* "reduce.pyx":419
  *             for i in range(length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 asum += ai             # <<<<<<<<<<<<<<
@@ -4817,7 +4855,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int32(PyArrayIterObject *__pyx
         __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
       }
 
-      /* "reduce.pyx":400
+      /* "reduce.pyx":420
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 asum += ai
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum / length             # <<<<<<<<<<<<<<
@@ -4826,7 +4864,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int32(PyArrayIterObject *__pyx
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = (__pyx_v_asum / __pyx_v_length);
 
-      /* "reduce.pyx":401
+      /* "reduce.pyx":421
  *                 asum += ai
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum / length
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -4835,7 +4873,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int32(PyArrayIterObject *__pyx
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":402
+      /* "reduce.pyx":422
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum / length
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -4847,7 +4885,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int32(PyArrayIterObject *__pyx
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":403
+  /* "reduce.pyx":423
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -4859,7 +4897,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int32(PyArrayIterObject *__pyx
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":381
+  /* "reduce.pyx":401
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanmean_one_int32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -4880,7 +4918,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmean_one_int32(PyArrayIterObject *__pyx
   return __pyx_r;
 }
 
-/* "reduce.pyx":405
+/* "reduce.pyx":425
  *     return y
  * 
  * cdef nanmean_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
@@ -4897,7 +4935,7 @@ static PyObject *__pyx_f_6reduce_nanmean_0d(PyArrayObject *__pyx_v_a, CYTHON_UNU
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmean_0d", 0);
 
-  /* "reduce.pyx":406
+  /* "reduce.pyx":426
  * 
  * cdef nanmean_0d(ndarray a, int int_input):
  *     return a[()]             # <<<<<<<<<<<<<<
@@ -4905,13 +4943,13 @@ static PyObject *__pyx_f_6reduce_nanmean_0d(PyArrayObject *__pyx_v_a, CYTHON_UNU
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_empty_tuple); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 406; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_empty_tuple); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 426; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "reduce.pyx":405
+  /* "reduce.pyx":425
  *     return y
  * 
  * cdef nanmean_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
@@ -4930,7 +4968,7 @@ static PyObject *__pyx_f_6reduce_nanmean_0d(PyArrayObject *__pyx_v_a, CYTHON_UNU
   return __pyx_r;
 }
 
-/* "reduce.pyx":411
+/* "reduce.pyx":431
  * # nanstd --------------------------------------------------------------------
  * 
  * def nanstd(arr, axis=None, int ddof=0):             # <<<<<<<<<<<<<<
@@ -4983,7 +5021,7 @@ static PyObject *__pyx_pw_6reduce_5nanstd(PyObject *__pyx_self, PyObject *__pyx_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nanstd") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 411; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nanstd") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 431; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -4997,14 +5035,14 @@ static PyObject *__pyx_pw_6reduce_5nanstd(PyObject *__pyx_self, PyObject *__pyx_
     __pyx_v_arr = values[0];
     __pyx_v_axis = values[1];
     if (values[2]) {
-      __pyx_v_ddof = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_ddof == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 411; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_v_ddof = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_ddof == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 431; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     } else {
       __pyx_v_ddof = ((int)0);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("nanstd", 0, 1, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 411; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("nanstd", 0, 1, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 431; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("reduce.nanstd", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -5037,7 +5075,7 @@ static PyObject *__pyx_pf_6reduce_4nanstd(CYTHON_UNUSED PyObject *__pyx_self, Py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanstd", 0);
 
-  /* "reduce.pyx":412
+  /* "reduce.pyx":432
  * 
  * def nanstd(arr, axis=None, int ddof=0):
  *     try:             # <<<<<<<<<<<<<<
@@ -5051,7 +5089,7 @@ static PyObject *__pyx_pf_6reduce_4nanstd(CYTHON_UNUSED PyObject *__pyx_self, Py
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "reduce.pyx":413
+      /* "reduce.pyx":433
  * def nanstd(arr, axis=None, int ddof=0):
  *     try:
  *         return reducer(arr, axis,             # <<<<<<<<<<<<<<
@@ -5060,7 +5098,7 @@ static PyObject *__pyx_pf_6reduce_4nanstd(CYTHON_UNUSED PyObject *__pyx_self, Py
  */
       __Pyx_XDECREF(__pyx_r);
 
-      /* "reduce.pyx":423
+      /* "reduce.pyx":443
  *                        nanstd_one_int32,
  *                        nanstd_0d,
  *                        ddof)             # <<<<<<<<<<<<<<
@@ -5069,7 +5107,7 @@ static PyObject *__pyx_pf_6reduce_4nanstd(CYTHON_UNUSED PyObject *__pyx_self, Py
  */
       __pyx_t_5.__pyx_n = 1;
       __pyx_t_5.int_input = __pyx_v_ddof;
-      __pyx_t_4 = __pyx_f_6reduce_reducer(__pyx_v_arr, __pyx_v_axis, __pyx_f_6reduce_nanstd_all_float64, __pyx_f_6reduce_nanstd_all_float32, __pyx_f_6reduce_nanstd_all_int64, __pyx_f_6reduce_nanstd_all_int32, __pyx_f_6reduce_nanstd_one_float64, __pyx_f_6reduce_nanstd_one_float32, __pyx_f_6reduce_nanstd_one_int64, __pyx_f_6reduce_nanstd_one_int32, __pyx_f_6reduce_nanstd_0d, &__pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 413; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_t_4 = __pyx_f_6reduce_reducer(__pyx_v_arr, __pyx_v_axis, __pyx_f_6reduce_nanstd_all_float64, __pyx_f_6reduce_nanstd_all_float32, __pyx_f_6reduce_nanstd_all_int64, __pyx_f_6reduce_nanstd_all_int32, __pyx_f_6reduce_nanstd_one_float64, __pyx_f_6reduce_nanstd_one_float32, __pyx_f_6reduce_nanstd_one_int64, __pyx_f_6reduce_nanstd_one_int32, __pyx_f_6reduce_nanstd_0d, &__pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 433; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
@@ -5078,7 +5116,7 @@ static PyObject *__pyx_pf_6reduce_4nanstd(CYTHON_UNUSED PyObject *__pyx_self, Py
     __pyx_L3_error:;
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "reduce.pyx":424
+    /* "reduce.pyx":444
  *                        nanstd_0d,
  *                        ddof)
  *     except TypeError:             # <<<<<<<<<<<<<<
@@ -5088,12 +5126,12 @@ static PyObject *__pyx_pf_6reduce_4nanstd(CYTHON_UNUSED PyObject *__pyx_self, Py
     __pyx_t_6 = PyErr_ExceptionMatches(__pyx_builtin_TypeError);
     if (__pyx_t_6) {
       __Pyx_AddTraceback("reduce.nanstd", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_7, &__pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 424; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_7, &__pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 444; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_GOTREF(__pyx_t_8);
 
-      /* "reduce.pyx":425
+      /* "reduce.pyx":445
  *                        ddof)
  *     except TypeError:
  *         return slow.nanstd(arr, axis, ddof=ddof)             # <<<<<<<<<<<<<<
@@ -5101,12 +5139,12 @@ static PyObject *__pyx_pf_6reduce_4nanstd(CYTHON_UNUSED PyObject *__pyx_self, Py
  * 
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 425; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 445; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_nanstd); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 425; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_nanstd); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 445; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 425; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 445; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_INCREF(__pyx_v_arr);
       PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_v_arr);
@@ -5114,13 +5152,13 @@ static PyObject *__pyx_pf_6reduce_4nanstd(CYTHON_UNUSED PyObject *__pyx_self, Py
       __Pyx_INCREF(__pyx_v_axis);
       PyTuple_SET_ITEM(__pyx_t_9, 1, __pyx_v_axis);
       __Pyx_GIVEREF(__pyx_v_axis);
-      __pyx_t_11 = PyDict_New(); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 425; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_11 = PyDict_New(); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 445; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_11);
-      __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_ddof); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 425; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_ddof); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 445; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_12);
-      if (PyDict_SetItem(__pyx_t_11, __pyx_n_s_ddof, __pyx_t_12) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 425; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      if (PyDict_SetItem(__pyx_t_11, __pyx_n_s_ddof, __pyx_t_12) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 445; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-      __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_9, __pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 425; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_9, __pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 445; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_12);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
@@ -5153,7 +5191,7 @@ static PyObject *__pyx_pf_6reduce_4nanstd(CYTHON_UNUSED PyObject *__pyx_self, Py
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":411
+  /* "reduce.pyx":431
  * # nanstd --------------------------------------------------------------------
  * 
  * def nanstd(arr, axis=None, int ddof=0):             # <<<<<<<<<<<<<<
@@ -5178,7 +5216,7 @@ static PyObject *__pyx_pf_6reduce_4nanstd(CYTHON_UNUSED PyObject *__pyx_self, Py
   return __pyx_r;
 }
 
-/* "reduce.pyx":429
+/* "reduce.pyx":449
  * 
  * @cython.cdivision(True)
  * cdef object nanstd_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -5203,7 +5241,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanstd_all_float64", 0);
 
-  /* "reduce.pyx":431
+  /* "reduce.pyx":451
  * cdef object nanstd_all_float64(np.flatiter ita, Py_ssize_t stride,
  *                               Py_ssize_t length, int ddof):
  *     cdef Py_ssize_t i, count = 0             # <<<<<<<<<<<<<<
@@ -5212,7 +5250,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
  */
   __pyx_v_count = 0;
 
-  /* "reduce.pyx":432
+  /* "reduce.pyx":452
  *                               Py_ssize_t length, int ddof):
  *     cdef Py_ssize_t i, count = 0
  *     cdef float64_t asum = 0, amean, ai             # <<<<<<<<<<<<<<
@@ -5221,7 +5259,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":433
+  /* "reduce.pyx":453
  *     cdef Py_ssize_t i, count = 0
  *     cdef float64_t asum = 0, amean, ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -5232,7 +5270,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":434
+    /* "reduce.pyx":454
  *     cdef float64_t asum = 0, amean, ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -5243,7 +5281,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":435
+      /* "reduce.pyx":455
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -5252,7 +5290,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":436
+      /* "reduce.pyx":456
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai == ai:             # <<<<<<<<<<<<<<
@@ -5262,7 +5300,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
       __pyx_t_1 = ((__pyx_v_ai == __pyx_v_ai) != 0);
       if (__pyx_t_1) {
 
-        /* "reduce.pyx":437
+        /* "reduce.pyx":457
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai == ai:
  *                 asum += ai             # <<<<<<<<<<<<<<
@@ -5271,7 +5309,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
  */
         __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
 
-        /* "reduce.pyx":438
+        /* "reduce.pyx":458
  *             if ai == ai:
  *                 asum += ai
  *                 count += 1             # <<<<<<<<<<<<<<
@@ -5284,7 +5322,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
       __pyx_L7:;
     }
 
-    /* "reduce.pyx":439
+    /* "reduce.pyx":459
  *                 asum += ai
  *                 count += 1
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -5294,7 +5332,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":440
+  /* "reduce.pyx":460
  *                 count += 1
  *         PyArray_ITER_NEXT(ita)
  *     if count > ddof:             # <<<<<<<<<<<<<<
@@ -5304,7 +5342,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
   __pyx_t_1 = ((__pyx_v_count > __pyx_v_ddof) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":441
+    /* "reduce.pyx":461
  *         PyArray_ITER_NEXT(ita)
  *     if count > ddof:
  *         amean = asum / count             # <<<<<<<<<<<<<<
@@ -5313,7 +5351,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
  */
     __pyx_v_amean = (__pyx_v_asum / __pyx_v_count);
 
-    /* "reduce.pyx":442
+    /* "reduce.pyx":462
  *     if count > ddof:
  *         amean = asum / count
  *         asum = 0             # <<<<<<<<<<<<<<
@@ -5322,7 +5360,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
  */
     __pyx_v_asum = 0.0;
 
-    /* "reduce.pyx":443
+    /* "reduce.pyx":463
  *         amean = asum / count
  *         asum = 0
  *         PyArray_ITER_RESET(ita)             # <<<<<<<<<<<<<<
@@ -5331,7 +5369,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
  */
     PyArray_ITER_RESET(__pyx_v_ita);
 
-    /* "reduce.pyx":444
+    /* "reduce.pyx":464
  *         asum = 0
  *         PyArray_ITER_RESET(ita)
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -5342,7 +5380,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
       __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_1) break;
 
-      /* "reduce.pyx":445
+      /* "reduce.pyx":465
  *         PyArray_ITER_RESET(ita)
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -5353,7 +5391,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
       for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
         __pyx_v_i = __pyx_t_3;
 
-        /* "reduce.pyx":446
+        /* "reduce.pyx":466
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -5362,7 +5400,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":447
+        /* "reduce.pyx":467
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == ai:             # <<<<<<<<<<<<<<
@@ -5372,7 +5410,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
         __pyx_t_1 = ((__pyx_v_ai == __pyx_v_ai) != 0);
         if (__pyx_t_1) {
 
-          /* "reduce.pyx":448
+          /* "reduce.pyx":468
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == ai:
  *                     ai -= amean             # <<<<<<<<<<<<<<
@@ -5381,7 +5419,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
  */
           __pyx_v_ai = (__pyx_v_ai - __pyx_v_amean);
 
-          /* "reduce.pyx":449
+          /* "reduce.pyx":469
  *                 if ai == ai:
  *                     ai -= amean
  *                     asum += ai * ai             # <<<<<<<<<<<<<<
@@ -5394,7 +5432,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
         __pyx_L13:;
       }
 
-      /* "reduce.pyx":450
+      /* "reduce.pyx":470
  *                     ai -= amean
  *                     asum += ai * ai
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -5404,7 +5442,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
       PyArray_ITER_NEXT(__pyx_v_ita);
     }
 
-    /* "reduce.pyx":451
+    /* "reduce.pyx":471
  *                     asum += ai * ai
  *             PyArray_ITER_NEXT(ita)
  *         return sqrt(asum / (count - ddof))             # <<<<<<<<<<<<<<
@@ -5412,7 +5450,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
  *         return NAN
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble(sqrt((__pyx_v_asum / (__pyx_v_count - __pyx_v_ddof)))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 451; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble(sqrt((__pyx_v_asum / (__pyx_v_count - __pyx_v_ddof)))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 471; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
@@ -5420,7 +5458,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
   }
   /*else*/ {
 
-    /* "reduce.pyx":453
+    /* "reduce.pyx":473
  *         return sqrt(asum / (count - ddof))
  *     else:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -5428,14 +5466,14 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
  * @cython.cdivision(True)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 453; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 473; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":429
+  /* "reduce.pyx":449
  * 
  * @cython.cdivision(True)
  * cdef object nanstd_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -5454,7 +5492,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float64(PyArrayIterObject *__pyx_v_i
   return __pyx_r;
 }
 
-/* "reduce.pyx":456
+/* "reduce.pyx":476
  * 
  * @cython.cdivision(True)
  * cdef object nanstd_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -5479,7 +5517,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanstd_all_float32", 0);
 
-  /* "reduce.pyx":458
+  /* "reduce.pyx":478
  * cdef object nanstd_all_float32(np.flatiter ita, Py_ssize_t stride,
  *                               Py_ssize_t length, int ddof):
  *     cdef Py_ssize_t i, count = 0             # <<<<<<<<<<<<<<
@@ -5488,7 +5526,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
  */
   __pyx_v_count = 0;
 
-  /* "reduce.pyx":459
+  /* "reduce.pyx":479
  *                               Py_ssize_t length, int ddof):
  *     cdef Py_ssize_t i, count = 0
  *     cdef float32_t asum = 0, amean, ai             # <<<<<<<<<<<<<<
@@ -5497,7 +5535,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":460
+  /* "reduce.pyx":480
  *     cdef Py_ssize_t i, count = 0
  *     cdef float32_t asum = 0, amean, ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -5508,7 +5546,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":461
+    /* "reduce.pyx":481
  *     cdef float32_t asum = 0, amean, ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -5519,7 +5557,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":462
+      /* "reduce.pyx":482
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -5528,7 +5566,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":463
+      /* "reduce.pyx":483
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai == ai:             # <<<<<<<<<<<<<<
@@ -5538,7 +5576,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
       __pyx_t_1 = ((__pyx_v_ai == __pyx_v_ai) != 0);
       if (__pyx_t_1) {
 
-        /* "reduce.pyx":464
+        /* "reduce.pyx":484
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai == ai:
  *                 asum += ai             # <<<<<<<<<<<<<<
@@ -5547,7 +5585,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
  */
         __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
 
-        /* "reduce.pyx":465
+        /* "reduce.pyx":485
  *             if ai == ai:
  *                 asum += ai
  *                 count += 1             # <<<<<<<<<<<<<<
@@ -5560,7 +5598,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
       __pyx_L7:;
     }
 
-    /* "reduce.pyx":466
+    /* "reduce.pyx":486
  *                 asum += ai
  *                 count += 1
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -5570,7 +5608,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":467
+  /* "reduce.pyx":487
  *                 count += 1
  *         PyArray_ITER_NEXT(ita)
  *     if count > ddof:             # <<<<<<<<<<<<<<
@@ -5580,7 +5618,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
   __pyx_t_1 = ((__pyx_v_count > __pyx_v_ddof) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":468
+    /* "reduce.pyx":488
  *         PyArray_ITER_NEXT(ita)
  *     if count > ddof:
  *         amean = asum / count             # <<<<<<<<<<<<<<
@@ -5589,7 +5627,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
  */
     __pyx_v_amean = (__pyx_v_asum / __pyx_v_count);
 
-    /* "reduce.pyx":469
+    /* "reduce.pyx":489
  *     if count > ddof:
  *         amean = asum / count
  *         asum = 0             # <<<<<<<<<<<<<<
@@ -5598,7 +5636,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
  */
     __pyx_v_asum = 0.0;
 
-    /* "reduce.pyx":470
+    /* "reduce.pyx":490
  *         amean = asum / count
  *         asum = 0
  *         PyArray_ITER_RESET(ita)             # <<<<<<<<<<<<<<
@@ -5607,7 +5645,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
  */
     PyArray_ITER_RESET(__pyx_v_ita);
 
-    /* "reduce.pyx":471
+    /* "reduce.pyx":491
  *         asum = 0
  *         PyArray_ITER_RESET(ita)
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -5618,7 +5656,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
       __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_1) break;
 
-      /* "reduce.pyx":472
+      /* "reduce.pyx":492
  *         PyArray_ITER_RESET(ita)
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -5629,7 +5667,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
       for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
         __pyx_v_i = __pyx_t_3;
 
-        /* "reduce.pyx":473
+        /* "reduce.pyx":493
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -5638,7 +5676,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":474
+        /* "reduce.pyx":494
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == ai:             # <<<<<<<<<<<<<<
@@ -5648,7 +5686,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
         __pyx_t_1 = ((__pyx_v_ai == __pyx_v_ai) != 0);
         if (__pyx_t_1) {
 
-          /* "reduce.pyx":475
+          /* "reduce.pyx":495
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == ai:
  *                     ai -= amean             # <<<<<<<<<<<<<<
@@ -5657,7 +5695,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
  */
           __pyx_v_ai = (__pyx_v_ai - __pyx_v_amean);
 
-          /* "reduce.pyx":476
+          /* "reduce.pyx":496
  *                 if ai == ai:
  *                     ai -= amean
  *                     asum += ai * ai             # <<<<<<<<<<<<<<
@@ -5670,7 +5708,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
         __pyx_L13:;
       }
 
-      /* "reduce.pyx":477
+      /* "reduce.pyx":497
  *                     ai -= amean
  *                     asum += ai * ai
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -5680,7 +5718,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
       PyArray_ITER_NEXT(__pyx_v_ita);
     }
 
-    /* "reduce.pyx":478
+    /* "reduce.pyx":498
  *                     asum += ai * ai
  *             PyArray_ITER_NEXT(ita)
  *         return sqrt(asum / (count - ddof))             # <<<<<<<<<<<<<<
@@ -5688,7 +5726,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
  *         return NAN
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble(sqrt((__pyx_v_asum / (__pyx_v_count - __pyx_v_ddof)))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 478; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble(sqrt((__pyx_v_asum / (__pyx_v_count - __pyx_v_ddof)))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 498; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
@@ -5696,7 +5734,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
   }
   /*else*/ {
 
-    /* "reduce.pyx":480
+    /* "reduce.pyx":500
  *         return sqrt(asum / (count - ddof))
  *     else:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -5704,14 +5742,14 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
  * @cython.cdivision(True)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 480; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 500; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":456
+  /* "reduce.pyx":476
  * 
  * @cython.cdivision(True)
  * cdef object nanstd_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -5730,7 +5768,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_float32(PyArrayIterObject *__pyx_v_i
   return __pyx_r;
 }
 
-/* "reduce.pyx":483
+/* "reduce.pyx":503
  * 
  * @cython.cdivision(True)
  * cdef object nanstd_all_int64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -5756,7 +5794,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanstd_all_int64", 0);
 
-  /* "reduce.pyx":485
+  /* "reduce.pyx":505
  * cdef object nanstd_all_int64(np.flatiter ita, Py_ssize_t stride,
  *                               Py_ssize_t length, int ddof):
  *     cdef Py_ssize_t i, size = 0             # <<<<<<<<<<<<<<
@@ -5765,7 +5803,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_size = 0;
 
-  /* "reduce.pyx":486
+  /* "reduce.pyx":506
  *                               Py_ssize_t length, int ddof):
  *     cdef Py_ssize_t i, size = 0
  *     cdef float64_t asum = 0, amean, aj             # <<<<<<<<<<<<<<
@@ -5774,7 +5812,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":488
+  /* "reduce.pyx":508
  *     cdef float64_t asum = 0, amean, aj
  *     cdef int64_t ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -5785,7 +5823,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":489
+    /* "reduce.pyx":509
  *     cdef int64_t ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -5796,7 +5834,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":490
+      /* "reduce.pyx":510
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -5805,7 +5843,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":491
+      /* "reduce.pyx":511
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai             # <<<<<<<<<<<<<<
@@ -5815,7 +5853,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
       __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
     }
 
-    /* "reduce.pyx":492
+    /* "reduce.pyx":512
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai
  *         size += length             # <<<<<<<<<<<<<<
@@ -5824,7 +5862,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
  */
     __pyx_v_size = (__pyx_v_size + __pyx_v_length);
 
-    /* "reduce.pyx":493
+    /* "reduce.pyx":513
  *             asum += ai
  *         size += length
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -5834,7 +5872,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":494
+  /* "reduce.pyx":514
  *         size += length
  *         PyArray_ITER_NEXT(ita)
  *     if size > ddof:             # <<<<<<<<<<<<<<
@@ -5844,7 +5882,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
   __pyx_t_1 = ((__pyx_v_size > __pyx_v_ddof) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":495
+    /* "reduce.pyx":515
  *         PyArray_ITER_NEXT(ita)
  *     if size > ddof:
  *         amean = asum / size             # <<<<<<<<<<<<<<
@@ -5853,7 +5891,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
  */
     __pyx_v_amean = (__pyx_v_asum / __pyx_v_size);
 
-    /* "reduce.pyx":496
+    /* "reduce.pyx":516
  *     if size > ddof:
  *         amean = asum / size
  *         asum = 0             # <<<<<<<<<<<<<<
@@ -5862,7 +5900,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
  */
     __pyx_v_asum = 0.0;
 
-    /* "reduce.pyx":497
+    /* "reduce.pyx":517
  *         amean = asum / size
  *         asum = 0
  *         PyArray_ITER_RESET(ita)             # <<<<<<<<<<<<<<
@@ -5871,7 +5909,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
  */
     PyArray_ITER_RESET(__pyx_v_ita);
 
-    /* "reduce.pyx":498
+    /* "reduce.pyx":518
  *         asum = 0
  *         PyArray_ITER_RESET(ita)
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -5882,7 +5920,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
       __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_1) break;
 
-      /* "reduce.pyx":499
+      /* "reduce.pyx":519
  *         PyArray_ITER_RESET(ita)
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -5893,7 +5931,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
       for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
         __pyx_v_i = __pyx_t_3;
 
-        /* "reduce.pyx":500
+        /* "reduce.pyx":520
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -5902,7 +5940,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
  */
         __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":501
+        /* "reduce.pyx":521
  *             for i in range(length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 aj = ai - amean             # <<<<<<<<<<<<<<
@@ -5911,7 +5949,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
  */
         __pyx_v_aj = (__pyx_v_ai - __pyx_v_amean);
 
-        /* "reduce.pyx":502
+        /* "reduce.pyx":522
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 aj = ai - amean
  *                 asum += aj * aj             # <<<<<<<<<<<<<<
@@ -5921,7 +5959,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
         __pyx_v_asum = (__pyx_v_asum + (__pyx_v_aj * __pyx_v_aj));
       }
 
-      /* "reduce.pyx":503
+      /* "reduce.pyx":523
  *                 aj = ai - amean
  *                 asum += aj * aj
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -5931,7 +5969,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
       PyArray_ITER_NEXT(__pyx_v_ita);
     }
 
-    /* "reduce.pyx":504
+    /* "reduce.pyx":524
  *                 asum += aj * aj
  *             PyArray_ITER_NEXT(ita)
  *         return sqrt(asum / (size - ddof))             # <<<<<<<<<<<<<<
@@ -5939,7 +5977,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
  *         return NAN
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble(sqrt((__pyx_v_asum / (__pyx_v_size - __pyx_v_ddof)))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 504; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble(sqrt((__pyx_v_asum / (__pyx_v_size - __pyx_v_ddof)))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 524; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
@@ -5947,7 +5985,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
   }
   /*else*/ {
 
-    /* "reduce.pyx":506
+    /* "reduce.pyx":526
  *         return sqrt(asum / (size - ddof))
  *     else:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -5955,14 +5993,14 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
  * @cython.cdivision(True)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 506; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 526; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":483
+  /* "reduce.pyx":503
  * 
  * @cython.cdivision(True)
  * cdef object nanstd_all_int64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -5981,7 +6019,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int64(PyArrayIterObject *__pyx_v_ita
   return __pyx_r;
 }
 
-/* "reduce.pyx":509
+/* "reduce.pyx":529
  * 
  * @cython.cdivision(True)
  * cdef object nanstd_all_int32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -6007,7 +6045,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanstd_all_int32", 0);
 
-  /* "reduce.pyx":511
+  /* "reduce.pyx":531
  * cdef object nanstd_all_int32(np.flatiter ita, Py_ssize_t stride,
  *                               Py_ssize_t length, int ddof):
  *     cdef Py_ssize_t i, size = 0             # <<<<<<<<<<<<<<
@@ -6016,7 +6054,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_size = 0;
 
-  /* "reduce.pyx":512
+  /* "reduce.pyx":532
  *                               Py_ssize_t length, int ddof):
  *     cdef Py_ssize_t i, size = 0
  *     cdef float64_t asum = 0, amean, aj             # <<<<<<<<<<<<<<
@@ -6025,7 +6063,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":514
+  /* "reduce.pyx":534
  *     cdef float64_t asum = 0, amean, aj
  *     cdef int32_t ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -6036,7 +6074,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":515
+    /* "reduce.pyx":535
  *     cdef int32_t ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -6047,7 +6085,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":516
+      /* "reduce.pyx":536
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -6056,7 +6094,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":517
+      /* "reduce.pyx":537
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai             # <<<<<<<<<<<<<<
@@ -6066,7 +6104,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
       __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
     }
 
-    /* "reduce.pyx":518
+    /* "reduce.pyx":538
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai
  *         size += length             # <<<<<<<<<<<<<<
@@ -6075,7 +6113,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
  */
     __pyx_v_size = (__pyx_v_size + __pyx_v_length);
 
-    /* "reduce.pyx":519
+    /* "reduce.pyx":539
  *             asum += ai
  *         size += length
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -6085,7 +6123,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":520
+  /* "reduce.pyx":540
  *         size += length
  *         PyArray_ITER_NEXT(ita)
  *     if size > ddof:             # <<<<<<<<<<<<<<
@@ -6095,7 +6133,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
   __pyx_t_1 = ((__pyx_v_size > __pyx_v_ddof) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":521
+    /* "reduce.pyx":541
  *         PyArray_ITER_NEXT(ita)
  *     if size > ddof:
  *         amean = asum / size             # <<<<<<<<<<<<<<
@@ -6104,7 +6142,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
  */
     __pyx_v_amean = (__pyx_v_asum / __pyx_v_size);
 
-    /* "reduce.pyx":522
+    /* "reduce.pyx":542
  *     if size > ddof:
  *         amean = asum / size
  *         asum = 0             # <<<<<<<<<<<<<<
@@ -6113,7 +6151,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
  */
     __pyx_v_asum = 0.0;
 
-    /* "reduce.pyx":523
+    /* "reduce.pyx":543
  *         amean = asum / size
  *         asum = 0
  *         PyArray_ITER_RESET(ita)             # <<<<<<<<<<<<<<
@@ -6122,7 +6160,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
  */
     PyArray_ITER_RESET(__pyx_v_ita);
 
-    /* "reduce.pyx":524
+    /* "reduce.pyx":544
  *         asum = 0
  *         PyArray_ITER_RESET(ita)
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -6133,7 +6171,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
       __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_1) break;
 
-      /* "reduce.pyx":525
+      /* "reduce.pyx":545
  *         PyArray_ITER_RESET(ita)
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -6144,7 +6182,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
       for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
         __pyx_v_i = __pyx_t_3;
 
-        /* "reduce.pyx":526
+        /* "reduce.pyx":546
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -6153,7 +6191,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
  */
         __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":527
+        /* "reduce.pyx":547
  *             for i in range(length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 aj = ai - amean             # <<<<<<<<<<<<<<
@@ -6162,7 +6200,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
  */
         __pyx_v_aj = (__pyx_v_ai - __pyx_v_amean);
 
-        /* "reduce.pyx":528
+        /* "reduce.pyx":548
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 aj = ai - amean
  *                 asum += aj * aj             # <<<<<<<<<<<<<<
@@ -6172,7 +6210,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
         __pyx_v_asum = (__pyx_v_asum + (__pyx_v_aj * __pyx_v_aj));
       }
 
-      /* "reduce.pyx":529
+      /* "reduce.pyx":549
  *                 aj = ai - amean
  *                 asum += aj * aj
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -6182,7 +6220,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
       PyArray_ITER_NEXT(__pyx_v_ita);
     }
 
-    /* "reduce.pyx":530
+    /* "reduce.pyx":550
  *                 asum += aj * aj
  *             PyArray_ITER_NEXT(ita)
  *         return sqrt(asum / (size - ddof))             # <<<<<<<<<<<<<<
@@ -6190,7 +6228,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
  *         return NAN
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble(sqrt((__pyx_v_asum / (__pyx_v_size - __pyx_v_ddof)))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble(sqrt((__pyx_v_asum / (__pyx_v_size - __pyx_v_ddof)))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 550; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
@@ -6198,7 +6236,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
   }
   /*else*/ {
 
-    /* "reduce.pyx":532
+    /* "reduce.pyx":552
  *         return sqrt(asum / (size - ddof))
  *     else:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -6206,14 +6244,14 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
  * @cython.cdivision(True)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 532; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 552; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":509
+  /* "reduce.pyx":529
  * 
  * @cython.cdivision(True)
  * cdef object nanstd_all_int32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -6232,7 +6270,7 @@ static PyObject *__pyx_f_6reduce_nanstd_all_int32(PyArrayIterObject *__pyx_v_ita
   return __pyx_r;
 }
 
-/* "reduce.pyx":535
+/* "reduce.pyx":555
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanstd_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -6259,7 +6297,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanstd_one_float64", 0);
 
-  /* "reduce.pyx":539
+  /* "reduce.pyx":559
  *                                int a_ndim, np.npy_intp* y_dims,
  *                                int ddof):
  *     cdef Py_ssize_t i, count = 0             # <<<<<<<<<<<<<<
@@ -6268,7 +6306,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
  */
   __pyx_v_count = 0;
 
-  /* "reduce.pyx":540
+  /* "reduce.pyx":560
  *                                int ddof):
  *     cdef Py_ssize_t i, count = 0
  *     cdef float64_t asum = 0, ai, amean             # <<<<<<<<<<<<<<
@@ -6277,33 +6315,33 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":541
+  /* "reduce.pyx":561
  *     cdef Py_ssize_t i, count = 0
  *     cdef float64_t asum = 0, ai, amean
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 541; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 561; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 541; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 561; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":542
+  /* "reduce.pyx":562
  *     cdef float64_t asum = 0, ai, amean
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 542; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 562; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 542; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 562; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":543
+  /* "reduce.pyx":563
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -6313,7 +6351,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":544
+    /* "reduce.pyx":564
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -6324,7 +6362,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":545
+      /* "reduce.pyx":565
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
@@ -6333,7 +6371,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
 
-      /* "reduce.pyx":546
+      /* "reduce.pyx":566
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -6346,7 +6384,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
   }
   /*else*/ {
 
-    /* "reduce.pyx":548
+    /* "reduce.pyx":568
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -6357,7 +6395,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":549
+      /* "reduce.pyx":569
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -6366,7 +6404,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
  */
       __pyx_v_asum = 0.0;
 
-      /* "reduce.pyx":550
+      /* "reduce.pyx":570
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             count = 0             # <<<<<<<<<<<<<<
@@ -6375,7 +6413,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
  */
       __pyx_v_count = 0;
 
-      /* "reduce.pyx":551
+      /* "reduce.pyx":571
  *             asum = 0
  *             count = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -6386,7 +6424,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":552
+        /* "reduce.pyx":572
  *             count = 0
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -6395,7 +6433,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":553
+        /* "reduce.pyx":573
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == ai:             # <<<<<<<<<<<<<<
@@ -6405,7 +6443,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
         __pyx_t_2 = ((__pyx_v_ai == __pyx_v_ai) != 0);
         if (__pyx_t_2) {
 
-          /* "reduce.pyx":554
+          /* "reduce.pyx":574
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == ai:
  *                     asum += ai             # <<<<<<<<<<<<<<
@@ -6414,7 +6452,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
  */
           __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
 
-          /* "reduce.pyx":555
+          /* "reduce.pyx":575
  *                 if ai == ai:
  *                     asum += ai
  *                     count += 1             # <<<<<<<<<<<<<<
@@ -6427,7 +6465,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
         __pyx_L10:;
       }
 
-      /* "reduce.pyx":556
+      /* "reduce.pyx":576
  *                     asum += ai
  *                     count += 1
  *             if count > ddof:             # <<<<<<<<<<<<<<
@@ -6437,7 +6475,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
       __pyx_t_2 = ((__pyx_v_count > __pyx_v_ddof) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":557
+        /* "reduce.pyx":577
  *                     count += 1
  *             if count > ddof:
  *                 amean = asum / count             # <<<<<<<<<<<<<<
@@ -6446,7 +6484,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
  */
         __pyx_v_amean = (__pyx_v_asum / __pyx_v_count);
 
-        /* "reduce.pyx":558
+        /* "reduce.pyx":578
  *             if count > ddof:
  *                 amean = asum / count
  *                 asum = 0             # <<<<<<<<<<<<<<
@@ -6455,7 +6493,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
  */
         __pyx_v_asum = 0.0;
 
-        /* "reduce.pyx":559
+        /* "reduce.pyx":579
  *                 amean = asum / count
  *                 asum = 0
  *                 for i in range(length):             # <<<<<<<<<<<<<<
@@ -6466,7 +6504,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
         for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
           __pyx_v_i = __pyx_t_4;
 
-          /* "reduce.pyx":560
+          /* "reduce.pyx":580
  *                 asum = 0
  *                 for i in range(length):
  *                     ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -6475,7 +6513,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
  */
           __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-          /* "reduce.pyx":561
+          /* "reduce.pyx":581
  *                 for i in range(length):
  *                     ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                     if ai == ai:             # <<<<<<<<<<<<<<
@@ -6485,7 +6523,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
           __pyx_t_2 = ((__pyx_v_ai == __pyx_v_ai) != 0);
           if (__pyx_t_2) {
 
-            /* "reduce.pyx":562
+            /* "reduce.pyx":582
  *                     ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                     if ai == ai:
  *                         ai -= amean             # <<<<<<<<<<<<<<
@@ -6494,7 +6532,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
  */
             __pyx_v_ai = (__pyx_v_ai - __pyx_v_amean);
 
-            /* "reduce.pyx":563
+            /* "reduce.pyx":583
  *                     if ai == ai:
  *                         ai -= amean
  *                         asum += ai * ai             # <<<<<<<<<<<<<<
@@ -6507,7 +6545,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
           __pyx_L14:;
         }
 
-        /* "reduce.pyx":564
+        /* "reduce.pyx":584
  *                         ai -= amean
  *                         asum += ai * ai
  *                 asum = sqrt(asum / (count - ddof))             # <<<<<<<<<<<<<<
@@ -6519,7 +6557,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
       }
       /*else*/ {
 
-        /* "reduce.pyx":566
+        /* "reduce.pyx":586
  *                 asum = sqrt(asum / (count - ddof))
  *             else:
  *                 asum = NAN             # <<<<<<<<<<<<<<
@@ -6530,7 +6568,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
       }
       __pyx_L11:;
 
-      /* "reduce.pyx":567
+      /* "reduce.pyx":587
  *             else:
  *                 asum = NAN
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -6539,7 +6577,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":568
+      /* "reduce.pyx":588
  *                 asum = NAN
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -6548,7 +6586,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":569
+      /* "reduce.pyx":589
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -6560,7 +6598,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":570
+  /* "reduce.pyx":590
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -6572,7 +6610,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":535
+  /* "reduce.pyx":555
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanstd_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -6593,7 +6631,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float64(PyArrayIterObject *__py
   return __pyx_r;
 }
 
-/* "reduce.pyx":573
+/* "reduce.pyx":593
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanstd_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -6620,7 +6658,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanstd_one_float32", 0);
 
-  /* "reduce.pyx":577
+  /* "reduce.pyx":597
  *                                int a_ndim, np.npy_intp* y_dims,
  *                                int ddof):
  *     cdef Py_ssize_t i, count = 0             # <<<<<<<<<<<<<<
@@ -6629,7 +6667,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
  */
   __pyx_v_count = 0;
 
-  /* "reduce.pyx":578
+  /* "reduce.pyx":598
  *                                int ddof):
  *     cdef Py_ssize_t i, count = 0
  *     cdef float32_t asum = 0, ai, amean             # <<<<<<<<<<<<<<
@@ -6638,33 +6676,33 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":579
+  /* "reduce.pyx":599
  *     cdef Py_ssize_t i, count = 0
  *     cdef float32_t asum = 0, ai, amean
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 579; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 599; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 579; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 599; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":580
+  /* "reduce.pyx":600
  *     cdef float32_t asum = 0, ai, amean
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 580; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 600; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 580; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 600; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":581
+  /* "reduce.pyx":601
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -6674,7 +6712,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":582
+    /* "reduce.pyx":602
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -6685,7 +6723,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":583
+      /* "reduce.pyx":603
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float32_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
@@ -6694,7 +6732,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
  */
       (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
 
-      /* "reduce.pyx":584
+      /* "reduce.pyx":604
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float32_t*>((<char*>pid(ity))))[0] = NAN
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -6707,7 +6745,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
   }
   /*else*/ {
 
-    /* "reduce.pyx":586
+    /* "reduce.pyx":606
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -6718,7 +6756,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":587
+      /* "reduce.pyx":607
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -6727,7 +6765,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
  */
       __pyx_v_asum = 0.0;
 
-      /* "reduce.pyx":588
+      /* "reduce.pyx":608
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             count = 0             # <<<<<<<<<<<<<<
@@ -6736,7 +6774,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
  */
       __pyx_v_count = 0;
 
-      /* "reduce.pyx":589
+      /* "reduce.pyx":609
  *             asum = 0
  *             count = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -6747,7 +6785,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":590
+        /* "reduce.pyx":610
  *             count = 0
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -6756,7 +6794,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":591
+        /* "reduce.pyx":611
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == ai:             # <<<<<<<<<<<<<<
@@ -6766,7 +6804,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
         __pyx_t_2 = ((__pyx_v_ai == __pyx_v_ai) != 0);
         if (__pyx_t_2) {
 
-          /* "reduce.pyx":592
+          /* "reduce.pyx":612
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == ai:
  *                     asum += ai             # <<<<<<<<<<<<<<
@@ -6775,7 +6813,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
  */
           __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
 
-          /* "reduce.pyx":593
+          /* "reduce.pyx":613
  *                 if ai == ai:
  *                     asum += ai
  *                     count += 1             # <<<<<<<<<<<<<<
@@ -6788,7 +6826,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
         __pyx_L10:;
       }
 
-      /* "reduce.pyx":594
+      /* "reduce.pyx":614
  *                     asum += ai
  *                     count += 1
  *             if count > ddof:             # <<<<<<<<<<<<<<
@@ -6798,7 +6836,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
       __pyx_t_2 = ((__pyx_v_count > __pyx_v_ddof) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":595
+        /* "reduce.pyx":615
  *                     count += 1
  *             if count > ddof:
  *                 amean = asum / count             # <<<<<<<<<<<<<<
@@ -6807,7 +6845,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
  */
         __pyx_v_amean = (__pyx_v_asum / __pyx_v_count);
 
-        /* "reduce.pyx":596
+        /* "reduce.pyx":616
  *             if count > ddof:
  *                 amean = asum / count
  *                 asum = 0             # <<<<<<<<<<<<<<
@@ -6816,7 +6854,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
  */
         __pyx_v_asum = 0.0;
 
-        /* "reduce.pyx":597
+        /* "reduce.pyx":617
  *                 amean = asum / count
  *                 asum = 0
  *                 for i in range(length):             # <<<<<<<<<<<<<<
@@ -6827,7 +6865,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
         for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
           __pyx_v_i = __pyx_t_4;
 
-          /* "reduce.pyx":598
+          /* "reduce.pyx":618
  *                 asum = 0
  *                 for i in range(length):
  *                     ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -6836,7 +6874,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
  */
           __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-          /* "reduce.pyx":599
+          /* "reduce.pyx":619
  *                 for i in range(length):
  *                     ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                     if ai == ai:             # <<<<<<<<<<<<<<
@@ -6846,7 +6884,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
           __pyx_t_2 = ((__pyx_v_ai == __pyx_v_ai) != 0);
           if (__pyx_t_2) {
 
-            /* "reduce.pyx":600
+            /* "reduce.pyx":620
  *                     ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                     if ai == ai:
  *                         ai -= amean             # <<<<<<<<<<<<<<
@@ -6855,7 +6893,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
  */
             __pyx_v_ai = (__pyx_v_ai - __pyx_v_amean);
 
-            /* "reduce.pyx":601
+            /* "reduce.pyx":621
  *                     if ai == ai:
  *                         ai -= amean
  *                         asum += ai * ai             # <<<<<<<<<<<<<<
@@ -6868,7 +6906,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
           __pyx_L14:;
         }
 
-        /* "reduce.pyx":602
+        /* "reduce.pyx":622
  *                         ai -= amean
  *                         asum += ai * ai
  *                 asum = sqrt(asum / (count - ddof))             # <<<<<<<<<<<<<<
@@ -6880,7 +6918,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
       }
       /*else*/ {
 
-        /* "reduce.pyx":604
+        /* "reduce.pyx":624
  *                 asum = sqrt(asum / (count - ddof))
  *             else:
  *                 asum = NAN             # <<<<<<<<<<<<<<
@@ -6891,7 +6929,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
       }
       __pyx_L11:;
 
-      /* "reduce.pyx":605
+      /* "reduce.pyx":625
  *             else:
  *                 asum = NAN
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -6900,7 +6938,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
  */
       (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":606
+      /* "reduce.pyx":626
  *                 asum = NAN
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -6909,7 +6947,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":607
+      /* "reduce.pyx":627
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -6921,7 +6959,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":608
+  /* "reduce.pyx":628
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -6933,7 +6971,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":573
+  /* "reduce.pyx":593
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanstd_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -6954,7 +6992,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_float32(PyArrayIterObject *__py
   return __pyx_r;
 }
 
-/* "reduce.pyx":611
+/* "reduce.pyx":631
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanstd_one_int64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -6981,7 +7019,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanstd_one_int64", 0);
 
-  /* "reduce.pyx":616
+  /* "reduce.pyx":636
  *                                int ddof):
  *     cdef Py_ssize_t i
  *     cdef float64_t asum = 0, amean, aj             # <<<<<<<<<<<<<<
@@ -6990,33 +7028,33 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":618
+  /* "reduce.pyx":638
  *     cdef float64_t asum = 0, amean, aj
  *     cdef int64_t ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 618; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 638; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 618; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 638; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":619
+  /* "reduce.pyx":639
  *     cdef int64_t ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 619; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 639; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 619; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 639; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":620
+  /* "reduce.pyx":640
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -7026,7 +7064,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":621
+    /* "reduce.pyx":641
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -7037,7 +7075,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":622
+      /* "reduce.pyx":642
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
@@ -7046,7 +7084,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
 
-      /* "reduce.pyx":623
+      /* "reduce.pyx":643
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -7059,7 +7097,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
   }
   /*else*/ {
 
-    /* "reduce.pyx":625
+    /* "reduce.pyx":645
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -7070,7 +7108,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":626
+      /* "reduce.pyx":646
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -7079,7 +7117,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
  */
       __pyx_v_asum = 0.0;
 
-      /* "reduce.pyx":627
+      /* "reduce.pyx":647
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -7090,7 +7128,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":628
+        /* "reduce.pyx":648
  *             asum = 0
  *             for i in range(length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -7099,7 +7137,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
  */
         __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":629
+        /* "reduce.pyx":649
  *             for i in range(length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 asum += ai             # <<<<<<<<<<<<<<
@@ -7109,7 +7147,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
         __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
       }
 
-      /* "reduce.pyx":630
+      /* "reduce.pyx":650
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 asum += ai
  *             if length > ddof:             # <<<<<<<<<<<<<<
@@ -7119,7 +7157,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
       __pyx_t_2 = ((__pyx_v_length > __pyx_v_ddof) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":631
+        /* "reduce.pyx":651
  *                 asum += ai
  *             if length > ddof:
  *                 amean = asum / length             # <<<<<<<<<<<<<<
@@ -7128,7 +7166,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
  */
         __pyx_v_amean = (__pyx_v_asum / __pyx_v_length);
 
-        /* "reduce.pyx":632
+        /* "reduce.pyx":652
  *             if length > ddof:
  *                 amean = asum / length
  *                 asum = 0             # <<<<<<<<<<<<<<
@@ -7137,7 +7175,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
  */
         __pyx_v_asum = 0.0;
 
-        /* "reduce.pyx":633
+        /* "reduce.pyx":653
  *                 amean = asum / length
  *                 asum = 0
  *                 for i in range(length):             # <<<<<<<<<<<<<<
@@ -7148,7 +7186,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
         for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
           __pyx_v_i = __pyx_t_4;
 
-          /* "reduce.pyx":634
+          /* "reduce.pyx":654
  *                 asum = 0
  *                 for i in range(length):
  *                     ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -7157,7 +7195,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
  */
           __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-          /* "reduce.pyx":635
+          /* "reduce.pyx":655
  *                 for i in range(length):
  *                     ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                     aj = ai - amean             # <<<<<<<<<<<<<<
@@ -7166,7 +7204,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
  */
           __pyx_v_aj = (__pyx_v_ai - __pyx_v_amean);
 
-          /* "reduce.pyx":636
+          /* "reduce.pyx":656
  *                     ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                     aj = ai - amean
  *                     asum += aj * aj             # <<<<<<<<<<<<<<
@@ -7176,7 +7214,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
           __pyx_v_asum = (__pyx_v_asum + (__pyx_v_aj * __pyx_v_aj));
         }
 
-        /* "reduce.pyx":637
+        /* "reduce.pyx":657
  *                     aj = ai - amean
  *                     asum += aj * aj
  *                 asum = sqrt(asum / (length - ddof))             # <<<<<<<<<<<<<<
@@ -7188,7 +7226,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
       }
       /*else*/ {
 
-        /* "reduce.pyx":639
+        /* "reduce.pyx":659
  *                 asum = sqrt(asum / (length - ddof))
  *             else:
  *                 asum = NAN             # <<<<<<<<<<<<<<
@@ -7199,7 +7237,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
       }
       __pyx_L10:;
 
-      /* "reduce.pyx":640
+      /* "reduce.pyx":660
  *             else:
  *                 asum = NAN
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -7208,7 +7246,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":641
+      /* "reduce.pyx":661
  *                 asum = NAN
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -7217,7 +7255,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":642
+      /* "reduce.pyx":662
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -7229,7 +7267,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":643
+  /* "reduce.pyx":663
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -7241,7 +7279,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":611
+  /* "reduce.pyx":631
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanstd_one_int64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -7262,7 +7300,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int64(PyArrayIterObject *__pyx_
   return __pyx_r;
 }
 
-/* "reduce.pyx":646
+/* "reduce.pyx":666
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanstd_one_int32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -7289,7 +7327,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanstd_one_int32", 0);
 
-  /* "reduce.pyx":651
+  /* "reduce.pyx":671
  *                                int ddof):
  *     cdef Py_ssize_t i
  *     cdef float64_t asum = 0, amean, aj             # <<<<<<<<<<<<<<
@@ -7298,33 +7336,33 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":653
+  /* "reduce.pyx":673
  *     cdef float64_t asum = 0, amean, aj
  *     cdef int32_t ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 653; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 673; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 653; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 673; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":654
+  /* "reduce.pyx":674
  *     cdef int32_t ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 654; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 674; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 654; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 674; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":655
+  /* "reduce.pyx":675
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -7334,7 +7372,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":656
+    /* "reduce.pyx":676
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -7345,7 +7383,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":657
+      /* "reduce.pyx":677
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
@@ -7354,7 +7392,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
 
-      /* "reduce.pyx":658
+      /* "reduce.pyx":678
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -7367,7 +7405,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
   }
   /*else*/ {
 
-    /* "reduce.pyx":660
+    /* "reduce.pyx":680
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -7378,7 +7416,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":661
+      /* "reduce.pyx":681
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -7387,7 +7425,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
  */
       __pyx_v_asum = 0.0;
 
-      /* "reduce.pyx":662
+      /* "reduce.pyx":682
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -7398,7 +7436,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":663
+        /* "reduce.pyx":683
  *             asum = 0
  *             for i in range(length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -7407,7 +7445,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
  */
         __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":664
+        /* "reduce.pyx":684
  *             for i in range(length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 asum += ai             # <<<<<<<<<<<<<<
@@ -7417,7 +7455,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
         __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
       }
 
-      /* "reduce.pyx":665
+      /* "reduce.pyx":685
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 asum += ai
  *             if length > ddof:             # <<<<<<<<<<<<<<
@@ -7427,7 +7465,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
       __pyx_t_2 = ((__pyx_v_length > __pyx_v_ddof) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":666
+        /* "reduce.pyx":686
  *                 asum += ai
  *             if length > ddof:
  *                 amean = asum / length             # <<<<<<<<<<<<<<
@@ -7436,7 +7474,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
  */
         __pyx_v_amean = (__pyx_v_asum / __pyx_v_length);
 
-        /* "reduce.pyx":667
+        /* "reduce.pyx":687
  *             if length > ddof:
  *                 amean = asum / length
  *                 asum = 0             # <<<<<<<<<<<<<<
@@ -7445,7 +7483,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
  */
         __pyx_v_asum = 0.0;
 
-        /* "reduce.pyx":668
+        /* "reduce.pyx":688
  *                 amean = asum / length
  *                 asum = 0
  *                 for i in range(length):             # <<<<<<<<<<<<<<
@@ -7456,7 +7494,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
         for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
           __pyx_v_i = __pyx_t_4;
 
-          /* "reduce.pyx":669
+          /* "reduce.pyx":689
  *                 asum = 0
  *                 for i in range(length):
  *                     ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -7465,7 +7503,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
  */
           __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-          /* "reduce.pyx":670
+          /* "reduce.pyx":690
  *                 for i in range(length):
  *                     ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                     aj = ai - amean             # <<<<<<<<<<<<<<
@@ -7474,7 +7512,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
  */
           __pyx_v_aj = (__pyx_v_ai - __pyx_v_amean);
 
-          /* "reduce.pyx":671
+          /* "reduce.pyx":691
  *                     ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                     aj = ai - amean
  *                     asum += aj * aj             # <<<<<<<<<<<<<<
@@ -7484,7 +7522,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
           __pyx_v_asum = (__pyx_v_asum + (__pyx_v_aj * __pyx_v_aj));
         }
 
-        /* "reduce.pyx":672
+        /* "reduce.pyx":692
  *                     aj = ai - amean
  *                     asum += aj * aj
  *                 asum = sqrt(asum / (length - ddof))             # <<<<<<<<<<<<<<
@@ -7496,7 +7534,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
       }
       /*else*/ {
 
-        /* "reduce.pyx":674
+        /* "reduce.pyx":694
  *                 asum = sqrt(asum / (length - ddof))
  *             else:
  *                 asum = NAN             # <<<<<<<<<<<<<<
@@ -7507,7 +7545,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
       }
       __pyx_L10:;
 
-      /* "reduce.pyx":675
+      /* "reduce.pyx":695
  *             else:
  *                 asum = NAN
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -7516,7 +7554,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":676
+      /* "reduce.pyx":696
  *                 asum = NAN
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -7525,7 +7563,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":677
+      /* "reduce.pyx":697
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -7537,7 +7575,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":678
+  /* "reduce.pyx":698
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -7549,7 +7587,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":646
+  /* "reduce.pyx":666
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanstd_one_int32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -7570,7 +7608,7 @@ static PyArrayObject *__pyx_f_6reduce_nanstd_one_int32(PyArrayIterObject *__pyx_
   return __pyx_r;
 }
 
-/* "reduce.pyx":680
+/* "reduce.pyx":700
  *     return y
  * 
  * cdef nanstd_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
@@ -7587,7 +7625,7 @@ static PyObject *__pyx_f_6reduce_nanstd_0d(PyArrayObject *__pyx_v_a, CYTHON_UNUS
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanstd_0d", 0);
 
-  /* "reduce.pyx":681
+  /* "reduce.pyx":701
  * 
  * cdef nanstd_0d(ndarray a, int int_input):
  *     return a[()]             # <<<<<<<<<<<<<<
@@ -7595,13 +7633,13 @@ static PyObject *__pyx_f_6reduce_nanstd_0d(PyArrayObject *__pyx_v_a, CYTHON_UNUS
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_empty_tuple); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 681; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_empty_tuple); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 701; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "reduce.pyx":680
+  /* "reduce.pyx":700
  *     return y
  * 
  * cdef nanstd_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
@@ -7620,7 +7658,7 @@ static PyObject *__pyx_f_6reduce_nanstd_0d(PyArrayObject *__pyx_v_a, CYTHON_UNUS
   return __pyx_r;
 }
 
-/* "reduce.pyx":686
+/* "reduce.pyx":706
  * # nanvar --------------------------------------------------------------------
  * 
  * def nanvar(arr, axis=None, int ddof=0):             # <<<<<<<<<<<<<<
@@ -7673,7 +7711,7 @@ static PyObject *__pyx_pw_6reduce_7nanvar(PyObject *__pyx_self, PyObject *__pyx_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nanvar") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 686; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nanvar") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 706; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -7687,14 +7725,14 @@ static PyObject *__pyx_pw_6reduce_7nanvar(PyObject *__pyx_self, PyObject *__pyx_
     __pyx_v_arr = values[0];
     __pyx_v_axis = values[1];
     if (values[2]) {
-      __pyx_v_ddof = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_ddof == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 686; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_v_ddof = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_ddof == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 706; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     } else {
       __pyx_v_ddof = ((int)0);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("nanvar", 0, 1, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 686; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("nanvar", 0, 1, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 706; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("reduce.nanvar", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -7727,7 +7765,7 @@ static PyObject *__pyx_pf_6reduce_6nanvar(CYTHON_UNUSED PyObject *__pyx_self, Py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanvar", 0);
 
-  /* "reduce.pyx":687
+  /* "reduce.pyx":707
  * 
  * def nanvar(arr, axis=None, int ddof=0):
  *     try:             # <<<<<<<<<<<<<<
@@ -7741,7 +7779,7 @@ static PyObject *__pyx_pf_6reduce_6nanvar(CYTHON_UNUSED PyObject *__pyx_self, Py
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "reduce.pyx":688
+      /* "reduce.pyx":708
  * def nanvar(arr, axis=None, int ddof=0):
  *     try:
  *         return reducer(arr, axis,             # <<<<<<<<<<<<<<
@@ -7750,7 +7788,7 @@ static PyObject *__pyx_pf_6reduce_6nanvar(CYTHON_UNUSED PyObject *__pyx_self, Py
  */
       __Pyx_XDECREF(__pyx_r);
 
-      /* "reduce.pyx":698
+      /* "reduce.pyx":718
  *                        nanvar_one_int32,
  *                        nanvar_0d,
  *                        ddof)             # <<<<<<<<<<<<<<
@@ -7759,7 +7797,7 @@ static PyObject *__pyx_pf_6reduce_6nanvar(CYTHON_UNUSED PyObject *__pyx_self, Py
  */
       __pyx_t_5.__pyx_n = 1;
       __pyx_t_5.int_input = __pyx_v_ddof;
-      __pyx_t_4 = __pyx_f_6reduce_reducer(__pyx_v_arr, __pyx_v_axis, __pyx_f_6reduce_nanvar_all_float64, __pyx_f_6reduce_nanvar_all_float32, __pyx_f_6reduce_nanvar_all_int64, __pyx_f_6reduce_nanvar_all_int32, __pyx_f_6reduce_nanvar_one_float64, __pyx_f_6reduce_nanvar_one_float32, __pyx_f_6reduce_nanvar_one_int64, __pyx_f_6reduce_nanvar_one_int32, __pyx_f_6reduce_nanvar_0d, &__pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 688; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_t_4 = __pyx_f_6reduce_reducer(__pyx_v_arr, __pyx_v_axis, __pyx_f_6reduce_nanvar_all_float64, __pyx_f_6reduce_nanvar_all_float32, __pyx_f_6reduce_nanvar_all_int64, __pyx_f_6reduce_nanvar_all_int32, __pyx_f_6reduce_nanvar_one_float64, __pyx_f_6reduce_nanvar_one_float32, __pyx_f_6reduce_nanvar_one_int64, __pyx_f_6reduce_nanvar_one_int32, __pyx_f_6reduce_nanvar_0d, &__pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 708; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
@@ -7768,7 +7806,7 @@ static PyObject *__pyx_pf_6reduce_6nanvar(CYTHON_UNUSED PyObject *__pyx_self, Py
     __pyx_L3_error:;
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "reduce.pyx":699
+    /* "reduce.pyx":719
  *                        nanvar_0d,
  *                        ddof)
  *     except TypeError:             # <<<<<<<<<<<<<<
@@ -7778,12 +7816,12 @@ static PyObject *__pyx_pf_6reduce_6nanvar(CYTHON_UNUSED PyObject *__pyx_self, Py
     __pyx_t_6 = PyErr_ExceptionMatches(__pyx_builtin_TypeError);
     if (__pyx_t_6) {
       __Pyx_AddTraceback("reduce.nanvar", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_7, &__pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 699; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_7, &__pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 719; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_GOTREF(__pyx_t_8);
 
-      /* "reduce.pyx":700
+      /* "reduce.pyx":720
  *                        ddof)
  *     except TypeError:
  *         return slow.nanvar(arr, axis, ddof=ddof)             # <<<<<<<<<<<<<<
@@ -7791,12 +7829,12 @@ static PyObject *__pyx_pf_6reduce_6nanvar(CYTHON_UNUSED PyObject *__pyx_self, Py
  * 
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 700; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 720; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_nanvar); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 700; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_nanvar); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 720; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 700; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 720; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_INCREF(__pyx_v_arr);
       PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_v_arr);
@@ -7804,13 +7842,13 @@ static PyObject *__pyx_pf_6reduce_6nanvar(CYTHON_UNUSED PyObject *__pyx_self, Py
       __Pyx_INCREF(__pyx_v_axis);
       PyTuple_SET_ITEM(__pyx_t_9, 1, __pyx_v_axis);
       __Pyx_GIVEREF(__pyx_v_axis);
-      __pyx_t_11 = PyDict_New(); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 700; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_11 = PyDict_New(); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 720; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_11);
-      __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_ddof); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 700; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_ddof); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 720; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_12);
-      if (PyDict_SetItem(__pyx_t_11, __pyx_n_s_ddof, __pyx_t_12) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 700; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      if (PyDict_SetItem(__pyx_t_11, __pyx_n_s_ddof, __pyx_t_12) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 720; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-      __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_9, __pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 700; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_9, __pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 720; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_12);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
@@ -7843,7 +7881,7 @@ static PyObject *__pyx_pf_6reduce_6nanvar(CYTHON_UNUSED PyObject *__pyx_self, Py
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":686
+  /* "reduce.pyx":706
  * # nanvar --------------------------------------------------------------------
  * 
  * def nanvar(arr, axis=None, int ddof=0):             # <<<<<<<<<<<<<<
@@ -7868,7 +7906,7 @@ static PyObject *__pyx_pf_6reduce_6nanvar(CYTHON_UNUSED PyObject *__pyx_self, Py
   return __pyx_r;
 }
 
-/* "reduce.pyx":704
+/* "reduce.pyx":724
  * 
  * @cython.cdivision(True)
  * cdef object nanvar_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -7893,7 +7931,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanvar_all_float64", 0);
 
-  /* "reduce.pyx":706
+  /* "reduce.pyx":726
  * cdef object nanvar_all_float64(np.flatiter ita, Py_ssize_t stride,
  *                               Py_ssize_t length, int ddof):
  *     cdef Py_ssize_t i, count = 0             # <<<<<<<<<<<<<<
@@ -7902,7 +7940,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
  */
   __pyx_v_count = 0;
 
-  /* "reduce.pyx":707
+  /* "reduce.pyx":727
  *                               Py_ssize_t length, int ddof):
  *     cdef Py_ssize_t i, count = 0
  *     cdef float64_t asum = 0, amean, ai             # <<<<<<<<<<<<<<
@@ -7911,7 +7949,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":708
+  /* "reduce.pyx":728
  *     cdef Py_ssize_t i, count = 0
  *     cdef float64_t asum = 0, amean, ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -7922,7 +7960,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":709
+    /* "reduce.pyx":729
  *     cdef float64_t asum = 0, amean, ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -7933,7 +7971,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":710
+      /* "reduce.pyx":730
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -7942,7 +7980,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":711
+      /* "reduce.pyx":731
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai == ai:             # <<<<<<<<<<<<<<
@@ -7952,7 +7990,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
       __pyx_t_1 = ((__pyx_v_ai == __pyx_v_ai) != 0);
       if (__pyx_t_1) {
 
-        /* "reduce.pyx":712
+        /* "reduce.pyx":732
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai == ai:
  *                 asum += ai             # <<<<<<<<<<<<<<
@@ -7961,7 +7999,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
  */
         __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
 
-        /* "reduce.pyx":713
+        /* "reduce.pyx":733
  *             if ai == ai:
  *                 asum += ai
  *                 count += 1             # <<<<<<<<<<<<<<
@@ -7974,7 +8012,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
       __pyx_L7:;
     }
 
-    /* "reduce.pyx":714
+    /* "reduce.pyx":734
  *                 asum += ai
  *                 count += 1
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -7984,7 +8022,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":715
+  /* "reduce.pyx":735
  *                 count += 1
  *         PyArray_ITER_NEXT(ita)
  *     if count > ddof:             # <<<<<<<<<<<<<<
@@ -7994,7 +8032,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
   __pyx_t_1 = ((__pyx_v_count > __pyx_v_ddof) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":716
+    /* "reduce.pyx":736
  *         PyArray_ITER_NEXT(ita)
  *     if count > ddof:
  *         amean = asum / count             # <<<<<<<<<<<<<<
@@ -8003,7 +8041,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
  */
     __pyx_v_amean = (__pyx_v_asum / __pyx_v_count);
 
-    /* "reduce.pyx":717
+    /* "reduce.pyx":737
  *     if count > ddof:
  *         amean = asum / count
  *         asum = 0             # <<<<<<<<<<<<<<
@@ -8012,7 +8050,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
  */
     __pyx_v_asum = 0.0;
 
-    /* "reduce.pyx":718
+    /* "reduce.pyx":738
  *         amean = asum / count
  *         asum = 0
  *         PyArray_ITER_RESET(ita)             # <<<<<<<<<<<<<<
@@ -8021,7 +8059,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
  */
     PyArray_ITER_RESET(__pyx_v_ita);
 
-    /* "reduce.pyx":719
+    /* "reduce.pyx":739
  *         asum = 0
  *         PyArray_ITER_RESET(ita)
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -8032,7 +8070,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
       __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_1) break;
 
-      /* "reduce.pyx":720
+      /* "reduce.pyx":740
  *         PyArray_ITER_RESET(ita)
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -8043,7 +8081,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
       for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
         __pyx_v_i = __pyx_t_3;
 
-        /* "reduce.pyx":721
+        /* "reduce.pyx":741
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -8052,7 +8090,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":722
+        /* "reduce.pyx":742
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == ai:             # <<<<<<<<<<<<<<
@@ -8062,7 +8100,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
         __pyx_t_1 = ((__pyx_v_ai == __pyx_v_ai) != 0);
         if (__pyx_t_1) {
 
-          /* "reduce.pyx":723
+          /* "reduce.pyx":743
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == ai:
  *                     ai -= amean             # <<<<<<<<<<<<<<
@@ -8071,7 +8109,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
  */
           __pyx_v_ai = (__pyx_v_ai - __pyx_v_amean);
 
-          /* "reduce.pyx":724
+          /* "reduce.pyx":744
  *                 if ai == ai:
  *                     ai -= amean
  *                     asum += ai * ai             # <<<<<<<<<<<<<<
@@ -8084,7 +8122,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
         __pyx_L13:;
       }
 
-      /* "reduce.pyx":725
+      /* "reduce.pyx":745
  *                     ai -= amean
  *                     asum += ai * ai
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -8094,7 +8132,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
       PyArray_ITER_NEXT(__pyx_v_ita);
     }
 
-    /* "reduce.pyx":726
+    /* "reduce.pyx":746
  *                     asum += ai * ai
  *             PyArray_ITER_NEXT(ita)
  *         return asum / (count - ddof)             # <<<<<<<<<<<<<<
@@ -8102,7 +8140,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
  *         return NAN
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_asum / (__pyx_v_count - __pyx_v_ddof))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 726; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_asum / (__pyx_v_count - __pyx_v_ddof))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 746; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
@@ -8110,7 +8148,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
   }
   /*else*/ {
 
-    /* "reduce.pyx":728
+    /* "reduce.pyx":748
  *         return asum / (count - ddof)
  *     else:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -8118,14 +8156,14 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
  * @cython.cdivision(True)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 728; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 748; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":704
+  /* "reduce.pyx":724
  * 
  * @cython.cdivision(True)
  * cdef object nanvar_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -8144,7 +8182,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float64(PyArrayIterObject *__pyx_v_i
   return __pyx_r;
 }
 
-/* "reduce.pyx":731
+/* "reduce.pyx":751
  * 
  * @cython.cdivision(True)
  * cdef object nanvar_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -8169,7 +8207,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanvar_all_float32", 0);
 
-  /* "reduce.pyx":733
+  /* "reduce.pyx":753
  * cdef object nanvar_all_float32(np.flatiter ita, Py_ssize_t stride,
  *                               Py_ssize_t length, int ddof):
  *     cdef Py_ssize_t i, count = 0             # <<<<<<<<<<<<<<
@@ -8178,7 +8216,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
  */
   __pyx_v_count = 0;
 
-  /* "reduce.pyx":734
+  /* "reduce.pyx":754
  *                               Py_ssize_t length, int ddof):
  *     cdef Py_ssize_t i, count = 0
  *     cdef float32_t asum = 0, amean, ai             # <<<<<<<<<<<<<<
@@ -8187,7 +8225,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":735
+  /* "reduce.pyx":755
  *     cdef Py_ssize_t i, count = 0
  *     cdef float32_t asum = 0, amean, ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -8198,7 +8236,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":736
+    /* "reduce.pyx":756
  *     cdef float32_t asum = 0, amean, ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -8209,7 +8247,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":737
+      /* "reduce.pyx":757
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -8218,7 +8256,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":738
+      /* "reduce.pyx":758
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai == ai:             # <<<<<<<<<<<<<<
@@ -8228,7 +8266,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
       __pyx_t_1 = ((__pyx_v_ai == __pyx_v_ai) != 0);
       if (__pyx_t_1) {
 
-        /* "reduce.pyx":739
+        /* "reduce.pyx":759
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai == ai:
  *                 asum += ai             # <<<<<<<<<<<<<<
@@ -8237,7 +8275,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
  */
         __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
 
-        /* "reduce.pyx":740
+        /* "reduce.pyx":760
  *             if ai == ai:
  *                 asum += ai
  *                 count += 1             # <<<<<<<<<<<<<<
@@ -8250,7 +8288,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
       __pyx_L7:;
     }
 
-    /* "reduce.pyx":741
+    /* "reduce.pyx":761
  *                 asum += ai
  *                 count += 1
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -8260,7 +8298,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":742
+  /* "reduce.pyx":762
  *                 count += 1
  *         PyArray_ITER_NEXT(ita)
  *     if count > ddof:             # <<<<<<<<<<<<<<
@@ -8270,7 +8308,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
   __pyx_t_1 = ((__pyx_v_count > __pyx_v_ddof) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":743
+    /* "reduce.pyx":763
  *         PyArray_ITER_NEXT(ita)
  *     if count > ddof:
  *         amean = asum / count             # <<<<<<<<<<<<<<
@@ -8279,7 +8317,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
  */
     __pyx_v_amean = (__pyx_v_asum / __pyx_v_count);
 
-    /* "reduce.pyx":744
+    /* "reduce.pyx":764
  *     if count > ddof:
  *         amean = asum / count
  *         asum = 0             # <<<<<<<<<<<<<<
@@ -8288,7 +8326,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
  */
     __pyx_v_asum = 0.0;
 
-    /* "reduce.pyx":745
+    /* "reduce.pyx":765
  *         amean = asum / count
  *         asum = 0
  *         PyArray_ITER_RESET(ita)             # <<<<<<<<<<<<<<
@@ -8297,7 +8335,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
  */
     PyArray_ITER_RESET(__pyx_v_ita);
 
-    /* "reduce.pyx":746
+    /* "reduce.pyx":766
  *         asum = 0
  *         PyArray_ITER_RESET(ita)
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -8308,7 +8346,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
       __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_1) break;
 
-      /* "reduce.pyx":747
+      /* "reduce.pyx":767
  *         PyArray_ITER_RESET(ita)
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -8319,7 +8357,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
       for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
         __pyx_v_i = __pyx_t_3;
 
-        /* "reduce.pyx":748
+        /* "reduce.pyx":768
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -8328,7 +8366,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":749
+        /* "reduce.pyx":769
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == ai:             # <<<<<<<<<<<<<<
@@ -8338,7 +8376,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
         __pyx_t_1 = ((__pyx_v_ai == __pyx_v_ai) != 0);
         if (__pyx_t_1) {
 
-          /* "reduce.pyx":750
+          /* "reduce.pyx":770
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == ai:
  *                     ai -= amean             # <<<<<<<<<<<<<<
@@ -8347,7 +8385,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
  */
           __pyx_v_ai = (__pyx_v_ai - __pyx_v_amean);
 
-          /* "reduce.pyx":751
+          /* "reduce.pyx":771
  *                 if ai == ai:
  *                     ai -= amean
  *                     asum += ai * ai             # <<<<<<<<<<<<<<
@@ -8360,7 +8398,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
         __pyx_L13:;
       }
 
-      /* "reduce.pyx":752
+      /* "reduce.pyx":772
  *                     ai -= amean
  *                     asum += ai * ai
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -8370,7 +8408,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
       PyArray_ITER_NEXT(__pyx_v_ita);
     }
 
-    /* "reduce.pyx":753
+    /* "reduce.pyx":773
  *                     asum += ai * ai
  *             PyArray_ITER_NEXT(ita)
  *         return asum / (count - ddof)             # <<<<<<<<<<<<<<
@@ -8378,7 +8416,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
  *         return NAN
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_asum / (__pyx_v_count - __pyx_v_ddof))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 753; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_asum / (__pyx_v_count - __pyx_v_ddof))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 773; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
@@ -8386,7 +8424,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
   }
   /*else*/ {
 
-    /* "reduce.pyx":755
+    /* "reduce.pyx":775
  *         return asum / (count - ddof)
  *     else:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -8394,14 +8432,14 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
  * @cython.cdivision(True)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 755; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 775; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":731
+  /* "reduce.pyx":751
  * 
  * @cython.cdivision(True)
  * cdef object nanvar_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -8420,7 +8458,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_float32(PyArrayIterObject *__pyx_v_i
   return __pyx_r;
 }
 
-/* "reduce.pyx":758
+/* "reduce.pyx":778
  * 
  * @cython.cdivision(True)
  * cdef object nanvar_all_int64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -8446,7 +8484,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanvar_all_int64", 0);
 
-  /* "reduce.pyx":760
+  /* "reduce.pyx":780
  * cdef object nanvar_all_int64(np.flatiter ita, Py_ssize_t stride,
  *                               Py_ssize_t length, int ddof):
  *     cdef Py_ssize_t i, size = 0             # <<<<<<<<<<<<<<
@@ -8455,7 +8493,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_size = 0;
 
-  /* "reduce.pyx":761
+  /* "reduce.pyx":781
  *                               Py_ssize_t length, int ddof):
  *     cdef Py_ssize_t i, size = 0
  *     cdef float64_t asum = 0, amean, aj             # <<<<<<<<<<<<<<
@@ -8464,7 +8502,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":763
+  /* "reduce.pyx":783
  *     cdef float64_t asum = 0, amean, aj
  *     cdef int64_t ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -8475,7 +8513,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":764
+    /* "reduce.pyx":784
  *     cdef int64_t ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -8486,7 +8524,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":765
+      /* "reduce.pyx":785
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -8495,7 +8533,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":766
+      /* "reduce.pyx":786
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai             # <<<<<<<<<<<<<<
@@ -8505,7 +8543,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
       __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
     }
 
-    /* "reduce.pyx":767
+    /* "reduce.pyx":787
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai
  *         size += length             # <<<<<<<<<<<<<<
@@ -8514,7 +8552,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
  */
     __pyx_v_size = (__pyx_v_size + __pyx_v_length);
 
-    /* "reduce.pyx":768
+    /* "reduce.pyx":788
  *             asum += ai
  *         size += length
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -8524,7 +8562,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":769
+  /* "reduce.pyx":789
  *         size += length
  *         PyArray_ITER_NEXT(ita)
  *     if size > ddof:             # <<<<<<<<<<<<<<
@@ -8534,7 +8572,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
   __pyx_t_1 = ((__pyx_v_size > __pyx_v_ddof) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":770
+    /* "reduce.pyx":790
  *         PyArray_ITER_NEXT(ita)
  *     if size > ddof:
  *         amean = asum / size             # <<<<<<<<<<<<<<
@@ -8543,7 +8581,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
  */
     __pyx_v_amean = (__pyx_v_asum / __pyx_v_size);
 
-    /* "reduce.pyx":771
+    /* "reduce.pyx":791
  *     if size > ddof:
  *         amean = asum / size
  *         asum = 0             # <<<<<<<<<<<<<<
@@ -8552,7 +8590,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
  */
     __pyx_v_asum = 0.0;
 
-    /* "reduce.pyx":772
+    /* "reduce.pyx":792
  *         amean = asum / size
  *         asum = 0
  *         PyArray_ITER_RESET(ita)             # <<<<<<<<<<<<<<
@@ -8561,7 +8599,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
  */
     PyArray_ITER_RESET(__pyx_v_ita);
 
-    /* "reduce.pyx":773
+    /* "reduce.pyx":793
  *         asum = 0
  *         PyArray_ITER_RESET(ita)
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -8572,7 +8610,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
       __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_1) break;
 
-      /* "reduce.pyx":774
+      /* "reduce.pyx":794
  *         PyArray_ITER_RESET(ita)
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -8583,7 +8621,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
       for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
         __pyx_v_i = __pyx_t_3;
 
-        /* "reduce.pyx":775
+        /* "reduce.pyx":795
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -8592,7 +8630,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
  */
         __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":776
+        /* "reduce.pyx":796
  *             for i in range(length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 aj = ai - amean             # <<<<<<<<<<<<<<
@@ -8601,7 +8639,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
  */
         __pyx_v_aj = (__pyx_v_ai - __pyx_v_amean);
 
-        /* "reduce.pyx":777
+        /* "reduce.pyx":797
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 aj = ai - amean
  *                 asum += aj * aj             # <<<<<<<<<<<<<<
@@ -8611,7 +8649,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
         __pyx_v_asum = (__pyx_v_asum + (__pyx_v_aj * __pyx_v_aj));
       }
 
-      /* "reduce.pyx":778
+      /* "reduce.pyx":798
  *                 aj = ai - amean
  *                 asum += aj * aj
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -8621,7 +8659,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
       PyArray_ITER_NEXT(__pyx_v_ita);
     }
 
-    /* "reduce.pyx":779
+    /* "reduce.pyx":799
  *                 asum += aj * aj
  *             PyArray_ITER_NEXT(ita)
  *         return asum / (size - ddof)             # <<<<<<<<<<<<<<
@@ -8629,7 +8667,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
  *         return NAN
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_asum / (__pyx_v_size - __pyx_v_ddof))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 779; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_asum / (__pyx_v_size - __pyx_v_ddof))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 799; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
@@ -8637,7 +8675,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
   }
   /*else*/ {
 
-    /* "reduce.pyx":781
+    /* "reduce.pyx":801
  *         return asum / (size - ddof)
  *     else:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -8645,14 +8683,14 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
  * @cython.cdivision(True)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 781; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 801; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":758
+  /* "reduce.pyx":778
  * 
  * @cython.cdivision(True)
  * cdef object nanvar_all_int64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -8671,7 +8709,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int64(PyArrayIterObject *__pyx_v_ita
   return __pyx_r;
 }
 
-/* "reduce.pyx":784
+/* "reduce.pyx":804
  * 
  * @cython.cdivision(True)
  * cdef object nanvar_all_int32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -8697,7 +8735,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanvar_all_int32", 0);
 
-  /* "reduce.pyx":786
+  /* "reduce.pyx":806
  * cdef object nanvar_all_int32(np.flatiter ita, Py_ssize_t stride,
  *                               Py_ssize_t length, int ddof):
  *     cdef Py_ssize_t i, size = 0             # <<<<<<<<<<<<<<
@@ -8706,7 +8744,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_size = 0;
 
-  /* "reduce.pyx":787
+  /* "reduce.pyx":807
  *                               Py_ssize_t length, int ddof):
  *     cdef Py_ssize_t i, size = 0
  *     cdef float64_t asum = 0, amean, aj             # <<<<<<<<<<<<<<
@@ -8715,7 +8753,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":789
+  /* "reduce.pyx":809
  *     cdef float64_t asum = 0, amean, aj
  *     cdef int32_t ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -8726,7 +8764,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":790
+    /* "reduce.pyx":810
  *     cdef int32_t ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -8737,7 +8775,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":791
+      /* "reduce.pyx":811
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -8746,7 +8784,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":792
+      /* "reduce.pyx":812
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai             # <<<<<<<<<<<<<<
@@ -8756,7 +8794,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
       __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
     }
 
-    /* "reduce.pyx":793
+    /* "reduce.pyx":813
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai
  *         size += length             # <<<<<<<<<<<<<<
@@ -8765,7 +8803,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
  */
     __pyx_v_size = (__pyx_v_size + __pyx_v_length);
 
-    /* "reduce.pyx":794
+    /* "reduce.pyx":814
  *             asum += ai
  *         size += length
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -8775,7 +8813,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":795
+  /* "reduce.pyx":815
  *         size += length
  *         PyArray_ITER_NEXT(ita)
  *     if size > ddof:             # <<<<<<<<<<<<<<
@@ -8785,7 +8823,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
   __pyx_t_1 = ((__pyx_v_size > __pyx_v_ddof) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":796
+    /* "reduce.pyx":816
  *         PyArray_ITER_NEXT(ita)
  *     if size > ddof:
  *         amean = asum / size             # <<<<<<<<<<<<<<
@@ -8794,7 +8832,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
  */
     __pyx_v_amean = (__pyx_v_asum / __pyx_v_size);
 
-    /* "reduce.pyx":797
+    /* "reduce.pyx":817
  *     if size > ddof:
  *         amean = asum / size
  *         asum = 0             # <<<<<<<<<<<<<<
@@ -8803,7 +8841,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
  */
     __pyx_v_asum = 0.0;
 
-    /* "reduce.pyx":798
+    /* "reduce.pyx":818
  *         amean = asum / size
  *         asum = 0
  *         PyArray_ITER_RESET(ita)             # <<<<<<<<<<<<<<
@@ -8812,7 +8850,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
  */
     PyArray_ITER_RESET(__pyx_v_ita);
 
-    /* "reduce.pyx":799
+    /* "reduce.pyx":819
  *         asum = 0
  *         PyArray_ITER_RESET(ita)
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -8823,7 +8861,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
       __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_1) break;
 
-      /* "reduce.pyx":800
+      /* "reduce.pyx":820
  *         PyArray_ITER_RESET(ita)
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -8834,7 +8872,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
       for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
         __pyx_v_i = __pyx_t_3;
 
-        /* "reduce.pyx":801
+        /* "reduce.pyx":821
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -8843,7 +8881,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
  */
         __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":802
+        /* "reduce.pyx":822
  *             for i in range(length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 aj = ai - amean             # <<<<<<<<<<<<<<
@@ -8852,7 +8890,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
  */
         __pyx_v_aj = (__pyx_v_ai - __pyx_v_amean);
 
-        /* "reduce.pyx":803
+        /* "reduce.pyx":823
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 aj = ai - amean
  *                 asum += aj * aj             # <<<<<<<<<<<<<<
@@ -8862,7 +8900,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
         __pyx_v_asum = (__pyx_v_asum + (__pyx_v_aj * __pyx_v_aj));
       }
 
-      /* "reduce.pyx":804
+      /* "reduce.pyx":824
  *                 aj = ai - amean
  *                 asum += aj * aj
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -8872,7 +8910,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
       PyArray_ITER_NEXT(__pyx_v_ita);
     }
 
-    /* "reduce.pyx":805
+    /* "reduce.pyx":825
  *                 asum += aj * aj
  *             PyArray_ITER_NEXT(ita)
  *         return asum / (size - ddof)             # <<<<<<<<<<<<<<
@@ -8880,7 +8918,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
  *         return NAN
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_asum / (__pyx_v_size - __pyx_v_ddof))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 805; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_asum / (__pyx_v_size - __pyx_v_ddof))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 825; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
@@ -8888,7 +8926,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
   }
   /*else*/ {
 
-    /* "reduce.pyx":807
+    /* "reduce.pyx":827
  *         return asum / (size - ddof)
  *     else:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -8896,14 +8934,14 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
  * @cython.cdivision(True)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 807; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 827; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":784
+  /* "reduce.pyx":804
  * 
  * @cython.cdivision(True)
  * cdef object nanvar_all_int32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -8922,7 +8960,7 @@ static PyObject *__pyx_f_6reduce_nanvar_all_int32(PyArrayIterObject *__pyx_v_ita
   return __pyx_r;
 }
 
-/* "reduce.pyx":810
+/* "reduce.pyx":830
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanvar_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -8949,7 +8987,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanvar_one_float64", 0);
 
-  /* "reduce.pyx":814
+  /* "reduce.pyx":834
  *                                int a_ndim, np.npy_intp* y_dims,
  *                                int ddof):
  *     cdef Py_ssize_t i, count = 0             # <<<<<<<<<<<<<<
@@ -8958,7 +8996,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
  */
   __pyx_v_count = 0;
 
-  /* "reduce.pyx":815
+  /* "reduce.pyx":835
  *                                int ddof):
  *     cdef Py_ssize_t i, count = 0
  *     cdef float64_t asum = 0, ai, amean             # <<<<<<<<<<<<<<
@@ -8967,33 +9005,33 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":816
+  /* "reduce.pyx":836
  *     cdef Py_ssize_t i, count = 0
  *     cdef float64_t asum = 0, ai, amean
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 816; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 836; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 816; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 836; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":817
+  /* "reduce.pyx":837
  *     cdef float64_t asum = 0, ai, amean
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 817; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 837; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 817; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 837; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":818
+  /* "reduce.pyx":838
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -9003,7 +9041,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":819
+    /* "reduce.pyx":839
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -9014,7 +9052,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":820
+      /* "reduce.pyx":840
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
@@ -9023,7 +9061,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
 
-      /* "reduce.pyx":821
+      /* "reduce.pyx":841
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -9036,7 +9074,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
   }
   /*else*/ {
 
-    /* "reduce.pyx":823
+    /* "reduce.pyx":843
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -9047,7 +9085,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":824
+      /* "reduce.pyx":844
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -9056,7 +9094,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
  */
       __pyx_v_asum = 0.0;
 
-      /* "reduce.pyx":825
+      /* "reduce.pyx":845
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             count = 0             # <<<<<<<<<<<<<<
@@ -9065,7 +9103,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
  */
       __pyx_v_count = 0;
 
-      /* "reduce.pyx":826
+      /* "reduce.pyx":846
  *             asum = 0
  *             count = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -9076,7 +9114,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":827
+        /* "reduce.pyx":847
  *             count = 0
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -9085,7 +9123,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":828
+        /* "reduce.pyx":848
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == ai:             # <<<<<<<<<<<<<<
@@ -9095,7 +9133,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
         __pyx_t_2 = ((__pyx_v_ai == __pyx_v_ai) != 0);
         if (__pyx_t_2) {
 
-          /* "reduce.pyx":829
+          /* "reduce.pyx":849
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == ai:
  *                     asum += ai             # <<<<<<<<<<<<<<
@@ -9104,7 +9142,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
  */
           __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
 
-          /* "reduce.pyx":830
+          /* "reduce.pyx":850
  *                 if ai == ai:
  *                     asum += ai
  *                     count += 1             # <<<<<<<<<<<<<<
@@ -9117,7 +9155,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
         __pyx_L10:;
       }
 
-      /* "reduce.pyx":831
+      /* "reduce.pyx":851
  *                     asum += ai
  *                     count += 1
  *             if count > ddof:             # <<<<<<<<<<<<<<
@@ -9127,7 +9165,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
       __pyx_t_2 = ((__pyx_v_count > __pyx_v_ddof) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":832
+        /* "reduce.pyx":852
  *                     count += 1
  *             if count > ddof:
  *                 amean = asum / count             # <<<<<<<<<<<<<<
@@ -9136,7 +9174,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
  */
         __pyx_v_amean = (__pyx_v_asum / __pyx_v_count);
 
-        /* "reduce.pyx":833
+        /* "reduce.pyx":853
  *             if count > ddof:
  *                 amean = asum / count
  *                 asum = 0             # <<<<<<<<<<<<<<
@@ -9145,7 +9183,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
  */
         __pyx_v_asum = 0.0;
 
-        /* "reduce.pyx":834
+        /* "reduce.pyx":854
  *                 amean = asum / count
  *                 asum = 0
  *                 for i in range(length):             # <<<<<<<<<<<<<<
@@ -9156,7 +9194,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
         for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
           __pyx_v_i = __pyx_t_4;
 
-          /* "reduce.pyx":835
+          /* "reduce.pyx":855
  *                 asum = 0
  *                 for i in range(length):
  *                     ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -9165,7 +9203,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
  */
           __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-          /* "reduce.pyx":836
+          /* "reduce.pyx":856
  *                 for i in range(length):
  *                     ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                     if ai == ai:             # <<<<<<<<<<<<<<
@@ -9175,7 +9213,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
           __pyx_t_2 = ((__pyx_v_ai == __pyx_v_ai) != 0);
           if (__pyx_t_2) {
 
-            /* "reduce.pyx":837
+            /* "reduce.pyx":857
  *                     ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                     if ai == ai:
  *                         ai -= amean             # <<<<<<<<<<<<<<
@@ -9184,7 +9222,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
  */
             __pyx_v_ai = (__pyx_v_ai - __pyx_v_amean);
 
-            /* "reduce.pyx":838
+            /* "reduce.pyx":858
  *                     if ai == ai:
  *                         ai -= amean
  *                         asum += ai * ai             # <<<<<<<<<<<<<<
@@ -9197,7 +9235,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
           __pyx_L14:;
         }
 
-        /* "reduce.pyx":839
+        /* "reduce.pyx":859
  *                         ai -= amean
  *                         asum += ai * ai
  *                 asum = asum / (count - ddof)             # <<<<<<<<<<<<<<
@@ -9209,7 +9247,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
       }
       /*else*/ {
 
-        /* "reduce.pyx":841
+        /* "reduce.pyx":861
  *                 asum = asum / (count - ddof)
  *             else:
  *                 asum = NAN             # <<<<<<<<<<<<<<
@@ -9220,7 +9258,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
       }
       __pyx_L11:;
 
-      /* "reduce.pyx":842
+      /* "reduce.pyx":862
  *             else:
  *                 asum = NAN
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -9229,7 +9267,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":843
+      /* "reduce.pyx":863
  *                 asum = NAN
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -9238,7 +9276,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":844
+      /* "reduce.pyx":864
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -9250,7 +9288,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":845
+  /* "reduce.pyx":865
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -9262,7 +9300,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":810
+  /* "reduce.pyx":830
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanvar_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -9283,7 +9321,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float64(PyArrayIterObject *__py
   return __pyx_r;
 }
 
-/* "reduce.pyx":848
+/* "reduce.pyx":868
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanvar_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -9310,7 +9348,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanvar_one_float32", 0);
 
-  /* "reduce.pyx":852
+  /* "reduce.pyx":872
  *                                int a_ndim, np.npy_intp* y_dims,
  *                                int ddof):
  *     cdef Py_ssize_t i, count = 0             # <<<<<<<<<<<<<<
@@ -9319,7 +9357,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
  */
   __pyx_v_count = 0;
 
-  /* "reduce.pyx":853
+  /* "reduce.pyx":873
  *                                int ddof):
  *     cdef Py_ssize_t i, count = 0
  *     cdef float32_t asum = 0, ai, amean             # <<<<<<<<<<<<<<
@@ -9328,33 +9366,33 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":854
+  /* "reduce.pyx":874
  *     cdef Py_ssize_t i, count = 0
  *     cdef float32_t asum = 0, ai, amean
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 854; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 874; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 854; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 874; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":855
+  /* "reduce.pyx":875
  *     cdef float32_t asum = 0, ai, amean
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 855; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 875; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 855; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 875; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":856
+  /* "reduce.pyx":876
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -9364,7 +9402,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":857
+    /* "reduce.pyx":877
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -9375,7 +9413,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":858
+      /* "reduce.pyx":878
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float32_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
@@ -9384,7 +9422,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
  */
       (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
 
-      /* "reduce.pyx":859
+      /* "reduce.pyx":879
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float32_t*>((<char*>pid(ity))))[0] = NAN
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -9397,7 +9435,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
   }
   /*else*/ {
 
-    /* "reduce.pyx":861
+    /* "reduce.pyx":881
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -9408,7 +9446,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":862
+      /* "reduce.pyx":882
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -9417,7 +9455,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
  */
       __pyx_v_asum = 0.0;
 
-      /* "reduce.pyx":863
+      /* "reduce.pyx":883
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             count = 0             # <<<<<<<<<<<<<<
@@ -9426,7 +9464,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
  */
       __pyx_v_count = 0;
 
-      /* "reduce.pyx":864
+      /* "reduce.pyx":884
  *             asum = 0
  *             count = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -9437,7 +9475,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":865
+        /* "reduce.pyx":885
  *             count = 0
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -9446,7 +9484,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":866
+        /* "reduce.pyx":886
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == ai:             # <<<<<<<<<<<<<<
@@ -9456,7 +9494,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
         __pyx_t_2 = ((__pyx_v_ai == __pyx_v_ai) != 0);
         if (__pyx_t_2) {
 
-          /* "reduce.pyx":867
+          /* "reduce.pyx":887
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 if ai == ai:
  *                     asum += ai             # <<<<<<<<<<<<<<
@@ -9465,7 +9503,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
  */
           __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
 
-          /* "reduce.pyx":868
+          /* "reduce.pyx":888
  *                 if ai == ai:
  *                     asum += ai
  *                     count += 1             # <<<<<<<<<<<<<<
@@ -9478,7 +9516,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
         __pyx_L10:;
       }
 
-      /* "reduce.pyx":869
+      /* "reduce.pyx":889
  *                     asum += ai
  *                     count += 1
  *             if count > ddof:             # <<<<<<<<<<<<<<
@@ -9488,7 +9526,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
       __pyx_t_2 = ((__pyx_v_count > __pyx_v_ddof) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":870
+        /* "reduce.pyx":890
  *                     count += 1
  *             if count > ddof:
  *                 amean = asum / count             # <<<<<<<<<<<<<<
@@ -9497,7 +9535,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
  */
         __pyx_v_amean = (__pyx_v_asum / __pyx_v_count);
 
-        /* "reduce.pyx":871
+        /* "reduce.pyx":891
  *             if count > ddof:
  *                 amean = asum / count
  *                 asum = 0             # <<<<<<<<<<<<<<
@@ -9506,7 +9544,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
  */
         __pyx_v_asum = 0.0;
 
-        /* "reduce.pyx":872
+        /* "reduce.pyx":892
  *                 amean = asum / count
  *                 asum = 0
  *                 for i in range(length):             # <<<<<<<<<<<<<<
@@ -9517,7 +9555,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
         for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
           __pyx_v_i = __pyx_t_4;
 
-          /* "reduce.pyx":873
+          /* "reduce.pyx":893
  *                 asum = 0
  *                 for i in range(length):
  *                     ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -9526,7 +9564,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
  */
           __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-          /* "reduce.pyx":874
+          /* "reduce.pyx":894
  *                 for i in range(length):
  *                     ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                     if ai == ai:             # <<<<<<<<<<<<<<
@@ -9536,7 +9574,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
           __pyx_t_2 = ((__pyx_v_ai == __pyx_v_ai) != 0);
           if (__pyx_t_2) {
 
-            /* "reduce.pyx":875
+            /* "reduce.pyx":895
  *                     ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                     if ai == ai:
  *                         ai -= amean             # <<<<<<<<<<<<<<
@@ -9545,7 +9583,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
  */
             __pyx_v_ai = (__pyx_v_ai - __pyx_v_amean);
 
-            /* "reduce.pyx":876
+            /* "reduce.pyx":896
  *                     if ai == ai:
  *                         ai -= amean
  *                         asum += ai * ai             # <<<<<<<<<<<<<<
@@ -9558,7 +9596,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
           __pyx_L14:;
         }
 
-        /* "reduce.pyx":877
+        /* "reduce.pyx":897
  *                         ai -= amean
  *                         asum += ai * ai
  *                 asum = asum / (count - ddof)             # <<<<<<<<<<<<<<
@@ -9570,7 +9608,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
       }
       /*else*/ {
 
-        /* "reduce.pyx":879
+        /* "reduce.pyx":899
  *                 asum = asum / (count - ddof)
  *             else:
  *                 asum = NAN             # <<<<<<<<<<<<<<
@@ -9581,7 +9619,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
       }
       __pyx_L11:;
 
-      /* "reduce.pyx":880
+      /* "reduce.pyx":900
  *             else:
  *                 asum = NAN
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -9590,7 +9628,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
  */
       (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":881
+      /* "reduce.pyx":901
  *                 asum = NAN
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -9599,7 +9637,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":882
+      /* "reduce.pyx":902
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -9611,7 +9649,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":883
+  /* "reduce.pyx":903
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -9623,7 +9661,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":848
+  /* "reduce.pyx":868
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanvar_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -9644,7 +9682,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_float32(PyArrayIterObject *__py
   return __pyx_r;
 }
 
-/* "reduce.pyx":886
+/* "reduce.pyx":906
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanvar_one_int64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -9671,7 +9709,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanvar_one_int64", 0);
 
-  /* "reduce.pyx":891
+  /* "reduce.pyx":911
  *                                int ddof):
  *     cdef Py_ssize_t i
  *     cdef float64_t asum = 0, amean, aj             # <<<<<<<<<<<<<<
@@ -9680,33 +9718,33 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":893
+  /* "reduce.pyx":913
  *     cdef float64_t asum = 0, amean, aj
  *     cdef int64_t ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 893; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 913; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 893; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 913; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":894
+  /* "reduce.pyx":914
  *     cdef int64_t ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 894; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 914; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 894; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 914; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":895
+  /* "reduce.pyx":915
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -9716,7 +9754,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":896
+    /* "reduce.pyx":916
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -9727,7 +9765,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":897
+      /* "reduce.pyx":917
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
@@ -9736,7 +9774,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
 
-      /* "reduce.pyx":898
+      /* "reduce.pyx":918
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -9749,7 +9787,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
   }
   /*else*/ {
 
-    /* "reduce.pyx":900
+    /* "reduce.pyx":920
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -9760,7 +9798,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":901
+      /* "reduce.pyx":921
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -9769,7 +9807,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
  */
       __pyx_v_asum = 0.0;
 
-      /* "reduce.pyx":902
+      /* "reduce.pyx":922
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -9780,7 +9818,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":903
+        /* "reduce.pyx":923
  *             asum = 0
  *             for i in range(length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -9789,7 +9827,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
  */
         __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":904
+        /* "reduce.pyx":924
  *             for i in range(length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 asum += ai             # <<<<<<<<<<<<<<
@@ -9799,7 +9837,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
         __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
       }
 
-      /* "reduce.pyx":905
+      /* "reduce.pyx":925
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 asum += ai
  *             if length > ddof:             # <<<<<<<<<<<<<<
@@ -9809,7 +9847,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
       __pyx_t_2 = ((__pyx_v_length > __pyx_v_ddof) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":906
+        /* "reduce.pyx":926
  *                 asum += ai
  *             if length > ddof:
  *                 amean = asum / length             # <<<<<<<<<<<<<<
@@ -9818,7 +9856,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
  */
         __pyx_v_amean = (__pyx_v_asum / __pyx_v_length);
 
-        /* "reduce.pyx":907
+        /* "reduce.pyx":927
  *             if length > ddof:
  *                 amean = asum / length
  *                 asum = 0             # <<<<<<<<<<<<<<
@@ -9827,7 +9865,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
  */
         __pyx_v_asum = 0.0;
 
-        /* "reduce.pyx":908
+        /* "reduce.pyx":928
  *                 amean = asum / length
  *                 asum = 0
  *                 for i in range(length):             # <<<<<<<<<<<<<<
@@ -9838,7 +9876,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
         for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
           __pyx_v_i = __pyx_t_4;
 
-          /* "reduce.pyx":909
+          /* "reduce.pyx":929
  *                 asum = 0
  *                 for i in range(length):
  *                     ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -9847,7 +9885,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
  */
           __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-          /* "reduce.pyx":910
+          /* "reduce.pyx":930
  *                 for i in range(length):
  *                     ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                     aj = ai - amean             # <<<<<<<<<<<<<<
@@ -9856,7 +9894,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
  */
           __pyx_v_aj = (__pyx_v_ai - __pyx_v_amean);
 
-          /* "reduce.pyx":911
+          /* "reduce.pyx":931
  *                     ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *                     aj = ai - amean
  *                     asum += aj * aj             # <<<<<<<<<<<<<<
@@ -9866,7 +9904,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
           __pyx_v_asum = (__pyx_v_asum + (__pyx_v_aj * __pyx_v_aj));
         }
 
-        /* "reduce.pyx":912
+        /* "reduce.pyx":932
  *                     aj = ai - amean
  *                     asum += aj * aj
  *                 asum = asum / (length - ddof)             # <<<<<<<<<<<<<<
@@ -9878,7 +9916,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
       }
       /*else*/ {
 
-        /* "reduce.pyx":914
+        /* "reduce.pyx":934
  *                 asum = asum / (length - ddof)
  *             else:
  *                 asum = NAN             # <<<<<<<<<<<<<<
@@ -9889,7 +9927,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
       }
       __pyx_L10:;
 
-      /* "reduce.pyx":915
+      /* "reduce.pyx":935
  *             else:
  *                 asum = NAN
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -9898,7 +9936,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":916
+      /* "reduce.pyx":936
  *                 asum = NAN
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -9907,7 +9945,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":917
+      /* "reduce.pyx":937
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -9919,7 +9957,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":918
+  /* "reduce.pyx":938
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -9931,7 +9969,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":886
+  /* "reduce.pyx":906
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanvar_one_int64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -9952,7 +9990,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int64(PyArrayIterObject *__pyx_
   return __pyx_r;
 }
 
-/* "reduce.pyx":921
+/* "reduce.pyx":941
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanvar_one_int32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -9979,7 +10017,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanvar_one_int32", 0);
 
-  /* "reduce.pyx":926
+  /* "reduce.pyx":946
  *                                int ddof):
  *     cdef Py_ssize_t i
  *     cdef float64_t asum = 0, amean, aj             # <<<<<<<<<<<<<<
@@ -9988,33 +10026,33 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":928
+  /* "reduce.pyx":948
  *     cdef float64_t asum = 0, amean, aj
  *     cdef int32_t ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 928; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 948; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 928; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 948; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":929
+  /* "reduce.pyx":949
  *     cdef int32_t ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 929; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 949; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 929; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 949; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":930
+  /* "reduce.pyx":950
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -10024,7 +10062,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":931
+    /* "reduce.pyx":951
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -10035,7 +10073,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":932
+      /* "reduce.pyx":952
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
@@ -10044,7 +10082,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
 
-      /* "reduce.pyx":933
+      /* "reduce.pyx":953
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -10057,7 +10095,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
   }
   /*else*/ {
 
-    /* "reduce.pyx":935
+    /* "reduce.pyx":955
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -10068,7 +10106,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":936
+      /* "reduce.pyx":956
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -10077,7 +10115,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
  */
       __pyx_v_asum = 0.0;
 
-      /* "reduce.pyx":937
+      /* "reduce.pyx":957
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -10088,7 +10126,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":938
+        /* "reduce.pyx":958
  *             asum = 0
  *             for i in range(length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -10097,7 +10135,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
  */
         __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":939
+        /* "reduce.pyx":959
  *             for i in range(length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 asum += ai             # <<<<<<<<<<<<<<
@@ -10107,7 +10145,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
         __pyx_v_asum = (__pyx_v_asum + __pyx_v_ai);
       }
 
-      /* "reduce.pyx":940
+      /* "reduce.pyx":960
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                 asum += ai
  *             if length > ddof:             # <<<<<<<<<<<<<<
@@ -10117,7 +10155,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
       __pyx_t_2 = ((__pyx_v_length > __pyx_v_ddof) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":941
+        /* "reduce.pyx":961
  *                 asum += ai
  *             if length > ddof:
  *                 amean = asum / length             # <<<<<<<<<<<<<<
@@ -10126,7 +10164,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
  */
         __pyx_v_amean = (__pyx_v_asum / __pyx_v_length);
 
-        /* "reduce.pyx":942
+        /* "reduce.pyx":962
  *             if length > ddof:
  *                 amean = asum / length
  *                 asum = 0             # <<<<<<<<<<<<<<
@@ -10135,7 +10173,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
  */
         __pyx_v_asum = 0.0;
 
-        /* "reduce.pyx":943
+        /* "reduce.pyx":963
  *                 amean = asum / length
  *                 asum = 0
  *                 for i in range(length):             # <<<<<<<<<<<<<<
@@ -10146,7 +10184,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
         for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
           __pyx_v_i = __pyx_t_4;
 
-          /* "reduce.pyx":944
+          /* "reduce.pyx":964
  *                 asum = 0
  *                 for i in range(length):
  *                     ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -10155,7 +10193,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
  */
           __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-          /* "reduce.pyx":945
+          /* "reduce.pyx":965
  *                 for i in range(length):
  *                     ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                     aj = ai - amean             # <<<<<<<<<<<<<<
@@ -10164,7 +10202,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
  */
           __pyx_v_aj = (__pyx_v_ai - __pyx_v_amean);
 
-          /* "reduce.pyx":946
+          /* "reduce.pyx":966
  *                     ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *                     aj = ai - amean
  *                     asum += aj * aj             # <<<<<<<<<<<<<<
@@ -10174,7 +10212,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
           __pyx_v_asum = (__pyx_v_asum + (__pyx_v_aj * __pyx_v_aj));
         }
 
-        /* "reduce.pyx":947
+        /* "reduce.pyx":967
  *                     aj = ai - amean
  *                     asum += aj * aj
  *                 asum = asum / (length - ddof)             # <<<<<<<<<<<<<<
@@ -10186,7 +10224,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
       }
       /*else*/ {
 
-        /* "reduce.pyx":949
+        /* "reduce.pyx":969
  *                 asum = asum / (length - ddof)
  *             else:
  *                 asum = NAN             # <<<<<<<<<<<<<<
@@ -10197,7 +10235,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
       }
       __pyx_L10:;
 
-      /* "reduce.pyx":950
+      /* "reduce.pyx":970
  *             else:
  *                 asum = NAN
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -10206,7 +10244,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":951
+      /* "reduce.pyx":971
  *                 asum = NAN
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -10215,7 +10253,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":952
+      /* "reduce.pyx":972
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -10227,7 +10265,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":953
+  /* "reduce.pyx":973
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -10239,7 +10277,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":921
+  /* "reduce.pyx":941
  * 
  * @cython.cdivision(True)
  * cdef ndarray nanvar_one_int32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -10260,7 +10298,7 @@ static PyArrayObject *__pyx_f_6reduce_nanvar_one_int32(PyArrayIterObject *__pyx_
   return __pyx_r;
 }
 
-/* "reduce.pyx":955
+/* "reduce.pyx":975
  *     return y
  * 
  * cdef nanvar_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
@@ -10277,7 +10315,7 @@ static PyObject *__pyx_f_6reduce_nanvar_0d(PyArrayObject *__pyx_v_a, CYTHON_UNUS
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanvar_0d", 0);
 
-  /* "reduce.pyx":956
+  /* "reduce.pyx":976
  * 
  * cdef nanvar_0d(ndarray a, int int_input):
  *     return a[()]             # <<<<<<<<<<<<<<
@@ -10285,13 +10323,13 @@ static PyObject *__pyx_f_6reduce_nanvar_0d(PyArrayObject *__pyx_v_a, CYTHON_UNUS
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_empty_tuple); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 956; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_empty_tuple); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 976; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "reduce.pyx":955
+  /* "reduce.pyx":975
  *     return y
  * 
  * cdef nanvar_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
@@ -10310,7 +10348,7 @@ static PyObject *__pyx_f_6reduce_nanvar_0d(PyArrayObject *__pyx_v_a, CYTHON_UNUS
   return __pyx_r;
 }
 
-/* "reduce.pyx":961
+/* "reduce.pyx":981
  * # nanmin --------------------------------------------------------------------
  * 
  * def nanmin(arr, axis=None):             # <<<<<<<<<<<<<<
@@ -10356,7 +10394,7 @@ static PyObject *__pyx_pw_6reduce_9nanmin(PyObject *__pyx_self, PyObject *__pyx_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nanmin") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 961; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nanmin") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 981; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -10371,7 +10409,7 @@ static PyObject *__pyx_pw_6reduce_9nanmin(PyObject *__pyx_self, PyObject *__pyx_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("nanmin", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 961; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("nanmin", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 981; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("reduce.nanmin", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -10404,7 +10442,7 @@ static PyObject *__pyx_pf_6reduce_8nanmin(CYTHON_UNUSED PyObject *__pyx_self, Py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmin", 0);
 
-  /* "reduce.pyx":962
+  /* "reduce.pyx":982
  * 
  * def nanmin(arr, axis=None):
  *     try:             # <<<<<<<<<<<<<<
@@ -10418,7 +10456,7 @@ static PyObject *__pyx_pf_6reduce_8nanmin(CYTHON_UNUSED PyObject *__pyx_self, Py
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "reduce.pyx":963
+      /* "reduce.pyx":983
  * def nanmin(arr, axis=None):
  *     try:
  *         return reducer(arr, axis,             # <<<<<<<<<<<<<<
@@ -10427,14 +10465,14 @@ static PyObject *__pyx_pf_6reduce_8nanmin(CYTHON_UNUSED PyObject *__pyx_self, Py
  */
       __Pyx_XDECREF(__pyx_r);
 
-      /* "reduce.pyx":972
+      /* "reduce.pyx":992
  *                        nanmin_one_int64,
  *                        nanmin_one_int32,
  *                        nanmin_0d)             # <<<<<<<<<<<<<<
  *     except TypeError:
  *         return slow.nanmin(arr, axis)
  */
-      __pyx_t_4 = __pyx_f_6reduce_reducer(__pyx_v_arr, __pyx_v_axis, __pyx_f_6reduce_nanmin_all_float64, __pyx_f_6reduce_nanmin_all_float32, __pyx_f_6reduce_nanmin_all_int64, __pyx_f_6reduce_nanmin_all_int32, __pyx_f_6reduce_nanmin_one_float64, __pyx_f_6reduce_nanmin_one_float32, __pyx_f_6reduce_nanmin_one_int64, __pyx_f_6reduce_nanmin_one_int32, __pyx_f_6reduce_nanmin_0d, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 963; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_t_4 = __pyx_f_6reduce_reducer(__pyx_v_arr, __pyx_v_axis, __pyx_f_6reduce_nanmin_all_float64, __pyx_f_6reduce_nanmin_all_float32, __pyx_f_6reduce_nanmin_all_int64, __pyx_f_6reduce_nanmin_all_int32, __pyx_f_6reduce_nanmin_one_float64, __pyx_f_6reduce_nanmin_one_float32, __pyx_f_6reduce_nanmin_one_int64, __pyx_f_6reduce_nanmin_one_int32, __pyx_f_6reduce_nanmin_0d, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 983; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
@@ -10443,7 +10481,7 @@ static PyObject *__pyx_pf_6reduce_8nanmin(CYTHON_UNUSED PyObject *__pyx_self, Py
     __pyx_L3_error:;
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "reduce.pyx":973
+    /* "reduce.pyx":993
  *                        nanmin_one_int32,
  *                        nanmin_0d)
  *     except TypeError:             # <<<<<<<<<<<<<<
@@ -10453,12 +10491,12 @@ static PyObject *__pyx_pf_6reduce_8nanmin(CYTHON_UNUSED PyObject *__pyx_self, Py
     __pyx_t_5 = PyErr_ExceptionMatches(__pyx_builtin_TypeError);
     if (__pyx_t_5) {
       __Pyx_AddTraceback("reduce.nanmin", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_7) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 973; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_7) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 993; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_7);
 
-      /* "reduce.pyx":974
+      /* "reduce.pyx":994
  *                        nanmin_0d)
  *     except TypeError:
  *         return slow.nanmin(arr, axis)             # <<<<<<<<<<<<<<
@@ -10466,9 +10504,9 @@ static PyObject *__pyx_pf_6reduce_8nanmin(CYTHON_UNUSED PyObject *__pyx_self, Py
  * 
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 974; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 994; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_nanmin); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 974; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_nanmin); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 994; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_t_9 = NULL;
@@ -10483,7 +10521,7 @@ static PyObject *__pyx_pf_6reduce_8nanmin(CYTHON_UNUSED PyObject *__pyx_self, Py
           __pyx_t_11 = 1;
         }
       }
-      __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 974; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 994; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_12);
       if (__pyx_t_9) {
         PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_9); __Pyx_GIVEREF(__pyx_t_9); __pyx_t_9 = NULL;
@@ -10494,7 +10532,7 @@ static PyObject *__pyx_pf_6reduce_8nanmin(CYTHON_UNUSED PyObject *__pyx_self, Py
       __Pyx_INCREF(__pyx_v_axis);
       PyTuple_SET_ITEM(__pyx_t_12, 1+__pyx_t_11, __pyx_v_axis);
       __Pyx_GIVEREF(__pyx_v_axis);
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_12, NULL); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 974; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_12, NULL); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 994; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -10526,7 +10564,7 @@ static PyObject *__pyx_pf_6reduce_8nanmin(CYTHON_UNUSED PyObject *__pyx_self, Py
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":961
+  /* "reduce.pyx":981
  * # nanmin --------------------------------------------------------------------
  * 
  * def nanmin(arr, axis=None):             # <<<<<<<<<<<<<<
@@ -10551,7 +10589,7 @@ static PyObject *__pyx_pf_6reduce_8nanmin(CYTHON_UNUSED PyObject *__pyx_self, Py
   return __pyx_r;
 }
 
-/* "reduce.pyx":977
+/* "reduce.pyx":997
  * 
  * 
  * cdef object nanmin_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -10578,7 +10616,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmin_all_float64", 0);
 
-  /* "reduce.pyx":979
+  /* "reduce.pyx":999
  * cdef object nanmin_all_float64(np.flatiter ita, Py_ssize_t stride,
  *                               Py_ssize_t length, int int_input):
  *     cdef int allnan = 1, is_size_0 = 1             # <<<<<<<<<<<<<<
@@ -10588,7 +10626,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
   __pyx_v_allnan = 1;
   __pyx_v_is_size_0 = 1;
 
-  /* "reduce.pyx":981
+  /* "reduce.pyx":1001
  *     cdef int allnan = 1, is_size_0 = 1
  *     cdef Py_ssize_t i
  *     cdef float64_t ai, amin = MAXfloat64             # <<<<<<<<<<<<<<
@@ -10597,7 +10635,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
  */
   __pyx_v_amin = __pyx_v_6reduce_MAXfloat64;
 
-  /* "reduce.pyx":982
+  /* "reduce.pyx":1002
  *     cdef Py_ssize_t i
  *     cdef float64_t ai, amin = MAXfloat64
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -10608,7 +10646,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":983
+    /* "reduce.pyx":1003
  *     cdef float64_t ai, amin = MAXfloat64
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -10619,7 +10657,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":984
+      /* "reduce.pyx":1004
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -10628,7 +10666,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":985
+      /* "reduce.pyx":1005
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai <= amin:             # <<<<<<<<<<<<<<
@@ -10638,7 +10676,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
       __pyx_t_1 = ((__pyx_v_ai <= __pyx_v_amin) != 0);
       if (__pyx_t_1) {
 
-        /* "reduce.pyx":986
+        /* "reduce.pyx":1006
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai <= amin:
  *                 amin = ai             # <<<<<<<<<<<<<<
@@ -10647,7 +10685,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
  */
         __pyx_v_amin = __pyx_v_ai;
 
-        /* "reduce.pyx":987
+        /* "reduce.pyx":1007
  *             if ai <= amin:
  *                 amin = ai
  *                 allnan = 0             # <<<<<<<<<<<<<<
@@ -10660,7 +10698,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
       __pyx_L7:;
     }
 
-    /* "reduce.pyx":988
+    /* "reduce.pyx":1008
  *                 amin = ai
  *                 allnan = 0
  *         is_size_0 = 0             # <<<<<<<<<<<<<<
@@ -10669,7 +10707,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
  */
     __pyx_v_is_size_0 = 0;
 
-    /* "reduce.pyx":989
+    /* "reduce.pyx":1009
  *                 allnan = 0
  *         is_size_0 = 0
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -10679,7 +10717,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":990
+  /* "reduce.pyx":1010
  *         is_size_0 = 0
  *         PyArray_ITER_NEXT(ita)
  *     if is_size_0 == 1:             # <<<<<<<<<<<<<<
@@ -10689,7 +10727,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
   __pyx_t_1 = ((__pyx_v_is_size_0 == 1) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":991
+    /* "reduce.pyx":1011
  *         PyArray_ITER_NEXT(ita)
  *     if is_size_0 == 1:
  *         m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."             # <<<<<<<<<<<<<<
@@ -10699,27 +10737,27 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
     __Pyx_INCREF(__pyx_kp_s_numpy_nanmin_raises_on_a_size_0);
     __pyx_v_m = __pyx_kp_s_numpy_nanmin_raises_on_a_size_0;
 
-    /* "reduce.pyx":992
+    /* "reduce.pyx":1012
  *     if is_size_0 == 1:
  *         m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."
  *         raise ValueError(m)             # <<<<<<<<<<<<<<
  *     if allnan == 0:
  *         return amin
  */
-    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 992; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1012; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_v_m);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_m);
     __Pyx_GIVEREF(__pyx_v_m);
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 992; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1012; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 992; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1012; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "reduce.pyx":993
+  /* "reduce.pyx":1013
  *         m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."
  *         raise ValueError(m)
  *     if allnan == 0:             # <<<<<<<<<<<<<<
@@ -10729,7 +10767,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
   __pyx_t_1 = ((__pyx_v_allnan == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":994
+    /* "reduce.pyx":1014
  *         raise ValueError(m)
  *     if allnan == 0:
  *         return amin             # <<<<<<<<<<<<<<
@@ -10737,7 +10775,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
  *         return NAN
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_amin); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 994; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_amin); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1014; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
@@ -10745,7 +10783,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
   }
   /*else*/ {
 
-    /* "reduce.pyx":996
+    /* "reduce.pyx":1016
  *         return amin
  *     else:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -10753,14 +10791,14 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
  * cdef object nanmin_all_float32(np.flatiter ita, Py_ssize_t stride,
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 996; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1016; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":977
+  /* "reduce.pyx":997
  * 
  * 
  * cdef object nanmin_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -10781,7 +10819,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float64(PyArrayIterObject *__pyx_v_i
   return __pyx_r;
 }
 
-/* "reduce.pyx":998
+/* "reduce.pyx":1018
  *         return NAN
  * 
  * cdef object nanmin_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -10808,7 +10846,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmin_all_float32", 0);
 
-  /* "reduce.pyx":1000
+  /* "reduce.pyx":1020
  * cdef object nanmin_all_float32(np.flatiter ita, Py_ssize_t stride,
  *                               Py_ssize_t length, int int_input):
  *     cdef int allnan = 1, is_size_0 = 1             # <<<<<<<<<<<<<<
@@ -10818,7 +10856,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
   __pyx_v_allnan = 1;
   __pyx_v_is_size_0 = 1;
 
-  /* "reduce.pyx":1002
+  /* "reduce.pyx":1022
  *     cdef int allnan = 1, is_size_0 = 1
  *     cdef Py_ssize_t i
  *     cdef float32_t ai, amin = MAXfloat32             # <<<<<<<<<<<<<<
@@ -10827,7 +10865,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
  */
   __pyx_v_amin = __pyx_v_6reduce_MAXfloat32;
 
-  /* "reduce.pyx":1003
+  /* "reduce.pyx":1023
  *     cdef Py_ssize_t i
  *     cdef float32_t ai, amin = MAXfloat32
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -10838,7 +10876,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":1004
+    /* "reduce.pyx":1024
  *     cdef float32_t ai, amin = MAXfloat32
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -10849,7 +10887,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":1005
+      /* "reduce.pyx":1025
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -10858,7 +10896,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1006
+      /* "reduce.pyx":1026
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai <= amin:             # <<<<<<<<<<<<<<
@@ -10868,7 +10906,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
       __pyx_t_1 = ((__pyx_v_ai <= __pyx_v_amin) != 0);
       if (__pyx_t_1) {
 
-        /* "reduce.pyx":1007
+        /* "reduce.pyx":1027
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai <= amin:
  *                 amin = ai             # <<<<<<<<<<<<<<
@@ -10877,7 +10915,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
  */
         __pyx_v_amin = __pyx_v_ai;
 
-        /* "reduce.pyx":1008
+        /* "reduce.pyx":1028
  *             if ai <= amin:
  *                 amin = ai
  *                 allnan = 0             # <<<<<<<<<<<<<<
@@ -10890,7 +10928,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
       __pyx_L7:;
     }
 
-    /* "reduce.pyx":1009
+    /* "reduce.pyx":1029
  *                 amin = ai
  *                 allnan = 0
  *         is_size_0 = 0             # <<<<<<<<<<<<<<
@@ -10899,7 +10937,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
  */
     __pyx_v_is_size_0 = 0;
 
-    /* "reduce.pyx":1010
+    /* "reduce.pyx":1030
  *                 allnan = 0
  *         is_size_0 = 0
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -10909,7 +10947,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":1011
+  /* "reduce.pyx":1031
  *         is_size_0 = 0
  *         PyArray_ITER_NEXT(ita)
  *     if is_size_0 == 1:             # <<<<<<<<<<<<<<
@@ -10919,7 +10957,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
   __pyx_t_1 = ((__pyx_v_is_size_0 == 1) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":1012
+    /* "reduce.pyx":1032
  *         PyArray_ITER_NEXT(ita)
  *     if is_size_0 == 1:
  *         m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."             # <<<<<<<<<<<<<<
@@ -10929,27 +10967,27 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
     __Pyx_INCREF(__pyx_kp_s_numpy_nanmin_raises_on_a_size_0);
     __pyx_v_m = __pyx_kp_s_numpy_nanmin_raises_on_a_size_0;
 
-    /* "reduce.pyx":1013
+    /* "reduce.pyx":1033
  *     if is_size_0 == 1:
  *         m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."
  *         raise ValueError(m)             # <<<<<<<<<<<<<<
  *     if allnan == 0:
  *         return amin
  */
-    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1013; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1033; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_v_m);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_m);
     __Pyx_GIVEREF(__pyx_v_m);
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1013; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1033; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1013; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1033; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "reduce.pyx":1014
+  /* "reduce.pyx":1034
  *         m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."
  *         raise ValueError(m)
  *     if allnan == 0:             # <<<<<<<<<<<<<<
@@ -10959,7 +10997,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
   __pyx_t_1 = ((__pyx_v_allnan == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":1015
+    /* "reduce.pyx":1035
  *         raise ValueError(m)
  *     if allnan == 0:
  *         return amin             # <<<<<<<<<<<<<<
@@ -10967,7 +11005,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
  *         return NAN
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_amin); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1015; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_amin); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1035; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
@@ -10975,7 +11013,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
   }
   /*else*/ {
 
-    /* "reduce.pyx":1017
+    /* "reduce.pyx":1037
  *         return amin
  *     else:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -10983,14 +11021,14 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
  * cdef object nanmin_all_int64(np.flatiter ita, Py_ssize_t stride,
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1017; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1037; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":998
+  /* "reduce.pyx":1018
  *         return NAN
  * 
  * cdef object nanmin_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -11011,7 +11049,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_float32(PyArrayIterObject *__pyx_v_i
   return __pyx_r;
 }
 
-/* "reduce.pyx":1019
+/* "reduce.pyx":1039
  *         return NAN
  * 
  * cdef object nanmin_all_int64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -11037,7 +11075,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int64(PyArrayIterObject *__pyx_v_ita
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmin_all_int64", 0);
 
-  /* "reduce.pyx":1021
+  /* "reduce.pyx":1041
  * cdef object nanmin_all_int64(np.flatiter ita, Py_ssize_t stride,
  *                               Py_ssize_t length, int int_input):
  *     cdef int is_size_0 = 1             # <<<<<<<<<<<<<<
@@ -11046,7 +11084,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int64(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_is_size_0 = 1;
 
-  /* "reduce.pyx":1023
+  /* "reduce.pyx":1043
  *     cdef int is_size_0 = 1
  *     cdef Py_ssize_t i
  *     cdef int64_t ai, amin = MAXint64             # <<<<<<<<<<<<<<
@@ -11055,7 +11093,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int64(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_amin = __pyx_v_6reduce_MAXint64;
 
-  /* "reduce.pyx":1024
+  /* "reduce.pyx":1044
  *     cdef Py_ssize_t i
  *     cdef int64_t ai, amin = MAXint64
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -11066,7 +11104,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int64(PyArrayIterObject *__pyx_v_ita
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":1025
+    /* "reduce.pyx":1045
  *     cdef int64_t ai, amin = MAXint64
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -11077,7 +11115,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int64(PyArrayIterObject *__pyx_v_ita
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":1026
+      /* "reduce.pyx":1046
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -11086,7 +11124,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int64(PyArrayIterObject *__pyx_v_ita
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1027
+      /* "reduce.pyx":1047
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai <= amin:             # <<<<<<<<<<<<<<
@@ -11096,7 +11134,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int64(PyArrayIterObject *__pyx_v_ita
       __pyx_t_1 = ((__pyx_v_ai <= __pyx_v_amin) != 0);
       if (__pyx_t_1) {
 
-        /* "reduce.pyx":1028
+        /* "reduce.pyx":1048
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai <= amin:
  *                 amin = ai             # <<<<<<<<<<<<<<
@@ -11109,7 +11147,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int64(PyArrayIterObject *__pyx_v_ita
       __pyx_L7:;
     }
 
-    /* "reduce.pyx":1029
+    /* "reduce.pyx":1049
  *             if ai <= amin:
  *                 amin = ai
  *         is_size_0 = 0             # <<<<<<<<<<<<<<
@@ -11118,7 +11156,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int64(PyArrayIterObject *__pyx_v_ita
  */
     __pyx_v_is_size_0 = 0;
 
-    /* "reduce.pyx":1030
+    /* "reduce.pyx":1050
  *                 amin = ai
  *         is_size_0 = 0
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -11128,7 +11166,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int64(PyArrayIterObject *__pyx_v_ita
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":1031
+  /* "reduce.pyx":1051
  *         is_size_0 = 0
  *         PyArray_ITER_NEXT(ita)
  *     if is_size_0 == 1:             # <<<<<<<<<<<<<<
@@ -11138,7 +11176,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int64(PyArrayIterObject *__pyx_v_ita
   __pyx_t_1 = ((__pyx_v_is_size_0 == 1) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":1032
+    /* "reduce.pyx":1052
  *         PyArray_ITER_NEXT(ita)
  *     if is_size_0 == 1:
  *         m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."             # <<<<<<<<<<<<<<
@@ -11148,27 +11186,27 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int64(PyArrayIterObject *__pyx_v_ita
     __Pyx_INCREF(__pyx_kp_s_numpy_nanmin_raises_on_a_size_0);
     __pyx_v_m = __pyx_kp_s_numpy_nanmin_raises_on_a_size_0;
 
-    /* "reduce.pyx":1033
+    /* "reduce.pyx":1053
  *     if is_size_0 == 1:
  *         m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."
  *         raise ValueError(m)             # <<<<<<<<<<<<<<
  *     return amin
  * 
  */
-    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1033; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1053; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_v_m);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_m);
     __Pyx_GIVEREF(__pyx_v_m);
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1033; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1053; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1033; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1053; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "reduce.pyx":1034
+  /* "reduce.pyx":1054
  *         m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."
  *         raise ValueError(m)
  *     return amin             # <<<<<<<<<<<<<<
@@ -11176,13 +11214,13 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int64(PyArrayIterObject *__pyx_v_ita
  * cdef object nanmin_all_int32(np.flatiter ita, Py_ssize_t stride,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = __Pyx_PyInt_From_npy_int64(__pyx_v_amin); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1034; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyInt_From_npy_int64(__pyx_v_amin); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1054; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_r = __pyx_t_5;
   __pyx_t_5 = 0;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1019
+  /* "reduce.pyx":1039
  *         return NAN
  * 
  * cdef object nanmin_all_int64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -11203,7 +11241,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int64(PyArrayIterObject *__pyx_v_ita
   return __pyx_r;
 }
 
-/* "reduce.pyx":1036
+/* "reduce.pyx":1056
  *     return amin
  * 
  * cdef object nanmin_all_int32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -11229,7 +11267,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int32(PyArrayIterObject *__pyx_v_ita
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmin_all_int32", 0);
 
-  /* "reduce.pyx":1038
+  /* "reduce.pyx":1058
  * cdef object nanmin_all_int32(np.flatiter ita, Py_ssize_t stride,
  *                               Py_ssize_t length, int int_input):
  *     cdef int is_size_0 = 1             # <<<<<<<<<<<<<<
@@ -11238,7 +11276,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int32(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_is_size_0 = 1;
 
-  /* "reduce.pyx":1040
+  /* "reduce.pyx":1060
  *     cdef int is_size_0 = 1
  *     cdef Py_ssize_t i
  *     cdef int32_t ai, amin = MAXint32             # <<<<<<<<<<<<<<
@@ -11247,7 +11285,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int32(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_amin = __pyx_v_6reduce_MAXint32;
 
-  /* "reduce.pyx":1041
+  /* "reduce.pyx":1061
  *     cdef Py_ssize_t i
  *     cdef int32_t ai, amin = MAXint32
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -11258,7 +11296,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int32(PyArrayIterObject *__pyx_v_ita
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":1042
+    /* "reduce.pyx":1062
  *     cdef int32_t ai, amin = MAXint32
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -11269,7 +11307,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int32(PyArrayIterObject *__pyx_v_ita
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":1043
+      /* "reduce.pyx":1063
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -11278,7 +11316,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int32(PyArrayIterObject *__pyx_v_ita
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1044
+      /* "reduce.pyx":1064
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai <= amin:             # <<<<<<<<<<<<<<
@@ -11288,7 +11326,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int32(PyArrayIterObject *__pyx_v_ita
       __pyx_t_1 = ((__pyx_v_ai <= __pyx_v_amin) != 0);
       if (__pyx_t_1) {
 
-        /* "reduce.pyx":1045
+        /* "reduce.pyx":1065
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai <= amin:
  *                 amin = ai             # <<<<<<<<<<<<<<
@@ -11301,7 +11339,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int32(PyArrayIterObject *__pyx_v_ita
       __pyx_L7:;
     }
 
-    /* "reduce.pyx":1046
+    /* "reduce.pyx":1066
  *             if ai <= amin:
  *                 amin = ai
  *         is_size_0 = 0             # <<<<<<<<<<<<<<
@@ -11310,7 +11348,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int32(PyArrayIterObject *__pyx_v_ita
  */
     __pyx_v_is_size_0 = 0;
 
-    /* "reduce.pyx":1047
+    /* "reduce.pyx":1067
  *                 amin = ai
  *         is_size_0 = 0
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -11320,7 +11358,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int32(PyArrayIterObject *__pyx_v_ita
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":1048
+  /* "reduce.pyx":1068
  *         is_size_0 = 0
  *         PyArray_ITER_NEXT(ita)
  *     if is_size_0 == 1:             # <<<<<<<<<<<<<<
@@ -11330,7 +11368,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int32(PyArrayIterObject *__pyx_v_ita
   __pyx_t_1 = ((__pyx_v_is_size_0 == 1) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":1049
+    /* "reduce.pyx":1069
  *         PyArray_ITER_NEXT(ita)
  *     if is_size_0 == 1:
  *         m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."             # <<<<<<<<<<<<<<
@@ -11340,27 +11378,27 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int32(PyArrayIterObject *__pyx_v_ita
     __Pyx_INCREF(__pyx_kp_s_numpy_nanmin_raises_on_a_size_0);
     __pyx_v_m = __pyx_kp_s_numpy_nanmin_raises_on_a_size_0;
 
-    /* "reduce.pyx":1050
+    /* "reduce.pyx":1070
  *     if is_size_0 == 1:
  *         m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."
  *         raise ValueError(m)             # <<<<<<<<<<<<<<
  *     return amin
  * 
  */
-    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1050; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1070; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_v_m);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_m);
     __Pyx_GIVEREF(__pyx_v_m);
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1050; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1070; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1050; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1070; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "reduce.pyx":1051
+  /* "reduce.pyx":1071
  *         m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."
  *         raise ValueError(m)
  *     return amin             # <<<<<<<<<<<<<<
@@ -11368,13 +11406,13 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int32(PyArrayIterObject *__pyx_v_ita
  * cdef ndarray nanmin_one_float64(np.flatiter ita,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = __Pyx_PyInt_From_npy_int32(__pyx_v_amin); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1051; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyInt_From_npy_int32(__pyx_v_amin); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1071; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_r = __pyx_t_5;
   __pyx_t_5 = 0;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1036
+  /* "reduce.pyx":1056
  *     return amin
  * 
  * cdef object nanmin_all_int32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -11395,7 +11433,7 @@ static PyObject *__pyx_f_6reduce_nanmin_all_int32(PyArrayIterObject *__pyx_v_ita
   return __pyx_r;
 }
 
-/* "reduce.pyx":1053
+/* "reduce.pyx":1073
  *     return amin
  * 
  * cdef ndarray nanmin_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -11423,33 +11461,33 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmin_one_float64", 0);
 
-  /* "reduce.pyx":1059
+  /* "reduce.pyx":1079
  *     cdef Py_ssize_t i
  *     cdef float64_t ai, amin
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1059; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1059; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1060
+  /* "reduce.pyx":1080
  *     cdef float64_t ai, amin
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1060; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1080; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1060; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1080; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1061
+  /* "reduce.pyx":1081
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -11459,7 +11497,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":1062
+    /* "reduce.pyx":1082
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."             # <<<<<<<<<<<<<<
@@ -11469,27 +11507,27 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
     __Pyx_INCREF(__pyx_kp_s_numpy_nanmin_raises_on_a_shape_a);
     __pyx_v_msg = __pyx_kp_s_numpy_nanmin_raises_on_a_shape_a;
 
-    /* "reduce.pyx":1063
+    /* "reduce.pyx":1083
  *     if length == 0:
  *         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."
  *         raise ValueError(msg)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MAXfloat64
  */
-    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1063; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1083; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_msg);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_msg);
     __Pyx_GIVEREF(__pyx_v_msg);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1063; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1083; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1063; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1083; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "reduce.pyx":1064
+  /* "reduce.pyx":1084
  *         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."
  *         raise ValueError(msg)
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -11500,7 +11538,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "reduce.pyx":1065
+    /* "reduce.pyx":1085
  *         raise ValueError(msg)
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MAXfloat64             # <<<<<<<<<<<<<<
@@ -11509,7 +11547,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
  */
     __pyx_v_amin = __pyx_v_6reduce_MAXfloat64;
 
-    /* "reduce.pyx":1066
+    /* "reduce.pyx":1086
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MAXfloat64
  *         allnan = 1             # <<<<<<<<<<<<<<
@@ -11518,7 +11556,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
  */
     __pyx_v_allnan = 1;
 
-    /* "reduce.pyx":1067
+    /* "reduce.pyx":1087
  *         amin = MAXfloat64
  *         allnan = 1
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -11529,7 +11567,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
 
-      /* "reduce.pyx":1068
+      /* "reduce.pyx":1088
  *         allnan = 1
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -11538,7 +11576,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1069
+      /* "reduce.pyx":1089
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai <= amin:             # <<<<<<<<<<<<<<
@@ -11548,7 +11586,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
       __pyx_t_2 = ((__pyx_v_ai <= __pyx_v_amin) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":1070
+        /* "reduce.pyx":1090
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai <= amin:
  *                 amin = ai             # <<<<<<<<<<<<<<
@@ -11557,7 +11595,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
  */
         __pyx_v_amin = __pyx_v_ai;
 
-        /* "reduce.pyx":1071
+        /* "reduce.pyx":1091
  *             if ai <= amin:
  *                 amin = ai
  *                 allnan = 0             # <<<<<<<<<<<<<<
@@ -11570,7 +11608,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
       __pyx_L8:;
     }
 
-    /* "reduce.pyx":1072
+    /* "reduce.pyx":1092
  *                 amin = ai
  *                 allnan = 0
  *         if allnan != 0:             # <<<<<<<<<<<<<<
@@ -11580,7 +11618,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
     __pyx_t_2 = ((__pyx_v_allnan != 0) != 0);
     if (__pyx_t_2) {
 
-      /* "reduce.pyx":1073
+      /* "reduce.pyx":1093
  *                 allnan = 0
  *         if allnan != 0:
  *             amin = NAN             # <<<<<<<<<<<<<<
@@ -11592,7 +11630,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
     }
     __pyx_L9:;
 
-    /* "reduce.pyx":1074
+    /* "reduce.pyx":1094
  *         if allnan != 0:
  *             amin = NAN
  *         (<float64_t*>((<char*>pid(ity))))[0] = amin             # <<<<<<<<<<<<<<
@@ -11601,7 +11639,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
  */
     (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_amin;
 
-    /* "reduce.pyx":1075
+    /* "reduce.pyx":1095
  *             amin = NAN
  *         (<float64_t*>((<char*>pid(ity))))[0] = amin
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -11610,7 +11648,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "reduce.pyx":1076
+    /* "reduce.pyx":1096
  *         (<float64_t*>((<char*>pid(ity))))[0] = amin
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -11620,7 +11658,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
     PyArray_ITER_NEXT(__pyx_v_ity);
   }
 
-  /* "reduce.pyx":1077
+  /* "reduce.pyx":1097
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -11632,7 +11670,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1053
+  /* "reduce.pyx":1073
  *     return amin
  * 
  * cdef ndarray nanmin_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -11655,7 +11693,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float64(PyArrayIterObject *__py
   return __pyx_r;
 }
 
-/* "reduce.pyx":1079
+/* "reduce.pyx":1099
  *     return y
  * 
  * cdef ndarray nanmin_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -11683,33 +11721,33 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmin_one_float32", 0);
 
-  /* "reduce.pyx":1085
+  /* "reduce.pyx":1105
  *     cdef Py_ssize_t i
  *     cdef float32_t ai, amin
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1085; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1085; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1086
+  /* "reduce.pyx":1106
  *     cdef float32_t ai, amin
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1086; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1086; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1087
+  /* "reduce.pyx":1107
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -11719,7 +11757,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":1088
+    /* "reduce.pyx":1108
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."             # <<<<<<<<<<<<<<
@@ -11729,27 +11767,27 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
     __Pyx_INCREF(__pyx_kp_s_numpy_nanmin_raises_on_a_shape_a);
     __pyx_v_msg = __pyx_kp_s_numpy_nanmin_raises_on_a_shape_a;
 
-    /* "reduce.pyx":1089
+    /* "reduce.pyx":1109
  *     if length == 0:
  *         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."
  *         raise ValueError(msg)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MAXfloat32
  */
-    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1089; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_msg);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_msg);
     __Pyx_GIVEREF(__pyx_v_msg);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1089; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1089; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "reduce.pyx":1090
+  /* "reduce.pyx":1110
  *         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."
  *         raise ValueError(msg)
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -11760,7 +11798,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "reduce.pyx":1091
+    /* "reduce.pyx":1111
  *         raise ValueError(msg)
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MAXfloat32             # <<<<<<<<<<<<<<
@@ -11769,7 +11807,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
  */
     __pyx_v_amin = __pyx_v_6reduce_MAXfloat32;
 
-    /* "reduce.pyx":1092
+    /* "reduce.pyx":1112
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MAXfloat32
  *         allnan = 1             # <<<<<<<<<<<<<<
@@ -11778,7 +11816,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
  */
     __pyx_v_allnan = 1;
 
-    /* "reduce.pyx":1093
+    /* "reduce.pyx":1113
  *         amin = MAXfloat32
  *         allnan = 1
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -11789,7 +11827,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
 
-      /* "reduce.pyx":1094
+      /* "reduce.pyx":1114
  *         allnan = 1
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -11798,7 +11836,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1095
+      /* "reduce.pyx":1115
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai <= amin:             # <<<<<<<<<<<<<<
@@ -11808,7 +11846,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
       __pyx_t_2 = ((__pyx_v_ai <= __pyx_v_amin) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":1096
+        /* "reduce.pyx":1116
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai <= amin:
  *                 amin = ai             # <<<<<<<<<<<<<<
@@ -11817,7 +11855,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
  */
         __pyx_v_amin = __pyx_v_ai;
 
-        /* "reduce.pyx":1097
+        /* "reduce.pyx":1117
  *             if ai <= amin:
  *                 amin = ai
  *                 allnan = 0             # <<<<<<<<<<<<<<
@@ -11830,7 +11868,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
       __pyx_L8:;
     }
 
-    /* "reduce.pyx":1098
+    /* "reduce.pyx":1118
  *                 amin = ai
  *                 allnan = 0
  *         if allnan != 0:             # <<<<<<<<<<<<<<
@@ -11840,7 +11878,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
     __pyx_t_2 = ((__pyx_v_allnan != 0) != 0);
     if (__pyx_t_2) {
 
-      /* "reduce.pyx":1099
+      /* "reduce.pyx":1119
  *                 allnan = 0
  *         if allnan != 0:
  *             amin = NAN             # <<<<<<<<<<<<<<
@@ -11852,7 +11890,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
     }
     __pyx_L9:;
 
-    /* "reduce.pyx":1100
+    /* "reduce.pyx":1120
  *         if allnan != 0:
  *             amin = NAN
  *         (<float32_t*>((<char*>pid(ity))))[0] = amin             # <<<<<<<<<<<<<<
@@ -11861,7 +11899,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
  */
     (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_amin;
 
-    /* "reduce.pyx":1101
+    /* "reduce.pyx":1121
  *             amin = NAN
  *         (<float32_t*>((<char*>pid(ity))))[0] = amin
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -11870,7 +11908,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "reduce.pyx":1102
+    /* "reduce.pyx":1122
  *         (<float32_t*>((<char*>pid(ity))))[0] = amin
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -11880,7 +11918,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
     PyArray_ITER_NEXT(__pyx_v_ity);
   }
 
-  /* "reduce.pyx":1103
+  /* "reduce.pyx":1123
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -11892,7 +11930,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1079
+  /* "reduce.pyx":1099
  *     return y
  * 
  * cdef ndarray nanmin_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -11915,7 +11953,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_float32(PyArrayIterObject *__py
   return __pyx_r;
 }
 
-/* "reduce.pyx":1105
+/* "reduce.pyx":1125
  *     return y
  * 
  * cdef ndarray nanmin_one_int64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -11942,33 +11980,33 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int64(PyArrayIterObject *__pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmin_one_int64", 0);
 
-  /* "reduce.pyx":1110
+  /* "reduce.pyx":1130
  *     cdef Py_ssize_t i
  *     cdef int64_t ai, amin
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_INT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_INT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1130; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1130; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1111
+  /* "reduce.pyx":1131
  *     cdef int64_t ai, amin
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1111; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1131; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1111; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1131; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1112
+  /* "reduce.pyx":1132
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -11978,7 +12016,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int64(PyArrayIterObject *__pyx_
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":1113
+    /* "reduce.pyx":1133
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."             # <<<<<<<<<<<<<<
@@ -11988,27 +12026,27 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int64(PyArrayIterObject *__pyx_
     __Pyx_INCREF(__pyx_kp_s_numpy_nanmin_raises_on_a_shape_a);
     __pyx_v_msg = __pyx_kp_s_numpy_nanmin_raises_on_a_shape_a;
 
-    /* "reduce.pyx":1114
+    /* "reduce.pyx":1134
  *     if length == 0:
  *         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."
  *         raise ValueError(msg)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MAXint64
  */
-    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1134; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_msg);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_msg);
     __Pyx_GIVEREF(__pyx_v_msg);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1134; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1134; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "reduce.pyx":1115
+  /* "reduce.pyx":1135
  *         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."
  *         raise ValueError(msg)
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -12019,7 +12057,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int64(PyArrayIterObject *__pyx_
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "reduce.pyx":1116
+    /* "reduce.pyx":1136
  *         raise ValueError(msg)
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MAXint64             # <<<<<<<<<<<<<<
@@ -12028,7 +12066,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int64(PyArrayIterObject *__pyx_
  */
     __pyx_v_amin = __pyx_v_6reduce_MAXint64;
 
-    /* "reduce.pyx":1117
+    /* "reduce.pyx":1137
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MAXint64
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -12039,7 +12077,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int64(PyArrayIterObject *__pyx_
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
 
-      /* "reduce.pyx":1118
+      /* "reduce.pyx":1138
  *         amin = MAXint64
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -12048,7 +12086,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int64(PyArrayIterObject *__pyx_
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1119
+      /* "reduce.pyx":1139
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai <= amin:             # <<<<<<<<<<<<<<
@@ -12058,7 +12096,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int64(PyArrayIterObject *__pyx_
       __pyx_t_2 = ((__pyx_v_ai <= __pyx_v_amin) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":1120
+        /* "reduce.pyx":1140
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai <= amin:
  *                 amin = ai             # <<<<<<<<<<<<<<
@@ -12071,7 +12109,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int64(PyArrayIterObject *__pyx_
       __pyx_L8:;
     }
 
-    /* "reduce.pyx":1121
+    /* "reduce.pyx":1141
  *             if ai <= amin:
  *                 amin = ai
  *         (<int64_t*>((<char*>pid(ity))))[0] = amin             # <<<<<<<<<<<<<<
@@ -12080,7 +12118,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int64(PyArrayIterObject *__pyx_
  */
     (((__pyx_t_5numpy_int64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_amin;
 
-    /* "reduce.pyx":1122
+    /* "reduce.pyx":1142
  *                 amin = ai
  *         (<int64_t*>((<char*>pid(ity))))[0] = amin
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -12089,7 +12127,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int64(PyArrayIterObject *__pyx_
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "reduce.pyx":1123
+    /* "reduce.pyx":1143
  *         (<int64_t*>((<char*>pid(ity))))[0] = amin
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -12099,7 +12137,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int64(PyArrayIterObject *__pyx_
     PyArray_ITER_NEXT(__pyx_v_ity);
   }
 
-  /* "reduce.pyx":1124
+  /* "reduce.pyx":1144
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -12111,7 +12149,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int64(PyArrayIterObject *__pyx_
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1105
+  /* "reduce.pyx":1125
  *     return y
  * 
  * cdef ndarray nanmin_one_int64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -12134,7 +12172,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int64(PyArrayIterObject *__pyx_
   return __pyx_r;
 }
 
-/* "reduce.pyx":1126
+/* "reduce.pyx":1146
  *     return y
  * 
  * cdef ndarray nanmin_one_int32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -12161,33 +12199,33 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int32(PyArrayIterObject *__pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmin_one_int32", 0);
 
-  /* "reduce.pyx":1131
+  /* "reduce.pyx":1151
  *     cdef Py_ssize_t i
  *     cdef int32_t ai, amin
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int32, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_INT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1131; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_INT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1151; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1131; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1151; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1132
+  /* "reduce.pyx":1152
  *     cdef int32_t ai, amin
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1132; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1132; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1133
+  /* "reduce.pyx":1153
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -12197,7 +12235,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int32(PyArrayIterObject *__pyx_
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":1134
+    /* "reduce.pyx":1154
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."             # <<<<<<<<<<<<<<
@@ -12207,27 +12245,27 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int32(PyArrayIterObject *__pyx_
     __Pyx_INCREF(__pyx_kp_s_numpy_nanmin_raises_on_a_shape_a);
     __pyx_v_msg = __pyx_kp_s_numpy_nanmin_raises_on_a_shape_a;
 
-    /* "reduce.pyx":1135
+    /* "reduce.pyx":1155
  *     if length == 0:
  *         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."
  *         raise ValueError(msg)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MAXint32
  */
-    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1135; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_msg);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_msg);
     __Pyx_GIVEREF(__pyx_v_msg);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1135; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1135; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "reduce.pyx":1136
+  /* "reduce.pyx":1156
  *         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."
  *         raise ValueError(msg)
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -12238,7 +12276,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int32(PyArrayIterObject *__pyx_
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "reduce.pyx":1137
+    /* "reduce.pyx":1157
  *         raise ValueError(msg)
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MAXint32             # <<<<<<<<<<<<<<
@@ -12247,7 +12285,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int32(PyArrayIterObject *__pyx_
  */
     __pyx_v_amin = __pyx_v_6reduce_MAXint32;
 
-    /* "reduce.pyx":1138
+    /* "reduce.pyx":1158
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MAXint32
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -12258,7 +12296,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int32(PyArrayIterObject *__pyx_
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
 
-      /* "reduce.pyx":1139
+      /* "reduce.pyx":1159
  *         amin = MAXint32
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -12267,7 +12305,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int32(PyArrayIterObject *__pyx_
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1140
+      /* "reduce.pyx":1160
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai <= amin:             # <<<<<<<<<<<<<<
@@ -12277,7 +12315,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int32(PyArrayIterObject *__pyx_
       __pyx_t_2 = ((__pyx_v_ai <= __pyx_v_amin) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":1141
+        /* "reduce.pyx":1161
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai <= amin:
  *                 amin = ai             # <<<<<<<<<<<<<<
@@ -12290,7 +12328,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int32(PyArrayIterObject *__pyx_
       __pyx_L8:;
     }
 
-    /* "reduce.pyx":1142
+    /* "reduce.pyx":1162
  *             if ai <= amin:
  *                 amin = ai
  *         (<int32_t*>((<char*>pid(ity))))[0] = amin             # <<<<<<<<<<<<<<
@@ -12299,7 +12337,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int32(PyArrayIterObject *__pyx_
  */
     (((__pyx_t_5numpy_int32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_amin;
 
-    /* "reduce.pyx":1143
+    /* "reduce.pyx":1163
  *                 amin = ai
  *         (<int32_t*>((<char*>pid(ity))))[0] = amin
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -12308,7 +12346,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int32(PyArrayIterObject *__pyx_
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "reduce.pyx":1144
+    /* "reduce.pyx":1164
  *         (<int32_t*>((<char*>pid(ity))))[0] = amin
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -12318,7 +12356,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int32(PyArrayIterObject *__pyx_
     PyArray_ITER_NEXT(__pyx_v_ity);
   }
 
-  /* "reduce.pyx":1145
+  /* "reduce.pyx":1165
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -12330,7 +12368,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int32(PyArrayIterObject *__pyx_
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1126
+  /* "reduce.pyx":1146
  *     return y
  * 
  * cdef ndarray nanmin_one_int32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -12353,7 +12391,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmin_one_int32(PyArrayIterObject *__pyx_
   return __pyx_r;
 }
 
-/* "reduce.pyx":1147
+/* "reduce.pyx":1167
  *     return y
  * 
  * cdef nanmin_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
@@ -12372,7 +12410,7 @@ static PyObject *__pyx_f_6reduce_nanmin_0d(CYTHON_UNUSED PyArrayObject *__pyx_v_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmin_0d", 0);
 
-  /* "reduce.pyx":1148
+  /* "reduce.pyx":1168
  * 
  * cdef nanmin_0d(ndarray a, int int_input):
  *     msg = "numpy.nanmin raises on a.ndim==0; so Bottleneck does too."             # <<<<<<<<<<<<<<
@@ -12382,26 +12420,26 @@ static PyObject *__pyx_f_6reduce_nanmin_0d(CYTHON_UNUSED PyArrayObject *__pyx_v_
   __Pyx_INCREF(__pyx_kp_s_numpy_nanmin_raises_on_a_ndim_0);
   __pyx_v_msg = __pyx_kp_s_numpy_nanmin_raises_on_a_ndim_0;
 
-  /* "reduce.pyx":1149
+  /* "reduce.pyx":1169
  * cdef nanmin_0d(ndarray a, int int_input):
  *     msg = "numpy.nanmin raises on a.ndim==0; so Bottleneck does too."
  *     raise ValueError(msg)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_msg);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_msg);
   __Pyx_GIVEREF(__pyx_v_msg);
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_Raise(__pyx_t_2, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1169; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "reduce.pyx":1147
+  /* "reduce.pyx":1167
  *     return y
  * 
  * cdef nanmin_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
@@ -12421,7 +12459,7 @@ static PyObject *__pyx_f_6reduce_nanmin_0d(CYTHON_UNUSED PyArrayObject *__pyx_v_
   return __pyx_r;
 }
 
-/* "reduce.pyx":1154
+/* "reduce.pyx":1174
  * # nanmax --------------------------------------------------------------------
  * 
  * def nanmax(arr, axis=None):             # <<<<<<<<<<<<<<
@@ -12467,7 +12505,7 @@ static PyObject *__pyx_pw_6reduce_11nanmax(PyObject *__pyx_self, PyObject *__pyx
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nanmax") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1154; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nanmax") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1174; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -12482,7 +12520,7 @@ static PyObject *__pyx_pw_6reduce_11nanmax(PyObject *__pyx_self, PyObject *__pyx
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("nanmax", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1154; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("nanmax", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1174; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("reduce.nanmax", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -12515,7 +12553,7 @@ static PyObject *__pyx_pf_6reduce_10nanmax(CYTHON_UNUSED PyObject *__pyx_self, P
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmax", 0);
 
-  /* "reduce.pyx":1155
+  /* "reduce.pyx":1175
  * 
  * def nanmax(arr, axis=None):
  *     try:             # <<<<<<<<<<<<<<
@@ -12529,7 +12567,7 @@ static PyObject *__pyx_pf_6reduce_10nanmax(CYTHON_UNUSED PyObject *__pyx_self, P
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "reduce.pyx":1156
+      /* "reduce.pyx":1176
  * def nanmax(arr, axis=None):
  *     try:
  *         return reducer(arr, axis,             # <<<<<<<<<<<<<<
@@ -12538,14 +12576,14 @@ static PyObject *__pyx_pf_6reduce_10nanmax(CYTHON_UNUSED PyObject *__pyx_self, P
  */
       __Pyx_XDECREF(__pyx_r);
 
-      /* "reduce.pyx":1165
+      /* "reduce.pyx":1185
  *                        nanmax_one_int64,
  *                        nanmax_one_int32,
  *                        nanmax_0d)             # <<<<<<<<<<<<<<
  *     except TypeError:
  *         return slow.nanmax(arr, axis)
  */
-      __pyx_t_4 = __pyx_f_6reduce_reducer(__pyx_v_arr, __pyx_v_axis, __pyx_f_6reduce_nanmax_all_float64, __pyx_f_6reduce_nanmax_all_float32, __pyx_f_6reduce_nanmax_all_int64, __pyx_f_6reduce_nanmax_all_int32, __pyx_f_6reduce_nanmax_one_float64, __pyx_f_6reduce_nanmax_one_float32, __pyx_f_6reduce_nanmax_one_int64, __pyx_f_6reduce_nanmax_one_int32, __pyx_f_6reduce_nanmax_0d, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1156; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_t_4 = __pyx_f_6reduce_reducer(__pyx_v_arr, __pyx_v_axis, __pyx_f_6reduce_nanmax_all_float64, __pyx_f_6reduce_nanmax_all_float32, __pyx_f_6reduce_nanmax_all_int64, __pyx_f_6reduce_nanmax_all_int32, __pyx_f_6reduce_nanmax_one_float64, __pyx_f_6reduce_nanmax_one_float32, __pyx_f_6reduce_nanmax_one_int64, __pyx_f_6reduce_nanmax_one_int32, __pyx_f_6reduce_nanmax_0d, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1176; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
@@ -12554,7 +12592,7 @@ static PyObject *__pyx_pf_6reduce_10nanmax(CYTHON_UNUSED PyObject *__pyx_self, P
     __pyx_L3_error:;
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "reduce.pyx":1166
+    /* "reduce.pyx":1186
  *                        nanmax_one_int32,
  *                        nanmax_0d)
  *     except TypeError:             # <<<<<<<<<<<<<<
@@ -12564,12 +12602,12 @@ static PyObject *__pyx_pf_6reduce_10nanmax(CYTHON_UNUSED PyObject *__pyx_self, P
     __pyx_t_5 = PyErr_ExceptionMatches(__pyx_builtin_TypeError);
     if (__pyx_t_5) {
       __Pyx_AddTraceback("reduce.nanmax", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_7) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1166; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_7) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1186; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_7);
 
-      /* "reduce.pyx":1167
+      /* "reduce.pyx":1187
  *                        nanmax_0d)
  *     except TypeError:
  *         return slow.nanmax(arr, axis)             # <<<<<<<<<<<<<<
@@ -12577,9 +12615,9 @@ static PyObject *__pyx_pf_6reduce_10nanmax(CYTHON_UNUSED PyObject *__pyx_self, P
  * 
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1167; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1187; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_nanmax); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1167; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_nanmax); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1187; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_t_9 = NULL;
@@ -12594,7 +12632,7 @@ static PyObject *__pyx_pf_6reduce_10nanmax(CYTHON_UNUSED PyObject *__pyx_self, P
           __pyx_t_11 = 1;
         }
       }
-      __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1167; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1187; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_12);
       if (__pyx_t_9) {
         PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_9); __Pyx_GIVEREF(__pyx_t_9); __pyx_t_9 = NULL;
@@ -12605,7 +12643,7 @@ static PyObject *__pyx_pf_6reduce_10nanmax(CYTHON_UNUSED PyObject *__pyx_self, P
       __Pyx_INCREF(__pyx_v_axis);
       PyTuple_SET_ITEM(__pyx_t_12, 1+__pyx_t_11, __pyx_v_axis);
       __Pyx_GIVEREF(__pyx_v_axis);
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_12, NULL); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1167; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_12, NULL); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1187; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -12637,7 +12675,7 @@ static PyObject *__pyx_pf_6reduce_10nanmax(CYTHON_UNUSED PyObject *__pyx_self, P
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":1154
+  /* "reduce.pyx":1174
  * # nanmax --------------------------------------------------------------------
  * 
  * def nanmax(arr, axis=None):             # <<<<<<<<<<<<<<
@@ -12662,7 +12700,7 @@ static PyObject *__pyx_pf_6reduce_10nanmax(CYTHON_UNUSED PyObject *__pyx_self, P
   return __pyx_r;
 }
 
-/* "reduce.pyx":1170
+/* "reduce.pyx":1190
  * 
  * 
  * cdef object nanmax_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -12689,7 +12727,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmax_all_float64", 0);
 
-  /* "reduce.pyx":1172
+  /* "reduce.pyx":1192
  * cdef object nanmax_all_float64(np.flatiter ita, Py_ssize_t stride,
  *                               Py_ssize_t length, int int_input):
  *     cdef int allnan = 1, is_size_0 = 1             # <<<<<<<<<<<<<<
@@ -12699,7 +12737,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
   __pyx_v_allnan = 1;
   __pyx_v_is_size_0 = 1;
 
-  /* "reduce.pyx":1174
+  /* "reduce.pyx":1194
  *     cdef int allnan = 1, is_size_0 = 1
  *     cdef Py_ssize_t i
  *     cdef float64_t ai, amin = MINfloat64             # <<<<<<<<<<<<<<
@@ -12708,7 +12746,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
  */
   __pyx_v_amin = __pyx_v_6reduce_MINfloat64;
 
-  /* "reduce.pyx":1175
+  /* "reduce.pyx":1195
  *     cdef Py_ssize_t i
  *     cdef float64_t ai, amin = MINfloat64
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -12719,7 +12757,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":1176
+    /* "reduce.pyx":1196
  *     cdef float64_t ai, amin = MINfloat64
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -12730,7 +12768,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":1177
+      /* "reduce.pyx":1197
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -12739,7 +12777,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1178
+      /* "reduce.pyx":1198
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai >= amin:             # <<<<<<<<<<<<<<
@@ -12749,7 +12787,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
       __pyx_t_1 = ((__pyx_v_ai >= __pyx_v_amin) != 0);
       if (__pyx_t_1) {
 
-        /* "reduce.pyx":1179
+        /* "reduce.pyx":1199
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai >= amin:
  *                 amin = ai             # <<<<<<<<<<<<<<
@@ -12758,7 +12796,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
  */
         __pyx_v_amin = __pyx_v_ai;
 
-        /* "reduce.pyx":1180
+        /* "reduce.pyx":1200
  *             if ai >= amin:
  *                 amin = ai
  *                 allnan = 0             # <<<<<<<<<<<<<<
@@ -12771,7 +12809,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
       __pyx_L7:;
     }
 
-    /* "reduce.pyx":1181
+    /* "reduce.pyx":1201
  *                 amin = ai
  *                 allnan = 0
  *         is_size_0 = 0             # <<<<<<<<<<<<<<
@@ -12780,7 +12818,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
  */
     __pyx_v_is_size_0 = 0;
 
-    /* "reduce.pyx":1182
+    /* "reduce.pyx":1202
  *                 allnan = 0
  *         is_size_0 = 0
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -12790,7 +12828,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":1183
+  /* "reduce.pyx":1203
  *         is_size_0 = 0
  *         PyArray_ITER_NEXT(ita)
  *     if is_size_0 == 1:             # <<<<<<<<<<<<<<
@@ -12800,7 +12838,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
   __pyx_t_1 = ((__pyx_v_is_size_0 == 1) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":1184
+    /* "reduce.pyx":1204
  *         PyArray_ITER_NEXT(ita)
  *     if is_size_0 == 1:
  *         m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."             # <<<<<<<<<<<<<<
@@ -12810,27 +12848,27 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
     __Pyx_INCREF(__pyx_kp_s_numpy_nanmax_raises_on_a_size_0);
     __pyx_v_m = __pyx_kp_s_numpy_nanmax_raises_on_a_size_0;
 
-    /* "reduce.pyx":1185
+    /* "reduce.pyx":1205
  *     if is_size_0 == 1:
  *         m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
  *         raise ValueError(m)             # <<<<<<<<<<<<<<
  *     if allnan == 0:
  *         return amin
  */
-    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1185; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1205; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_v_m);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_m);
     __Pyx_GIVEREF(__pyx_v_m);
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1185; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1205; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1185; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1205; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "reduce.pyx":1186
+  /* "reduce.pyx":1206
  *         m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
  *         raise ValueError(m)
  *     if allnan == 0:             # <<<<<<<<<<<<<<
@@ -12840,7 +12878,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
   __pyx_t_1 = ((__pyx_v_allnan == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":1187
+    /* "reduce.pyx":1207
  *         raise ValueError(m)
  *     if allnan == 0:
  *         return amin             # <<<<<<<<<<<<<<
@@ -12848,7 +12886,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
  *         return NAN
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_amin); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1187; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_amin); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1207; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
@@ -12856,7 +12894,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
   }
   /*else*/ {
 
-    /* "reduce.pyx":1189
+    /* "reduce.pyx":1209
  *         return amin
  *     else:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -12864,14 +12902,14 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
  * cdef object nanmax_all_float32(np.flatiter ita, Py_ssize_t stride,
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1189; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1209; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":1170
+  /* "reduce.pyx":1190
  * 
  * 
  * cdef object nanmax_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -12892,7 +12930,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float64(PyArrayIterObject *__pyx_v_i
   return __pyx_r;
 }
 
-/* "reduce.pyx":1191
+/* "reduce.pyx":1211
  *         return NAN
  * 
  * cdef object nanmax_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -12919,7 +12957,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmax_all_float32", 0);
 
-  /* "reduce.pyx":1193
+  /* "reduce.pyx":1213
  * cdef object nanmax_all_float32(np.flatiter ita, Py_ssize_t stride,
  *                               Py_ssize_t length, int int_input):
  *     cdef int allnan = 1, is_size_0 = 1             # <<<<<<<<<<<<<<
@@ -12929,7 +12967,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
   __pyx_v_allnan = 1;
   __pyx_v_is_size_0 = 1;
 
-  /* "reduce.pyx":1195
+  /* "reduce.pyx":1215
  *     cdef int allnan = 1, is_size_0 = 1
  *     cdef Py_ssize_t i
  *     cdef float32_t ai, amin = MINfloat32             # <<<<<<<<<<<<<<
@@ -12938,7 +12976,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
  */
   __pyx_v_amin = __pyx_v_6reduce_MINfloat32;
 
-  /* "reduce.pyx":1196
+  /* "reduce.pyx":1216
  *     cdef Py_ssize_t i
  *     cdef float32_t ai, amin = MINfloat32
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -12949,7 +12987,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":1197
+    /* "reduce.pyx":1217
  *     cdef float32_t ai, amin = MINfloat32
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -12960,7 +12998,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":1198
+      /* "reduce.pyx":1218
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -12969,7 +13007,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1199
+      /* "reduce.pyx":1219
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai >= amin:             # <<<<<<<<<<<<<<
@@ -12979,7 +13017,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
       __pyx_t_1 = ((__pyx_v_ai >= __pyx_v_amin) != 0);
       if (__pyx_t_1) {
 
-        /* "reduce.pyx":1200
+        /* "reduce.pyx":1220
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai >= amin:
  *                 amin = ai             # <<<<<<<<<<<<<<
@@ -12988,7 +13026,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
  */
         __pyx_v_amin = __pyx_v_ai;
 
-        /* "reduce.pyx":1201
+        /* "reduce.pyx":1221
  *             if ai >= amin:
  *                 amin = ai
  *                 allnan = 0             # <<<<<<<<<<<<<<
@@ -13001,7 +13039,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
       __pyx_L7:;
     }
 
-    /* "reduce.pyx":1202
+    /* "reduce.pyx":1222
  *                 amin = ai
  *                 allnan = 0
  *         is_size_0 = 0             # <<<<<<<<<<<<<<
@@ -13010,7 +13048,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
  */
     __pyx_v_is_size_0 = 0;
 
-    /* "reduce.pyx":1203
+    /* "reduce.pyx":1223
  *                 allnan = 0
  *         is_size_0 = 0
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -13020,7 +13058,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":1204
+  /* "reduce.pyx":1224
  *         is_size_0 = 0
  *         PyArray_ITER_NEXT(ita)
  *     if is_size_0 == 1:             # <<<<<<<<<<<<<<
@@ -13030,7 +13068,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
   __pyx_t_1 = ((__pyx_v_is_size_0 == 1) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":1205
+    /* "reduce.pyx":1225
  *         PyArray_ITER_NEXT(ita)
  *     if is_size_0 == 1:
  *         m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."             # <<<<<<<<<<<<<<
@@ -13040,27 +13078,27 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
     __Pyx_INCREF(__pyx_kp_s_numpy_nanmax_raises_on_a_size_0);
     __pyx_v_m = __pyx_kp_s_numpy_nanmax_raises_on_a_size_0;
 
-    /* "reduce.pyx":1206
+    /* "reduce.pyx":1226
  *     if is_size_0 == 1:
  *         m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
  *         raise ValueError(m)             # <<<<<<<<<<<<<<
  *     if allnan == 0:
  *         return amin
  */
-    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1206; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1226; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_v_m);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_m);
     __Pyx_GIVEREF(__pyx_v_m);
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1206; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1226; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1206; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1226; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "reduce.pyx":1207
+  /* "reduce.pyx":1227
  *         m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
  *         raise ValueError(m)
  *     if allnan == 0:             # <<<<<<<<<<<<<<
@@ -13070,7 +13108,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
   __pyx_t_1 = ((__pyx_v_allnan == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":1208
+    /* "reduce.pyx":1228
  *         raise ValueError(m)
  *     if allnan == 0:
  *         return amin             # <<<<<<<<<<<<<<
@@ -13078,7 +13116,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
  *         return NAN
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_amin); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1208; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_amin); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
@@ -13086,7 +13124,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
   }
   /*else*/ {
 
-    /* "reduce.pyx":1210
+    /* "reduce.pyx":1230
  *         return amin
  *     else:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -13094,14 +13132,14 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
  * cdef object nanmax_all_int64(np.flatiter ita, Py_ssize_t stride,
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1210; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1230; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":1191
+  /* "reduce.pyx":1211
  *         return NAN
  * 
  * cdef object nanmax_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -13122,7 +13160,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_float32(PyArrayIterObject *__pyx_v_i
   return __pyx_r;
 }
 
-/* "reduce.pyx":1212
+/* "reduce.pyx":1232
  *         return NAN
  * 
  * cdef object nanmax_all_int64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -13148,7 +13186,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int64(PyArrayIterObject *__pyx_v_ita
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmax_all_int64", 0);
 
-  /* "reduce.pyx":1214
+  /* "reduce.pyx":1234
  * cdef object nanmax_all_int64(np.flatiter ita, Py_ssize_t stride,
  *                               Py_ssize_t length, int int_input):
  *     cdef int is_size_0 = 1             # <<<<<<<<<<<<<<
@@ -13157,7 +13195,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int64(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_is_size_0 = 1;
 
-  /* "reduce.pyx":1216
+  /* "reduce.pyx":1236
  *     cdef int is_size_0 = 1
  *     cdef Py_ssize_t i
  *     cdef int64_t ai, amin = MINint64             # <<<<<<<<<<<<<<
@@ -13166,7 +13204,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int64(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_amin = __pyx_v_6reduce_MINint64;
 
-  /* "reduce.pyx":1217
+  /* "reduce.pyx":1237
  *     cdef Py_ssize_t i
  *     cdef int64_t ai, amin = MINint64
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -13177,7 +13215,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int64(PyArrayIterObject *__pyx_v_ita
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":1218
+    /* "reduce.pyx":1238
  *     cdef int64_t ai, amin = MINint64
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -13188,7 +13226,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int64(PyArrayIterObject *__pyx_v_ita
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":1219
+      /* "reduce.pyx":1239
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -13197,7 +13235,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int64(PyArrayIterObject *__pyx_v_ita
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1220
+      /* "reduce.pyx":1240
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai >= amin:             # <<<<<<<<<<<<<<
@@ -13207,7 +13245,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int64(PyArrayIterObject *__pyx_v_ita
       __pyx_t_1 = ((__pyx_v_ai >= __pyx_v_amin) != 0);
       if (__pyx_t_1) {
 
-        /* "reduce.pyx":1221
+        /* "reduce.pyx":1241
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai >= amin:
  *                 amin = ai             # <<<<<<<<<<<<<<
@@ -13220,7 +13258,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int64(PyArrayIterObject *__pyx_v_ita
       __pyx_L7:;
     }
 
-    /* "reduce.pyx":1222
+    /* "reduce.pyx":1242
  *             if ai >= amin:
  *                 amin = ai
  *         is_size_0 = 0             # <<<<<<<<<<<<<<
@@ -13229,7 +13267,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int64(PyArrayIterObject *__pyx_v_ita
  */
     __pyx_v_is_size_0 = 0;
 
-    /* "reduce.pyx":1223
+    /* "reduce.pyx":1243
  *                 amin = ai
  *         is_size_0 = 0
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -13239,7 +13277,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int64(PyArrayIterObject *__pyx_v_ita
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":1224
+  /* "reduce.pyx":1244
  *         is_size_0 = 0
  *         PyArray_ITER_NEXT(ita)
  *     if is_size_0 == 1:             # <<<<<<<<<<<<<<
@@ -13249,7 +13287,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int64(PyArrayIterObject *__pyx_v_ita
   __pyx_t_1 = ((__pyx_v_is_size_0 == 1) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":1225
+    /* "reduce.pyx":1245
  *         PyArray_ITER_NEXT(ita)
  *     if is_size_0 == 1:
  *         m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."             # <<<<<<<<<<<<<<
@@ -13259,27 +13297,27 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int64(PyArrayIterObject *__pyx_v_ita
     __Pyx_INCREF(__pyx_kp_s_numpy_nanmax_raises_on_a_size_0);
     __pyx_v_m = __pyx_kp_s_numpy_nanmax_raises_on_a_size_0;
 
-    /* "reduce.pyx":1226
+    /* "reduce.pyx":1246
  *     if is_size_0 == 1:
  *         m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
  *         raise ValueError(m)             # <<<<<<<<<<<<<<
  *     return amin
  * 
  */
-    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1226; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1246; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_v_m);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_m);
     __Pyx_GIVEREF(__pyx_v_m);
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1226; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1246; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1226; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1246; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "reduce.pyx":1227
+  /* "reduce.pyx":1247
  *         m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
  *         raise ValueError(m)
  *     return amin             # <<<<<<<<<<<<<<
@@ -13287,13 +13325,13 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int64(PyArrayIterObject *__pyx_v_ita
  * cdef object nanmax_all_int32(np.flatiter ita, Py_ssize_t stride,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = __Pyx_PyInt_From_npy_int64(__pyx_v_amin); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1227; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyInt_From_npy_int64(__pyx_v_amin); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1247; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_r = __pyx_t_5;
   __pyx_t_5 = 0;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1212
+  /* "reduce.pyx":1232
  *         return NAN
  * 
  * cdef object nanmax_all_int64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -13314,7 +13352,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int64(PyArrayIterObject *__pyx_v_ita
   return __pyx_r;
 }
 
-/* "reduce.pyx":1229
+/* "reduce.pyx":1249
  *     return amin
  * 
  * cdef object nanmax_all_int32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -13340,7 +13378,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int32(PyArrayIterObject *__pyx_v_ita
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmax_all_int32", 0);
 
-  /* "reduce.pyx":1231
+  /* "reduce.pyx":1251
  * cdef object nanmax_all_int32(np.flatiter ita, Py_ssize_t stride,
  *                               Py_ssize_t length, int int_input):
  *     cdef int is_size_0 = 1             # <<<<<<<<<<<<<<
@@ -13349,7 +13387,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int32(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_is_size_0 = 1;
 
-  /* "reduce.pyx":1233
+  /* "reduce.pyx":1253
  *     cdef int is_size_0 = 1
  *     cdef Py_ssize_t i
  *     cdef int32_t ai, amin = MINint32             # <<<<<<<<<<<<<<
@@ -13358,7 +13396,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int32(PyArrayIterObject *__pyx_v_ita
  */
   __pyx_v_amin = __pyx_v_6reduce_MINint32;
 
-  /* "reduce.pyx":1234
+  /* "reduce.pyx":1254
  *     cdef Py_ssize_t i
  *     cdef int32_t ai, amin = MINint32
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -13369,7 +13407,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int32(PyArrayIterObject *__pyx_v_ita
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":1235
+    /* "reduce.pyx":1255
  *     cdef int32_t ai, amin = MINint32
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -13380,7 +13418,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int32(PyArrayIterObject *__pyx_v_ita
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":1236
+      /* "reduce.pyx":1256
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -13389,7 +13427,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int32(PyArrayIterObject *__pyx_v_ita
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1237
+      /* "reduce.pyx":1257
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai >= amin:             # <<<<<<<<<<<<<<
@@ -13399,7 +13437,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int32(PyArrayIterObject *__pyx_v_ita
       __pyx_t_1 = ((__pyx_v_ai >= __pyx_v_amin) != 0);
       if (__pyx_t_1) {
 
-        /* "reduce.pyx":1238
+        /* "reduce.pyx":1258
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai >= amin:
  *                 amin = ai             # <<<<<<<<<<<<<<
@@ -13412,7 +13450,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int32(PyArrayIterObject *__pyx_v_ita
       __pyx_L7:;
     }
 
-    /* "reduce.pyx":1239
+    /* "reduce.pyx":1259
  *             if ai >= amin:
  *                 amin = ai
  *         is_size_0 = 0             # <<<<<<<<<<<<<<
@@ -13421,7 +13459,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int32(PyArrayIterObject *__pyx_v_ita
  */
     __pyx_v_is_size_0 = 0;
 
-    /* "reduce.pyx":1240
+    /* "reduce.pyx":1260
  *                 amin = ai
  *         is_size_0 = 0
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -13431,7 +13469,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int32(PyArrayIterObject *__pyx_v_ita
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":1241
+  /* "reduce.pyx":1261
  *         is_size_0 = 0
  *         PyArray_ITER_NEXT(ita)
  *     if is_size_0 == 1:             # <<<<<<<<<<<<<<
@@ -13441,7 +13479,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int32(PyArrayIterObject *__pyx_v_ita
   __pyx_t_1 = ((__pyx_v_is_size_0 == 1) != 0);
   if (__pyx_t_1) {
 
-    /* "reduce.pyx":1242
+    /* "reduce.pyx":1262
  *         PyArray_ITER_NEXT(ita)
  *     if is_size_0 == 1:
  *         m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."             # <<<<<<<<<<<<<<
@@ -13451,27 +13489,27 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int32(PyArrayIterObject *__pyx_v_ita
     __Pyx_INCREF(__pyx_kp_s_numpy_nanmax_raises_on_a_size_0);
     __pyx_v_m = __pyx_kp_s_numpy_nanmax_raises_on_a_size_0;
 
-    /* "reduce.pyx":1243
+    /* "reduce.pyx":1263
  *     if is_size_0 == 1:
  *         m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
  *         raise ValueError(m)             # <<<<<<<<<<<<<<
  *     return amin
  * 
  */
-    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1243; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1263; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_v_m);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_m);
     __Pyx_GIVEREF(__pyx_v_m);
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1243; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1263; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1243; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1263; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "reduce.pyx":1244
+  /* "reduce.pyx":1264
  *         m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
  *         raise ValueError(m)
  *     return amin             # <<<<<<<<<<<<<<
@@ -13479,13 +13517,13 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int32(PyArrayIterObject *__pyx_v_ita
  * cdef ndarray nanmax_one_float64(np.flatiter ita,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = __Pyx_PyInt_From_npy_int32(__pyx_v_amin); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyInt_From_npy_int32(__pyx_v_amin); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1264; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_r = __pyx_t_5;
   __pyx_t_5 = 0;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1229
+  /* "reduce.pyx":1249
  *     return amin
  * 
  * cdef object nanmax_all_int32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -13506,7 +13544,7 @@ static PyObject *__pyx_f_6reduce_nanmax_all_int32(PyArrayIterObject *__pyx_v_ita
   return __pyx_r;
 }
 
-/* "reduce.pyx":1246
+/* "reduce.pyx":1266
  *     return amin
  * 
  * cdef ndarray nanmax_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -13534,33 +13572,33 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmax_one_float64", 0);
 
-  /* "reduce.pyx":1252
+  /* "reduce.pyx":1272
  *     cdef Py_ssize_t i
  *     cdef float64_t ai, amin
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1252; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1252; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1253
+  /* "reduce.pyx":1273
  *     cdef float64_t ai, amin
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1253; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1273; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1253; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1273; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1254
+  /* "reduce.pyx":1274
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -13570,7 +13608,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":1255
+    /* "reduce.pyx":1275
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."             # <<<<<<<<<<<<<<
@@ -13580,27 +13618,27 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
     __Pyx_INCREF(__pyx_kp_s_numpy_nanmax_raises_on_a_shape_a);
     __pyx_v_msg = __pyx_kp_s_numpy_nanmax_raises_on_a_shape_a;
 
-    /* "reduce.pyx":1256
+    /* "reduce.pyx":1276
  *     if length == 0:
  *         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
  *         raise ValueError(msg)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MINfloat64
  */
-    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1256; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1276; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_msg);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_msg);
     __Pyx_GIVEREF(__pyx_v_msg);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1256; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1276; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1256; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1276; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "reduce.pyx":1257
+  /* "reduce.pyx":1277
  *         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
  *         raise ValueError(msg)
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -13611,7 +13649,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "reduce.pyx":1258
+    /* "reduce.pyx":1278
  *         raise ValueError(msg)
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MINfloat64             # <<<<<<<<<<<<<<
@@ -13620,7 +13658,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
  */
     __pyx_v_amin = __pyx_v_6reduce_MINfloat64;
 
-    /* "reduce.pyx":1259
+    /* "reduce.pyx":1279
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MINfloat64
  *         allnan = 1             # <<<<<<<<<<<<<<
@@ -13629,7 +13667,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
  */
     __pyx_v_allnan = 1;
 
-    /* "reduce.pyx":1260
+    /* "reduce.pyx":1280
  *         amin = MINfloat64
  *         allnan = 1
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -13640,7 +13678,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
 
-      /* "reduce.pyx":1261
+      /* "reduce.pyx":1281
  *         allnan = 1
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -13649,7 +13687,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1262
+      /* "reduce.pyx":1282
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai >= amin:             # <<<<<<<<<<<<<<
@@ -13659,7 +13697,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
       __pyx_t_2 = ((__pyx_v_ai >= __pyx_v_amin) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":1263
+        /* "reduce.pyx":1283
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai >= amin:
  *                 amin = ai             # <<<<<<<<<<<<<<
@@ -13668,7 +13706,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
  */
         __pyx_v_amin = __pyx_v_ai;
 
-        /* "reduce.pyx":1264
+        /* "reduce.pyx":1284
  *             if ai >= amin:
  *                 amin = ai
  *                 allnan = 0             # <<<<<<<<<<<<<<
@@ -13681,7 +13719,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
       __pyx_L8:;
     }
 
-    /* "reduce.pyx":1265
+    /* "reduce.pyx":1285
  *                 amin = ai
  *                 allnan = 0
  *         if allnan != 0:             # <<<<<<<<<<<<<<
@@ -13691,7 +13729,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
     __pyx_t_2 = ((__pyx_v_allnan != 0) != 0);
     if (__pyx_t_2) {
 
-      /* "reduce.pyx":1266
+      /* "reduce.pyx":1286
  *                 allnan = 0
  *         if allnan != 0:
  *             amin = NAN             # <<<<<<<<<<<<<<
@@ -13703,7 +13741,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
     }
     __pyx_L9:;
 
-    /* "reduce.pyx":1267
+    /* "reduce.pyx":1287
  *         if allnan != 0:
  *             amin = NAN
  *         (<float64_t*>((<char*>pid(ity))))[0] = amin             # <<<<<<<<<<<<<<
@@ -13712,7 +13750,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
  */
     (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_amin;
 
-    /* "reduce.pyx":1268
+    /* "reduce.pyx":1288
  *             amin = NAN
  *         (<float64_t*>((<char*>pid(ity))))[0] = amin
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -13721,7 +13759,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "reduce.pyx":1269
+    /* "reduce.pyx":1289
  *         (<float64_t*>((<char*>pid(ity))))[0] = amin
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -13731,7 +13769,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
     PyArray_ITER_NEXT(__pyx_v_ity);
   }
 
-  /* "reduce.pyx":1270
+  /* "reduce.pyx":1290
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -13743,7 +13781,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1246
+  /* "reduce.pyx":1266
  *     return amin
  * 
  * cdef ndarray nanmax_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -13766,7 +13804,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float64(PyArrayIterObject *__py
   return __pyx_r;
 }
 
-/* "reduce.pyx":1272
+/* "reduce.pyx":1292
  *     return y
  * 
  * cdef ndarray nanmax_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -13794,33 +13832,33 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmax_one_float32", 0);
 
-  /* "reduce.pyx":1278
+  /* "reduce.pyx":1298
  *     cdef Py_ssize_t i
  *     cdef float32_t ai, amin
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1298; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1298; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1279
+  /* "reduce.pyx":1299
  *     cdef float32_t ai, amin
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1280
+  /* "reduce.pyx":1300
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -13830,7 +13868,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":1281
+    /* "reduce.pyx":1301
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."             # <<<<<<<<<<<<<<
@@ -13840,27 +13878,27 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
     __Pyx_INCREF(__pyx_kp_s_numpy_nanmax_raises_on_a_shape_a);
     __pyx_v_msg = __pyx_kp_s_numpy_nanmax_raises_on_a_shape_a;
 
-    /* "reduce.pyx":1282
+    /* "reduce.pyx":1302
  *     if length == 0:
  *         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
  *         raise ValueError(msg)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MINfloat32
  */
-    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_msg);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_msg);
     __Pyx_GIVEREF(__pyx_v_msg);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "reduce.pyx":1283
+  /* "reduce.pyx":1303
  *         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
  *         raise ValueError(msg)
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -13871,7 +13909,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "reduce.pyx":1284
+    /* "reduce.pyx":1304
  *         raise ValueError(msg)
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MINfloat32             # <<<<<<<<<<<<<<
@@ -13880,7 +13918,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
  */
     __pyx_v_amin = __pyx_v_6reduce_MINfloat32;
 
-    /* "reduce.pyx":1285
+    /* "reduce.pyx":1305
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MINfloat32
  *         allnan = 1             # <<<<<<<<<<<<<<
@@ -13889,7 +13927,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
  */
     __pyx_v_allnan = 1;
 
-    /* "reduce.pyx":1286
+    /* "reduce.pyx":1306
  *         amin = MINfloat32
  *         allnan = 1
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -13900,7 +13938,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
 
-      /* "reduce.pyx":1287
+      /* "reduce.pyx":1307
  *         allnan = 1
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -13909,7 +13947,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1288
+      /* "reduce.pyx":1308
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai >= amin:             # <<<<<<<<<<<<<<
@@ -13919,7 +13957,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
       __pyx_t_2 = ((__pyx_v_ai >= __pyx_v_amin) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":1289
+        /* "reduce.pyx":1309
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai >= amin:
  *                 amin = ai             # <<<<<<<<<<<<<<
@@ -13928,7 +13966,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
  */
         __pyx_v_amin = __pyx_v_ai;
 
-        /* "reduce.pyx":1290
+        /* "reduce.pyx":1310
  *             if ai >= amin:
  *                 amin = ai
  *                 allnan = 0             # <<<<<<<<<<<<<<
@@ -13941,7 +13979,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
       __pyx_L8:;
     }
 
-    /* "reduce.pyx":1291
+    /* "reduce.pyx":1311
  *                 amin = ai
  *                 allnan = 0
  *         if allnan != 0:             # <<<<<<<<<<<<<<
@@ -13951,7 +13989,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
     __pyx_t_2 = ((__pyx_v_allnan != 0) != 0);
     if (__pyx_t_2) {
 
-      /* "reduce.pyx":1292
+      /* "reduce.pyx":1312
  *                 allnan = 0
  *         if allnan != 0:
  *             amin = NAN             # <<<<<<<<<<<<<<
@@ -13963,7 +14001,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
     }
     __pyx_L9:;
 
-    /* "reduce.pyx":1293
+    /* "reduce.pyx":1313
  *         if allnan != 0:
  *             amin = NAN
  *         (<float32_t*>((<char*>pid(ity))))[0] = amin             # <<<<<<<<<<<<<<
@@ -13972,7 +14010,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
  */
     (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_amin;
 
-    /* "reduce.pyx":1294
+    /* "reduce.pyx":1314
  *             amin = NAN
  *         (<float32_t*>((<char*>pid(ity))))[0] = amin
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -13981,7 +14019,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "reduce.pyx":1295
+    /* "reduce.pyx":1315
  *         (<float32_t*>((<char*>pid(ity))))[0] = amin
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -13991,7 +14029,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
     PyArray_ITER_NEXT(__pyx_v_ity);
   }
 
-  /* "reduce.pyx":1296
+  /* "reduce.pyx":1316
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -14003,7 +14041,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1272
+  /* "reduce.pyx":1292
  *     return y
  * 
  * cdef ndarray nanmax_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -14026,7 +14064,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_float32(PyArrayIterObject *__py
   return __pyx_r;
 }
 
-/* "reduce.pyx":1298
+/* "reduce.pyx":1318
  *     return y
  * 
  * cdef ndarray nanmax_one_int64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -14053,33 +14091,33 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int64(PyArrayIterObject *__pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmax_one_int64", 0);
 
-  /* "reduce.pyx":1303
+  /* "reduce.pyx":1323
  *     cdef Py_ssize_t i
  *     cdef int64_t ai, amin
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_INT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_INT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1323; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1323; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1304
+  /* "reduce.pyx":1324
  *     cdef int64_t ai, amin
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1324; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1324; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1305
+  /* "reduce.pyx":1325
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -14089,7 +14127,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int64(PyArrayIterObject *__pyx_
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":1306
+    /* "reduce.pyx":1326
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."             # <<<<<<<<<<<<<<
@@ -14099,27 +14137,27 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int64(PyArrayIterObject *__pyx_
     __Pyx_INCREF(__pyx_kp_s_numpy_nanmax_raises_on_a_shape_a);
     __pyx_v_msg = __pyx_kp_s_numpy_nanmax_raises_on_a_shape_a;
 
-    /* "reduce.pyx":1307
+    /* "reduce.pyx":1327
  *     if length == 0:
  *         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
  *         raise ValueError(msg)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MINint64
  */
-    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1307; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1327; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_msg);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_msg);
     __Pyx_GIVEREF(__pyx_v_msg);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1307; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1327; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1307; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1327; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "reduce.pyx":1308
+  /* "reduce.pyx":1328
  *         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
  *         raise ValueError(msg)
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -14130,7 +14168,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int64(PyArrayIterObject *__pyx_
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "reduce.pyx":1309
+    /* "reduce.pyx":1329
  *         raise ValueError(msg)
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MINint64             # <<<<<<<<<<<<<<
@@ -14139,7 +14177,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int64(PyArrayIterObject *__pyx_
  */
     __pyx_v_amin = __pyx_v_6reduce_MINint64;
 
-    /* "reduce.pyx":1310
+    /* "reduce.pyx":1330
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MINint64
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -14150,7 +14188,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int64(PyArrayIterObject *__pyx_
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
 
-      /* "reduce.pyx":1311
+      /* "reduce.pyx":1331
  *         amin = MINint64
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -14159,7 +14197,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int64(PyArrayIterObject *__pyx_
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1312
+      /* "reduce.pyx":1332
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai >= amin:             # <<<<<<<<<<<<<<
@@ -14169,7 +14207,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int64(PyArrayIterObject *__pyx_
       __pyx_t_2 = ((__pyx_v_ai >= __pyx_v_amin) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":1313
+        /* "reduce.pyx":1333
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai >= amin:
  *                 amin = ai             # <<<<<<<<<<<<<<
@@ -14182,7 +14220,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int64(PyArrayIterObject *__pyx_
       __pyx_L8:;
     }
 
-    /* "reduce.pyx":1314
+    /* "reduce.pyx":1334
  *             if ai >= amin:
  *                 amin = ai
  *         (<int64_t*>((<char*>pid(ity))))[0] = amin             # <<<<<<<<<<<<<<
@@ -14191,7 +14229,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int64(PyArrayIterObject *__pyx_
  */
     (((__pyx_t_5numpy_int64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_amin;
 
-    /* "reduce.pyx":1315
+    /* "reduce.pyx":1335
  *                 amin = ai
  *         (<int64_t*>((<char*>pid(ity))))[0] = amin
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -14200,7 +14238,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int64(PyArrayIterObject *__pyx_
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "reduce.pyx":1316
+    /* "reduce.pyx":1336
  *         (<int64_t*>((<char*>pid(ity))))[0] = amin
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -14210,7 +14248,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int64(PyArrayIterObject *__pyx_
     PyArray_ITER_NEXT(__pyx_v_ity);
   }
 
-  /* "reduce.pyx":1317
+  /* "reduce.pyx":1337
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -14222,7 +14260,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int64(PyArrayIterObject *__pyx_
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1298
+  /* "reduce.pyx":1318
  *     return y
  * 
  * cdef ndarray nanmax_one_int64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -14245,7 +14283,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int64(PyArrayIterObject *__pyx_
   return __pyx_r;
 }
 
-/* "reduce.pyx":1319
+/* "reduce.pyx":1339
  *     return y
  * 
  * cdef ndarray nanmax_one_int32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -14272,33 +14310,33 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int32(PyArrayIterObject *__pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmax_one_int32", 0);
 
-  /* "reduce.pyx":1324
+  /* "reduce.pyx":1344
  *     cdef Py_ssize_t i
  *     cdef int32_t ai, amin
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int32, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_INT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1324; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_INT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1344; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1324; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1344; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1325
+  /* "reduce.pyx":1345
  *     cdef int32_t ai, amin
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1325; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1345; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1325; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1345; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1326
+  /* "reduce.pyx":1346
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -14308,7 +14346,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int32(PyArrayIterObject *__pyx_
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":1327
+    /* "reduce.pyx":1347
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."             # <<<<<<<<<<<<<<
@@ -14318,27 +14356,27 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int32(PyArrayIterObject *__pyx_
     __Pyx_INCREF(__pyx_kp_s_numpy_nanmax_raises_on_a_shape_a);
     __pyx_v_msg = __pyx_kp_s_numpy_nanmax_raises_on_a_shape_a;
 
-    /* "reduce.pyx":1328
+    /* "reduce.pyx":1348
  *     if length == 0:
  *         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
  *         raise ValueError(msg)             # <<<<<<<<<<<<<<
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MINint32
  */
-    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1328; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1348; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_msg);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_msg);
     __Pyx_GIVEREF(__pyx_v_msg);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1328; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1348; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1328; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1348; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "reduce.pyx":1329
+  /* "reduce.pyx":1349
  *         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
  *         raise ValueError(msg)
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -14349,7 +14387,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int32(PyArrayIterObject *__pyx_
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "reduce.pyx":1330
+    /* "reduce.pyx":1350
  *         raise ValueError(msg)
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MINint32             # <<<<<<<<<<<<<<
@@ -14358,7 +14396,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int32(PyArrayIterObject *__pyx_
  */
     __pyx_v_amin = __pyx_v_6reduce_MINint32;
 
-    /* "reduce.pyx":1331
+    /* "reduce.pyx":1351
  *     while PyArray_ITER_NOTDONE(ita):
  *         amin = MINint32
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -14369,7 +14407,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int32(PyArrayIterObject *__pyx_
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
 
-      /* "reduce.pyx":1332
+      /* "reduce.pyx":1352
  *         amin = MINint32
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -14378,7 +14416,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int32(PyArrayIterObject *__pyx_
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1333
+      /* "reduce.pyx":1353
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai >= amin:             # <<<<<<<<<<<<<<
@@ -14388,7 +14426,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int32(PyArrayIterObject *__pyx_
       __pyx_t_2 = ((__pyx_v_ai >= __pyx_v_amin) != 0);
       if (__pyx_t_2) {
 
-        /* "reduce.pyx":1334
+        /* "reduce.pyx":1354
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             if ai >= amin:
  *                 amin = ai             # <<<<<<<<<<<<<<
@@ -14401,7 +14439,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int32(PyArrayIterObject *__pyx_
       __pyx_L8:;
     }
 
-    /* "reduce.pyx":1335
+    /* "reduce.pyx":1355
  *             if ai >= amin:
  *                 amin = ai
  *         (<int32_t*>((<char*>pid(ity))))[0] = amin             # <<<<<<<<<<<<<<
@@ -14410,7 +14448,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int32(PyArrayIterObject *__pyx_
  */
     (((__pyx_t_5numpy_int32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_amin;
 
-    /* "reduce.pyx":1336
+    /* "reduce.pyx":1356
  *                 amin = ai
  *         (<int32_t*>((<char*>pid(ity))))[0] = amin
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -14419,7 +14457,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int32(PyArrayIterObject *__pyx_
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "reduce.pyx":1337
+    /* "reduce.pyx":1357
  *         (<int32_t*>((<char*>pid(ity))))[0] = amin
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -14429,7 +14467,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int32(PyArrayIterObject *__pyx_
     PyArray_ITER_NEXT(__pyx_v_ity);
   }
 
-  /* "reduce.pyx":1338
+  /* "reduce.pyx":1358
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -14441,7 +14479,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int32(PyArrayIterObject *__pyx_
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1319
+  /* "reduce.pyx":1339
  *     return y
  * 
  * cdef ndarray nanmax_one_int32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -14464,7 +14502,7 @@ static PyArrayObject *__pyx_f_6reduce_nanmax_one_int32(PyArrayIterObject *__pyx_
   return __pyx_r;
 }
 
-/* "reduce.pyx":1340
+/* "reduce.pyx":1360
  *     return y
  * 
  * cdef nanmax_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
@@ -14483,7 +14521,7 @@ static PyObject *__pyx_f_6reduce_nanmax_0d(CYTHON_UNUSED PyArrayObject *__pyx_v_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nanmax_0d", 0);
 
-  /* "reduce.pyx":1341
+  /* "reduce.pyx":1361
  * 
  * cdef nanmax_0d(ndarray a, int int_input):
  *     msg = "numpy.nanmax raises on a.ndim==0; so Bottleneck does too."             # <<<<<<<<<<<<<<
@@ -14493,26 +14531,26 @@ static PyObject *__pyx_f_6reduce_nanmax_0d(CYTHON_UNUSED PyArrayObject *__pyx_v_
   __Pyx_INCREF(__pyx_kp_s_numpy_nanmax_raises_on_a_ndim_0);
   __pyx_v_msg = __pyx_kp_s_numpy_nanmax_raises_on_a_ndim_0;
 
-  /* "reduce.pyx":1342
+  /* "reduce.pyx":1362
  * cdef nanmax_0d(ndarray a, int int_input):
  *     msg = "numpy.nanmax raises on a.ndim==0; so Bottleneck does too."
  *     raise ValueError(msg)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1342; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1362; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_msg);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_msg);
   __Pyx_GIVEREF(__pyx_v_msg);
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1342; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1362; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_Raise(__pyx_t_2, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1342; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1362; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "reduce.pyx":1340
+  /* "reduce.pyx":1360
  *     return y
  * 
  * cdef nanmax_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
@@ -14532,7 +14570,7 @@ static PyObject *__pyx_f_6reduce_nanmax_0d(CYTHON_UNUSED PyArrayObject *__pyx_v_
   return __pyx_r;
 }
 
-/* "reduce.pyx":1347
+/* "reduce.pyx":1367
  * # ss ------------------------------------------------------------------------
  * 
  * def ss(arr, axis=None):             # <<<<<<<<<<<<<<
@@ -14578,7 +14616,7 @@ static PyObject *__pyx_pw_6reduce_13ss(PyObject *__pyx_self, PyObject *__pyx_arg
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "ss") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1347; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "ss") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1367; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -14593,7 +14631,7 @@ static PyObject *__pyx_pw_6reduce_13ss(PyObject *__pyx_self, PyObject *__pyx_arg
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("ss", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1347; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("ss", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1367; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("reduce.ss", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -14626,7 +14664,7 @@ static PyObject *__pyx_pf_6reduce_12ss(CYTHON_UNUSED PyObject *__pyx_self, PyObj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("ss", 0);
 
-  /* "reduce.pyx":1348
+  /* "reduce.pyx":1368
  * 
  * def ss(arr, axis=None):
  *     try:             # <<<<<<<<<<<<<<
@@ -14640,7 +14678,7 @@ static PyObject *__pyx_pf_6reduce_12ss(CYTHON_UNUSED PyObject *__pyx_self, PyObj
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "reduce.pyx":1349
+      /* "reduce.pyx":1369
  * def ss(arr, axis=None):
  *     try:
  *         return reducer(arr, axis,             # <<<<<<<<<<<<<<
@@ -14649,14 +14687,14 @@ static PyObject *__pyx_pf_6reduce_12ss(CYTHON_UNUSED PyObject *__pyx_self, PyObj
  */
       __Pyx_XDECREF(__pyx_r);
 
-      /* "reduce.pyx":1358
+      /* "reduce.pyx":1378
  *                        ss_one_int64,
  *                        ss_one_int32,
  *                        ss_0d)             # <<<<<<<<<<<<<<
  *     except TypeError:
  *         return slow.ss(arr, axis)
  */
-      __pyx_t_4 = __pyx_f_6reduce_reducer(__pyx_v_arr, __pyx_v_axis, __pyx_f_6reduce_ss_all_float64, __pyx_f_6reduce_ss_all_float32, __pyx_f_6reduce_ss_all_int64, __pyx_f_6reduce_ss_all_int32, __pyx_f_6reduce_ss_one_float64, __pyx_f_6reduce_ss_one_float32, __pyx_f_6reduce_ss_one_int64, __pyx_f_6reduce_ss_one_int32, __pyx_f_6reduce_ss_0d, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1349; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_t_4 = __pyx_f_6reduce_reducer(__pyx_v_arr, __pyx_v_axis, __pyx_f_6reduce_ss_all_float64, __pyx_f_6reduce_ss_all_float32, __pyx_f_6reduce_ss_all_int64, __pyx_f_6reduce_ss_all_int32, __pyx_f_6reduce_ss_one_float64, __pyx_f_6reduce_ss_one_float32, __pyx_f_6reduce_ss_one_int64, __pyx_f_6reduce_ss_one_int32, __pyx_f_6reduce_ss_0d, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1369; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
@@ -14665,7 +14703,7 @@ static PyObject *__pyx_pf_6reduce_12ss(CYTHON_UNUSED PyObject *__pyx_self, PyObj
     __pyx_L3_error:;
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "reduce.pyx":1359
+    /* "reduce.pyx":1379
  *                        ss_one_int32,
  *                        ss_0d)
  *     except TypeError:             # <<<<<<<<<<<<<<
@@ -14675,12 +14713,12 @@ static PyObject *__pyx_pf_6reduce_12ss(CYTHON_UNUSED PyObject *__pyx_self, PyObj
     __pyx_t_5 = PyErr_ExceptionMatches(__pyx_builtin_TypeError);
     if (__pyx_t_5) {
       __Pyx_AddTraceback("reduce.ss", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_7) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1359; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_7) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1379; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_7);
 
-      /* "reduce.pyx":1360
+      /* "reduce.pyx":1380
  *                        ss_0d)
  *     except TypeError:
  *         return slow.ss(arr, axis)             # <<<<<<<<<<<<<<
@@ -14688,9 +14726,9 @@ static PyObject *__pyx_pf_6reduce_12ss(CYTHON_UNUSED PyObject *__pyx_self, PyObj
  * 
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1360; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1380; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_ss); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1360; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_ss); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1380; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_t_9 = NULL;
@@ -14705,7 +14743,7 @@ static PyObject *__pyx_pf_6reduce_12ss(CYTHON_UNUSED PyObject *__pyx_self, PyObj
           __pyx_t_11 = 1;
         }
       }
-      __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1360; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1380; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_12);
       if (__pyx_t_9) {
         PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_9); __Pyx_GIVEREF(__pyx_t_9); __pyx_t_9 = NULL;
@@ -14716,7 +14754,7 @@ static PyObject *__pyx_pf_6reduce_12ss(CYTHON_UNUSED PyObject *__pyx_self, PyObj
       __Pyx_INCREF(__pyx_v_axis);
       PyTuple_SET_ITEM(__pyx_t_12, 1+__pyx_t_11, __pyx_v_axis);
       __Pyx_GIVEREF(__pyx_v_axis);
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_12, NULL); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1360; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_12, NULL); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1380; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -14748,7 +14786,7 @@ static PyObject *__pyx_pf_6reduce_12ss(CYTHON_UNUSED PyObject *__pyx_self, PyObj
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":1347
+  /* "reduce.pyx":1367
  * # ss ------------------------------------------------------------------------
  * 
  * def ss(arr, axis=None):             # <<<<<<<<<<<<<<
@@ -14773,7 +14811,7 @@ static PyObject *__pyx_pf_6reduce_12ss(CYTHON_UNUSED PyObject *__pyx_self, PyObj
   return __pyx_r;
 }
 
-/* "reduce.pyx":1363
+/* "reduce.pyx":1383
  * 
  * 
  * cdef object ss_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -14796,7 +14834,7 @@ static PyObject *__pyx_f_6reduce_ss_all_float64(PyArrayIterObject *__pyx_v_ita, 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("ss_all_float64", 0);
 
-  /* "reduce.pyx":1366
+  /* "reduce.pyx":1386
  *                           Py_ssize_t length, int int_input):
  *     cdef Py_ssize_t i
  *     cdef float64_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -14805,7 +14843,7 @@ static PyObject *__pyx_f_6reduce_ss_all_float64(PyArrayIterObject *__pyx_v_ita, 
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":1367
+  /* "reduce.pyx":1387
  *     cdef Py_ssize_t i
  *     cdef float64_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -14816,7 +14854,7 @@ static PyObject *__pyx_f_6reduce_ss_all_float64(PyArrayIterObject *__pyx_v_ita, 
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":1368
+    /* "reduce.pyx":1388
  *     cdef float64_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -14827,7 +14865,7 @@ static PyObject *__pyx_f_6reduce_ss_all_float64(PyArrayIterObject *__pyx_v_ita, 
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":1369
+      /* "reduce.pyx":1389
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -14836,7 +14874,7 @@ static PyObject *__pyx_f_6reduce_ss_all_float64(PyArrayIterObject *__pyx_v_ita, 
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1370
+      /* "reduce.pyx":1390
  *         for i in range(length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai * ai             # <<<<<<<<<<<<<<
@@ -14846,7 +14884,7 @@ static PyObject *__pyx_f_6reduce_ss_all_float64(PyArrayIterObject *__pyx_v_ita, 
       __pyx_v_asum = (__pyx_v_asum + (__pyx_v_ai * __pyx_v_ai));
     }
 
-    /* "reduce.pyx":1371
+    /* "reduce.pyx":1391
  *             ai = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai * ai
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -14856,7 +14894,7 @@ static PyObject *__pyx_f_6reduce_ss_all_float64(PyArrayIterObject *__pyx_v_ita, 
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":1372
+  /* "reduce.pyx":1392
  *             asum += ai * ai
  *         PyArray_ITER_NEXT(ita)
  *     return asum             # <<<<<<<<<<<<<<
@@ -14864,13 +14902,13 @@ static PyObject *__pyx_f_6reduce_ss_all_float64(PyArrayIterObject *__pyx_v_ita, 
  * cdef object ss_all_float32(np.flatiter ita, Py_ssize_t stride,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_asum); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1372; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_asum); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1392; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1363
+  /* "reduce.pyx":1383
  * 
  * 
  * cdef object ss_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -14889,7 +14927,7 @@ static PyObject *__pyx_f_6reduce_ss_all_float64(PyArrayIterObject *__pyx_v_ita, 
   return __pyx_r;
 }
 
-/* "reduce.pyx":1374
+/* "reduce.pyx":1394
  *     return asum
  * 
  * cdef object ss_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -14912,7 +14950,7 @@ static PyObject *__pyx_f_6reduce_ss_all_float32(PyArrayIterObject *__pyx_v_ita, 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("ss_all_float32", 0);
 
-  /* "reduce.pyx":1377
+  /* "reduce.pyx":1397
  *                           Py_ssize_t length, int int_input):
  *     cdef Py_ssize_t i
  *     cdef float32_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -14921,7 +14959,7 @@ static PyObject *__pyx_f_6reduce_ss_all_float32(PyArrayIterObject *__pyx_v_ita, 
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":1378
+  /* "reduce.pyx":1398
  *     cdef Py_ssize_t i
  *     cdef float32_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -14932,7 +14970,7 @@ static PyObject *__pyx_f_6reduce_ss_all_float32(PyArrayIterObject *__pyx_v_ita, 
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":1379
+    /* "reduce.pyx":1399
  *     cdef float32_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -14943,7 +14981,7 @@ static PyObject *__pyx_f_6reduce_ss_all_float32(PyArrayIterObject *__pyx_v_ita, 
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":1380
+      /* "reduce.pyx":1400
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -14952,7 +14990,7 @@ static PyObject *__pyx_f_6reduce_ss_all_float32(PyArrayIterObject *__pyx_v_ita, 
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1381
+      /* "reduce.pyx":1401
  *         for i in range(length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai * ai             # <<<<<<<<<<<<<<
@@ -14962,7 +15000,7 @@ static PyObject *__pyx_f_6reduce_ss_all_float32(PyArrayIterObject *__pyx_v_ita, 
       __pyx_v_asum = (__pyx_v_asum + (__pyx_v_ai * __pyx_v_ai));
     }
 
-    /* "reduce.pyx":1382
+    /* "reduce.pyx":1402
  *             ai = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai * ai
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -14972,7 +15010,7 @@ static PyObject *__pyx_f_6reduce_ss_all_float32(PyArrayIterObject *__pyx_v_ita, 
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":1383
+  /* "reduce.pyx":1403
  *             asum += ai * ai
  *         PyArray_ITER_NEXT(ita)
  *     return asum             # <<<<<<<<<<<<<<
@@ -14980,13 +15018,13 @@ static PyObject *__pyx_f_6reduce_ss_all_float32(PyArrayIterObject *__pyx_v_ita, 
  * cdef object ss_all_int64(np.flatiter ita, Py_ssize_t stride,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_asum); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_asum); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1403; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1374
+  /* "reduce.pyx":1394
  *     return asum
  * 
  * cdef object ss_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -15005,7 +15043,7 @@ static PyObject *__pyx_f_6reduce_ss_all_float32(PyArrayIterObject *__pyx_v_ita, 
   return __pyx_r;
 }
 
-/* "reduce.pyx":1385
+/* "reduce.pyx":1405
  *     return asum
  * 
  * cdef object ss_all_int64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -15028,7 +15066,7 @@ static PyObject *__pyx_f_6reduce_ss_all_int64(PyArrayIterObject *__pyx_v_ita, Py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("ss_all_int64", 0);
 
-  /* "reduce.pyx":1388
+  /* "reduce.pyx":1408
  *                           Py_ssize_t length, int int_input):
  *     cdef Py_ssize_t i
  *     cdef int64_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -15037,7 +15075,7 @@ static PyObject *__pyx_f_6reduce_ss_all_int64(PyArrayIterObject *__pyx_v_ita, Py
  */
   __pyx_v_asum = 0;
 
-  /* "reduce.pyx":1389
+  /* "reduce.pyx":1409
  *     cdef Py_ssize_t i
  *     cdef int64_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -15048,7 +15086,7 @@ static PyObject *__pyx_f_6reduce_ss_all_int64(PyArrayIterObject *__pyx_v_ita, Py
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":1390
+    /* "reduce.pyx":1410
  *     cdef int64_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -15059,7 +15097,7 @@ static PyObject *__pyx_f_6reduce_ss_all_int64(PyArrayIterObject *__pyx_v_ita, Py
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":1391
+      /* "reduce.pyx":1411
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -15068,7 +15106,7 @@ static PyObject *__pyx_f_6reduce_ss_all_int64(PyArrayIterObject *__pyx_v_ita, Py
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1392
+      /* "reduce.pyx":1412
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai * ai             # <<<<<<<<<<<<<<
@@ -15078,7 +15116,7 @@ static PyObject *__pyx_f_6reduce_ss_all_int64(PyArrayIterObject *__pyx_v_ita, Py
       __pyx_v_asum = (__pyx_v_asum + (__pyx_v_ai * __pyx_v_ai));
     }
 
-    /* "reduce.pyx":1393
+    /* "reduce.pyx":1413
  *             ai = (<int64_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai * ai
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -15088,7 +15126,7 @@ static PyObject *__pyx_f_6reduce_ss_all_int64(PyArrayIterObject *__pyx_v_ita, Py
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":1394
+  /* "reduce.pyx":1414
  *             asum += ai * ai
  *         PyArray_ITER_NEXT(ita)
  *     return asum             # <<<<<<<<<<<<<<
@@ -15096,13 +15134,13 @@ static PyObject *__pyx_f_6reduce_ss_all_int64(PyArrayIterObject *__pyx_v_ita, Py
  * cdef object ss_all_int32(np.flatiter ita, Py_ssize_t stride,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __Pyx_PyInt_From_npy_int64(__pyx_v_asum); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1394; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyInt_From_npy_int64(__pyx_v_asum); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1414; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1385
+  /* "reduce.pyx":1405
  *     return asum
  * 
  * cdef object ss_all_int64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -15121,7 +15159,7 @@ static PyObject *__pyx_f_6reduce_ss_all_int64(PyArrayIterObject *__pyx_v_ita, Py
   return __pyx_r;
 }
 
-/* "reduce.pyx":1396
+/* "reduce.pyx":1416
  *     return asum
  * 
  * cdef object ss_all_int32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -15144,7 +15182,7 @@ static PyObject *__pyx_f_6reduce_ss_all_int32(PyArrayIterObject *__pyx_v_ita, Py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("ss_all_int32", 0);
 
-  /* "reduce.pyx":1399
+  /* "reduce.pyx":1419
  *                           Py_ssize_t length, int int_input):
  *     cdef Py_ssize_t i
  *     cdef int32_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -15153,7 +15191,7 @@ static PyObject *__pyx_f_6reduce_ss_all_int32(PyArrayIterObject *__pyx_v_ita, Py
  */
   __pyx_v_asum = 0;
 
-  /* "reduce.pyx":1400
+  /* "reduce.pyx":1420
  *     cdef Py_ssize_t i
  *     cdef int32_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -15164,7 +15202,7 @@ static PyObject *__pyx_f_6reduce_ss_all_int32(PyArrayIterObject *__pyx_v_ita, Py
     __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_1) break;
 
-    /* "reduce.pyx":1401
+    /* "reduce.pyx":1421
  *     cdef int32_t asum = 0, ai
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
@@ -15175,7 +15213,7 @@ static PyObject *__pyx_f_6reduce_ss_all_int32(PyArrayIterObject *__pyx_v_ita, Py
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "reduce.pyx":1402
+      /* "reduce.pyx":1422
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
@@ -15184,7 +15222,7 @@ static PyObject *__pyx_f_6reduce_ss_all_int32(PyArrayIterObject *__pyx_v_ita, Py
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "reduce.pyx":1403
+      /* "reduce.pyx":1423
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai * ai             # <<<<<<<<<<<<<<
@@ -15194,7 +15232,7 @@ static PyObject *__pyx_f_6reduce_ss_all_int32(PyArrayIterObject *__pyx_v_ita, Py
       __pyx_v_asum = (__pyx_v_asum + (__pyx_v_ai * __pyx_v_ai));
     }
 
-    /* "reduce.pyx":1404
+    /* "reduce.pyx":1424
  *             ai = (<int32_t*>((<char*>pid(ita)) + i * stride))[0]
  *             asum += ai * ai
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -15204,7 +15242,7 @@ static PyObject *__pyx_f_6reduce_ss_all_int32(PyArrayIterObject *__pyx_v_ita, Py
     PyArray_ITER_NEXT(__pyx_v_ita);
   }
 
-  /* "reduce.pyx":1405
+  /* "reduce.pyx":1425
  *             asum += ai * ai
  *         PyArray_ITER_NEXT(ita)
  *     return asum             # <<<<<<<<<<<<<<
@@ -15212,13 +15250,13 @@ static PyObject *__pyx_f_6reduce_ss_all_int32(PyArrayIterObject *__pyx_v_ita, Py
  * cdef ndarray ss_one_float64(np.flatiter ita,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __Pyx_PyInt_From_npy_int32(__pyx_v_asum); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1405; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyInt_From_npy_int32(__pyx_v_asum); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1425; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1396
+  /* "reduce.pyx":1416
  *     return asum
  * 
  * cdef object ss_all_int32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
@@ -15237,7 +15275,7 @@ static PyObject *__pyx_f_6reduce_ss_all_int32(PyArrayIterObject *__pyx_v_ita, Py
   return __pyx_r;
 }
 
-/* "reduce.pyx":1407
+/* "reduce.pyx":1427
  *     return asum
  * 
  * cdef ndarray ss_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -15262,7 +15300,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float64(PyArrayIterObject *__pyx_v_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("ss_one_float64", 0);
 
-  /* "reduce.pyx":1411
+  /* "reduce.pyx":1431
  *                            int a_ndim, np.npy_intp* y_dims, int int_input):
  *     cdef Py_ssize_t i
  *     cdef float64_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -15271,33 +15309,33 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float64(PyArrayIterObject *__pyx_v_
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":1412
+  /* "reduce.pyx":1432
  *     cdef Py_ssize_t i
  *     cdef float64_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1412; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1432; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1412; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1432; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1413
+  /* "reduce.pyx":1433
  *     cdef float64_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1413; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1433; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1413; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1433; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1414
+  /* "reduce.pyx":1434
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -15307,7 +15345,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float64(PyArrayIterObject *__pyx_v_
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":1415
+    /* "reduce.pyx":1435
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -15318,7 +15356,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float64(PyArrayIterObject *__pyx_v_
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":1416
+      /* "reduce.pyx":1436
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -15327,7 +15365,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float64(PyArrayIterObject *__pyx_v_
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":1417
+      /* "reduce.pyx":1437
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -15340,7 +15378,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float64(PyArrayIterObject *__pyx_v_
   }
   /*else*/ {
 
-    /* "reduce.pyx":1419
+    /* "reduce.pyx":1439
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -15351,7 +15389,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float64(PyArrayIterObject *__pyx_v_
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":1420
+      /* "reduce.pyx":1440
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -15360,7 +15398,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float64(PyArrayIterObject *__pyx_v_
  */
       __pyx_v_asum = 0.0;
 
-      /* "reduce.pyx":1421
+      /* "reduce.pyx":1441
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -15371,7 +15409,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float64(PyArrayIterObject *__pyx_v_
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":1422
+        /* "reduce.pyx":1442
  *             asum = 0
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -15380,7 +15418,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float64(PyArrayIterObject *__pyx_v_
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":1423
+        /* "reduce.pyx":1443
  *             for i in range(length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 asum += ai * ai             # <<<<<<<<<<<<<<
@@ -15390,7 +15428,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float64(PyArrayIterObject *__pyx_v_
         __pyx_v_asum = (__pyx_v_asum + (__pyx_v_ai * __pyx_v_ai));
       }
 
-      /* "reduce.pyx":1424
+      /* "reduce.pyx":1444
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 asum += ai * ai
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -15399,7 +15437,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float64(PyArrayIterObject *__pyx_v_
  */
       (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":1425
+      /* "reduce.pyx":1445
  *                 asum += ai * ai
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -15408,7 +15446,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float64(PyArrayIterObject *__pyx_v_
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":1426
+      /* "reduce.pyx":1446
  *             (<float64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -15420,7 +15458,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float64(PyArrayIterObject *__pyx_v_
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":1427
+  /* "reduce.pyx":1447
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -15432,7 +15470,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float64(PyArrayIterObject *__pyx_v_
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1407
+  /* "reduce.pyx":1427
  *     return asum
  * 
  * cdef ndarray ss_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -15453,7 +15491,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float64(PyArrayIterObject *__pyx_v_
   return __pyx_r;
 }
 
-/* "reduce.pyx":1429
+/* "reduce.pyx":1449
  *     return y
  * 
  * cdef ndarray ss_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -15478,7 +15516,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *__pyx_v_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("ss_one_float32", 0);
 
-  /* "reduce.pyx":1433
+  /* "reduce.pyx":1453
  *                            int a_ndim, np.npy_intp* y_dims, int int_input):
  *     cdef Py_ssize_t i
  *     cdef float32_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -15487,33 +15525,33 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *__pyx_v_
  */
   __pyx_v_asum = 0.0;
 
-  /* "reduce.pyx":1434
+  /* "reduce.pyx":1454
  *     cdef Py_ssize_t i
  *     cdef float32_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1434; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1454; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1434; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1454; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1435
+  /* "reduce.pyx":1455
  *     cdef float32_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1435; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1455; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1435; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1455; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1436
+  /* "reduce.pyx":1456
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -15523,7 +15561,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *__pyx_v_
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":1437
+    /* "reduce.pyx":1457
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -15534,7 +15572,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *__pyx_v_
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":1438
+      /* "reduce.pyx":1458
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -15543,7 +15581,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *__pyx_v_
  */
       (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":1439
+      /* "reduce.pyx":1459
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -15556,7 +15594,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *__pyx_v_
   }
   /*else*/ {
 
-    /* "reduce.pyx":1441
+    /* "reduce.pyx":1461
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -15567,7 +15605,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *__pyx_v_
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":1442
+      /* "reduce.pyx":1462
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -15576,7 +15614,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *__pyx_v_
  */
       __pyx_v_asum = 0.0;
 
-      /* "reduce.pyx":1443
+      /* "reduce.pyx":1463
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -15587,7 +15625,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *__pyx_v_
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":1444
+        /* "reduce.pyx":1464
  *             asum = 0
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -15596,7 +15634,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *__pyx_v_
  */
         __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":1445
+        /* "reduce.pyx":1465
  *             for i in range(length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 asum += ai * ai             # <<<<<<<<<<<<<<
@@ -15606,7 +15644,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *__pyx_v_
         __pyx_v_asum = (__pyx_v_asum + (__pyx_v_ai * __pyx_v_ai));
       }
 
-      /* "reduce.pyx":1446
+      /* "reduce.pyx":1466
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 asum += ai * ai
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -15615,7 +15653,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *__pyx_v_
  */
       (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":1447
+      /* "reduce.pyx":1467
  *                 asum += ai * ai
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -15624,7 +15662,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *__pyx_v_
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":1448
+      /* "reduce.pyx":1468
  *             (<float32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -15636,7 +15674,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *__pyx_v_
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":1449
+  /* "reduce.pyx":1469
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -15648,7 +15686,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *__pyx_v_
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1429
+  /* "reduce.pyx":1449
  *     return y
  * 
  * cdef ndarray ss_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -15669,7 +15707,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_float32(PyArrayIterObject *__pyx_v_
   return __pyx_r;
 }
 
-/* "reduce.pyx":1451
+/* "reduce.pyx":1471
  *     return y
  * 
  * cdef ndarray ss_one_int64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -15694,7 +15732,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *__pyx_v_it
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("ss_one_int64", 0);
 
-  /* "reduce.pyx":1455
+  /* "reduce.pyx":1475
  *                            int a_ndim, np.npy_intp* y_dims, int int_input):
  *     cdef Py_ssize_t i
  *     cdef int64_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -15703,33 +15741,33 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *__pyx_v_it
  */
   __pyx_v_asum = 0;
 
-  /* "reduce.pyx":1456
+  /* "reduce.pyx":1476
  *     cdef Py_ssize_t i
  *     cdef int64_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_INT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1456; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_INT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1476; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1456; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1476; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1457
+  /* "reduce.pyx":1477
  *     cdef int64_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1457; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1477; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1457; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1477; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1458
+  /* "reduce.pyx":1478
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int64, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -15739,7 +15777,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *__pyx_v_it
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":1459
+    /* "reduce.pyx":1479
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -15750,7 +15788,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *__pyx_v_it
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":1460
+      /* "reduce.pyx":1480
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<int64_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -15759,7 +15797,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *__pyx_v_it
  */
       (((__pyx_t_5numpy_int64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":1461
+      /* "reduce.pyx":1481
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<int64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -15772,7 +15810,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *__pyx_v_it
   }
   /*else*/ {
 
-    /* "reduce.pyx":1463
+    /* "reduce.pyx":1483
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -15783,7 +15821,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *__pyx_v_it
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":1464
+      /* "reduce.pyx":1484
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -15792,7 +15830,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *__pyx_v_it
  */
       __pyx_v_asum = 0;
 
-      /* "reduce.pyx":1465
+      /* "reduce.pyx":1485
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -15803,7 +15841,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *__pyx_v_it
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":1466
+        /* "reduce.pyx":1486
  *             asum = 0
  *             for i in range(length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -15812,7 +15850,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *__pyx_v_it
  */
         __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":1467
+        /* "reduce.pyx":1487
  *             for i in range(length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 asum += ai * ai             # <<<<<<<<<<<<<<
@@ -15822,7 +15860,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *__pyx_v_it
         __pyx_v_asum = (__pyx_v_asum + (__pyx_v_ai * __pyx_v_ai));
       }
 
-      /* "reduce.pyx":1468
+      /* "reduce.pyx":1488
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 asum += ai * ai
  *             (<int64_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -15831,7 +15869,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *__pyx_v_it
  */
       (((__pyx_t_5numpy_int64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":1469
+      /* "reduce.pyx":1489
  *                 asum += ai * ai
  *             (<int64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -15840,7 +15878,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *__pyx_v_it
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":1470
+      /* "reduce.pyx":1490
  *             (<int64_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -15852,7 +15890,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *__pyx_v_it
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":1471
+  /* "reduce.pyx":1491
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -15864,7 +15902,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *__pyx_v_it
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1451
+  /* "reduce.pyx":1471
  *     return y
  * 
  * cdef ndarray ss_one_int64(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -15885,7 +15923,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int64(PyArrayIterObject *__pyx_v_it
   return __pyx_r;
 }
 
-/* "reduce.pyx":1473
+/* "reduce.pyx":1493
  *     return y
  * 
  * cdef ndarray ss_one_int32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -15910,7 +15948,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *__pyx_v_it
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("ss_one_int32", 0);
 
-  /* "reduce.pyx":1477
+  /* "reduce.pyx":1497
  *                            int a_ndim, np.npy_intp* y_dims, int int_input):
  *     cdef Py_ssize_t i
  *     cdef int32_t asum = 0, ai             # <<<<<<<<<<<<<<
@@ -15919,33 +15957,33 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *__pyx_v_it
  */
   __pyx_v_asum = 0;
 
-  /* "reduce.pyx":1478
+  /* "reduce.pyx":1498
  *     cdef Py_ssize_t i
  *     cdef int32_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int32, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  */
-  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_INT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1478; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_INT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1498; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1478; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1498; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1479
+  /* "reduce.pyx":1499
  *     cdef int32_t asum = 0, ai
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  */
-  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1479; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1499; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1479; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1499; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1480
+  /* "reduce.pyx":1500
  *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_int32, 0)
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:             # <<<<<<<<<<<<<<
@@ -15955,7 +15993,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *__pyx_v_it
   __pyx_t_2 = ((__pyx_v_length == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":1481
+    /* "reduce.pyx":1501
  *     cdef np.flatiter ity = PyArray_IterNew(y)
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
@@ -15966,7 +16004,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *__pyx_v_it
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":1482
+      /* "reduce.pyx":1502
  *     if length == 0:
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<int32_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -15975,7 +16013,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *__pyx_v_it
  */
       (((__pyx_t_5numpy_int32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":1483
+      /* "reduce.pyx":1503
  *         while PyArray_ITER_NOTDONE(ity):
  *             (<int32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -15988,7 +16026,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *__pyx_v_it
   }
   /*else*/ {
 
-    /* "reduce.pyx":1485
+    /* "reduce.pyx":1505
  *             PyArray_ITER_NEXT(ity)
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -15999,7 +16037,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *__pyx_v_it
       __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
       if (!__pyx_t_2) break;
 
-      /* "reduce.pyx":1486
+      /* "reduce.pyx":1506
  *     else:
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0             # <<<<<<<<<<<<<<
@@ -16008,7 +16046,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *__pyx_v_it
  */
       __pyx_v_asum = 0;
 
-      /* "reduce.pyx":1487
+      /* "reduce.pyx":1507
  *         while PyArray_ITER_NOTDONE(ita):
  *             asum = 0
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -16019,7 +16057,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *__pyx_v_it
       for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
         __pyx_v_i = __pyx_t_4;
 
-        /* "reduce.pyx":1488
+        /* "reduce.pyx":1508
  *             asum = 0
  *             for i in range(length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -16028,7 +16066,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *__pyx_v_it
  */
         __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-        /* "reduce.pyx":1489
+        /* "reduce.pyx":1509
  *             for i in range(length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 asum += ai * ai             # <<<<<<<<<<<<<<
@@ -16038,7 +16076,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *__pyx_v_it
         __pyx_v_asum = (__pyx_v_asum + (__pyx_v_ai * __pyx_v_ai));
       }
 
-      /* "reduce.pyx":1490
+      /* "reduce.pyx":1510
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 asum += ai * ai
  *             (<int32_t*>((<char*>pid(ity))))[0] = asum             # <<<<<<<<<<<<<<
@@ -16047,7 +16085,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *__pyx_v_it
  */
       (((__pyx_t_5numpy_int32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_asum;
 
-      /* "reduce.pyx":1491
+      /* "reduce.pyx":1511
  *                 asum += ai * ai
  *             (<int32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -16056,7 +16094,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *__pyx_v_it
  */
       PyArray_ITER_NEXT(__pyx_v_ita);
 
-      /* "reduce.pyx":1492
+      /* "reduce.pyx":1512
  *             (<int32_t*>((<char*>pid(ity))))[0] = asum
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -16068,7 +16106,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *__pyx_v_it
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":1493
+  /* "reduce.pyx":1513
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -16080,7 +16118,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *__pyx_v_it
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1473
+  /* "reduce.pyx":1493
  *     return y
  * 
  * cdef ndarray ss_one_int32(np.flatiter ita,             # <<<<<<<<<<<<<<
@@ -16101,7 +16139,7 @@ static PyArrayObject *__pyx_f_6reduce_ss_one_int32(PyArrayIterObject *__pyx_v_it
   return __pyx_r;
 }
 
-/* "reduce.pyx":1495
+/* "reduce.pyx":1515
  *     return y
  * 
  * cdef ss_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
@@ -16119,19 +16157,19 @@ static PyObject *__pyx_f_6reduce_ss_0d(PyArrayObject *__pyx_v_a, CYTHON_UNUSED i
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("ss_0d", 0);
 
-  /* "reduce.pyx":1496
+  /* "reduce.pyx":1516
  * 
  * cdef ss_0d(ndarray a, int int_input):
  *     out = a[()]             # <<<<<<<<<<<<<<
  *     return out * out
  * 
  */
-  __pyx_t_1 = PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_empty_tuple); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1496; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_empty_tuple); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1516; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_out = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1497
+  /* "reduce.pyx":1517
  * cdef ss_0d(ndarray a, int int_input):
  *     out = a[()]
  *     return out * out             # <<<<<<<<<<<<<<
@@ -16139,13 +16177,13 @@ static PyObject *__pyx_f_6reduce_ss_0d(PyArrayObject *__pyx_v_a, CYTHON_UNUSED i
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyNumber_Multiply(__pyx_v_out, __pyx_v_out); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1497; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyNumber_Multiply(__pyx_v_out, __pyx_v_out); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1517; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "reduce.pyx":1495
+  /* "reduce.pyx":1515
  *     return y
  * 
  * cdef ss_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
@@ -16165,7 +16203,6743 @@ static PyObject *__pyx_f_6reduce_ss_0d(PyArrayObject *__pyx_v_a, CYTHON_UNUSED i
   return __pyx_r;
 }
 
-/* "reduce.pyx":1513
+/* "reduce.pyx":1522
+ * # nanmedian -----------------------------------------------------------------
+ * 
+ * def nanmedian(arr, axis=None):             # <<<<<<<<<<<<<<
+ *     cdef int ravel = 0, copy = 1, int_input = 0
+ *     try:
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_6reduce_15nanmedian(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_6reduce_14nanmedian[] = "nanmedian(arr, axis=None)";
+static PyMethodDef __pyx_mdef_6reduce_15nanmedian = {"nanmedian", (PyCFunction)__pyx_pw_6reduce_15nanmedian, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6reduce_14nanmedian};
+static PyObject *__pyx_pw_6reduce_15nanmedian(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_arr = 0;
+  PyObject *__pyx_v_axis = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("nanmedian (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_arr,&__pyx_n_s_axis,0};
+    PyObject* values[2] = {0,0};
+    values[1] = ((PyObject *)Py_None);
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_arr)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_axis);
+          if (value) { values[1] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nanmedian") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1522; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_arr = values[0];
+    __pyx_v_axis = values[1];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("nanmedian", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1522; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("reduce.nanmedian", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_6reduce_14nanmedian(__pyx_self, __pyx_v_arr, __pyx_v_axis);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_6reduce_14nanmedian(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arr, PyObject *__pyx_v_axis) {
+  int __pyx_v_ravel;
+  int __pyx_v_copy;
+  int __pyx_v_int_input;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_t_4;
+  int __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
+  struct __pyx_opt_args_6reduce_reducer __pyx_t_7;
+  int __pyx_t_8;
+  PyObject *__pyx_t_9 = NULL;
+  PyObject *__pyx_t_10 = NULL;
+  PyObject *__pyx_t_11 = NULL;
+  PyObject *__pyx_t_12 = NULL;
+  PyObject *__pyx_t_13 = NULL;
+  Py_ssize_t __pyx_t_14;
+  PyObject *__pyx_t_15 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("nanmedian", 0);
+
+  /* "reduce.pyx":1523
+ * 
+ * def nanmedian(arr, axis=None):
+ *     cdef int ravel = 0, copy = 1, int_input = 0             # <<<<<<<<<<<<<<
+ *     try:
+ *         if axis is None:
+ */
+  __pyx_v_ravel = 0;
+  __pyx_v_copy = 1;
+  __pyx_v_int_input = 0;
+
+  /* "reduce.pyx":1524
+ * def nanmedian(arr, axis=None):
+ *     cdef int ravel = 0, copy = 1, int_input = 0
+ *     try:             # <<<<<<<<<<<<<<
+ *         if axis is None:
+ *             ravel = 1
+ */
+  {
+    __Pyx_ExceptionSave(&__pyx_t_1, &__pyx_t_2, &__pyx_t_3);
+    __Pyx_XGOTREF(__pyx_t_1);
+    __Pyx_XGOTREF(__pyx_t_2);
+    __Pyx_XGOTREF(__pyx_t_3);
+    /*try:*/ {
+
+      /* "reduce.pyx":1525
+ *     cdef int ravel = 0, copy = 1, int_input = 0
+ *     try:
+ *         if axis is None:             # <<<<<<<<<<<<<<
+ *             ravel = 1
+ *         return reducer(arr, axis,
+ */
+      __pyx_t_4 = (__pyx_v_axis == Py_None);
+      __pyx_t_5 = (__pyx_t_4 != 0);
+      if (__pyx_t_5) {
+
+        /* "reduce.pyx":1526
+ *     try:
+ *         if axis is None:
+ *             ravel = 1             # <<<<<<<<<<<<<<
+ *         return reducer(arr, axis,
+ *                        nanmedian_all_float64,
+ */
+        __pyx_v_ravel = 1;
+        goto __pyx_L11;
+      }
+      __pyx_L11:;
+
+      /* "reduce.pyx":1527
+ *         if axis is None:
+ *             ravel = 1
+ *         return reducer(arr, axis,             # <<<<<<<<<<<<<<
+ *                        nanmedian_all_float64,
+ *                        nanmedian_all_float32,
+ */
+      __Pyx_XDECREF(__pyx_r);
+
+      /* "reduce.pyx":1539
+ *                        int_input,
+ *                        ravel,
+ *                        copy)             # <<<<<<<<<<<<<<
+ *     except TypeError:
+ *         return slow.nanmedian(arr, axis)
+ */
+      __pyx_t_7.__pyx_n = 3;
+      __pyx_t_7.int_input = __pyx_v_int_input;
+      __pyx_t_7.ravel = __pyx_v_ravel;
+      __pyx_t_7.copy = __pyx_v_copy;
+      __pyx_t_6 = __pyx_f_6reduce_reducer(__pyx_v_arr, __pyx_v_axis, __pyx_f_6reduce_nanmedian_all_float64, __pyx_f_6reduce_nanmedian_all_float32, __pyx_f_6reduce_median_all_int64, __pyx_f_6reduce_median_all_int32, __pyx_f_6reduce_nanmedian_one_float64, __pyx_f_6reduce_nanmedian_one_float32, __pyx_f_6reduce_median_one_int64, __pyx_f_6reduce_median_one_int32, __pyx_f_6reduce_nanmedian_0d, &__pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1527; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_r = __pyx_t_6;
+      __pyx_t_6 = 0;
+      goto __pyx_L7_try_return;
+    }
+    __pyx_L3_error:;
+    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+    /* "reduce.pyx":1540
+ *                        ravel,
+ *                        copy)
+ *     except TypeError:             # <<<<<<<<<<<<<<
+ *         return slow.nanmedian(arr, axis)
+ * 
+ */
+    __pyx_t_8 = PyErr_ExceptionMatches(__pyx_builtin_TypeError);
+    if (__pyx_t_8) {
+      __Pyx_AddTraceback("reduce.nanmedian", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      if (__Pyx_GetException(&__pyx_t_6, &__pyx_t_9, &__pyx_t_10) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1540; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_GOTREF(__pyx_t_9);
+      __Pyx_GOTREF(__pyx_t_10);
+
+      /* "reduce.pyx":1541
+ *                        copy)
+ *     except TypeError:
+ *         return slow.nanmedian(arr, axis)             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+      __Pyx_XDECREF(__pyx_r);
+      __pyx_t_12 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1541; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __Pyx_GOTREF(__pyx_t_12);
+      __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_nanmedian); if (unlikely(!__pyx_t_13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1541; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __Pyx_GOTREF(__pyx_t_13);
+      __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+      __pyx_t_12 = NULL;
+      __pyx_t_14 = 0;
+      if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_13))) {
+        __pyx_t_12 = PyMethod_GET_SELF(__pyx_t_13);
+        if (likely(__pyx_t_12)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_13);
+          __Pyx_INCREF(__pyx_t_12);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_13, function);
+          __pyx_t_14 = 1;
+        }
+      }
+      __pyx_t_15 = PyTuple_New(2+__pyx_t_14); if (unlikely(!__pyx_t_15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1541; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __Pyx_GOTREF(__pyx_t_15);
+      if (__pyx_t_12) {
+        PyTuple_SET_ITEM(__pyx_t_15, 0, __pyx_t_12); __Pyx_GIVEREF(__pyx_t_12); __pyx_t_12 = NULL;
+      }
+      __Pyx_INCREF(__pyx_v_arr);
+      PyTuple_SET_ITEM(__pyx_t_15, 0+__pyx_t_14, __pyx_v_arr);
+      __Pyx_GIVEREF(__pyx_v_arr);
+      __Pyx_INCREF(__pyx_v_axis);
+      PyTuple_SET_ITEM(__pyx_t_15, 1+__pyx_t_14, __pyx_v_axis);
+      __Pyx_GIVEREF(__pyx_v_axis);
+      __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_13, __pyx_t_15, NULL); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1541; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __Pyx_GOTREF(__pyx_t_11);
+      __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
+      __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+      __pyx_r = __pyx_t_11;
+      __pyx_t_11 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+      goto __pyx_L6_except_return;
+    }
+    goto __pyx_L5_except_error;
+    __pyx_L5_except_error:;
+    __Pyx_XGIVEREF(__pyx_t_1);
+    __Pyx_XGIVEREF(__pyx_t_2);
+    __Pyx_XGIVEREF(__pyx_t_3);
+    __Pyx_ExceptionReset(__pyx_t_1, __pyx_t_2, __pyx_t_3);
+    goto __pyx_L1_error;
+    __pyx_L7_try_return:;
+    __Pyx_XGIVEREF(__pyx_t_1);
+    __Pyx_XGIVEREF(__pyx_t_2);
+    __Pyx_XGIVEREF(__pyx_t_3);
+    __Pyx_ExceptionReset(__pyx_t_1, __pyx_t_2, __pyx_t_3);
+    goto __pyx_L0;
+    __pyx_L6_except_return:;
+    __Pyx_XGIVEREF(__pyx_t_1);
+    __Pyx_XGIVEREF(__pyx_t_2);
+    __Pyx_XGIVEREF(__pyx_t_3);
+    __Pyx_ExceptionReset(__pyx_t_1, __pyx_t_2, __pyx_t_3);
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1522
+ * # nanmedian -----------------------------------------------------------------
+ * 
+ * def nanmedian(arr, axis=None):             # <<<<<<<<<<<<<<
+ *     cdef int ravel = 0, copy = 1, int_input = 0
+ *     try:
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_XDECREF(__pyx_t_12);
+  __Pyx_XDECREF(__pyx_t_13);
+  __Pyx_XDECREF(__pyx_t_15);
+  __Pyx_AddTraceback("reduce.nanmedian", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "reduce.pyx":1544
+ * 
+ * 
+ * cdef object nanmedian_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
+ *                                  Py_ssize_t length, int int_input):
+ *     cdef int allnan = 1, flag = 0
+ */
+
+static PyObject *__pyx_f_6reduce_nanmedian_all_float64(PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, CYTHON_UNUSED int __pyx_v_int_input) {
+  int __pyx_v_allnan;
+  int __pyx_v_flag;
+  npy_intp __pyx_v_i;
+  npy_intp __pyx_v_j;
+  npy_intp __pyx_v_l;
+  npy_intp __pyx_v_r;
+  npy_intp __pyx_v_k;
+  npy_intp __pyx_v_n;
+  __pyx_t_5numpy_float64_t __pyx_v_x;
+  __pyx_t_5numpy_float64_t __pyx_v_tmp;
+  __pyx_t_5numpy_float64_t __pyx_v_amax;
+  __pyx_t_5numpy_float64_t __pyx_v_ai;
+  __pyx_t_5numpy_float64_t __pyx_v_bi;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  Py_ssize_t __pyx_t_3;
+  npy_intp __pyx_t_4;
+  npy_intp __pyx_t_5;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("nanmedian_all_float64", 0);
+
+  /* "reduce.pyx":1546
+ * cdef object nanmedian_all_float64(np.flatiter ita, Py_ssize_t stride,
+ *                                  Py_ssize_t length, int int_input):
+ *     cdef int allnan = 1, flag = 0             # <<<<<<<<<<<<<<
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k, n
+ *     cdef float64_t x, tmp, amax, ai, bi
+ */
+  __pyx_v_allnan = 1;
+  __pyx_v_flag = 0;
+
+  /* "reduce.pyx":1547
+ *                                  Py_ssize_t length, int int_input):
+ *     cdef int allnan = 1, flag = 0
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k, n             # <<<<<<<<<<<<<<
+ *     cdef float64_t x, tmp, amax, ai, bi
+ *     if length == 0:
+ */
+  __pyx_v_i = 0;
+  __pyx_v_j = 0;
+
+  /* "reduce.pyx":1549
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k, n
+ *     cdef float64_t x, tmp, amax, ai, bi
+ *     if length == 0:             # <<<<<<<<<<<<<<
+ *         return NAN
+ *     j = length - 1
+ */
+  __pyx_t_1 = ((__pyx_v_length == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "reduce.pyx":1550
+ *     cdef float64_t x, tmp, amax, ai, bi
+ *     if length == 0:
+ *         return NAN             # <<<<<<<<<<<<<<
+ *     j = length - 1
+ *     flag = 1
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1550; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1551
+ *     if length == 0:
+ *         return NAN
+ *     j = length - 1             # <<<<<<<<<<<<<<
+ *     flag = 1
+ *     for i in range(length):
+ */
+  __pyx_v_j = (__pyx_v_length - 1);
+
+  /* "reduce.pyx":1552
+ *         return NAN
+ *     j = length - 1
+ *     flag = 1             # <<<<<<<<<<<<<<
+ *     for i in range(length):
+ *         bi = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
+ */
+  __pyx_v_flag = 1;
+
+  /* "reduce.pyx":1553
+ *     j = length - 1
+ *     flag = 1
+ *     for i in range(length):             # <<<<<<<<<<<<<<
+ *         bi = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
+ *         if bi != bi:
+ */
+  __pyx_t_3 = __pyx_v_length;
+  for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+    __pyx_v_i = __pyx_t_4;
+
+    /* "reduce.pyx":1554
+ *     flag = 1
+ *     for i in range(length):
+ *         bi = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
+ *         if bi != bi:
+ *             while (<float64_t*>((<char*>pid(ita)) + j*stride))[0] != (<float64_t*>((<char*>pid(ita)) + j*stride))[0]:
+ */
+    __pyx_v_bi = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+    /* "reduce.pyx":1555
+ *     for i in range(length):
+ *         bi = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
+ *         if bi != bi:             # <<<<<<<<<<<<<<
+ *             while (<float64_t*>((<char*>pid(ita)) + j*stride))[0] != (<float64_t*>((<char*>pid(ita)) + j*stride))[0]:
+ *                 if j <= 0:
+ */
+    __pyx_t_1 = ((__pyx_v_bi != __pyx_v_bi) != 0);
+    if (__pyx_t_1) {
+
+      /* "reduce.pyx":1556
+ *         bi = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
+ *         if bi != bi:
+ *             while (<float64_t*>((<char*>pid(ita)) + j*stride))[0] != (<float64_t*>((<char*>pid(ita)) + j*stride))[0]:             # <<<<<<<<<<<<<<
+ *                 if j <= 0:
+ *                     break
+ */
+      while (1) {
+        __pyx_t_1 = (((((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) != (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0])) != 0);
+        if (!__pyx_t_1) break;
+
+        /* "reduce.pyx":1557
+ *         if bi != bi:
+ *             while (<float64_t*>((<char*>pid(ita)) + j*stride))[0] != (<float64_t*>((<char*>pid(ita)) + j*stride))[0]:
+ *                 if j <= 0:             # <<<<<<<<<<<<<<
+ *                     break
+ *                 j -= 1
+ */
+        __pyx_t_1 = ((__pyx_v_j <= 0) != 0);
+        if (__pyx_t_1) {
+
+          /* "reduce.pyx":1558
+ *             while (<float64_t*>((<char*>pid(ita)) + j*stride))[0] != (<float64_t*>((<char*>pid(ita)) + j*stride))[0]:
+ *                 if j <= 0:
+ *                     break             # <<<<<<<<<<<<<<
+ *                 j -= 1
+ *             if i >= j:
+ */
+          goto __pyx_L8_break;
+        }
+
+        /* "reduce.pyx":1559
+ *                 if j <= 0:
+ *                     break
+ *                 j -= 1             # <<<<<<<<<<<<<<
+ *             if i >= j:
+ *                 flag = 0
+ */
+        __pyx_v_j = (__pyx_v_j - 1);
+      }
+      __pyx_L8_break:;
+
+      /* "reduce.pyx":1560
+ *                     break
+ *                 j -= 1
+ *             if i >= j:             # <<<<<<<<<<<<<<
+ *                 flag = 0
+ *                 break
+ */
+      __pyx_t_1 = ((__pyx_v_i >= __pyx_v_j) != 0);
+      if (__pyx_t_1) {
+
+        /* "reduce.pyx":1561
+ *                 j -= 1
+ *             if i >= j:
+ *                 flag = 0             # <<<<<<<<<<<<<<
+ *                 break
+ *             tmp = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+        __pyx_v_flag = 0;
+
+        /* "reduce.pyx":1562
+ *             if i >= j:
+ *                 flag = 0
+ *                 break             # <<<<<<<<<<<<<<
+ *             tmp = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *             (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+        goto __pyx_L5_break;
+      }
+
+      /* "reduce.pyx":1563
+ *                 flag = 0
+ *                 break
+ *             tmp = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *             (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *             (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+ */
+      __pyx_v_tmp = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":1564
+ *                 break
+ *             tmp = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *             (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *             (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+ *     n = i + flag
+ */
+      (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":1565
+ *             tmp = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *             (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *             (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = bi             # <<<<<<<<<<<<<<
+ *     n = i + flag
+ *     k = n >> 1
+ */
+      (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_bi;
+      goto __pyx_L6;
+    }
+    __pyx_L6:;
+  }
+  __pyx_L5_break:;
+
+  /* "reduce.pyx":1566
+ *             (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *             (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+ *     n = i + flag             # <<<<<<<<<<<<<<
+ *     k = n >> 1
+ *     l = 0
+ */
+  __pyx_v_n = (__pyx_v_i + __pyx_v_flag);
+
+  /* "reduce.pyx":1567
+ *             (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+ *     n = i + flag
+ *     k = n >> 1             # <<<<<<<<<<<<<<
+ *     l = 0
+ *     r = n - 1
+ */
+  __pyx_v_k = (__pyx_v_n >> 1);
+
+  /* "reduce.pyx":1568
+ *     n = i + flag
+ *     k = n >> 1
+ *     l = 0             # <<<<<<<<<<<<<<
+ *     r = n - 1
+ *     while l < r:
+ */
+  __pyx_v_l = 0;
+
+  /* "reduce.pyx":1569
+ *     k = n >> 1
+ *     l = 0
+ *     r = n - 1             # <<<<<<<<<<<<<<
+ *     while l < r:
+ *         x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+  __pyx_v_r = (__pyx_v_n - 1);
+
+  /* "reduce.pyx":1570
+ *     l = 0
+ *     r = n - 1
+ *     while l < r:             # <<<<<<<<<<<<<<
+ *         x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l
+ */
+  while (1) {
+    __pyx_t_1 = ((__pyx_v_l < __pyx_v_r) != 0);
+    if (!__pyx_t_1) break;
+
+    /* "reduce.pyx":1571
+ *     r = n - 1
+ *     while l < r:
+ *         x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *         i = l
+ *         j = r
+ */
+    __pyx_v_x = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+    /* "reduce.pyx":1572
+ *     while l < r:
+ *         x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l             # <<<<<<<<<<<<<<
+ *         j = r
+ *         while 1:
+ */
+    __pyx_v_i = __pyx_v_l;
+
+    /* "reduce.pyx":1573
+ *         x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l
+ *         j = r             # <<<<<<<<<<<<<<
+ *         while 1:
+ *             while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ */
+    __pyx_v_j = __pyx_v_r;
+
+    /* "reduce.pyx":1574
+ *         i = l
+ *         j = r
+ *         while 1:             # <<<<<<<<<<<<<<
+ *             while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ */
+    while (1) {
+
+      /* "reduce.pyx":1575
+ *         j = r
+ *         while 1:
+ *             while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
+ *             while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:
+ */
+      while (1) {
+        __pyx_t_1 = (((((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) < __pyx_v_x) != 0);
+        if (!__pyx_t_1) break;
+        __pyx_v_i = (__pyx_v_i + 1);
+      }
+
+      /* "reduce.pyx":1576
+ *         while 1:
+ *             while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
+ *             if i <= j:
+ *                 tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+      while (1) {
+        __pyx_t_1 = ((__pyx_v_x < (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0])) != 0);
+        if (!__pyx_t_1) break;
+        __pyx_v_j = (__pyx_v_j - 1);
+      }
+
+      /* "reduce.pyx":1577
+ *             while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:             # <<<<<<<<<<<<<<
+ *                 tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+      __pyx_t_1 = ((__pyx_v_i <= __pyx_v_j) != 0);
+      if (__pyx_t_1) {
+
+        /* "reduce.pyx":1578
+ *             while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:
+ *                 tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                 (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ */
+        __pyx_v_tmp = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1579
+ *             if i <= j:
+ *                 tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *                 (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1
+ */
+        (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1580
+ *                 tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp             # <<<<<<<<<<<<<<
+ *                 i += 1
+ *                 j -= 1
+ */
+        (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmp;
+
+        /* "reduce.pyx":1581
+ *                 (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1             # <<<<<<<<<<<<<<
+ *                 j -= 1
+ *             if i > j: break
+ */
+        __pyx_v_i = (__pyx_v_i + 1);
+
+        /* "reduce.pyx":1582
+ *                 (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1
+ *                 j -= 1             # <<<<<<<<<<<<<<
+ *             if i > j: break
+ *         if j < k: l = i
+ */
+        __pyx_v_j = (__pyx_v_j - 1);
+        goto __pyx_L19;
+      }
+      __pyx_L19:;
+
+      /* "reduce.pyx":1583
+ *                 i += 1
+ *                 j -= 1
+ *             if i > j: break             # <<<<<<<<<<<<<<
+ *         if j < k: l = i
+ *         if k < i: r = j
+ */
+      __pyx_t_1 = ((__pyx_v_i > __pyx_v_j) != 0);
+      if (__pyx_t_1) {
+        goto __pyx_L14_break;
+      }
+    }
+    __pyx_L14_break:;
+
+    /* "reduce.pyx":1584
+ *                 j -= 1
+ *             if i > j: break
+ *         if j < k: l = i             # <<<<<<<<<<<<<<
+ *         if k < i: r = j
+ *     bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+    __pyx_t_1 = ((__pyx_v_j < __pyx_v_k) != 0);
+    if (__pyx_t_1) {
+      __pyx_v_l = __pyx_v_i;
+      goto __pyx_L21;
+    }
+    __pyx_L21:;
+
+    /* "reduce.pyx":1585
+ *             if i > j: break
+ *         if j < k: l = i
+ *         if k < i: r = j             # <<<<<<<<<<<<<<
+ *     bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if n % 2 == 0:
+ */
+    __pyx_t_1 = ((__pyx_v_k < __pyx_v_i) != 0);
+    if (__pyx_t_1) {
+      __pyx_v_r = __pyx_v_j;
+      goto __pyx_L22;
+    }
+    __pyx_L22:;
+  }
+
+  /* "reduce.pyx":1586
+ *         if j < k: l = i
+ *         if k < i: r = j
+ *     bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *     if n % 2 == 0:
+ *         amax = MINfloat64
+ */
+  __pyx_v_bi = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+  /* "reduce.pyx":1587
+ *         if k < i: r = j
+ *     bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if n % 2 == 0:             # <<<<<<<<<<<<<<
+ *         amax = MINfloat64
+ *         allnan = 1
+ */
+  __pyx_t_1 = ((__Pyx_mod_long(__pyx_v_n, 2) == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "reduce.pyx":1588
+ *     bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if n % 2 == 0:
+ *         amax = MINfloat64             # <<<<<<<<<<<<<<
+ *         allnan = 1
+ *         for i in range(k):
+ */
+    __pyx_v_amax = __pyx_v_6reduce_MINfloat64;
+
+    /* "reduce.pyx":1589
+ *     if n % 2 == 0:
+ *         amax = MINfloat64
+ *         allnan = 1             # <<<<<<<<<<<<<<
+ *         for i in range(k):
+ *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+    __pyx_v_allnan = 1;
+
+    /* "reduce.pyx":1590
+ *         amax = MINfloat64
+ *         allnan = 1
+ *         for i in range(k):             # <<<<<<<<<<<<<<
+ *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:
+ */
+    __pyx_t_4 = __pyx_v_k;
+    for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
+      __pyx_v_i = __pyx_t_5;
+
+      /* "reduce.pyx":1591
+ *         allnan = 1
+ *         for i in range(k):
+ *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *             if ai >= amax:
+ *                 amax = ai
+ */
+      __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":1592
+ *         for i in range(k):
+ *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:             # <<<<<<<<<<<<<<
+ *                 amax = ai
+ *                 allnan = 0
+ */
+      __pyx_t_1 = ((__pyx_v_ai >= __pyx_v_amax) != 0);
+      if (__pyx_t_1) {
+
+        /* "reduce.pyx":1593
+ *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:
+ *                 amax = ai             # <<<<<<<<<<<<<<
+ *                 allnan = 0
+ *         if allnan == 0:
+ */
+        __pyx_v_amax = __pyx_v_ai;
+
+        /* "reduce.pyx":1594
+ *             if ai >= amax:
+ *                 amax = ai
+ *                 allnan = 0             # <<<<<<<<<<<<<<
+ *         if allnan == 0:
+ *             return 0.5 * (bi + amax)
+ */
+        __pyx_v_allnan = 0;
+        goto __pyx_L26;
+      }
+      __pyx_L26:;
+    }
+
+    /* "reduce.pyx":1595
+ *                 amax = ai
+ *                 allnan = 0
+ *         if allnan == 0:             # <<<<<<<<<<<<<<
+ *             return 0.5 * (bi + amax)
+ *         else:
+ */
+    __pyx_t_1 = ((__pyx_v_allnan == 0) != 0);
+    if (__pyx_t_1) {
+
+      /* "reduce.pyx":1596
+ *                 allnan = 0
+ *         if allnan == 0:
+ *             return 0.5 * (bi + amax)             # <<<<<<<<<<<<<<
+ *         else:
+ *             return bi
+ */
+      __Pyx_XDECREF(__pyx_r);
+      __pyx_t_2 = PyFloat_FromDouble((0.5 * (__pyx_v_bi + __pyx_v_amax))); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1596; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_r = __pyx_t_2;
+      __pyx_t_2 = 0;
+      goto __pyx_L0;
+    }
+    /*else*/ {
+
+      /* "reduce.pyx":1598
+ *             return 0.5 * (bi + amax)
+ *         else:
+ *             return bi             # <<<<<<<<<<<<<<
+ *     else:
+ *         return bi
+ */
+      __Pyx_XDECREF(__pyx_r);
+      __pyx_t_2 = PyFloat_FromDouble(__pyx_v_bi); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1598; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_r = __pyx_t_2;
+      __pyx_t_2 = 0;
+      goto __pyx_L0;
+    }
+  }
+  /*else*/ {
+
+    /* "reduce.pyx":1600
+ *             return bi
+ *     else:
+ *         return bi             # <<<<<<<<<<<<<<
+ * 
+ * cdef object nanmedian_all_float32(np.flatiter ita, Py_ssize_t stride,
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_bi); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1600; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1544
+ * 
+ * 
+ * cdef object nanmedian_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
+ *                                  Py_ssize_t length, int int_input):
+ *     cdef int allnan = 1, flag = 0
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("reduce.nanmedian_all_float64", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "reduce.pyx":1602
+ *         return bi
+ * 
+ * cdef object nanmedian_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
+ *                                  Py_ssize_t length, int int_input):
+ *     cdef int allnan = 1, flag = 0
+ */
+
+static PyObject *__pyx_f_6reduce_nanmedian_all_float32(PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, CYTHON_UNUSED int __pyx_v_int_input) {
+  int __pyx_v_allnan;
+  int __pyx_v_flag;
+  npy_intp __pyx_v_i;
+  npy_intp __pyx_v_j;
+  npy_intp __pyx_v_l;
+  npy_intp __pyx_v_r;
+  npy_intp __pyx_v_k;
+  npy_intp __pyx_v_n;
+  __pyx_t_5numpy_float32_t __pyx_v_x;
+  __pyx_t_5numpy_float32_t __pyx_v_tmp;
+  __pyx_t_5numpy_float32_t __pyx_v_amax;
+  __pyx_t_5numpy_float32_t __pyx_v_ai;
+  __pyx_t_5numpy_float32_t __pyx_v_bi;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  Py_ssize_t __pyx_t_3;
+  npy_intp __pyx_t_4;
+  npy_intp __pyx_t_5;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("nanmedian_all_float32", 0);
+
+  /* "reduce.pyx":1604
+ * cdef object nanmedian_all_float32(np.flatiter ita, Py_ssize_t stride,
+ *                                  Py_ssize_t length, int int_input):
+ *     cdef int allnan = 1, flag = 0             # <<<<<<<<<<<<<<
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k, n
+ *     cdef float32_t x, tmp, amax, ai, bi
+ */
+  __pyx_v_allnan = 1;
+  __pyx_v_flag = 0;
+
+  /* "reduce.pyx":1605
+ *                                  Py_ssize_t length, int int_input):
+ *     cdef int allnan = 1, flag = 0
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k, n             # <<<<<<<<<<<<<<
+ *     cdef float32_t x, tmp, amax, ai, bi
+ *     if length == 0:
+ */
+  __pyx_v_i = 0;
+  __pyx_v_j = 0;
+
+  /* "reduce.pyx":1607
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k, n
+ *     cdef float32_t x, tmp, amax, ai, bi
+ *     if length == 0:             # <<<<<<<<<<<<<<
+ *         return NAN
+ *     j = length - 1
+ */
+  __pyx_t_1 = ((__pyx_v_length == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "reduce.pyx":1608
+ *     cdef float32_t x, tmp, amax, ai, bi
+ *     if length == 0:
+ *         return NAN             # <<<<<<<<<<<<<<
+ *     j = length - 1
+ *     flag = 1
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1608; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1609
+ *     if length == 0:
+ *         return NAN
+ *     j = length - 1             # <<<<<<<<<<<<<<
+ *     flag = 1
+ *     for i in range(length):
+ */
+  __pyx_v_j = (__pyx_v_length - 1);
+
+  /* "reduce.pyx":1610
+ *         return NAN
+ *     j = length - 1
+ *     flag = 1             # <<<<<<<<<<<<<<
+ *     for i in range(length):
+ *         bi = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
+ */
+  __pyx_v_flag = 1;
+
+  /* "reduce.pyx":1611
+ *     j = length - 1
+ *     flag = 1
+ *     for i in range(length):             # <<<<<<<<<<<<<<
+ *         bi = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
+ *         if bi != bi:
+ */
+  __pyx_t_3 = __pyx_v_length;
+  for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+    __pyx_v_i = __pyx_t_4;
+
+    /* "reduce.pyx":1612
+ *     flag = 1
+ *     for i in range(length):
+ *         bi = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
+ *         if bi != bi:
+ *             while (<float32_t*>((<char*>pid(ita)) + j*stride))[0] != (<float32_t*>((<char*>pid(ita)) + j*stride))[0]:
+ */
+    __pyx_v_bi = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+    /* "reduce.pyx":1613
+ *     for i in range(length):
+ *         bi = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
+ *         if bi != bi:             # <<<<<<<<<<<<<<
+ *             while (<float32_t*>((<char*>pid(ita)) + j*stride))[0] != (<float32_t*>((<char*>pid(ita)) + j*stride))[0]:
+ *                 if j <= 0:
+ */
+    __pyx_t_1 = ((__pyx_v_bi != __pyx_v_bi) != 0);
+    if (__pyx_t_1) {
+
+      /* "reduce.pyx":1614
+ *         bi = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
+ *         if bi != bi:
+ *             while (<float32_t*>((<char*>pid(ita)) + j*stride))[0] != (<float32_t*>((<char*>pid(ita)) + j*stride))[0]:             # <<<<<<<<<<<<<<
+ *                 if j <= 0:
+ *                     break
+ */
+      while (1) {
+        __pyx_t_1 = (((((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) != (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0])) != 0);
+        if (!__pyx_t_1) break;
+
+        /* "reduce.pyx":1615
+ *         if bi != bi:
+ *             while (<float32_t*>((<char*>pid(ita)) + j*stride))[0] != (<float32_t*>((<char*>pid(ita)) + j*stride))[0]:
+ *                 if j <= 0:             # <<<<<<<<<<<<<<
+ *                     break
+ *                 j -= 1
+ */
+        __pyx_t_1 = ((__pyx_v_j <= 0) != 0);
+        if (__pyx_t_1) {
+
+          /* "reduce.pyx":1616
+ *             while (<float32_t*>((<char*>pid(ita)) + j*stride))[0] != (<float32_t*>((<char*>pid(ita)) + j*stride))[0]:
+ *                 if j <= 0:
+ *                     break             # <<<<<<<<<<<<<<
+ *                 j -= 1
+ *             if i >= j:
+ */
+          goto __pyx_L8_break;
+        }
+
+        /* "reduce.pyx":1617
+ *                 if j <= 0:
+ *                     break
+ *                 j -= 1             # <<<<<<<<<<<<<<
+ *             if i >= j:
+ *                 flag = 0
+ */
+        __pyx_v_j = (__pyx_v_j - 1);
+      }
+      __pyx_L8_break:;
+
+      /* "reduce.pyx":1618
+ *                     break
+ *                 j -= 1
+ *             if i >= j:             # <<<<<<<<<<<<<<
+ *                 flag = 0
+ *                 break
+ */
+      __pyx_t_1 = ((__pyx_v_i >= __pyx_v_j) != 0);
+      if (__pyx_t_1) {
+
+        /* "reduce.pyx":1619
+ *                 j -= 1
+ *             if i >= j:
+ *                 flag = 0             # <<<<<<<<<<<<<<
+ *                 break
+ *             tmp = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+        __pyx_v_flag = 0;
+
+        /* "reduce.pyx":1620
+ *             if i >= j:
+ *                 flag = 0
+ *                 break             # <<<<<<<<<<<<<<
+ *             tmp = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *             (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+        goto __pyx_L5_break;
+      }
+
+      /* "reduce.pyx":1621
+ *                 flag = 0
+ *                 break
+ *             tmp = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *             (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *             (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+ */
+      __pyx_v_tmp = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":1622
+ *                 break
+ *             tmp = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *             (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *             (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+ *     n = i + flag
+ */
+      (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":1623
+ *             tmp = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *             (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *             (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = bi             # <<<<<<<<<<<<<<
+ *     n = i + flag
+ *     k = n >> 1
+ */
+      (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_bi;
+      goto __pyx_L6;
+    }
+    __pyx_L6:;
+  }
+  __pyx_L5_break:;
+
+  /* "reduce.pyx":1624
+ *             (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *             (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+ *     n = i + flag             # <<<<<<<<<<<<<<
+ *     k = n >> 1
+ *     l = 0
+ */
+  __pyx_v_n = (__pyx_v_i + __pyx_v_flag);
+
+  /* "reduce.pyx":1625
+ *             (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+ *     n = i + flag
+ *     k = n >> 1             # <<<<<<<<<<<<<<
+ *     l = 0
+ *     r = n - 1
+ */
+  __pyx_v_k = (__pyx_v_n >> 1);
+
+  /* "reduce.pyx":1626
+ *     n = i + flag
+ *     k = n >> 1
+ *     l = 0             # <<<<<<<<<<<<<<
+ *     r = n - 1
+ *     while l < r:
+ */
+  __pyx_v_l = 0;
+
+  /* "reduce.pyx":1627
+ *     k = n >> 1
+ *     l = 0
+ *     r = n - 1             # <<<<<<<<<<<<<<
+ *     while l < r:
+ *         x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+  __pyx_v_r = (__pyx_v_n - 1);
+
+  /* "reduce.pyx":1628
+ *     l = 0
+ *     r = n - 1
+ *     while l < r:             # <<<<<<<<<<<<<<
+ *         x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l
+ */
+  while (1) {
+    __pyx_t_1 = ((__pyx_v_l < __pyx_v_r) != 0);
+    if (!__pyx_t_1) break;
+
+    /* "reduce.pyx":1629
+ *     r = n - 1
+ *     while l < r:
+ *         x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *         i = l
+ *         j = r
+ */
+    __pyx_v_x = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+    /* "reduce.pyx":1630
+ *     while l < r:
+ *         x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l             # <<<<<<<<<<<<<<
+ *         j = r
+ *         while 1:
+ */
+    __pyx_v_i = __pyx_v_l;
+
+    /* "reduce.pyx":1631
+ *         x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l
+ *         j = r             # <<<<<<<<<<<<<<
+ *         while 1:
+ *             while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ */
+    __pyx_v_j = __pyx_v_r;
+
+    /* "reduce.pyx":1632
+ *         i = l
+ *         j = r
+ *         while 1:             # <<<<<<<<<<<<<<
+ *             while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ */
+    while (1) {
+
+      /* "reduce.pyx":1633
+ *         j = r
+ *         while 1:
+ *             while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
+ *             while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:
+ */
+      while (1) {
+        __pyx_t_1 = (((((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) < __pyx_v_x) != 0);
+        if (!__pyx_t_1) break;
+        __pyx_v_i = (__pyx_v_i + 1);
+      }
+
+      /* "reduce.pyx":1634
+ *         while 1:
+ *             while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
+ *             if i <= j:
+ *                 tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+      while (1) {
+        __pyx_t_1 = ((__pyx_v_x < (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0])) != 0);
+        if (!__pyx_t_1) break;
+        __pyx_v_j = (__pyx_v_j - 1);
+      }
+
+      /* "reduce.pyx":1635
+ *             while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:             # <<<<<<<<<<<<<<
+ *                 tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+      __pyx_t_1 = ((__pyx_v_i <= __pyx_v_j) != 0);
+      if (__pyx_t_1) {
+
+        /* "reduce.pyx":1636
+ *             while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:
+ *                 tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                 (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ */
+        __pyx_v_tmp = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1637
+ *             if i <= j:
+ *                 tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *                 (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1
+ */
+        (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1638
+ *                 tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp             # <<<<<<<<<<<<<<
+ *                 i += 1
+ *                 j -= 1
+ */
+        (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmp;
+
+        /* "reduce.pyx":1639
+ *                 (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1             # <<<<<<<<<<<<<<
+ *                 j -= 1
+ *             if i > j: break
+ */
+        __pyx_v_i = (__pyx_v_i + 1);
+
+        /* "reduce.pyx":1640
+ *                 (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1
+ *                 j -= 1             # <<<<<<<<<<<<<<
+ *             if i > j: break
+ *         if j < k: l = i
+ */
+        __pyx_v_j = (__pyx_v_j - 1);
+        goto __pyx_L19;
+      }
+      __pyx_L19:;
+
+      /* "reduce.pyx":1641
+ *                 i += 1
+ *                 j -= 1
+ *             if i > j: break             # <<<<<<<<<<<<<<
+ *         if j < k: l = i
+ *         if k < i: r = j
+ */
+      __pyx_t_1 = ((__pyx_v_i > __pyx_v_j) != 0);
+      if (__pyx_t_1) {
+        goto __pyx_L14_break;
+      }
+    }
+    __pyx_L14_break:;
+
+    /* "reduce.pyx":1642
+ *                 j -= 1
+ *             if i > j: break
+ *         if j < k: l = i             # <<<<<<<<<<<<<<
+ *         if k < i: r = j
+ *     bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+    __pyx_t_1 = ((__pyx_v_j < __pyx_v_k) != 0);
+    if (__pyx_t_1) {
+      __pyx_v_l = __pyx_v_i;
+      goto __pyx_L21;
+    }
+    __pyx_L21:;
+
+    /* "reduce.pyx":1643
+ *             if i > j: break
+ *         if j < k: l = i
+ *         if k < i: r = j             # <<<<<<<<<<<<<<
+ *     bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if n % 2 == 0:
+ */
+    __pyx_t_1 = ((__pyx_v_k < __pyx_v_i) != 0);
+    if (__pyx_t_1) {
+      __pyx_v_r = __pyx_v_j;
+      goto __pyx_L22;
+    }
+    __pyx_L22:;
+  }
+
+  /* "reduce.pyx":1644
+ *         if j < k: l = i
+ *         if k < i: r = j
+ *     bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *     if n % 2 == 0:
+ *         amax = MINfloat32
+ */
+  __pyx_v_bi = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+  /* "reduce.pyx":1645
+ *         if k < i: r = j
+ *     bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if n % 2 == 0:             # <<<<<<<<<<<<<<
+ *         amax = MINfloat32
+ *         allnan = 1
+ */
+  __pyx_t_1 = ((__Pyx_mod_long(__pyx_v_n, 2) == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "reduce.pyx":1646
+ *     bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if n % 2 == 0:
+ *         amax = MINfloat32             # <<<<<<<<<<<<<<
+ *         allnan = 1
+ *         for i in range(k):
+ */
+    __pyx_v_amax = __pyx_v_6reduce_MINfloat32;
+
+    /* "reduce.pyx":1647
+ *     if n % 2 == 0:
+ *         amax = MINfloat32
+ *         allnan = 1             # <<<<<<<<<<<<<<
+ *         for i in range(k):
+ *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+    __pyx_v_allnan = 1;
+
+    /* "reduce.pyx":1648
+ *         amax = MINfloat32
+ *         allnan = 1
+ *         for i in range(k):             # <<<<<<<<<<<<<<
+ *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:
+ */
+    __pyx_t_4 = __pyx_v_k;
+    for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
+      __pyx_v_i = __pyx_t_5;
+
+      /* "reduce.pyx":1649
+ *         allnan = 1
+ *         for i in range(k):
+ *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *             if ai >= amax:
+ *                 amax = ai
+ */
+      __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":1650
+ *         for i in range(k):
+ *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:             # <<<<<<<<<<<<<<
+ *                 amax = ai
+ *                 allnan = 0
+ */
+      __pyx_t_1 = ((__pyx_v_ai >= __pyx_v_amax) != 0);
+      if (__pyx_t_1) {
+
+        /* "reduce.pyx":1651
+ *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:
+ *                 amax = ai             # <<<<<<<<<<<<<<
+ *                 allnan = 0
+ *         if allnan == 0:
+ */
+        __pyx_v_amax = __pyx_v_ai;
+
+        /* "reduce.pyx":1652
+ *             if ai >= amax:
+ *                 amax = ai
+ *                 allnan = 0             # <<<<<<<<<<<<<<
+ *         if allnan == 0:
+ *             return 0.5 * (bi + amax)
+ */
+        __pyx_v_allnan = 0;
+        goto __pyx_L26;
+      }
+      __pyx_L26:;
+    }
+
+    /* "reduce.pyx":1653
+ *                 amax = ai
+ *                 allnan = 0
+ *         if allnan == 0:             # <<<<<<<<<<<<<<
+ *             return 0.5 * (bi + amax)
+ *         else:
+ */
+    __pyx_t_1 = ((__pyx_v_allnan == 0) != 0);
+    if (__pyx_t_1) {
+
+      /* "reduce.pyx":1654
+ *                 allnan = 0
+ *         if allnan == 0:
+ *             return 0.5 * (bi + amax)             # <<<<<<<<<<<<<<
+ *         else:
+ *             return bi
+ */
+      __Pyx_XDECREF(__pyx_r);
+      __pyx_t_2 = PyFloat_FromDouble((0.5 * (__pyx_v_bi + __pyx_v_amax))); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1654; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_r = __pyx_t_2;
+      __pyx_t_2 = 0;
+      goto __pyx_L0;
+    }
+    /*else*/ {
+
+      /* "reduce.pyx":1656
+ *             return 0.5 * (bi + amax)
+ *         else:
+ *             return bi             # <<<<<<<<<<<<<<
+ *     else:
+ *         return bi
+ */
+      __Pyx_XDECREF(__pyx_r);
+      __pyx_t_2 = PyFloat_FromDouble(__pyx_v_bi); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1656; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_r = __pyx_t_2;
+      __pyx_t_2 = 0;
+      goto __pyx_L0;
+    }
+  }
+  /*else*/ {
+
+    /* "reduce.pyx":1658
+ *             return bi
+ *     else:
+ *         return bi             # <<<<<<<<<<<<<<
+ * 
+ * cdef ndarray nanmedian_one_float64(np.flatiter ita,
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_bi); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1658; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1602
+ *         return bi
+ * 
+ * cdef object nanmedian_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
+ *                                  Py_ssize_t length, int int_input):
+ *     cdef int allnan = 1, flag = 0
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("reduce.nanmedian_all_float32", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "reduce.pyx":1660
+ *         return bi
+ * 
+ * cdef ndarray nanmedian_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
+ *                                   Py_ssize_t stride, Py_ssize_t length,
+ *                                   int a_ndim, np.npy_intp* y_dims,
+ */
+
+static PyArrayObject *__pyx_f_6reduce_nanmedian_one_float64(PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, int __pyx_v_a_ndim, npy_intp *__pyx_v_y_dims, CYTHON_UNUSED int __pyx_v_int_input) {
+  int __pyx_v_allnan;
+  int __pyx_v_flag;
+  npy_intp __pyx_v_i;
+  npy_intp __pyx_v_j;
+  npy_intp __pyx_v_l;
+  npy_intp __pyx_v_r;
+  npy_intp __pyx_v_k;
+  npy_intp __pyx_v_n;
+  __pyx_t_5numpy_float64_t __pyx_v_x;
+  __pyx_t_5numpy_float64_t __pyx_v_tmp;
+  __pyx_t_5numpy_float64_t __pyx_v_amax;
+  __pyx_t_5numpy_float64_t __pyx_v_ai;
+  __pyx_t_5numpy_float64_t __pyx_v_bi;
+  PyArrayObject *__pyx_v_y = 0;
+  PyArrayIterObject *__pyx_v_ity = 0;
+  PyArrayObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  Py_ssize_t __pyx_t_3;
+  npy_intp __pyx_t_4;
+  npy_intp __pyx_t_5;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("nanmedian_one_float64", 0);
+
+  /* "reduce.pyx":1664
+ *                                   int a_ndim, np.npy_intp* y_dims,
+ *                                   int int_input):
+ *     cdef int allnan = 1, flag = 0             # <<<<<<<<<<<<<<
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k, n
+ *     cdef float64_t x, tmp, amax, ai, bi
+ */
+  __pyx_v_allnan = 1;
+  __pyx_v_flag = 0;
+
+  /* "reduce.pyx":1665
+ *                                   int int_input):
+ *     cdef int allnan = 1, flag = 0
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k, n             # <<<<<<<<<<<<<<
+ *     cdef float64_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
+ */
+  __pyx_v_i = 0;
+  __pyx_v_j = 0;
+
+  /* "reduce.pyx":1667
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k, n
+ *     cdef float64_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:
+ */
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1667; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1667; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "reduce.pyx":1668
+ *     cdef float64_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
+ *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):
+ */
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1668; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1668; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "reduce.pyx":1669
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:             # <<<<<<<<<<<<<<
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
+ */
+  __pyx_t_2 = ((__pyx_v_length == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "reduce.pyx":1670
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)
+ */
+    while (1) {
+      __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
+      if (!__pyx_t_2) break;
+
+      /* "reduce.pyx":1671
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
+ *             PyArray_ITER_NEXT(ity)
+ *         return y
+ */
+      (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
+
+      /* "reduce.pyx":1672
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):
+ */
+      PyArray_ITER_NEXT(__pyx_v_ity);
+    }
+
+    /* "reduce.pyx":1673
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)
+ *         return y             # <<<<<<<<<<<<<<
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         j = length - 1
+ */
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __Pyx_INCREF(((PyObject *)__pyx_v_y));
+    __pyx_r = __pyx_v_y;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1674
+ *             PyArray_ITER_NEXT(ity)
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
+ *         j = length - 1
+ *         flag = 1
+ */
+  while (1) {
+    __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
+    if (!__pyx_t_2) break;
+
+    /* "reduce.pyx":1675
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         j = length - 1             # <<<<<<<<<<<<<<
+ *         flag = 1
+ *         for i in range(length):
+ */
+    __pyx_v_j = (__pyx_v_length - 1);
+
+    /* "reduce.pyx":1676
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         j = length - 1
+ *         flag = 1             # <<<<<<<<<<<<<<
+ *         for i in range(length):
+ *             bi = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
+ */
+    __pyx_v_flag = 1;
+
+    /* "reduce.pyx":1677
+ *         j = length - 1
+ *         flag = 1
+ *         for i in range(length):             # <<<<<<<<<<<<<<
+ *             bi = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
+ *             if bi != bi:
+ */
+    __pyx_t_3 = __pyx_v_length;
+    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+      __pyx_v_i = __pyx_t_4;
+
+      /* "reduce.pyx":1678
+ *         flag = 1
+ *         for i in range(length):
+ *             bi = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
+ *             if bi != bi:
+ *                 while (<float64_t*>((<char*>pid(ita)) + j*stride))[0] != (<float64_t*>((<char*>pid(ita)) + j*stride))[0]:
+ */
+      __pyx_v_bi = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":1679
+ *         for i in range(length):
+ *             bi = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
+ *             if bi != bi:             # <<<<<<<<<<<<<<
+ *                 while (<float64_t*>((<char*>pid(ita)) + j*stride))[0] != (<float64_t*>((<char*>pid(ita)) + j*stride))[0]:
+ *                     if j <= 0:
+ */
+      __pyx_t_2 = ((__pyx_v_bi != __pyx_v_bi) != 0);
+      if (__pyx_t_2) {
+
+        /* "reduce.pyx":1680
+ *             bi = (<float64_t*>((<char*>pid(ita)) + i * stride))[0]
+ *             if bi != bi:
+ *                 while (<float64_t*>((<char*>pid(ita)) + j*stride))[0] != (<float64_t*>((<char*>pid(ita)) + j*stride))[0]:             # <<<<<<<<<<<<<<
+ *                     if j <= 0:
+ *                         break
+ */
+        while (1) {
+          __pyx_t_2 = (((((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) != (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0])) != 0);
+          if (!__pyx_t_2) break;
+
+          /* "reduce.pyx":1681
+ *             if bi != bi:
+ *                 while (<float64_t*>((<char*>pid(ita)) + j*stride))[0] != (<float64_t*>((<char*>pid(ita)) + j*stride))[0]:
+ *                     if j <= 0:             # <<<<<<<<<<<<<<
+ *                         break
+ *                     j -= 1
+ */
+          __pyx_t_2 = ((__pyx_v_j <= 0) != 0);
+          if (__pyx_t_2) {
+
+            /* "reduce.pyx":1682
+ *                 while (<float64_t*>((<char*>pid(ita)) + j*stride))[0] != (<float64_t*>((<char*>pid(ita)) + j*stride))[0]:
+ *                     if j <= 0:
+ *                         break             # <<<<<<<<<<<<<<
+ *                     j -= 1
+ *                 if i >= j:
+ */
+            goto __pyx_L12_break;
+          }
+
+          /* "reduce.pyx":1683
+ *                     if j <= 0:
+ *                         break
+ *                     j -= 1             # <<<<<<<<<<<<<<
+ *                 if i >= j:
+ *                     flag = 0
+ */
+          __pyx_v_j = (__pyx_v_j - 1);
+        }
+        __pyx_L12_break:;
+
+        /* "reduce.pyx":1684
+ *                         break
+ *                     j -= 1
+ *                 if i >= j:             # <<<<<<<<<<<<<<
+ *                     flag = 0
+ *                     break
+ */
+        __pyx_t_2 = ((__pyx_v_i >= __pyx_v_j) != 0);
+        if (__pyx_t_2) {
+
+          /* "reduce.pyx":1685
+ *                     j -= 1
+ *                 if i >= j:
+ *                     flag = 0             # <<<<<<<<<<<<<<
+ *                     break
+ *                 tmp = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+          __pyx_v_flag = 0;
+
+          /* "reduce.pyx":1686
+ *                 if i >= j:
+ *                     flag = 0
+ *                     break             # <<<<<<<<<<<<<<
+ *                 tmp = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+          goto __pyx_L9_break;
+        }
+
+        /* "reduce.pyx":1687
+ *                     flag = 0
+ *                     break
+ *                 tmp = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *                 (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+ */
+        __pyx_v_tmp = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1688
+ *                     break
+ *                 tmp = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *                 (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+ *         n = i + flag
+ */
+        (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1689
+ *                 tmp = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = bi             # <<<<<<<<<<<<<<
+ *         n = i + flag
+ *         k = n >> 1
+ */
+        (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_bi;
+        goto __pyx_L10;
+      }
+      __pyx_L10:;
+    }
+    __pyx_L9_break:;
+
+    /* "reduce.pyx":1690
+ *                 (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+ *         n = i + flag             # <<<<<<<<<<<<<<
+ *         k = n >> 1
+ *         l = 0
+ */
+    __pyx_v_n = (__pyx_v_i + __pyx_v_flag);
+
+    /* "reduce.pyx":1691
+ *                 (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+ *         n = i + flag
+ *         k = n >> 1             # <<<<<<<<<<<<<<
+ *         l = 0
+ *         r = n - 1
+ */
+    __pyx_v_k = (__pyx_v_n >> 1);
+
+    /* "reduce.pyx":1692
+ *         n = i + flag
+ *         k = n >> 1
+ *         l = 0             # <<<<<<<<<<<<<<
+ *         r = n - 1
+ *         while l < r:
+ */
+    __pyx_v_l = 0;
+
+    /* "reduce.pyx":1693
+ *         k = n >> 1
+ *         l = 0
+ *         r = n - 1             # <<<<<<<<<<<<<<
+ *         while l < r:
+ *             x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+    __pyx_v_r = (__pyx_v_n - 1);
+
+    /* "reduce.pyx":1694
+ *         l = 0
+ *         r = n - 1
+ *         while l < r:             # <<<<<<<<<<<<<<
+ *             x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l
+ */
+    while (1) {
+      __pyx_t_2 = ((__pyx_v_l < __pyx_v_r) != 0);
+      if (!__pyx_t_2) break;
+
+      /* "reduce.pyx":1695
+ *         r = n - 1
+ *         while l < r:
+ *             x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *             i = l
+ *             j = r
+ */
+      __pyx_v_x = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":1696
+ *         while l < r:
+ *             x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l             # <<<<<<<<<<<<<<
+ *             j = r
+ *             while 1:
+ */
+      __pyx_v_i = __pyx_v_l;
+
+      /* "reduce.pyx":1697
+ *             x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l
+ *             j = r             # <<<<<<<<<<<<<<
+ *             while 1:
+ *                 while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ */
+      __pyx_v_j = __pyx_v_r;
+
+      /* "reduce.pyx":1698
+ *             i = l
+ *             j = r
+ *             while 1:             # <<<<<<<<<<<<<<
+ *                 while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ */
+      while (1) {
+
+        /* "reduce.pyx":1699
+ *             j = r
+ *             while 1:
+ *                 while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
+ *                 while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:
+ */
+        while (1) {
+          __pyx_t_2 = (((((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) < __pyx_v_x) != 0);
+          if (!__pyx_t_2) break;
+          __pyx_v_i = (__pyx_v_i + 1);
+        }
+
+        /* "reduce.pyx":1700
+ *             while 1:
+ *                 while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
+ *                 if i <= j:
+ *                     tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+        while (1) {
+          __pyx_t_2 = ((__pyx_v_x < (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0])) != 0);
+          if (!__pyx_t_2) break;
+          __pyx_v_j = (__pyx_v_j - 1);
+        }
+
+        /* "reduce.pyx":1701
+ *                 while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:             # <<<<<<<<<<<<<<
+ *                     tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+        __pyx_t_2 = ((__pyx_v_i <= __pyx_v_j) != 0);
+        if (__pyx_t_2) {
+
+          /* "reduce.pyx":1702
+ *                 while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:
+ *                     tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                     (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ */
+          __pyx_v_tmp = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+          /* "reduce.pyx":1703
+ *                 if i <= j:
+ *                     tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *                     (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1
+ */
+          (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+          /* "reduce.pyx":1704
+ *                     tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp             # <<<<<<<<<<<<<<
+ *                     i += 1
+ *                     j -= 1
+ */
+          (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmp;
+
+          /* "reduce.pyx":1705
+ *                     (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1             # <<<<<<<<<<<<<<
+ *                     j -= 1
+ *                 if i > j: break
+ */
+          __pyx_v_i = (__pyx_v_i + 1);
+
+          /* "reduce.pyx":1706
+ *                     (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1
+ *                     j -= 1             # <<<<<<<<<<<<<<
+ *                 if i > j: break
+ *             if j < k: l = i
+ */
+          __pyx_v_j = (__pyx_v_j - 1);
+          goto __pyx_L23;
+        }
+        __pyx_L23:;
+
+        /* "reduce.pyx":1707
+ *                     i += 1
+ *                     j -= 1
+ *                 if i > j: break             # <<<<<<<<<<<<<<
+ *             if j < k: l = i
+ *             if k < i: r = j
+ */
+        __pyx_t_2 = ((__pyx_v_i > __pyx_v_j) != 0);
+        if (__pyx_t_2) {
+          goto __pyx_L18_break;
+        }
+      }
+      __pyx_L18_break:;
+
+      /* "reduce.pyx":1708
+ *                     j -= 1
+ *                 if i > j: break
+ *             if j < k: l = i             # <<<<<<<<<<<<<<
+ *             if k < i: r = j
+ *         bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+      __pyx_t_2 = ((__pyx_v_j < __pyx_v_k) != 0);
+      if (__pyx_t_2) {
+        __pyx_v_l = __pyx_v_i;
+        goto __pyx_L25;
+      }
+      __pyx_L25:;
+
+      /* "reduce.pyx":1709
+ *                 if i > j: break
+ *             if j < k: l = i
+ *             if k < i: r = j             # <<<<<<<<<<<<<<
+ *         bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if n % 2 == 0:
+ */
+      __pyx_t_2 = ((__pyx_v_k < __pyx_v_i) != 0);
+      if (__pyx_t_2) {
+        __pyx_v_r = __pyx_v_j;
+        goto __pyx_L26;
+      }
+      __pyx_L26:;
+    }
+
+    /* "reduce.pyx":1710
+ *             if j < k: l = i
+ *             if k < i: r = j
+ *         bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *         if n % 2 == 0:
+ *             amax = MINfloat64
+ */
+    __pyx_v_bi = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+    /* "reduce.pyx":1711
+ *             if k < i: r = j
+ *         bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if n % 2 == 0:             # <<<<<<<<<<<<<<
+ *             amax = MINfloat64
+ *             allnan = 1
+ */
+    __pyx_t_2 = ((__Pyx_mod_long(__pyx_v_n, 2) == 0) != 0);
+    if (__pyx_t_2) {
+
+      /* "reduce.pyx":1712
+ *         bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if n % 2 == 0:
+ *             amax = MINfloat64             # <<<<<<<<<<<<<<
+ *             allnan = 1
+ *             for i in range(k):
+ */
+      __pyx_v_amax = __pyx_v_6reduce_MINfloat64;
+
+      /* "reduce.pyx":1713
+ *         if n % 2 == 0:
+ *             amax = MINfloat64
+ *             allnan = 1             # <<<<<<<<<<<<<<
+ *             for i in range(k):
+ *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+      __pyx_v_allnan = 1;
+
+      /* "reduce.pyx":1714
+ *             amax = MINfloat64
+ *             allnan = 1
+ *             for i in range(k):             # <<<<<<<<<<<<<<
+ *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:
+ */
+      __pyx_t_4 = __pyx_v_k;
+      for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
+        __pyx_v_i = __pyx_t_5;
+
+        /* "reduce.pyx":1715
+ *             allnan = 1
+ *             for i in range(k):
+ *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                 if ai >= amax:
+ *                     amax = ai
+ */
+        __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1716
+ *             for i in range(k):
+ *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:             # <<<<<<<<<<<<<<
+ *                     amax = ai
+ *                     allnan = 0
+ */
+        __pyx_t_2 = ((__pyx_v_ai >= __pyx_v_amax) != 0);
+        if (__pyx_t_2) {
+
+          /* "reduce.pyx":1717
+ *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:
+ *                     amax = ai             # <<<<<<<<<<<<<<
+ *                     allnan = 0
+ *             if allnan == 0:
+ */
+          __pyx_v_amax = __pyx_v_ai;
+
+          /* "reduce.pyx":1718
+ *                 if ai >= amax:
+ *                     amax = ai
+ *                     allnan = 0             # <<<<<<<<<<<<<<
+ *             if allnan == 0:
+ *                 (<float64_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ */
+          __pyx_v_allnan = 0;
+          goto __pyx_L30;
+        }
+        __pyx_L30:;
+      }
+
+      /* "reduce.pyx":1719
+ *                     amax = ai
+ *                     allnan = 0
+ *             if allnan == 0:             # <<<<<<<<<<<<<<
+ *                 (<float64_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ *             else:
+ */
+      __pyx_t_2 = ((__pyx_v_allnan == 0) != 0);
+      if (__pyx_t_2) {
+
+        /* "reduce.pyx":1720
+ *                     allnan = 0
+ *             if allnan == 0:
+ *                 (<float64_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)             # <<<<<<<<<<<<<<
+ *             else:
+ *                 (<float64_t*>((<char*>pid(ity))))[0] = bi
+ */
+        (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = (0.5 * (__pyx_v_bi + __pyx_v_amax));
+        goto __pyx_L31;
+      }
+      /*else*/ {
+
+        /* "reduce.pyx":1722
+ *                 (<float64_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ *             else:
+ *                 (<float64_t*>((<char*>pid(ity))))[0] = bi             # <<<<<<<<<<<<<<
+ *         else:
+ *             (<float64_t*>((<char*>pid(ity))))[0] = bi
+ */
+        (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_bi;
+      }
+      __pyx_L31:;
+      goto __pyx_L27;
+    }
+    /*else*/ {
+
+      /* "reduce.pyx":1724
+ *                 (<float64_t*>((<char*>pid(ity))))[0] = bi
+ *         else:
+ *             (<float64_t*>((<char*>pid(ity))))[0] = bi             # <<<<<<<<<<<<<<
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)
+ */
+      (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_bi;
+    }
+    __pyx_L27:;
+
+    /* "reduce.pyx":1725
+ *         else:
+ *             (<float64_t*>((<char*>pid(ity))))[0] = bi
+ *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
+ *         PyArray_ITER_NEXT(ity)
+ *     return y
+ */
+    PyArray_ITER_NEXT(__pyx_v_ita);
+
+    /* "reduce.pyx":1726
+ *             (<float64_t*>((<char*>pid(ity))))[0] = bi
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
+ *     return y
+ * 
+ */
+    PyArray_ITER_NEXT(__pyx_v_ity);
+  }
+
+  /* "reduce.pyx":1727
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)
+ *     return y             # <<<<<<<<<<<<<<
+ * 
+ * cdef ndarray nanmedian_one_float32(np.flatiter ita,
+ */
+  __Pyx_XDECREF(((PyObject *)__pyx_r));
+  __Pyx_INCREF(((PyObject *)__pyx_v_y));
+  __pyx_r = __pyx_v_y;
+  goto __pyx_L0;
+
+  /* "reduce.pyx":1660
+ *         return bi
+ * 
+ * cdef ndarray nanmedian_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
+ *                                   Py_ssize_t stride, Py_ssize_t length,
+ *                                   int a_ndim, np.npy_intp* y_dims,
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("reduce.nanmedian_one_float64", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF((PyObject *)__pyx_v_y);
+  __Pyx_XDECREF((PyObject *)__pyx_v_ity);
+  __Pyx_XGIVEREF((PyObject *)__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "reduce.pyx":1729
+ *     return y
+ * 
+ * cdef ndarray nanmedian_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
+ *                                   Py_ssize_t stride, Py_ssize_t length,
+ *                                   int a_ndim, np.npy_intp* y_dims,
+ */
+
+static PyArrayObject *__pyx_f_6reduce_nanmedian_one_float32(PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, int __pyx_v_a_ndim, npy_intp *__pyx_v_y_dims, CYTHON_UNUSED int __pyx_v_int_input) {
+  int __pyx_v_allnan;
+  int __pyx_v_flag;
+  npy_intp __pyx_v_i;
+  npy_intp __pyx_v_j;
+  npy_intp __pyx_v_l;
+  npy_intp __pyx_v_r;
+  npy_intp __pyx_v_k;
+  npy_intp __pyx_v_n;
+  __pyx_t_5numpy_float32_t __pyx_v_x;
+  __pyx_t_5numpy_float32_t __pyx_v_tmp;
+  __pyx_t_5numpy_float32_t __pyx_v_amax;
+  __pyx_t_5numpy_float32_t __pyx_v_ai;
+  __pyx_t_5numpy_float32_t __pyx_v_bi;
+  PyArrayObject *__pyx_v_y = 0;
+  PyArrayIterObject *__pyx_v_ity = 0;
+  PyArrayObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  Py_ssize_t __pyx_t_3;
+  npy_intp __pyx_t_4;
+  npy_intp __pyx_t_5;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("nanmedian_one_float32", 0);
+
+  /* "reduce.pyx":1733
+ *                                   int a_ndim, np.npy_intp* y_dims,
+ *                                   int int_input):
+ *     cdef int allnan = 1, flag = 0             # <<<<<<<<<<<<<<
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k, n
+ *     cdef float32_t x, tmp, amax, ai, bi
+ */
+  __pyx_v_allnan = 1;
+  __pyx_v_flag = 0;
+
+  /* "reduce.pyx":1734
+ *                                   int int_input):
+ *     cdef int allnan = 1, flag = 0
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k, n             # <<<<<<<<<<<<<<
+ *     cdef float32_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
+ */
+  __pyx_v_i = 0;
+  __pyx_v_j = 0;
+
+  /* "reduce.pyx":1736
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k, n
+ *     cdef float32_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)             # <<<<<<<<<<<<<<
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:
+ */
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1736; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1736; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "reduce.pyx":1737
+ *     cdef float32_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
+ *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):
+ */
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1737; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1737; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "reduce.pyx":1738
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:             # <<<<<<<<<<<<<<
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float32_t*>((<char*>pid(ity))))[0] = NAN
+ */
+  __pyx_t_2 = ((__pyx_v_length == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "reduce.pyx":1739
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
+ *             (<float32_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)
+ */
+    while (1) {
+      __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
+      if (!__pyx_t_2) break;
+
+      /* "reduce.pyx":1740
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float32_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
+ *             PyArray_ITER_NEXT(ity)
+ *         return y
+ */
+      (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
+
+      /* "reduce.pyx":1741
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float32_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):
+ */
+      PyArray_ITER_NEXT(__pyx_v_ity);
+    }
+
+    /* "reduce.pyx":1742
+ *             (<float32_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)
+ *         return y             # <<<<<<<<<<<<<<
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         j = length - 1
+ */
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __Pyx_INCREF(((PyObject *)__pyx_v_y));
+    __pyx_r = __pyx_v_y;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1743
+ *             PyArray_ITER_NEXT(ity)
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
+ *         j = length - 1
+ *         flag = 1
+ */
+  while (1) {
+    __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
+    if (!__pyx_t_2) break;
+
+    /* "reduce.pyx":1744
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         j = length - 1             # <<<<<<<<<<<<<<
+ *         flag = 1
+ *         for i in range(length):
+ */
+    __pyx_v_j = (__pyx_v_length - 1);
+
+    /* "reduce.pyx":1745
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         j = length - 1
+ *         flag = 1             # <<<<<<<<<<<<<<
+ *         for i in range(length):
+ *             bi = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
+ */
+    __pyx_v_flag = 1;
+
+    /* "reduce.pyx":1746
+ *         j = length - 1
+ *         flag = 1
+ *         for i in range(length):             # <<<<<<<<<<<<<<
+ *             bi = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
+ *             if bi != bi:
+ */
+    __pyx_t_3 = __pyx_v_length;
+    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+      __pyx_v_i = __pyx_t_4;
+
+      /* "reduce.pyx":1747
+ *         flag = 1
+ *         for i in range(length):
+ *             bi = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]             # <<<<<<<<<<<<<<
+ *             if bi != bi:
+ *                 while (<float32_t*>((<char*>pid(ita)) + j*stride))[0] != (<float32_t*>((<char*>pid(ita)) + j*stride))[0]:
+ */
+      __pyx_v_bi = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":1748
+ *         for i in range(length):
+ *             bi = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
+ *             if bi != bi:             # <<<<<<<<<<<<<<
+ *                 while (<float32_t*>((<char*>pid(ita)) + j*stride))[0] != (<float32_t*>((<char*>pid(ita)) + j*stride))[0]:
+ *                     if j <= 0:
+ */
+      __pyx_t_2 = ((__pyx_v_bi != __pyx_v_bi) != 0);
+      if (__pyx_t_2) {
+
+        /* "reduce.pyx":1749
+ *             bi = (<float32_t*>((<char*>pid(ita)) + i * stride))[0]
+ *             if bi != bi:
+ *                 while (<float32_t*>((<char*>pid(ita)) + j*stride))[0] != (<float32_t*>((<char*>pid(ita)) + j*stride))[0]:             # <<<<<<<<<<<<<<
+ *                     if j <= 0:
+ *                         break
+ */
+        while (1) {
+          __pyx_t_2 = (((((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) != (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0])) != 0);
+          if (!__pyx_t_2) break;
+
+          /* "reduce.pyx":1750
+ *             if bi != bi:
+ *                 while (<float32_t*>((<char*>pid(ita)) + j*stride))[0] != (<float32_t*>((<char*>pid(ita)) + j*stride))[0]:
+ *                     if j <= 0:             # <<<<<<<<<<<<<<
+ *                         break
+ *                     j -= 1
+ */
+          __pyx_t_2 = ((__pyx_v_j <= 0) != 0);
+          if (__pyx_t_2) {
+
+            /* "reduce.pyx":1751
+ *                 while (<float32_t*>((<char*>pid(ita)) + j*stride))[0] != (<float32_t*>((<char*>pid(ita)) + j*stride))[0]:
+ *                     if j <= 0:
+ *                         break             # <<<<<<<<<<<<<<
+ *                     j -= 1
+ *                 if i >= j:
+ */
+            goto __pyx_L12_break;
+          }
+
+          /* "reduce.pyx":1752
+ *                     if j <= 0:
+ *                         break
+ *                     j -= 1             # <<<<<<<<<<<<<<
+ *                 if i >= j:
+ *                     flag = 0
+ */
+          __pyx_v_j = (__pyx_v_j - 1);
+        }
+        __pyx_L12_break:;
+
+        /* "reduce.pyx":1753
+ *                         break
+ *                     j -= 1
+ *                 if i >= j:             # <<<<<<<<<<<<<<
+ *                     flag = 0
+ *                     break
+ */
+        __pyx_t_2 = ((__pyx_v_i >= __pyx_v_j) != 0);
+        if (__pyx_t_2) {
+
+          /* "reduce.pyx":1754
+ *                     j -= 1
+ *                 if i >= j:
+ *                     flag = 0             # <<<<<<<<<<<<<<
+ *                     break
+ *                 tmp = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+          __pyx_v_flag = 0;
+
+          /* "reduce.pyx":1755
+ *                 if i >= j:
+ *                     flag = 0
+ *                     break             # <<<<<<<<<<<<<<
+ *                 tmp = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+          goto __pyx_L9_break;
+        }
+
+        /* "reduce.pyx":1756
+ *                     flag = 0
+ *                     break
+ *                 tmp = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *                 (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+ */
+        __pyx_v_tmp = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1757
+ *                     break
+ *                 tmp = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *                 (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+ *         n = i + flag
+ */
+        (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1758
+ *                 tmp = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = bi             # <<<<<<<<<<<<<<
+ *         n = i + flag
+ *         k = n >> 1
+ */
+        (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_bi;
+        goto __pyx_L10;
+      }
+      __pyx_L10:;
+    }
+    __pyx_L9_break:;
+
+    /* "reduce.pyx":1759
+ *                 (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+ *         n = i + flag             # <<<<<<<<<<<<<<
+ *         k = n >> 1
+ *         l = 0
+ */
+    __pyx_v_n = (__pyx_v_i + __pyx_v_flag);
+
+    /* "reduce.pyx":1760
+ *                 (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+ *         n = i + flag
+ *         k = n >> 1             # <<<<<<<<<<<<<<
+ *         l = 0
+ *         r = n - 1
+ */
+    __pyx_v_k = (__pyx_v_n >> 1);
+
+    /* "reduce.pyx":1761
+ *         n = i + flag
+ *         k = n >> 1
+ *         l = 0             # <<<<<<<<<<<<<<
+ *         r = n - 1
+ *         while l < r:
+ */
+    __pyx_v_l = 0;
+
+    /* "reduce.pyx":1762
+ *         k = n >> 1
+ *         l = 0
+ *         r = n - 1             # <<<<<<<<<<<<<<
+ *         while l < r:
+ *             x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+    __pyx_v_r = (__pyx_v_n - 1);
+
+    /* "reduce.pyx":1763
+ *         l = 0
+ *         r = n - 1
+ *         while l < r:             # <<<<<<<<<<<<<<
+ *             x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l
+ */
+    while (1) {
+      __pyx_t_2 = ((__pyx_v_l < __pyx_v_r) != 0);
+      if (!__pyx_t_2) break;
+
+      /* "reduce.pyx":1764
+ *         r = n - 1
+ *         while l < r:
+ *             x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *             i = l
+ *             j = r
+ */
+      __pyx_v_x = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":1765
+ *         while l < r:
+ *             x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l             # <<<<<<<<<<<<<<
+ *             j = r
+ *             while 1:
+ */
+      __pyx_v_i = __pyx_v_l;
+
+      /* "reduce.pyx":1766
+ *             x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l
+ *             j = r             # <<<<<<<<<<<<<<
+ *             while 1:
+ *                 while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ */
+      __pyx_v_j = __pyx_v_r;
+
+      /* "reduce.pyx":1767
+ *             i = l
+ *             j = r
+ *             while 1:             # <<<<<<<<<<<<<<
+ *                 while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ */
+      while (1) {
+
+        /* "reduce.pyx":1768
+ *             j = r
+ *             while 1:
+ *                 while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
+ *                 while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:
+ */
+        while (1) {
+          __pyx_t_2 = (((((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) < __pyx_v_x) != 0);
+          if (!__pyx_t_2) break;
+          __pyx_v_i = (__pyx_v_i + 1);
+        }
+
+        /* "reduce.pyx":1769
+ *             while 1:
+ *                 while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
+ *                 if i <= j:
+ *                     tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+        while (1) {
+          __pyx_t_2 = ((__pyx_v_x < (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0])) != 0);
+          if (!__pyx_t_2) break;
+          __pyx_v_j = (__pyx_v_j - 1);
+        }
+
+        /* "reduce.pyx":1770
+ *                 while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:             # <<<<<<<<<<<<<<
+ *                     tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+        __pyx_t_2 = ((__pyx_v_i <= __pyx_v_j) != 0);
+        if (__pyx_t_2) {
+
+          /* "reduce.pyx":1771
+ *                 while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:
+ *                     tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                     (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ */
+          __pyx_v_tmp = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+          /* "reduce.pyx":1772
+ *                 if i <= j:
+ *                     tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *                     (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1
+ */
+          (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+          /* "reduce.pyx":1773
+ *                     tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp             # <<<<<<<<<<<<<<
+ *                     i += 1
+ *                     j -= 1
+ */
+          (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmp;
+
+          /* "reduce.pyx":1774
+ *                     (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1             # <<<<<<<<<<<<<<
+ *                     j -= 1
+ *                 if i > j: break
+ */
+          __pyx_v_i = (__pyx_v_i + 1);
+
+          /* "reduce.pyx":1775
+ *                     (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1
+ *                     j -= 1             # <<<<<<<<<<<<<<
+ *                 if i > j: break
+ *             if j < k: l = i
+ */
+          __pyx_v_j = (__pyx_v_j - 1);
+          goto __pyx_L23;
+        }
+        __pyx_L23:;
+
+        /* "reduce.pyx":1776
+ *                     i += 1
+ *                     j -= 1
+ *                 if i > j: break             # <<<<<<<<<<<<<<
+ *             if j < k: l = i
+ *             if k < i: r = j
+ */
+        __pyx_t_2 = ((__pyx_v_i > __pyx_v_j) != 0);
+        if (__pyx_t_2) {
+          goto __pyx_L18_break;
+        }
+      }
+      __pyx_L18_break:;
+
+      /* "reduce.pyx":1777
+ *                     j -= 1
+ *                 if i > j: break
+ *             if j < k: l = i             # <<<<<<<<<<<<<<
+ *             if k < i: r = j
+ *         bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+      __pyx_t_2 = ((__pyx_v_j < __pyx_v_k) != 0);
+      if (__pyx_t_2) {
+        __pyx_v_l = __pyx_v_i;
+        goto __pyx_L25;
+      }
+      __pyx_L25:;
+
+      /* "reduce.pyx":1778
+ *                 if i > j: break
+ *             if j < k: l = i
+ *             if k < i: r = j             # <<<<<<<<<<<<<<
+ *         bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if n % 2 == 0:
+ */
+      __pyx_t_2 = ((__pyx_v_k < __pyx_v_i) != 0);
+      if (__pyx_t_2) {
+        __pyx_v_r = __pyx_v_j;
+        goto __pyx_L26;
+      }
+      __pyx_L26:;
+    }
+
+    /* "reduce.pyx":1779
+ *             if j < k: l = i
+ *             if k < i: r = j
+ *         bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *         if n % 2 == 0:
+ *             amax = MINfloat32
+ */
+    __pyx_v_bi = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+    /* "reduce.pyx":1780
+ *             if k < i: r = j
+ *         bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if n % 2 == 0:             # <<<<<<<<<<<<<<
+ *             amax = MINfloat32
+ *             allnan = 1
+ */
+    __pyx_t_2 = ((__Pyx_mod_long(__pyx_v_n, 2) == 0) != 0);
+    if (__pyx_t_2) {
+
+      /* "reduce.pyx":1781
+ *         bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if n % 2 == 0:
+ *             amax = MINfloat32             # <<<<<<<<<<<<<<
+ *             allnan = 1
+ *             for i in range(k):
+ */
+      __pyx_v_amax = __pyx_v_6reduce_MINfloat32;
+
+      /* "reduce.pyx":1782
+ *         if n % 2 == 0:
+ *             amax = MINfloat32
+ *             allnan = 1             # <<<<<<<<<<<<<<
+ *             for i in range(k):
+ *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+      __pyx_v_allnan = 1;
+
+      /* "reduce.pyx":1783
+ *             amax = MINfloat32
+ *             allnan = 1
+ *             for i in range(k):             # <<<<<<<<<<<<<<
+ *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:
+ */
+      __pyx_t_4 = __pyx_v_k;
+      for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
+        __pyx_v_i = __pyx_t_5;
+
+        /* "reduce.pyx":1784
+ *             allnan = 1
+ *             for i in range(k):
+ *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                 if ai >= amax:
+ *                     amax = ai
+ */
+        __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1785
+ *             for i in range(k):
+ *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:             # <<<<<<<<<<<<<<
+ *                     amax = ai
+ *                     allnan = 0
+ */
+        __pyx_t_2 = ((__pyx_v_ai >= __pyx_v_amax) != 0);
+        if (__pyx_t_2) {
+
+          /* "reduce.pyx":1786
+ *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:
+ *                     amax = ai             # <<<<<<<<<<<<<<
+ *                     allnan = 0
+ *             if allnan == 0:
+ */
+          __pyx_v_amax = __pyx_v_ai;
+
+          /* "reduce.pyx":1787
+ *                 if ai >= amax:
+ *                     amax = ai
+ *                     allnan = 0             # <<<<<<<<<<<<<<
+ *             if allnan == 0:
+ *                 (<float32_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ */
+          __pyx_v_allnan = 0;
+          goto __pyx_L30;
+        }
+        __pyx_L30:;
+      }
+
+      /* "reduce.pyx":1788
+ *                     amax = ai
+ *                     allnan = 0
+ *             if allnan == 0:             # <<<<<<<<<<<<<<
+ *                 (<float32_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ *             else:
+ */
+      __pyx_t_2 = ((__pyx_v_allnan == 0) != 0);
+      if (__pyx_t_2) {
+
+        /* "reduce.pyx":1789
+ *                     allnan = 0
+ *             if allnan == 0:
+ *                 (<float32_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)             # <<<<<<<<<<<<<<
+ *             else:
+ *                 (<float32_t*>((<char*>pid(ity))))[0] = bi
+ */
+        (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = (0.5 * (__pyx_v_bi + __pyx_v_amax));
+        goto __pyx_L31;
+      }
+      /*else*/ {
+
+        /* "reduce.pyx":1791
+ *                 (<float32_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ *             else:
+ *                 (<float32_t*>((<char*>pid(ity))))[0] = bi             # <<<<<<<<<<<<<<
+ *         else:
+ *             (<float32_t*>((<char*>pid(ity))))[0] = bi
+ */
+        (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_bi;
+      }
+      __pyx_L31:;
+      goto __pyx_L27;
+    }
+    /*else*/ {
+
+      /* "reduce.pyx":1793
+ *                 (<float32_t*>((<char*>pid(ity))))[0] = bi
+ *         else:
+ *             (<float32_t*>((<char*>pid(ity))))[0] = bi             # <<<<<<<<<<<<<<
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)
+ */
+      (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_bi;
+    }
+    __pyx_L27:;
+
+    /* "reduce.pyx":1794
+ *         else:
+ *             (<float32_t*>((<char*>pid(ity))))[0] = bi
+ *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
+ *         PyArray_ITER_NEXT(ity)
+ *     return y
+ */
+    PyArray_ITER_NEXT(__pyx_v_ita);
+
+    /* "reduce.pyx":1795
+ *             (<float32_t*>((<char*>pid(ity))))[0] = bi
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
+ *     return y
+ * 
+ */
+    PyArray_ITER_NEXT(__pyx_v_ity);
+  }
+
+  /* "reduce.pyx":1796
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)
+ *     return y             # <<<<<<<<<<<<<<
+ * 
+ * cdef nanmedian_0d(ndarray a, int int_input):
+ */
+  __Pyx_XDECREF(((PyObject *)__pyx_r));
+  __Pyx_INCREF(((PyObject *)__pyx_v_y));
+  __pyx_r = __pyx_v_y;
+  goto __pyx_L0;
+
+  /* "reduce.pyx":1729
+ *     return y
+ * 
+ * cdef ndarray nanmedian_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
+ *                                   Py_ssize_t stride, Py_ssize_t length,
+ *                                   int a_ndim, np.npy_intp* y_dims,
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("reduce.nanmedian_one_float32", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF((PyObject *)__pyx_v_y);
+  __Pyx_XDECREF((PyObject *)__pyx_v_ity);
+  __Pyx_XGIVEREF((PyObject *)__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "reduce.pyx":1798
+ *     return y
+ * 
+ * cdef nanmedian_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
+ *     return a[()]
+ * 
+ */
+
+static PyObject *__pyx_f_6reduce_nanmedian_0d(PyArrayObject *__pyx_v_a, CYTHON_UNUSED int __pyx_v_int_input) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("nanmedian_0d", 0);
+
+  /* "reduce.pyx":1799
+ * 
+ * cdef nanmedian_0d(ndarray a, int int_input):
+ *     return a[()]             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_empty_tuple); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1799; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "reduce.pyx":1798
+ *     return y
+ * 
+ * cdef nanmedian_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
+ *     return a[()]
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("reduce.nanmedian_0d", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "reduce.pyx":1804
+ * # median -----------------------------------------------------------------
+ * 
+ * def median(arr, axis=None):             # <<<<<<<<<<<<<<
+ *     cdef int ravel = 0, copy = 1, int_input = 0
+ *     try:
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_6reduce_17median(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_6reduce_16median[] = "median(arr, axis=None)";
+static PyMethodDef __pyx_mdef_6reduce_17median = {"median", (PyCFunction)__pyx_pw_6reduce_17median, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6reduce_16median};
+static PyObject *__pyx_pw_6reduce_17median(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_arr = 0;
+  PyObject *__pyx_v_axis = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("median (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_arr,&__pyx_n_s_axis,0};
+    PyObject* values[2] = {0,0};
+    values[1] = ((PyObject *)Py_None);
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_arr)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_axis);
+          if (value) { values[1] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "median") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1804; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_arr = values[0];
+    __pyx_v_axis = values[1];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("median", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1804; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("reduce.median", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_6reduce_16median(__pyx_self, __pyx_v_arr, __pyx_v_axis);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_6reduce_16median(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_arr, PyObject *__pyx_v_axis) {
+  int __pyx_v_ravel;
+  int __pyx_v_copy;
+  int __pyx_v_int_input;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_t_4;
+  int __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
+  struct __pyx_opt_args_6reduce_reducer __pyx_t_7;
+  int __pyx_t_8;
+  PyObject *__pyx_t_9 = NULL;
+  PyObject *__pyx_t_10 = NULL;
+  PyObject *__pyx_t_11 = NULL;
+  PyObject *__pyx_t_12 = NULL;
+  PyObject *__pyx_t_13 = NULL;
+  Py_ssize_t __pyx_t_14;
+  PyObject *__pyx_t_15 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("median", 0);
+
+  /* "reduce.pyx":1805
+ * 
+ * def median(arr, axis=None):
+ *     cdef int ravel = 0, copy = 1, int_input = 0             # <<<<<<<<<<<<<<
+ *     try:
+ *         if axis is None:
+ */
+  __pyx_v_ravel = 0;
+  __pyx_v_copy = 1;
+  __pyx_v_int_input = 0;
+
+  /* "reduce.pyx":1806
+ * def median(arr, axis=None):
+ *     cdef int ravel = 0, copy = 1, int_input = 0
+ *     try:             # <<<<<<<<<<<<<<
+ *         if axis is None:
+ *             ravel = 1
+ */
+  {
+    __Pyx_ExceptionSave(&__pyx_t_1, &__pyx_t_2, &__pyx_t_3);
+    __Pyx_XGOTREF(__pyx_t_1);
+    __Pyx_XGOTREF(__pyx_t_2);
+    __Pyx_XGOTREF(__pyx_t_3);
+    /*try:*/ {
+
+      /* "reduce.pyx":1807
+ *     cdef int ravel = 0, copy = 1, int_input = 0
+ *     try:
+ *         if axis is None:             # <<<<<<<<<<<<<<
+ *             ravel = 1
+ *         return reducer(arr, axis,
+ */
+      __pyx_t_4 = (__pyx_v_axis == Py_None);
+      __pyx_t_5 = (__pyx_t_4 != 0);
+      if (__pyx_t_5) {
+
+        /* "reduce.pyx":1808
+ *     try:
+ *         if axis is None:
+ *             ravel = 1             # <<<<<<<<<<<<<<
+ *         return reducer(arr, axis,
+ *                        median_all_float64,
+ */
+        __pyx_v_ravel = 1;
+        goto __pyx_L11;
+      }
+      __pyx_L11:;
+
+      /* "reduce.pyx":1809
+ *         if axis is None:
+ *             ravel = 1
+ *         return reducer(arr, axis,             # <<<<<<<<<<<<<<
+ *                        median_all_float64,
+ *                        median_all_float32,
+ */
+      __Pyx_XDECREF(__pyx_r);
+
+      /* "reduce.pyx":1821
+ *                        int_input,
+ *                        ravel,
+ *                        copy)             # <<<<<<<<<<<<<<
+ *     except TypeError:
+ *         return slow.median(arr, axis)
+ */
+      __pyx_t_7.__pyx_n = 3;
+      __pyx_t_7.int_input = __pyx_v_int_input;
+      __pyx_t_7.ravel = __pyx_v_ravel;
+      __pyx_t_7.copy = __pyx_v_copy;
+      __pyx_t_6 = __pyx_f_6reduce_reducer(__pyx_v_arr, __pyx_v_axis, __pyx_f_6reduce_median_all_float64, __pyx_f_6reduce_median_all_float32, __pyx_f_6reduce_median_all_int64, __pyx_f_6reduce_median_all_int32, __pyx_f_6reduce_median_one_float64, __pyx_f_6reduce_median_one_float32, __pyx_f_6reduce_median_one_int64, __pyx_f_6reduce_median_one_int32, __pyx_f_6reduce_median_0d, &__pyx_t_7); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1809; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_r = __pyx_t_6;
+      __pyx_t_6 = 0;
+      goto __pyx_L7_try_return;
+    }
+    __pyx_L3_error:;
+    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+    /* "reduce.pyx":1822
+ *                        ravel,
+ *                        copy)
+ *     except TypeError:             # <<<<<<<<<<<<<<
+ *         return slow.median(arr, axis)
+ * 
+ */
+    __pyx_t_8 = PyErr_ExceptionMatches(__pyx_builtin_TypeError);
+    if (__pyx_t_8) {
+      __Pyx_AddTraceback("reduce.median", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      if (__Pyx_GetException(&__pyx_t_6, &__pyx_t_9, &__pyx_t_10) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1822; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_GOTREF(__pyx_t_9);
+      __Pyx_GOTREF(__pyx_t_10);
+
+      /* "reduce.pyx":1823
+ *                        copy)
+ *     except TypeError:
+ *         return slow.median(arr, axis)             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+      __Pyx_XDECREF(__pyx_r);
+      __pyx_t_12 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1823; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __Pyx_GOTREF(__pyx_t_12);
+      __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_median); if (unlikely(!__pyx_t_13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1823; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __Pyx_GOTREF(__pyx_t_13);
+      __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+      __pyx_t_12 = NULL;
+      __pyx_t_14 = 0;
+      if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_13))) {
+        __pyx_t_12 = PyMethod_GET_SELF(__pyx_t_13);
+        if (likely(__pyx_t_12)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_13);
+          __Pyx_INCREF(__pyx_t_12);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_13, function);
+          __pyx_t_14 = 1;
+        }
+      }
+      __pyx_t_15 = PyTuple_New(2+__pyx_t_14); if (unlikely(!__pyx_t_15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1823; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __Pyx_GOTREF(__pyx_t_15);
+      if (__pyx_t_12) {
+        PyTuple_SET_ITEM(__pyx_t_15, 0, __pyx_t_12); __Pyx_GIVEREF(__pyx_t_12); __pyx_t_12 = NULL;
+      }
+      __Pyx_INCREF(__pyx_v_arr);
+      PyTuple_SET_ITEM(__pyx_t_15, 0+__pyx_t_14, __pyx_v_arr);
+      __Pyx_GIVEREF(__pyx_v_arr);
+      __Pyx_INCREF(__pyx_v_axis);
+      PyTuple_SET_ITEM(__pyx_t_15, 1+__pyx_t_14, __pyx_v_axis);
+      __Pyx_GIVEREF(__pyx_v_axis);
+      __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_13, __pyx_t_15, NULL); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1823; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
+      __Pyx_GOTREF(__pyx_t_11);
+      __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
+      __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+      __pyx_r = __pyx_t_11;
+      __pyx_t_11 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+      goto __pyx_L6_except_return;
+    }
+    goto __pyx_L5_except_error;
+    __pyx_L5_except_error:;
+    __Pyx_XGIVEREF(__pyx_t_1);
+    __Pyx_XGIVEREF(__pyx_t_2);
+    __Pyx_XGIVEREF(__pyx_t_3);
+    __Pyx_ExceptionReset(__pyx_t_1, __pyx_t_2, __pyx_t_3);
+    goto __pyx_L1_error;
+    __pyx_L7_try_return:;
+    __Pyx_XGIVEREF(__pyx_t_1);
+    __Pyx_XGIVEREF(__pyx_t_2);
+    __Pyx_XGIVEREF(__pyx_t_3);
+    __Pyx_ExceptionReset(__pyx_t_1, __pyx_t_2, __pyx_t_3);
+    goto __pyx_L0;
+    __pyx_L6_except_return:;
+    __Pyx_XGIVEREF(__pyx_t_1);
+    __Pyx_XGIVEREF(__pyx_t_2);
+    __Pyx_XGIVEREF(__pyx_t_3);
+    __Pyx_ExceptionReset(__pyx_t_1, __pyx_t_2, __pyx_t_3);
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1804
+ * # median -----------------------------------------------------------------
+ * 
+ * def median(arr, axis=None):             # <<<<<<<<<<<<<<
+ *     cdef int ravel = 0, copy = 1, int_input = 0
+ *     try:
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_XDECREF(__pyx_t_12);
+  __Pyx_XDECREF(__pyx_t_13);
+  __Pyx_XDECREF(__pyx_t_15);
+  __Pyx_AddTraceback("reduce.median", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "reduce.pyx":1826
+ * 
+ * 
+ * cdef object median_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
+ *                               Py_ssize_t length, int int_input):
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k
+ */
+
+static PyObject *__pyx_f_6reduce_median_all_float64(PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, CYTHON_UNUSED int __pyx_v_int_input) {
+  npy_intp __pyx_v_i;
+  npy_intp __pyx_v_j;
+  npy_intp __pyx_v_l;
+  npy_intp __pyx_v_r;
+  npy_intp __pyx_v_k;
+  __pyx_t_5numpy_float64_t __pyx_v_x;
+  __pyx_t_5numpy_float64_t __pyx_v_tmp;
+  __pyx_t_5numpy_float64_t __pyx_v_amax;
+  __pyx_t_5numpy_float64_t __pyx_v_ai;
+  __pyx_t_5numpy_float64_t __pyx_v_bi;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  npy_intp __pyx_t_3;
+  npy_intp __pyx_t_4;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("median_all_float64", 0);
+
+  /* "reduce.pyx":1828
+ * cdef object median_all_float64(np.flatiter ita, Py_ssize_t stride,
+ *                               Py_ssize_t length, int int_input):
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k             # <<<<<<<<<<<<<<
+ *     cdef float64_t x, tmp, amax, ai, bi
+ *     if length == 0:
+ */
+  __pyx_v_i = 0;
+  __pyx_v_j = 0;
+
+  /* "reduce.pyx":1830
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k
+ *     cdef float64_t x, tmp, amax, ai, bi
+ *     if length == 0:             # <<<<<<<<<<<<<<
+ *         return NAN
+ *     k = length >> 1
+ */
+  __pyx_t_1 = ((__pyx_v_length == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "reduce.pyx":1831
+ *     cdef float64_t x, tmp, amax, ai, bi
+ *     if length == 0:
+ *         return NAN             # <<<<<<<<<<<<<<
+ *     k = length >> 1
+ *     l = 0
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1831; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1832
+ *     if length == 0:
+ *         return NAN
+ *     k = length >> 1             # <<<<<<<<<<<<<<
+ *     l = 0
+ *     r = length - 1
+ */
+  __pyx_v_k = (__pyx_v_length >> 1);
+
+  /* "reduce.pyx":1833
+ *         return NAN
+ *     k = length >> 1
+ *     l = 0             # <<<<<<<<<<<<<<
+ *     r = length - 1
+ *     while l < r:
+ */
+  __pyx_v_l = 0;
+
+  /* "reduce.pyx":1834
+ *     k = length >> 1
+ *     l = 0
+ *     r = length - 1             # <<<<<<<<<<<<<<
+ *     while l < r:
+ *         x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+  __pyx_v_r = (__pyx_v_length - 1);
+
+  /* "reduce.pyx":1835
+ *     l = 0
+ *     r = length - 1
+ *     while l < r:             # <<<<<<<<<<<<<<
+ *         x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l
+ */
+  while (1) {
+    __pyx_t_1 = ((__pyx_v_l < __pyx_v_r) != 0);
+    if (!__pyx_t_1) break;
+
+    /* "reduce.pyx":1836
+ *     r = length - 1
+ *     while l < r:
+ *         x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *         i = l
+ *         j = r
+ */
+    __pyx_v_x = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+    /* "reduce.pyx":1837
+ *     while l < r:
+ *         x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l             # <<<<<<<<<<<<<<
+ *         j = r
+ *         while 1:
+ */
+    __pyx_v_i = __pyx_v_l;
+
+    /* "reduce.pyx":1838
+ *         x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l
+ *         j = r             # <<<<<<<<<<<<<<
+ *         while 1:
+ *             while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ */
+    __pyx_v_j = __pyx_v_r;
+
+    /* "reduce.pyx":1839
+ *         i = l
+ *         j = r
+ *         while 1:             # <<<<<<<<<<<<<<
+ *             while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ */
+    while (1) {
+
+      /* "reduce.pyx":1840
+ *         j = r
+ *         while 1:
+ *             while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
+ *             while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:
+ */
+      while (1) {
+        __pyx_t_1 = (((((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) < __pyx_v_x) != 0);
+        if (!__pyx_t_1) break;
+        __pyx_v_i = (__pyx_v_i + 1);
+      }
+
+      /* "reduce.pyx":1841
+ *         while 1:
+ *             while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
+ *             if i <= j:
+ *                 tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+      while (1) {
+        __pyx_t_1 = ((__pyx_v_x < (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0])) != 0);
+        if (!__pyx_t_1) break;
+        __pyx_v_j = (__pyx_v_j - 1);
+      }
+
+      /* "reduce.pyx":1842
+ *             while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:             # <<<<<<<<<<<<<<
+ *                 tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+      __pyx_t_1 = ((__pyx_v_i <= __pyx_v_j) != 0);
+      if (__pyx_t_1) {
+
+        /* "reduce.pyx":1843
+ *             while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:
+ *                 tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                 (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ */
+        __pyx_v_tmp = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1844
+ *             if i <= j:
+ *                 tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *                 (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1
+ */
+        (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1845
+ *                 tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp             # <<<<<<<<<<<<<<
+ *                 i += 1
+ *                 j -= 1
+ */
+        (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmp;
+
+        /* "reduce.pyx":1846
+ *                 (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1             # <<<<<<<<<<<<<<
+ *                 j -= 1
+ *             if i > j: break
+ */
+        __pyx_v_i = (__pyx_v_i + 1);
+
+        /* "reduce.pyx":1847
+ *                 (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1
+ *                 j -= 1             # <<<<<<<<<<<<<<
+ *             if i > j: break
+ *         if j < k: l = i
+ */
+        __pyx_v_j = (__pyx_v_j - 1);
+        goto __pyx_L12;
+      }
+      __pyx_L12:;
+
+      /* "reduce.pyx":1848
+ *                 i += 1
+ *                 j -= 1
+ *             if i > j: break             # <<<<<<<<<<<<<<
+ *         if j < k: l = i
+ *         if k < i: r = j
+ */
+      __pyx_t_1 = ((__pyx_v_i > __pyx_v_j) != 0);
+      if (__pyx_t_1) {
+        goto __pyx_L7_break;
+      }
+    }
+    __pyx_L7_break:;
+
+    /* "reduce.pyx":1849
+ *                 j -= 1
+ *             if i > j: break
+ *         if j < k: l = i             # <<<<<<<<<<<<<<
+ *         if k < i: r = j
+ *     bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+    __pyx_t_1 = ((__pyx_v_j < __pyx_v_k) != 0);
+    if (__pyx_t_1) {
+      __pyx_v_l = __pyx_v_i;
+      goto __pyx_L14;
+    }
+    __pyx_L14:;
+
+    /* "reduce.pyx":1850
+ *             if i > j: break
+ *         if j < k: l = i
+ *         if k < i: r = j             # <<<<<<<<<<<<<<
+ *     bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if length % 2 == 0:
+ */
+    __pyx_t_1 = ((__pyx_v_k < __pyx_v_i) != 0);
+    if (__pyx_t_1) {
+      __pyx_v_r = __pyx_v_j;
+      goto __pyx_L15;
+    }
+    __pyx_L15:;
+  }
+
+  /* "reduce.pyx":1851
+ *         if j < k: l = i
+ *         if k < i: r = j
+ *     bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *     if length % 2 == 0:
+ *         amax = MINfloat64
+ */
+  __pyx_v_bi = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+  /* "reduce.pyx":1852
+ *         if k < i: r = j
+ *     bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if length % 2 == 0:             # <<<<<<<<<<<<<<
+ *         amax = MINfloat64
+ *         for i in range(k):
+ */
+  __pyx_t_1 = ((__Pyx_mod_Py_ssize_t(__pyx_v_length, 2) == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "reduce.pyx":1853
+ *     bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if length % 2 == 0:
+ *         amax = MINfloat64             # <<<<<<<<<<<<<<
+ *         for i in range(k):
+ *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+    __pyx_v_amax = __pyx_v_6reduce_MINfloat64;
+
+    /* "reduce.pyx":1854
+ *     if length % 2 == 0:
+ *         amax = MINfloat64
+ *         for i in range(k):             # <<<<<<<<<<<<<<
+ *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:
+ */
+    __pyx_t_3 = __pyx_v_k;
+    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+      __pyx_v_i = __pyx_t_4;
+
+      /* "reduce.pyx":1855
+ *         amax = MINfloat64
+ *         for i in range(k):
+ *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *             if ai >= amax:
+ *                 amax = ai
+ */
+      __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":1856
+ *         for i in range(k):
+ *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:             # <<<<<<<<<<<<<<
+ *                 amax = ai
+ *         return 0.5 * (bi + amax)
+ */
+      __pyx_t_1 = ((__pyx_v_ai >= __pyx_v_amax) != 0);
+      if (__pyx_t_1) {
+
+        /* "reduce.pyx":1857
+ *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:
+ *                 amax = ai             # <<<<<<<<<<<<<<
+ *         return 0.5 * (bi + amax)
+ *     else:
+ */
+        __pyx_v_amax = __pyx_v_ai;
+        goto __pyx_L19;
+      }
+      __pyx_L19:;
+    }
+
+    /* "reduce.pyx":1858
+ *             if ai >= amax:
+ *                 amax = ai
+ *         return 0.5 * (bi + amax)             # <<<<<<<<<<<<<<
+ *     else:
+ *         return 1.0 * bi
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = PyFloat_FromDouble((0.5 * (__pyx_v_bi + __pyx_v_amax))); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1858; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+  /*else*/ {
+
+    /* "reduce.pyx":1860
+ *         return 0.5 * (bi + amax)
+ *     else:
+ *         return 1.0 * bi             # <<<<<<<<<<<<<<
+ * 
+ * cdef object median_all_float32(np.flatiter ita, Py_ssize_t stride,
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = PyFloat_FromDouble((1.0 * __pyx_v_bi)); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1860; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1826
+ * 
+ * 
+ * cdef object median_all_float64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
+ *                               Py_ssize_t length, int int_input):
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("reduce.median_all_float64", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "reduce.pyx":1862
+ *         return 1.0 * bi
+ * 
+ * cdef object median_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
+ *                               Py_ssize_t length, int int_input):
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k
+ */
+
+static PyObject *__pyx_f_6reduce_median_all_float32(PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, CYTHON_UNUSED int __pyx_v_int_input) {
+  npy_intp __pyx_v_i;
+  npy_intp __pyx_v_j;
+  npy_intp __pyx_v_l;
+  npy_intp __pyx_v_r;
+  npy_intp __pyx_v_k;
+  __pyx_t_5numpy_float32_t __pyx_v_x;
+  __pyx_t_5numpy_float32_t __pyx_v_tmp;
+  __pyx_t_5numpy_float32_t __pyx_v_amax;
+  __pyx_t_5numpy_float32_t __pyx_v_ai;
+  __pyx_t_5numpy_float32_t __pyx_v_bi;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  npy_intp __pyx_t_3;
+  npy_intp __pyx_t_4;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("median_all_float32", 0);
+
+  /* "reduce.pyx":1864
+ * cdef object median_all_float32(np.flatiter ita, Py_ssize_t stride,
+ *                               Py_ssize_t length, int int_input):
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k             # <<<<<<<<<<<<<<
+ *     cdef float32_t x, tmp, amax, ai, bi
+ *     if length == 0:
+ */
+  __pyx_v_i = 0;
+  __pyx_v_j = 0;
+
+  /* "reduce.pyx":1866
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k
+ *     cdef float32_t x, tmp, amax, ai, bi
+ *     if length == 0:             # <<<<<<<<<<<<<<
+ *         return NAN
+ *     k = length >> 1
+ */
+  __pyx_t_1 = ((__pyx_v_length == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "reduce.pyx":1867
+ *     cdef float32_t x, tmp, amax, ai, bi
+ *     if length == 0:
+ *         return NAN             # <<<<<<<<<<<<<<
+ *     k = length >> 1
+ *     l = 0
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1867; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1868
+ *     if length == 0:
+ *         return NAN
+ *     k = length >> 1             # <<<<<<<<<<<<<<
+ *     l = 0
+ *     r = length - 1
+ */
+  __pyx_v_k = (__pyx_v_length >> 1);
+
+  /* "reduce.pyx":1869
+ *         return NAN
+ *     k = length >> 1
+ *     l = 0             # <<<<<<<<<<<<<<
+ *     r = length - 1
+ *     while l < r:
+ */
+  __pyx_v_l = 0;
+
+  /* "reduce.pyx":1870
+ *     k = length >> 1
+ *     l = 0
+ *     r = length - 1             # <<<<<<<<<<<<<<
+ *     while l < r:
+ *         x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+  __pyx_v_r = (__pyx_v_length - 1);
+
+  /* "reduce.pyx":1871
+ *     l = 0
+ *     r = length - 1
+ *     while l < r:             # <<<<<<<<<<<<<<
+ *         x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l
+ */
+  while (1) {
+    __pyx_t_1 = ((__pyx_v_l < __pyx_v_r) != 0);
+    if (!__pyx_t_1) break;
+
+    /* "reduce.pyx":1872
+ *     r = length - 1
+ *     while l < r:
+ *         x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *         i = l
+ *         j = r
+ */
+    __pyx_v_x = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+    /* "reduce.pyx":1873
+ *     while l < r:
+ *         x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l             # <<<<<<<<<<<<<<
+ *         j = r
+ *         while 1:
+ */
+    __pyx_v_i = __pyx_v_l;
+
+    /* "reduce.pyx":1874
+ *         x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l
+ *         j = r             # <<<<<<<<<<<<<<
+ *         while 1:
+ *             while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ */
+    __pyx_v_j = __pyx_v_r;
+
+    /* "reduce.pyx":1875
+ *         i = l
+ *         j = r
+ *         while 1:             # <<<<<<<<<<<<<<
+ *             while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ */
+    while (1) {
+
+      /* "reduce.pyx":1876
+ *         j = r
+ *         while 1:
+ *             while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
+ *             while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:
+ */
+      while (1) {
+        __pyx_t_1 = (((((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) < __pyx_v_x) != 0);
+        if (!__pyx_t_1) break;
+        __pyx_v_i = (__pyx_v_i + 1);
+      }
+
+      /* "reduce.pyx":1877
+ *         while 1:
+ *             while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
+ *             if i <= j:
+ *                 tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+      while (1) {
+        __pyx_t_1 = ((__pyx_v_x < (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0])) != 0);
+        if (!__pyx_t_1) break;
+        __pyx_v_j = (__pyx_v_j - 1);
+      }
+
+      /* "reduce.pyx":1878
+ *             while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:             # <<<<<<<<<<<<<<
+ *                 tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+      __pyx_t_1 = ((__pyx_v_i <= __pyx_v_j) != 0);
+      if (__pyx_t_1) {
+
+        /* "reduce.pyx":1879
+ *             while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:
+ *                 tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                 (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ */
+        __pyx_v_tmp = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1880
+ *             if i <= j:
+ *                 tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *                 (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1
+ */
+        (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1881
+ *                 tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp             # <<<<<<<<<<<<<<
+ *                 i += 1
+ *                 j -= 1
+ */
+        (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmp;
+
+        /* "reduce.pyx":1882
+ *                 (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1             # <<<<<<<<<<<<<<
+ *                 j -= 1
+ *             if i > j: break
+ */
+        __pyx_v_i = (__pyx_v_i + 1);
+
+        /* "reduce.pyx":1883
+ *                 (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1
+ *                 j -= 1             # <<<<<<<<<<<<<<
+ *             if i > j: break
+ *         if j < k: l = i
+ */
+        __pyx_v_j = (__pyx_v_j - 1);
+        goto __pyx_L12;
+      }
+      __pyx_L12:;
+
+      /* "reduce.pyx":1884
+ *                 i += 1
+ *                 j -= 1
+ *             if i > j: break             # <<<<<<<<<<<<<<
+ *         if j < k: l = i
+ *         if k < i: r = j
+ */
+      __pyx_t_1 = ((__pyx_v_i > __pyx_v_j) != 0);
+      if (__pyx_t_1) {
+        goto __pyx_L7_break;
+      }
+    }
+    __pyx_L7_break:;
+
+    /* "reduce.pyx":1885
+ *                 j -= 1
+ *             if i > j: break
+ *         if j < k: l = i             # <<<<<<<<<<<<<<
+ *         if k < i: r = j
+ *     bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+    __pyx_t_1 = ((__pyx_v_j < __pyx_v_k) != 0);
+    if (__pyx_t_1) {
+      __pyx_v_l = __pyx_v_i;
+      goto __pyx_L14;
+    }
+    __pyx_L14:;
+
+    /* "reduce.pyx":1886
+ *             if i > j: break
+ *         if j < k: l = i
+ *         if k < i: r = j             # <<<<<<<<<<<<<<
+ *     bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if length % 2 == 0:
+ */
+    __pyx_t_1 = ((__pyx_v_k < __pyx_v_i) != 0);
+    if (__pyx_t_1) {
+      __pyx_v_r = __pyx_v_j;
+      goto __pyx_L15;
+    }
+    __pyx_L15:;
+  }
+
+  /* "reduce.pyx":1887
+ *         if j < k: l = i
+ *         if k < i: r = j
+ *     bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *     if length % 2 == 0:
+ *         amax = MINfloat32
+ */
+  __pyx_v_bi = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+  /* "reduce.pyx":1888
+ *         if k < i: r = j
+ *     bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if length % 2 == 0:             # <<<<<<<<<<<<<<
+ *         amax = MINfloat32
+ *         for i in range(k):
+ */
+  __pyx_t_1 = ((__Pyx_mod_Py_ssize_t(__pyx_v_length, 2) == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "reduce.pyx":1889
+ *     bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if length % 2 == 0:
+ *         amax = MINfloat32             # <<<<<<<<<<<<<<
+ *         for i in range(k):
+ *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+    __pyx_v_amax = __pyx_v_6reduce_MINfloat32;
+
+    /* "reduce.pyx":1890
+ *     if length % 2 == 0:
+ *         amax = MINfloat32
+ *         for i in range(k):             # <<<<<<<<<<<<<<
+ *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:
+ */
+    __pyx_t_3 = __pyx_v_k;
+    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+      __pyx_v_i = __pyx_t_4;
+
+      /* "reduce.pyx":1891
+ *         amax = MINfloat32
+ *         for i in range(k):
+ *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *             if ai >= amax:
+ *                 amax = ai
+ */
+      __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":1892
+ *         for i in range(k):
+ *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:             # <<<<<<<<<<<<<<
+ *                 amax = ai
+ *         return 0.5 * (bi + amax)
+ */
+      __pyx_t_1 = ((__pyx_v_ai >= __pyx_v_amax) != 0);
+      if (__pyx_t_1) {
+
+        /* "reduce.pyx":1893
+ *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:
+ *                 amax = ai             # <<<<<<<<<<<<<<
+ *         return 0.5 * (bi + amax)
+ *     else:
+ */
+        __pyx_v_amax = __pyx_v_ai;
+        goto __pyx_L19;
+      }
+      __pyx_L19:;
+    }
+
+    /* "reduce.pyx":1894
+ *             if ai >= amax:
+ *                 amax = ai
+ *         return 0.5 * (bi + amax)             # <<<<<<<<<<<<<<
+ *     else:
+ *         return 1.0 * bi
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = PyFloat_FromDouble((0.5 * (__pyx_v_bi + __pyx_v_amax))); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1894; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+  /*else*/ {
+
+    /* "reduce.pyx":1896
+ *         return 0.5 * (bi + amax)
+ *     else:
+ *         return 1.0 * bi             # <<<<<<<<<<<<<<
+ * 
+ * cdef object median_all_int64(np.flatiter ita, Py_ssize_t stride,
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = PyFloat_FromDouble((1.0 * __pyx_v_bi)); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1896; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1862
+ *         return 1.0 * bi
+ * 
+ * cdef object median_all_float32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
+ *                               Py_ssize_t length, int int_input):
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("reduce.median_all_float32", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "reduce.pyx":1898
+ *         return 1.0 * bi
+ * 
+ * cdef object median_all_int64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
+ *                               Py_ssize_t length, int int_input):
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k
+ */
+
+static PyObject *__pyx_f_6reduce_median_all_int64(PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, CYTHON_UNUSED int __pyx_v_int_input) {
+  npy_intp __pyx_v_i;
+  npy_intp __pyx_v_j;
+  npy_intp __pyx_v_l;
+  npy_intp __pyx_v_r;
+  npy_intp __pyx_v_k;
+  __pyx_t_5numpy_int64_t __pyx_v_x;
+  __pyx_t_5numpy_int64_t __pyx_v_tmp;
+  __pyx_t_5numpy_int64_t __pyx_v_amax;
+  __pyx_t_5numpy_int64_t __pyx_v_ai;
+  __pyx_t_5numpy_int64_t __pyx_v_bi;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  npy_intp __pyx_t_3;
+  npy_intp __pyx_t_4;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("median_all_int64", 0);
+
+  /* "reduce.pyx":1900
+ * cdef object median_all_int64(np.flatiter ita, Py_ssize_t stride,
+ *                               Py_ssize_t length, int int_input):
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k             # <<<<<<<<<<<<<<
+ *     cdef int64_t x, tmp, amax, ai, bi
+ *     if length == 0:
+ */
+  __pyx_v_i = 0;
+  __pyx_v_j = 0;
+
+  /* "reduce.pyx":1902
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k
+ *     cdef int64_t x, tmp, amax, ai, bi
+ *     if length == 0:             # <<<<<<<<<<<<<<
+ *         return NAN
+ *     k = length >> 1
+ */
+  __pyx_t_1 = ((__pyx_v_length == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "reduce.pyx":1903
+ *     cdef int64_t x, tmp, amax, ai, bi
+ *     if length == 0:
+ *         return NAN             # <<<<<<<<<<<<<<
+ *     k = length >> 1
+ *     l = 0
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1903; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1904
+ *     if length == 0:
+ *         return NAN
+ *     k = length >> 1             # <<<<<<<<<<<<<<
+ *     l = 0
+ *     r = length - 1
+ */
+  __pyx_v_k = (__pyx_v_length >> 1);
+
+  /* "reduce.pyx":1905
+ *         return NAN
+ *     k = length >> 1
+ *     l = 0             # <<<<<<<<<<<<<<
+ *     r = length - 1
+ *     while l < r:
+ */
+  __pyx_v_l = 0;
+
+  /* "reduce.pyx":1906
+ *     k = length >> 1
+ *     l = 0
+ *     r = length - 1             # <<<<<<<<<<<<<<
+ *     while l < r:
+ *         x = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+  __pyx_v_r = (__pyx_v_length - 1);
+
+  /* "reduce.pyx":1907
+ *     l = 0
+ *     r = length - 1
+ *     while l < r:             # <<<<<<<<<<<<<<
+ *         x = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l
+ */
+  while (1) {
+    __pyx_t_1 = ((__pyx_v_l < __pyx_v_r) != 0);
+    if (!__pyx_t_1) break;
+
+    /* "reduce.pyx":1908
+ *     r = length - 1
+ *     while l < r:
+ *         x = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *         i = l
+ *         j = r
+ */
+    __pyx_v_x = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+    /* "reduce.pyx":1909
+ *     while l < r:
+ *         x = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l             # <<<<<<<<<<<<<<
+ *         j = r
+ *         while 1:
+ */
+    __pyx_v_i = __pyx_v_l;
+
+    /* "reduce.pyx":1910
+ *         x = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l
+ *         j = r             # <<<<<<<<<<<<<<
+ *         while 1:
+ *             while (<int64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ */
+    __pyx_v_j = __pyx_v_r;
+
+    /* "reduce.pyx":1911
+ *         i = l
+ *         j = r
+ *         while 1:             # <<<<<<<<<<<<<<
+ *             while (<int64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<int64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ */
+    while (1) {
+
+      /* "reduce.pyx":1912
+ *         j = r
+ *         while 1:
+ *             while (<int64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
+ *             while x < (<int64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:
+ */
+      while (1) {
+        __pyx_t_1 = (((((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) < __pyx_v_x) != 0);
+        if (!__pyx_t_1) break;
+        __pyx_v_i = (__pyx_v_i + 1);
+      }
+
+      /* "reduce.pyx":1913
+ *         while 1:
+ *             while (<int64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<int64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
+ *             if i <= j:
+ *                 tmp = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+      while (1) {
+        __pyx_t_1 = ((__pyx_v_x < (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0])) != 0);
+        if (!__pyx_t_1) break;
+        __pyx_v_j = (__pyx_v_j - 1);
+      }
+
+      /* "reduce.pyx":1914
+ *             while (<int64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<int64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:             # <<<<<<<<<<<<<<
+ *                 tmp = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<int64_t*>((<char*>pid(ita)) + i*stride))[0] = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+      __pyx_t_1 = ((__pyx_v_i <= __pyx_v_j) != 0);
+      if (__pyx_t_1) {
+
+        /* "reduce.pyx":1915
+ *             while x < (<int64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:
+ *                 tmp = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                 (<int64_t*>((<char*>pid(ita)) + i*stride))[0] = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<int64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ */
+        __pyx_v_tmp = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1916
+ *             if i <= j:
+ *                 tmp = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<int64_t*>((<char*>pid(ita)) + i*stride))[0] = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *                 (<int64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1
+ */
+        (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1917
+ *                 tmp = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<int64_t*>((<char*>pid(ita)) + i*stride))[0] = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<int64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp             # <<<<<<<<<<<<<<
+ *                 i += 1
+ *                 j -= 1
+ */
+        (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmp;
+
+        /* "reduce.pyx":1918
+ *                 (<int64_t*>((<char*>pid(ita)) + i*stride))[0] = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<int64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1             # <<<<<<<<<<<<<<
+ *                 j -= 1
+ *             if i > j: break
+ */
+        __pyx_v_i = (__pyx_v_i + 1);
+
+        /* "reduce.pyx":1919
+ *                 (<int64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1
+ *                 j -= 1             # <<<<<<<<<<<<<<
+ *             if i > j: break
+ *         if j < k: l = i
+ */
+        __pyx_v_j = (__pyx_v_j - 1);
+        goto __pyx_L12;
+      }
+      __pyx_L12:;
+
+      /* "reduce.pyx":1920
+ *                 i += 1
+ *                 j -= 1
+ *             if i > j: break             # <<<<<<<<<<<<<<
+ *         if j < k: l = i
+ *         if k < i: r = j
+ */
+      __pyx_t_1 = ((__pyx_v_i > __pyx_v_j) != 0);
+      if (__pyx_t_1) {
+        goto __pyx_L7_break;
+      }
+    }
+    __pyx_L7_break:;
+
+    /* "reduce.pyx":1921
+ *                 j -= 1
+ *             if i > j: break
+ *         if j < k: l = i             # <<<<<<<<<<<<<<
+ *         if k < i: r = j
+ *     bi = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+    __pyx_t_1 = ((__pyx_v_j < __pyx_v_k) != 0);
+    if (__pyx_t_1) {
+      __pyx_v_l = __pyx_v_i;
+      goto __pyx_L14;
+    }
+    __pyx_L14:;
+
+    /* "reduce.pyx":1922
+ *             if i > j: break
+ *         if j < k: l = i
+ *         if k < i: r = j             # <<<<<<<<<<<<<<
+ *     bi = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if length % 2 == 0:
+ */
+    __pyx_t_1 = ((__pyx_v_k < __pyx_v_i) != 0);
+    if (__pyx_t_1) {
+      __pyx_v_r = __pyx_v_j;
+      goto __pyx_L15;
+    }
+    __pyx_L15:;
+  }
+
+  /* "reduce.pyx":1923
+ *         if j < k: l = i
+ *         if k < i: r = j
+ *     bi = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *     if length % 2 == 0:
+ *         amax = MINint64
+ */
+  __pyx_v_bi = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+  /* "reduce.pyx":1924
+ *         if k < i: r = j
+ *     bi = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if length % 2 == 0:             # <<<<<<<<<<<<<<
+ *         amax = MINint64
+ *         for i in range(k):
+ */
+  __pyx_t_1 = ((__Pyx_mod_Py_ssize_t(__pyx_v_length, 2) == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "reduce.pyx":1925
+ *     bi = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if length % 2 == 0:
+ *         amax = MINint64             # <<<<<<<<<<<<<<
+ *         for i in range(k):
+ *             ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+    __pyx_v_amax = __pyx_v_6reduce_MINint64;
+
+    /* "reduce.pyx":1926
+ *     if length % 2 == 0:
+ *         amax = MINint64
+ *         for i in range(k):             # <<<<<<<<<<<<<<
+ *             ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:
+ */
+    __pyx_t_3 = __pyx_v_k;
+    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+      __pyx_v_i = __pyx_t_4;
+
+      /* "reduce.pyx":1927
+ *         amax = MINint64
+ *         for i in range(k):
+ *             ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *             if ai >= amax:
+ *                 amax = ai
+ */
+      __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":1928
+ *         for i in range(k):
+ *             ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:             # <<<<<<<<<<<<<<
+ *                 amax = ai
+ *         return 0.5 * (bi + amax)
+ */
+      __pyx_t_1 = ((__pyx_v_ai >= __pyx_v_amax) != 0);
+      if (__pyx_t_1) {
+
+        /* "reduce.pyx":1929
+ *             ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:
+ *                 amax = ai             # <<<<<<<<<<<<<<
+ *         return 0.5 * (bi + amax)
+ *     else:
+ */
+        __pyx_v_amax = __pyx_v_ai;
+        goto __pyx_L19;
+      }
+      __pyx_L19:;
+    }
+
+    /* "reduce.pyx":1930
+ *             if ai >= amax:
+ *                 amax = ai
+ *         return 0.5 * (bi + amax)             # <<<<<<<<<<<<<<
+ *     else:
+ *         return 1.0 * bi
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = PyFloat_FromDouble((0.5 * (__pyx_v_bi + __pyx_v_amax))); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1930; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+  /*else*/ {
+
+    /* "reduce.pyx":1932
+ *         return 0.5 * (bi + amax)
+ *     else:
+ *         return 1.0 * bi             # <<<<<<<<<<<<<<
+ * 
+ * cdef object median_all_int32(np.flatiter ita, Py_ssize_t stride,
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = PyFloat_FromDouble((1.0 * __pyx_v_bi)); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1932; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1898
+ *         return 1.0 * bi
+ * 
+ * cdef object median_all_int64(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
+ *                               Py_ssize_t length, int int_input):
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("reduce.median_all_int64", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "reduce.pyx":1934
+ *         return 1.0 * bi
+ * 
+ * cdef object median_all_int32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
+ *                               Py_ssize_t length, int int_input):
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k
+ */
+
+static PyObject *__pyx_f_6reduce_median_all_int32(PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, CYTHON_UNUSED int __pyx_v_int_input) {
+  npy_intp __pyx_v_i;
+  npy_intp __pyx_v_j;
+  npy_intp __pyx_v_l;
+  npy_intp __pyx_v_r;
+  npy_intp __pyx_v_k;
+  __pyx_t_5numpy_int32_t __pyx_v_x;
+  __pyx_t_5numpy_int32_t __pyx_v_tmp;
+  __pyx_t_5numpy_int32_t __pyx_v_amax;
+  __pyx_t_5numpy_int32_t __pyx_v_ai;
+  __pyx_t_5numpy_int32_t __pyx_v_bi;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  npy_intp __pyx_t_3;
+  npy_intp __pyx_t_4;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("median_all_int32", 0);
+
+  /* "reduce.pyx":1936
+ * cdef object median_all_int32(np.flatiter ita, Py_ssize_t stride,
+ *                               Py_ssize_t length, int int_input):
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k             # <<<<<<<<<<<<<<
+ *     cdef int32_t x, tmp, amax, ai, bi
+ *     if length == 0:
+ */
+  __pyx_v_i = 0;
+  __pyx_v_j = 0;
+
+  /* "reduce.pyx":1938
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k
+ *     cdef int32_t x, tmp, amax, ai, bi
+ *     if length == 0:             # <<<<<<<<<<<<<<
+ *         return NAN
+ *     k = length >> 1
+ */
+  __pyx_t_1 = ((__pyx_v_length == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "reduce.pyx":1939
+ *     cdef int32_t x, tmp, amax, ai, bi
+ *     if length == 0:
+ *         return NAN             # <<<<<<<<<<<<<<
+ *     k = length >> 1
+ *     l = 0
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_6reduce_NAN); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1939; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1940
+ *     if length == 0:
+ *         return NAN
+ *     k = length >> 1             # <<<<<<<<<<<<<<
+ *     l = 0
+ *     r = length - 1
+ */
+  __pyx_v_k = (__pyx_v_length >> 1);
+
+  /* "reduce.pyx":1941
+ *         return NAN
+ *     k = length >> 1
+ *     l = 0             # <<<<<<<<<<<<<<
+ *     r = length - 1
+ *     while l < r:
+ */
+  __pyx_v_l = 0;
+
+  /* "reduce.pyx":1942
+ *     k = length >> 1
+ *     l = 0
+ *     r = length - 1             # <<<<<<<<<<<<<<
+ *     while l < r:
+ *         x = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+  __pyx_v_r = (__pyx_v_length - 1);
+
+  /* "reduce.pyx":1943
+ *     l = 0
+ *     r = length - 1
+ *     while l < r:             # <<<<<<<<<<<<<<
+ *         x = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l
+ */
+  while (1) {
+    __pyx_t_1 = ((__pyx_v_l < __pyx_v_r) != 0);
+    if (!__pyx_t_1) break;
+
+    /* "reduce.pyx":1944
+ *     r = length - 1
+ *     while l < r:
+ *         x = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *         i = l
+ *         j = r
+ */
+    __pyx_v_x = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+    /* "reduce.pyx":1945
+ *     while l < r:
+ *         x = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l             # <<<<<<<<<<<<<<
+ *         j = r
+ *         while 1:
+ */
+    __pyx_v_i = __pyx_v_l;
+
+    /* "reduce.pyx":1946
+ *         x = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         i = l
+ *         j = r             # <<<<<<<<<<<<<<
+ *         while 1:
+ *             while (<int32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ */
+    __pyx_v_j = __pyx_v_r;
+
+    /* "reduce.pyx":1947
+ *         i = l
+ *         j = r
+ *         while 1:             # <<<<<<<<<<<<<<
+ *             while (<int32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<int32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ */
+    while (1) {
+
+      /* "reduce.pyx":1948
+ *         j = r
+ *         while 1:
+ *             while (<int32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
+ *             while x < (<int32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:
+ */
+      while (1) {
+        __pyx_t_1 = (((((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) < __pyx_v_x) != 0);
+        if (!__pyx_t_1) break;
+        __pyx_v_i = (__pyx_v_i + 1);
+      }
+
+      /* "reduce.pyx":1949
+ *         while 1:
+ *             while (<int32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<int32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
+ *             if i <= j:
+ *                 tmp = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+      while (1) {
+        __pyx_t_1 = ((__pyx_v_x < (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0])) != 0);
+        if (!__pyx_t_1) break;
+        __pyx_v_j = (__pyx_v_j - 1);
+      }
+
+      /* "reduce.pyx":1950
+ *             while (<int32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *             while x < (<int32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:             # <<<<<<<<<<<<<<
+ *                 tmp = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<int32_t*>((<char*>pid(ita)) + i*stride))[0] = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+      __pyx_t_1 = ((__pyx_v_i <= __pyx_v_j) != 0);
+      if (__pyx_t_1) {
+
+        /* "reduce.pyx":1951
+ *             while x < (<int32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *             if i <= j:
+ *                 tmp = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                 (<int32_t*>((<char*>pid(ita)) + i*stride))[0] = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<int32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ */
+        __pyx_v_tmp = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1952
+ *             if i <= j:
+ *                 tmp = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<int32_t*>((<char*>pid(ita)) + i*stride))[0] = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *                 (<int32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1
+ */
+        (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":1953
+ *                 tmp = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 (<int32_t*>((<char*>pid(ita)) + i*stride))[0] = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<int32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp             # <<<<<<<<<<<<<<
+ *                 i += 1
+ *                 j -= 1
+ */
+        (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmp;
+
+        /* "reduce.pyx":1954
+ *                 (<int32_t*>((<char*>pid(ita)) + i*stride))[0] = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                 (<int32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1             # <<<<<<<<<<<<<<
+ *                 j -= 1
+ *             if i > j: break
+ */
+        __pyx_v_i = (__pyx_v_i + 1);
+
+        /* "reduce.pyx":1955
+ *                 (<int32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                 i += 1
+ *                 j -= 1             # <<<<<<<<<<<<<<
+ *             if i > j: break
+ *         if j < k: l = i
+ */
+        __pyx_v_j = (__pyx_v_j - 1);
+        goto __pyx_L12;
+      }
+      __pyx_L12:;
+
+      /* "reduce.pyx":1956
+ *                 i += 1
+ *                 j -= 1
+ *             if i > j: break             # <<<<<<<<<<<<<<
+ *         if j < k: l = i
+ *         if k < i: r = j
+ */
+      __pyx_t_1 = ((__pyx_v_i > __pyx_v_j) != 0);
+      if (__pyx_t_1) {
+        goto __pyx_L7_break;
+      }
+    }
+    __pyx_L7_break:;
+
+    /* "reduce.pyx":1957
+ *                 j -= 1
+ *             if i > j: break
+ *         if j < k: l = i             # <<<<<<<<<<<<<<
+ *         if k < i: r = j
+ *     bi = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+    __pyx_t_1 = ((__pyx_v_j < __pyx_v_k) != 0);
+    if (__pyx_t_1) {
+      __pyx_v_l = __pyx_v_i;
+      goto __pyx_L14;
+    }
+    __pyx_L14:;
+
+    /* "reduce.pyx":1958
+ *             if i > j: break
+ *         if j < k: l = i
+ *         if k < i: r = j             # <<<<<<<<<<<<<<
+ *     bi = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if length % 2 == 0:
+ */
+    __pyx_t_1 = ((__pyx_v_k < __pyx_v_i) != 0);
+    if (__pyx_t_1) {
+      __pyx_v_r = __pyx_v_j;
+      goto __pyx_L15;
+    }
+    __pyx_L15:;
+  }
+
+  /* "reduce.pyx":1959
+ *         if j < k: l = i
+ *         if k < i: r = j
+ *     bi = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *     if length % 2 == 0:
+ *         amax = MINint32
+ */
+  __pyx_v_bi = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+  /* "reduce.pyx":1960
+ *         if k < i: r = j
+ *     bi = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if length % 2 == 0:             # <<<<<<<<<<<<<<
+ *         amax = MINint32
+ *         for i in range(k):
+ */
+  __pyx_t_1 = ((__Pyx_mod_Py_ssize_t(__pyx_v_length, 2) == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "reduce.pyx":1961
+ *     bi = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *     if length % 2 == 0:
+ *         amax = MINint32             # <<<<<<<<<<<<<<
+ *         for i in range(k):
+ *             ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+    __pyx_v_amax = __pyx_v_6reduce_MINint32;
+
+    /* "reduce.pyx":1962
+ *     if length % 2 == 0:
+ *         amax = MINint32
+ *         for i in range(k):             # <<<<<<<<<<<<<<
+ *             ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:
+ */
+    __pyx_t_3 = __pyx_v_k;
+    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+      __pyx_v_i = __pyx_t_4;
+
+      /* "reduce.pyx":1963
+ *         amax = MINint32
+ *         for i in range(k):
+ *             ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *             if ai >= amax:
+ *                 amax = ai
+ */
+      __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":1964
+ *         for i in range(k):
+ *             ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:             # <<<<<<<<<<<<<<
+ *                 amax = ai
+ *         return 0.5 * (bi + amax)
+ */
+      __pyx_t_1 = ((__pyx_v_ai >= __pyx_v_amax) != 0);
+      if (__pyx_t_1) {
+
+        /* "reduce.pyx":1965
+ *             ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *             if ai >= amax:
+ *                 amax = ai             # <<<<<<<<<<<<<<
+ *         return 0.5 * (bi + amax)
+ *     else:
+ */
+        __pyx_v_amax = __pyx_v_ai;
+        goto __pyx_L19;
+      }
+      __pyx_L19:;
+    }
+
+    /* "reduce.pyx":1966
+ *             if ai >= amax:
+ *                 amax = ai
+ *         return 0.5 * (bi + amax)             # <<<<<<<<<<<<<<
+ *     else:
+ *         return 1.0 * bi
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = PyFloat_FromDouble((0.5 * (__pyx_v_bi + __pyx_v_amax))); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1966; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+  /*else*/ {
+
+    /* "reduce.pyx":1968
+ *         return 0.5 * (bi + amax)
+ *     else:
+ *         return 1.0 * bi             # <<<<<<<<<<<<<<
+ * 
+ * cdef ndarray median_one_float64(np.flatiter ita,
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = PyFloat_FromDouble((1.0 * __pyx_v_bi)); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1968; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1934
+ *         return 1.0 * bi
+ * 
+ * cdef object median_all_int32(np.flatiter ita, Py_ssize_t stride,             # <<<<<<<<<<<<<<
+ *                               Py_ssize_t length, int int_input):
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("reduce.median_all_int32", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "reduce.pyx":1970
+ *         return 1.0 * bi
+ * 
+ * cdef ndarray median_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
+ *                                Py_ssize_t stride, Py_ssize_t length,
+ *                                int a_ndim, np.npy_intp* y_dims,
+ */
+
+static PyArrayObject *__pyx_f_6reduce_median_one_float64(PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, int __pyx_v_a_ndim, npy_intp *__pyx_v_y_dims, CYTHON_UNUSED int __pyx_v_int_input) {
+  npy_intp __pyx_v_i;
+  npy_intp __pyx_v_j;
+  npy_intp __pyx_v_l;
+  npy_intp __pyx_v_r;
+  npy_intp __pyx_v_k;
+  __pyx_t_5numpy_float64_t __pyx_v_x;
+  __pyx_t_5numpy_float64_t __pyx_v_tmp;
+  __pyx_t_5numpy_float64_t __pyx_v_amax;
+  __pyx_t_5numpy_float64_t __pyx_v_ai;
+  __pyx_t_5numpy_float64_t __pyx_v_bi;
+  PyArrayObject *__pyx_v_y = 0;
+  PyArrayIterObject *__pyx_v_ity = 0;
+  PyArrayObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  npy_intp __pyx_t_3;
+  npy_intp __pyx_t_4;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("median_one_float64", 0);
+
+  /* "reduce.pyx":1974
+ *                                int a_ndim, np.npy_intp* y_dims,
+ *                                int int_input):
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k             # <<<<<<<<<<<<<<
+ *     cdef float64_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
+ */
+  __pyx_v_i = 0;
+  __pyx_v_j = 0;
+
+  /* "reduce.pyx":1976
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k
+ *     cdef float64_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:
+ */
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1976; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1976; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "reduce.pyx":1977
+ *     cdef float64_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
+ *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):
+ */
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1977; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1977; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "reduce.pyx":1978
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:             # <<<<<<<<<<<<<<
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
+ */
+  __pyx_t_2 = ((__pyx_v_length == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "reduce.pyx":1979
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)
+ */
+    while (1) {
+      __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
+      if (!__pyx_t_2) break;
+
+      /* "reduce.pyx":1980
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
+ *             PyArray_ITER_NEXT(ity)
+ *         return y
+ */
+      (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
+
+      /* "reduce.pyx":1981
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):
+ */
+      PyArray_ITER_NEXT(__pyx_v_ity);
+    }
+
+    /* "reduce.pyx":1982
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)
+ *         return y             # <<<<<<<<<<<<<<
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         k = length >> 1
+ */
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __Pyx_INCREF(((PyObject *)__pyx_v_y));
+    __pyx_r = __pyx_v_y;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":1983
+ *             PyArray_ITER_NEXT(ity)
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
+ *         k = length >> 1
+ *         l = 0
+ */
+  while (1) {
+    __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
+    if (!__pyx_t_2) break;
+
+    /* "reduce.pyx":1984
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         k = length >> 1             # <<<<<<<<<<<<<<
+ *         l = 0
+ *         r = length - 1
+ */
+    __pyx_v_k = (__pyx_v_length >> 1);
+
+    /* "reduce.pyx":1985
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         k = length >> 1
+ *         l = 0             # <<<<<<<<<<<<<<
+ *         r = length - 1
+ *         while l < r:
+ */
+    __pyx_v_l = 0;
+
+    /* "reduce.pyx":1986
+ *         k = length >> 1
+ *         l = 0
+ *         r = length - 1             # <<<<<<<<<<<<<<
+ *         while l < r:
+ *             x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+    __pyx_v_r = (__pyx_v_length - 1);
+
+    /* "reduce.pyx":1987
+ *         l = 0
+ *         r = length - 1
+ *         while l < r:             # <<<<<<<<<<<<<<
+ *             x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l
+ */
+    while (1) {
+      __pyx_t_2 = ((__pyx_v_l < __pyx_v_r) != 0);
+      if (!__pyx_t_2) break;
+
+      /* "reduce.pyx":1988
+ *         r = length - 1
+ *         while l < r:
+ *             x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *             i = l
+ *             j = r
+ */
+      __pyx_v_x = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":1989
+ *         while l < r:
+ *             x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l             # <<<<<<<<<<<<<<
+ *             j = r
+ *             while 1:
+ */
+      __pyx_v_i = __pyx_v_l;
+
+      /* "reduce.pyx":1990
+ *             x = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l
+ *             j = r             # <<<<<<<<<<<<<<
+ *             while 1:
+ *                 while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ */
+      __pyx_v_j = __pyx_v_r;
+
+      /* "reduce.pyx":1991
+ *             i = l
+ *             j = r
+ *             while 1:             # <<<<<<<<<<<<<<
+ *                 while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ */
+      while (1) {
+
+        /* "reduce.pyx":1992
+ *             j = r
+ *             while 1:
+ *                 while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
+ *                 while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:
+ */
+        while (1) {
+          __pyx_t_2 = (((((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) < __pyx_v_x) != 0);
+          if (!__pyx_t_2) break;
+          __pyx_v_i = (__pyx_v_i + 1);
+        }
+
+        /* "reduce.pyx":1993
+ *             while 1:
+ *                 while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
+ *                 if i <= j:
+ *                     tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+        while (1) {
+          __pyx_t_2 = ((__pyx_v_x < (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0])) != 0);
+          if (!__pyx_t_2) break;
+          __pyx_v_j = (__pyx_v_j - 1);
+        }
+
+        /* "reduce.pyx":1994
+ *                 while (<float64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:             # <<<<<<<<<<<<<<
+ *                     tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+        __pyx_t_2 = ((__pyx_v_i <= __pyx_v_j) != 0);
+        if (__pyx_t_2) {
+
+          /* "reduce.pyx":1995
+ *                 while x < (<float64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:
+ *                     tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                     (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ */
+          __pyx_v_tmp = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+          /* "reduce.pyx":1996
+ *                 if i <= j:
+ *                     tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *                     (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1
+ */
+          (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+          /* "reduce.pyx":1997
+ *                     tmp = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp             # <<<<<<<<<<<<<<
+ *                     i += 1
+ *                     j -= 1
+ */
+          (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmp;
+
+          /* "reduce.pyx":1998
+ *                     (<float64_t*>((<char*>pid(ita)) + i*stride))[0] = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1             # <<<<<<<<<<<<<<
+ *                     j -= 1
+ *                 if i > j: break
+ */
+          __pyx_v_i = (__pyx_v_i + 1);
+
+          /* "reduce.pyx":1999
+ *                     (<float64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1
+ *                     j -= 1             # <<<<<<<<<<<<<<
+ *                 if i > j: break
+ *             if j < k: l = i
+ */
+          __pyx_v_j = (__pyx_v_j - 1);
+          goto __pyx_L16;
+        }
+        __pyx_L16:;
+
+        /* "reduce.pyx":2000
+ *                     i += 1
+ *                     j -= 1
+ *                 if i > j: break             # <<<<<<<<<<<<<<
+ *             if j < k: l = i
+ *             if k < i: r = j
+ */
+        __pyx_t_2 = ((__pyx_v_i > __pyx_v_j) != 0);
+        if (__pyx_t_2) {
+          goto __pyx_L11_break;
+        }
+      }
+      __pyx_L11_break:;
+
+      /* "reduce.pyx":2001
+ *                     j -= 1
+ *                 if i > j: break
+ *             if j < k: l = i             # <<<<<<<<<<<<<<
+ *             if k < i: r = j
+ *         bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+      __pyx_t_2 = ((__pyx_v_j < __pyx_v_k) != 0);
+      if (__pyx_t_2) {
+        __pyx_v_l = __pyx_v_i;
+        goto __pyx_L18;
+      }
+      __pyx_L18:;
+
+      /* "reduce.pyx":2002
+ *                 if i > j: break
+ *             if j < k: l = i
+ *             if k < i: r = j             # <<<<<<<<<<<<<<
+ *         bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if length % 2 == 0:
+ */
+      __pyx_t_2 = ((__pyx_v_k < __pyx_v_i) != 0);
+      if (__pyx_t_2) {
+        __pyx_v_r = __pyx_v_j;
+        goto __pyx_L19;
+      }
+      __pyx_L19:;
+    }
+
+    /* "reduce.pyx":2003
+ *             if j < k: l = i
+ *             if k < i: r = j
+ *         bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *         if length % 2 == 0:
+ *             amax = MINfloat64
+ */
+    __pyx_v_bi = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+    /* "reduce.pyx":2004
+ *             if k < i: r = j
+ *         bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if length % 2 == 0:             # <<<<<<<<<<<<<<
+ *             amax = MINfloat64
+ *             for i in range(k):
+ */
+    __pyx_t_2 = ((__Pyx_mod_Py_ssize_t(__pyx_v_length, 2) == 0) != 0);
+    if (__pyx_t_2) {
+
+      /* "reduce.pyx":2005
+ *         bi = (<float64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if length % 2 == 0:
+ *             amax = MINfloat64             # <<<<<<<<<<<<<<
+ *             for i in range(k):
+ *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+      __pyx_v_amax = __pyx_v_6reduce_MINfloat64;
+
+      /* "reduce.pyx":2006
+ *         if length % 2 == 0:
+ *             amax = MINfloat64
+ *             for i in range(k):             # <<<<<<<<<<<<<<
+ *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:
+ */
+      __pyx_t_3 = __pyx_v_k;
+      for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+        __pyx_v_i = __pyx_t_4;
+
+        /* "reduce.pyx":2007
+ *             amax = MINfloat64
+ *             for i in range(k):
+ *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                 if ai >= amax:
+ *                     amax = ai
+ */
+        __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":2008
+ *             for i in range(k):
+ *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:             # <<<<<<<<<<<<<<
+ *                     amax = ai
+ *             (<float64_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ */
+        __pyx_t_2 = ((__pyx_v_ai >= __pyx_v_amax) != 0);
+        if (__pyx_t_2) {
+
+          /* "reduce.pyx":2009
+ *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:
+ *                     amax = ai             # <<<<<<<<<<<<<<
+ *             (<float64_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ *         else:
+ */
+          __pyx_v_amax = __pyx_v_ai;
+          goto __pyx_L23;
+        }
+        __pyx_L23:;
+      }
+
+      /* "reduce.pyx":2010
+ *                 if ai >= amax:
+ *                     amax = ai
+ *             (<float64_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)             # <<<<<<<<<<<<<<
+ *         else:
+ *             (<float64_t*>((<char*>pid(ity))))[0] = bi
+ */
+      (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = (0.5 * (__pyx_v_bi + __pyx_v_amax));
+      goto __pyx_L20;
+    }
+    /*else*/ {
+
+      /* "reduce.pyx":2012
+ *             (<float64_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ *         else:
+ *             (<float64_t*>((<char*>pid(ity))))[0] = bi             # <<<<<<<<<<<<<<
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)
+ */
+      (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_bi;
+    }
+    __pyx_L20:;
+
+    /* "reduce.pyx":2013
+ *         else:
+ *             (<float64_t*>((<char*>pid(ity))))[0] = bi
+ *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
+ *         PyArray_ITER_NEXT(ity)
+ *     return y
+ */
+    PyArray_ITER_NEXT(__pyx_v_ita);
+
+    /* "reduce.pyx":2014
+ *             (<float64_t*>((<char*>pid(ity))))[0] = bi
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
+ *     return y
+ * 
+ */
+    PyArray_ITER_NEXT(__pyx_v_ity);
+  }
+
+  /* "reduce.pyx":2015
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)
+ *     return y             # <<<<<<<<<<<<<<
+ * 
+ * cdef ndarray median_one_float32(np.flatiter ita,
+ */
+  __Pyx_XDECREF(((PyObject *)__pyx_r));
+  __Pyx_INCREF(((PyObject *)__pyx_v_y));
+  __pyx_r = __pyx_v_y;
+  goto __pyx_L0;
+
+  /* "reduce.pyx":1970
+ *         return 1.0 * bi
+ * 
+ * cdef ndarray median_one_float64(np.flatiter ita,             # <<<<<<<<<<<<<<
+ *                                Py_ssize_t stride, Py_ssize_t length,
+ *                                int a_ndim, np.npy_intp* y_dims,
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("reduce.median_one_float64", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF((PyObject *)__pyx_v_y);
+  __Pyx_XDECREF((PyObject *)__pyx_v_ity);
+  __Pyx_XGIVEREF((PyObject *)__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "reduce.pyx":2017
+ *     return y
+ * 
+ * cdef ndarray median_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
+ *                                Py_ssize_t stride, Py_ssize_t length,
+ *                                int a_ndim, np.npy_intp* y_dims,
+ */
+
+static PyArrayObject *__pyx_f_6reduce_median_one_float32(PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, int __pyx_v_a_ndim, npy_intp *__pyx_v_y_dims, CYTHON_UNUSED int __pyx_v_int_input) {
+  npy_intp __pyx_v_i;
+  npy_intp __pyx_v_j;
+  npy_intp __pyx_v_l;
+  npy_intp __pyx_v_r;
+  npy_intp __pyx_v_k;
+  __pyx_t_5numpy_float32_t __pyx_v_x;
+  __pyx_t_5numpy_float32_t __pyx_v_tmp;
+  __pyx_t_5numpy_float32_t __pyx_v_amax;
+  __pyx_t_5numpy_float32_t __pyx_v_ai;
+  __pyx_t_5numpy_float32_t __pyx_v_bi;
+  PyArrayObject *__pyx_v_y = 0;
+  PyArrayIterObject *__pyx_v_ity = 0;
+  PyArrayObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  npy_intp __pyx_t_3;
+  npy_intp __pyx_t_4;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("median_one_float32", 0);
+
+  /* "reduce.pyx":2021
+ *                                int a_ndim, np.npy_intp* y_dims,
+ *                                int int_input):
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k             # <<<<<<<<<<<<<<
+ *     cdef float32_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
+ */
+  __pyx_v_i = 0;
+  __pyx_v_j = 0;
+
+  /* "reduce.pyx":2023
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k
+ *     cdef float32_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)             # <<<<<<<<<<<<<<
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:
+ */
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2023; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2023; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "reduce.pyx":2024
+ *     cdef float32_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
+ *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):
+ */
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2024; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2024; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "reduce.pyx":2025
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float32, 0)
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:             # <<<<<<<<<<<<<<
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float32_t*>((<char*>pid(ity))))[0] = NAN
+ */
+  __pyx_t_2 = ((__pyx_v_length == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "reduce.pyx":2026
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
+ *             (<float32_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)
+ */
+    while (1) {
+      __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
+      if (!__pyx_t_2) break;
+
+      /* "reduce.pyx":2027
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float32_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
+ *             PyArray_ITER_NEXT(ity)
+ *         return y
+ */
+      (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
+
+      /* "reduce.pyx":2028
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float32_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):
+ */
+      PyArray_ITER_NEXT(__pyx_v_ity);
+    }
+
+    /* "reduce.pyx":2029
+ *             (<float32_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)
+ *         return y             # <<<<<<<<<<<<<<
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         k = length >> 1
+ */
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __Pyx_INCREF(((PyObject *)__pyx_v_y));
+    __pyx_r = __pyx_v_y;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":2030
+ *             PyArray_ITER_NEXT(ity)
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
+ *         k = length >> 1
+ *         l = 0
+ */
+  while (1) {
+    __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
+    if (!__pyx_t_2) break;
+
+    /* "reduce.pyx":2031
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         k = length >> 1             # <<<<<<<<<<<<<<
+ *         l = 0
+ *         r = length - 1
+ */
+    __pyx_v_k = (__pyx_v_length >> 1);
+
+    /* "reduce.pyx":2032
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         k = length >> 1
+ *         l = 0             # <<<<<<<<<<<<<<
+ *         r = length - 1
+ *         while l < r:
+ */
+    __pyx_v_l = 0;
+
+    /* "reduce.pyx":2033
+ *         k = length >> 1
+ *         l = 0
+ *         r = length - 1             # <<<<<<<<<<<<<<
+ *         while l < r:
+ *             x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+    __pyx_v_r = (__pyx_v_length - 1);
+
+    /* "reduce.pyx":2034
+ *         l = 0
+ *         r = length - 1
+ *         while l < r:             # <<<<<<<<<<<<<<
+ *             x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l
+ */
+    while (1) {
+      __pyx_t_2 = ((__pyx_v_l < __pyx_v_r) != 0);
+      if (!__pyx_t_2) break;
+
+      /* "reduce.pyx":2035
+ *         r = length - 1
+ *         while l < r:
+ *             x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *             i = l
+ *             j = r
+ */
+      __pyx_v_x = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":2036
+ *         while l < r:
+ *             x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l             # <<<<<<<<<<<<<<
+ *             j = r
+ *             while 1:
+ */
+      __pyx_v_i = __pyx_v_l;
+
+      /* "reduce.pyx":2037
+ *             x = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l
+ *             j = r             # <<<<<<<<<<<<<<
+ *             while 1:
+ *                 while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ */
+      __pyx_v_j = __pyx_v_r;
+
+      /* "reduce.pyx":2038
+ *             i = l
+ *             j = r
+ *             while 1:             # <<<<<<<<<<<<<<
+ *                 while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ */
+      while (1) {
+
+        /* "reduce.pyx":2039
+ *             j = r
+ *             while 1:
+ *                 while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
+ *                 while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:
+ */
+        while (1) {
+          __pyx_t_2 = (((((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) < __pyx_v_x) != 0);
+          if (!__pyx_t_2) break;
+          __pyx_v_i = (__pyx_v_i + 1);
+        }
+
+        /* "reduce.pyx":2040
+ *             while 1:
+ *                 while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
+ *                 if i <= j:
+ *                     tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+        while (1) {
+          __pyx_t_2 = ((__pyx_v_x < (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0])) != 0);
+          if (!__pyx_t_2) break;
+          __pyx_v_j = (__pyx_v_j - 1);
+        }
+
+        /* "reduce.pyx":2041
+ *                 while (<float32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:             # <<<<<<<<<<<<<<
+ *                     tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+        __pyx_t_2 = ((__pyx_v_i <= __pyx_v_j) != 0);
+        if (__pyx_t_2) {
+
+          /* "reduce.pyx":2042
+ *                 while x < (<float32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:
+ *                     tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                     (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ */
+          __pyx_v_tmp = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+          /* "reduce.pyx":2043
+ *                 if i <= j:
+ *                     tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *                     (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1
+ */
+          (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+          /* "reduce.pyx":2044
+ *                     tmp = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp             # <<<<<<<<<<<<<<
+ *                     i += 1
+ *                     j -= 1
+ */
+          (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmp;
+
+          /* "reduce.pyx":2045
+ *                     (<float32_t*>((<char*>pid(ita)) + i*stride))[0] = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1             # <<<<<<<<<<<<<<
+ *                     j -= 1
+ *                 if i > j: break
+ */
+          __pyx_v_i = (__pyx_v_i + 1);
+
+          /* "reduce.pyx":2046
+ *                     (<float32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1
+ *                     j -= 1             # <<<<<<<<<<<<<<
+ *                 if i > j: break
+ *             if j < k: l = i
+ */
+          __pyx_v_j = (__pyx_v_j - 1);
+          goto __pyx_L16;
+        }
+        __pyx_L16:;
+
+        /* "reduce.pyx":2047
+ *                     i += 1
+ *                     j -= 1
+ *                 if i > j: break             # <<<<<<<<<<<<<<
+ *             if j < k: l = i
+ *             if k < i: r = j
+ */
+        __pyx_t_2 = ((__pyx_v_i > __pyx_v_j) != 0);
+        if (__pyx_t_2) {
+          goto __pyx_L11_break;
+        }
+      }
+      __pyx_L11_break:;
+
+      /* "reduce.pyx":2048
+ *                     j -= 1
+ *                 if i > j: break
+ *             if j < k: l = i             # <<<<<<<<<<<<<<
+ *             if k < i: r = j
+ *         bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+      __pyx_t_2 = ((__pyx_v_j < __pyx_v_k) != 0);
+      if (__pyx_t_2) {
+        __pyx_v_l = __pyx_v_i;
+        goto __pyx_L18;
+      }
+      __pyx_L18:;
+
+      /* "reduce.pyx":2049
+ *                 if i > j: break
+ *             if j < k: l = i
+ *             if k < i: r = j             # <<<<<<<<<<<<<<
+ *         bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if length % 2 == 0:
+ */
+      __pyx_t_2 = ((__pyx_v_k < __pyx_v_i) != 0);
+      if (__pyx_t_2) {
+        __pyx_v_r = __pyx_v_j;
+        goto __pyx_L19;
+      }
+      __pyx_L19:;
+    }
+
+    /* "reduce.pyx":2050
+ *             if j < k: l = i
+ *             if k < i: r = j
+ *         bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *         if length % 2 == 0:
+ *             amax = MINfloat32
+ */
+    __pyx_v_bi = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+    /* "reduce.pyx":2051
+ *             if k < i: r = j
+ *         bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if length % 2 == 0:             # <<<<<<<<<<<<<<
+ *             amax = MINfloat32
+ *             for i in range(k):
+ */
+    __pyx_t_2 = ((__Pyx_mod_Py_ssize_t(__pyx_v_length, 2) == 0) != 0);
+    if (__pyx_t_2) {
+
+      /* "reduce.pyx":2052
+ *         bi = (<float32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if length % 2 == 0:
+ *             amax = MINfloat32             # <<<<<<<<<<<<<<
+ *             for i in range(k):
+ *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+      __pyx_v_amax = __pyx_v_6reduce_MINfloat32;
+
+      /* "reduce.pyx":2053
+ *         if length % 2 == 0:
+ *             amax = MINfloat32
+ *             for i in range(k):             # <<<<<<<<<<<<<<
+ *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:
+ */
+      __pyx_t_3 = __pyx_v_k;
+      for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+        __pyx_v_i = __pyx_t_4;
+
+        /* "reduce.pyx":2054
+ *             amax = MINfloat32
+ *             for i in range(k):
+ *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                 if ai >= amax:
+ *                     amax = ai
+ */
+        __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":2055
+ *             for i in range(k):
+ *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:             # <<<<<<<<<<<<<<
+ *                     amax = ai
+ *             (<float32_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ */
+        __pyx_t_2 = ((__pyx_v_ai >= __pyx_v_amax) != 0);
+        if (__pyx_t_2) {
+
+          /* "reduce.pyx":2056
+ *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:
+ *                     amax = ai             # <<<<<<<<<<<<<<
+ *             (<float32_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ *         else:
+ */
+          __pyx_v_amax = __pyx_v_ai;
+          goto __pyx_L23;
+        }
+        __pyx_L23:;
+      }
+
+      /* "reduce.pyx":2057
+ *                 if ai >= amax:
+ *                     amax = ai
+ *             (<float32_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)             # <<<<<<<<<<<<<<
+ *         else:
+ *             (<float32_t*>((<char*>pid(ity))))[0] = bi
+ */
+      (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = (0.5 * (__pyx_v_bi + __pyx_v_amax));
+      goto __pyx_L20;
+    }
+    /*else*/ {
+
+      /* "reduce.pyx":2059
+ *             (<float32_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ *         else:
+ *             (<float32_t*>((<char*>pid(ity))))[0] = bi             # <<<<<<<<<<<<<<
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)
+ */
+      (((__pyx_t_5numpy_float32_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_bi;
+    }
+    __pyx_L20:;
+
+    /* "reduce.pyx":2060
+ *         else:
+ *             (<float32_t*>((<char*>pid(ity))))[0] = bi
+ *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
+ *         PyArray_ITER_NEXT(ity)
+ *     return y
+ */
+    PyArray_ITER_NEXT(__pyx_v_ita);
+
+    /* "reduce.pyx":2061
+ *             (<float32_t*>((<char*>pid(ity))))[0] = bi
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
+ *     return y
+ * 
+ */
+    PyArray_ITER_NEXT(__pyx_v_ity);
+  }
+
+  /* "reduce.pyx":2062
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)
+ *     return y             # <<<<<<<<<<<<<<
+ * 
+ * cdef ndarray median_one_int64(np.flatiter ita,
+ */
+  __Pyx_XDECREF(((PyObject *)__pyx_r));
+  __Pyx_INCREF(((PyObject *)__pyx_v_y));
+  __pyx_r = __pyx_v_y;
+  goto __pyx_L0;
+
+  /* "reduce.pyx":2017
+ *     return y
+ * 
+ * cdef ndarray median_one_float32(np.flatiter ita,             # <<<<<<<<<<<<<<
+ *                                Py_ssize_t stride, Py_ssize_t length,
+ *                                int a_ndim, np.npy_intp* y_dims,
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("reduce.median_one_float32", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF((PyObject *)__pyx_v_y);
+  __Pyx_XDECREF((PyObject *)__pyx_v_ity);
+  __Pyx_XGIVEREF((PyObject *)__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "reduce.pyx":2064
+ *     return y
+ * 
+ * cdef ndarray median_one_int64(np.flatiter ita,             # <<<<<<<<<<<<<<
+ *                                Py_ssize_t stride, Py_ssize_t length,
+ *                                int a_ndim, np.npy_intp* y_dims,
+ */
+
+static PyArrayObject *__pyx_f_6reduce_median_one_int64(PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, int __pyx_v_a_ndim, npy_intp *__pyx_v_y_dims, CYTHON_UNUSED int __pyx_v_int_input) {
+  npy_intp __pyx_v_i;
+  npy_intp __pyx_v_j;
+  npy_intp __pyx_v_l;
+  npy_intp __pyx_v_r;
+  npy_intp __pyx_v_k;
+  __pyx_t_5numpy_int64_t __pyx_v_x;
+  __pyx_t_5numpy_int64_t __pyx_v_tmp;
+  __pyx_t_5numpy_int64_t __pyx_v_amax;
+  __pyx_t_5numpy_int64_t __pyx_v_ai;
+  __pyx_t_5numpy_int64_t __pyx_v_bi;
+  PyArrayObject *__pyx_v_y = 0;
+  PyArrayIterObject *__pyx_v_ity = 0;
+  PyArrayObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  npy_intp __pyx_t_3;
+  npy_intp __pyx_t_4;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("median_one_int64", 0);
+
+  /* "reduce.pyx":2068
+ *                                int a_ndim, np.npy_intp* y_dims,
+ *                                int int_input):
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k             # <<<<<<<<<<<<<<
+ *     cdef int64_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
+ */
+  __pyx_v_i = 0;
+  __pyx_v_j = 0;
+
+  /* "reduce.pyx":2070
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k
+ *     cdef int64_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:
+ */
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2070; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2070; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "reduce.pyx":2071
+ *     cdef int64_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
+ *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):
+ */
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2071; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2071; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "reduce.pyx":2072
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:             # <<<<<<<<<<<<<<
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
+ */
+  __pyx_t_2 = ((__pyx_v_length == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "reduce.pyx":2073
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)
+ */
+    while (1) {
+      __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
+      if (!__pyx_t_2) break;
+
+      /* "reduce.pyx":2074
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
+ *             PyArray_ITER_NEXT(ity)
+ *         return y
+ */
+      (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
+
+      /* "reduce.pyx":2075
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):
+ */
+      PyArray_ITER_NEXT(__pyx_v_ity);
+    }
+
+    /* "reduce.pyx":2076
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)
+ *         return y             # <<<<<<<<<<<<<<
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         k = length >> 1
+ */
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __Pyx_INCREF(((PyObject *)__pyx_v_y));
+    __pyx_r = __pyx_v_y;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":2077
+ *             PyArray_ITER_NEXT(ity)
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
+ *         k = length >> 1
+ *         l = 0
+ */
+  while (1) {
+    __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
+    if (!__pyx_t_2) break;
+
+    /* "reduce.pyx":2078
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         k = length >> 1             # <<<<<<<<<<<<<<
+ *         l = 0
+ *         r = length - 1
+ */
+    __pyx_v_k = (__pyx_v_length >> 1);
+
+    /* "reduce.pyx":2079
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         k = length >> 1
+ *         l = 0             # <<<<<<<<<<<<<<
+ *         r = length - 1
+ *         while l < r:
+ */
+    __pyx_v_l = 0;
+
+    /* "reduce.pyx":2080
+ *         k = length >> 1
+ *         l = 0
+ *         r = length - 1             # <<<<<<<<<<<<<<
+ *         while l < r:
+ *             x = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+    __pyx_v_r = (__pyx_v_length - 1);
+
+    /* "reduce.pyx":2081
+ *         l = 0
+ *         r = length - 1
+ *         while l < r:             # <<<<<<<<<<<<<<
+ *             x = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l
+ */
+    while (1) {
+      __pyx_t_2 = ((__pyx_v_l < __pyx_v_r) != 0);
+      if (!__pyx_t_2) break;
+
+      /* "reduce.pyx":2082
+ *         r = length - 1
+ *         while l < r:
+ *             x = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *             i = l
+ *             j = r
+ */
+      __pyx_v_x = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":2083
+ *         while l < r:
+ *             x = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l             # <<<<<<<<<<<<<<
+ *             j = r
+ *             while 1:
+ */
+      __pyx_v_i = __pyx_v_l;
+
+      /* "reduce.pyx":2084
+ *             x = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l
+ *             j = r             # <<<<<<<<<<<<<<
+ *             while 1:
+ *                 while (<int64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ */
+      __pyx_v_j = __pyx_v_r;
+
+      /* "reduce.pyx":2085
+ *             i = l
+ *             j = r
+ *             while 1:             # <<<<<<<<<<<<<<
+ *                 while (<int64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<int64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ */
+      while (1) {
+
+        /* "reduce.pyx":2086
+ *             j = r
+ *             while 1:
+ *                 while (<int64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
+ *                 while x < (<int64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:
+ */
+        while (1) {
+          __pyx_t_2 = (((((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) < __pyx_v_x) != 0);
+          if (!__pyx_t_2) break;
+          __pyx_v_i = (__pyx_v_i + 1);
+        }
+
+        /* "reduce.pyx":2087
+ *             while 1:
+ *                 while (<int64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<int64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
+ *                 if i <= j:
+ *                     tmp = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+        while (1) {
+          __pyx_t_2 = ((__pyx_v_x < (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0])) != 0);
+          if (!__pyx_t_2) break;
+          __pyx_v_j = (__pyx_v_j - 1);
+        }
+
+        /* "reduce.pyx":2088
+ *                 while (<int64_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<int64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:             # <<<<<<<<<<<<<<
+ *                     tmp = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<int64_t*>((<char*>pid(ita)) + i*stride))[0] = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+        __pyx_t_2 = ((__pyx_v_i <= __pyx_v_j) != 0);
+        if (__pyx_t_2) {
+
+          /* "reduce.pyx":2089
+ *                 while x < (<int64_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:
+ *                     tmp = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                     (<int64_t*>((<char*>pid(ita)) + i*stride))[0] = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<int64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ */
+          __pyx_v_tmp = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+          /* "reduce.pyx":2090
+ *                 if i <= j:
+ *                     tmp = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<int64_t*>((<char*>pid(ita)) + i*stride))[0] = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *                     (<int64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1
+ */
+          (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+          /* "reduce.pyx":2091
+ *                     tmp = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<int64_t*>((<char*>pid(ita)) + i*stride))[0] = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<int64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp             # <<<<<<<<<<<<<<
+ *                     i += 1
+ *                     j -= 1
+ */
+          (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmp;
+
+          /* "reduce.pyx":2092
+ *                     (<int64_t*>((<char*>pid(ita)) + i*stride))[0] = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<int64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1             # <<<<<<<<<<<<<<
+ *                     j -= 1
+ *                 if i > j: break
+ */
+          __pyx_v_i = (__pyx_v_i + 1);
+
+          /* "reduce.pyx":2093
+ *                     (<int64_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1
+ *                     j -= 1             # <<<<<<<<<<<<<<
+ *                 if i > j: break
+ *             if j < k: l = i
+ */
+          __pyx_v_j = (__pyx_v_j - 1);
+          goto __pyx_L16;
+        }
+        __pyx_L16:;
+
+        /* "reduce.pyx":2094
+ *                     i += 1
+ *                     j -= 1
+ *                 if i > j: break             # <<<<<<<<<<<<<<
+ *             if j < k: l = i
+ *             if k < i: r = j
+ */
+        __pyx_t_2 = ((__pyx_v_i > __pyx_v_j) != 0);
+        if (__pyx_t_2) {
+          goto __pyx_L11_break;
+        }
+      }
+      __pyx_L11_break:;
+
+      /* "reduce.pyx":2095
+ *                     j -= 1
+ *                 if i > j: break
+ *             if j < k: l = i             # <<<<<<<<<<<<<<
+ *             if k < i: r = j
+ *         bi = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+      __pyx_t_2 = ((__pyx_v_j < __pyx_v_k) != 0);
+      if (__pyx_t_2) {
+        __pyx_v_l = __pyx_v_i;
+        goto __pyx_L18;
+      }
+      __pyx_L18:;
+
+      /* "reduce.pyx":2096
+ *                 if i > j: break
+ *             if j < k: l = i
+ *             if k < i: r = j             # <<<<<<<<<<<<<<
+ *         bi = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if length % 2 == 0:
+ */
+      __pyx_t_2 = ((__pyx_v_k < __pyx_v_i) != 0);
+      if (__pyx_t_2) {
+        __pyx_v_r = __pyx_v_j;
+        goto __pyx_L19;
+      }
+      __pyx_L19:;
+    }
+
+    /* "reduce.pyx":2097
+ *             if j < k: l = i
+ *             if k < i: r = j
+ *         bi = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *         if length % 2 == 0:
+ *             amax = MINint64
+ */
+    __pyx_v_bi = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+    /* "reduce.pyx":2098
+ *             if k < i: r = j
+ *         bi = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if length % 2 == 0:             # <<<<<<<<<<<<<<
+ *             amax = MINint64
+ *             for i in range(k):
+ */
+    __pyx_t_2 = ((__Pyx_mod_Py_ssize_t(__pyx_v_length, 2) == 0) != 0);
+    if (__pyx_t_2) {
+
+      /* "reduce.pyx":2099
+ *         bi = (<int64_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if length % 2 == 0:
+ *             amax = MINint64             # <<<<<<<<<<<<<<
+ *             for i in range(k):
+ *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+      __pyx_v_amax = __pyx_v_6reduce_MINint64;
+
+      /* "reduce.pyx":2100
+ *         if length % 2 == 0:
+ *             amax = MINint64
+ *             for i in range(k):             # <<<<<<<<<<<<<<
+ *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:
+ */
+      __pyx_t_3 = __pyx_v_k;
+      for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+        __pyx_v_i = __pyx_t_4;
+
+        /* "reduce.pyx":2101
+ *             amax = MINint64
+ *             for i in range(k):
+ *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                 if ai >= amax:
+ *                     amax = ai
+ */
+        __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":2102
+ *             for i in range(k):
+ *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:             # <<<<<<<<<<<<<<
+ *                     amax = ai
+ *             (<float64_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ */
+        __pyx_t_2 = ((__pyx_v_ai >= __pyx_v_amax) != 0);
+        if (__pyx_t_2) {
+
+          /* "reduce.pyx":2103
+ *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:
+ *                     amax = ai             # <<<<<<<<<<<<<<
+ *             (<float64_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ *         else:
+ */
+          __pyx_v_amax = __pyx_v_ai;
+          goto __pyx_L23;
+        }
+        __pyx_L23:;
+      }
+
+      /* "reduce.pyx":2104
+ *                 if ai >= amax:
+ *                     amax = ai
+ *             (<float64_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)             # <<<<<<<<<<<<<<
+ *         else:
+ *             (<float64_t*>((<char*>pid(ity))))[0] = bi
+ */
+      (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = (0.5 * (__pyx_v_bi + __pyx_v_amax));
+      goto __pyx_L20;
+    }
+    /*else*/ {
+
+      /* "reduce.pyx":2106
+ *             (<float64_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ *         else:
+ *             (<float64_t*>((<char*>pid(ity))))[0] = bi             # <<<<<<<<<<<<<<
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)
+ */
+      (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_bi;
+    }
+    __pyx_L20:;
+
+    /* "reduce.pyx":2107
+ *         else:
+ *             (<float64_t*>((<char*>pid(ity))))[0] = bi
+ *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
+ *         PyArray_ITER_NEXT(ity)
+ *     return y
+ */
+    PyArray_ITER_NEXT(__pyx_v_ita);
+
+    /* "reduce.pyx":2108
+ *             (<float64_t*>((<char*>pid(ity))))[0] = bi
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
+ *     return y
+ * 
+ */
+    PyArray_ITER_NEXT(__pyx_v_ity);
+  }
+
+  /* "reduce.pyx":2109
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)
+ *     return y             # <<<<<<<<<<<<<<
+ * 
+ * cdef ndarray median_one_int32(np.flatiter ita,
+ */
+  __Pyx_XDECREF(((PyObject *)__pyx_r));
+  __Pyx_INCREF(((PyObject *)__pyx_v_y));
+  __pyx_r = __pyx_v_y;
+  goto __pyx_L0;
+
+  /* "reduce.pyx":2064
+ *     return y
+ * 
+ * cdef ndarray median_one_int64(np.flatiter ita,             # <<<<<<<<<<<<<<
+ *                                Py_ssize_t stride, Py_ssize_t length,
+ *                                int a_ndim, np.npy_intp* y_dims,
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("reduce.median_one_int64", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF((PyObject *)__pyx_v_y);
+  __Pyx_XDECREF((PyObject *)__pyx_v_ity);
+  __Pyx_XGIVEREF((PyObject *)__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "reduce.pyx":2111
+ *     return y
+ * 
+ * cdef ndarray median_one_int32(np.flatiter ita,             # <<<<<<<<<<<<<<
+ *                                Py_ssize_t stride, Py_ssize_t length,
+ *                                int a_ndim, np.npy_intp* y_dims,
+ */
+
+static PyArrayObject *__pyx_f_6reduce_median_one_int32(PyArrayIterObject *__pyx_v_ita, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_length, int __pyx_v_a_ndim, npy_intp *__pyx_v_y_dims, CYTHON_UNUSED int __pyx_v_int_input) {
+  npy_intp __pyx_v_i;
+  npy_intp __pyx_v_j;
+  npy_intp __pyx_v_l;
+  npy_intp __pyx_v_r;
+  npy_intp __pyx_v_k;
+  __pyx_t_5numpy_int32_t __pyx_v_x;
+  __pyx_t_5numpy_int32_t __pyx_v_tmp;
+  __pyx_t_5numpy_int32_t __pyx_v_amax;
+  __pyx_t_5numpy_int32_t __pyx_v_ai;
+  __pyx_t_5numpy_int32_t __pyx_v_bi;
+  PyArrayObject *__pyx_v_y = 0;
+  PyArrayIterObject *__pyx_v_ity = 0;
+  PyArrayObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  npy_intp __pyx_t_3;
+  npy_intp __pyx_t_4;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("median_one_int32", 0);
+
+  /* "reduce.pyx":2115
+ *                                int a_ndim, np.npy_intp* y_dims,
+ *                                int int_input):
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k             # <<<<<<<<<<<<<<
+ *     cdef int32_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
+ */
+  __pyx_v_i = 0;
+  __pyx_v_j = 0;
+
+  /* "reduce.pyx":2117
+ *     cdef np.npy_intp i = 0, j = 0, l, r, k
+ *     cdef int32_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:
+ */
+  __pyx_t_1 = PyArray_EMPTY((__pyx_v_a_ndim - 1), __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2117; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "reduce.pyx":2118
+ *     cdef int32_t x, tmp, amax, ai, bi
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
+ *     cdef np.flatiter ity = PyArray_IterNew(y)             # <<<<<<<<<<<<<<
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):
+ */
+  __pyx_t_1 = PyArray_IterNew(((PyObject *)__pyx_v_y)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2118; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2118; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "reduce.pyx":2119
+ *     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_float64, 0)
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:             # <<<<<<<<<<<<<<
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
+ */
+  __pyx_t_2 = ((__pyx_v_length == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "reduce.pyx":2120
+ *     cdef np.flatiter ity = PyArray_IterNew(y)
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):             # <<<<<<<<<<<<<<
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)
+ */
+    while (1) {
+      __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ity) != 0);
+      if (!__pyx_t_2) break;
+
+      /* "reduce.pyx":2121
+ *     if length == 0:
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN             # <<<<<<<<<<<<<<
+ *             PyArray_ITER_NEXT(ity)
+ *         return y
+ */
+      (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_6reduce_NAN;
+
+      /* "reduce.pyx":2122
+ *         while PyArray_ITER_NOTDONE(ity):
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):
+ */
+      PyArray_ITER_NEXT(__pyx_v_ity);
+    }
+
+    /* "reduce.pyx":2123
+ *             (<float64_t*>((<char*>pid(ity))))[0] = NAN
+ *             PyArray_ITER_NEXT(ity)
+ *         return y             # <<<<<<<<<<<<<<
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         k = length >> 1
+ */
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __Pyx_INCREF(((PyObject *)__pyx_v_y));
+    __pyx_r = __pyx_v_y;
+    goto __pyx_L0;
+  }
+
+  /* "reduce.pyx":2124
+ *             PyArray_ITER_NEXT(ity)
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
+ *         k = length >> 1
+ *         l = 0
+ */
+  while (1) {
+    __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
+    if (!__pyx_t_2) break;
+
+    /* "reduce.pyx":2125
+ *         return y
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         k = length >> 1             # <<<<<<<<<<<<<<
+ *         l = 0
+ *         r = length - 1
+ */
+    __pyx_v_k = (__pyx_v_length >> 1);
+
+    /* "reduce.pyx":2126
+ *     while PyArray_ITER_NOTDONE(ita):
+ *         k = length >> 1
+ *         l = 0             # <<<<<<<<<<<<<<
+ *         r = length - 1
+ *         while l < r:
+ */
+    __pyx_v_l = 0;
+
+    /* "reduce.pyx":2127
+ *         k = length >> 1
+ *         l = 0
+ *         r = length - 1             # <<<<<<<<<<<<<<
+ *         while l < r:
+ *             x = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+    __pyx_v_r = (__pyx_v_length - 1);
+
+    /* "reduce.pyx":2128
+ *         l = 0
+ *         r = length - 1
+ *         while l < r:             # <<<<<<<<<<<<<<
+ *             x = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l
+ */
+    while (1) {
+      __pyx_t_2 = ((__pyx_v_l < __pyx_v_r) != 0);
+      if (!__pyx_t_2) break;
+
+      /* "reduce.pyx":2129
+ *         r = length - 1
+ *         while l < r:
+ *             x = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *             i = l
+ *             j = r
+ */
+      __pyx_v_x = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+      /* "reduce.pyx":2130
+ *         while l < r:
+ *             x = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l             # <<<<<<<<<<<<<<
+ *             j = r
+ *             while 1:
+ */
+      __pyx_v_i = __pyx_v_l;
+
+      /* "reduce.pyx":2131
+ *             x = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *             i = l
+ *             j = r             # <<<<<<<<<<<<<<
+ *             while 1:
+ *                 while (<int32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ */
+      __pyx_v_j = __pyx_v_r;
+
+      /* "reduce.pyx":2132
+ *             i = l
+ *             j = r
+ *             while 1:             # <<<<<<<<<<<<<<
+ *                 while (<int32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<int32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ */
+      while (1) {
+
+        /* "reduce.pyx":2133
+ *             j = r
+ *             while 1:
+ *                 while (<int32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1             # <<<<<<<<<<<<<<
+ *                 while x < (<int32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:
+ */
+        while (1) {
+          __pyx_t_2 = (((((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) < __pyx_v_x) != 0);
+          if (!__pyx_t_2) break;
+          __pyx_v_i = (__pyx_v_i + 1);
+        }
+
+        /* "reduce.pyx":2134
+ *             while 1:
+ *                 while (<int32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<int32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1             # <<<<<<<<<<<<<<
+ *                 if i <= j:
+ *                     tmp = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+        while (1) {
+          __pyx_t_2 = ((__pyx_v_x < (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0])) != 0);
+          if (!__pyx_t_2) break;
+          __pyx_v_j = (__pyx_v_j - 1);
+        }
+
+        /* "reduce.pyx":2135
+ *                 while (<int32_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+ *                 while x < (<int32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:             # <<<<<<<<<<<<<<
+ *                     tmp = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<int32_t*>((<char*>pid(ita)) + i*stride))[0] = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]
+ */
+        __pyx_t_2 = ((__pyx_v_i <= __pyx_v_j) != 0);
+        if (__pyx_t_2) {
+
+          /* "reduce.pyx":2136
+ *                 while x < (<int32_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+ *                 if i <= j:
+ *                     tmp = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                     (<int32_t*>((<char*>pid(ita)) + i*stride))[0] = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<int32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ */
+          __pyx_v_tmp = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+          /* "reduce.pyx":2137
+ *                 if i <= j:
+ *                     tmp = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<int32_t*>((<char*>pid(ita)) + i*stride))[0] = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
+ *                     (<int32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1
+ */
+          (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]) = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
+
+          /* "reduce.pyx":2138
+ *                     tmp = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                     (<int32_t*>((<char*>pid(ita)) + i*stride))[0] = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<int32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp             # <<<<<<<<<<<<<<
+ *                     i += 1
+ *                     j -= 1
+ */
+          (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]) = __pyx_v_tmp;
+
+          /* "reduce.pyx":2139
+ *                     (<int32_t*>((<char*>pid(ita)) + i*stride))[0] = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]
+ *                     (<int32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1             # <<<<<<<<<<<<<<
+ *                     j -= 1
+ *                 if i > j: break
+ */
+          __pyx_v_i = (__pyx_v_i + 1);
+
+          /* "reduce.pyx":2140
+ *                     (<int32_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+ *                     i += 1
+ *                     j -= 1             # <<<<<<<<<<<<<<
+ *                 if i > j: break
+ *             if j < k: l = i
+ */
+          __pyx_v_j = (__pyx_v_j - 1);
+          goto __pyx_L16;
+        }
+        __pyx_L16:;
+
+        /* "reduce.pyx":2141
+ *                     i += 1
+ *                     j -= 1
+ *                 if i > j: break             # <<<<<<<<<<<<<<
+ *             if j < k: l = i
+ *             if k < i: r = j
+ */
+        __pyx_t_2 = ((__pyx_v_i > __pyx_v_j) != 0);
+        if (__pyx_t_2) {
+          goto __pyx_L11_break;
+        }
+      }
+      __pyx_L11_break:;
+
+      /* "reduce.pyx":2142
+ *                     j -= 1
+ *                 if i > j: break
+ *             if j < k: l = i             # <<<<<<<<<<<<<<
+ *             if k < i: r = j
+ *         bi = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]
+ */
+      __pyx_t_2 = ((__pyx_v_j < __pyx_v_k) != 0);
+      if (__pyx_t_2) {
+        __pyx_v_l = __pyx_v_i;
+        goto __pyx_L18;
+      }
+      __pyx_L18:;
+
+      /* "reduce.pyx":2143
+ *                 if i > j: break
+ *             if j < k: l = i
+ *             if k < i: r = j             # <<<<<<<<<<<<<<
+ *         bi = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if length % 2 == 0:
+ */
+      __pyx_t_2 = ((__pyx_v_k < __pyx_v_i) != 0);
+      if (__pyx_t_2) {
+        __pyx_v_r = __pyx_v_j;
+        goto __pyx_L19;
+      }
+      __pyx_L19:;
+    }
+
+    /* "reduce.pyx":2144
+ *             if j < k: l = i
+ *             if k < i: r = j
+ *         bi = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]             # <<<<<<<<<<<<<<
+ *         if length % 2 == 0:
+ *             amax = MINint32
+ */
+    __pyx_v_bi = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_k * __pyx_v_stride)))[0]);
+
+    /* "reduce.pyx":2145
+ *             if k < i: r = j
+ *         bi = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if length % 2 == 0:             # <<<<<<<<<<<<<<
+ *             amax = MINint32
+ *             for i in range(k):
+ */
+    __pyx_t_2 = ((__Pyx_mod_Py_ssize_t(__pyx_v_length, 2) == 0) != 0);
+    if (__pyx_t_2) {
+
+      /* "reduce.pyx":2146
+ *         bi = (<int32_t*>((<char*>pid(ita)) + k*stride))[0]
+ *         if length % 2 == 0:
+ *             amax = MINint32             # <<<<<<<<<<<<<<
+ *             for i in range(k):
+ *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
+ */
+      __pyx_v_amax = __pyx_v_6reduce_MINint32;
+
+      /* "reduce.pyx":2147
+ *         if length % 2 == 0:
+ *             amax = MINint32
+ *             for i in range(k):             # <<<<<<<<<<<<<<
+ *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:
+ */
+      __pyx_t_3 = __pyx_v_k;
+      for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+        __pyx_v_i = __pyx_t_4;
+
+        /* "reduce.pyx":2148
+ *             amax = MINint32
+ *             for i in range(k):
+ *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
+ *                 if ai >= amax:
+ *                     amax = ai
+ */
+        __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
+
+        /* "reduce.pyx":2149
+ *             for i in range(k):
+ *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:             # <<<<<<<<<<<<<<
+ *                     amax = ai
+ *             (<float64_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ */
+        __pyx_t_2 = ((__pyx_v_ai >= __pyx_v_amax) != 0);
+        if (__pyx_t_2) {
+
+          /* "reduce.pyx":2150
+ *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
+ *                 if ai >= amax:
+ *                     amax = ai             # <<<<<<<<<<<<<<
+ *             (<float64_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ *         else:
+ */
+          __pyx_v_amax = __pyx_v_ai;
+          goto __pyx_L23;
+        }
+        __pyx_L23:;
+      }
+
+      /* "reduce.pyx":2151
+ *                 if ai >= amax:
+ *                     amax = ai
+ *             (<float64_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)             # <<<<<<<<<<<<<<
+ *         else:
+ *             (<float64_t*>((<char*>pid(ity))))[0] = bi
+ */
+      (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = (0.5 * (__pyx_v_bi + __pyx_v_amax));
+      goto __pyx_L20;
+    }
+    /*else*/ {
+
+      /* "reduce.pyx":2153
+ *             (<float64_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+ *         else:
+ *             (<float64_t*>((<char*>pid(ity))))[0] = bi             # <<<<<<<<<<<<<<
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)
+ */
+      (((__pyx_t_5numpy_float64_t *)((char *)PyArray_ITER_DATA(__pyx_v_ity)))[0]) = __pyx_v_bi;
+    }
+    __pyx_L20:;
+
+    /* "reduce.pyx":2154
+ *         else:
+ *             (<float64_t*>((<char*>pid(ity))))[0] = bi
+ *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
+ *         PyArray_ITER_NEXT(ity)
+ *     return y
+ */
+    PyArray_ITER_NEXT(__pyx_v_ita);
+
+    /* "reduce.pyx":2155
+ *             (<float64_t*>((<char*>pid(ity))))[0] = bi
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
+ *     return y
+ * 
+ */
+    PyArray_ITER_NEXT(__pyx_v_ity);
+  }
+
+  /* "reduce.pyx":2156
+ *         PyArray_ITER_NEXT(ita)
+ *         PyArray_ITER_NEXT(ity)
+ *     return y             # <<<<<<<<<<<<<<
+ * 
+ * cdef median_0d(ndarray a, int int_input):
+ */
+  __Pyx_XDECREF(((PyObject *)__pyx_r));
+  __Pyx_INCREF(((PyObject *)__pyx_v_y));
+  __pyx_r = __pyx_v_y;
+  goto __pyx_L0;
+
+  /* "reduce.pyx":2111
+ *     return y
+ * 
+ * cdef ndarray median_one_int32(np.flatiter ita,             # <<<<<<<<<<<<<<
+ *                                Py_ssize_t stride, Py_ssize_t length,
+ *                                int a_ndim, np.npy_intp* y_dims,
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("reduce.median_one_int32", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF((PyObject *)__pyx_v_y);
+  __Pyx_XDECREF((PyObject *)__pyx_v_ity);
+  __Pyx_XGIVEREF((PyObject *)__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "reduce.pyx":2158
+ *     return y
+ * 
+ * cdef median_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
+ *     return a[()]
+ * 
+ */
+
+static PyObject *__pyx_f_6reduce_median_0d(PyArrayObject *__pyx_v_a, CYTHON_UNUSED int __pyx_v_int_input) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("median_0d", 0);
+
+  /* "reduce.pyx":2159
+ * 
+ * cdef median_0d(ndarray a, int int_input):
+ *     return a[()]             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_empty_tuple); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2159; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "reduce.pyx":2158
+ *     return y
+ * 
+ * cdef median_0d(ndarray a, int int_input):             # <<<<<<<<<<<<<<
+ *     return a[()]
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("reduce.median_0d", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "reduce.pyx":2175
  * 
  * 
  * cdef reducer(arr, axis,             # <<<<<<<<<<<<<<
@@ -16175,6 +22949,8 @@ static PyObject *__pyx_f_6reduce_ss_0d(PyArrayObject *__pyx_v_a, CYTHON_UNUSED i
 
 static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_v_axis, __pyx_t_6reduce_fall_t __pyx_v_fall_float64, __pyx_t_6reduce_fall_t __pyx_v_fall_float32, __pyx_t_6reduce_fall_t __pyx_v_fall_int64, __pyx_t_6reduce_fall_t __pyx_v_fall_int32, __pyx_t_6reduce_fone_t __pyx_v_fone_float64, __pyx_t_6reduce_fone_t __pyx_v_fone_float32, __pyx_t_6reduce_fone_t __pyx_v_fone_int64, __pyx_t_6reduce_fone_t __pyx_v_fone_int32, __pyx_t_6reduce_f0d_t __pyx_v_f0d, struct __pyx_opt_args_6reduce_reducer *__pyx_optional_args) {
   int __pyx_v_int_input = ((int)0);
+  int __pyx_v_ravel = ((int)0);
+  int __pyx_v_copy = ((int)0);
   PyArrayObject *__pyx_v_a = 0;
   PyArrayIterObject *__pyx_v_ita = 0;
   Py_ssize_t __pyx_v_stride;
@@ -16208,10 +22984,16 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
   if (__pyx_optional_args) {
     if (__pyx_optional_args->__pyx_n > 0) {
       __pyx_v_int_input = __pyx_optional_args->int_input;
+      if (__pyx_optional_args->__pyx_n > 1) {
+        __pyx_v_ravel = __pyx_optional_args->ravel;
+        if (__pyx_optional_args->__pyx_n > 2) {
+          __pyx_v_copy = __pyx_optional_args->copy;
+        }
+      }
     }
   }
 
-  /* "reduce.pyx":1527
+  /* "reduce.pyx":2191
  *     # convert to array if necessary
  *     cdef ndarray a
  *     if type(arr) is ndarray:             # <<<<<<<<<<<<<<
@@ -16222,14 +23004,14 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":1528
+    /* "reduce.pyx":2192
  *     cdef ndarray a
  *     if type(arr) is ndarray:
  *         a = arr             # <<<<<<<<<<<<<<
  *     else:
  *         a = np.array(arr, copy=False)
  */
-    if (!(likely(((__pyx_v_arr) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_arr, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1528; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!(likely(((__pyx_v_arr) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_arr, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2192; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_t_3 = __pyx_v_arr;
     __Pyx_INCREF(__pyx_t_3);
     __pyx_v_a = ((PyArrayObject *)__pyx_t_3);
@@ -16238,38 +23020,90 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
   }
   /*else*/ {
 
-    /* "reduce.pyx":1530
+    /* "reduce.pyx":2194
  *         a = arr
  *     else:
  *         a = np.array(arr, copy=False)             # <<<<<<<<<<<<<<
  * 
  *     # input array
  */
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2194; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2194; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2194; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_v_arr);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_arr);
     __Pyx_GIVEREF(__pyx_v_arr);
-    __pyx_t_5 = PyDict_New(); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyDict_New(); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2194; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_copy, Py_False) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_copy, Py_False) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2194; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2194; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2194; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_v_a = ((PyArrayObject *)__pyx_t_6);
     __pyx_t_6 = 0;
   }
   __pyx_L3:;
 
-  /* "reduce.pyx":1535
+  /* "reduce.pyx":2197
+ * 
+ *     # input array
+ *     if ravel == 1:             # <<<<<<<<<<<<<<
+ *         a = PyArray_Ravel(a, NPY_CORDER)
+ *     if copy == 1:
+ */
+  __pyx_t_2 = ((__pyx_v_ravel == 1) != 0);
+  if (__pyx_t_2) {
+
+    /* "reduce.pyx":2198
+ *     # input array
+ *     if ravel == 1:
+ *         a = PyArray_Ravel(a, NPY_CORDER)             # <<<<<<<<<<<<<<
+ *     if copy == 1:
+ *         a = PyArray_Copy(a)
+ */
+    __pyx_t_6 = PyArray_Ravel(__pyx_v_a, NPY_CORDER); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF_SET(__pyx_v_a, ((PyArrayObject *)__pyx_t_6));
+    __pyx_t_6 = 0;
+    goto __pyx_L4;
+  }
+  __pyx_L4:;
+
+  /* "reduce.pyx":2199
+ *     if ravel == 1:
+ *         a = PyArray_Ravel(a, NPY_CORDER)
+ *     if copy == 1:             # <<<<<<<<<<<<<<
+ *         a = PyArray_Copy(a)
+ * 
+ */
+  __pyx_t_2 = ((__pyx_v_copy == 1) != 0);
+  if (__pyx_t_2) {
+
+    /* "reduce.pyx":2200
+ *         a = PyArray_Ravel(a, NPY_CORDER)
+ *     if copy == 1:
+ *         a = PyArray_Copy(a)             # <<<<<<<<<<<<<<
+ * 
+ *     cdef np.flatiter ita
+ */
+    __pyx_t_6 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF_SET(__pyx_v_a, ((PyArrayObject *)__pyx_t_6));
+    __pyx_t_6 = 0;
+    goto __pyx_L5;
+  }
+  __pyx_L5:;
+
+  /* "reduce.pyx":2204
  *     cdef np.flatiter ita
  *     cdef Py_ssize_t stride, length, i, j
  *     cdef int dtype = PyArray_TYPE(a)             # <<<<<<<<<<<<<<
@@ -16278,7 +23112,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
   __pyx_v_dtype = PyArray_TYPE(__pyx_v_a);
 
-  /* "reduce.pyx":1536
+  /* "reduce.pyx":2205
  *     cdef Py_ssize_t stride, length, i, j
  *     cdef int dtype = PyArray_TYPE(a)
  *     cdef int a_ndim = PyArray_NDIM(a)             # <<<<<<<<<<<<<<
@@ -16287,7 +23121,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
   __pyx_v_a_ndim = PyArray_NDIM(__pyx_v_a);
 
-  /* "reduce.pyx":1541
+  /* "reduce.pyx":2210
  *     cdef ndarray y
  *     cdef np.npy_intp *adim
  *     cdef np.npy_intp *y_dims = [0, 0, 0, 0, 0, 0, 0, 0, 0]  # TODO max ndim=10             # <<<<<<<<<<<<<<
@@ -16305,7 +23139,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
   __pyx_t_7[8] = 0;
   __pyx_v_y_dims = __pyx_t_7;
 
-  /* "reduce.pyx":1544
+  /* "reduce.pyx":2213
  * 
  *     # defend against 0d beings
  *     if a_ndim == 0:             # <<<<<<<<<<<<<<
@@ -16315,7 +23149,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
   __pyx_t_2 = ((__pyx_v_a_ndim == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "reduce.pyx":1545
+    /* "reduce.pyx":2214
  *     # defend against 0d beings
  *     if a_ndim == 0:
  *         if axis is None or axis == 0 or axis == -1:             # <<<<<<<<<<<<<<
@@ -16327,24 +23161,24 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
     if (!__pyx_t_8) {
     } else {
       __pyx_t_2 = __pyx_t_8;
-      goto __pyx_L6_bool_binop_done;
+      goto __pyx_L8_bool_binop_done;
     }
-    __pyx_t_6 = PyObject_RichCompare(__pyx_v_axis, __pyx_int_0, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1545; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_8 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1545; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = PyObject_RichCompare(__pyx_v_axis, __pyx_int_0, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_8 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if (!__pyx_t_8) {
     } else {
       __pyx_t_2 = __pyx_t_8;
-      goto __pyx_L6_bool_binop_done;
+      goto __pyx_L8_bool_binop_done;
     }
-    __pyx_t_6 = PyObject_RichCompare(__pyx_v_axis, __pyx_int_neg_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1545; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_8 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1545; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = PyObject_RichCompare(__pyx_v_axis, __pyx_int_neg_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_8 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_2 = __pyx_t_8;
-    __pyx_L6_bool_binop_done:;
+    __pyx_L8_bool_binop_done:;
     if (__pyx_t_2) {
 
-      /* "reduce.pyx":1546
+      /* "reduce.pyx":2215
  *     if a_ndim == 0:
  *         if axis is None or axis == 0 or axis == -1:
  *             return f0d(a, int_input)             # <<<<<<<<<<<<<<
@@ -16352,7 +23186,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  *             raise ValueError("axis(=%d) out of bounds" % axis)
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_6 = __pyx_v_f0d(__pyx_v_a, __pyx_v_int_input); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1546; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __pyx_v_f0d(__pyx_v_a, __pyx_v_int_input); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2215; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __pyx_r = __pyx_t_6;
       __pyx_t_6 = 0;
@@ -16360,30 +23194,30 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
     }
     /*else*/ {
 
-      /* "reduce.pyx":1548
+      /* "reduce.pyx":2217
  *             return f0d(a, int_input)
  *         else:
  *             raise ValueError("axis(=%d) out of bounds" % axis)             # <<<<<<<<<<<<<<
  * 
  *     # does user want to reduce over all axes?
  */
-      __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_axis_d_out_of_bounds, __pyx_v_axis); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1548; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_axis_d_out_of_bounds, __pyx_v_axis); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1548; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
       __Pyx_GIVEREF(__pyx_t_6);
       __pyx_t_6 = 0;
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1548; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_Raise(__pyx_t_6, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1548; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "reduce.pyx":1551
+  /* "reduce.pyx":2220
  * 
  *     # does user want to reduce over all axes?
  *     cdef int reduce_all = 0             # <<<<<<<<<<<<<<
@@ -16392,7 +23226,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
   __pyx_v_reduce_all = 0;
 
-  /* "reduce.pyx":1554
+  /* "reduce.pyx":2223
  *     cdef int axis_int
  *     cdef int axis_reduce
  *     if axis is None:             # <<<<<<<<<<<<<<
@@ -16403,7 +23237,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
   __pyx_t_8 = (__pyx_t_2 != 0);
   if (__pyx_t_8) {
 
-    /* "reduce.pyx":1555
+    /* "reduce.pyx":2224
  *     cdef int axis_reduce
  *     if axis is None:
  *         reduce_all = 1             # <<<<<<<<<<<<<<
@@ -16412,7 +23246,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
     __pyx_v_reduce_all = 1;
 
-    /* "reduce.pyx":1556
+    /* "reduce.pyx":2225
  *     if axis is None:
  *         reduce_all = 1
  *         axis_reduce = -1             # <<<<<<<<<<<<<<
@@ -16420,21 +23254,21 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  *         axis_int = <int>axis
  */
     __pyx_v_axis_reduce = -1;
-    goto __pyx_L9;
+    goto __pyx_L11;
   }
   /*else*/ {
 
-    /* "reduce.pyx":1558
+    /* "reduce.pyx":2227
  *         axis_reduce = -1
  *     else:
  *         axis_int = <int>axis             # <<<<<<<<<<<<<<
  *         if axis_int < 0:
  *             axis_int += a_ndim
  */
-    __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_v_axis); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1558; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_v_axis); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2227; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_v_axis_int = ((int)__pyx_t_9);
 
-    /* "reduce.pyx":1559
+    /* "reduce.pyx":2228
  *     else:
  *         axis_int = <int>axis
  *         if axis_int < 0:             # <<<<<<<<<<<<<<
@@ -16444,7 +23278,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
     __pyx_t_8 = ((__pyx_v_axis_int < 0) != 0);
     if (__pyx_t_8) {
 
-      /* "reduce.pyx":1560
+      /* "reduce.pyx":2229
  *         axis_int = <int>axis
  *         if axis_int < 0:
  *             axis_int += a_ndim             # <<<<<<<<<<<<<<
@@ -16453,7 +23287,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
       __pyx_v_axis_int = (__pyx_v_axis_int + __pyx_v_a_ndim);
 
-      /* "reduce.pyx":1561
+      /* "reduce.pyx":2230
  *         if axis_int < 0:
  *             axis_int += a_ndim
  *             if axis_int < 0:             # <<<<<<<<<<<<<<
@@ -16463,31 +23297,31 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
       __pyx_t_8 = ((__pyx_v_axis_int < 0) != 0);
       if (__pyx_t_8) {
 
-        /* "reduce.pyx":1562
+        /* "reduce.pyx":2231
  *             axis_int += a_ndim
  *             if axis_int < 0:
  *                 raise ValueError("axis(=%d) out of bounds" % axis)             # <<<<<<<<<<<<<<
  *         elif axis_int >= a_ndim:
  *             raise ValueError("axis(=%d) out of bounds" % axis)
  */
-        __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_axis_d_out_of_bounds, __pyx_v_axis); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1562; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_axis_d_out_of_bounds, __pyx_v_axis); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1562; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_5);
         PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
         __Pyx_GIVEREF(__pyx_t_6);
         __pyx_t_6 = 0;
-        __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1562; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_Raise(__pyx_t_6, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1562; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
-      goto __pyx_L10;
+      goto __pyx_L12;
     }
 
-    /* "reduce.pyx":1563
+    /* "reduce.pyx":2232
  *             if axis_int < 0:
  *                 raise ValueError("axis(=%d) out of bounds" % axis)
  *         elif axis_int >= a_ndim:             # <<<<<<<<<<<<<<
@@ -16497,30 +23331,30 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
     __pyx_t_8 = ((__pyx_v_axis_int >= __pyx_v_a_ndim) != 0);
     if (__pyx_t_8) {
 
-      /* "reduce.pyx":1564
+      /* "reduce.pyx":2233
  *                 raise ValueError("axis(=%d) out of bounds" % axis)
  *         elif axis_int >= a_ndim:
  *             raise ValueError("axis(=%d) out of bounds" % axis)             # <<<<<<<<<<<<<<
  *         if a_ndim == 1 and axis_int == 0:
  *             reduce_all = 1
  */
-      __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_axis_d_out_of_bounds, __pyx_v_axis); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1564; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_axis_d_out_of_bounds, __pyx_v_axis); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2233; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1564; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2233; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
       __Pyx_GIVEREF(__pyx_t_6);
       __pyx_t_6 = 0;
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1564; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2233; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_Raise(__pyx_t_6, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1564; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2233; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
-    __pyx_L10:;
+    __pyx_L12:;
 
-    /* "reduce.pyx":1565
+    /* "reduce.pyx":2234
  *         elif axis_int >= a_ndim:
  *             raise ValueError("axis(=%d) out of bounds" % axis)
  *         if a_ndim == 1 and axis_int == 0:             # <<<<<<<<<<<<<<
@@ -16531,14 +23365,14 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
     if (__pyx_t_2) {
     } else {
       __pyx_t_8 = __pyx_t_2;
-      goto __pyx_L13_bool_binop_done;
+      goto __pyx_L15_bool_binop_done;
     }
     __pyx_t_2 = ((__pyx_v_axis_int == 0) != 0);
     __pyx_t_8 = __pyx_t_2;
-    __pyx_L13_bool_binop_done:;
+    __pyx_L15_bool_binop_done:;
     if (__pyx_t_8) {
 
-      /* "reduce.pyx":1566
+      /* "reduce.pyx":2235
  *             raise ValueError("axis(=%d) out of bounds" % axis)
  *         if a_ndim == 1 and axis_int == 0:
  *             reduce_all = 1             # <<<<<<<<<<<<<<
@@ -16546,11 +23380,11 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  * 
  */
       __pyx_v_reduce_all = 1;
-      goto __pyx_L12;
+      goto __pyx_L14;
     }
-    __pyx_L12:;
+    __pyx_L14:;
 
-    /* "reduce.pyx":1567
+    /* "reduce.pyx":2236
  *         if a_ndim == 1 and axis_int == 0:
  *             reduce_all = 1
  *         axis_reduce = axis_int             # <<<<<<<<<<<<<<
@@ -16559,22 +23393,22 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
     __pyx_v_axis_reduce = __pyx_v_axis_int;
   }
-  __pyx_L9:;
+  __pyx_L11:;
 
-  /* "reduce.pyx":1570
+  /* "reduce.pyx":2239
  * 
  *     # input iterator
  *     ita = PyArray_IterAllButAxis(a, &axis_reduce)             # <<<<<<<<<<<<<<
  *     stride = a.strides[axis_reduce]
  *     length = a.shape[axis_reduce]
  */
-  __pyx_t_6 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis_reduce)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1570; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis_reduce)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2239; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
-  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1570; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_flatiter))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2239; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ita = ((PyArrayIterObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "reduce.pyx":1571
+  /* "reduce.pyx":2240
  *     # input iterator
  *     ita = PyArray_IterAllButAxis(a, &axis_reduce)
  *     stride = a.strides[axis_reduce]             # <<<<<<<<<<<<<<
@@ -16583,7 +23417,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
   __pyx_v_stride = (__pyx_v_a->strides[__pyx_v_axis_reduce]);
 
-  /* "reduce.pyx":1572
+  /* "reduce.pyx":2241
  *     ita = PyArray_IterAllButAxis(a, &axis_reduce)
  *     stride = a.strides[axis_reduce]
  *     length = a.shape[axis_reduce]             # <<<<<<<<<<<<<<
@@ -16592,7 +23426,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
   __pyx_v_length = (__pyx_v_a->dimensions[__pyx_v_axis_reduce]);
 
-  /* "reduce.pyx":1574
+  /* "reduce.pyx":2243
  *     length = a.shape[axis_reduce]
  * 
  *     if reduce_all == 1:             # <<<<<<<<<<<<<<
@@ -16602,7 +23436,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
   __pyx_t_8 = ((__pyx_v_reduce_all == 1) != 0);
   if (__pyx_t_8) {
 
-    /* "reduce.pyx":1582
+    /* "reduce.pyx":2251
  *         elif dtype == NPY_int64:
  *             return fall_int64(ita, stride, length, int_input)
  *         elif dtype == NPY_int32:             # <<<<<<<<<<<<<<
@@ -16611,7 +23445,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
     switch (__pyx_v_dtype) {
 
-      /* "reduce.pyx":1576
+      /* "reduce.pyx":2245
  *     if reduce_all == 1:
  *         # reduce over all axes
  *         if dtype == NPY_float64:             # <<<<<<<<<<<<<<
@@ -16620,7 +23454,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
       case NPY_FLOAT64:
 
-      /* "reduce.pyx":1577
+      /* "reduce.pyx":2246
  *         # reduce over all axes
  *         if dtype == NPY_float64:
  *             return fall_float64(ita, stride, length, int_input)             # <<<<<<<<<<<<<<
@@ -16628,14 +23462,14 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  *             return fall_float32(ita, stride, length, int_input)
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_6 = __pyx_v_fall_float64(__pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_int_input); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1577; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __pyx_v_fall_float64(__pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_int_input); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2246; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __pyx_r = __pyx_t_6;
       __pyx_t_6 = 0;
       goto __pyx_L0;
       break;
 
-      /* "reduce.pyx":1578
+      /* "reduce.pyx":2247
  *         if dtype == NPY_float64:
  *             return fall_float64(ita, stride, length, int_input)
  *         elif dtype == NPY_float32:             # <<<<<<<<<<<<<<
@@ -16644,7 +23478,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
       case NPY_FLOAT32:
 
-      /* "reduce.pyx":1579
+      /* "reduce.pyx":2248
  *             return fall_float64(ita, stride, length, int_input)
  *         elif dtype == NPY_float32:
  *             return fall_float32(ita, stride, length, int_input)             # <<<<<<<<<<<<<<
@@ -16652,14 +23486,14 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  *             return fall_int64(ita, stride, length, int_input)
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_6 = __pyx_v_fall_float32(__pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_int_input); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1579; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __pyx_v_fall_float32(__pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_int_input); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2248; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __pyx_r = __pyx_t_6;
       __pyx_t_6 = 0;
       goto __pyx_L0;
       break;
 
-      /* "reduce.pyx":1580
+      /* "reduce.pyx":2249
  *         elif dtype == NPY_float32:
  *             return fall_float32(ita, stride, length, int_input)
  *         elif dtype == NPY_int64:             # <<<<<<<<<<<<<<
@@ -16668,7 +23502,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
       case NPY_INT64:
 
-      /* "reduce.pyx":1581
+      /* "reduce.pyx":2250
  *             return fall_float32(ita, stride, length, int_input)
  *         elif dtype == NPY_int64:
  *             return fall_int64(ita, stride, length, int_input)             # <<<<<<<<<<<<<<
@@ -16676,14 +23510,14 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  *             return fall_int32(ita, stride, length, int_input)
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_6 = __pyx_v_fall_int64(__pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_int_input); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1581; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __pyx_v_fall_int64(__pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_int_input); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2250; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __pyx_r = __pyx_t_6;
       __pyx_t_6 = 0;
       goto __pyx_L0;
       break;
 
-      /* "reduce.pyx":1582
+      /* "reduce.pyx":2251
  *         elif dtype == NPY_int64:
  *             return fall_int64(ita, stride, length, int_input)
  *         elif dtype == NPY_int32:             # <<<<<<<<<<<<<<
@@ -16692,7 +23526,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
       case NPY_INT32:
 
-      /* "reduce.pyx":1583
+      /* "reduce.pyx":2252
  *             return fall_int64(ita, stride, length, int_input)
  *         elif dtype == NPY_int32:
  *             return fall_int32(ita, stride, length, int_input)             # <<<<<<<<<<<<<<
@@ -16700,7 +23534,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  *             raise TypeError("Unsupported dtype (%s)." % a.dtype)
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_6 = __pyx_v_fall_int32(__pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_int_input); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1583; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __pyx_v_fall_int32(__pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_int_input); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2252; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __pyx_r = __pyx_t_6;
       __pyx_t_6 = 0;
@@ -16708,35 +23542,35 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
       break;
       default:
 
-      /* "reduce.pyx":1585
+      /* "reduce.pyx":2254
  *             return fall_int32(ita, stride, length, int_input)
  *         else:
  *             raise TypeError("Unsupported dtype (%s)." % a.dtype)             # <<<<<<<<<<<<<<
  *     else:
  *         # reduce over a single axis; a_ndim > 1
  */
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1585; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_5 = __Pyx_PyString_Format(__pyx_kp_s_Unsupported_dtype_s, __pyx_t_6); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1585; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = __Pyx_PyString_Format(__pyx_kp_s_Unsupported_dtype_s, __pyx_t_6); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1585; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_5);
       __pyx_t_5 = 0;
-      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_6, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1585; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_6, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_Raise(__pyx_t_5, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1585; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       break;
     }
   }
   /*else*/ {
 
-    /* "reduce.pyx":1588
+    /* "reduce.pyx":2257
  *     else:
  *         # reduce over a single axis; a_ndim > 1
  *         adim = np.PyArray_DIMS(a)             # <<<<<<<<<<<<<<
@@ -16745,7 +23579,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
     __pyx_v_adim = PyArray_DIMS(__pyx_v_a);
 
-    /* "reduce.pyx":1589
+    /* "reduce.pyx":2258
  *         # reduce over a single axis; a_ndim > 1
  *         adim = np.PyArray_DIMS(a)
  *         j = 0             # <<<<<<<<<<<<<<
@@ -16754,7 +23588,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
     __pyx_v_j = 0;
 
-    /* "reduce.pyx":1590
+    /* "reduce.pyx":2259
  *         adim = np.PyArray_DIMS(a)
  *         j = 0
  *         for i in range(a_ndim):             # <<<<<<<<<<<<<<
@@ -16765,7 +23599,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
     for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
       __pyx_v_i = __pyx_t_10;
 
-      /* "reduce.pyx":1591
+      /* "reduce.pyx":2260
  *         j = 0
  *         for i in range(a_ndim):
  *             if i != axis_reduce:             # <<<<<<<<<<<<<<
@@ -16775,7 +23609,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
       __pyx_t_8 = ((__pyx_v_i != __pyx_v_axis_reduce) != 0);
       if (__pyx_t_8) {
 
-        /* "reduce.pyx":1592
+        /* "reduce.pyx":2261
  *         for i in range(a_ndim):
  *             if i != axis_reduce:
  *                 y_dims[j] = adim[i]             # <<<<<<<<<<<<<<
@@ -16784,7 +23618,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
         (__pyx_v_y_dims[__pyx_v_j]) = (__pyx_v_adim[__pyx_v_i]);
 
-        /* "reduce.pyx":1593
+        /* "reduce.pyx":2262
  *             if i != axis_reduce:
  *                 y_dims[j] = adim[i]
  *                 j += 1             # <<<<<<<<<<<<<<
@@ -16792,12 +23626,12 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  *             y = fone_float64(ita, stride, length, a_ndim, y_dims, int_input)
  */
         __pyx_v_j = (__pyx_v_j + 1);
-        goto __pyx_L18;
+        goto __pyx_L20;
       }
-      __pyx_L18:;
+      __pyx_L20:;
     }
 
-    /* "reduce.pyx":1600
+    /* "reduce.pyx":2269
  *         elif dtype == NPY_int64:
  *             y = fone_int64(ita, stride, length, a_ndim, y_dims, int_input)
  *         elif dtype == NPY_int32:             # <<<<<<<<<<<<<<
@@ -16806,7 +23640,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
     switch (__pyx_v_dtype) {
 
-      /* "reduce.pyx":1594
+      /* "reduce.pyx":2263
  *                 y_dims[j] = adim[i]
  *                 j += 1
  *         if dtype == NPY_float64:             # <<<<<<<<<<<<<<
@@ -16815,20 +23649,20 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
       case NPY_FLOAT64:
 
-      /* "reduce.pyx":1595
+      /* "reduce.pyx":2264
  *                 j += 1
  *         if dtype == NPY_float64:
  *             y = fone_float64(ita, stride, length, a_ndim, y_dims, int_input)             # <<<<<<<<<<<<<<
  *         elif dtype == NPY_float32:
  *             y = fone_float32(ita, stride, length, a_ndim, y_dims, int_input)
  */
-      __pyx_t_5 = ((PyObject *)__pyx_v_fone_float64(__pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1595; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = ((PyObject *)__pyx_v_fone_float64(__pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2264; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_v_y = ((PyArrayObject *)__pyx_t_5);
       __pyx_t_5 = 0;
       break;
 
-      /* "reduce.pyx":1596
+      /* "reduce.pyx":2265
  *         if dtype == NPY_float64:
  *             y = fone_float64(ita, stride, length, a_ndim, y_dims, int_input)
  *         elif dtype == NPY_float32:             # <<<<<<<<<<<<<<
@@ -16837,20 +23671,20 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
       case NPY_FLOAT32:
 
-      /* "reduce.pyx":1597
+      /* "reduce.pyx":2266
  *             y = fone_float64(ita, stride, length, a_ndim, y_dims, int_input)
  *         elif dtype == NPY_float32:
  *             y = fone_float32(ita, stride, length, a_ndim, y_dims, int_input)             # <<<<<<<<<<<<<<
  *         elif dtype == NPY_int64:
  *             y = fone_int64(ita, stride, length, a_ndim, y_dims, int_input)
  */
-      __pyx_t_5 = ((PyObject *)__pyx_v_fone_float32(__pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1597; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = ((PyObject *)__pyx_v_fone_float32(__pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2266; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_v_y = ((PyArrayObject *)__pyx_t_5);
       __pyx_t_5 = 0;
       break;
 
-      /* "reduce.pyx":1598
+      /* "reduce.pyx":2267
  *         elif dtype == NPY_float32:
  *             y = fone_float32(ita, stride, length, a_ndim, y_dims, int_input)
  *         elif dtype == NPY_int64:             # <<<<<<<<<<<<<<
@@ -16859,20 +23693,20 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
       case NPY_INT64:
 
-      /* "reduce.pyx":1599
+      /* "reduce.pyx":2268
  *             y = fone_float32(ita, stride, length, a_ndim, y_dims, int_input)
  *         elif dtype == NPY_int64:
  *             y = fone_int64(ita, stride, length, a_ndim, y_dims, int_input)             # <<<<<<<<<<<<<<
  *         elif dtype == NPY_int32:
  *             y = fone_int32(ita, stride, length, a_ndim, y_dims, int_input)
  */
-      __pyx_t_5 = ((PyObject *)__pyx_v_fone_int64(__pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1599; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = ((PyObject *)__pyx_v_fone_int64(__pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2268; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_v_y = ((PyArrayObject *)__pyx_t_5);
       __pyx_t_5 = 0;
       break;
 
-      /* "reduce.pyx":1600
+      /* "reduce.pyx":2269
  *         elif dtype == NPY_int64:
  *             y = fone_int64(ita, stride, length, a_ndim, y_dims, int_input)
  *         elif dtype == NPY_int32:             # <<<<<<<<<<<<<<
@@ -16881,46 +23715,46 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
  */
       case NPY_INT32:
 
-      /* "reduce.pyx":1601
+      /* "reduce.pyx":2270
  *             y = fone_int64(ita, stride, length, a_ndim, y_dims, int_input)
  *         elif dtype == NPY_int32:
  *             y = fone_int32(ita, stride, length, a_ndim, y_dims, int_input)             # <<<<<<<<<<<<<<
  *         else:
  *             raise TypeError("Unsupported dtype (%s)." % a.dtype)
  */
-      __pyx_t_5 = ((PyObject *)__pyx_v_fone_int32(__pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1601; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = ((PyObject *)__pyx_v_fone_int32(__pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2270; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_v_y = ((PyArrayObject *)__pyx_t_5);
       __pyx_t_5 = 0;
       break;
       default:
 
-      /* "reduce.pyx":1603
+      /* "reduce.pyx":2272
  *             y = fone_int32(ita, stride, length, a_ndim, y_dims, int_input)
  *         else:
  *             raise TypeError("Unsupported dtype (%s)." % a.dtype)             # <<<<<<<<<<<<<<
  *         return y
  */
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_dtype); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1603; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_dtype); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_Unsupported_dtype_s, __pyx_t_5); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1603; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_Unsupported_dtype_s, __pyx_t_5); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1603; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
       __Pyx_GIVEREF(__pyx_t_6);
       __pyx_t_6 = 0;
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1603; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_Raise(__pyx_t_6, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1603; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       break;
     }
 
-    /* "reduce.pyx":1604
+    /* "reduce.pyx":2273
  *         else:
  *             raise TypeError("Unsupported dtype (%s)." % a.dtype)
  *         return y             # <<<<<<<<<<<<<<
@@ -16931,7 +23765,7 @@ static PyObject *__pyx_f_6reduce_reducer(PyObject *__pyx_v_arr, PyObject *__pyx_
     goto __pyx_L0;
   }
 
-  /* "reduce.pyx":1513
+  /* "reduce.pyx":2175
  * 
  * 
  * cdef reducer(arr, axis,             # <<<<<<<<<<<<<<
@@ -18999,12 +25833,15 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_inf, __pyx_k_inf, sizeof(__pyx_k_inf), 0, 0, 1, 1},
   {&__pyx_n_s_int32, __pyx_k_int32, sizeof(__pyx_k_int32), 0, 0, 1, 1},
   {&__pyx_n_s_int64, __pyx_k_int64, sizeof(__pyx_k_int64), 0, 0, 1, 1},
+  {&__pyx_n_s_int_input, __pyx_k_int_input, sizeof(__pyx_k_int_input), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_max, __pyx_k_max, sizeof(__pyx_k_max), 0, 0, 1, 1},
+  {&__pyx_n_s_median, __pyx_k_median, sizeof(__pyx_k_median), 0, 0, 1, 1},
   {&__pyx_n_s_min, __pyx_k_min, sizeof(__pyx_k_min), 0, 0, 1, 1},
   {&__pyx_n_s_nan, __pyx_k_nan, sizeof(__pyx_k_nan), 0, 0, 1, 1},
   {&__pyx_n_s_nanmax, __pyx_k_nanmax, sizeof(__pyx_k_nanmax), 0, 0, 1, 1},
   {&__pyx_n_s_nanmean, __pyx_k_nanmean, sizeof(__pyx_k_nanmean), 0, 0, 1, 1},
+  {&__pyx_n_s_nanmedian, __pyx_k_nanmedian, sizeof(__pyx_k_nanmedian), 0, 0, 1, 1},
   {&__pyx_n_s_nanmin, __pyx_k_nanmin, sizeof(__pyx_k_nanmin), 0, 0, 1, 1},
   {&__pyx_n_s_nanstd, __pyx_k_nanstd, sizeof(__pyx_k_nanstd), 0, 0, 1, 1},
   {&__pyx_n_s_nansum, __pyx_k_nansum, sizeof(__pyx_k_nansum), 0, 0, 1, 1},
@@ -19020,6 +25857,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_numpy_nanmin_raises_on_a_shape_a, __pyx_k_numpy_nanmin_raises_on_a_shape_a, sizeof(__pyx_k_numpy_nanmin_raises_on_a_shape_a), 0, 0, 1, 0},
   {&__pyx_kp_s_numpy_nanmin_raises_on_a_size_0, __pyx_k_numpy_nanmin_raises_on_a_size_0, sizeof(__pyx_k_numpy_nanmin_raises_on_a_size_0), 0, 0, 1, 0},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
+  {&__pyx_n_s_ravel, __pyx_k_ravel, sizeof(__pyx_k_ravel), 0, 0, 1, 1},
   {&__pyx_n_s_reduce, __pyx_k_reduce, sizeof(__pyx_k_reduce), 0, 0, 1, 1},
   {&__pyx_n_s_slow, __pyx_k_slow, sizeof(__pyx_k_slow), 0, 0, 1, 1},
   {&__pyx_n_s_ss, __pyx_k_ss, sizeof(__pyx_k_ss), 0, 0, 1, 1},
@@ -19028,9 +25866,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 59; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 992; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1012; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 799; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
@@ -19107,89 +25945,113 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
-  /* "reduce.pyx":47
+  /* "reduce.pyx":67
  * # nansum --------------------------------------------------------------------
  * 
  * def nansum(arr, axis=None):             # <<<<<<<<<<<<<<
  *     try:
  *         return reducer(arr, axis,
  */
-  __pyx_tuple__8 = PyTuple_Pack(2, __pyx_n_s_arr, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__8 = PyTuple_Pack(2, __pyx_n_s_arr, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
-  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_nansum, 47, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_nansum, 67, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "reduce.pyx":209
+  /* "reduce.pyx":229
  * # nanmean --------------------------------------------------------------------
  * 
  * def nanmean(arr, axis=None):             # <<<<<<<<<<<<<<
  *     try:
  *         return reducer(arr, axis,
  */
-  __pyx_tuple__10 = PyTuple_Pack(2, __pyx_n_s_arr, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__10 = PyTuple_Pack(2, __pyx_n_s_arr, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__10);
   __Pyx_GIVEREF(__pyx_tuple__10);
-  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_nanmean, 209, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_nanmean, 229, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "reduce.pyx":411
+  /* "reduce.pyx":431
  * # nanstd --------------------------------------------------------------------
  * 
  * def nanstd(arr, axis=None, int ddof=0):             # <<<<<<<<<<<<<<
  *     try:
  *         return reducer(arr, axis,
  */
-  __pyx_tuple__12 = PyTuple_Pack(3, __pyx_n_s_arr, __pyx_n_s_axis, __pyx_n_s_ddof); if (unlikely(!__pyx_tuple__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 411; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__12 = PyTuple_Pack(3, __pyx_n_s_arr, __pyx_n_s_axis, __pyx_n_s_ddof); if (unlikely(!__pyx_tuple__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 431; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
-  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_nanstd, 411, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 411; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_nanstd, 431, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 431; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "reduce.pyx":686
+  /* "reduce.pyx":706
  * # nanvar --------------------------------------------------------------------
  * 
  * def nanvar(arr, axis=None, int ddof=0):             # <<<<<<<<<<<<<<
  *     try:
  *         return reducer(arr, axis,
  */
-  __pyx_tuple__14 = PyTuple_Pack(3, __pyx_n_s_arr, __pyx_n_s_axis, __pyx_n_s_ddof); if (unlikely(!__pyx_tuple__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 686; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__14 = PyTuple_Pack(3, __pyx_n_s_arr, __pyx_n_s_axis, __pyx_n_s_ddof); if (unlikely(!__pyx_tuple__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 706; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__14);
   __Pyx_GIVEREF(__pyx_tuple__14);
-  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_nanvar, 686, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 686; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_nanvar, 706, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 706; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "reduce.pyx":961
+  /* "reduce.pyx":981
  * # nanmin --------------------------------------------------------------------
  * 
  * def nanmin(arr, axis=None):             # <<<<<<<<<<<<<<
  *     try:
  *         return reducer(arr, axis,
  */
-  __pyx_tuple__16 = PyTuple_Pack(2, __pyx_n_s_arr, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__16)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 961; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__16 = PyTuple_Pack(2, __pyx_n_s_arr, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__16)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 981; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__16);
   __Pyx_GIVEREF(__pyx_tuple__16);
-  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_nanmin, 961, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 961; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_nanmin, 981, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 981; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "reduce.pyx":1154
+  /* "reduce.pyx":1174
  * # nanmax --------------------------------------------------------------------
  * 
  * def nanmax(arr, axis=None):             # <<<<<<<<<<<<<<
  *     try:
  *         return reducer(arr, axis,
  */
-  __pyx_tuple__18 = PyTuple_Pack(2, __pyx_n_s_arr, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1154; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__18 = PyTuple_Pack(2, __pyx_n_s_arr, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__18);
   __Pyx_GIVEREF(__pyx_tuple__18);
-  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_nanmax, 1154, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1154; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_nanmax, 1174, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "reduce.pyx":1347
+  /* "reduce.pyx":1367
  * # ss ------------------------------------------------------------------------
  * 
  * def ss(arr, axis=None):             # <<<<<<<<<<<<<<
  *     try:
  *         return reducer(arr, axis,
  */
-  __pyx_tuple__20 = PyTuple_Pack(2, __pyx_n_s_arr, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__20)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1347; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__20 = PyTuple_Pack(2, __pyx_n_s_arr, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__20)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1367; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__20);
   __Pyx_GIVEREF(__pyx_tuple__20);
-  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_ss, 1347, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1347; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_ss, 1367, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1367; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "reduce.pyx":1522
+ * # nanmedian -----------------------------------------------------------------
+ * 
+ * def nanmedian(arr, axis=None):             # <<<<<<<<<<<<<<
+ *     cdef int ravel = 0, copy = 1, int_input = 0
+ *     try:
+ */
+  __pyx_tuple__22 = PyTuple_Pack(5, __pyx_n_s_arr, __pyx_n_s_axis, __pyx_n_s_ravel, __pyx_n_s_copy, __pyx_n_s_int_input); if (unlikely(!__pyx_tuple__22)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1522; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__22);
+  __Pyx_GIVEREF(__pyx_tuple__22);
+  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_nanmedian, 1522, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1522; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "reduce.pyx":1804
+ * # median -----------------------------------------------------------------
+ * 
+ * def median(arr, axis=None):             # <<<<<<<<<<<<<<
+ *     cdef int ravel = 0, copy = 1, int_input = 0
+ *     try:
+ */
+  __pyx_tuple__24 = PyTuple_Pack(5, __pyx_n_s_arr, __pyx_n_s_axis, __pyx_n_s_ravel, __pyx_n_s_copy, __pyx_n_s_int_input); if (unlikely(!__pyx_tuple__24)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1804; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__24);
+  __Pyx_GIVEREF(__pyx_tuple__24);
+  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_median, 1804, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1804; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -19313,19 +26175,19 @@ PyMODINIT_FUNC PyInit_reduce(void)
   /*--- Function import code ---*/
   /*--- Execution code ---*/
 
-  /* "reduce.pyx":3
- * #cython: embedsignature=True
+  /* "reduce.pyx":20
+ * # (C) 2010, 2015 Keith Goodman
  * 
  * import numpy as np             # <<<<<<<<<<<<<<
  * cimport numpy as np
  * import cython
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, -1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 3; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, -1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 3; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "reduce.pyx":26
+  /* "reduce.pyx":46
  * from numpy cimport ndarray
  * from numpy cimport import_array
  * import_array()             # <<<<<<<<<<<<<<
@@ -19334,55 +26196,55 @@ PyMODINIT_FUNC PyInit_reduce(void)
  */
   import_array();
 
-  /* "reduce.pyx":28
+  /* "reduce.pyx":48
  * import_array()
  * 
  * import bottleneck.slow.reduce as slow             # <<<<<<<<<<<<<<
  * 
  * cdef double NAN = <double> np.nan
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s__7);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s__7);
   __Pyx_GIVEREF(__pyx_n_s__7);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_bottleneck_slow_reduce, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_bottleneck_slow_reduce, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_slow, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_slow, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "reduce.pyx":30
+  /* "reduce.pyx":50
  * import bottleneck.slow.reduce as slow
  * 
  * cdef double NAN = <double> np.nan             # <<<<<<<<<<<<<<
  * cdef extern from "math.h":
  *     double sqrt(double x)
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_nan); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_nan); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_6reduce_NAN = ((double)__pyx_t_3);
 
-  /* "reduce.pyx":34
+  /* "reduce.pyx":54
  *     double sqrt(double x)
  * 
  * cdef np.int32_t MAXint32 = np.iinfo(np.int32).max             # <<<<<<<<<<<<<<
  * cdef np.int64_t MAXint64 = np.iinfo(np.int64).max
  * cdef np.float32_t MAXfloat32 = np.inf
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -19396,43 +26258,43 @@ PyMODINIT_FUNC PyInit_reduce(void)
     }
   }
   if (!__pyx_t_2) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else {
-    __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_2); __Pyx_GIVEREF(__pyx_t_2); __pyx_t_2 = NULL;
     PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_5);
     __pyx_t_5 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_max); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_max); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_7 = __Pyx_PyInt_As_npy_int32(__pyx_t_4); if (unlikely((__pyx_t_7 == (npy_int32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = __Pyx_PyInt_As_npy_int32(__pyx_t_4); if (unlikely((__pyx_t_7 == (npy_int32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_v_6reduce_MAXint32 = __pyx_t_7;
 
-  /* "reduce.pyx":35
+  /* "reduce.pyx":55
  * 
  * cdef np.int32_t MAXint32 = np.iinfo(np.int32).max
  * cdef np.int64_t MAXint64 = np.iinfo(np.int64).max             # <<<<<<<<<<<<<<
  * cdef np.float32_t MAXfloat32 = np.inf
  * cdef np.float64_t MAXfloat64 = np.inf
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_int64); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_int64); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = NULL;
@@ -19446,75 +26308,75 @@ PyMODINIT_FUNC PyInit_reduce(void)
     }
   }
   if (!__pyx_t_1) {
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_4);
   } else {
-    __pyx_t_2 = PyTuple_New(1+1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = PyTuple_New(1+1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1); __Pyx_GIVEREF(__pyx_t_1); __pyx_t_1 = NULL;
     PyTuple_SET_ITEM(__pyx_t_2, 0+1, __pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_5);
     __pyx_t_5 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_2, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_2, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_max); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_max); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_8 = __Pyx_PyInt_As_npy_int64(__pyx_t_6); if (unlikely((__pyx_t_8 == (npy_int64)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_8 = __Pyx_PyInt_As_npy_int64(__pyx_t_6); if (unlikely((__pyx_t_8 == (npy_int64)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_v_6reduce_MAXint64 = __pyx_t_8;
 
-  /* "reduce.pyx":36
+  /* "reduce.pyx":56
  * cdef np.int32_t MAXint32 = np.iinfo(np.int32).max
  * cdef np.int64_t MAXint64 = np.iinfo(np.int64).max
  * cdef np.float32_t MAXfloat32 = np.inf             # <<<<<<<<<<<<<<
  * cdef np.float64_t MAXfloat64 = np.inf
  * 
  */
-  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 56; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_inf); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_inf); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 56; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_4); if (unlikely((__pyx_t_9 == (npy_float32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_4); if (unlikely((__pyx_t_9 == (npy_float32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 56; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_v_6reduce_MAXfloat32 = __pyx_t_9;
 
-  /* "reduce.pyx":37
+  /* "reduce.pyx":57
  * cdef np.int64_t MAXint64 = np.iinfo(np.int64).max
  * cdef np.float32_t MAXfloat32 = np.inf
  * cdef np.float64_t MAXfloat64 = np.inf             # <<<<<<<<<<<<<<
  * 
  * cdef np.int32_t MINint32 = np.iinfo(np.int32).min
  */
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_inf); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_inf); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_10 = __pyx_PyFloat_AsDouble(__pyx_t_6); if (unlikely((__pyx_t_10 == (npy_float64)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_10 = __pyx_PyFloat_AsDouble(__pyx_t_6); if (unlikely((__pyx_t_10 == (npy_float64)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_v_6reduce_MAXfloat64 = __pyx_t_10;
 
-  /* "reduce.pyx":39
+  /* "reduce.pyx":59
  * cdef np.float64_t MAXfloat64 = np.inf
  * 
  * cdef np.int32_t MINint32 = np.iinfo(np.int32).min             # <<<<<<<<<<<<<<
  * cdef np.int64_t MINint64 = np.iinfo(np.int64).min
  * cdef np.float32_t MINfloat32 = -np.inf
  */
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 59; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 59; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 59; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 59; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_4 = NULL;
@@ -19528,43 +26390,43 @@ PyMODINIT_FUNC PyInit_reduce(void)
     }
   }
   if (!__pyx_t_4) {
-    __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 59; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_6);
   } else {
-    __pyx_t_1 = PyTuple_New(1+1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyTuple_New(1+1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 59; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_4); __Pyx_GIVEREF(__pyx_t_4); __pyx_t_4 = NULL;
     PyTuple_SET_ITEM(__pyx_t_1, 0+1, __pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_5);
     __pyx_t_5 = 0;
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 59; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_min); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_min); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 59; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_7 = __Pyx_PyInt_As_npy_int32(__pyx_t_2); if (unlikely((__pyx_t_7 == (npy_int32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = __Pyx_PyInt_As_npy_int32(__pyx_t_2); if (unlikely((__pyx_t_7 == (npy_int32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 59; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_6reduce_MINint32 = __pyx_t_7;
 
-  /* "reduce.pyx":40
+  /* "reduce.pyx":60
  * 
  * cdef np.int32_t MINint32 = np.iinfo(np.int32).min
  * cdef np.int64_t MINint64 = np.iinfo(np.int64).min             # <<<<<<<<<<<<<<
  * cdef np.float32_t MINfloat32 = -np.inf
  * cdef np.float64_t MINfloat64 = -np.inf
  */
-  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_int64); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_int64); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_6 = NULL;
@@ -19578,154 +26440,178 @@ PyMODINIT_FUNC PyInit_reduce(void)
     }
   }
   if (!__pyx_t_6) {
-    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_2);
   } else {
-    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_6); __Pyx_GIVEREF(__pyx_t_6); __pyx_t_6 = NULL;
     PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_5);
     __pyx_t_5 = 0;
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_min); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_min); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_8 = __Pyx_PyInt_As_npy_int64(__pyx_t_1); if (unlikely((__pyx_t_8 == (npy_int64)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_8 = __Pyx_PyInt_As_npy_int64(__pyx_t_1); if (unlikely((__pyx_t_8 == (npy_int64)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_6reduce_MINint64 = __pyx_t_8;
 
-  /* "reduce.pyx":41
+  /* "reduce.pyx":61
  * cdef np.int32_t MINint32 = np.iinfo(np.int32).min
  * cdef np.int64_t MINint64 = np.iinfo(np.int64).min
  * cdef np.float32_t MINfloat32 = -np.inf             # <<<<<<<<<<<<<<
  * cdef np.float64_t MINfloat64 = -np.inf
  * 
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_inf); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_inf); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyNumber_Negative(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyNumber_Negative(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_9 == (npy_float32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_9 == (npy_float32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_6reduce_MINfloat32 = __pyx_t_9;
 
-  /* "reduce.pyx":42
+  /* "reduce.pyx":62
  * cdef np.int64_t MINint64 = np.iinfo(np.int64).min
  * cdef np.float32_t MINfloat32 = -np.inf
  * cdef np.float64_t MINfloat64 = -np.inf             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_inf); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_inf); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyNumber_Negative(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyNumber_Negative(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_10 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_10 == (npy_float64)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_10 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_10 == (npy_float64)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_6reduce_MINfloat64 = __pyx_t_10;
 
-  /* "reduce.pyx":47
+  /* "reduce.pyx":67
  * # nansum --------------------------------------------------------------------
  * 
  * def nansum(arr, axis=None):             # <<<<<<<<<<<<<<
  *     try:
  *         return reducer(arr, axis,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6reduce_1nansum, NULL, __pyx_n_s_reduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6reduce_1nansum, NULL, __pyx_n_s_reduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nansum, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nansum, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "reduce.pyx":209
+  /* "reduce.pyx":229
  * # nanmean --------------------------------------------------------------------
  * 
  * def nanmean(arr, axis=None):             # <<<<<<<<<<<<<<
  *     try:
  *         return reducer(arr, axis,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6reduce_3nanmean, NULL, __pyx_n_s_reduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6reduce_3nanmean, NULL, __pyx_n_s_reduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nanmean, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nanmean, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "reduce.pyx":411
+  /* "reduce.pyx":431
  * # nanstd --------------------------------------------------------------------
  * 
  * def nanstd(arr, axis=None, int ddof=0):             # <<<<<<<<<<<<<<
  *     try:
  *         return reducer(arr, axis,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6reduce_5nanstd, NULL, __pyx_n_s_reduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 411; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6reduce_5nanstd, NULL, __pyx_n_s_reduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 431; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nanstd, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 411; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nanstd, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 431; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "reduce.pyx":686
+  /* "reduce.pyx":706
  * # nanvar --------------------------------------------------------------------
  * 
  * def nanvar(arr, axis=None, int ddof=0):             # <<<<<<<<<<<<<<
  *     try:
  *         return reducer(arr, axis,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6reduce_7nanvar, NULL, __pyx_n_s_reduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 686; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6reduce_7nanvar, NULL, __pyx_n_s_reduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 706; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nanvar, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 686; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nanvar, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 706; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "reduce.pyx":961
+  /* "reduce.pyx":981
  * # nanmin --------------------------------------------------------------------
  * 
  * def nanmin(arr, axis=None):             # <<<<<<<<<<<<<<
  *     try:
  *         return reducer(arr, axis,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6reduce_9nanmin, NULL, __pyx_n_s_reduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 961; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6reduce_9nanmin, NULL, __pyx_n_s_reduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 981; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nanmin, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 961; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nanmin, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 981; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1154
+  /* "reduce.pyx":1174
  * # nanmax --------------------------------------------------------------------
  * 
  * def nanmax(arr, axis=None):             # <<<<<<<<<<<<<<
  *     try:
  *         return reducer(arr, axis,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6reduce_11nanmax, NULL, __pyx_n_s_reduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1154; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6reduce_11nanmax, NULL, __pyx_n_s_reduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nanmax, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1154; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nanmax, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "reduce.pyx":1347
+  /* "reduce.pyx":1367
  * # ss ------------------------------------------------------------------------
  * 
  * def ss(arr, axis=None):             # <<<<<<<<<<<<<<
  *     try:
  *         return reducer(arr, axis,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6reduce_13ss, NULL, __pyx_n_s_reduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1347; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6reduce_13ss, NULL, __pyx_n_s_reduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1367; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ss, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1347; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ss, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1367; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "reduce.pyx":1522
+ * # nanmedian -----------------------------------------------------------------
+ * 
+ * def nanmedian(arr, axis=None):             # <<<<<<<<<<<<<<
+ *     cdef int ravel = 0, copy = 1, int_input = 0
+ *     try:
+ */
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6reduce_15nanmedian, NULL, __pyx_n_s_reduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1522; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nanmedian, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1522; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "reduce.pyx":1804
+ * # median -----------------------------------------------------------------
+ * 
+ * def median(arr, axis=None):             # <<<<<<<<<<<<<<
+ *     cdef int ravel = 0, copy = 1, int_input = 0
+ *     try:
+ */
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6reduce_17median, NULL, __pyx_n_s_reduce); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1804; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_median, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1804; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "reduce.pyx":1
  * #cython: embedsignature=True             # <<<<<<<<<<<<<<
  * 
- * import numpy as np
+ * # Select smallest k elements code used for inner loop of median method:
  */
   __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
@@ -20258,6 +27144,18 @@ bad:
     return;
 }
 #endif
+
+static CYTHON_INLINE long __Pyx_mod_long(long a, long b) {
+    long r = a % b;
+    r += ((r != 0) & ((r ^ b) < 0)) * b;
+    return r;
+}
+
+static CYTHON_INLINE Py_ssize_t __Pyx_mod_Py_ssize_t(Py_ssize_t a, Py_ssize_t b) {
+    Py_ssize_t r = a % b;
+    r += ((r != 0) & ((r ^ b) < 0)) * b;
+    return r;
+}
 
 static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected) {
     PyErr_Format(PyExc_ValueError,
@@ -20935,6 +27833,127 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
         int one = 1; int little = (int)*(unsigned char *)&one;
         unsigned char *bytes = (unsigned char *)&value;
         return _PyLong_FromByteArray(bytes, sizeof(int),
+                                     little, !is_unsigned);
+    }
+}
+
+static CYTHON_INLINE Py_intptr_t __Pyx_PyInt_As_Py_intptr_t(PyObject *x) {
+    const Py_intptr_t neg_one = (Py_intptr_t) -1, const_zero = 0;
+    const int is_unsigned = neg_one > const_zero;
+#if PY_MAJOR_VERSION < 3
+    if (likely(PyInt_Check(x))) {
+        if (sizeof(Py_intptr_t) < sizeof(long)) {
+            __PYX_VERIFY_RETURN_INT(Py_intptr_t, long, PyInt_AS_LONG(x))
+        } else {
+            long val = PyInt_AS_LONG(x);
+            if (is_unsigned && unlikely(val < 0)) {
+                goto raise_neg_overflow;
+            }
+            return (Py_intptr_t) val;
+        }
+    } else
+#endif
+    if (likely(PyLong_Check(x))) {
+        if (is_unsigned) {
+#if CYTHON_COMPILING_IN_CPYTHON && PY_MAJOR_VERSION >= 3
+ #if CYTHON_USE_PYLONG_INTERNALS
+            switch (Py_SIZE(x)) {
+                case  0: return 0;
+                case  1: __PYX_VERIFY_RETURN_INT(Py_intptr_t, digit, ((PyLongObject*)x)->ob_digit[0]);
+            }
+ #endif
+#endif
+            if (unlikely(Py_SIZE(x) < 0)) {
+                goto raise_neg_overflow;
+            }
+            if (sizeof(Py_intptr_t) <= sizeof(unsigned long)) {
+                __PYX_VERIFY_RETURN_INT(Py_intptr_t, unsigned long, PyLong_AsUnsignedLong(x))
+            } else if (sizeof(Py_intptr_t) <= sizeof(unsigned long long)) {
+                __PYX_VERIFY_RETURN_INT(Py_intptr_t, unsigned long long, PyLong_AsUnsignedLongLong(x))
+            }
+        } else {
+#if CYTHON_COMPILING_IN_CPYTHON && PY_MAJOR_VERSION >= 3
+ #if CYTHON_USE_PYLONG_INTERNALS
+            switch (Py_SIZE(x)) {
+                case  0: return 0;
+                case  1: __PYX_VERIFY_RETURN_INT(Py_intptr_t,  digit, +(((PyLongObject*)x)->ob_digit[0]));
+                case -1: __PYX_VERIFY_RETURN_INT(Py_intptr_t, sdigit, -(sdigit) ((PyLongObject*)x)->ob_digit[0]);
+            }
+ #endif
+#endif
+            if (sizeof(Py_intptr_t) <= sizeof(long)) {
+                __PYX_VERIFY_RETURN_INT(Py_intptr_t, long, PyLong_AsLong(x))
+            } else if (sizeof(Py_intptr_t) <= sizeof(long long)) {
+                __PYX_VERIFY_RETURN_INT(Py_intptr_t, long long, PyLong_AsLongLong(x))
+            }
+        }
+        {
+#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
+            PyErr_SetString(PyExc_RuntimeError,
+                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
+#else
+            Py_intptr_t val;
+            PyObject *v = __Pyx_PyNumber_Int(x);
+ #if PY_MAJOR_VERSION < 3
+            if (likely(v) && !PyLong_Check(v)) {
+                PyObject *tmp = v;
+                v = PyNumber_Long(tmp);
+                Py_DECREF(tmp);
+            }
+ #endif
+            if (likely(v)) {
+                int one = 1; int is_little = (int)*(unsigned char *)&one;
+                unsigned char *bytes = (unsigned char *)&val;
+                int ret = _PyLong_AsByteArray((PyLongObject *)v,
+                                              bytes, sizeof(val),
+                                              is_little, !is_unsigned);
+                Py_DECREF(v);
+                if (likely(!ret))
+                    return val;
+            }
+#endif
+            return (Py_intptr_t) -1;
+        }
+    } else {
+        Py_intptr_t val;
+        PyObject *tmp = __Pyx_PyNumber_Int(x);
+        if (!tmp) return (Py_intptr_t) -1;
+        val = __Pyx_PyInt_As_Py_intptr_t(tmp);
+        Py_DECREF(tmp);
+        return val;
+    }
+raise_overflow:
+    PyErr_SetString(PyExc_OverflowError,
+        "value too large to convert to Py_intptr_t");
+    return (Py_intptr_t) -1;
+raise_neg_overflow:
+    PyErr_SetString(PyExc_OverflowError,
+        "can't convert negative value to Py_intptr_t");
+    return (Py_intptr_t) -1;
+}
+
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_Py_intptr_t(Py_intptr_t value) {
+    const Py_intptr_t neg_one = (Py_intptr_t) -1, const_zero = 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(Py_intptr_t) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(Py_intptr_t) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+        } else if (sizeof(Py_intptr_t) <= sizeof(unsigned long long)) {
+            return PyLong_FromUnsignedLongLong((unsigned long long) value);
+        }
+    } else {
+        if (sizeof(Py_intptr_t) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(Py_intptr_t) <= sizeof(long long)) {
+            return PyLong_FromLongLong((long long) value);
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(Py_intptr_t),
                                      little, !is_unsigned);
     }
 }
