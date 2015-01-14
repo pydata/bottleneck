@@ -88,6 +88,16 @@ def test_ss():
     yield unit_maker, bn.ss, bn.slow.ss
 
 
+def test_nanargmin():
+    "Test nanargmin."
+    yield unit_maker, bn.nanargmin, bn.slow.nanargmin
+
+
+def test_nanargmax():
+    "Test nanargmax."
+    yield unit_maker, bn.nanargmax, bn.slow.nanargmax
+
+
 def test_partsort():
     "Test partsort."
     yield unit_maker, bn.partsort, bn.slow.partsort, (2,)
@@ -109,15 +119,6 @@ def test_nanrankdata():
 
 
 """
-def test_nanargmin():
-    "Test nanargmin."
-    yield unit_maker, bn.nanargmin, bn.slow.nanargmin
-
-
-def test_nanargmax():
-    "Test nanargmax."
-    yield unit_maker, bn.nanargmax, bn.slow.nanargmax
-
 
 def test_anynan():
     "Test anynan."

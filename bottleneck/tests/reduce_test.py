@@ -136,6 +136,16 @@ def test_ss():
     yield unit_maker, bn.ss, bn.slow.ss, np.inf, True, False
 
 
+def test_nanargmin():
+    "Test nanargmin."
+    yield unit_maker, bn.nanargmin, bn.slow.nanargmin
+
+
+def test_nanargmax():
+    "Test nanargmax."
+    yield unit_maker, bn.nanargmax, bn.slow.nanargmax
+
+
 def test_rankdata():
     "Test rankdata."
     yield unit_maker, bn.rankdata, bn.slow.rankdata
@@ -147,15 +157,6 @@ def test_nanrankdata():
 
 
 """
-def test_nanargmin():
-    "Test nanargmin."
-    yield unit_maker, bn.nanargmin, bn.slow.nanargmin
-
-
-def test_nanargmax():
-    "Test nanargmax."
-    yield unit_maker, bn.nanargmax, bn.slow.nanargmax
-
 
 def test_anynan():
     "Test anynan."

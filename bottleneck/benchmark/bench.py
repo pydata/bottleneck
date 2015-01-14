@@ -107,7 +107,8 @@ def benchsuite(shapes, dtype, axis, nans):
 
     # non-moving window functions
     funcs = ['nansum', 'nanmean', 'nanstd', 'nanmin', 'nanmax', 'median',
-             'nanmedian', 'ss', 'rankdata', 'nanrankdata']
+             'nanmedian', 'ss', 'nanargmin', 'nanargmax', 'rankdata',
+             'nanrankdata']
     for func in funcs:
         run = {}
         run['name'] = func
@@ -173,43 +174,6 @@ def benchsuite(shapes, dtype, axis, nans):
     # runs
     # -----------------------------------------------------------------------
     # does not yet run
-
-    # median
-    run = {}
-    run['name'] = "median"
-    run['ref'] = "np.median"
-    run['scipy_required'] = False
-    code = "bn.median(a, axis=AXIS)"
-    run['statements'] = [code, "np.median(a, axis=AXIS)"]
-    setup = """
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    #suite.append(run)
-
-    # nanmedian
-    run = {}
-    run['name'] = "nanmedian"
-    run['ref'] = "local copy of sp.stats.nanmedian"
-    run['scipy_required'] = False
-    code = "bn.nanmedian(a, axis=AXIS)"
-    run['statements'] = [code, "scipy_nanmedian(a, axis=AXIS)"]
-    setup = """
-        from bottleneck.slow.func import scipy_nanmedian
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    #suite.append(run)
-
-    # nanargmax
-    run = {}
-    run['name'] = "nanargmax"
-    run['ref'] = "np.nanargmax"
-    run['scipy_required'] = False
-    code = "bn.nanargmax(a, axis=AXIS)"
-    run['statements'] = [code, "np.nanargmax(a, axis=AXIS)"]
-    setup = """
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    #suite.append(run)
 
     # anynan
     run = {}

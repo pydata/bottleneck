@@ -11,7 +11,7 @@ Reduce
             median, nanmedian, nanmean
 
         output dtype = intp
-            nanargmin*, nanargmax*
+            nanargmin, nanargmax
 
         output dtype = bool
             anynan*, allnan*
@@ -68,3 +68,5 @@ Misc
 - can nogil be used?
 - why does the benchmark say that nanmax and move_max are twice as fast as
   nanmin and move_min for (1000, 1000) arrays with NaNs in them?
+- Add unit test for 0d input arrays (nanstd, eg, has a bug for 0d input yet
+  no test caught it)
