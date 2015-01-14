@@ -261,7 +261,7 @@ cdef ndarray nanmean_one_DTYPE0(np.flatiter ita,
 
 
 cdef nanmean_0d(ndarray a, int int_input):
-    return a[()]
+    return <double>a[()]
 
 
 # nanstd --------------------------------------------------------------------
@@ -418,7 +418,14 @@ cdef ndarray nanstd_one_DTYPE0(np.flatiter ita,
 
 
 cdef nanstd_0d(ndarray a, int int_input):
-    return a[()]
+    out = a[()]
+    if out == out:
+        if out == np.inf or out == -np.inf:
+            return NAN
+        else:
+            return 0.0
+    else:
+        return NAN
 
 
 # nanvar --------------------------------------------------------------------
@@ -575,7 +582,14 @@ cdef ndarray nanvar_one_DTYPE0(np.flatiter ita,
 
 
 cdef nanvar_0d(ndarray a, int int_input):
-    return a[()]
+    out = a[()]
+    if out == out:
+        if out == np.inf or out == -np.inf:
+            return NAN
+        else:
+            return 0.0
+    else:
+        return NAN
 
 
 # nanmin --------------------------------------------------------------------
@@ -690,8 +704,7 @@ cdef ndarray nanmin_one_DTYPE0(np.flatiter ita,
 
 
 cdef nanmin_0d(ndarray a, int int_input):
-    msg = "numpy.nanmin raises on a.ndim==0; so Bottleneck does too."
-    raise ValueError(msg)
+    raise a[()]
 
 
 # nanmax --------------------------------------------------------------------
@@ -806,8 +819,7 @@ cdef ndarray nanmax_one_DTYPE0(np.flatiter ita,
 
 
 cdef nanmax_0d(ndarray a, int int_input):
-    msg = "numpy.nanmax raises on a.ndim==0; so Bottleneck does too."
-    raise ValueError(msg)
+    raise a[()]
 
 
 # ss ------------------------------------------------------------------------

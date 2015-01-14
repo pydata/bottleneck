@@ -24,6 +24,7 @@ This release is a complete rewrite of Bottleneck.
 - bn.ss() now has default axis=None instead of 0
 - bn.nn() is no longer in bottleneck
 - bn.move_max, bn.move_namax, and min now return float32 for float32 input
+- add unit tests for 0d input arrays
 - Can now install bottleneck with pip even if numpy is not already installed
 - Compile time dropped by a factor of xxxx
 - Source tarball is one-xxxx the size of the previous release

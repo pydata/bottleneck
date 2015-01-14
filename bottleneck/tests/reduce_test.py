@@ -47,6 +47,16 @@ def arrays(dtypes=DTYPES, nans=True):
         a = np.vstack((a, a))
         yield a
         yield a.reshape(1, 2, 4)
+    # check 0d input
+    yield np.array(-9)
+    yield np.array(0)
+    yield np.array(9)
+    yield np.array(-9.0)
+    yield np.array(0.0)
+    yield np.array(9.0)
+    yield np.array(-np.inf)
+    yield np.array(np.inf)
+    yield np.array(np.nan)
 
 
 def unit_maker(func, func0, decimal=np.inf, nans=True, check_dtype=True):
