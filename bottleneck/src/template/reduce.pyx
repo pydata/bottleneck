@@ -1485,16 +1485,8 @@ cdef ndarray anynan_one_DTYPE0(np.flatiter ita,
                                Py_ssize_t stride, Py_ssize_t length,
                                int a_ndim, np.npy_intp* y_dims, int int_input):
     # bn.dtypes = [['int64'], ['int32']]
-    cdef Py_ssize_t i
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_BOOL, 0)
-    cdef np.flatiter ity = PyArray_IterNew(y)
-    if length == 0:
-        PyArray_FillWithScalar(y, 0)
-        return y
-    while PyArray_ITER_NOTDONE(ity):
-        for i in range(length):
-            (<np.uint8_t*>((<char*>pid(ity))))[0] = 0
-        PyArray_ITER_NEXT(ity)
+    PyArray_FillWithScalar(y, 0)
     return y
 
 
@@ -1504,7 +1496,6 @@ cdef anynan_0d(ndarray a, int int_input):
         return False
     else:
         return True
-
 
 
 # reducer -------------------------------------------------------------------
