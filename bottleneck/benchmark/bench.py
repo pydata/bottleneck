@@ -107,7 +107,7 @@ def benchsuite(shapes, dtype, axis, nans):
 
     # non-moving window functions
     funcs = ['nansum', 'nanmean', 'nanstd', 'nanmin', 'nanmax', 'median',
-             'nanmedian', 'ss', 'nanargmin', 'nanargmax', 'rankdata',
+             'nanmedian', 'ss', 'nanargmin', 'nanargmax', 'anynan', 'rankdata',
              'nanrankdata']
     for func in funcs:
         run = {}
@@ -170,22 +170,6 @@ def benchsuite(shapes, dtype, axis, nans):
         run['setups'] = getsetups(setup, shapes, nans)
         if axis != 'None':
             suite.append(run)
-
-    # runs
-    # -----------------------------------------------------------------------
-    # does not yet run
-
-    # anynan
-    run = {}
-    run['name'] = "anynan"
-    run['ref'] = "np.isnan(arr).any(axis)"
-    run['scipy_required'] = False
-    code = "bn.anynan(a, axis=AXIS)"
-    run['statements'] = [code, "np.isnan(a).any(axis=AXIS)"]
-    setup = """
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    #suite.append(run)
 
     # Strip leading spaces from setup code
     for i, run in enumerate(suite):

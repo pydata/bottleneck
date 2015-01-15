@@ -44,6 +44,7 @@ Bottleneck comes with a benchmark suite::
         ss             14.4        3.5       14.4        3.7
         nanargmin      62.8        4.2       62.7        7.3
         nanargmax      63.0        4.2       63.0        9.2
+        anynan         13.5        1.0       15.2       88.4
         rankdata       53.4        1.4       47.7        2.1
         nanrankdata    61.1       25.9       55.9       38.4
         partsort        3.7        2.7        3.8        3.4
@@ -116,6 +117,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 73 tests in 66.712s
+    Ran 76 tests in 68.712s
     OK
-    <nose.result.TextTestResult run=73 errors=0 failures=0>
+    <nose.result.TextTestResult run=76 errors=0 failures=0>

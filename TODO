@@ -14,7 +14,7 @@ Reduce
             nanargmin, nanargmax
 
         output dtype = bool
-            anynan*, allnan*
+            anynan, allnan*
 
     (arr, axis, int)
 

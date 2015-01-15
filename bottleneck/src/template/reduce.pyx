@@ -27,6 +27,7 @@ from numpy cimport NPY_FLOAT32 as NPY_float32
 from numpy cimport NPY_INT64 as NPY_int64
 from numpy cimport NPY_INT32 as NPY_int32
 from numpy cimport NPY_INTP as NPY_intp
+from numpy cimport NPY_BOOL
 
 from numpy cimport PyArray_ITER_DATA as pid
 from numpy cimport PyArray_ITER_NOTDONE
@@ -39,6 +40,7 @@ from numpy cimport PyArray_TYPE
 from numpy cimport PyArray_NDIM
 from numpy cimport NPY_CORDER
 
+from numpy cimport PyArray_FillWithScalar
 from numpy cimport PyArray_Copy
 from numpy cimport PyArray_Ravel
 from numpy cimport PyArray_EMPTY
@@ -1412,6 +1414,97 @@ cdef nanargmax_0d(ndarray a, int int_input):
         return 0
     else:
         raise ValueError("All-NaN slice encountered")
+
+
+# anynan --------------------------------------------------------------------
+
+def anynan(arr, axis=None):
+    try:
+        return reducer(arr, axis,
+                       anynan_all_float64,
+                       anynan_all_float32,
+                       anynan_all_int64,
+                       anynan_all_int32,
+                       anynan_one_float64,
+                       anynan_one_float32,
+                       anynan_one_int64,
+                       anynan_one_int32,
+                       anynan_0d)
+    except TypeError:
+        return slow.anynan(arr, axis)
+
+
+cdef object anynan_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai
+    while PyArray_ITER_NOTDONE(ita):
+        for i in range(length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+            if ai != ai:
+                return True
+        PyArray_ITER_NEXT(ita)
+    return False
+
+
+cdef object anynan_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    return False
+
+
+cdef ndarray anynan_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims, int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int f
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_BOOL, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        PyArray_FillWithScalar(y, 0)
+        return y
+    while PyArray_ITER_NOTDONE(ita):
+        f = 1
+        for i in range(length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai != ai:
+                (<np.uint8_t*>((<char*>pid(ity))))[0] = 1
+                f = 0
+                break
+        if f == 1:
+            (<np.uint8_t*>((<char*>pid(ity))))[0] = 0
+        PyArray_ITER_NEXT(ita)
+        PyArray_ITER_NEXT(ity)
+    return y
+
+
+cdef ndarray anynan_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims, int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef Py_ssize_t i
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_BOOL, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        PyArray_FillWithScalar(y, 0)
+        return y
+    while PyArray_ITER_NOTDONE(ity):
+        for i in range(length):
+            (<np.uint8_t*>((<char*>pid(ity))))[0] = 0
+        PyArray_ITER_NEXT(ity)
+    return y
+
+
+cdef anynan_0d(ndarray a, int int_input):
+    out = a[()]
+    if out == out:
+        return False
+    else:
+        return True
+
 
 
 # reducer -------------------------------------------------------------------

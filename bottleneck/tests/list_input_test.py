@@ -98,6 +98,11 @@ def test_nanargmax():
     yield unit_maker, bn.nanargmax, bn.slow.nanargmax
 
 
+def test_anynan():
+    "Test anynan."
+    yield unit_maker, bn.anynan, bn.slow.anynan
+
+
 def test_partsort():
     "Test partsort."
     yield unit_maker, bn.partsort, bn.slow.partsort, (2,)
@@ -119,11 +124,6 @@ def test_nanrankdata():
 
 
 """
-
-def test_anynan():
-    "Test anynan."
-    yield unit_maker, bn.anynan, bn.slow.anynan
-
 
 def test_allnan():
     "Test allnan."

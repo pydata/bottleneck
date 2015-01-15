@@ -156,6 +156,11 @@ def test_nanargmax():
     yield unit_maker, bn.nanargmax, bn.slow.nanargmax
 
 
+def test_anynan():
+    "Test anynan."
+    yield unit_maker, bn.anynan, bn.slow.anynan
+
+
 def test_rankdata():
     "Test rankdata."
     yield unit_maker, bn.rankdata, bn.slow.rankdata
@@ -166,12 +171,8 @@ def test_nanrankdata():
     yield unit_maker, bn.nanrankdata, bn.slow.nanrankdata
 
 
+
 """
-
-def test_anynan():
-    "Test anynan."
-    yield unit_maker, bn.anynan, bn.slow.anynan
-
 
 def test_allnan():
     "Test allnan."
