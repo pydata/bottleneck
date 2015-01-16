@@ -103,6 +103,11 @@ def test_anynan():
     yield unit_maker, bn.anynan, bn.slow.anynan
 
 
+def test_allnan():
+    "Test allnan."
+    yield unit_maker, bn.allnan, bn.slow.allnan
+
+
 def test_partsort():
     "Test partsort."
     yield unit_maker, bn.partsort, bn.slow.partsort, (2,)
@@ -121,16 +126,6 @@ def test_rankdata():
 def test_nanrankdata():
     "Test nanrankdata."
     yield unit_maker, bn.nanrankdata, bn.slow.nanrankdata
-
-
-"""
-
-def test_allnan():
-    "Test allnan."
-    yield unit_maker, bn.allnan, bn.slow.allnan
-
-
-"""
 
 
 def test_move_sum():

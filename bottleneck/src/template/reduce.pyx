@@ -1498,6 +1498,101 @@ cdef anynan_0d(ndarray a, int int_input):
         return True
 
 
+# allnan --------------------------------------------------------------------
+
+def allnan(arr, axis=None):
+    try:
+        return reducer(arr, axis,
+                       allnan_all_float64,
+                       allnan_all_float32,
+                       allnan_all_int64,
+                       allnan_all_int32,
+                       allnan_one_float64,
+                       allnan_one_float32,
+                       allnan_one_int64,
+                       allnan_one_int32,
+                       allnan_0d)
+    except TypeError:
+        return slow.allnan(arr, axis)
+
+
+cdef object allnan_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai
+    while PyArray_ITER_NOTDONE(ita):
+        for i in range(length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+            if ai == ai:
+                return False
+        PyArray_ITER_NEXT(ita)
+    return True
+
+
+cdef object allnan_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef DTYPE0_t size = 0
+    while PyArray_ITER_NOTDONE(ita):
+        size += length
+        PyArray_ITER_NEXT(ita)
+    if size == 0:
+        return True
+    return False
+
+
+cdef ndarray allnan_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims, int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int f
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_BOOL, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        PyArray_FillWithScalar(y, 1)
+        return y
+    while PyArray_ITER_NOTDONE(ita):
+        f = 1
+        for i in range(length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai == ai:
+                (<np.uint8_t*>((<char*>pid(ity))))[0] = 0
+                f = 0
+                break
+        if f == 1:
+            (<np.uint8_t*>((<char*>pid(ity))))[0] = 1
+        PyArray_ITER_NEXT(ita)
+        PyArray_ITER_NEXT(ity)
+    return y
+
+
+cdef ndarray allnan_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims, int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_BOOL, 0)
+    cdef Py_ssize_t i, size = 1
+    cdef int f = 0
+    for i in range(a_ndim - 1):
+        size *= y_dims[i]
+    size *= length
+    if size == 0:
+        f = 1
+    PyArray_FillWithScalar(y, f)
+    return y
+
+
+cdef allnan_0d(ndarray a, int int_input):
+    out = a[()]
+    if out == out:
+        return False
+    else:
+        return True
+
+
 # reducer -------------------------------------------------------------------
 
 # pointer to functions that reduce along ALL axes

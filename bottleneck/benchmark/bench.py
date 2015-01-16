@@ -107,8 +107,8 @@ def benchsuite(shapes, dtype, axis, nans):
 
     # non-moving window functions
     funcs = ['nansum', 'nanmean', 'nanstd', 'nanmin', 'nanmax', 'median',
-             'nanmedian', 'ss', 'nanargmin', 'nanargmax', 'anynan', 'rankdata',
-             'nanrankdata']
+             'nanmedian', 'ss', 'nanargmin', 'nanargmax', 'anynan', 'allnan',
+             'rankdata', 'nanrankdata']
     for func in funcs:
         run = {}
         run['name'] = func

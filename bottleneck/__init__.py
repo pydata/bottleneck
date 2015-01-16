@@ -8,7 +8,8 @@ from . import slow
 # functions to the top level, but move on if not successful.
 try:
     from .reduce import (nansum, nanmean, nanstd, nanvar, nanmin, nanmax,
-                         median, nanmedian, ss, nanargmin, nanargmax, anynan)
+                         median, nanmedian, ss, nanargmin, nanargmax, anynan,
+                         allnan)
 except:
     pass
 try:

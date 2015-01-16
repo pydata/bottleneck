@@ -161,6 +161,11 @@ def test_anynan():
     yield unit_maker, bn.anynan, bn.slow.anynan
 
 
+def test_allnan():
+    "Test allnan."
+    yield unit_maker, bn.allnan, bn.slow.allnan
+
+
 def test_rankdata():
     "Test rankdata."
     yield unit_maker, bn.rankdata, bn.slow.rankdata
@@ -169,16 +174,6 @@ def test_rankdata():
 def test_nanrankdata():
     "Test nanrankdata."
     yield unit_maker, bn.nanrankdata, bn.slow.nanrankdata
-
-
-
-"""
-
-def test_allnan():
-    "Test allnan."
-    yield unit_maker, bn.allnan, bn.slow.allnan
-"""
-
 
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised

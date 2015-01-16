@@ -73,6 +73,7 @@ def test_modification():
              bn.nanargmin,
              bn.nanargmax,
              bn.anynan,
+             bn.allnan,
              bn.partsort,
              bn.argpartsort,
              bn.rankdata,
@@ -84,9 +85,5 @@ def test_modification():
              bn.move_max,
              bn.move_median,
              ]
-    """
-             bn.allnan,
-             ]
-    """
     for func in funcs:
         yield unit_maker, func
