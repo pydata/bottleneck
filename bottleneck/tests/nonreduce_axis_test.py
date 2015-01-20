@@ -10,6 +10,9 @@ import bottleneck as bn
 DTYPES = [np.float64, np.float32, np.int64, np.int32, np.float16]
 
 
+# ---------------------------------------------------------------------------
+# partsort, argpartsort
+
 def arrays(dtypes=DTYPES):
     "Iterator that yield arrays to use for unit testing."
     ss = {}
@@ -76,11 +79,24 @@ def test_argpartsort():
     yield unit_maker, bn.argpartsort, bn.slow.argpartsort
 
 
-# regression test -----------------------------------------------------------
-
 def test_transpose():
     "partsort transpose test"
     a = np.arange(12).reshape(4, 3)
     actual = bn.partsort(a.T, 2, -1).T
     desired = bn.slow.partsort(a.T, 2, -1).T
     assert_equal(actual, desired, 'partsort transpose test')
+
+
+# ---------------------------------------------------------------------------
+# rankdata, nanrankdata
+
+from .reduce_test import unit_maker as reduce_unit_maker
+
+def test_rankdata():
+    "Test rankdata."
+    yield reduce_unit_maker, bn.rankdata, bn.slow.rankdata
+
+
+def test_nanrankdata():
+    "Test nanrankdata."
+    yield reduce_unit_maker, bn.nanrankdata, bn.slow.nanrankdata

@@ -166,18 +166,8 @@ def test_allnan():
     yield unit_maker, bn.allnan, bn.slow.allnan
 
 
-def test_rankdata():
-    "Test rankdata."
-    yield unit_maker, bn.rankdata, bn.slow.rankdata
-
-
-def test_nanrankdata():
-    "Test nanrankdata."
-    yield unit_maker, bn.nanrankdata, bn.slow.nanrankdata
-
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
-
 
 def test_nanmax_size_zero(dtypes=DTYPES):
     "Test nanmax for size zero input arrays."
@@ -198,10 +188,9 @@ def test_nanmin_size_zero(dtypes=DTYPES):
             assert_raises(ValueError, bn.nanmin, a)
             assert_raises(ValueError, bn.slow.nanmin, a)
 
+
 # ---------------------------------------------------------------------------
-
 # nanstd and nanvar regression test (issue #60)
-
 
 def test_nanstd_issue60():
     "nanstd regression test (issue #60)"

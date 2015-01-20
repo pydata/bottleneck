@@ -76,9 +76,9 @@ def test_replace():
     "Test replace."
     yield unit_maker, bn.replace, bn.slow.replace
 
+
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
-
 
 def test_replace_unsafe_cast():
     "Test replace for unsafe casts."
@@ -100,10 +100,10 @@ def test_non_array():
     a = (1, 2, 3)
     assert_raises(TypeError, bn.replace, a, 0, 1)
 
+
 # ---------------------------------------------------------------------------
 # Make sure bn.replace and bn.slow.replace can handle int arrays where
 # user wants to replace nans
-
 
 def test_replace_nan_int():
     "Test replace, int array, old=nan, new=0"
