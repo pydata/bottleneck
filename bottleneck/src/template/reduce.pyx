@@ -68,6 +68,60 @@ cdef np.float64_t MINfloat64 = -np.inf
 # nansum --------------------------------------------------------------------
 
 def nansum(arr, axis=None):
+    """
+    Sum of array elements along given axis ignoring NaNs.
+
+    When the input has an integer type with less precision than the default
+    platform integer, the default platform integer is used for the
+    accumulator and return values.
+
+    Parameters
+    ----------
+    arr : array_like
+        Array containing numbers whose sum is desired. If `arr` is not an
+        array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the sum is computed. The default (axis=None) is to
+        compute the sum of the flattened array.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape as `arr`, with the specified axis removed.
+        If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+
+    Notes
+    -----
+    No error is raised on overflow.
+
+    If positive or negative infinity are present the result is positive or
+    negative infinity. But if both positive and negative infinity are present,
+    the result is Not A Number (NaN).
+
+    Examples
+    --------
+    >>> bn.nansum(1)
+    1
+    >>> bn.nansum([1])
+    1
+    >>> bn.nansum([1, np.nan])
+    1.0
+    >>> a = np.array([[1, 1], [1, np.nan]])
+    >>> bn.nansum(a)
+    3.0
+    >>> bn.nansum(a, axis=0)
+    array([ 2.,  1.])
+
+    When positive infinity and negative infinity are present:
+
+    >>> bn.nansum([1, np.nan, np.inf])
+    inf
+    >>> bn.nansum([1, np.nan, np.NINF])
+    -inf
+    >>> bn.nansum([1, np.nan, np.inf, np.NINF])
+    nan
+
+    """
     try:
         return reducer(arr, axis,
                        nansum_all_float64,
@@ -149,6 +203,64 @@ cdef nansum_0d(ndarray a, int int_input):
 # nanmean --------------------------------------------------------------------
 
 def nanmean(arr, axis=None):
+    """
+    Mean of array elements along given axis ignoring NaNs.
+
+    `float64` intermediate and return values are used for integer inputs.
+
+    Parameters
+    ----------
+    arr : array_like
+        Array containing numbers whose mean is desired. If `arr` is not an
+        array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the mean is computed. The default (axis=None) is to
+        compute the mean of the flattened array.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape as `arr`, with the specified axis removed.
+        If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+        `float64` intermediate and return values are used for integer inputs.
+
+    See also
+    --------
+    bottleneck.nanmedian: Median along specified axis, ignoring NaNs.
+
+    Notes
+    -----
+    No error is raised on overflow. (The sum is computed and then the result
+    is divided by the number of non-NaN elements.)
+
+    If positive or negative infinity are present the result is positive or
+    negative infinity. But if both positive and negative infinity are present,
+    the result is Not A Number (NaN).
+
+    Examples
+    --------
+    >>> bn.nanmean(1)
+    1.0
+    >>> bn.nanmean([1])
+    1.0
+    >>> bn.nanmean([1, np.nan])
+    1.0
+    >>> a = np.array([[1, 4], [1, np.nan]])
+    >>> bn.nanmean(a)
+    2.0
+    >>> bn.nanmean(a, axis=0)
+    array([ 1.,  4.])
+
+    When positive infinity and negative infinity are present:
+
+    >>> bn.nanmean([1, np.nan, np.inf])
+    inf
+    >>> bn.nanmean([1, np.nan, np.NINF])
+    -inf
+    >>> bn.nanmean([1, np.nan, np.inf, np.NINF])
+    nan
+
+    """
     try:
         return reducer(arr, axis,
                        nanmean_all_float64,
@@ -269,6 +381,74 @@ cdef nanmean_0d(ndarray a, int int_input):
 # nanstd --------------------------------------------------------------------
 
 def nanstd(arr, axis=None, int ddof=0):
+    """
+    Standard deviation along the specified axis, ignoring NaNs.
+
+    `float64` intermediate and return values are used for integer inputs.
+
+    Instead of a faster one-pass algorithm, a more stable two-pass algorithm
+    is used.
+
+    An example of a one-pass algorithm:
+
+        >>> np.sqrt((arr*arr).mean() - arr.mean()**2)
+
+    An example of a two-pass algorithm:
+
+        >>> np.sqrt(((arr - arr.mean())**2).mean())
+
+    Note in the two-pass algorithm the mean must be found (first pass) before
+    the squared deviation (second pass) can be found.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the standard deviation is computed. The default
+        (axis=None) is to compute the standard deviation of the flattened
+        array.
+    ddof : int, optional
+        Means Delta Degrees of Freedom. The divisor used in calculations
+        is ``N - ddof``, where ``N`` represents the number of elements.
+        By default `ddof` is zero.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape as `arr`, with the specified axis removed.
+        If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+        `float64` intermediate and return values are used for integer inputs.
+
+    See also
+    --------
+    bottleneck.nanvar: Variance along specified axis ignoring NaNs
+
+    Notes
+    -----
+    If positive or negative infinity are present the result is Not A Number
+    (NaN).
+
+    Examples
+    --------
+    >>> bn.nanstd(1)
+    0.0
+    >>> bn.nanstd([1])
+    0.0
+    >>> bn.nanstd([1, np.nan])
+    0.0
+    >>> a = np.array([[1, 4], [1, np.nan]])
+    >>> bn.nanstd(a)
+    1.4142135623730951
+    >>> bn.nanstd(a, axis=0)
+    array([ 0.,  0.])
+
+    When positive infinity or negative infinity are present NaN is returned:
+
+    >>> bn.nanstd([1, np.nan, np.inf])
+    nan
+
+    """
     try:
         return reducer(arr, axis,
                        nanstd_all_float64,
@@ -433,6 +613,74 @@ cdef nanstd_0d(ndarray a, int int_input):
 # nanvar --------------------------------------------------------------------
 
 def nanvar(arr, axis=None, int ddof=0):
+    """
+    Variance along the specified axis, ignoring NaNs.
+
+    `float64` intermediate and return values are used for integer inputs.
+
+    Instead of a faster one-pass algorithm, a more stable two-pass algorithm
+    is used.
+
+    An example of a one-pass algorithm:
+
+        >>> np.sqrt((arr*arr).mean() - arr.mean()**2)
+
+    An example of a two-pass algorithm:
+
+        >>> np.sqrt(((arr - arr.mean())**2).mean())
+
+    Note in the two-pass algorithm the mean must be found (first pass) before
+    the squared deviation (second pass) can be found.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the variance is computed. The default (axis=None)is
+        to compute the variance of the flattened array.
+    ddof : int, optional
+        Means Delta Degrees of Freedom. The divisor used in calculations
+        is ``N - ddof``, where ``N`` represents the number of elements.
+        By default `ddof` is zero.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape as `arr`, with the specified axis
+        removed. If `arr` is a 0-d array, or if axis is None, a scalar is
+        returned. `float64` intermediate and return values are used for
+        integer inputs.
+
+    See also
+    --------
+    bottleneck.nanstd: Standard deviation along specified axis ignoring NaNs.
+
+    Notes
+    -----
+    If positive or negative infinity are present the result is Not A Number
+    (NaN).
+
+    Examples
+    --------
+    >>> bn.nanvar(1)
+    0.0
+    >>> bn.nanvar([1])
+    0.0
+    >>> bn.nanvar([1, np.nan])
+    0.0
+    >>> a = np.array([[1, 4], [1, np.nan]])
+    >>> bn.nanvar(a)
+    2.0
+    >>> bn.nanvar(a, axis=0)
+    array([ 0.,  0.])
+
+    When positive infinity or negative infinity are present NaN is returned:
+
+    >>> bn.nanvar([1, np.nan, np.inf])
+    nan
+
+    """
     try:
         return reducer(arr, axis,
                        nanvar_all_float64,
@@ -597,6 +845,43 @@ cdef nanvar_0d(ndarray a, int int_input):
 # nanmin --------------------------------------------------------------------
 
 def nanmin(arr, axis=None):
+    """
+    Minimum values along specified axis, ignoring NaNs.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the minimum is computed. The default (axis=None) is
+        to compute the minimum of the flattened array.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape as `arr`, with the specified axis removed.
+        If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+
+    See also
+    --------
+    bottleneck.nanmax: Maximum along specified axis, ignoring NaNs.
+    bottleneck.nanargmin: Indices of minimum values along axis, ignoring NaNs.
+
+    Examples
+    --------
+    >>> bn.nanmin(1)
+    1
+    >>> bn.nanmin([1])
+    1
+    >>> bn.nanmin([1, np.nan])
+    1.0
+    >>> a = np.array([[1, 4], [1, np.nan]])
+    >>> bn.nanmin(a)
+    1.0
+    >>> bn.nanmin(a, axis=0)
+    array([ 1.,  4.])
+
+    """
     try:
         return reducer(arr, axis,
                        nanmin_all_float64,
@@ -712,6 +997,43 @@ cdef nanmin_0d(ndarray a, int int_input):
 # nanmax --------------------------------------------------------------------
 
 def nanmax(arr, axis=None):
+    """
+    Maximum values along specified axis, ignoring NaNs.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the maximum is computed. The default (axis=None) is
+        to compute the maximum of the flattened array.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape as `arr`, with the specified axis removed.
+        If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+
+    See also
+    --------
+    bottleneck.nanmin: Minimum along specified axis, ignoring NaNs.
+    bottleneck.nanargmax: Indices of maximum values along axis, ignoring NaNs.
+
+    Examples
+    --------
+    >>> bn.nanmax(1)
+    1
+    >>> bn.nanmax([1])
+    1
+    >>> bn.nanmax([1, np.nan])
+    1.0
+    >>> a = np.array([[1, 4], [1, np.nan]])
+    >>> bn.nanmax(a)
+    4.0
+    >>> bn.nanmax(a, axis=0)
+    array([ 1.,  4.])
+
+    """
     try:
         return reducer(arr, axis,
                        nanmax_all_float64,
@@ -827,6 +1149,40 @@ cdef nanmax_0d(ndarray a, int int_input):
 # ss ------------------------------------------------------------------------
 
 def ss(arr, axis=None):
+    """
+    Sum of the square of each element along specified axis.
+
+    Parameters
+    ----------
+    arr : array_like
+        Array whose sum of squares is desired. If `arr` is not an array, a
+        conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the sum if squared is computed. The default (axis=0)
+        is to sum the squares along the first dimension.
+
+    Returns
+    -------
+    y : ndarray
+        The sum of a**2 along the given axis.
+
+    See also
+    --------
+    bottleneck.nn: Nearest neighbor.
+
+    Examples
+    --------
+    >>> a = np.array([1., 2., 5.])
+    >>> bn.ss(a)
+    30.0
+
+    And calculating along an axis:
+
+    >>> b = np.array([[1., 2., 5.], [2., 5., 6.]])
+    >>> bn.ss(b, axis=1)
+    array([ 30., 65.])
+
+    """
     try:
         return reducer(arr, axis,
                        ss_all_float64,
@@ -887,6 +1243,42 @@ cdef ss_0d(ndarray a, int int_input):
 # nanmedian -----------------------------------------------------------------
 
 def nanmedian(arr, axis=None):
+    """
+    Median of array elements along given axis ignoring NaNs.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the median is computed. The default (axis=None) is to
+        compute the median of the flattened array.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape as `arr`, except that the specified axis
+        has been removed. If `arr` is a 0d array, or if axis is None, a scalar
+        is returned. `float64` return values are used for integer inputs.
+
+    See also
+    --------
+    bottleneck.median: Median along specified axis.
+
+    Examples
+    --------
+    >>> a = np.array([[np.nan, 7, 4], [3, 2, 1]])
+    >>> a
+    array([[ nan,   7.,   4.],
+           [  3.,   2.,   1.]])
+    >>> bn.nanmedian(a)
+    3.0
+    >> bn.nanmedian(a, axis=0)
+    array([ 3. ,  4.5,  2.5])
+    >> bn.nanmedian(a, axis=1)
+    array([ 5.5,  2. ])
+
+    """
     cdef int ravel = 0, copy = 1, int_input = 0
     try:
         if axis is None:
@@ -1046,6 +1438,47 @@ cdef nanmedian_0d(ndarray a, int int_input):
 # median -----------------------------------------------------------------
 
 def median(arr, axis=None):
+    """
+    Median of array elements along given axis.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the median is computed. The default (axis=None) is to
+        compute the median of the flattened array.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape as `arr`, except that the specified axis
+        has been removed. If `arr` is a 0d array, or if axis is None, a scalar
+        is returned. `float64` return values are used for integer inputs.
+
+    See also
+    --------
+    bottleneck.nanmedian: Median along specified axis ignoring NaNs.
+
+    Notes
+    -----
+    This function returns the same output as NumPy's median except when the
+    input contains NaN.
+
+    Examples
+    --------
+    >>> a = np.array([[10, 7, 4], [3, 2, 1]])
+    >>> a
+    array([[10,  7,  4],
+           [ 3,  2,  1]])
+    >>> bn.median(a)
+    3.5
+    >>> bn.median(a, axis=0)
+    array([ 6.5,  4.5,  2.5])
+    >>> bn.median(a, axis=1)
+    array([ 7.,  2.])
+
+    """
     cdef int ravel = 0, copy = 1, int_input = 0
     try:
         if axis is None:

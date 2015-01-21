@@ -39,6 +39,66 @@ cdef double NAN = <double> np.nan
 # partsort ------------------------------------------------------------------
 
 def partsort(arr, int n, axis=-1):
+    """
+    Partial sorting of array elements along given axis.
+
+    A partially sorted array is one in which the `n` smallest values appear
+    (in any order) in the first `n` elements. The remaining largest elements
+    are also unordered. Due to the algorithm used (Wirth's method), the nth
+    smallest element is in its sorted position (at index `n-1`).
+
+    Shuffling the input array may change the output. The only guarantee is
+    that the first `n` elements will be the `n` smallest and the remaining
+    element will appear in the remainder of the output.
+
+    This functions is not protected against NaN. Therefore, you may get
+    unexpected results if the input contains NaN.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    n : int
+        The `n` smallest elements will appear (unordered) in the first `n`
+        elements of the output array.
+    axis : {int, None}, optional
+        Axis along which the partial sort is performed. The default (axis=-1)
+        is to sort along the last axis.
+
+    Returns
+    -------
+    y : ndarray
+        A partially sorted copy of the input array where the `n` smallest
+        elements will appear (unordered) in the first `n` elements.
+
+    See Also
+    --------
+    bottleneck.argpartsort: Indices that would partially sort an array
+
+    Notes
+    -----
+    Unexpected results may occur if the input array contains NaN.
+
+    Examples
+    --------
+    Create a numpy array:
+
+    >>> a = np.array([1, 0, 3, 4, 2])
+
+    Partially sort array so that the first 3 elements are the smallest 3
+    elements (note, as in this example, that the smallest 3 elements may not
+    be sorted):
+
+    >>> bn.partsort(a, n=3)
+    array([1, 0, 2, 4, 3])
+
+    Now partially sort array so that the last 2 elements are the largest 2
+    elements:
+
+    >>> bn.partsort(a, n=a.shape[0]-2)
+    array([1, 0, 2, 3, 4])
+
+    """
     try:
         return nonreducer_axis(arr, axis,
                                partsort_float64,
@@ -91,6 +151,67 @@ cdef ndarray partsort_DTYPE0(ndarray a, int axis,
 # argpartsort ---------------------------------------------------------------
 
 def argpartsort(arr, int n, axis=-1):
+    """
+    Return indices that would partially sort an array.
+
+    A partially sorted array is one in which the `n` smallest values appear
+    (in any order) in the first `n` elements. The remaining largest elements
+    are also unordered. Due to the algorithm used (Wirth's method), the nth
+    smallest element is in its sorted position (at index `n-1`).
+
+    Shuffling the input array may change the output. The only guarantee is
+    that the first `n` elements will be the `n` smallest and the remaining
+    element will appear in the remainder of the output.
+
+    This functions is not protected against NaN. Therefore, you may get
+    unexpected results if the input contains NaN.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    n : int
+        The indices of the `n` smallest elements will appear in the first `n`
+        elements of the output array along the given `axis`.
+    axis : {int, None}, optional
+        Axis along which the partial sort is performed. The default (axis=-1)
+        is to sort along the last axis.
+
+    Returns
+    -------
+    y : ndarray
+        An array the same shape as the input array containing the indices
+        that partially sort `arr` such that the `n` smallest elements will
+        appear (unordered) in the first `n` elements.
+
+    See Also
+    --------
+    bottleneck.partsort: Partial sorting of array elements along given axis.
+
+    Notes
+    -----
+    Unexpected results may occur if the input array contains NaN.
+
+    Examples
+    --------
+    Create a numpy array:
+
+    >>> a = np.array([1, 0, 3, 4, 2])
+
+    Find the indices that partially sort that array so that the first 3
+    elements are the smallest 3 elements:
+
+    >>> index = bn.argpartsort(a, n=3)
+    >>> index
+    array([0, 1, 4, 3, 2])
+
+    Let's use the indices to partially sort the array (note, as in this
+    example, that the smallest 3 elements may not be in order):
+
+    >>> a[index]
+    array([1, 0, 2, 4, 3])
+
+    """
     try:
         return nonreducer_axis(arr, axis,
                                argpartsort_float64,
@@ -162,6 +283,46 @@ cdef ndarray argpartsort_DTYPE0(ndarray a, int axis,
 # nanrankdata ---------------------------------------------------------------
 
 def nanrankdata(arr, axis=None):
+    """
+    Ranks the data, dealing with ties and NaNs appropriately.
+
+    Equal values are assigned a rank that is the average of the ranks that
+    would have been otherwise assigned to all of the values within that set.
+    Ranks begin at 1, not 0.
+
+    NaNs in the input array are returned as NaNs.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the elements of the array are ranked. The default
+        (axis=None) is to rank the elements of the flattened array.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape as `arr`. The dtype is 'float64'.
+
+    See also
+    --------
+    bottleneck.rankdata: Ranks the data, dealing with ties and appropriately.
+
+    Examples
+    --------
+    >>> bn.nanrankdata([np.nan, 2, 2, 3])
+    array([ nan,  1.5,  1.5,  3. ])
+    >>> bn.nanrankdata([[np.nan, 2], [2, 3]])
+    array([ nan,  1.5,  1.5,  3. ])
+    >>> bn.nanrankdata([[np.nan, 2], [2, 3]], axis=0)
+    array([[ nan,   1.],
+           [  1.,   2.]])
+    >>> bn.nanrankdata([[np.nan, 2], [2, 3]], axis=1)
+    array([[ nan,   1.],
+           [  1.,   2.]])
+
+    """
     try:
         return nonreducer_axis(arr, axis,
                                nanrankdata_float64,
@@ -237,6 +398,44 @@ cdef ndarray nanrankdata_DTYPE0(ndarray a, int axis,
 # rankdata ------------------------------------------------------------------
 
 def rankdata(arr, axis=None):
+    """
+    Ranks the data, dealing with ties appropriately.
+
+    Equal values are assigned a rank that is the average of the ranks that
+    would have been otherwise assigned to all of the values within that set.
+    Ranks begin at 1, not 0.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the elements of the array are ranked. The default
+        (axis=None) is to rank the elements of the flattened array.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape as `arr`. The dtype is 'float64'.
+
+    See also
+    --------
+    bottleneck.nanrankdata: Ranks the data dealing with ties and NaNs.
+
+    Examples
+    --------
+    >>> bn.rankdata([0, 2, 2, 3])
+    array([ 1. ,  2.5,  2.5,  4. ])
+    >>> bn.rankdata([[0, 2], [2, 3]])
+    array([ 1. ,  2.5,  2.5,  4. ])
+    >>> bn.rankdata([[0, 2], [2, 3]], axis=0)
+    array([[ 1.,  1.],
+           [ 2.,  2.]])
+    >>> bn.rankdata([[0, 2], [2, 3]], axis=1)
+    array([[ 1.,  2.],
+           [ 1.,  2.]])
+
+    """
     try:
         return nonreducer_axis(arr, axis,
                                rankdata_float64,

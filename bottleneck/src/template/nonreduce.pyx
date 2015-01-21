@@ -29,6 +29,48 @@ import bottleneck.slow.nonreduce as slow
 # replace -------------------------------------------------------------------
 
 def replace(arr, double old, double new):
+    """
+    Replace (inplace) given scalar values of an array with new values.
+
+    The equivalent numpy function:
+
+        arr[arr==old] = new
+
+    Or in the case where old=np.nan:
+
+        arr[np.isnan(old)] = new
+
+    Parameters
+    ----------
+    arr : numpy.ndarray
+        The input array, which is also the output array since this functions
+        works inplace.
+    old : scalar
+        All elements in `arr` with this value will be replaced by `new`.
+    new : scalar
+        All elements in `arr` with a value of `old` will be replaced by `new`.
+
+    Returns
+    -------
+    None, the operation is inplace.
+
+    Examples
+    --------
+    Replace zero with 3 (note that the input array is modified):
+
+    >>> a = np.array([1, 2, 0])
+    >>> bn.replace(a, 0, 3)
+    >>> a
+    array([1, 2, 3])
+
+    Replace np.nan with 0:
+
+    >>> a = np.array([1, 2, np.nan])
+    >>> bn.replace(a, np.nan, 0)
+    >>> a
+    array([ 1.,  2.,  0.])
+
+    """
     try:
         nonreducer(arr,
                    replace_float64,
