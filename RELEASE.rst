@@ -21,7 +21,7 @@ This release is a complete rewrite of Bottleneck.
 - Single API: bn.nansum instead of bn.nansum and nansum_2d_float64_axis0
 - On 64-bit systems bn.nansum(int32) returns int32 instead of int64
 - Reducing over all axes returns, e.g., 6.0; previously np.float64(6.0)
-- bn.ss() now has default axis=None instead of 0
+- bn.ss() now has default axis=None instead of axis=0
 - bn.nn() is no longer in bottleneck
 - bn.move_max, bn.move_namax, and min now return float32 for float32 input
 - add unit tests for 0d input arrays

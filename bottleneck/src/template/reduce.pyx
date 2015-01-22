@@ -69,11 +69,11 @@ cdef np.float64_t MINfloat64 = -np.inf
 
 def nansum(arr, axis=None):
     """
-    Sum of array elements along given axis ignoring NaNs.
+    Sum of array elements along given axis treating NaNs as zero.
 
-    When the input has an integer type with less precision than the default
-    platform integer, the default platform integer is used for the
-    accumulator and return values.
+    The data type (dtype) of the output is the same as the input. On 64-bit
+    operating systems, 32-bit input is NOT upcast to 64-bit accumulator and
+    return values.
 
     Parameters
     ----------
@@ -214,7 +214,7 @@ def nanmean(arr, axis=None):
         Array containing numbers whose mean is desired. If `arr` is not an
         array, a conversion is attempted.
     axis : {int, None}, optional
-        Axis along which the mean is computed. The default (axis=None) is to
+        Axis along which the means are computed. The default (axis=None) is to
         compute the mean of the flattened array.
 
     Returns
@@ -410,7 +410,7 @@ def nanstd(arr, axis=None, int ddof=0):
         array.
     ddof : int, optional
         Means Delta Degrees of Freedom. The divisor used in calculations
-        is ``N - ddof``, where ``N`` represents the number of elements.
+        is ``N - ddof``, where ``N`` represents the number of non-NaN elements.
         By default `ddof` is zero.
 
     Returns
@@ -419,6 +419,8 @@ def nanstd(arr, axis=None, int ddof=0):
         An array with the same shape as `arr`, with the specified axis removed.
         If `arr` is a 0-d array, or if axis is None, a scalar is returned.
         `float64` intermediate and return values are used for integer inputs.
+        If ddof is >= the number of non-NaN elements in a slice or the slice
+        contains only NaNs, then the result for that slice is NaN.
 
     See also
     --------
@@ -623,11 +625,11 @@ def nanvar(arr, axis=None, int ddof=0):
 
     An example of a one-pass algorithm:
 
-        >>> np.sqrt((arr*arr).mean() - arr.mean()**2)
+        >>> (arr*arr).mean() - arr.mean()**2
 
     An example of a two-pass algorithm:
 
-        >>> np.sqrt(((arr - arr.mean())**2).mean())
+        >>> ((arr - arr.mean())**2).mean()
 
     Note in the two-pass algorithm the mean must be found (first pass) before
     the squared deviation (second pass) can be found.
@@ -637,11 +639,11 @@ def nanvar(arr, axis=None, int ddof=0):
     arr : array_like
         Input array. If `arr` is not an array, a conversion is attempted.
     axis : {int, None}, optional
-        Axis along which the variance is computed. The default (axis=None)is
+        Axis along which the variance is computed. The default (axis=None) is
         to compute the variance of the flattened array.
     ddof : int, optional
         Means Delta Degrees of Freedom. The divisor used in calculations
-        is ``N - ddof``, where ``N`` represents the number of elements.
+        is ``N - ddof``, where ``N`` represents the number of non_NaN elements.
         By default `ddof` is zero.
 
     Returns
@@ -650,7 +652,9 @@ def nanvar(arr, axis=None, int ddof=0):
         An array with the same shape as `arr`, with the specified axis
         removed. If `arr` is a 0-d array, or if axis is None, a scalar is
         returned. `float64` intermediate and return values are used for
-        integer inputs.
+        integer inputs. If ddof is >= the number of non-NaN elements in a
+        slice or the slice contains only NaNs, then the result for that slice
+        is NaN.
 
     See also
     --------
@@ -848,6 +852,8 @@ def nanmin(arr, axis=None):
     """
     Minimum values along specified axis, ignoring NaNs.
 
+    When all-NaN slices are encountered, NaN is returned for that slice.
+
     Parameters
     ----------
     arr : array_like
@@ -860,7 +866,8 @@ def nanmin(arr, axis=None):
     -------
     y : ndarray
         An array with the same shape as `arr`, with the specified axis removed.
-        If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+        If `arr` is a 0-d array, or if axis is None, a scalar is returned. The
+        same dtype as `arr` is returned.
 
     See also
     --------
@@ -1000,6 +1007,8 @@ def nanmax(arr, axis=None):
     """
     Maximum values along specified axis, ignoring NaNs.
 
+    When all-NaN slices are encountered, NaN is returned for that slice.
+
     Parameters
     ----------
     arr : array_like
@@ -1012,7 +1021,8 @@ def nanmax(arr, axis=None):
     -------
     y : ndarray
         An array with the same shape as `arr`, with the specified axis removed.
-        If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+        If `arr` is a 0-d array, or if axis is None, a scalar is returned. The
+        same dtype as `arr` is returned.
 
     See also
     --------
@@ -1150,7 +1160,7 @@ cdef nanmax_0d(ndarray a, int int_input):
 
 def ss(arr, axis=None):
     """
-    Sum of the square of each element along specified axis.
+    Sum of the square of each element along the specified axis.
 
     Parameters
     ----------
@@ -1158,17 +1168,13 @@ def ss(arr, axis=None):
         Array whose sum of squares is desired. If `arr` is not an array, a
         conversion is attempted.
     axis : {int, None}, optional
-        Axis along which the sum if squared is computed. The default (axis=0)
-        is to sum the squares along the first dimension.
+        Axis along which the sum of squares is computed. The default
+        (axis=None) is to sum the squares of the flattened array.
 
     Returns
     -------
     y : ndarray
         The sum of a**2 along the given axis.
-
-    See also
-    --------
-    bottleneck.nn: Nearest neighbor.
 
     Examples
     --------
@@ -1594,6 +1600,43 @@ cdef median_0d(ndarray a, int int_input):
 # nanargmin -----------------------------------------------------------------
 
 def nanargmin(arr, axis=None):
+    """
+    Indices of the minimum values along an axis, ignoring NaNs.
+
+    For all-NaN slices ``ValueError`` is raised. Unlike NumPy, the results
+    can be trusted if a slice contains only NaNs and Infs.
+
+    Parameters
+    ----------
+    a : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which to operate. By default (axis=None) flattened input
+        is used.
+
+    See also
+    --------
+    bottleneck.nanargmax: Indices of the maximum values along an axis.
+    bottleneck.nanmin: Minimum values along specified axis, ignoring NaNs.
+
+    Returns
+    -------
+    index_array : ndarray
+        An array of indices or a single index value.
+
+    Examples
+    --------
+    >>> a = np.array([[np.nan, 4], [2, 3]])
+    >>> bn.nanargmin(a)
+    2
+    >>> a.flat[1]
+    2.0
+    >>> bn.nanargmax(a, axis=0)
+    array([1, 1])
+    >>> bn.nanargmax(a, axis=1)
+    array([1, 0])
+
+    """
     cdef int ravel = 0, copy = 0, int_input = 0
     try:
         if axis is None:
@@ -1723,6 +1766,43 @@ cdef nanargmin_0d(ndarray a, int int_input):
 # nanargmax -----------------------------------------------------------------
 
 def nanargmax(arr, axis=None):
+    """
+    Indices of the maximum values along an axis, ignoring NaNs.
+
+    For all-NaN slices ``ValueError`` is raised. Unlike NumPy, the results
+    can be trusted if a slice contains only NaNs and Infs.
+
+    Parameters
+    ----------
+    a : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which to operate. By default (axis=None) flattened input
+        is used.
+
+    See also
+    --------
+    bottleneck.nanargmin: Indices of the minimum values along an axis.
+    bottleneck.nanmax: Maximum values along specified axis, ignoring NaNs.
+
+    Returns
+    -------
+    index_array : ndarray
+        An array of indices or a single index value.
+
+    Examples
+    --------
+    >>> a = np.array([[np.nan, 4], [2, 3]])
+    >>> bn.nanargmax(a)
+    1
+    >>> a.flat[1]
+    4.0
+    >>> bn.nanargmax(a, axis=0)
+    array([1, 0])
+    >>> bn.nanargmax(a, axis=1)
+    array([1, 1])
+
+    """
     cdef int ravel = 0, copy = 0, int_input = 0
     try:
         if axis is None:
@@ -1852,6 +1932,43 @@ cdef nanargmax_0d(ndarray a, int int_input):
 # anynan --------------------------------------------------------------------
 
 def anynan(arr, axis=None):
+    """
+    Test whether any array element along a given axis is NaN.
+
+    Returns the same output as np.isnan(arr).any(axis)
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which NaNs are searched. The default (`axis` = ``None``)
+        is to search for NaNs over a flattened input array.
+
+    Returns
+    -------
+    y : bool or ndarray
+        A boolean or new `ndarray` is returned.
+
+    See also
+    --------
+    bottleneck.allnan: Test if all array elements along given axis are NaN
+
+    Examples
+    --------
+    >>> bn.anynan(1)
+    False
+    >>> bn.anynan(np.nan)
+    True
+    >>> bn.anynan([1, np.nan])
+    True
+    >>> a = np.array([[1, 4], [1, np.nan]])
+    >>> bn.anynan(a)
+    True
+    >>> bn.anynan(a, axis=0)
+    array([False,  True], dtype=bool)
+
+    """
     try:
         return reducer(arr, axis,
                        anynan_all_float64,
@@ -1934,6 +2051,57 @@ cdef anynan_0d(ndarray a, int int_input):
 # allnan --------------------------------------------------------------------
 
 def allnan(arr, axis=None):
+    """
+    Test whether all array elements along a given axis are NaN.
+
+    Returns the same output as np.isnan(arr).all(axis)
+
+    Note that allnan([]) is True to match np.isnan([]).all() and all([])
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which NaNs are searched. The default (`axis` = ``None``)
+        is to search for NaNs over a flattened input array.
+
+    Returns
+    -------
+    y : bool or ndarray
+        A boolean or new `ndarray` is returned.
+
+    See also
+    --------
+    bottleneck.anynan: Test if any array element along given axis is NaN
+
+    Examples
+    --------
+    >>> bn.allnan(1)
+    False
+    >>> bn.allnan(np.nan)
+    True
+    >>> bn.allnan([1, np.nan])
+    False
+    >>> a = np.array([[1, np.nan], [1, np.nan]])
+    >>> bn.allnan(a)
+    False
+    >>> bn.allnan(a, axis=0)
+    array([False,  True], dtype=bool)
+
+    An empty array returns True:
+
+    >>> bn.allnan([])
+    True
+
+    which is similar to:
+
+    >>> all([])
+    True
+    >>> np.isnan([]).all()
+    True
+
+    """
     try:
         return reducer(arr, axis,
                        allnan_all_float64,
