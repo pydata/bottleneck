@@ -47,13 +47,9 @@ cdef struct pairs:
     double value
     int death
 
-cdef np.int32_t MAXint32 = np.iinfo(np.int32).max
-cdef np.int64_t MAXint64 = np.iinfo(np.int64).max
 cdef np.float32_t MAXfloat32 = np.inf
 cdef np.float64_t MAXfloat64 = np.inf
 
-cdef np.int32_t MINint32 = np.iinfo(np.int32).min
-cdef np.int64_t MINint64 = np.iinfo(np.int64).min
 cdef np.float32_t MINfloat32 = -np.inf
 cdef np.float64_t MINfloat64 = -np.inf
 

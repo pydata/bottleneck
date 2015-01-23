@@ -62,8 +62,6 @@ Move
 Misc
 ====
 
-- after porting all functions, remove unused imports in pyx files
-- get function reference in sphinx doc working
 - can nogil be used?
 - why does the benchmark say that nanmax and move_max are twice as fast as
   nanmin and move_min for (1000, 1000) arrays with NaNs in them?

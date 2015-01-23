@@ -4,12 +4,11 @@ import numpy as np
 cimport numpy as np
 import cython
 
-from numpy cimport float64_t, float32_t, int64_t, int32_t, intp_t
+from numpy cimport float64_t, float32_t, int64_t, int32_t
 from numpy cimport NPY_FLOAT64 as NPY_float64
 from numpy cimport NPY_FLOAT32 as NPY_float32
 from numpy cimport NPY_INT64 as NPY_int64
 from numpy cimport NPY_INT32 as NPY_int32
-from numpy cimport NPY_INTP as NPY_intp
 
 from numpy cimport PyArray_ITER_DATA as pid
 from numpy cimport PyArray_ITER_NOTDONE
