@@ -37,6 +37,7 @@ Bottleneck comes with a benchmark suite::
         nansum         40.0        4.0       40.0        9.3
         nanmean       149.0        5.5      137.0       10.8
         nanstd        241.1        4.2      240.2        8.4
+        nanvar        223.1        4.3      235.4        8.4
         nanmin         31.1        1.1       31.2        1.7
         nanmax         31.3        1.1       31.1        2.9
         median         44.6        0.8       47.6        0.9
