@@ -63,7 +63,6 @@ Misc
 ====
 
 - after porting all functions, remove unused imports in pyx files
-- port docstrings from old bottleneck
 - get function reference in sphinx doc working
 - can nogil be used?
 - why does the benchmark say that nanmax and move_max are twice as fast as

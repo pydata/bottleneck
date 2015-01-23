@@ -2242,7 +2242,7 @@ cdef reducer(arr, axis,
     # output array, if needed
     cdef ndarray y
     cdef np.npy_intp *adim
-    cdef np.npy_intp *y_dims = [0, 0, 0, 0, 0, 0, 0, 0, 0]  # TODO max ndim=10
+    cdef np.npy_intp *y_dims = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     # defend against 0d beings
     if a_ndim == 0:
@@ -2289,6 +2289,8 @@ cdef reducer(arr, axis,
             raise TypeError("Unsupported dtype (%s)." % a.dtype)
     else:
         # reduce over a single axis; a_ndim > 1
+        if a_ndim > 11:
+            raise ValueError("arr.ndim must be less than 12")
         adim = np.PyArray_DIMS(a)
         j = 0
         for i in range(a_ndim):
