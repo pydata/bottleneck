@@ -55,7 +55,6 @@ def unit_maker(func, func0):
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
                     desired = func0(arr.copy(), n, axis=axis)
-                if 'arg' in func.__name__:
                     desired[:n] = np.sort(desired[:n], axis=axis)
                     desired[n:] = np.sort(desired[n:], axis=axis)
             tup = (func.__name__, 'a'+str(i), str(arr.dtype),

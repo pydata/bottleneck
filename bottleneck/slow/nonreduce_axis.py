@@ -54,12 +54,17 @@ def nanrankdata(arr, axis=None):
 
 def partsort(arr, n, axis=-1):
     "Slow partial sort used for unaccelerated ndim/dtype combinations."
-    return np.sort(arr, axis)
+    return np.partition(arr, n - 1, axis)
 
 
 def argpartsort(arr, n, axis=-1):
     "Slow partial argsort used for unaccelerated ndim/dtype combinations."
-    return np.argsort(arr, axis)
+    if type(arr) is np.ndarray:
+        a = arr
+    else:
+        # bug in numpy 1.9.1: `a` cannot be a list
+        a = np.array(arr, copy=False)
+    return np.argpartition(a, n - 1, axis)
 
 
 # ---------------------------------------------------------------------------

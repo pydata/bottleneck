@@ -127,19 +127,16 @@ def benchsuite(shapes, dtype, axis, nans):
     for func in funcs:
         run = {}
         run['name'] = func
-        if func == 'argpartsort':
-            pre = 'arg'
-        else:
-            pre = ''
-        run['statements'] = ["bn_func(a, n=n, axis=AXIS)",
-                             "np_func(a, axis=AXIS)"]
+        run['statements'] = ["bn_func(a, n, axis=AXIS)",
+                             "sl_func(a, m, axis=AXIS)"]
         setup = """
             from bottleneck import %s as bn_func
-            from numpy import %ssort as np_func
+            from bottleneck.slow import %s as sl_func
             if AXIS is None: n = a.size
             else: n = a.shape[AXIS]
             n = max(n / 2, 1)
-        """ % (func, pre)
+            m = n - 1
+        """ % (func, func)
         run['setups'] = getsetups(setup, shapes, nans)
         suite.append(run)
 
