@@ -83,7 +83,7 @@ def move_sum(arr, int window, min_count=None, int axis=-1):
     Examples
     --------
     >>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
-    >>> bn.move_nansum(arr, window=2)
+    >>> bn.move_sum(arr, window=2)
     array([ nan,   3.,   5.,  nan,  nan])
     >>> bn.move_sum(arr, window=2, min_count=1)
     array([ 1.,  3.,  5.,  3.,  5.])
@@ -185,18 +185,21 @@ cdef ndarray move_sum_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 def move_mean(arr, int window, min_count=None, int axis=-1):
     """
-    Moving window mean along the specified axis, ignoring NaNs.
+    Moving window mean along the specified axis, optionally ignoring NaNs.
 
     Parameters
     ----------
     arr : ndarray
-        Input array.
+        Input array. If `arr` is not an array, a conversion is attempted.
     window : int
         The number of elements in the moving window.
+    min_count: {int, None}, optional
+        If the number of non-NaN values in a window is less than `min_count`,
+        then a value of NaN is assigned to the window. By default `min_count`
+        is None, which is equivalent to setting `min_count` equal to `window`.
     axis : int, optional
-        The axis over which to perform the moving mean. By default the moving
-        mean is taken over the last axis (axis=-1). An axis of None is not
-        allowed.
+        The axis over which the window is moved. By default the last axis
+        (axis=-1) is used. An axis of None is not allowed.
 
     Returns
     -------
@@ -206,9 +209,11 @@ def move_mean(arr, int window, min_count=None, int axis=-1):
 
     Examples
     --------
-    >>> arr = np.array([1.0, 2.0, 3.0, 4.0])
-    >>> bn.move_nanmean(arr, window=2)
-    array([ nan,  1.5,  2.5,  3.5])
+    >>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
+    >>> bn.move_mean(arr, window=2)
+    array([ nan,  1.5,  2.5,  nan,  nan])
+    >>> bn.move_mean(arr, window=2, min_count=1)
+    array([ 1. ,  1.5,  2.5,  3. ,  5. ])
 
     """
     try:
@@ -309,7 +314,8 @@ cdef ndarray move_mean_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 def move_std(arr, int window, min_count=None, int axis=-1, int ddof=0):
     """
-    Moving window standard deviation along the specified axis, ignoring NaNs.
+    Moving window standard deviation along the specified axis, optionally
+    ignoring NaNs.
 
     Unlike bn.nanstd, which uses a more rubust two-pass algorithm, move_nanstd
     uses a faster one-pass algorithm.
@@ -328,13 +334,16 @@ def move_std(arr, int window, min_count=None, int axis=-1, int ddof=0):
     Parameters
     ----------
     arr : ndarray
-        Input array.
+        Input array. If `arr` is not an array, a conversion is attempted.
     window : int
         The number of elements in the moving window.
+    min_count: {int, None}, optional
+        If the number of non-NaN values in a window is less than `min_count`,
+        then a value of NaN is assigned to the window. By default `min_count`
+        is None, which is equivalent to setting `min_count` equal to `window`.
     axis : int, optional
-        The axis over which to perform the moving standard deviation. By
-        default the moving standard deviation is taken over the last axis
-        (axis=-1). An axis of None is not allowed.
+        The axis over which the window is moved. By default the last axis
+        (axis=-1) is used. An axis of None is not allowed.
     ddof : int, optional
         Means Delta Degrees of Freedom. The divisor used in calculations
         is ``N - ddof``, where ``N`` represents the number of elements.
@@ -348,9 +357,11 @@ def move_std(arr, int window, min_count=None, int axis=-1, int ddof=0):
 
     Examples
     --------
-    >>> arr = np.array([1.0, 2.0, 3.0, 4.0])
-    >>> bn.move_nanstd(arr, window=2)
-    array([ nan,  1.5,  2.5,  3.5])
+    >>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
+    >>> bn.move_std(arr, window=2)
+    array([ nan,  0.5,  0.5,  nan,  nan])
+    >>> bn.move_std(arr, window=2, min_count=1)
+    array([ 0. ,  0.5,  0.5,  0. ,  0. ])
 
     """
     try:
@@ -472,32 +483,38 @@ cdef ndarray move_std_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 def move_min(arr, int window, min_count=None, int axis=-1):
     """
-    Moving window minimum along the specified axis, ignoring NaNs.
+    Moving window minimum along the specified axis, optionally ignoring NaNs.
 
     float64 output is returned for all input data types.
 
     Parameters
     ----------
     arr : ndarray
-        Input array.
+        Input array. If `arr` is not an array, a conversion is attempted.
     window : int
         The number of elements in the moving window.
+    min_count: {int, None}, optional
+        If the number of non-NaN values in a window is less than `min_count`,
+        then a value of NaN is assigned to the window. By default `min_count`
+        is None, which is equivalent to setting `min_count` equal to `window`.
     axis : int, optional
-        The axis over which to find the moving minimum. By default the moving
-        minimum is taken over the last axis (axis=-1). An axis of None is not
-        allowed.
+        The axis over which the window is moved. By default the last axis
+        (axis=-1) is used. An axis of None is not allowed.
 
     Returns
     -------
     y : ndarray
         The moving minimum of the input array along the specified axis. The
-        output has the same shape as the input.
+        output has the same shape as the input. The dtype of the output is
+        always float64.
 
     Examples
     --------
-    >>> arr = np.array([1.0, 2.0, 4.0, 3.0])
-    >>> bn.move_nanmin(arr, window=2)
-    array([ nan,  2.,  4.,  4.])
+    >>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
+    >>> bn.move_min(arr, window=2)
+    array([ nan,   1.,   2.,  nan,  nan])
+    >>> bn.move_min(arr, window=2, min_count=1)
+    array([ 1.,  1.,  2.,  3.,  5.])
 
     """
     try:
@@ -645,32 +662,38 @@ cdef ndarray move_min_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 def move_max(arr, int window, min_count=None, int axis=-1):
     """
-    Moving window maximum along the specified axis, ignoring NaNs.
+    Moving window maximum along the specified axis, optionally ignoring NaNs.
 
     float64 output is returned for all input data types.
 
     Parameters
     ----------
     arr : ndarray
-        Input array.
+        Input array. If `arr` is not an array, a conversion is attempted.
     window : int
         The number of elements in the moving window.
+    min_count: {int, None}, optional
+        If the number of non-NaN values in a window is less than `min_count`,
+        then a value of NaN is assigned to the window. By default `min_count`
+        is None, which is equivalent to setting `min_count` equal to `window`.
     axis : int, optional
-        The axis over which to find the moving maximum. By default the moving
-        maximum is taken over the last axis (axis=-1). An axis of None is not
-        allowed.
+        The axis over which the window is moved. By default the last axis
+        (axis=-1) is used. An axis of None is not allowed.
 
     Returns
     -------
     y : ndarray
         The moving maximum of the input array along the specified axis. The
-        output has the same shape as the input.
+        output has the same shape as the input. The dtype of the output is
+        always float64.
 
     Examples
     --------
-    >>> arr = np.array([1.0, 2.0, 4.0, 3.0])
-    >>> bn.move_nanmax(arr, window=2)
-    array([ nan,  2.,  4.,  4.])
+    >>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
+    >>> bn.move_max(arr, window=2)
+    array([ nan,   2.,   3.,  nan,  nan])
+    >>> bn.move_max(arr, window=2, min_count=1)
+    array([ 1.,  2.,  3.,  3.,  5.])
 
     """
     try:
@@ -853,13 +876,12 @@ def move_median(arr, int window, int axis=-1):
     Parameters
     ----------
     arr : ndarray
-        Input array.
+        Input array. If `arr` is not an array, a conversion is attempted.
     window : int
         The number of elements in the moving window.
     axis : int, optional
-        The axis over which to perform the moving median. By default the moving
-        median is taken over the last axis (axis=-1). An axis of None is not
-        allowed.
+        The axis over which the window is moved. By default the last axis
+        (axis=-1) is used. An axis of None is not allowed.
 
     Returns
     -------
@@ -870,6 +892,7 @@ def move_median(arr, int window, int axis=-1):
     Notes
     -----
     Unexpected results may occur if the input array contains NaN.
+    This function does NOT take `min_count` as an input.
 
     Examples
     --------
