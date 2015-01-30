@@ -58,18 +58,21 @@ cdef np.float64_t MINfloat64 = -np.inf
 
 def move_sum(arr, int window, min_count=None, int axis=-1):
     """
-    Moving window sum along the specified axis, ignoring NaNs.
+    Moving window sum along the specified axis, optionally ignoring NaNs.
 
     Parameters
     ----------
     arr : ndarray
-        Input array.
+        Input array. If `arr` is not an array, a conversion is attempted.
     window : int
         The number of elements in the moving window.
+    min_count: {int, None}, optional
+        If the number of non-NaN values in a window is less than `min_count`,
+        then a value of NaN is assigned to the window. By default `min_count`
+        is None, which is equivalent to setting `min_count` equal to `window`.
     axis : int, optional
-        The axis over which to perform the moving sum. By default the moving
-        sum is taken over the last axis (axis=-1). An axis of None is not
-        allowed.
+        The axis over which the window is moved. By default the last axis
+        (axis=-1) is used. An axis of None is not allowed.
 
     Returns
     -------
@@ -79,9 +82,11 @@ def move_sum(arr, int window, min_count=None, int axis=-1):
 
     Examples
     --------
-    >>> arr = np.array([1.0, 2.0, 3.0, 4.0])
+    >>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
     >>> bn.move_nansum(arr, window=2)
-    array([ nan,  3.,  5.,  7.])
+    array([ nan,   3.,   5.,  nan,  nan])
+    >>> bn.move_sum(arr, window=2, min_count=1)
+    array([ 1.,  3.,  5.,  3.,  5.])
 
     """
     try:
