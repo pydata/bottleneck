@@ -13,22 +13,47 @@ Bottleneck 1.0.0
 
 This release is a complete rewrite of Bottleneck.
 
+**Faster**
+
+- Builds 15 times faster
 - Function-call overhead cut in half---a big speed up for small input arrays
 - Arbitrary ndim input arrays accelerated; previously only 1d, 2d, and 3d
 - No speed penalty for reducing along all axes when input is Fortran ordered
-- bn.move_max, bn.move_nanmax, and min are faster for int input arrays
+- bn.move_max, bn.move_min are faster for int input arrays
 - bn.nanrankdata is twice as fast for float input arrays
-- Single API: bn.nansum instead of bn.nansum and nansum_2d_float64_axis0
+
+**Smaller**
+
+- Compiled binaries 14.1 times smaller
+- Source tarball 4.7 times smaller
+- 9.8 times less C code
+- 4.3 times less Cython code
+- 3.7 times less Python code
+
+**Beware**
+
+- Requires numpy 1.9.1
+- Single API, e.g.: bn.nansum instead of bn.nansum and nansum_2d_float64_axis0
 - On 64-bit systems bn.nansum(int32) returns int32 instead of int64
 - Reducing over all axes returns, e.g., 6.0; previously np.float64(6.0)
 - bn.ss() now has default axis=None instead of axis=0
 - bn.nn() is no longer in bottleneck
-- bn.move_max, bn.move_namax, and min now return float32 for float32 input
-- add unit tests for 0d input arrays
+
+**Bug Fixes**
+
 - Can now install bottleneck with pip even if numpy is not already installed
-- Compile time dropped by a factor of xxxx
-- Source tarball is one-xxxx the size of the previous release
-- Requires numpy 1.9.1
+- bn.move_max, bn.move_min now return float32 for float32 input
+- Bug prevention: add unit tests for 0d input arrays
+
+**min_count**
+
+- Previous releases had moving window functions pairs: move_sum, move_nansum
+- This release only has half of the pairs: move_sum
+- Instead a new input parameter, min_count, has been added
+- min_count=None same as old move_sum; min_count=1 same as old move_nansum
+- If # non-NaN values in window < min_count, then NaN assigned to the window
+- Exception: move_median does not tkae min_count as input
+
 
 Older versions
 ==============
