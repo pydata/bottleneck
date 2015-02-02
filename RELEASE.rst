@@ -18,9 +18,9 @@ This release is a complete rewrite of Bottleneck.
 - Builds 15 times faster
 - Function-call overhead cut in half---a big speed up for small input arrays
 - Arbitrary ndim input arrays accelerated; previously only 1d, 2d, and 3d
-- No speed penalty for reducing along all axes when input is Fortran ordered
-- bn.move_max, bn.move_min are faster for int input arrays
 - bn.nanrankdata is twice as fast for float input arrays
+- bn.move_max, bn.move_min are faster for int input arrays
+- No speed penalty for reducing along all axes when input is Fortran ordered
 
 **Smaller**
 
@@ -39,20 +39,20 @@ This release is a complete rewrite of Bottleneck.
 - bn.ss() now has default axis=None instead of axis=0
 - bn.nn() is no longer in bottleneck
 
+**min_count**
+
+- Previous releases had moving window function pairs: move_sum, move_nansum
+- This release only has half of the pairs: move_sum
+- Instead a new input parameter, min_count, has been added
+- min_count=None same as old move_sum; min_count=1 same as old move_nansum
+- If # non-NaN values in window < min_count, then NaN assigned to the window
+- Exception: move_median does not take min_count as input
+
 **Bug Fixes**
 
 - Can now install bottleneck with pip even if numpy is not already installed
 - bn.move_max, bn.move_min now return float32 for float32 input
 - Bug prevention: add unit tests for 0d input arrays
-
-**min_count**
-
-- Previous releases had moving window functions pairs: move_sum, move_nansum
-- This release only has half of the pairs: move_sum
-- Instead a new input parameter, min_count, has been added
-- min_count=None same as old move_sum; min_count=1 same as old move_nansum
-- If # non-NaN values in window < min_count, then NaN assigned to the window
-- Exception: move_median does not tkae min_count as input
 
 
 Older versions
