@@ -35,8 +35,6 @@ def unit_maker(func, func0, args=tuple()):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             actual = func(*argsi)
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
             desired = func0(*argsi)
         tup = (func.__name__, 'a'+str(i), str(np.array(arr).shape), arr)
         err_msg = msg % tup

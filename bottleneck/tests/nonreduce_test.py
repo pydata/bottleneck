@@ -1,5 +1,7 @@
 "Test replace()."
 
+import warnings
+
 import numpy as np
 from numpy.testing import assert_equal, assert_array_equal, assert_raises
 nan = np.nan
@@ -58,9 +60,13 @@ def unit_maker(func, func0, nans=True):
                         # Cannot safely cast to int
                         continue
                 actual = arr.copy()
-                func(actual, old, new)
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    func(actual, old, new)
                 desired = arr.copy()
-                func0(desired, old, new)
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    func0(desired, old, new)
                 tup = (func.__name__, 'a'+str(i), str(arr.dtype),
                        str(arr.shape), old, new, arr)
                 err_msg = msg % tup
