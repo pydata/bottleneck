@@ -52,7 +52,6 @@ This release is a complete rewrite of Bottleneck.
 
 - Can now install bottleneck with pip even if numpy is not already installed
 - bn.move_max, bn.move_min now return float32 for float32 input
-- Bug prevention: add unit tests for 0d input arrays
 
 
 Older versions
