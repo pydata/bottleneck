@@ -195,46 +195,52 @@ def test_nanmin_size_zero(dtypes=DTYPES):
 def test_nanstd_issue60():
     "nanstd regression test (issue #60)"
 
-    f = bn.nanstd([1.0], ddof=1)
-    with np.errstate(invalid='ignore'):
-        s = bn.slow.nanstd([1.0], ddof=1)
-    assert_equal(f, s, err_msg="bn.nanstd([1.0], ddof=1) wrong")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
 
-    f = bn.nanstd([1], ddof=1)
-    with np.errstate(invalid='ignore'):
-        s = bn.slow.nanstd([1], ddof=1)
-    assert_equal(f, s, err_msg="bn.nanstd([1], ddof=1) wrong")
+        f = bn.nanstd([1.0], ddof=1)
+        with np.errstate(invalid='ignore'):
+            s = bn.slow.nanstd([1.0], ddof=1)
+        assert_equal(f, s, err_msg="bn.nanstd([1.0], ddof=1) wrong")
 
-    b = bn.nanstd([1, np.nan], ddof=1)
-    with np.errstate(invalid='ignore'):
-        b = bn.slow.nanstd([1, np.nan], ddof=1)
-    assert_equal(f, s, err_msg="bn.nanstd([1, nan], ddof=1) wrong")
+        f = bn.nanstd([1], ddof=1)
+        with np.errstate(invalid='ignore'):
+            s = bn.slow.nanstd([1], ddof=1)
+        assert_equal(f, s, err_msg="bn.nanstd([1], ddof=1) wrong")
 
-    b = bn.nanstd([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
-    with np.errstate(invalid='ignore'):
-        b = bn.slow.nanstd([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
-    assert_equal(f, s, err_msg="issue #60 regression")
+        b = bn.nanstd([1, np.nan], ddof=1)
+        with np.errstate(invalid='ignore'):
+            b = bn.slow.nanstd([1, np.nan], ddof=1)
+        assert_equal(f, s, err_msg="bn.nanstd([1, nan], ddof=1) wrong")
+
+        b = bn.nanstd([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
+        with np.errstate(invalid='ignore'):
+            b = bn.slow.nanstd([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
+        assert_equal(f, s, err_msg="issue #60 regression")
 
 
 def test_nanvar_issue60():
     "nanvar regression test (issue #60)"
 
-    f = bn.nanvar([1.0], ddof=1)
-    with np.errstate(invalid='ignore'):
-        s = bn.slow.nanvar([1.0], ddof=1)
-    assert_equal(f, s, err_msg="bn.nanvar([1.0], ddof=1) wrong")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
 
-    f = bn.nanvar([1], ddof=1)
-    with np.errstate(invalid='ignore'):
-        s = bn.slow.nanvar([1], ddof=1)
-    assert_equal(f, s, err_msg="bn.nanvar([1], ddof=1) wrong")
+        f = bn.nanvar([1.0], ddof=1)
+        with np.errstate(invalid='ignore'):
+            s = bn.slow.nanvar([1.0], ddof=1)
+        assert_equal(f, s, err_msg="bn.nanvar([1.0], ddof=1) wrong")
 
-    f = bn.nanvar([1, np.nan], ddof=1)
-    with np.errstate(invalid='ignore'):
-        s = bn.slow.nanvar([1, np.nan], ddof=1)
-    assert_equal(f, s, err_msg="bn.nanvar([1, nan], ddof=1) wrong")
+        f = bn.nanvar([1], ddof=1)
+        with np.errstate(invalid='ignore'):
+            s = bn.slow.nanvar([1], ddof=1)
+        assert_equal(f, s, err_msg="bn.nanvar([1], ddof=1) wrong")
 
-    f = bn.nanvar([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
-    with np.errstate(invalid='ignore'):
-        s = bn.slow.nanvar([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
-    assert_equal(f, s, err_msg="issue #60 regression")
+        f = bn.nanvar([1, np.nan], ddof=1)
+        with np.errstate(invalid='ignore'):
+            s = bn.slow.nanvar([1, np.nan], ddof=1)
+        assert_equal(f, s, err_msg="bn.nanvar([1, nan], ddof=1) wrong")
+
+        f = bn.nanvar([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
+        with np.errstate(invalid='ignore'):
+            s = bn.slow.nanvar([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
+        assert_equal(f, s, err_msg="issue #60 regression")
