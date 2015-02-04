@@ -2,7 +2,7 @@
 Upload Sphinx docs to web server
 ================================
 
-Godaddy doesn't allow rsyc. So to upload Shinx docs to
+Godaddy doesn't allow rsyc. So to upload Sphinx docs to
 http://berkeleyanalytics.com/bottleneck:
 
 In bottleneck/doc:
