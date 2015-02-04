@@ -1,15 +1,16 @@
 "Test functions."
 
-# For support of python 2.5
-from __future__ import with_statement
+import warnings
 
 import numpy as np
 from numpy.testing import assert_equal
 nan = np.nan
 import bottleneck as bn
 
+DTYPES = [np.float64, np.float32, np.int64, np.int32]
 
-def arrays(dtypes=bn.dtypes, nans=True):
+
+def arrays(dtypes=DTYPES, nans=True):
     "Iterator that yield arrays to use for unit testing."
     ss = {}
     ss[1] = {'size':  4, 'shapes': [(4,)]}
@@ -45,10 +46,14 @@ def unit_maker(func, nans=True):
                 if ('move_' in func.__name__) or ('sort' in func.__name__):
                     if axis is None:
                         continue
-                    actual = func(arr1, 1, axis=axis)
+                    with warnings.catch_warnings():
+                        warnings.simplefilter("ignore")
+                        actual = func(arr1, 1, axis=axis)
                 else:
                     try:
-                        actual = func(arr1, axis=axis)
+                        with warnings.catch_warnings():
+                            warnings.simplefilter("ignore")
+                            actual = func(arr1, axis=axis)
                     except:
                         continue
                 assert_equal(arr1, arr2, msg % (func.__name__, arr1, arr2))
@@ -57,32 +62,28 @@ def unit_maker(func, nans=True):
 def test_modification():
     "Test for illegal inplace modification of input array"
     funcs = [bn.nansum,
-             bn.nanmax,
-             bn.nanargmin,
-             bn.nanargmax,
-             bn.nanmin,
              bn.nanmean,
              bn.nanstd,
              bn.nanvar,
+             bn.nanmin,
+             bn.nanmax,
              bn.median,
              bn.nanmedian,
-             bn.rankdata,
-             bn.nanrankdata,
              bn.ss,
-             bn.partsort,
-             bn.argpartsort,
+             bn.nanargmin,
+             bn.nanargmax,
              bn.anynan,
              bn.allnan,
+             bn.partsort,
+             bn.argpartsort,
+             bn.rankdata,
+             bn.nanrankdata,
              bn.move_sum,
-             bn.move_nansum,
              bn.move_mean,
-             bn.move_median,
-             bn.move_nanmean,
              bn.move_std,
-             bn.move_nanstd,
              bn.move_min,
              bn.move_max,
-             bn.move_nanmin,
-             bn.move_nanmax]
+             bn.move_median,
+             ]
     for func in funcs:
         yield unit_maker, func

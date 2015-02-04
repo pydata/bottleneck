@@ -6,22 +6,53 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
-Bottleneck 0.9.0
+Bottleneck 1.0.0
 ================
 
 *Release date: Not yet released, in development*
 
-**Enhancements**
+This release is a complete rewrite of Bottleneck.
 
-- bn.slow.move functions with method='strides' no longer limited to ndim < 4
-- Use setuptools to enable automatic installation of numpy by pip
-- A new compile time option NDIM_MAX allows for adjusting the number of
-  dimensions for which fast functions are generated
-- Moving window functions now release Python's global interpreter lock
+**Faster**
 
-**Bug fixes**
+- Builds 15 times faster
+- Function-call overhead cut in half---a big speed up for small input arrays
+- Arbitrary ndim input arrays accelerated; previously only 1d, 2d, and 3d
+- bn.nanrankdata is twice as fast for float input arrays
+- bn.move_max, bn.move_min are faster for int input arrays
+- No speed penalty for reducing along all axes when input is Fortran ordered
 
-- #91 bn.nanmedian template bug causes big slowdown
+**Smaller**
+
+- Compiled binaries 14.1 times smaller
+- Source tarball 4.7 times smaller
+- 9.8 times less C code
+- 4.3 times less Cython code
+- 3.7 times less Python code
+
+**Beware**
+
+- Requires numpy 1.9.1
+- Single API, e.g.: bn.nansum instead of bn.nansum and nansum_2d_float64_axis0
+- On 64-bit systems bn.nansum(int32) returns int32 instead of int64
+- Reducing over all axes returns, e.g., 6.0; previously np.float64(6.0)
+- bn.ss() now has default axis=None instead of axis=0
+- bn.nn() is no longer in bottleneck
+
+**min_count**
+
+- Previous releases had moving window function pairs: move_sum, move_nansum
+- This release only has half of the pairs: move_sum
+- Instead a new input parameter, min_count, has been added
+- min_count=None same as old move_sum; min_count=1 same as old move_nansum
+- If # non-NaN values in window < min_count, then NaN assigned to the window
+- Exception: move_median does not take min_count as input
+
+**Bug Fixes**
+
+- Can now install bottleneck with pip even if numpy is not already installed
+- bn.move_max, bn.move_min now return float32 for float32 input
+
 
 Older versions
 ==============

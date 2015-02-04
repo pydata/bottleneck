@@ -2,7 +2,7 @@
 
 PYTHON=python
 
-srcdir := bottleneck/src
+srcdir := bottleneck/src/auto_pyx
 
 help:
 	@echo "Available tasks:"
@@ -20,21 +20,31 @@ help:
 all: clean pyx cfiles build test
 
 pyx:
-	${PYTHON} -c "from bottleneck.src.makepyx import makepyx; makepyx();"
+	${PYTHON} -c "from bottleneck.src.template.template import make_pyx; make_pyx();"
 
 cfiles:
-	cython ${srcdir}/func/func.pyx
-	cython ${srcdir}/move/move.pyx
+	cython ${srcdir}/reduce.pyx
+	cython ${srcdir}/nonreduce.pyx
+	cython ${srcdir}/nonreduce_axis.pyx
+	cython ${srcdir}/move.pyx
 
-build: funcs moves
+build: reduce nonreduce nonreduce_axis move
 
-funcs:
-	rm -rf ${srcdir}/../func.so
-	${PYTHON} ${srcdir}/func/setup.py build_ext --inplace
+reduce:
+	rm -rf ${srcdir}/../reduce.so
+	${PYTHON} ${srcdir}/reduce_setup.py build_ext --inplace
 
-moves:
+nonreduce:
+	rm -rf ${srcdir}/../nonreduce.so
+	${PYTHON} ${srcdir}/nonreduce_setup.py build_ext --inplace
+
+nonreduce_axis:
+	rm -rf ${srcdir}/../nonreduce_axis.so
+	${PYTHON} ${srcdir}/nonreduce_axis_setup.py build_ext --inplace
+
+move:
 	rm -rf ${srcdir}/../move.so
-	${PYTHON} ${srcdir}/move/setup.py build_ext --inplace
+	${PYTHON} ${srcdir}/move_setup.py build_ext --inplace
 
 test:
 	${PYTHON} -c "import bottleneck;bottleneck.test()"
@@ -55,8 +65,6 @@ sdist: pyx
 
 .PHONY: clean
 clean:
-	rm -rf ${srcdir}/*~ ${srcdir}/*.so ${srcdir}/*.c ${srcdir}/*.o ${srcdir}/*.html ${srcdir}/build ${srcdir}/../*.so
-	rm -rf ${srcdir}/func/*.c
-	rm -rf ${srcdir}/move/*.c
-	rm -rf ${srcdir}/func/*.pyx
-	rm -rf ${srcdir}/move/*.pyx
+	rm -rf build dist Bottleneck.egg-info
+	find . -name \*.pyc -delete
+	rm -rf ${srcdir}/*.c ${srcdir}/*.html ${srcdir}/build ${srcdir}/../../*.so

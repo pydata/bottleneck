@@ -62,11 +62,8 @@ PACKAGES = ["bottleneck",
             "bottleneck/tests",
             "bottleneck/benchmark",
             "bottleneck/src",
-            "bottleneck/src/func",
-            "bottleneck/src/move",
             "bottleneck/src/template",
-            "bottleneck/src/template/func",
-            "bottleneck/src/template/move"]
+            "bottleneck/src/auto_pyx"]
 PACKAGE_DATA = {'bottleneck': ['LICENSE']}
 REQUIRES = ["numpy"]
 
@@ -97,9 +94,13 @@ if not(len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or \
     import numpy as np
     metadata['ext_package'] = 'bottleneck'
     metadata['ext_modules'] = \
-                              [Extension("func", sources=["bottleneck/src/func/func.c"],
+                              [Extension("reduce", sources=["bottleneck/src/auto_pyx/reduce.c"],
                                          include_dirs=[np.get_include()]),
-                               Extension("move", sources=["bottleneck/src/move/move.c"],
+                               Extension("nonreduce", sources=["bottleneck/src/auto_pyx/nonreduce.c"],
+                                         include_dirs=[np.get_include()]),
+                               Extension("nonreduce_axis", sources=["bottleneck/src/auto_pyx/nonreduce_axis.c"],
+                                         include_dirs=[np.get_include()]),
+                               Extension("move", sources=["bottleneck/src/auto_pyx/move.c"],
                                          extra_compile_args=["-std=gnu89"],
                                          include_dirs=[np.get_include()])]
 
