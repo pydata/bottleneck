@@ -15,7 +15,7 @@ This release is a complete rewrite of Bottleneck.
 
 **Faster**
 
-- Builds 15 times faster
+- "python setup.py build" is 18.7 times faster
 - Function-call overhead cut in half---a big speed up for small input arrays
 - Arbitrary ndim input arrays accelerated; previously only 1d, 2d, and 3d
 - bn.nanrankdata is twice as fast for float input arrays
@@ -35,6 +35,7 @@ This release is a complete rewrite of Bottleneck.
 - Requires numpy 1.9.1
 - Single API, e.g.: bn.nansum instead of bn.nansum and nansum_2d_float64_axis0
 - On 64-bit systems bn.nansum(int32) returns int32 instead of int64
+- bn.nansum now returns 0 for all NaN slices (as does numpy 1.9.1)
 - Reducing over all axes returns, e.g., 6.0; previously np.float64(6.0)
 - bn.ss() now has default axis=None instead of axis=0
 - bn.nn() is no longer in bottleneck
