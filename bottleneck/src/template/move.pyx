@@ -382,53 +382,65 @@ cdef ndarray move_std_DTYPE0(ndarray a, int window, int min_count, int axis,
                              np.npy_intp* y_dims, int ddof):
     # bn.dtypes = [['float64'], ['float32']]
     cdef Py_ssize_t i, count
-    cdef DTYPE0_t asum, a2sum, ai, ssr, aold, yi
+    cdef DTYPE0_t delta, amean, assqdm, ai, aold, yi
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
     while PyArray_ITER_NOTDONE(ita):
-        asum = 0
-        a2sum = 0
+        amean = 0
+        assqdm = 0
         count = 0
         for i in range(min_count - 1):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             if ai == ai:
-                asum += ai
-                a2sum += ai * ai
                 count += 1
+                delta = ai - amean
+                amean += delta / count
+                assqdm += delta * (ai - amean)
             (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
         for i in range(min_count - 1, window):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             if ai == ai:
-                asum += ai
-                a2sum += ai * ai
                 count += 1
+                delta = ai - amean
+                amean += delta / count
+                assqdm += delta * (ai - amean)
             if count >= min_count:
-                ssr = a2sum - asum * asum / count
-                if ssr < 0:
-                    yi = 0
-                else:
-                    yi = sqrt(ssr / (count - ddof))
+                if assqdm < 0:
+                    assqdm = 0
+                yi = sqrt(assqdm / (count - ddof))
             else:
                 yi = NAN
             (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
         for i in range(window, length):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                asum += ai
-                a2sum += ai * ai
-                count += 1
             aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-            if aold == aold:
-                asum -= aold
-                a2sum -= aold * aold
-                count -= 1
-            if count >= min_count:
-                ssr = a2sum - asum * asum / count
-                if ssr < 0:
-                    yi = 0
+            if ai == ai:
+                if aold == aold:
+                    delta = ai - aold
+                    aold -= amean
+                    amean += delta / count
+                    ai -= amean
+                    assqdm += (ai + aold) * delta
                 else:
-                    yi = sqrt(ssr / (count - ddof))
+                    count += 1
+                    delta = ai - amean
+                    amean += delta / count
+                    assqdm += delta * (ai - amean)
+            else:
+                if aold == aold:
+                    count -= 1
+                    if count > 0:
+                        delta = aold - amean
+                        amean -= delta / count
+                        assqdm -= delta * (aold - amean)
+                    else:
+                        amean = 0
+                        assqdm = 0
+            if count >= min_count:
+                if assqdm < 0:
+                    assqdm = 0
+                yi = sqrt(assqdm / (count - ddof))
             else:
                 yi = NAN
             (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
@@ -445,34 +457,40 @@ cdef ndarray move_std_DTYPE0(ndarray a, int window, int min_count, int axis,
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef Py_ssize_t i
     cdef int winddof
-    cdef DTYPE0_t ai, aold
-    cdef DTYPE1_t yi, asum, a2sum
+    cdef DTYPE1_t delta, amean, assqdm, yi, ai, aold
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
     winddof = window - ddof
     while PyArray_ITER_NOTDONE(ita):
-        asum = 0
-        a2sum = 0
+        amean = 0
+        assqdm = 0
         for i in range(min_count - 1):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            asum += ai
-            a2sum += ai * ai
+            if ai == ai:
+                delta = ai - amean
+                amean += delta / (i + 1)
+                assqdm += delta * (ai - amean)
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
         for i in range(min_count - 1, window):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            asum += ai
-            a2sum += ai * ai
-            yi = sqrt((a2sum - asum * asum / (i + 1)) / (i + 1 - ddof))
+            if ai == ai:
+                delta = ai - amean
+                amean += delta / (i + 1)
+                assqdm += delta * (ai - amean)
+            yi = sqrt(assqdm / (i + 1 - ddof))
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
         for i in range(window, length):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            asum += ai
-            a2sum += ai * ai
             aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-            asum -= aold
-            a2sum -= aold * aold
-            yi = sqrt((a2sum - asum * asum / window) / winddof)
+            delta = ai - aold
+            aold -= amean
+            amean += delta / window
+            ai -= amean
+            assqdm += (ai + aold) * delta
+            if assqdm < 0:
+                assqdm = 0
+            yi = sqrt(assqdm / winddof)
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
         PyArray_ITER_NEXT(ita)
         PyArray_ITER_NEXT(ity)
