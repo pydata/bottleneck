@@ -9,7 +9,7 @@ except ImportError:
     from ez_setup import use_setuptools
     use_setuptools()
 
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.extension import Extension
 
 CLASSIFIERS = ["Development Status :: 4 - Beta",
@@ -57,13 +57,7 @@ MINOR = VER[1]
 MICRO = VER[2]
 ISRELEASED = False
 VERSION = '%s.%s.%s' % (MAJOR, MINOR, MICRO)
-PACKAGES = ["bottleneck",
-            "bottleneck/slow",
-            "bottleneck/tests",
-            "bottleneck/benchmark",
-            "bottleneck/src",
-            "bottleneck/src/template",
-            "bottleneck/src/auto_pyx"]
+PACKAGES = find_packages()
 PACKAGE_DATA = {'bottleneck': ['LICENSE']}
 REQUIRES = ["numpy"]
 
@@ -92,15 +86,14 @@ if not(len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or \
        sys.argv[1] in ('--help-commands', 'egg_info', '--version', 'clean'))):
 
     import numpy as np
-    metadata['ext_package'] = 'bottleneck'
     metadata['ext_modules'] = \
-                              [Extension("reduce", sources=["bottleneck/src/auto_pyx/reduce.c"],
+                              [Extension("bottleneck.reduce", sources=["bottleneck/src/auto_pyx/reduce.c"],
                                          include_dirs=[np.get_include()]),
-                               Extension("nonreduce", sources=["bottleneck/src/auto_pyx/nonreduce.c"],
+                               Extension("bottleneck.nonreduce", sources=["bottleneck/src/auto_pyx/nonreduce.c"],
                                          include_dirs=[np.get_include()]),
-                               Extension("nonreduce_axis", sources=["bottleneck/src/auto_pyx/nonreduce_axis.c"],
+                               Extension("bottleneck.nonreduce_axis", sources=["bottleneck/src/auto_pyx/nonreduce_axis.c"],
                                          include_dirs=[np.get_include()]),
-                               Extension("move", sources=["bottleneck/src/auto_pyx/move.c"],
+                               Extension("bottleneck.move", sources=["bottleneck/src/auto_pyx/move.c"],
                                          extra_compile_args=["-std=gnu89"],
                                          include_dirs=[np.get_include()])]
 
