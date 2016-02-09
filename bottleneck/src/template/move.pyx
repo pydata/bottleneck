@@ -948,6 +948,8 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
     mm = mm_new(window, min_count)
+    if mm is NULL:
+        raise MemoryError()
     while PyArray_ITER_NOTDONE(ita):
         for i in range(length):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
