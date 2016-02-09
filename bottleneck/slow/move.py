@@ -38,9 +38,9 @@ def move_max(arr, window, min_count=None, axis=-1):
     return move_func(np.nanmax, arr, window, min_count, axis=axis)
 
 
-def move_median(arr, window, axis=-1):
+def move_median(arr, window, min_count=None, axis=-1):
     "Slow move_median for unaccelerated dtype"
-    return move_func(np.nanmedian, arr, window, window, axis=axis)
+    return move_func(np.nanmedian, arr, window, min_count, axis=axis)
 
 
 # magic utility functions ---------------------------------------------------
