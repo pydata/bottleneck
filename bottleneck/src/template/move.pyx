@@ -922,7 +922,7 @@ def move_median(arr, int window, min_count=None, axis=-1):
                      move_median_int64,
                      move_median_int32)
     except TypeError:
-        return slow.move_median(arr, window, axis)
+        return slow.move_median(arr, window, min_count, axis)
 
 
 @cython.cdivision(True)
