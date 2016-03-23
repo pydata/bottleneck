@@ -11,7 +11,8 @@ Bottleneck 1.1.0
 
 *Release date: in development, not yet released*
 
-- bn.move_std is slower but more numerically stable
+- bn.move_std is slower but numerically more stable
+- C files are now generated with Cython 0.23.4 instead of 0.21.1
 
 Older versions
 ==============
