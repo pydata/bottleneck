@@ -467,17 +467,15 @@ cdef ndarray move_std_DTYPE0(ndarray a, int window, int min_count, int axis,
         assqdm = 0
         for i in range(min_count - 1):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                delta = ai - amean
-                amean += delta / (i + 1)
-                assqdm += delta * (ai - amean)
+            delta = ai - amean
+            amean += delta / (i + 1)
+            assqdm += delta * (ai - amean)
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
         for i in range(min_count - 1, window):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                delta = ai - amean
-                amean += delta / (i + 1)
-                assqdm += delta * (ai - amean)
+            delta = ai - amean
+            amean += delta / (i + 1)
+            assqdm += delta * (ai - amean)
             yi = sqrt(assqdm / (i + 1 - ddof))
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
         for i in range(window, length):
