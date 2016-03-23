@@ -11,6 +11,7 @@ Bottleneck 1.1.0
 
 *Release date: in development, not yet released*
 
+- bn.move_std is slower but more numerically stable
 
 Older versions
 ==============
