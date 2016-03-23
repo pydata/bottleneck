@@ -317,19 +317,10 @@ def move_std(arr, int window, min_count=None, int axis=-1, int ddof=0):
     Moving window standard deviation along the specified axis, optionally
     ignoring NaNs.
 
-    Unlike bn.nanstd, which uses a more rubust two-pass algorithm, move_nanstd
-    uses a faster one-pass algorithm.
-
-    An example of a one-pass algorithm:
-
-        >>> np.sqrt((arr*arr).mean() - arr.mean()**2)
-
-    An example of a two-pass algorithm:
-
-        >>> np.sqrt(((arr - arr.mean())**2).mean())
-
-    Note in the two-pass algorithm the mean must be found (first pass) before
-    the squared deviation (second pass) can be found.
+    Unlike bn.nanstd, which uses a two-pass algorithm, move_nanstd uses a
+    one-pass algorithm called Welford's method. The algorithm is slow but
+    numerically stable for cases where the mean is large compared to the
+    standard deviation.
 
     Parameters
     ----------
