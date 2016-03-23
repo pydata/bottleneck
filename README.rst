@@ -27,37 +27,37 @@ Bottleneck comes with a benchmark suite::
 
     >>> bn.bench()
     Bottleneck performance benchmark
-        Bottleneck  1.0.0
-        Numpy (np)  1.9.1
+        Bottleneck  1.1.0dev
+        Numpy (np)  1.9.2
         Speed is NumPy time divided by Bottleneck time
         NaN means approx one-third NaNs; float64 and axis=-1 are used
 
                      no NaN     no NaN      NaN        NaN
                        (10,)   (1000,1000)   (10,)   (1000,1000)
-        nansum         36.5        4.0       36.6        9.1
-        nanmean       144.5        5.2      146.1        9.2
-        nanstd        253.2        4.3      253.1        8.4
-        nanvar        241.4        4.2      241.2        8.4
-        nanmin         30.6        1.1       30.5        1.7
-        nanmax         32.1        1.1       32.2        2.9
-        median         43.3        0.8       45.7        0.9
-        nanmedian      58.7        2.8       67.5        6.8
-        ss             14.3        3.5       14.4        3.4
-        nanargmin      60.8        4.1       61.1        7.3
-        nanargmax      61.4        4.1       61.3        9.0
-        anynan         12.9        1.0       13.5       89.2
-        allnan         13.6       98.5       13.5       97.8
-        rankdata       45.5        1.4       45.9        1.9
-        nanrankdata    60.7       26.3       54.1       37.9
-        partsort        6.4        0.9        6.5        1.1
-        argpartsort     3.3        0.7        3.3        0.5
-        replace         9.9        1.2        9.9        1.2
-        move_sum      276.1      121.1      283.2      330.9
-        move_mean     714.4       95.7      723.7      415.8
-        move_std     1102.5       56.2     1160.7      749.0
-        move_min      207.0       20.9      211.0       55.2
-        move_max      213.8       21.4      218.4      118.6
-        move_median   457.9       43.4      452.7      208.4
+        nansum         31.9        3.9       33.0        6.9
+        nanmean       119.1        5.2      119.5        8.4
+        nanstd        168.0        4.8      165.6        7.6
+        nanvar        189.1        4.6      193.7        7.2
+        nanmin         29.6        1.1       28.9        1.4
+        nanmax         29.2        1.0       29.3        1.7
+        median         29.8        0.8       32.5        0.9
+        nanmedian      38.9        2.1       46.7        4.8
+        ss             13.5        3.8        3.0        1.2
+        nanargmin      49.0        4.6       53.9        5.3
+        nanargmax      54.3        3.9       54.6        6.8
+        anynan         12.3        1.6       12.7      158.0
+        allnan         11.9      254.6       12.4      198.5
+        rankdata       38.0        1.5       38.9        2.2
+        nanrankdata    47.1       18.9       43.7       27.7
+        partsort        6.0        0.8        6.2        1.1
+        argpartsort     2.4        0.8        2.6        0.6
+        replace         8.7        1.3        8.8        1.3
+        move_sum      290.3      207.8      288.7      325.1
+        move_mean     626.2      243.0      634.8      472.9
+        move_std     1116.7      127.4     1199.1      393.6
+        move_min      218.2       23.8      214.6       47.4
+        move_max      208.7       21.5      211.9       70.1
+        move_median   372.7       55.1      134.9       74.5
 
 Only arrays with data type (dtype) int32, int64, float32, and float64 are
 accelerated. All other dtypes result in calls to slower, unaccelerated
