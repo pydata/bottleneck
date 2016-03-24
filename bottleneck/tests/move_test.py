@@ -55,17 +55,11 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
                     with np.errstate(invalid='ignore'):
                         with warnings.catch_warnings():
                             warnings.simplefilter("ignore")
-                            if func.__name__ == 'move_median':
-                                actual = func(arr, window, axis=axis)
-                            else:
-                                actual = func(arr, window, min_count,
-                                              axis=axis)
+                            actual = func(arr, window, min_count,
+                                          axis=axis)
                         with warnings.catch_warnings():
                             warnings.simplefilter("ignore")
-                            if func.__name__ == 'move_median':
-                                desired = func0(arr, window, axis=axis)
-                            else:
-                                desired = func0(arr, window, min_count,
+                            desired = func0(arr, window, min_count,
                                                 axis=axis)
                     tup = (func.__name__, window, str(min_count), 'a'+str(i),
                            str(arr.dtype), str(arr.shape), str(axis), arr)
