@@ -889,10 +889,9 @@ cdef extern from "csrc/move_median.c":
 
 def move_median(arr, int window, min_count=None, axis=-1):
     """
-    Moving window median along the specified axis.
+    Moving window median along the specified axis, optionally ignoring NaNs.
 
-    This functions is not protected against NaN. Therefore, you may get
-    unexpected results if the input contains NaN.
+    float64 output is returned for all input data types.
 
     Parameters
     ----------
@@ -900,6 +899,10 @@ def move_median(arr, int window, min_count=None, axis=-1):
         Input array. If `arr` is not an array, a conversion is attempted.
     window : int
         The number of elements in the moving window.
+    min_count: {int, None}, optional
+        If the number of non-NaN values in a window is less than `min_count`,
+        then a value of NaN is assigned to the window. By default `min_count`
+        is None, which is equivalent to setting `min_count` equal to `window`.
     axis : int, optional
         The axis over which the window is moved. By default the last axis
         (axis=-1) is used. An axis of None is not allowed.
@@ -910,16 +913,13 @@ def move_median(arr, int window, min_count=None, axis=-1):
         The moving median of the input array along the specified axis. The
         output has the same shape as the input.
 
-    Notes
-    -----
-    Unexpected results may occur if the input array contains NaN.
-    This function does NOT take `min_count` as an input.
-
     Examples
     --------
     >>> arr = np.array([1.0, 2.0, 3.0, 4.0])
     >>> bn.move_median(arr, window=2)
     array([ nan,  1.5,  2.5,  3.5])
+    >>> bn.move_median(arr, window=2, min_count=1)
+    array([ 1. ,  1.5,  2.5,  3.5])
 
     """
     try:
