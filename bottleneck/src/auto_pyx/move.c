@@ -13509,7 +13509,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
  *             ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
- *             mm_update_movemedian_possiblenan(mm, ai)
+ *             mm_update_movemedian_nonan(mm, ai)
  */
     __pyx_t_7 = __pyx_v_length;
     for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
@@ -13519,7 +13519,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
- *             mm_update_movemedian_possiblenan(mm, ai)
+ *             mm_update_movemedian_nonan(mm, ai)
  *             yi = mm_get_median(mm)
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
@@ -13527,15 +13527,15 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
       /* "move.pyx":1521
  *         for i in range(length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
- *             mm_update_movemedian_possiblenan(mm, ai)             # <<<<<<<<<<<<<<
+ *             mm_update_movemedian_nonan(mm, ai)             # <<<<<<<<<<<<<<
  *             yi = mm_get_median(mm)
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  */
-      mm_update_movemedian_possiblenan(__pyx_v_mm, __pyx_v_ai);
+      mm_update_movemedian_nonan(__pyx_v_mm, __pyx_v_ai);
 
       /* "move.pyx":1522
  *             ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
- *             mm_update_movemedian_possiblenan(mm, ai)
+ *             mm_update_movemedian_nonan(mm, ai)
  *             yi = mm_get_median(mm)             # <<<<<<<<<<<<<<
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *         PyArray_ITER_NEXT(ita)
@@ -13543,7 +13543,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
       __pyx_v_yi = mm_get_median(__pyx_v_mm);
 
       /* "move.pyx":1523
- *             mm_update_movemedian_possiblenan(mm, ai)
+ *             mm_update_movemedian_nonan(mm, ai)
  *             yi = mm_get_median(mm)
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi             # <<<<<<<<<<<<<<
  *         PyArray_ITER_NEXT(ita)
@@ -13810,7 +13810,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):             # <<<<<<<<<<<<<<
  *             ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
- *             mm_update_movemedian_possiblenan(mm, ai)
+ *             mm_update_movemedian_nonan(mm, ai)
  */
     __pyx_t_7 = __pyx_v_length;
     for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
@@ -13820,7 +13820,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
- *             mm_update_movemedian_possiblenan(mm, ai)
+ *             mm_update_movemedian_nonan(mm, ai)
  *             yi = mm_get_median(mm)
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
@@ -13828,15 +13828,15 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
       /* "move.pyx":1550
  *         for i in range(length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
- *             mm_update_movemedian_possiblenan(mm, ai)             # <<<<<<<<<<<<<<
+ *             mm_update_movemedian_nonan(mm, ai)             # <<<<<<<<<<<<<<
  *             yi = mm_get_median(mm)
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  */
-      mm_update_movemedian_possiblenan(__pyx_v_mm, __pyx_v_ai);
+      mm_update_movemedian_nonan(__pyx_v_mm, __pyx_v_ai);
 
       /* "move.pyx":1551
  *             ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
- *             mm_update_movemedian_possiblenan(mm, ai)
+ *             mm_update_movemedian_nonan(mm, ai)
  *             yi = mm_get_median(mm)             # <<<<<<<<<<<<<<
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *         PyArray_ITER_NEXT(ita)
@@ -13844,7 +13844,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
       __pyx_v_yi = mm_get_median(__pyx_v_mm);
 
       /* "move.pyx":1552
- *             mm_update_movemedian_possiblenan(mm, ai)
+ *             mm_update_movemedian_nonan(mm, ai)
  *             yi = mm_get_median(mm)
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi             # <<<<<<<<<<<<<<
  *         PyArray_ITER_NEXT(ita)

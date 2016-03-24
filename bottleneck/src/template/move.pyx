@@ -960,7 +960,14 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
     while PyArray_ITER_NOTDONE(ita):
         for i in range(length):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            mm_update_movemedian_possiblenan(mm, ai)
+            if DTYPE0 == 'float64':
+                mm_update_movemedian_possiblenan(mm, ai)
+            if DTYPE0 == 'float32':
+                mm_update_movemedian_possiblenan(mm, ai)
+            if DTYPE0 == 'int64':
+                mm_update_movemedian_nonan(mm, ai)
+            if DTYPE0 == 'int32':
+                mm_update_movemedian_nonan(mm, ai)
             yi = mm_get_median(mm)
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
         PyArray_ITER_NEXT(ita)
