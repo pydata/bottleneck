@@ -852,11 +852,18 @@ cdef extern from "csrc/move_median.c":
         np.npy_uint64   idx
         np.npy_float64  val
         _mm_node         *next
+        _mm_node         *next_nan
+        _mm_node         *prev_nan
     ctypedef _mm_node mm_node
     struct _mm_handle:
+        np.npy_uint64    w_size
+        np.npy_uint64    n_s_nan
+        np.npy_uint64    n_l_nan
+        int              init_wnd_complete
         int              odd
         np.npy_uint64    n_s
         np.npy_uint64    n_l
+        np.npy_uint64    min_count
         mm_node          **s_heap
         mm_node          **l_heap
         mm_node          **nodes
@@ -865,20 +872,26 @@ cdef extern from "csrc/move_median.c":
         mm_node           *last
         np.npy_uint64 s_first_leaf
         np.npy_uint64 l_first_leaf
+        mm_node           *first_nan_s
+        mm_node           *last_nan_s
+        mm_node           *first_nan_l
+        mm_node           *last_nan_l
+        np.npy_uint64 max_s_heap_size
     ctypedef _mm_handle mm_handle
-    mm_handle *mm_new(np.npy_uint64 size) nogil
-    void mm_insert_init(mm_handle *mm, np.npy_float64 val) nogil
-    void mm_update(mm_handle *mm, np.npy_float64 val) nogil
+
+    void mm_reset(mm_handle* mm) nogil
+    mm_handle *mm_new(np.npy_uint64 size, np.npy_uint64 min_count) nogil
+    void mm_update_movemedian_possiblenan(mm_handle *mm, np.npy_float64 val) nogil
+    void mm_update_movemedian_nonan(mm_handle *mm, np.npy_float64 val) nogil
     np.npy_float64 mm_get_median(mm_handle *mm) nogil
     void mm_free(mm_handle *mm) nogil
 
 
-def move_median(arr, int window, int axis=-1):
+def move_median(arr, int window, min_count=None, axis=-1):
     """
-    Moving window median along the specified axis.
+    Moving window median along the specified axis, optionally ignoring NaNs.
 
-    This functions is not protected against NaN. Therefore, you may get
-    unexpected results if the input contains NaN.
+    float64 output is returned for all input data types.
 
     Parameters
     ----------
@@ -886,6 +899,10 @@ def move_median(arr, int window, int axis=-1):
         Input array. If `arr` is not an array, a conversion is attempted.
     window : int
         The number of elements in the moving window.
+    min_count: {int, None}, optional
+        If the number of non-NaN values in a window is less than `min_count`,
+        then a value of NaN is assigned to the window. By default `min_count`
+        is None, which is equivalent to setting `min_count` equal to `window`.
     axis : int, optional
         The axis over which the window is moved. By default the last axis
         (axis=-1) is used. An axis of None is not allowed.
@@ -896,26 +913,23 @@ def move_median(arr, int window, int axis=-1):
         The moving median of the input array along the specified axis. The
         output has the same shape as the input.
 
-    Notes
-    -----
-    Unexpected results may occur if the input array contains NaN.
-    This function does NOT take `min_count` as an input.
-
     Examples
     --------
     >>> arr = np.array([1.0, 2.0, 3.0, 4.0])
     >>> bn.move_median(arr, window=2)
     array([ nan,  1.5,  2.5,  3.5])
+    >>> bn.move_median(arr, window=2, min_count=1)
+    array([ 1. ,  1.5,  2.5,  3.5])
 
     """
     try:
-        return mover(arr, window, window, axis,
+        return mover(arr, window, min_count, axis,
                      move_median_float64,
                      move_median_float32,
                      move_median_int64,
                      move_median_int32)
     except TypeError:
-        return slow.move_median(arr, window, axis)
+        return slow.move_median(arr, window, min_count, axis)
 
 
 @cython.cdivision(True)
@@ -940,24 +954,25 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
-    mm = mm_new(window)
+    mm = mm_new(window, min_count)
+    if mm is NULL:
+        raise MemoryError()
     while PyArray_ITER_NOTDONE(ita):
-        for i in range(window - 1):
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(window):
+        for i in range(length):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            mm_insert_init(mm, ai)
-        yi = mm_get_median(mm)
-        (<DTYPE1_t*>((<char*>pid(ity)) + (window - 1)*ystride))[0] = yi
-        for i in range(window, length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            mm_update(mm, ai)
+            if DTYPE0 == 'float64':
+                mm_update_movemedian_possiblenan(mm, ai)
+            if DTYPE0 == 'float32':
+                mm_update_movemedian_possiblenan(mm, ai)
+            if DTYPE0 == 'int64':
+                mm_update_movemedian_nonan(mm, ai)
+            if DTYPE0 == 'int32':
+                mm_update_movemedian_nonan(mm, ai)
             yi = mm_get_median(mm)
             (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        mm.n_s = 0
-        mm.n_l = 0
         PyArray_ITER_NEXT(ita)
         PyArray_ITER_NEXT(ity)
+        mm_reset(mm)
     mm_free(mm)
     return y
 

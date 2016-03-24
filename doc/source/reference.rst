@@ -20,9 +20,7 @@ non-reduce with axis               :meth:`rankdata <bottleneck.rankdata>`, :meth
 
 moving window                      :meth:`move_sum <bottleneck.move_sum>`, :meth:`move_mean <bottleneck.move_mean>`,
                                    :meth:`move_std <bottleneck.move_std>`, :meth:`move_min <bottleneck.move_min>`,
-                                   :meth:`move_max <bottleneck.move_max>`
-
-moving window without `min_count`  :meth:`move_median <bottleneck.move_median>`
+                                   :meth:`move_max <bottleneck.move_max>`, :meth:`move_median <bottleneck.move_median>`
 
 =================================  ==============================================================================================
 
@@ -144,13 +142,6 @@ input.
 ------------
 
 .. autofunction:: bottleneck.move_max
-
-
-Moving window functions without `min_count`
--------------------------------------------
-
-Moving window functions (with a 1d window) that do NOT take `min_count` as an
-optional input. In other works, NaNs in will results in NaNs in the output.
 
 ------------
 
