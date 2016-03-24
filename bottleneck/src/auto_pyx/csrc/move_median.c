@@ -99,14 +99,16 @@ void mm_update_nonan(mm_handle* mm, value_t val);
 
 void check_asserts(mm_handle* mm)
 {
-#if 1
-    return;
-#else
     mm_dump(mm);
     assert(mm->n_s >= mm->n_s_nan);
     assert(mm->n_l >= mm->n_l_nan);
     _size_t valid_s = mm->n_s - mm->n_s_nan;
     _size_t valid_l = mm->n_l - mm->n_l_nan;
+
+    // use valid_s and valid_l or get compiler warnings
+    // these lines do nothing
+    _size_t dummy = valid_l + valid_s;
+    if (dummy > 100){dummy = 99;}
 
     assert(valid_s < 5000000000); //most likely an overflow
     assert(valid_l < 5000000000); //most likely an overflow
@@ -170,7 +172,6 @@ void check_asserts(mm_handle* mm)
 
 
     assert(mm->n_s <= mm->max_s_heap_size);
-#endif
 }
 
 
@@ -487,7 +488,7 @@ void mm_insert_nan(mm_handle *mm)
     node->next = mm->first;
     mm->first = node;
 
-    check_asserts(mm);
+    //check_asserts(mm);
 
     int l_heap_full = (n_l == (mm->w_size - mm->max_s_heap_size));
     int s_heap_full = (n_s == mm->max_s_heap_size);
@@ -611,7 +612,7 @@ void mm_insert_init(mm_handle *mm, value_t val) {
     _size_t n_s_nan  = mm->n_s_nan;
     _size_t n_l_nan  = mm->n_l_nan;
     // double check these in debug, to catch overflows
-    check_asserts(mm);
+    //check_asserts(mm);
 
     int is_nan_val = isnan(val);
 
@@ -649,7 +650,7 @@ void mm_insert_init(mm_handle *mm, value_t val) {
         if (is_nan_val)
         {
             mm_insert_nan(mm);
-            check_asserts(mm);
+            //check_asserts(mm);
         }
         else
         {
@@ -767,7 +768,7 @@ void mm_update_checknan(mm_handle *mm, value_t val)
     if (isnan(val))
     {
         // double check these in debug, to catch overflows
-        check_asserts(mm);
+        //check_asserts(mm);
 
         // try to keep the heaps balanced, so we can try to avoid the nan rebalancing penalty
         // makes significant difference when % of nans is large and window size is also large
@@ -809,7 +810,7 @@ void mm_update_checknan(mm_handle *mm, value_t val)
         move_nan_from_l_to_s(mm); // min heap is too big...
 
     // double check these in debug, to catch overflows
-    check_asserts(mm);
+    //check_asserts(mm);
 }
 
 
@@ -885,7 +886,7 @@ void mm_update_movemedian_possiblenan(mm_handle* mm, value_t val)
     else
         mm_update_checknan(mm, val);
 
-    check_asserts(mm);
+    //check_asserts(mm);
 }
 
 /*
@@ -900,7 +901,7 @@ void mm_update_movemedian_nonan(mm_handle* mm, value_t val)
     else
         mm_update_nonan(mm, val);
 
-    check_asserts(mm);
+    //check_asserts(mm);
 }
 
 /*
@@ -912,7 +913,7 @@ value_t mm_get_median(mm_handle *mm) {
     _size_t n_s_nan  = mm->n_s_nan;
     _size_t n_l_nan  = mm->n_l_nan;
 
-    check_asserts(mm);
+    //check_asserts(mm);
 
     _size_t nonnan_n_l = n_l - n_l_nan;
     _size_t nonnan_n_s = n_s - n_s_nan;
@@ -980,9 +981,6 @@ void process_median_nonans(mm_handle *mm,
  * Print the two heaps to the screen.
  */
 void mm_dump(mm_handle *mm) {
-#if 1
-    return;
-#else
     if (!mm) {
         printf("mm is empty");
         return;
@@ -1004,7 +1002,6 @@ void mm_dump(mm_handle *mm) {
     for(i = 0; i < mm->n_l; ++i) {
         printf("%i %f\n", (int)mm->l_heap[i]->idx, mm->l_heap[i]->val);
     }
-#endif
 }
 
 /*
