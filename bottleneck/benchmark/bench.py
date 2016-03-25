@@ -118,7 +118,8 @@ def benchsuite(shapes, dtype, axis, nans):
             try: from numpy import %s as sl_func
             except ImportError: from bottleneck.slow import %s as sl_func
             if "%s" == "rankdata": sl_func([1, 2, 3])
-        """ % (func, func, func, func)
+            if "%s" == "median": from bottleneck.slow import median as sl_func
+        """ % (func, func, func, func, func)
         run['setups'] = getsetups(setup, shapes, nans)
         suite.append(run)
 

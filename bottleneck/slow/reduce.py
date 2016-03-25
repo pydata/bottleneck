@@ -7,8 +7,7 @@ __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
 
 rankdata_func = None
 
-from numpy import (nansum, nanmean, nanstd, nanvar, nanmin, nanmax, median,
-                   nanmedian)
+from numpy import nansum, nanmean, nanstd, nanvar, nanmin, nanmax, nanmedian
 
 
 def nanargmin(arr, axis=None):
@@ -23,6 +22,13 @@ def nanargmax(arr, axis=None):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         return np.nanargmax(arr, axis=axis)
+
+
+def median(arr, axis=None):
+    "Slow median function used for unaccelerated dtypes."
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        return np.median(arr, axis=axis)
 
 
 def ss(arr, axis=None):
