@@ -66,6 +66,8 @@ def unit_maker(func, func0):
                 da = actual.dtype
                 dd = desired.dtype
                 assert_equal(da, dd, err_msg % (da, dd))
+    yield np.array([1, 2, 3], dtype='>f4')
+    yield np.array([1, 2, 3], dtype='<f4')
 
 
 def test_partsort():
