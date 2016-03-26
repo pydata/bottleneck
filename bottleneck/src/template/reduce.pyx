@@ -39,6 +39,7 @@ from numpy cimport PyArray_IterNew
 from numpy cimport PyArray_TYPE
 from numpy cimport PyArray_NDIM
 from numpy cimport NPY_CORDER
+from numpy cimport PyArray_ISBYTESWAPPED
 
 from numpy cimport PyArray_FillWithScalar
 from numpy cimport PyArray_Copy
@@ -2227,6 +2228,11 @@ cdef reducer(arr, axis,
         a = arr
     else:
         a = np.array(arr, copy=False)
+
+    # check for byte swapped input array
+    cdef bint is_swapped = PyArray_ISBYTESWAPPED(a)
+    if is_swapped:
+        raise TypeError
 
     # input array
     if ravel == 1:
