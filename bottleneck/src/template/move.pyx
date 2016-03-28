@@ -29,6 +29,7 @@ from numpy cimport PyArray_IterAllButAxis
 
 from numpy cimport PyArray_TYPE
 from numpy cimport PyArray_NDIM
+from numpy cimport PyArray_ISBYTESWAPPED
 
 from numpy cimport PyArray_Copy
 from numpy cimport PyArray_EMPTY
@@ -996,6 +997,11 @@ cdef ndarray mover(arr, int window, min_count, int axis,
         a = arr
     else:
         a = np.array(arr, copy=False)
+
+    # check for byte swapped input array
+    cdef bint is_swapped = PyArray_ISBYTESWAPPED(a)
+    if is_swapped:
+        raise TypeError
 
     # min_count
     cdef int mc

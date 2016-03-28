@@ -33,6 +33,8 @@ def arrays(dtypes=DTYPES):
             for i in range(0, a.size, 2):
                 a.flat[i] *= -1
                 yield a
+    yield np.array([1, 2, 3], dtype='>f4')
+    yield np.array([1, 2, 3], dtype='<f4')
 
 
 def unit_maker(func, func0):

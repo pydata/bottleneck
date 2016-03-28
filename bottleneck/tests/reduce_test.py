@@ -40,6 +40,8 @@ def arrays(dtypes=DTYPES, nans=True):
                     a.flat[i] = np.inf
                     yield a
                     yield -a
+    yield np.array([1, 2, 3], dtype='>f4')
+    yield np.array([1, 2, 3], dtype='<f4')
     if nans:
         # nanmedian regression tests
         a = np.array([1, nan, nan, 2])

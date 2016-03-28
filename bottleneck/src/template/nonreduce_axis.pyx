@@ -26,6 +26,7 @@ from numpy cimport PyArray_Ravel
 from numpy cimport PyArray_ArgSort
 from numpy cimport NPY_QUICKSORT
 from numpy cimport PyArray_FillWithScalar
+from numpy cimport PyArray_ISBYTESWAPPED
 
 from numpy cimport ndarray
 from numpy cimport import_array
@@ -518,6 +519,11 @@ cdef ndarray nonreducer_axis(arr, axis,
         a = arr
     else:
         a = np.array(arr, copy=False)
+
+    # check for byte swapped input array
+    cdef bint is_swapped = PyArray_ISBYTESWAPPED(a)
+    if is_swapped:
+        raise TypeError
 
     # input array
     cdef int dtype = PyArray_TYPE(a)
