@@ -17,6 +17,7 @@ from numpy cimport PyArray_IterAllButAxis
 
 from numpy cimport PyArray_TYPE
 from numpy cimport PyArray_NDIM
+from numpy cimport PyArray_ISBYTESWAPPED
 
 from numpy cimport ndarray
 from numpy cimport import_array
@@ -157,6 +158,11 @@ cdef ndarray nonreducer(arr,
             raise TypeError("`arr` must be a numpy array.")
         else:
             a = np.array(arr, copy=False)
+
+    # check for byte swapped input array
+    cdef bint is_swapped = PyArray_ISBYTESWAPPED(a)
+    if is_swapped:
+        raise TypeError
 
     # input array
     cdef int dtype = PyArray_TYPE(a)
