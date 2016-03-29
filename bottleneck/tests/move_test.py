@@ -92,6 +92,11 @@ def test_move_std():
     yield unit_maker, bn.move_std, bn.slow.move_std, 5
 
 
+def test_move_var():
+    "Test move_var."
+    yield unit_maker, bn.move_var, bn.slow.move_var, 5
+
+
 def test_move_min():
     "Test move_min."
     yield unit_maker, bn.move_min, bn.slow.move_min, 5

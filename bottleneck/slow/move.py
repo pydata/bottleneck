@@ -9,8 +9,8 @@ import warnings
 import numpy as np
 
 
-__all__ = ['move_sum', 'move_mean', 'move_std', 'move_min', 'move_max',
-           'move_median']
+__all__ = ['move_sum', 'move_mean', 'move_std', 'move_var', 'move_min',
+           'move_max', 'move_median']
 
 
 def move_sum(arr, window, min_count=None, axis=-1):
@@ -26,6 +26,11 @@ def move_mean(arr, window, min_count=None, axis=-1):
 def move_std(arr, window, min_count=None, axis=-1, ddof=0):
     "Slow move_std for unaccelerated dtype"
     return move_func(np.nanstd, arr, window, min_count, axis=axis)
+
+
+def move_var(arr, window, min_count=None, axis=-1, ddof=0):
+    "Slow move_var for unaccelerated dtype"
+    return move_func(np.nanvar, arr, window, min_count, axis=axis)
 
 
 def move_min(arr, window, min_count=None, axis=-1):

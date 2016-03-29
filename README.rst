@@ -32,32 +32,33 @@ Bottleneck comes with a benchmark suite::
         Speed is NumPy time divided by Bottleneck time
         NaN means approx one-third NaNs; float64 and axis=-1 are used
 
-                     no NaN     no NaN      NaN        NaN
+                     no NaN     no NaN      NaN        NaN    
                        (10,)   (1000,1000)   (10,)   (1000,1000)
-        nansum         34.7        3.9       34.8        6.5
-        nanmean       121.2        5.6      123.2        8.2
-        nanstd        209.0        4.7      212.1        7.2
-        nanvar        210.5        4.6      205.5        6.9
-        nanmin         30.9        1.1       31.5        1.4
-        nanmax         31.3        1.0       30.7        1.8
-        median         50.6        0.8       60.2        1.0
-        nanmedian      49.8        2.6       57.6        6.1
-        ss             14.3        3.8        3.1        1.1
-        nanargmin      55.1        3.8       55.6        5.1
-        nanargmax      55.4        3.9       56.2        6.5
-        anynan         13.6        1.5       14.3      170.2
-        allnan         14.1      271.1       13.6      196.6
-        rankdata       38.2        1.6       37.8        2.3
-        nanrankdata    45.3       20.7       41.3       28.0
-        partsort        5.0        0.8        5.3        1.1
-        argpartsort     2.6        0.8        2.7        0.6
-        replace        10.2        1.3        9.9        1.5
-        move_sum      281.9      189.0      296.9      326.2
-        move_mean     730.1      224.0      784.0      466.7
-        move_std     1122.0      132.5     1158.3      385.9
-        move_min      220.6       22.9      225.3       48.7
-        move_max      220.2       22.2      221.7       72.6
-        move_median   396.1       35.7      387.1       53.8
+        nansum         34.9        4.0       34.4        6.4
+        nanmean       119.3        5.6      121.0        8.1
+        nanstd        207.2        4.7      207.2        7.3
+        nanvar        198.7        4.6      198.5        6.9
+        nanmin         30.8        1.1       31.0        1.4
+        nanmax         30.0        1.1       30.9        1.7
+        median         49.3        0.8       60.6        1.0
+        nanmedian      49.6        2.7       55.2        6.1
+        ss             16.1        4.9        3.2        1.1
+        nanargmin      52.3        4.3       55.8        5.9
+        nanargmax      55.3        4.5       60.3        6.9
+        anynan         13.8        1.5       14.4      243.7
+        allnan         13.6      356.8       13.2      276.7
+        rankdata       35.5        1.4       37.7        2.5
+        nanrankdata    47.0       18.2       42.6       27.9
+        partsort        5.0        0.8        5.2        1.1
+        argpartsort     2.7        0.8        2.8        0.6
+        replace         9.8        1.3        9.9        1.3
+        move_sum      284.2      190.3      288.1      306.9
+        move_mean     718.1      237.7      731.9      444.4
+        move_std     1128.0      124.5     1186.3      378.9
+        move_var     1138.9      184.1     1174.8      372.4
+        move_min      213.8       22.7      219.9       47.3
+        move_max      218.8       21.7      214.3       72.9
+        move_median   383.3       35.6      385.7       57.3
 
 Only arrays with data type (dtype) int32, int64, float32, and float64 are
 accelerated. All other dtypes result in calls to slower, unaccelerated
@@ -121,6 +122,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 79 tests in 70.712s
+    Ran 82 tests in 70.712s
     OK
-    <nose.result.TextTestResult run=79 errors=0 failures=0>
+    <nose.result.TextTestResult run=82 errors=0 failures=0>

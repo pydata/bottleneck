@@ -81,6 +81,7 @@ def test_modification():
              bn.move_sum,
              bn.move_mean,
              bn.move_std,
+             bn.move_var,
              bn.move_min,
              bn.move_max,
              bn.move_median,

@@ -487,6 +487,182 @@ cdef ndarray move_std_DTYPE0(ndarray a, int window, int min_count, int axis,
     return y
 
 
+# move_var-----------------------------------------------------------------
+
+def move_var(arr, int window, min_count=None, int axis=-1, int ddof=0):
+    """
+    Moving window standard deviation along the specified axis, optionally
+    ignoring NaNs.
+
+    Unlike bn.nanvar, which uses a two-pass algorithm, move_nanvar uses a
+    one-pass algorithm called Welford's method. The algorithm is slow but
+    numerically stable for cases where the mean is large compared to the
+    standard deviation.
+
+    Parameters
+    ----------
+    arr : ndarray
+        Input array. If `arr` is not an array, a conversion is attempted.
+    window : int
+        The number of elements in the moving window.
+    min_count: {int, None}, optional
+        If the number of non-NaN values in a window is less than `min_count`,
+        then a value of NaN is assigned to the window. By default `min_count`
+        is None, which is equivalent to setting `min_count` equal to `window`.
+    axis : int, optional
+        The axis over which the window is moved. By default the last axis
+        (axis=-1) is used. An axis of None is not allowed.
+    ddof : int, optional
+        Means Delta Degrees of Freedom. The divisor used in calculations
+        is ``N - ddof``, where ``N`` represents the number of elements.
+        By default `ddof` is zero.
+
+    Returns
+    -------
+    y : ndarray
+        The moving standard deviation of the input array along the specified
+        axis. The output has the same shape as the input.
+
+    Examples
+    --------
+    >>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
+    >>> bn.move_var(arr, window=2)
+    array([ nan,  0.5,  0.5,  nan,  nan])
+    >>> bn.move_var(arr, window=2, min_count=1)
+    array([ 0. ,  0.5,  0.5,  0. ,  0. ])
+
+    """
+    try:
+        return mover(arr, window, min_count, axis,
+                     move_var_float64,
+                     move_var_float32,
+                     move_var_int64,
+                     move_var_int32,
+                     ddof)
+    except TypeError:
+        return slow.move_var(arr, window, min_count, axis, ddof)
+
+
+@cython.cdivision(True)
+cdef ndarray move_var_DTYPE0(ndarray a, int window, int min_count, int axis,
+                             np.flatiter ita, Py_ssize_t stride,
+                             Py_ssize_t length, int a_ndim,
+                             np.npy_intp* y_dims, int ddof):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i, count
+    cdef DTYPE0_t delta, amean, assqdm, ai, aold, yi
+    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef Py_ssize_t ystride = y.strides[axis]
+    while PyArray_ITER_NOTDONE(ita):
+        amean = 0
+        assqdm = 0
+        count = 0
+        for i in range(min_count - 1):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai == ai:
+                count += 1
+                delta = ai - amean
+                amean += delta / count
+                assqdm += delta * (ai - amean)
+            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+        for i in range(min_count - 1, window):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai == ai:
+                count += 1
+                delta = ai - amean
+                amean += delta / count
+                assqdm += delta * (ai - amean)
+            if count >= min_count:
+                if assqdm < 0:
+                    assqdm = 0
+                yi = assqdm / (count - ddof)
+            else:
+                yi = NAN
+            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+        for i in range(window, length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+            if ai == ai:
+                if aold == aold:
+                    delta = ai - aold
+                    aold -= amean
+                    amean += delta / count
+                    ai -= amean
+                    assqdm += (ai + aold) * delta
+                else:
+                    count += 1
+                    delta = ai - amean
+                    amean += delta / count
+                    assqdm += delta * (ai - amean)
+            else:
+                if aold == aold:
+                    count -= 1
+                    if count > 0:
+                        delta = aold - amean
+                        amean -= delta / count
+                        assqdm -= delta * (aold - amean)
+                    else:
+                        amean = 0
+                        assqdm = 0
+            if count >= min_count:
+                if assqdm < 0:
+                    assqdm = 0
+                yi = assqdm / (count - ddof)
+            else:
+                yi = NAN
+            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+        PyArray_ITER_NEXT(ita)
+        PyArray_ITER_NEXT(ity)
+    return y
+
+
+@cython.cdivision(True)
+cdef ndarray move_var_DTYPE0(ndarray a, int window, int min_count, int axis,
+                             np.flatiter ita, Py_ssize_t stride,
+                             Py_ssize_t length, int a_ndim,
+                             np.npy_intp* y_dims, int ddof):
+    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
+    cdef Py_ssize_t i
+    cdef int winddof
+    cdef DTYPE1_t delta, amean, assqdm, yi, ai, aold
+    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef Py_ssize_t ystride = y.strides[axis]
+    winddof = window - ddof
+    while PyArray_ITER_NOTDONE(ita):
+        amean = 0
+        assqdm = 0
+        for i in range(min_count - 1):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            delta = ai - amean
+            amean += delta / (i + 1)
+            assqdm += delta * (ai - amean)
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+        for i in range(min_count - 1, window):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            delta = ai - amean
+            amean += delta / (i + 1)
+            assqdm += delta * (ai - amean)
+            yi = assqdm / (i + 1 - ddof)
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+        for i in range(window, length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+            delta = ai - aold
+            aold -= amean
+            amean += delta / window
+            ai -= amean
+            assqdm += (ai + aold) * delta
+            if assqdm < 0:
+                assqdm = 0
+            yi = assqdm / winddof
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+        PyArray_ITER_NEXT(ita)
+        PyArray_ITER_NEXT(ity)
+    return y
+
+
 # move_min ---------------------------------------------------------------
 
 def move_min(arr, int window, min_count=None, int axis=-1):
