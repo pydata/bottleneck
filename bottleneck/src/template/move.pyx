@@ -491,8 +491,7 @@ cdef ndarray move_std_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 def move_var(arr, int window, min_count=None, int axis=-1, int ddof=0):
     """
-    Moving window standard deviation along the specified axis, optionally
-    ignoring NaNs.
+    Moving window variance along the specified axis, optionally ignoring NaNs.
 
     Unlike bn.nanvar, which uses a two-pass algorithm, move_nanvar uses a
     one-pass algorithm called Welford's method. The algorithm is slow but
@@ -520,16 +519,16 @@ def move_var(arr, int window, min_count=None, int axis=-1, int ddof=0):
     Returns
     -------
     y : ndarray
-        The moving standard deviation of the input array along the specified
-        axis. The output has the same shape as the input.
+        The moving variance of the input array along the specified axis. The
+        output has the same shape as the input.
 
     Examples
     --------
     >>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
     >>> bn.move_var(arr, window=2)
-    array([ nan,  0.5,  0.5,  nan,  nan])
+    array([ nan,  0.25,  0.25,  nan,  nan])
     >>> bn.move_var(arr, window=2, min_count=1)
-    array([ 0. ,  0.5,  0.5,  0. ,  0. ])
+    array([ 0. ,  0.25,  0.25,  0. ,  0. ])
 
     """
     try:
