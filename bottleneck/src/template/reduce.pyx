@@ -2009,13 +2009,15 @@ cdef ndarray anynan_one_DTYPE0(np.flatiter ita,
                                Py_ssize_t stride, Py_ssize_t length,
                                int a_ndim, np.npy_intp* y_dims, int int_input):
     # bn.dtypes = [['float64'], ['float32']]
-    cdef int f
+    cdef int f, err_code
     cdef Py_ssize_t i
     cdef DTYPE0_t ai
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_BOOL, 0)
     cdef np.flatiter ity = PyArray_IterNew(y)
     if length == 0:
-        PyArray_FillWithScalar(y, 0)
+        err_code = PyArray_FillWithScalar(y, 0)
+        if err_code == -1:
+            raise RuntimeError("`PyArray_FillWithScalar` returned an error")
         return y
     while PyArray_ITER_NOTDONE(ita):
         f = 1
@@ -2037,7 +2039,10 @@ cdef ndarray anynan_one_DTYPE0(np.flatiter ita,
                                int a_ndim, np.npy_intp* y_dims, int int_input):
     # bn.dtypes = [['int64'], ['int32']]
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_BOOL, 0)
-    PyArray_FillWithScalar(y, 0)
+    cdef int err_code
+    err_code = PyArray_FillWithScalar(y, 0)
+    if err_code == -1:
+        raise RuntimeError("`PyArray_FillWithScalar` returned an error")
     return y
 
 
@@ -2148,13 +2153,15 @@ cdef ndarray allnan_one_DTYPE0(np.flatiter ita,
                                Py_ssize_t stride, Py_ssize_t length,
                                int a_ndim, np.npy_intp* y_dims, int int_input):
     # bn.dtypes = [['float64'], ['float32']]
-    cdef int f
+    cdef int f, err_code
     cdef Py_ssize_t i
     cdef DTYPE0_t ai
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_BOOL, 0)
     cdef np.flatiter ity = PyArray_IterNew(y)
     if length == 0:
-        PyArray_FillWithScalar(y, 1)
+        err_code = PyArray_FillWithScalar(y, 1)
+        if err_code == -1:
+            raise RuntimeError("`PyArray_FillWithScalar` returned an error")
         return y
     while PyArray_ITER_NOTDONE(ita):
         f = 1
@@ -2177,13 +2184,15 @@ cdef ndarray allnan_one_DTYPE0(np.flatiter ita,
     # bn.dtypes = [['int64'], ['int32']]
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_BOOL, 0)
     cdef Py_ssize_t i, size = 1
-    cdef int f = 0
+    cdef int f = 0, err_code
     for i in range(a_ndim - 1):
         size *= y_dims[i]
     size *= length
     if size == 0:
         f = 1
-    PyArray_FillWithScalar(y, f)
+    err_code = PyArray_FillWithScalar(y, f)
+    if err_code == -1:
+        raise RuntimeError("`PyArray_FillWithScalar` returned an error")
     return y
 
 

@@ -341,6 +341,7 @@ cdef ndarray nanrankdata_DTYPE0(ndarray a, int axis,
     cdef Py_ssize_t j=0, k, idx, dupcount=0, i
     cdef DTYPE1_t old, new, averank, sumranks = 0
     cdef Py_ssize_t length = a.shape[axis]
+    cdef int err_code
 
     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)
     cdef Py_ssize_t astride = a.strides[axis]
@@ -354,7 +355,9 @@ cdef ndarray nanrankdata_DTYPE0(ndarray a, int axis,
     cdef Py_ssize_t ystride = y.strides[axis]
 
     if length == 0:
-        PyArray_FillWithScalar(y, NAN)
+        err_code = PyArray_FillWithScalar(y, NAN)
+        if err_code == -1:
+            raise RuntimeError("`PyArray_FillWithScalar` returned an error")
         return y
 
     while PyArray_ITER_NOTDONE(ita):
@@ -454,6 +457,7 @@ cdef ndarray rankdata_DTYPE0(ndarray a, int axis,
     cdef Py_ssize_t j=0, k, idx, dupcount=0, i
     cdef DTYPE1_t old, new, averank, sumranks = 0
     cdef Py_ssize_t length = a.shape[axis]
+    cdef int err_code
 
     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)
     cdef Py_ssize_t astride = a.strides[axis]
@@ -467,7 +471,9 @@ cdef ndarray rankdata_DTYPE0(ndarray a, int axis,
     cdef Py_ssize_t ystride = y.strides[axis]
 
     if length == 0:
-        PyArray_FillWithScalar(y, NAN)
+        err_code = PyArray_FillWithScalar(y, NAN)
+        if err_code == -1:
+            raise RuntimeError("`PyArray_FillWithScalar` returned an error")
         return y
 
     while PyArray_ITER_NOTDONE(ita):
