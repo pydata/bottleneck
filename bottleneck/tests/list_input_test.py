@@ -156,6 +156,11 @@ def test_move_max():
     yield unit_maker, bn.move_max, bn.slow.move_max, (2,)
 
 
+def test_move_argmax():
+    "Test move_argmax."
+    yield unit_maker, bn.move_argmax, bn.slow.move_argmax, (2,)
+
+
 def test_move_median():
     "Test move_median."
     yield unit_maker, bn.move_median, bn.slow.move_median, (2,)
