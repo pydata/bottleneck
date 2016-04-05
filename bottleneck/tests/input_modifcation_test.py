@@ -84,6 +84,7 @@ def test_modification():
              bn.move_var,
              bn.move_min,
              bn.move_max,
+             bn.move_argmax,
              bn.move_median,
              ]
     for func in funcs:

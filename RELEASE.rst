@@ -11,12 +11,21 @@ Bottleneck 1.1.0
 
 *Release date: in development, not yet released*
 
+This release makes Bottleneck more robust and adds X new functions.
+
+**More Robust**
+
 - bn.move_std is slower but numerically more stable
 - bn.move_median is slower but can now handle NaNs and `min_count` parameter
 - Bottleneck can now handle byte-swapped input arrays
 - Bottleneck now checks that calls to PyArray_FillWithScalar are successful
 - C files are now generated with Cython 0.23.4 instead of 0.21.1
-- New function: bn.move_var
+
+**New Functions**
+
+- bn.move_var
+- bn.move_argmax
+
 
 Older versions
 ==============

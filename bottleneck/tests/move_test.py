@@ -34,9 +34,10 @@ def arrays(dtypes=DTYPES, nans=True):
                         a.flat[i] = np.nan
                         yield a
                         yield -a
-    yield np.array([1., 2., 3.]) + 1e9  # check that move_std is robust
+    yield np.array([1, 2, 3]) + 1e9  # check that move_std is robust
     yield np.array([1, 2, 3], dtype='>f4')
     yield np.array([1, 2, 3], dtype='<f4')
+    yield np.array([1, 1, 1])  # move_argmax should pick index of rightmost tie
 
 
 def unit_maker(func, func0, decimal=np.inf, nans=True):
@@ -105,6 +106,11 @@ def test_move_min():
 def test_move_max():
     "Test move_max."
     yield unit_maker, bn.move_max, bn.slow.move_max, 5
+
+
+def test_move_argmax():
+    "Test move_argmax."
+    yield unit_maker, bn.move_argmax, bn.slow.move_argmax, 5
 
 
 def test_move_median():
