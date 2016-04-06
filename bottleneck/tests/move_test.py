@@ -108,6 +108,11 @@ def test_move_max():
     yield unit_maker, bn.move_max, bn.slow.move_max, 5
 
 
+def test_move_argmin():
+    "Test move_argmin."
+    yield unit_maker, bn.move_argmin, bn.slow.move_argmin, 5
+
+
 def test_move_argmax():
     "Test move_argmax."
     yield unit_maker, bn.move_argmax, bn.slow.move_argmax, 5

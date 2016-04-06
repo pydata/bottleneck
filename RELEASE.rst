@@ -24,6 +24,7 @@ This release makes Bottleneck more robust and adds X new functions.
 **New Functions**
 
 - bn.move_var
+- bn.move_argmin
 - bn.move_argmax
 
 

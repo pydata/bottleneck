@@ -10,7 +10,7 @@ import numpy as np
 
 
 __all__ = ['move_sum', 'move_mean', 'move_std', 'move_var', 'move_min',
-           'move_max', 'move_median', 'move_argmax']
+           'move_max', 'move_argmin', 'move_argmax', 'move_median']
 
 
 def move_sum(arr, window, min_count=None, axis=-1):
@@ -43,9 +43,28 @@ def move_max(arr, window, min_count=None, axis=-1):
     return move_func(np.nanmax, arr, window, min_count, axis=axis)
 
 
-def move_median(arr, window, min_count=None, axis=-1):
-    "Slow move_median for unaccelerated dtype"
-    return move_func(np.nanmedian, arr, window, min_count, axis=axis)
+def move_argmin(arr, window, min_count=None, axis=-1):
+    "Slow move_argmin for unaccelerated dtype"
+    def argmin(arr, axis):
+        arr = np.array(arr, copy=False)
+        flip = [slice(None)] * arr.ndim
+        flip[axis] = slice(None, None, -1)
+        arr = arr[flip]  # if tie, pick index of rightmost tie
+        try:
+            idx = np.nanargmin(arr, axis=axis)
+        except ValueError:
+            # an all nan slice encountered
+            a = arr.copy()
+            mask = np.isnan(a)
+            np.copyto(a, np.inf, where=mask)
+            idx = np.argmin(a, axis=axis).astype(np.float64)
+            if idx.ndim == 0:
+                idx = np.nan
+            else:
+                mask = np.all(mask, axis=axis)
+                idx[mask] = np.nan
+        return idx
+    return move_func(argmin, arr, window, min_count, axis=axis)
 
 
 def move_argmax(arr, window, min_count=None, axis=-1):
@@ -70,6 +89,11 @@ def move_argmax(arr, window, min_count=None, axis=-1):
                 idx[mask] = np.nan
         return idx
     return move_func(argmax, arr, window, min_count, axis=axis)
+
+
+def move_median(arr, window, min_count=None, axis=-1):
+    "Slow move_median for unaccelerated dtype"
+    return move_func(np.nanmedian, arr, window, min_count, axis=axis)
 
 
 # magic utility functions ---------------------------------------------------

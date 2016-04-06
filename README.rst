@@ -32,34 +32,35 @@ Bottleneck comes with a benchmark suite::
         Speed is NumPy time divided by Bottleneck time
         NaN means approx one-third NaNs; float64 and axis=-1 are used
 
-                     no NaN     no NaN      NaN        NaN
+                     no NaN     no NaN      NaN        NaN    
                        (10,)   (1000,1000)   (10,)   (1000,1000)
-        nansum         34.9        3.8       35.7        5.6
-        nanmean       125.1        5.8      120.9        8.0
-        nanstd        205.8        4.6      210.6        7.2
-        nanvar        209.1        4.2      186.1        6.9
-        nanmin         31.1        1.1       30.9        1.3
-        nanmax         31.4        1.0       30.6        1.7
-        median         49.2        0.8       56.8        1.0
-        nanmedian      47.9        2.5       55.1        6.0
-        ss             14.2        3.9        3.1        1.1
-        nanargmin      55.0        3.9       57.2        5.4
-        nanargmax      56.1        4.0       56.3        6.6
-        anynan         13.6        1.5       14.0      191.9
-        allnan         14.0      275.8       14.1      206.4
-        rankdata       38.4        1.5       45.0        2.0
-        nanrankdata    48.4       20.1       42.9       28.9
-        partsort        4.5        0.8        4.8        1.1
-        argpartsort     2.7        0.7        2.8        0.6
-        replace         9.2        1.3        9.1        1.3
-        move_sum      324.3      187.5      324.4      315.5
-        move_mean     735.0      245.9      800.3      435.7
-        move_std     1235.9      123.7     1320.2      378.9
-        move_var     1251.4      179.3     1292.7      374.0
-        move_min      231.7       23.8      242.2       49.0
-        move_max      246.1       21.7      241.5       72.7
-        move_argmax   373.5       75.2      398.8      259.0
-        move_median   382.1       36.5      383.3       50.2
+        nansum         35.2        3.7       35.2        5.8
+        nanmean       120.5        5.8      125.0        8.1
+        nanstd        212.6        4.6      215.3        7.1
+        nanvar        203.7        4.4      206.4        6.8
+        nanmin         31.6        1.1       31.1        1.4
+        nanmax         31.3        1.0       31.2        1.7
+        median         47.8        0.7       55.9        1.0
+        nanmedian      47.4        2.4       55.2        5.9
+        ss             14.5        3.8        3.1        1.2
+        nanargmin      56.2        4.2       56.3        5.4
+        nanargmax      56.6        3.9       56.2        6.4
+        anynan         13.7        1.5       14.4      186.3
+        allnan         14.4      282.9       14.2      202.0
+        rankdata       38.5        1.5       38.3        2.3
+        nanrankdata    47.3       19.1       44.6       29.0
+        partsort        4.7        0.8        5.3        1.0
+        argpartsort     2.7        0.7        2.7        0.6
+        replace         9.0        1.3        8.8        1.3
+        move_sum      320.2      191.4      322.0      321.4
+        move_mean     796.0      231.8      804.5      434.6
+        move_std     1247.9      125.5     1325.6      374.9
+        move_var     1230.0      183.7     1289.2      368.4
+        move_min      242.8       23.2      244.8       49.4
+        move_max      258.4       20.1      246.4       71.0
+        move_argmin   374.0       75.8      388.1      240.0
+        move_argmax   385.1       81.1      400.1      262.2
+        move_median   385.3       34.5      384.8       55.3
 
 Only arrays with data type (dtype) int32, int64, float32, and float64 are
 accelerated. All other dtypes result in calls to slower, unaccelerated
@@ -123,6 +124,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 85 tests in 70.712s
+    Ran 88 tests in 70.712s
     OK
-    <nose.result.TextTestResult run=85 errors=0 failures=0>
+    <nose.result.TextTestResult run=88 errors=0 failures=0>
