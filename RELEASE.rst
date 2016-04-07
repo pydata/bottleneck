@@ -27,6 +27,12 @@ This release makes Bottleneck more robust and adds X new functions.
 - bn.move_argmin
 - bn.move_argmax
 
+**Thanks**
+
+- Jennifer Olsen worked on bn.move_median
+- Jaime Frio worked on bn.move_std
+- Alessandro Amici worked on setup.py
+
 
 Older versions
 ==============
