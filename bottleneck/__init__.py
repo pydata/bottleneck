@@ -28,6 +28,7 @@ except:
 
 from bottleneck.version import __version__
 from bottleneck.benchmark.bench import bench
+from bottleneck.threads import run_threaded, make_unary
 
 try:
     from numpy.testing import Tester
