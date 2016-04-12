@@ -41,7 +41,7 @@ import bottleneck.slow.move as slow
 
 cdef double NAN = <double> np.nan
 cdef extern from "math.h":
-    double sqrt(double x)
+    double sqrt(double x) nogil
 
 # Used by move_min and move_max
 cdef struct pairs:
@@ -110,41 +110,42 @@ cdef ndarray move_sum_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
-    while PyArray_ITER_NOTDONE(ita):
-        asum = 0
-        count = 0
-        for i in range(min_count - 1):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                asum += ai
-                count += 1
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(min_count - 1, window):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                asum += ai
-                count += 1
-            if count >= min_count:
-                yi = asum
-            else:
-                yi = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        for i in range(window, length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                asum += ai
-                count += 1
-            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-            if aold == aold:
-                asum -= aold
-                count -= 1
-            if count >= min_count:
-                yi = asum
-            else:
-                yi = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            asum = 0
+            count = 0
+            for i in range(min_count - 1):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+            for i in range(min_count - 1, window):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                if count >= min_count:
+                    yi = asum
+                else:
+                    yi = NAN
+                (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            for i in range(window, length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+                if aold == aold:
+                    asum -= aold
+                    count -= 1
+                if count >= min_count:
+                    yi = asum
+                else:
+                    yi = NAN
+                (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -159,26 +160,27 @@ cdef ndarray move_sum_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
-    while PyArray_ITER_NOTDONE(ita):
-        asum = 0
-        for i in range(min_count - 1):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            asum += ai
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(min_count - 1, window):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            asum += ai
-            yi = <DTYPE1_t>asum
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        for i in range(window, length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            asum += ai
-            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-            asum -= aold
-            yi = <DTYPE1_t>asum
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            asum = 0
+            for i in range(min_count - 1):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                asum += ai
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+            for i in range(min_count - 1, window):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                asum += ai
+                yi = <DTYPE1_t>asum
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            for i in range(window, length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                asum += ai
+                aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+                asum -= aold
+                yi = <DTYPE1_t>asum
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -238,41 +240,42 @@ cdef ndarray move_mean_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
-    while PyArray_ITER_NOTDONE(ita):
-        asum = 0
-        count = 0
-        for i in range(min_count - 1):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                asum += ai
-                count += 1
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(min_count - 1, window):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                asum += ai
-                count += 1
-            if count >= min_count:
-                yi = asum / count
-            else:
-                yi = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        for i in range(window, length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                asum += ai
-                count += 1
-            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-            if aold == aold:
-                asum -= aold
-                count -= 1
-            if count >= min_count:
-                yi = asum / count
-            else:
-                yi = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            asum = 0
+            count = 0
+            for i in range(min_count - 1):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+            for i in range(min_count - 1, window):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                if count >= min_count:
+                    yi = asum / count
+                else:
+                    yi = NAN
+                (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            for i in range(window, length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+                aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+                if aold == aold:
+                    asum -= aold
+                    count -= 1
+                if count >= min_count:
+                    yi = asum / count
+                else:
+                    yi = NAN
+                (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -288,26 +291,27 @@ cdef ndarray move_mean_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
-    while PyArray_ITER_NOTDONE(ita):
-        asum = 0
-        for i in range(min_count - 1):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            asum += ai
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(min_count - 1, window):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            asum += ai
-            yi = asum / (i + 1)
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        for i in range(window, length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            asum += ai
-            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-            asum -= aold
-            yi = asum / window
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            asum = 0
+            for i in range(min_count - 1):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                asum += ai
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+            for i in range(min_count - 1, window):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                asum += ai
+                yi = asum / (i + 1)
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            for i in range(window, length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                asum += ai
+                aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+                asum -= aold
+                yi = asum / window
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -378,66 +382,67 @@ cdef ndarray move_std_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
-    while PyArray_ITER_NOTDONE(ita):
-        amean = 0
-        assqdm = 0
-        count = 0
-        for i in range(min_count - 1):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                count += 1
-                delta = ai - amean
-                amean += delta / count
-                assqdm += delta * (ai - amean)
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(min_count - 1, window):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                count += 1
-                delta = ai - amean
-                amean += delta / count
-                assqdm += delta * (ai - amean)
-            if count >= min_count:
-                if assqdm < 0:
-                    assqdm = 0
-                yi = sqrt(assqdm / (count - ddof))
-            else:
-                yi = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        for i in range(window, length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-            if ai == ai:
-                if aold == aold:
-                    delta = ai - aold
-                    aold -= amean
-                    amean += delta / count
-                    ai -= amean
-                    assqdm += (ai + aold) * delta
-                else:
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            amean = 0
+            assqdm = 0
+            count = 0
+            for i in range(min_count - 1):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai == ai:
                     count += 1
                     delta = ai - amean
                     amean += delta / count
                     assqdm += delta * (ai - amean)
-            else:
-                if aold == aold:
-                    count -= 1
-                    if count > 0:
-                        delta = aold - amean
-                        amean -= delta / count
-                        assqdm -= delta * (aold - amean)
-                    else:
-                        amean = 0
+                (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+            for i in range(min_count - 1, window):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai == ai:
+                    count += 1
+                    delta = ai - amean
+                    amean += delta / count
+                    assqdm += delta * (ai - amean)
+                if count >= min_count:
+                    if assqdm < 0:
                         assqdm = 0
-            if count >= min_count:
-                if assqdm < 0:
-                    assqdm = 0
-                yi = sqrt(assqdm / (count - ddof))
-            else:
-                yi = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+                    yi = sqrt(assqdm / (count - ddof))
+                else:
+                    yi = NAN
+                (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            for i in range(window, length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+                if ai == ai:
+                    if aold == aold:
+                        delta = ai - aold
+                        aold -= amean
+                        amean += delta / count
+                        ai -= amean
+                        assqdm += (ai + aold) * delta
+                    else:
+                        count += 1
+                        delta = ai - amean
+                        amean += delta / count
+                        assqdm += delta * (ai - amean)
+                else:
+                    if aold == aold:
+                        count -= 1
+                        if count > 0:
+                            delta = aold - amean
+                            amean -= delta / count
+                            assqdm -= delta * (aold - amean)
+                        else:
+                            amean = 0
+                            assqdm = 0
+                if count >= min_count:
+                    if assqdm < 0:
+                        assqdm = 0
+                    yi = sqrt(assqdm / (count - ddof))
+                else:
+                    yi = NAN
+                (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -453,37 +458,38 @@ cdef ndarray move_std_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
-    winddof = window - ddof
-    while PyArray_ITER_NOTDONE(ita):
-        amean = 0
-        assqdm = 0
-        for i in range(min_count - 1):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            delta = ai - amean
-            amean += delta / (i + 1)
-            assqdm += delta * (ai - amean)
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(min_count - 1, window):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            delta = ai - amean
-            amean += delta / (i + 1)
-            assqdm += delta * (ai - amean)
-            yi = sqrt(assqdm / (i + 1 - ddof))
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        for i in range(window, length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-            delta = ai - aold
-            aold -= amean
-            amean += delta / window
-            ai -= amean
-            assqdm += (ai + aold) * delta
-            if assqdm < 0:
-                assqdm = 0
-            yi = sqrt(assqdm / winddof)
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        winddof = window - ddof
+        while PyArray_ITER_NOTDONE(ita):
+            amean = 0
+            assqdm = 0
+            for i in range(min_count - 1):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                delta = ai - amean
+                amean += delta / (i + 1)
+                assqdm += delta * (ai - amean)
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+            for i in range(min_count - 1, window):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                delta = ai - amean
+                amean += delta / (i + 1)
+                assqdm += delta * (ai - amean)
+                yi = sqrt(assqdm / (i + 1 - ddof))
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            for i in range(window, length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+                delta = ai - aold
+                aold -= amean
+                amean += delta / window
+                ai -= amean
+                assqdm += (ai + aold) * delta
+                if assqdm < 0:
+                    assqdm = 0
+                yi = sqrt(assqdm / winddof)
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -553,66 +559,67 @@ cdef ndarray move_var_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
-    while PyArray_ITER_NOTDONE(ita):
-        amean = 0
-        assqdm = 0
-        count = 0
-        for i in range(min_count - 1):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                count += 1
-                delta = ai - amean
-                amean += delta / count
-                assqdm += delta * (ai - amean)
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(min_count - 1, window):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                count += 1
-                delta = ai - amean
-                amean += delta / count
-                assqdm += delta * (ai - amean)
-            if count >= min_count:
-                if assqdm < 0:
-                    assqdm = 0
-                yi = assqdm / (count - ddof)
-            else:
-                yi = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        for i in range(window, length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-            if ai == ai:
-                if aold == aold:
-                    delta = ai - aold
-                    aold -= amean
-                    amean += delta / count
-                    ai -= amean
-                    assqdm += (ai + aold) * delta
-                else:
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            amean = 0
+            assqdm = 0
+            count = 0
+            for i in range(min_count - 1):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai == ai:
                     count += 1
                     delta = ai - amean
                     amean += delta / count
                     assqdm += delta * (ai - amean)
-            else:
-                if aold == aold:
-                    count -= 1
-                    if count > 0:
-                        delta = aold - amean
-                        amean -= delta / count
-                        assqdm -= delta * (aold - amean)
-                    else:
-                        amean = 0
+                (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+            for i in range(min_count - 1, window):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai == ai:
+                    count += 1
+                    delta = ai - amean
+                    amean += delta / count
+                    assqdm += delta * (ai - amean)
+                if count >= min_count:
+                    if assqdm < 0:
                         assqdm = 0
-            if count >= min_count:
-                if assqdm < 0:
-                    assqdm = 0
-                yi = assqdm / (count - ddof)
-            else:
-                yi = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+                    yi = assqdm / (count - ddof)
+                else:
+                    yi = NAN
+                (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            for i in range(window, length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+                if ai == ai:
+                    if aold == aold:
+                        delta = ai - aold
+                        aold -= amean
+                        amean += delta / count
+                        ai -= amean
+                        assqdm += (ai + aold) * delta
+                    else:
+                        count += 1
+                        delta = ai - amean
+                        amean += delta / count
+                        assqdm += delta * (ai - amean)
+                else:
+                    if aold == aold:
+                        count -= 1
+                        if count > 0:
+                            delta = aold - amean
+                            amean -= delta / count
+                            assqdm -= delta * (aold - amean)
+                        else:
+                            amean = 0
+                            assqdm = 0
+                if count >= min_count:
+                    if assqdm < 0:
+                        assqdm = 0
+                    yi = assqdm / (count - ddof)
+                else:
+                    yi = NAN
+                (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -628,37 +635,38 @@ cdef ndarray move_var_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
-    winddof = window - ddof
-    while PyArray_ITER_NOTDONE(ita):
-        amean = 0
-        assqdm = 0
-        for i in range(min_count - 1):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            delta = ai - amean
-            amean += delta / (i + 1)
-            assqdm += delta * (ai - amean)
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
-        for i in range(min_count - 1, window):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            delta = ai - amean
-            amean += delta / (i + 1)
-            assqdm += delta * (ai - amean)
-            yi = assqdm / (i + 1 - ddof)
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        for i in range(window, length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-            delta = ai - aold
-            aold -= amean
-            amean += delta / window
-            ai -= amean
-            assqdm += (ai + aold) * delta
-            if assqdm < 0:
-                assqdm = 0
-            yi = assqdm / winddof
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        winddof = window - ddof
+        while PyArray_ITER_NOTDONE(ita):
+            amean = 0
+            assqdm = 0
+            for i in range(min_count - 1):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                delta = ai - amean
+                amean += delta / (i + 1)
+                assqdm += delta * (ai - amean)
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+            for i in range(min_count - 1, window):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                delta = ai - amean
+                amean += delta / (i + 1)
+                assqdm += delta * (ai - amean)
+                yi = assqdm / (i + 1 - ddof)
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            for i in range(window, length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+                delta = ai - aold
+                aold -= amean
+                amean += delta / window
+                ai -= amean
+                assqdm += (ai + aold) * delta
+                if assqdm < 0:
+                    assqdm = 0
+                yi = assqdm / winddof
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -725,59 +733,59 @@ cdef ndarray move_min_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
-    ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+    with nogil:
+        ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+        while PyArray_ITER_NOTDONE(ita):
 
-    while PyArray_ITER_NOTDONE(ita):
+            end = ring + window
+            last = ring
 
-        end = ring + window
-        last = ring
-
-        minpair = ring
-        ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
-        if ai == ai:
-            minpair.value = ai
-        else:
-            minpair.value = MAXDTYPE0
-        minpair.death = window
-
-        count = 0
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            minpair = ring
+            ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
             if ai == ai:
-                count += 1
-            else:
-                ai = MAXDTYPE0
-            if i >= window:
-                aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-                if aold == aold:
-                    count -= 1
-            if minpair.death == i:
-                minpair += 1
-                if minpair >= end:
-                    minpair = ring
-            if ai <= minpair.value:
                 minpair.value = ai
-                minpair.death = i + window
-                last = minpair
             else:
-                while last.value >= ai:
-                    if last == ring:
-                        last = end
-                    last -= 1
-                last += 1
-                if last == end:
-                    last = ring
-                last.value = ai
-                last.death = i + window
-            if count >= min_count:
-                yi = minpair.value
-            else:
-                yi = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+                minpair.value = MAXDTYPE0
+            minpair.death = window
 
-    stdlib.free(ring)
+            count = 0
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MAXDTYPE0
+                if i >= window:
+                    aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+                    if aold == aold:
+                        count -= 1
+                if minpair.death == i:
+                    minpair += 1
+                    if minpair >= end:
+                        minpair = ring
+                if ai <= minpair.value:
+                    minpair.value = ai
+                    minpair.death = i + window
+                    last = minpair
+                else:
+                    while last.value >= ai:
+                        if last == ring:
+                            last = end
+                        last -= 1
+                    last += 1
+                    if last == end:
+                        last = ring
+                    last.value = ai
+                    last.death = i + window
+                if count >= min_count:
+                    yi = minpair.value
+                else:
+                    yi = NAN
+                (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+
+        stdlib.free(ring)
     return y
 
 
@@ -797,47 +805,47 @@ cdef ndarray move_min_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
-    ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+    with nogil:
+        ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+        while PyArray_ITER_NOTDONE(ita):
 
-    while PyArray_ITER_NOTDONE(ita):
+            end = ring + window
+            last = ring
 
-        end = ring + window
-        last = ring
+            minpair = ring
+            ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
+            minpair.value = ai
+            minpair.death = window
 
-        minpair = ring
-        ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
-        minpair.value = ai
-        minpair.death = window
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if minpair.death == i:
+                    minpair += 1
+                    if minpair >= end:
+                        minpair = ring
+                if ai <= minpair.value:
+                    minpair.value = ai
+                    minpair.death = i + window
+                    last = minpair
+                else:
+                    while last.value >= ai:
+                        if last == ring:
+                            last = end
+                        last -= 1
+                    last += 1
+                    if last == end:
+                        last = ring
+                    last.value = ai
+                    last.death = i + window
+                if i + 1 >= min_count:
+                    yi = minpair.value
+                else:
+                    yi = NAN
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
 
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if minpair.death == i:
-                minpair += 1
-                if minpair >= end:
-                    minpair = ring
-            if ai <= minpair.value:
-                minpair.value = ai
-                minpair.death = i + window
-                last = minpair
-            else:
-                while last.value >= ai:
-                    if last == ring:
-                        last = end
-                    last -= 1
-                last += 1
-                if last == end:
-                    last = ring
-                last.value = ai
-                last.death = i + window
-            if i + 1 >= min_count:
-                yi = minpair.value
-            else:
-                yi = NAN
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
-
-    stdlib.free(ring)
+        stdlib.free(ring)
     return y
 
 
@@ -904,59 +912,59 @@ cdef ndarray move_max_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
-    ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+    with nogil:
+        ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+        while PyArray_ITER_NOTDONE(ita):
 
-    while PyArray_ITER_NOTDONE(ita):
+            end = ring + window
+            last = ring
 
-        end = ring + window
-        last = ring
-
-        maxpair = ring
-        ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
-        if ai == ai:
-            maxpair.value = ai
-        else:
-            maxpair.value = MINDTYPE0
-        maxpair.death = window
-
-        count = 0
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            maxpair = ring
+            ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
             if ai == ai:
-                count += 1
-            else:
-                ai = MINDTYPE0
-            if i >= window:
-                aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-                if aold == aold:
-                    count -= 1
-            if maxpair.death == i:
-                maxpair += 1
-                if maxpair >= end:
-                    maxpair = ring
-            if ai >= maxpair.value:
                 maxpair.value = ai
-                maxpair.death = i + window
-                last = maxpair
             else:
-                while last.value <= ai:
-                    if last == ring:
-                        last = end
-                    last -= 1
-                last += 1
-                if last == end:
-                    last = ring
-                last.value = ai
-                last.death = i + window
-            if count >= min_count:
-                yi = maxpair.value
-            else:
-                yi = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+                maxpair.value = MINDTYPE0
+            maxpair.death = window
 
-    stdlib.free(ring)
+            count = 0
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MINDTYPE0
+                if i >= window:
+                    aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+                    if aold == aold:
+                        count -= 1
+                if maxpair.death == i:
+                    maxpair += 1
+                    if maxpair >= end:
+                        maxpair = ring
+                if ai >= maxpair.value:
+                    maxpair.value = ai
+                    maxpair.death = i + window
+                    last = maxpair
+                else:
+                    while last.value <= ai:
+                        if last == ring:
+                            last = end
+                        last -= 1
+                    last += 1
+                    if last == end:
+                        last = ring
+                    last.value = ai
+                    last.death = i + window
+                if count >= min_count:
+                    yi = maxpair.value
+                else:
+                    yi = NAN
+                (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+
+        stdlib.free(ring)
     return y
 
 
@@ -976,47 +984,47 @@ cdef ndarray move_max_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
-    ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+    with nogil:
+        ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+        while PyArray_ITER_NOTDONE(ita):
 
-    while PyArray_ITER_NOTDONE(ita):
+            end = ring + window
+            last = ring
 
-        end = ring + window
-        last = ring
+            maxpair = ring
+            ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
+            maxpair.value = ai
+            maxpair.death = window
 
-        maxpair = ring
-        ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
-        maxpair.value = ai
-        maxpair.death = window
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if maxpair.death == i:
+                    maxpair += 1
+                    if maxpair >= end:
+                        maxpair = ring
+                if ai >= maxpair.value:
+                    maxpair.value = ai
+                    maxpair.death = i + window
+                    last = maxpair
+                else:
+                    while last.value <= ai:
+                        if last == ring:
+                            last = end
+                        last -= 1
+                    last += 1
+                    if last == end:
+                        last = ring
+                    last.value = ai
+                    last.death = i + window
+                if i + 1 >= min_count:
+                    yi = maxpair.value
+                else:
+                    yi = NAN
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
 
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if maxpair.death == i:
-                maxpair += 1
-                if maxpair >= end:
-                    maxpair = ring
-            if ai >= maxpair.value:
-                maxpair.value = ai
-                maxpair.death = i + window
-                last = maxpair
-            else:
-                while last.value <= ai:
-                    if last == ring:
-                        last = end
-                    last -= 1
-                last += 1
-                if last == end:
-                    last = ring
-                last.value = ai
-                last.death = i + window
-            if i + 1 >= min_count:
-                yi = maxpair.value
-            else:
-                yi = NAN
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
-
-    stdlib.free(ring)
+        stdlib.free(ring)
     return y
 
 
@@ -1097,59 +1105,59 @@ cdef ndarray move_argmin_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
-    ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+    with nogil:
+        ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+        while PyArray_ITER_NOTDONE(ita):
 
-    while PyArray_ITER_NOTDONE(ita):
+            end = ring + window
+            last = ring
 
-        end = ring + window
-        last = ring
-
-        minpair = ring
-        ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
-        if ai == ai:
-            minpair.value = ai
-        else:
-            minpair.value = MAXDTYPE0
-        minpair.death = window
-
-        count = 0
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            minpair = ring
+            ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
             if ai == ai:
-                count += 1
-            else:
-                ai = MAXDTYPE0
-            if i >= window:
-                aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-                if aold == aold:
-                    count -= 1
-            if minpair.death == i:
-                minpair += 1
-                if minpair >= end:
-                    minpair = ring
-            if ai <= minpair.value:
                 minpair.value = ai
-                minpair.death = i + window
-                last = minpair
             else:
-                while last.value >= ai:
-                    if last == ring:
-                        last = end
-                    last -= 1
-                last += 1
-                if last == end:
-                    last = ring
-                last.value = ai
-                last.death = i + window
-            if count >= min_count:
-                yi = i - minpair.death + window
-            else:
-                yi = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+                minpair.value = MAXDTYPE0
+            minpair.death = window
 
-    stdlib.free(ring)
+            count = 0
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MAXDTYPE0
+                if i >= window:
+                    aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+                    if aold == aold:
+                        count -= 1
+                if minpair.death == i:
+                    minpair += 1
+                    if minpair >= end:
+                        minpair = ring
+                if ai <= minpair.value:
+                    minpair.value = ai
+                    minpair.death = i + window
+                    last = minpair
+                else:
+                    while last.value >= ai:
+                        if last == ring:
+                            last = end
+                        last -= 1
+                    last += 1
+                    if last == end:
+                        last = ring
+                    last.value = ai
+                    last.death = i + window
+                if count >= min_count:
+                    yi = i - minpair.death + window
+                else:
+                    yi = NAN
+                (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+
+        stdlib.free(ring)
     return y
 
 
@@ -1169,47 +1177,47 @@ cdef ndarray move_argmin_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
-    ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+    with nogil:
+        ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+        while PyArray_ITER_NOTDONE(ita):
 
-    while PyArray_ITER_NOTDONE(ita):
+            end = ring + window
+            last = ring
 
-        end = ring + window
-        last = ring
+            minpair = ring
+            ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
+            minpair.value = ai
+            minpair.death = window
 
-        minpair = ring
-        ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
-        minpair.value = ai
-        minpair.death = window
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if minpair.death == i:
+                    minpair += 1
+                    if minpair >= end:
+                        minpair = ring
+                if ai <= minpair.value:
+                    minpair.value = ai
+                    minpair.death = i + window
+                    last = minpair
+                else:
+                    while last.value >= ai:
+                        if last == ring:
+                            last = end
+                        last -= 1
+                    last += 1
+                    if last == end:
+                        last = ring
+                    last.value = ai
+                    last.death = i + window
+                if i + 1 >= min_count:
+                    yi = i - minpair.death + window
+                else:
+                    yi = NAN
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
 
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if minpair.death == i:
-                minpair += 1
-                if minpair >= end:
-                    minpair = ring
-            if ai <= minpair.value:
-                minpair.value = ai
-                minpair.death = i + window
-                last = minpair
-            else:
-                while last.value >= ai:
-                    if last == ring:
-                        last = end
-                    last -= 1
-                last += 1
-                if last == end:
-                    last = ring
-                last.value = ai
-                last.death = i + window
-            if i + 1 >= min_count:
-                yi = i - minpair.death + window
-            else:
-                yi = NAN
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
-
-    stdlib.free(ring)
+        stdlib.free(ring)
     return y
 
 
@@ -1290,59 +1298,59 @@ cdef ndarray move_argmax_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
-    ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+    with nogil:
+        ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+        while PyArray_ITER_NOTDONE(ita):
 
-    while PyArray_ITER_NOTDONE(ita):
+            end = ring + window
+            last = ring
 
-        end = ring + window
-        last = ring
-
-        maxpair = ring
-        ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
-        if ai == ai:
-            maxpair.value = ai
-        else:
-            maxpair.value = MINDTYPE0
-        maxpair.death = window
-
-        count = 0
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            maxpair = ring
+            ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
             if ai == ai:
-                count += 1
-            else:
-                ai = MINDTYPE0
-            if i >= window:
-                aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
-                if aold == aold:
-                    count -= 1
-            if maxpair.death == i:
-                maxpair += 1
-                if maxpair >= end:
-                    maxpair = ring
-            if ai >= maxpair.value:
                 maxpair.value = ai
-                maxpair.death = i + window
-                last = maxpair
             else:
-                while last.value <= ai:
-                    if last == ring:
-                        last = end
-                    last -= 1
-                last += 1
-                if last == end:
-                    last = ring
-                last.value = ai
-                last.death = i + window
-            if count >= min_count:
-                yi = i - maxpair.death + window
-            else:
-                yi = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+                maxpair.value = MINDTYPE0
+            maxpair.death = window
 
-    stdlib.free(ring)
+            count = 0
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai == ai:
+                    count += 1
+                else:
+                    ai = MINDTYPE0
+                if i >= window:
+                    aold = (<DTYPE0_t*>((<char*>pid(ita)) + (i-window)*stride))[0]
+                    if aold == aold:
+                        count -= 1
+                if maxpair.death == i:
+                    maxpair += 1
+                    if maxpair >= end:
+                        maxpair = ring
+                if ai >= maxpair.value:
+                    maxpair.value = ai
+                    maxpair.death = i + window
+                    last = maxpair
+                else:
+                    while last.value <= ai:
+                        if last == ring:
+                            last = end
+                        last -= 1
+                    last += 1
+                    if last == end:
+                        last = ring
+                    last.value = ai
+                    last.death = i + window
+                if count >= min_count:
+                    yi = i - maxpair.death + window
+                else:
+                    yi = NAN
+                (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+
+        stdlib.free(ring)
     return y
 
 
@@ -1362,47 +1370,47 @@ cdef ndarray move_argmax_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
-    ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+    with nogil:
+        ring = <pairs*>stdlib.malloc(window * sizeof(pairs))
+        while PyArray_ITER_NOTDONE(ita):
 
-    while PyArray_ITER_NOTDONE(ita):
+            end = ring + window
+            last = ring
 
-        end = ring + window
-        last = ring
+            maxpair = ring
+            ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
+            maxpair.value = ai
+            maxpair.death = window
 
-        maxpair = ring
-        ai = (<DTYPE0_t*>((<char*>pid(ita))))[0]
-        maxpair.value = ai
-        maxpair.death = window
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if maxpair.death == i:
+                    maxpair += 1
+                    if maxpair >= end:
+                        maxpair = ring
+                if ai >= maxpair.value:
+                    maxpair.value = ai
+                    maxpair.death = i + window
+                    last = maxpair
+                else:
+                    while last.value <= ai:
+                        if last == ring:
+                            last = end
+                        last -= 1
+                    last += 1
+                    if last == end:
+                        last = ring
+                    last.value = ai
+                    last.death = i + window
+                if i + 1 >= min_count:
+                    yi = i - maxpair.death + window
+                else:
+                    yi = NAN
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
 
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if maxpair.death == i:
-                maxpair += 1
-                if maxpair >= end:
-                    maxpair = ring
-            if ai >= maxpair.value:
-                maxpair.value = ai
-                maxpair.death = i + window
-                last = maxpair
-            else:
-                while last.value <= ai:
-                    if last == ring:
-                        last = end
-                    last -= 1
-                last += 1
-                if last == end:
-                    last = ring
-                last.value = ai
-                last.death = i + window
-            if i + 1 >= min_count:
-                yi = i - maxpair.death + window
-            else:
-                yi = NAN
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
-
-    stdlib.free(ring)
+        stdlib.free(ring)
     return y
 
 
@@ -1519,23 +1527,24 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
     mm = mm_new(window, min_count)
     if mm is NULL:
         raise MemoryError()
-    while PyArray_ITER_NOTDONE(ita):
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if DTYPE0 == 'float64':
-                mm_update_movemedian_possiblenan(mm, ai)
-            if DTYPE0 == 'float32':
-                mm_update_movemedian_possiblenan(mm, ai)
-            if DTYPE0 == 'int64':
-                mm_update_movemedian_nonan(mm, ai)
-            if DTYPE0 == 'int32':
-                mm_update_movemedian_nonan(mm, ai)
-            yi = mm_get_median(mm)
-            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
-        mm_reset(mm)
-    mm_free(mm)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if DTYPE0 == 'float64':
+                    mm_update_movemedian_possiblenan(mm, ai)
+                if DTYPE0 == 'float32':
+                    mm_update_movemedian_possiblenan(mm, ai)
+                if DTYPE0 == 'int64':
+                    mm_update_movemedian_nonan(mm, ai)
+                if DTYPE0 == 'int32':
+                    mm_update_movemedian_nonan(mm, ai)
+                yi = mm_get_median(mm)
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+            mm_reset(mm)
+        mm_free(mm)
     return y
 
 
