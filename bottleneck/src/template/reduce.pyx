@@ -53,7 +53,7 @@ import bottleneck.slow.reduce as slow
 
 cdef double NAN = <double> np.nan
 cdef extern from "math.h":
-    double sqrt(double x)
+    double sqrt(double x) nogil
 
 cdef np.int32_t MAXint32 = np.iinfo(np.int32).max
 cdef np.int64_t MAXint64 = np.iinfo(np.int64).max
@@ -143,20 +143,21 @@ cdef object nansum_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
     # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
     cdef Py_ssize_t i
     cdef DTYPE0_t asum = 0, ai
-    while PyArray_ITER_NOTDONE(ita):
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            if DTYPE0 == 'float64':
-                if ai == ai:
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if DTYPE0 == 'float64':
+                    if ai == ai:
+                        asum += ai
+                if DTYPE0 == 'float32':
+                    if ai == ai:
+                        asum += ai
+                if DTYPE0 == 'int64':
                     asum += ai
-            if DTYPE0 == 'float32':
-                if ai == ai:
+                if DTYPE0 == 'int32':
                     asum += ai
-            if DTYPE0 == 'int64':
-                asum += ai
-            if DTYPE0 == 'int32':
-                asum += ai
-        PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ita)
     return asum
 
 
@@ -168,28 +169,29 @@ cdef ndarray nansum_one_DTYPE0(np.flatiter ita,
     cdef DTYPE0_t asum = 0, ai
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
     cdef np.flatiter ity = PyArray_IterNew(y)
-    if length == 0:
-        while PyArray_ITER_NOTDONE(ity):
-            (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ity)
-    else:
-        while PyArray_ITER_NOTDONE(ita):
-            asum = 0
-            for i in range(length):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                if DTYPE0 == 'float64':
-                    if ai == ai:
+    with nogil:
+        if length == 0:
+            while PyArray_ITER_NOTDONE(ity):
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
+                PyArray_ITER_NEXT(ity)
+        else:
+            while PyArray_ITER_NOTDONE(ita):
+                asum = 0
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    if DTYPE0 == 'float64':
+                        if ai == ai:
+                            asum += ai
+                    if DTYPE0 == 'float32':
+                        if ai == ai:
+                            asum += ai
+                    if DTYPE0 == 'int64':
                         asum += ai
-                if DTYPE0 == 'float32':
-                    if ai == ai:
+                    if DTYPE0 == 'int32':
                         asum += ai
-                if DTYPE0 == 'int64':
-                    asum += ai
-                if DTYPE0 == 'int32':
-                    asum += ai
-            (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ita)
-            PyArray_ITER_NEXT(ity)
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
+                PyArray_ITER_NEXT(ita)
+                PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -283,13 +285,14 @@ cdef object nanmean_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
     # bn.dtypes = [['float64'], ['float32']]
     cdef Py_ssize_t i, count = 0
     cdef DTYPE0_t asum = 0, ai
-    while PyArray_ITER_NOTDONE(ita):
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            if ai == ai:
-                asum += ai
-                count += 1
-        PyArray_ITER_NEXT(ita)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+            PyArray_ITER_NEXT(ita)
     if count > 0:
         return asum / count
     else:
@@ -303,12 +306,13 @@ cdef object nanmean_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
     cdef Py_ssize_t i, size = 0
     cdef DTYPE1_t asum = 0
     cdef DTYPE0_t ai
-    while PyArray_ITER_NOTDONE(ita):
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            asum += ai
-        size += length
-        PyArray_ITER_NEXT(ita)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                asum += ai
+            size += length
+            PyArray_ITER_NEXT(ita)
     if size == 0:
         return NAN
     else:
@@ -325,26 +329,27 @@ cdef ndarray nanmean_one_DTYPE0(np.flatiter ita,
     cdef DTYPE0_t asum = 0, ai
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
     cdef np.flatiter ity = PyArray_IterNew(y)
-    if length == 0:
-        while PyArray_ITER_NOTDONE(ity):
-            (<DTYPE0_t*>((<char*>pid(ity))))[0] = NAN
-            PyArray_ITER_NEXT(ity)
-    else:
-        while PyArray_ITER_NOTDONE(ita):
-            asum = 0
-            count = 0
-            for i in range(length):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-            if count > 0:
-                asum = asum / count
-            else:
-                asum = NAN
-            (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ita)
-            PyArray_ITER_NEXT(ity)
+    with nogil:
+        if length == 0:
+            while PyArray_ITER_NOTDONE(ity):
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = NAN
+                PyArray_ITER_NEXT(ity)
+        else:
+            while PyArray_ITER_NOTDONE(ita):
+                asum = 0
+                count = 0
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    if ai == ai:
+                        asum += ai
+                        count += 1
+                if count > 0:
+                    asum = asum / count
+                else:
+                    asum = NAN
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
+                PyArray_ITER_NEXT(ita)
+                PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -359,19 +364,20 @@ cdef ndarray nanmean_one_DTYPE0(np.flatiter ita,
     cdef DTYPE0_t ai
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE1, 0)
     cdef np.flatiter ity = PyArray_IterNew(y)
-    if length == 0:
-        while PyArray_ITER_NOTDONE(ity):
-            (<DTYPE1_t*>((<char*>pid(ity))))[0] = NAN
-            PyArray_ITER_NEXT(ity)
-    else:
-        while PyArray_ITER_NOTDONE(ita):
-            asum = 0
-            for i in range(length):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                asum += ai
-            (<DTYPE1_t*>((<char*>pid(ity))))[0] = asum / length
-            PyArray_ITER_NEXT(ita)
-            PyArray_ITER_NEXT(ity)
+    with nogil:
+        if length == 0:
+            while PyArray_ITER_NOTDONE(ity):
+                (<DTYPE1_t*>((<char*>pid(ity))))[0] = NAN
+                PyArray_ITER_NEXT(ity)
+        else:
+            while PyArray_ITER_NOTDONE(ita):
+                asum = 0
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    asum += ai
+                (<DTYPE1_t*>((<char*>pid(ity))))[0] = asum / length
+                PyArray_ITER_NEXT(ita)
+                PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -473,28 +479,30 @@ cdef object nanstd_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
                               Py_ssize_t length, int ddof):
     # bn.dtypes = [['float64'], ['float32']]
     cdef Py_ssize_t i, count = 0
-    cdef DTYPE0_t asum = 0, amean, ai
-    while PyArray_ITER_NOTDONE(ita):
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            if ai == ai:
-                asum += ai
-                count += 1
-        PyArray_ITER_NEXT(ita)
-    if count > ddof:
-        amean = asum / count
-        asum = 0
-        PyArray_ITER_RESET(ita)
+    cdef DTYPE0_t asum = 0, amean, ai, out
+    with nogil:
         while PyArray_ITER_NOTDONE(ita):
             for i in range(length):
                 ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
                 if ai == ai:
-                    ai -= amean
-                    asum += ai * ai
+                    asum += ai
+                    count += 1
             PyArray_ITER_NEXT(ita)
-        return sqrt(asum / (count - ddof))
-    else:
-        return NAN
+        if count > ddof:
+            amean = asum / count
+            asum = 0
+            PyArray_ITER_RESET(ita)
+            while PyArray_ITER_NOTDONE(ita):
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                    if ai == ai:
+                        ai -= amean
+                        asum += ai * ai
+                PyArray_ITER_NEXT(ita)
+            out = sqrt(asum / (count - ddof))
+        else:
+            out = NAN
+    return out
 
 
 @cython.cdivision(True)
@@ -502,27 +510,29 @@ cdef object nanstd_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
                               Py_ssize_t length, int ddof):
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef Py_ssize_t i, size = 0
-    cdef DTYPE1_t asum = 0, amean, aj
+    cdef DTYPE1_t asum = 0, amean, aj, out
     cdef DTYPE0_t ai
-    while PyArray_ITER_NOTDONE(ita):
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            asum += ai
-        size += length
-        PyArray_ITER_NEXT(ita)
-    if size > ddof:
-        amean = asum / size
-        asum = 0
-        PyArray_ITER_RESET(ita)
+    with nogil:
         while PyArray_ITER_NOTDONE(ita):
             for i in range(length):
                 ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-                aj = ai - amean
-                asum += aj * aj
+                asum += ai
+            size += length
             PyArray_ITER_NEXT(ita)
-        return sqrt(asum / (size - ddof))
-    else:
-        return NAN
+        if size > ddof:
+            amean = asum / size
+            asum = 0
+            PyArray_ITER_RESET(ita)
+            while PyArray_ITER_NOTDONE(ita):
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                    aj = ai - amean
+                    asum += aj * aj
+                PyArray_ITER_NEXT(ita)
+            out =  sqrt(asum / (size - ddof))
+        else:
+            out =  NAN
+    return out
 
 
 @cython.cdivision(True)
@@ -535,33 +545,34 @@ cdef ndarray nanstd_one_DTYPE0(np.flatiter ita,
     cdef DTYPE0_t asum = 0, ai, amean
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
     cdef np.flatiter ity = PyArray_IterNew(y)
-    if length == 0:
-        while PyArray_ITER_NOTDONE(ity):
-            (<DTYPE0_t*>((<char*>pid(ity))))[0] = NAN
-            PyArray_ITER_NEXT(ity)
-    else:
-        while PyArray_ITER_NOTDONE(ita):
-            asum = 0
-            count = 0
-            for i in range(length):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-            if count > ddof:
-                amean = asum / count
+    with nogil:
+        if length == 0:
+            while PyArray_ITER_NOTDONE(ity):
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = NAN
+                PyArray_ITER_NEXT(ity)
+        else:
+            while PyArray_ITER_NOTDONE(ita):
                 asum = 0
+                count = 0
                 for i in range(length):
                     ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
                     if ai == ai:
-                        ai -= amean
-                        asum += ai * ai
-                asum = sqrt(asum / (count - ddof))
-            else:
-                asum = NAN
-            (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ita)
-            PyArray_ITER_NEXT(ity)
+                        asum += ai
+                        count += 1
+                if count > ddof:
+                    amean = asum / count
+                    asum = 0
+                    for i in range(length):
+                        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                        if ai == ai:
+                            ai -= amean
+                            asum += ai * ai
+                    asum = sqrt(asum / (count - ddof))
+                else:
+                    asum = NAN
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
+                PyArray_ITER_NEXT(ita)
+                PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -576,29 +587,30 @@ cdef ndarray nanstd_one_DTYPE0(np.flatiter ita,
     cdef DTYPE0_t ai
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE1, 0)
     cdef np.flatiter ity = PyArray_IterNew(y)
-    if length == 0:
-        while PyArray_ITER_NOTDONE(ity):
-            (<DTYPE1_t*>((<char*>pid(ity))))[0] = NAN
-            PyArray_ITER_NEXT(ity)
-    else:
-        while PyArray_ITER_NOTDONE(ita):
-            asum = 0
-            for i in range(length):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-                asum += ai
-            if length > ddof:
-                amean = asum / length
+    with nogil:
+        if length == 0:
+            while PyArray_ITER_NOTDONE(ity):
+                (<DTYPE1_t*>((<char*>pid(ity))))[0] = NAN
+                PyArray_ITER_NEXT(ity)
+        else:
+            while PyArray_ITER_NOTDONE(ita):
                 asum = 0
                 for i in range(length):
                     ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-                    aj = ai - amean
-                    asum += aj * aj
-                asum = sqrt(asum / (length - ddof))
-            else:
-                asum = NAN
-            (<DTYPE1_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ita)
-            PyArray_ITER_NEXT(ity)
+                    asum += ai
+                if length > ddof:
+                    amean = asum / length
+                    asum = 0
+                    for i in range(length):
+                        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                        aj = ai - amean
+                        asum += aj * aj
+                    asum = sqrt(asum / (length - ddof))
+                else:
+                    asum = NAN
+                (<DTYPE1_t*>((<char*>pid(ity))))[0] = asum
+                PyArray_ITER_NEXT(ita)
+                PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -707,28 +719,30 @@ cdef object nanvar_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
                               Py_ssize_t length, int ddof):
     # bn.dtypes = [['float64'], ['float32']]
     cdef Py_ssize_t i, count = 0
-    cdef DTYPE0_t asum = 0, amean, ai
-    while PyArray_ITER_NOTDONE(ita):
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            if ai == ai:
-                asum += ai
-                count += 1
-        PyArray_ITER_NEXT(ita)
-    if count > ddof:
-        amean = asum / count
-        asum = 0
-        PyArray_ITER_RESET(ita)
+    cdef DTYPE0_t asum = 0, amean, ai, out
+    with nogil:
         while PyArray_ITER_NOTDONE(ita):
             for i in range(length):
                 ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
                 if ai == ai:
-                    ai -= amean
-                    asum += ai * ai
+                    asum += ai
+                    count += 1
             PyArray_ITER_NEXT(ita)
-        return asum / (count - ddof)
-    else:
-        return NAN
+        if count > ddof:
+            amean = asum / count
+            asum = 0
+            PyArray_ITER_RESET(ita)
+            while PyArray_ITER_NOTDONE(ita):
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                    if ai == ai:
+                        ai -= amean
+                        asum += ai * ai
+                PyArray_ITER_NEXT(ita)
+            out =  asum / (count - ddof)
+        else:
+            out =  NAN
+    return out
 
 
 @cython.cdivision(True)
@@ -736,27 +750,29 @@ cdef object nanvar_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
                               Py_ssize_t length, int ddof):
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef Py_ssize_t i, size = 0
-    cdef DTYPE1_t asum = 0, amean, aj
+    cdef DTYPE1_t asum = 0, amean, aj, out
     cdef DTYPE0_t ai
-    while PyArray_ITER_NOTDONE(ita):
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            asum += ai
-        size += length
-        PyArray_ITER_NEXT(ita)
-    if size > ddof:
-        amean = asum / size
-        asum = 0
-        PyArray_ITER_RESET(ita)
+    with nogil:
         while PyArray_ITER_NOTDONE(ita):
             for i in range(length):
                 ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-                aj = ai - amean
-                asum += aj * aj
+                asum += ai
+            size += length
             PyArray_ITER_NEXT(ita)
-        return asum / (size - ddof)
-    else:
-        return NAN
+        if size > ddof:
+            amean = asum / size
+            asum = 0
+            PyArray_ITER_RESET(ita)
+            while PyArray_ITER_NOTDONE(ita):
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                    aj = ai - amean
+                    asum += aj * aj
+                PyArray_ITER_NEXT(ita)
+            out =  asum / (size - ddof)
+        else:
+            out =  NAN
+    return out
 
 
 @cython.cdivision(True)
@@ -769,33 +785,34 @@ cdef ndarray nanvar_one_DTYPE0(np.flatiter ita,
     cdef DTYPE0_t asum = 0, ai, amean
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
     cdef np.flatiter ity = PyArray_IterNew(y)
-    if length == 0:
-        while PyArray_ITER_NOTDONE(ity):
-            (<DTYPE0_t*>((<char*>pid(ity))))[0] = NAN
-            PyArray_ITER_NEXT(ity)
-    else:
-        while PyArray_ITER_NOTDONE(ita):
-            asum = 0
-            count = 0
-            for i in range(length):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-                if ai == ai:
-                    asum += ai
-                    count += 1
-            if count > ddof:
-                amean = asum / count
+    with nogil:
+        if length == 0:
+            while PyArray_ITER_NOTDONE(ity):
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = NAN
+                PyArray_ITER_NEXT(ity)
+        else:
+            while PyArray_ITER_NOTDONE(ita):
                 asum = 0
+                count = 0
                 for i in range(length):
                     ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
                     if ai == ai:
-                        ai -= amean
-                        asum += ai * ai
-                asum = asum / (count - ddof)
-            else:
-                asum = NAN
-            (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ita)
-            PyArray_ITER_NEXT(ity)
+                        asum += ai
+                        count += 1
+                if count > ddof:
+                    amean = asum / count
+                    asum = 0
+                    for i in range(length):
+                        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                        if ai == ai:
+                            ai -= amean
+                            asum += ai * ai
+                    asum = asum / (count - ddof)
+                else:
+                    asum = NAN
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
+                PyArray_ITER_NEXT(ita)
+                PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -810,29 +827,30 @@ cdef ndarray nanvar_one_DTYPE0(np.flatiter ita,
     cdef DTYPE0_t ai
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE1, 0)
     cdef np.flatiter ity = PyArray_IterNew(y)
-    if length == 0:
-        while PyArray_ITER_NOTDONE(ity):
-            (<DTYPE1_t*>((<char*>pid(ity))))[0] = NAN
-            PyArray_ITER_NEXT(ity)
-    else:
-        while PyArray_ITER_NOTDONE(ita):
-            asum = 0
-            for i in range(length):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-                asum += ai
-            if length > ddof:
-                amean = asum / length
+    with nogil:
+        if length == 0:
+            while PyArray_ITER_NOTDONE(ity):
+                (<DTYPE1_t*>((<char*>pid(ity))))[0] = NAN
+                PyArray_ITER_NEXT(ity)
+        else:
+            while PyArray_ITER_NOTDONE(ita):
                 asum = 0
                 for i in range(length):
                     ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-                    aj = ai - amean
-                    asum += aj * aj
-                asum = asum / (length - ddof)
-            else:
-                asum = NAN
-            (<DTYPE1_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ita)
-            PyArray_ITER_NEXT(ity)
+                    asum += ai
+                if length > ddof:
+                    amean = asum / length
+                    asum = 0
+                    for i in range(length):
+                        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                        aj = ai - amean
+                        asum += aj * aj
+                    asum = asum / (length - ddof)
+                else:
+                    asum = NAN
+                (<DTYPE1_t*>((<char*>pid(ity))))[0] = asum
+                PyArray_ITER_NEXT(ita)
+                PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -911,14 +929,15 @@ cdef object nanmin_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
     cdef int allnan = 1, is_size_0 = 1
     cdef Py_ssize_t i
     cdef DTYPE0_t ai, amin = MAXDTYPE0
-    while PyArray_ITER_NOTDONE(ita):
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            if ai <= amin:
-                amin = ai
-                allnan = 0
-        is_size_0 = 0
-        PyArray_ITER_NEXT(ita)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if ai <= amin:
+                    amin = ai
+                    allnan = 0
+            is_size_0 = 0
+            PyArray_ITER_NEXT(ita)
     if is_size_0 == 1:
         m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."
         raise ValueError(m)
@@ -934,13 +953,14 @@ cdef object nanmin_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
     cdef int is_size_0 = 1
     cdef Py_ssize_t i
     cdef DTYPE0_t ai, amin = MAXDTYPE0
-    while PyArray_ITER_NOTDONE(ita):
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            if ai <= amin:
-                amin = ai
-        is_size_0 = 0
-        PyArray_ITER_NEXT(ita)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if ai <= amin:
+                    amin = ai
+            is_size_0 = 0
+            PyArray_ITER_NEXT(ita)
     if is_size_0 == 1:
         m = "numpy.nanmin raises on a.size==0 and axis=None; Bottleneck too."
         raise ValueError(m)
@@ -959,19 +979,20 @@ cdef ndarray nanmin_one_DTYPE0(np.flatiter ita,
     if length == 0:
         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."
         raise ValueError(msg)
-    while PyArray_ITER_NOTDONE(ita):
-        amin = MAXDTYPE0
-        allnan = 1
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            if ai <= amin:
-                amin = ai
-                allnan = 0
-        if allnan != 0:
-            amin = NAN
-        (<DTYPE0_t*>((<char*>pid(ity))))[0] = amin
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            amin = MAXDTYPE0
+            allnan = 1
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if ai <= amin:
+                    amin = ai
+                    allnan = 0
+            if allnan != 0:
+                amin = NAN
+            (<DTYPE0_t*>((<char*>pid(ity))))[0] = amin
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -986,15 +1007,16 @@ cdef ndarray nanmin_one_DTYPE0(np.flatiter ita,
     if length == 0:
         msg = "numpy.nanmin raises on a.shape[axis]==0; so Bottleneck does."
         raise ValueError(msg)
-    while PyArray_ITER_NOTDONE(ita):
-        amin = MAXDTYPE0
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            if ai <= amin:
-                amin = ai
-        (<DTYPE0_t*>((<char*>pid(ity))))[0] = amin
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            amin = MAXDTYPE0
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if ai <= amin:
+                    amin = ai
+            (<DTYPE0_t*>((<char*>pid(ity))))[0] = amin
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -1066,14 +1088,15 @@ cdef object nanmax_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
     cdef int allnan = 1, is_size_0 = 1
     cdef Py_ssize_t i
     cdef DTYPE0_t ai, amin = MINDTYPE0
-    while PyArray_ITER_NOTDONE(ita):
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            if ai >= amin:
-                amin = ai
-                allnan = 0
-        is_size_0 = 0
-        PyArray_ITER_NEXT(ita)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if ai >= amin:
+                    amin = ai
+                    allnan = 0
+            is_size_0 = 0
+            PyArray_ITER_NEXT(ita)
     if is_size_0 == 1:
         m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
         raise ValueError(m)
@@ -1089,13 +1112,14 @@ cdef object nanmax_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
     cdef int is_size_0 = 1
     cdef Py_ssize_t i
     cdef DTYPE0_t ai, amin = MINDTYPE0
-    while PyArray_ITER_NOTDONE(ita):
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            if ai >= amin:
-                amin = ai
-        is_size_0 = 0
-        PyArray_ITER_NEXT(ita)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if ai >= amin:
+                    amin = ai
+            is_size_0 = 0
+            PyArray_ITER_NEXT(ita)
     if is_size_0 == 1:
         m = "numpy.nanmax raises on a.size==0 and axis=None; Bottleneck too."
         raise ValueError(m)
@@ -1114,19 +1138,20 @@ cdef ndarray nanmax_one_DTYPE0(np.flatiter ita,
     if length == 0:
         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
         raise ValueError(msg)
-    while PyArray_ITER_NOTDONE(ita):
-        amin = MINDTYPE0
-        allnan = 1
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            if ai >= amin:
-                amin = ai
-                allnan = 0
-        if allnan != 0:
-            amin = NAN
-        (<DTYPE0_t*>((<char*>pid(ity))))[0] = amin
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            amin = MINDTYPE0
+            allnan = 1
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if ai >= amin:
+                    amin = ai
+                    allnan = 0
+            if allnan != 0:
+                amin = NAN
+            (<DTYPE0_t*>((<char*>pid(ity))))[0] = amin
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -1141,15 +1166,16 @@ cdef ndarray nanmax_one_DTYPE0(np.flatiter ita,
     if length == 0:
         msg = "numpy.nanmax raises on a.shape[axis]==0; so Bottleneck does."
         raise ValueError(msg)
-    while PyArray_ITER_NOTDONE(ita):
-        amin = MINDTYPE0
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            if ai >= amin:
-                amin = ai
-        (<DTYPE0_t*>((<char*>pid(ity))))[0] = amin
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            amin = MINDTYPE0
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if ai >= amin:
+                    amin = ai
+            (<DTYPE0_t*>((<char*>pid(ity))))[0] = amin
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -1210,11 +1236,12 @@ cdef object ss_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
     # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
     cdef Py_ssize_t i
     cdef DTYPE0_t asum = 0, ai
-    while PyArray_ITER_NOTDONE(ita):
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-            asum += ai * ai
-        PyArray_ITER_NEXT(ita)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                asum += ai * ai
+            PyArray_ITER_NEXT(ita)
     return asum
 
 
@@ -1226,19 +1253,20 @@ cdef ndarray ss_one_DTYPE0(np.flatiter ita,
     cdef DTYPE0_t asum = 0, ai
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
     cdef np.flatiter ity = PyArray_IterNew(y)
-    if length == 0:
-        while PyArray_ITER_NOTDONE(ity):
-            (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ity)
-    else:
-        while PyArray_ITER_NOTDONE(ita):
-            asum = 0
-            for i in range(length):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                asum += ai * ai
-            (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ita)
-            PyArray_ITER_NEXT(ity)
+    with nogil:
+        if length == 0:
+            while PyArray_ITER_NOTDONE(ity):
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
+                PyArray_ITER_NEXT(ity)
+        else:
+            while PyArray_ITER_NOTDONE(ita):
+                asum = 0
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    asum += ai * ai
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
+                PyArray_ITER_NEXT(ita)
+                PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -1312,77 +1340,10 @@ cdef object nanmedian_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
     # bn.dtypes = [['float64'], ['float32']]
     cdef int allnan = 1, flag = 0
     cdef np.npy_intp i = 0, j = 0, l, r, k, n
-    cdef DTYPE0_t x, tmp, amax, ai, bi
+    cdef DTYPE0_t x, tmp, amax, ai, bi, out
     if length == 0:
         return NAN
-    j = length - 1
-    flag = 1
-    for i in range(length):
-        bi = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-        if bi != bi:
-            while (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] != (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]:
-                if j <= 0:
-                    break
-                j -= 1
-            if i >= j:
-                flag = 0
-                break
-            tmp = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
-            (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
-            (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = bi
-    n = i + flag
-    k = n >> 1
-    l = 0
-    r = n - 1
-    while l < r:
-        x = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
-        i = l
-        j = r
-        while 1:
-            while (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
-            while x < (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
-            if i <= j:
-                tmp = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
-                (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
-                i += 1
-                j -= 1
-            if i > j: break
-        if j < k: l = i
-        if k < i: r = j
-    bi = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
-    if n % 2 == 0:
-        amax = MINDTYPE0
-        allnan = 1
-        for i in range(k):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai >= amax:
-                amax = ai
-                allnan = 0
-        if allnan == 0:
-            return 0.5 * (bi + amax)
-        else:
-            return bi
-    else:
-        return bi
-
-
-cdef ndarray nanmedian_one_DTYPE0(np.flatiter ita,
-                                  Py_ssize_t stride, Py_ssize_t length,
-                                  int a_ndim, np.npy_intp* y_dims,
-                                  int int_input):
-    # bn.dtypes = [['float64'], ['float32']]
-    cdef int allnan = 1, flag = 0
-    cdef np.npy_intp i = 0, j = 0, l, r, k, n
-    cdef DTYPE0_t x, tmp, amax, ai, bi
-    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
-    cdef np.flatiter ity = PyArray_IterNew(y)
-    if length == 0:
-        while PyArray_ITER_NOTDONE(ity):
-            (<DTYPE0_t*>((<char*>pid(ity))))[0] = NAN
-            PyArray_ITER_NEXT(ity)
-        return y
-    while PyArray_ITER_NOTDONE(ita):
+    with nogil:
         j = length - 1
         flag = 1
         for i in range(length):
@@ -1428,13 +1389,83 @@ cdef ndarray nanmedian_one_DTYPE0(np.flatiter ita,
                     amax = ai
                     allnan = 0
             if allnan == 0:
-                (<DTYPE0_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+                out = 0.5 * (bi + amax)
+            else:
+                out = bi
+        else:
+            out = bi
+    return out
+
+
+cdef ndarray nanmedian_one_DTYPE0(np.flatiter ita,
+                                  Py_ssize_t stride, Py_ssize_t length,
+                                  int a_ndim, np.npy_intp* y_dims,
+                                  int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int allnan = 1, flag = 0
+    cdef np.npy_intp i = 0, j = 0, l, r, k, n
+    cdef DTYPE0_t x, tmp, amax, ai, bi
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        while PyArray_ITER_NOTDONE(ity):
+            (<DTYPE0_t*>((<char*>pid(ity))))[0] = NAN
+            PyArray_ITER_NEXT(ity)
+        return y
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            j = length - 1
+            flag = 1
+            for i in range(length):
+                bi = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if bi != bi:
+                    while (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] != (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]:
+                        if j <= 0:
+                            break
+                        j -= 1
+                    if i >= j:
+                        flag = 0
+                        break
+                    tmp = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                    (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                    (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+            n = i + flag
+            k = n >> 1
+            l = 0
+            r = n - 1
+            while l < r:
+                x = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+                i = l
+                j = r
+                while 1:
+                    while (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+                    while x < (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+                    if i <= j:
+                        tmp = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                        (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                        (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            bi = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+            if n % 2 == 0:
+                amax = MINDTYPE0
+                allnan = 1
+                for i in range(k):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    if ai >= amax:
+                        amax = ai
+                        allnan = 0
+                if allnan == 0:
+                    (<DTYPE0_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+                else:
+                    (<DTYPE0_t*>((<char*>pid(ity))))[0] = bi
             else:
                 (<DTYPE0_t*>((<char*>pid(ity))))[0] = bi
-        else:
-            (<DTYPE0_t*>((<char*>pid(ity))))[0] = bi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -1511,58 +1542,14 @@ cdef object median_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
                               Py_ssize_t length, int int_input):
     # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
     cdef np.npy_intp i = 0, j = 0, l, r, k
-    cdef DTYPE0_t x, tmp, amax, ai, bi
+    cdef DTYPE0_t x, tmp, amax, ai, bi,
+    cdef double out
     if length == 0:
         return NAN
     k = length >> 1
     l = 0
     r = length - 1
-    while l < r:
-        x = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
-        i = l
-        j = r
-        while 1:
-            while (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
-            while x < (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
-            if i <= j:
-                tmp = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
-                (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
-                i += 1
-                j -= 1
-            if i > j: break
-        if j < k: l = i
-        if k < i: r = j
-    bi = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
-    if length % 2 == 0:
-        amax = MINDTYPE0
-        for i in range(k):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai >= amax:
-                amax = ai
-        return 0.5 * (bi + amax)
-    else:
-        return 1.0 * bi
-
-
-cdef ndarray median_one_DTYPE0(np.flatiter ita,
-                               Py_ssize_t stride, Py_ssize_t length,
-                               int a_ndim, np.npy_intp* y_dims,
-                               int int_input):
-    # bn.dtypes = [['float64', 'float64'], ['float32', 'float32'], ['int64', 'float64'], ['int32', 'float64']]
-    cdef np.npy_intp i = 0, j = 0, l, r, k
-    cdef DTYPE0_t x, tmp, amax, ai, bi
-    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterNew(y)
-    if length == 0:
-        while PyArray_ITER_NOTDONE(ity):
-            (<DTYPE1_t*>((<char*>pid(ity))))[0] = NAN
-            PyArray_ITER_NEXT(ity)
-        return y
-    while PyArray_ITER_NOTDONE(ita):
-        k = length >> 1
-        l = 0
-        r = length - 1
+    with nogil:
         while l < r:
             x = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
             i = l
@@ -1586,11 +1573,59 @@ cdef ndarray median_one_DTYPE0(np.flatiter ita,
                 ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
                 if ai >= amax:
                     amax = ai
-            (<DTYPE1_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+            out = 0.5 * (bi + amax)
         else:
-            (<DTYPE1_t*>((<char*>pid(ity))))[0] = bi
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+            out = 1.0 * bi
+    return out
+
+
+cdef ndarray median_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims,
+                               int int_input):
+    # bn.dtypes = [['float64', 'float64'], ['float32', 'float32'], ['int64', 'float64'], ['int32', 'float64']]
+    cdef np.npy_intp i = 0, j = 0, l, r, k
+    cdef DTYPE0_t x, tmp, amax, ai, bi
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        while PyArray_ITER_NOTDONE(ity):
+            (<DTYPE1_t*>((<char*>pid(ity))))[0] = NAN
+            PyArray_ITER_NEXT(ity)
+        return y
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            k = length >> 1
+            l = 0
+            r = length - 1
+            while l < r:
+                x = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+                i = l
+                j = r
+                while 1:
+                    while (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+                    while x < (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+                    if i <= j:
+                        tmp = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                        (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                        (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            bi = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+            if length % 2 == 0:
+                amax = MINDTYPE0
+                for i in range(k):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    if ai >= amax:
+                        amax = ai
+                (<DTYPE1_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+            else:
+                (<DTYPE1_t*>((<char*>pid(ity))))[0] = bi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -1668,14 +1703,15 @@ cdef object nanargmin_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
     if length == 0:
         msg = "numpy.nanargmin raises on a.shape[axis]==0; Bottleneck too."
         raise ValueError(msg)
-    amin = MAXDTYPE0
-    allnan = 1
-    for i in range(length - 1, -1, -1):
-        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-        if ai <= amin:
-            amin = ai
-            allnan = 0
-            idx = i
+    with nogil:
+        amin = MAXDTYPE0
+        allnan = 1
+        for i in range(length - 1, -1, -1):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai <= amin:
+                amin = ai
+                allnan = 0
+                idx = i
     if allnan == 0:
         return idx
     else:
@@ -1690,13 +1726,14 @@ cdef object nanargmin_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
     if length == 0:
         msg = "numpy.nanargmin raises on a.shape[axis]==0; Bottleneck too."
         raise ValueError(msg)
-    amin = MAXDTYPE0
-    allnan = 1
-    for i in range(length - 1, -1, -1):
-        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-        if ai <= amin:
-            amin = ai
-            idx = i
+    with nogil:
+        amin = MAXDTYPE0
+        allnan = 1
+        for i in range(length - 1, -1, -1):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai <= amin:
+                amin = ai
+                idx = i
     return idx
 
 
@@ -1705,7 +1742,7 @@ cdef ndarray nanargmin_one_DTYPE0(np.flatiter ita,
                                   int a_ndim, np.npy_intp* y_dims,
                                   int int_input):
     # bn.dtypes = [['float64'], ['float32']]
-    cdef int allnan = 1
+    cdef int allnan = 1, err_code = 0
     cdef DTYPE0_t amin, ai
     cdef Py_ssize_t i, idx = 0
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_intp, 0)
@@ -1713,21 +1750,24 @@ cdef ndarray nanargmin_one_DTYPE0(np.flatiter ita,
     if length == 0:
         msg = "numpy.nanargmin raises on a.shape[axis]==0; Bottleneck too."
         raise ValueError(msg)
-    while PyArray_ITER_NOTDONE(ita):
-        amin = MAXDTYPE0
-        allnan = 1
-        for i in range(length - 1, -1, -1):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai <= amin:
-                amin = ai
-                allnan = 0
-                idx = i
-        if allnan == 0:
-            (<intp_t*>((<char*>pid(ity))))[0] = idx
-        else:
-            raise ValueError("All-NaN slice encountered")
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            amin = MAXDTYPE0
+            allnan = 1
+            for i in range(length - 1, -1, -1):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai <= amin:
+                    amin = ai
+                    allnan = 0
+                    idx = i
+            if allnan == 0:
+                (<intp_t*>((<char*>pid(ity))))[0] = idx
+            else:
+                err_code = 1
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+    if err_code == 1:
+        raise ValueError("All-NaN slice encountered")
     return y
 
 
@@ -1743,16 +1783,17 @@ cdef ndarray nanargmin_one_DTYPE0(np.flatiter ita,
     if length == 0:
         msg = "numpy.nanargmin raises on a.shape[axis]==0; Bottleneck too."
         raise ValueError(msg)
-    while PyArray_ITER_NOTDONE(ita):
-        amin = MAXDTYPE0
-        for i in range(length - 1, -1, -1):
-            ai = (<intp_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai <= amin:
-                amin = ai
-                idx = i
-        (<intp_t*>((<char*>pid(ity))))[0] = idx
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            amin = MAXDTYPE0
+            for i in range(length - 1, -1, -1):
+                ai = (<intp_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai <= amin:
+                    amin = ai
+                    idx = i
+            (<intp_t*>((<char*>pid(ity))))[0] = idx
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -1834,14 +1875,15 @@ cdef object nanargmax_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
     if length == 0:
         msg = "numpy.nanargmax raises on a.shape[axis]==0; Bottleneck too."
         raise ValueError(msg)
-    amax = MINDTYPE0
-    allnan = 1
-    for i in range(length - 1, -1, -1):
-        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-        if ai >= amax:
-            amax = ai
-            allnan = 0
-            idx = i
+    with nogil:
+        amax = MINDTYPE0
+        allnan = 1
+        for i in range(length - 1, -1, -1):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai >= amax:
+                amax = ai
+                allnan = 0
+                idx = i
     if allnan == 0:
         return idx
     else:
@@ -1856,13 +1898,14 @@ cdef object nanargmax_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
     if length == 0:
         msg = "numpy.nanargmax raises on a.shape[axis]==0; Bottleneck too."
         raise ValueError(msg)
-    amax = MINDTYPE0
-    allnan = 1
-    for i in range(length - 1, -1, -1):
-        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-        if ai >= amax:
-            amax = ai
-            idx = i
+    with nogil:
+        amax = MINDTYPE0
+        allnan = 1
+        for i in range(length - 1, -1, -1):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai >= amax:
+                amax = ai
+                idx = i
     return idx
 
 
@@ -1871,7 +1914,7 @@ cdef ndarray nanargmax_one_DTYPE0(np.flatiter ita,
                                   int a_ndim, np.npy_intp* y_dims,
                                   int int_input):
     # bn.dtypes = [['float64'], ['float32']]
-    cdef int allnan = 1
+    cdef int allnan = 1, err_code = 0
     cdef DTYPE0_t amax, ai
     cdef Py_ssize_t i, idx = 0
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_intp, 0)
@@ -1879,21 +1922,24 @@ cdef ndarray nanargmax_one_DTYPE0(np.flatiter ita,
     if length == 0:
         msg = "numpy.nanargmax raises on a.shape[axis]==0; Bottleneck too."
         raise ValueError(msg)
-    while PyArray_ITER_NOTDONE(ita):
-        amax = MINDTYPE0
-        allnan = 1
-        for i in range(length - 1, -1, -1):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai >= amax:
-                amax = ai
-                allnan = 0
-                idx = i
-        if allnan == 0:
-            (<intp_t*>((<char*>pid(ity))))[0] = idx
-        else:
-            raise ValueError("All-NaN slice encountered")
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            amax = MINDTYPE0
+            allnan = 1
+            for i in range(length - 1, -1, -1):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai >= amax:
+                    amax = ai
+                    allnan = 0
+                    idx = i
+            if allnan == 0:
+                (<intp_t*>((<char*>pid(ity))))[0] = idx
+            else:
+                err_code = 1
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+    if err_code == 1:
+        raise ValueError("All-NaN slice encountered")
     return y
 
 
@@ -1909,16 +1955,17 @@ cdef ndarray nanargmax_one_DTYPE0(np.flatiter ita,
     if length == 0:
         msg = "numpy.nanargmax raises on a.shape[axis]==0; Bottleneck too."
         raise ValueError(msg)
-    while PyArray_ITER_NOTDONE(ita):
-        amax = MINDTYPE0
-        for i in range(length - 1, -1, -1):
-            ai = (<intp_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai >= amax:
-                amax = ai
-                idx = i
-        (<intp_t*>((<char*>pid(ity))))[0] = idx
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            amax = MINDTYPE0
+            for i in range(length - 1, -1, -1):
+                ai = (<intp_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai >= amax:
+                    amax = ai
+                    idx = i
+            (<intp_t*>((<char*>pid(ity))))[0] = idx
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -2019,18 +2066,19 @@ cdef ndarray anynan_one_DTYPE0(np.flatiter ita,
         if err_code == -1:
             raise RuntimeError("`PyArray_FillWithScalar` returned an error")
         return y
-    while PyArray_ITER_NOTDONE(ita):
-        f = 1
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai != ai:
-                (<np.uint8_t*>((<char*>pid(ity))))[0] = 1
-                f = 0
-                break
-        if f == 1:
-            (<np.uint8_t*>((<char*>pid(ity))))[0] = 0
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            f = 1
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai != ai:
+                    (<np.uint8_t*>((<char*>pid(ity))))[0] = 1
+                    f = 0
+                    break
+            if f == 1:
+                (<np.uint8_t*>((<char*>pid(ity))))[0] = 0
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -2141,9 +2189,10 @@ cdef object allnan_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
                               Py_ssize_t length, int int_input):
     # bn.dtypes = [['int64'], ['int32']]
     cdef DTYPE0_t size = 0
-    while PyArray_ITER_NOTDONE(ita):
-        size += length
-        PyArray_ITER_NEXT(ita)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            size += length
+            PyArray_ITER_NEXT(ita)
     if size == 0:
         return True
     return False
@@ -2163,18 +2212,19 @@ cdef ndarray allnan_one_DTYPE0(np.flatiter ita,
         if err_code == -1:
             raise RuntimeError("`PyArray_FillWithScalar` returned an error")
         return y
-    while PyArray_ITER_NOTDONE(ita):
-        f = 1
-        for i in range(length):
-            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-            if ai == ai:
-                (<np.uint8_t*>((<char*>pid(ity))))[0] = 0
-                f = 0
-                break
-        if f == 1:
-            (<np.uint8_t*>((<char*>pid(ity))))[0] = 1
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            f = 1
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai == ai:
+                    (<np.uint8_t*>((<char*>pid(ity))))[0] = 0
+                    f = 0
+                    break
+            if f == 1:
+                (<np.uint8_t*>((<char*>pid(ity))))[0] = 1
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
     return y
 
 

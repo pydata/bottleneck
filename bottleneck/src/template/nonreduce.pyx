@@ -91,20 +91,21 @@ cdef ndarray replace_DTYPE0(ndarray a, np.flatiter ita,
     # bn.dtypes = [['float64'], ['float32']]
     cdef Py_ssize_t i
     cdef DTYPE0_t ai
-    if old == old:
-        while PyArray_ITER_NOTDONE(ita):
-            for i in range(length):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-                if ai == old:
-                    (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0] = new
-            PyArray_ITER_NEXT(ita)
-    else:
-        while PyArray_ITER_NOTDONE(ita):
-            for i in range(length):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-                if ai != ai:
-                    (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0] = new
-            PyArray_ITER_NEXT(ita)
+    with nogil:
+        if old == old:
+            while PyArray_ITER_NOTDONE(ita):
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                    if ai == old:
+                        (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0] = new
+                PyArray_ITER_NEXT(ita)
+        else:
+            while PyArray_ITER_NOTDONE(ita):
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                    if ai != ai:
+                        (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0] = new
+                PyArray_ITER_NEXT(ita)
     return a
 
 
@@ -122,12 +123,13 @@ cdef ndarray replace_DTYPE0(ndarray a, np.flatiter ita,
             raise ValueError("Cannot safely cast `old` to int.")
         if newint != new:
             raise ValueError("Cannot safely cast `new` to int.")
-        while PyArray_ITER_NOTDONE(ita):
-            for i in range(length):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
-                if ai == oldint:
-                    (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0] = newint
-            PyArray_ITER_NEXT(ita)
+        with nogil:
+            while PyArray_ITER_NOTDONE(ita):
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                    if ai == oldint:
+                        (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0] = newint
+                PyArray_ITER_NEXT(ita)
     return a
 
 

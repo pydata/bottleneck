@@ -125,27 +125,28 @@ cdef ndarray partsort_DTYPE0(ndarray a, int axis,
         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
                          (n, length))
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
-    while PyArray_ITER_NOTDONE(ity):
-        l = 0
-        r = length - 1
-        while l < r:
-            x = (<DTYPE0_t*>((<char*>pid(ity)) + k*stride))[0]
-            i = l
-            j = r
-            while 1:
-                while (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
-                while x < (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
-                if i <= j:
-                    tmpi = (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0]
-                    tmpj = (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0]
-                    (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
-                    (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
-                    i += 1
-                    j -= 1
-                if i > j: break
-            if j < k: l = i
-            if k < i: r = j
-        PyArray_ITER_NEXT(ity)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ity):
+            l = 0
+            r = length - 1
+            while l < r:
+                x = (<DTYPE0_t*>((<char*>pid(ity)) + k*stride))[0]
+                i = l
+                j = r
+                while 1:
+                    while (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
+                    while x < (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
+                    if i <= j:
+                        tmpi = (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0]
+                        tmpj = (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0]
+                        (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
+                        (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            PyArray_ITER_NEXT(ity)
     return y
 
 
@@ -238,11 +239,12 @@ cdef ndarray argpartsort_DTYPE0(ndarray a, int axis,
     cdef ndarray index = PyArray_EMPTY(a_ndim, y_dims, NPY_intp, 0)
     cdef Py_ssize_t istride = index.strides[axis]
     cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)
-    while PyArray_ITER_NOTDONE(iti):
-        for i in range(length):
-            (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = i
-        PyArray_ITER_NEXT(iti)
-    PyArray_ITER_RESET(iti)
+    with nogil:
+        while PyArray_ITER_NOTDONE(iti):
+            for i in range(length):
+                (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = i
+            PyArray_ITER_NEXT(iti)
+        PyArray_ITER_RESET(iti)
 
     if length == 0:
         return index
@@ -251,32 +253,33 @@ cdef ndarray argpartsort_DTYPE0(ndarray a, int axis,
                          (n, length))
 
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
-    while PyArray_ITER_NOTDONE(ity):
-        l = 0
-        r = length - 1
-        while l < r:
-            x = (<DTYPE0_t*>((<char*>pid(ity)) + k*stride))[0]
-            i = l
-            j = r
-            while 1:
-                while (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
-                while x < (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
-                if i <= j:
-                    tmpi = (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0]
-                    tmpj = (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0]
-                    (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
-                    (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
-                    itmpi = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]
-                    itmpj = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
-                    (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = itmpj
-                    (<intp_t*>((<char*>pid(iti)) + j*istride))[0] = itmpi
-                    i += 1
-                    j -= 1
-                if i > j: break
-            if j < k: l = i
-            if k < i: r = j
-        PyArray_ITER_NEXT(ity)
-        PyArray_ITER_NEXT(iti)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ity):
+            l = 0
+            r = length - 1
+            while l < r:
+                x = (<DTYPE0_t*>((<char*>pid(ity)) + k*stride))[0]
+                i = l
+                j = r
+                while 1:
+                    while (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0] < x: i += 1
+                    while x < (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0]: j -= 1
+                    if i <= j:
+                        tmpi = (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0]
+                        tmpj = (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0]
+                        (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0] = tmpj
+                        (<DTYPE0_t*>((<char*>pid(ity)) + j*stride))[0] = tmpi
+                        itmpi = (<intp_t*>((<char*>pid(iti)) + i*istride))[0]
+                        itmpj = (<intp_t*>((<char*>pid(iti)) + j*istride))[0]
+                        (<intp_t*>((<char*>pid(iti)) + i*istride))[0] = itmpj
+                        (<intp_t*>((<char*>pid(iti)) + j*istride))[0] = itmpi
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            PyArray_ITER_NEXT(ity)
+            PyArray_ITER_NEXT(iti)
 
     return index
 
@@ -360,42 +363,43 @@ cdef ndarray nanrankdata_DTYPE0(ndarray a, int axis,
             raise RuntimeError("`PyArray_FillWithScalar` returned an error")
         return y
 
-    while PyArray_ITER_NOTDONE(ita):
-        idx = (<DTYPE2_t*>((<char*>pid(iti)) + 0*istride))[0]
-        old = (<DTYPE0_t*>((<char*>pid(ita)) + idx*astride))[0]
-        sumranks = 0
-        dupcount = 0
-        for i in range(length - 1):
-            sumranks += i
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            idx = (<DTYPE2_t*>((<char*>pid(iti)) + 0*istride))[0]
+            old = (<DTYPE0_t*>((<char*>pid(ita)) + idx*astride))[0]
+            sumranks = 0
+            dupcount = 0
+            for i in range(length - 1):
+                sumranks += i
+                dupcount += 1
+                k = i + 1
+                idx = (<DTYPE2_t*>((<char*>pid(iti)) + k*istride))[0]
+                new = (<DTYPE0_t*>((<char*>pid(ita)) + idx*astride))[0]
+                if old != new:
+                    if old == old:
+                        averank = sumranks / dupcount + 1
+                        for j in range(k - dupcount, k):
+                            idx = (<DTYPE2_t*>((<char*>pid(iti)) + j*istride))[0]
+                            (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
+                    else:
+                        idx = (<DTYPE2_t*>((<char*>pid(iti)) + i*istride))[0]
+                        (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN
+                    sumranks = 0
+                    dupcount = 0
+                old = new
+            sumranks += (length - 1)
             dupcount += 1
-            k = i + 1
-            idx = (<DTYPE2_t*>((<char*>pid(iti)) + k*istride))[0]
-            new = (<DTYPE0_t*>((<char*>pid(ita)) + idx*astride))[0]
-            if old != new:
-                if old == old:
-                    averank = sumranks / dupcount + 1
-                    for j in range(k - dupcount, k):
-                        idx = (<DTYPE2_t*>((<char*>pid(iti)) + j*istride))[0]
-                        (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
-                else:
-                    idx = (<DTYPE2_t*>((<char*>pid(iti)) + i*istride))[0]
-                    (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN
-                sumranks = 0
-                dupcount = 0
-            old = new
-        sumranks += (length - 1)
-        dupcount += 1
-        averank = sumranks / dupcount + 1
-        if old == old:
-            for j in range(length - dupcount, length):
-                idx = (<DTYPE2_t*>((<char*>pid(iti)) + j*istride))[0]
-                (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
-        else:
-            idx = (<DTYPE2_t*>((<char*>pid(iti)) + (length - 1)*istride))[0]
-            (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
-        PyArray_ITER_NEXT(iti)
+            averank = sumranks / dupcount + 1
+            if old == old:
+                for j in range(length - dupcount, length):
+                    idx = (<DTYPE2_t*>((<char*>pid(iti)) + j*istride))[0]
+                    (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
+            else:
+                idx = (<DTYPE2_t*>((<char*>pid(iti)) + (length - 1)*istride))[0]
+                (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = NAN
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+            PyArray_ITER_NEXT(iti)
     return y
 
 
@@ -476,34 +480,35 @@ cdef ndarray rankdata_DTYPE0(ndarray a, int axis,
             raise RuntimeError("`PyArray_FillWithScalar` returned an error")
         return y
 
-    while PyArray_ITER_NOTDONE(ita):
-        idx = (<DTYPE2_t*>((<char*>pid(iti)) + 0*istride))[0]
-        old = (<DTYPE0_t*>((<char*>pid(ita)) + idx*astride))[0]
-        sumranks = 0
-        dupcount = 0
-        for i in range(length - 1):
-            sumranks += i
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            idx = (<DTYPE2_t*>((<char*>pid(iti)) + 0*istride))[0]
+            old = (<DTYPE0_t*>((<char*>pid(ita)) + idx*astride))[0]
+            sumranks = 0
+            dupcount = 0
+            for i in range(length - 1):
+                sumranks += i
+                dupcount += 1
+                k = i + 1
+                idx = (<DTYPE2_t*>((<char*>pid(iti)) + k*istride))[0]
+                new = (<DTYPE0_t*>((<char*>pid(ita)) + idx*astride))[0]
+                if old != new:
+                    averank = sumranks / dupcount + 1
+                    for j in range(k - dupcount, k):
+                        idx = (<DTYPE2_t*>((<char*>pid(iti)) + j*istride))[0]
+                        (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
+                    sumranks = 0
+                    dupcount = 0
+                old = new
+            sumranks += (length - 1)
             dupcount += 1
-            k = i + 1
-            idx = (<DTYPE2_t*>((<char*>pid(iti)) + k*istride))[0]
-            new = (<DTYPE0_t*>((<char*>pid(ita)) + idx*astride))[0]
-            if old != new:
-                averank = sumranks / dupcount + 1
-                for j in range(k - dupcount, k):
-                    idx = (<DTYPE2_t*>((<char*>pid(iti)) + j*istride))[0]
-                    (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
-                sumranks = 0
-                dupcount = 0
-            old = new
-        sumranks += (length - 1)
-        dupcount += 1
-        averank = sumranks / dupcount + 1
-        for j in range(length - dupcount, length):
-            idx = (<DTYPE2_t*>((<char*>pid(iti)) + j*istride))[0]
-            (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
-        PyArray_ITER_NEXT(iti)
+            averank = sumranks / dupcount + 1
+            for j in range(length - dupcount, length):
+                idx = (<DTYPE2_t*>((<char*>pid(iti)) + j*istride))[0]
+                (<DTYPE1_t*>((<char*>pid(ity)) + idx*ystride))[0] = averank
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+            PyArray_ITER_NEXT(iti)
     return y
 
 
