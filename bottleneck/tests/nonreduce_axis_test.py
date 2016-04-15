@@ -6,6 +6,7 @@ import numpy as np
 from numpy.testing import assert_equal, assert_array_equal
 nan = np.nan
 import bottleneck as bn
+from bottleneck.threads import make_unary
 
 DTYPES = [np.float64, np.float32, np.int64, np.int32, np.float16]
 
@@ -101,3 +102,16 @@ def test_rankdata():
 def test_nanrankdata():
     "Test nanrankdata."
     yield reduce_unit_maker, bn.nanrankdata, bn.slow.nanrankdata
+
+
+def test_push():
+    "Test push."
+    yield reduce_unit_maker, push , push_slow
+
+
+def push(arr, axis=-1):
+    return bn.push(arr, n=3, axis=axis)
+
+
+def push_slow(arr, axis=-1):
+    return bn.slow.push(arr, n=3, axis=axis)

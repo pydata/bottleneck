@@ -512,6 +512,58 @@ cdef ndarray rankdata_DTYPE0(ndarray a, int axis,
     return y
 
 
+# push ----------------------------------------------------------------------
+
+def push(arr, int n, int axis=-1):
+    try:
+        return nonreducer_axis(arr, axis,
+                               push_float64,
+                               push_float32,
+                               push_int64,
+                               push_int32,
+                               n)
+    except TypeError:
+        return slow.push(arr, n, axis)
+
+
+cdef ndarray push_DTYPE0(ndarray a, int axis,
+                             int a_ndim, np.npy_intp* y_dims, int n):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef np.npy_intp i, index
+    cdef DTYPE0_t ai, ai_last
+    cdef ndarray y = PyArray_Copy(a)
+    cdef Py_ssize_t stride = y.strides[axis]
+    cdef Py_ssize_t length = y.shape[axis]
+    if length == 0:
+        return y
+    if (n < 1):
+        raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
+                         (n, length))
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ity):
+            index = 0
+            ai_last = NAN
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0]
+                if ai == ai:
+                    ai_last = ai
+                    index = i
+                else:
+                    if i - index <= n:
+                        (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0] = ai_last
+            PyArray_ITER_NEXT(ity)
+    return y
+
+
+
+cdef ndarray push_DTYPE0(ndarray a, int axis,
+                             int a_ndim, np.npy_intp* y_dims, int n):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef ndarray y = PyArray_Copy(a)
+    return y
+
+
 # nonreduce_axis ------------------------------------------------------------
 
 ctypedef ndarray (*nra_t)(ndarray, int, int, np.npy_intp*, int)

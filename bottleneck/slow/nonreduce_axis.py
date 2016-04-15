@@ -1,6 +1,6 @@
 import numpy as np
 
-__all__ = ['rankdata', 'nanrankdata', 'partsort', 'argpartsort']
+__all__ = ['rankdata', 'nanrankdata', 'partsort', 'argpartsort', 'push']
 
 rankdata_func = None
 
@@ -65,6 +65,36 @@ def argpartsort(arr, n, axis=-1):
         # bug in numpy 1.9.1: `a` cannot be a list
         a = np.array(arr, copy=False)
     return np.argpartition(a, n - 1, axis)
+
+
+def push(arr, n, axis=-1):
+    "Slow push used for unaccelerated ndim/dtype combinations."
+    if axis is None:
+        raise ValueError("`axis` cannot be None")
+    if axis != -1 or axis != arr.ndim-1:
+        arr = np.rollaxis(arr, axis, arr.ndim)
+    y = np.array(arr)
+    if y.ndim == 1:
+        y = y[None, :]
+    fidx = ~np.isnan(y)
+    recent = np.empty(y.shape[:-1])
+    count = np.empty(y.shape[:-1])
+    recent.fill(np.nan)
+    count.fill(np.nan)
+    with np.errstate(invalid='ignore'):
+        for i in range(y.shape[-1]):
+            idx = (i - count) > n
+            recent[idx] = np.nan
+            idx = ~fidx[..., i]
+            y[idx, i] = recent[idx]
+            idx = fidx[..., i]
+            count[idx] = i
+            recent[idx] = y[idx, i]
+    if axis != -1 or axis != arr.ndim-1:
+        y = np.rollaxis(y, arr.ndim-1, axis)
+    if arr.ndim == 1:
+        return y[0]
+    return y
 
 
 # ---------------------------------------------------------------------------
