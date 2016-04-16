@@ -71,11 +71,14 @@ def push(arr, n, axis=-1):
     "Slow push used for unaccelerated ndim/dtype combinations."
     if axis is None:
         raise ValueError("`axis` cannot be None")
-    if axis != -1 or axis != arr.ndim-1:
+    ndim = arr.ndim
+    if axis != -1 or axis != ndim - 1:
         arr = np.rollaxis(arr, axis, arr.ndim)
     y = np.array(arr)
-    if y.ndim == 1:
+    if ndim == 1:
         y = y[None, :]
+    elif ndim == 0:
+        return y
     fidx = ~np.isnan(y)
     recent = np.empty(y.shape[:-1])
     count = np.empty(y.shape[:-1])
@@ -90,9 +93,9 @@ def push(arr, n, axis=-1):
             idx = fidx[..., i]
             count[idx] = i
             recent[idx] = y[idx, i]
-    if axis != -1 or axis != arr.ndim-1:
-        y = np.rollaxis(y, arr.ndim-1, axis)
-    if arr.ndim == 1:
+    if axis != -1 or axis != ndim - 1:
+        y = np.rollaxis(y, ndim - 1, axis)
+    if ndim == 1:
         return y[0]
     return y
 

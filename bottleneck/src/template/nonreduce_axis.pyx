@@ -526,15 +526,15 @@ def push(arr, int n, int axis=-1):
         return slow.push(arr, n, axis)
 
 
-cdef ndarray push_DTYPE0(ndarray a, int axis,
-                             int a_ndim, np.npy_intp* y_dims, int n):
+cdef ndarray push_DTYPE0(ndarray a, int axis, int a_ndim, np.npy_intp* y_dims,
+                         int n):
     # bn.dtypes = [['float64'], ['float32']]
     cdef np.npy_intp i, index
     cdef DTYPE0_t ai, ai_last
     cdef ndarray y = PyArray_Copy(a)
     cdef Py_ssize_t stride = y.strides[axis]
     cdef Py_ssize_t length = y.shape[axis]
-    if length == 0:
+    if length == 0 or a_ndim == 0:
         return y
     if (n < 1):
         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
@@ -557,8 +557,8 @@ cdef ndarray push_DTYPE0(ndarray a, int axis,
 
 
 
-cdef ndarray push_DTYPE0(ndarray a, int axis,
-                             int a_ndim, np.npy_intp* y_dims, int n):
+cdef ndarray push_DTYPE0(ndarray a, int axis, int a_ndim, np.npy_intp* y_dims,
+                         int n):
     # bn.dtypes = [['int64'], ['int32']]
     cdef ndarray y = PyArray_Copy(a)
     return y
