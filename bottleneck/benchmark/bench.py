@@ -42,8 +42,7 @@ def bench(dtype='float64', axis=-1,
 
     # Header
     print('Bottleneck performance benchmark')
-    print("%sBottleneck  %s" % (tab, bn.__version__))
-    print("%sNumpy (np)  %s" % (tab, np.__version__))
+    print("%sBottleneck %s; Numpy %s" % (tab, bn.__version__, np.__version__))
     print("%sSpeed is NumPy time divided by Bottleneck time" % tab)
     tup = (tab, dtype, axis)
     print("%sNaN means approx one-third NaNs; %s and axis=%s are used" % tup)
@@ -141,19 +140,27 @@ def benchsuite(shapes, dtype, axis, nans):
         run['setups'] = getsetups(setup, shapes, nans)
         suite.append(run)
 
-    # replace
-    run = {}
-    run['name'] = "replace"
-    run['statements'] = ["bn_func(a, np.nan, 0)",
-                         "slow_func(a, np.nan, 0)"]
-    setup = """
-        from bottleneck import replace as bn_func
-        from bottleneck.slow import replace as slow_func
-    """
-    run['setups'] = getsetups(setup, shapes, nans)
-    suite.append(run)
+    # replace, push
+    funcs = ['replace', 'push']
+    for func in funcs:
+        run = {}
+        run['name'] = func
+        if func == 'replace':
+            run['statements'] = ["bn_func(a, np.nan, 0)",
+                                 "slow_func(a, np.nan, 0)"]
+        elif func == 'push':
+            run['statements'] = ["bn_func(a, 5, axis=AXIS)",
+                                 "slow_func(a, 5, axis=AXIS)"]
+        else:
+            raise ValueError('Unknow function name')
+        setup = """
+            from bottleneck import %s as bn_func
+            from bottleneck.slow import %s as slow_func
+        """ % (func, func)
+        run['setups'] = getsetups(setup, shapes, nans)
+        suite.append(run)
 
-    # moving window function that benchmark against sp.ndimage.convolve1d
+    # moving window functions
     funcs = ['move_sum', 'move_mean', 'move_std', 'move_var', 'move_min',
              'move_max', 'move_argmin', 'move_argmax', 'move_median']
     for func in funcs:
