@@ -19,7 +19,7 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 - bn.move_median is slower but can now handle NaNs and `min_count` parameter
 - Bottleneck can now handle byte-swapped input arrays
 - Bottleneck now checks that calls to PyArray_FillWithScalar are successful
-- C files are now generated with Cython 0.23.4 instead of 0.21.1
+- C files are now generated with Cython 0.24 instead of 0.21.1
 
 **Multiple threads**
 
