@@ -514,14 +514,59 @@ cdef ndarray rankdata_DTYPE0(ndarray a, int axis,
 
 # push ----------------------------------------------------------------------
 
-def push(arr, int n, int axis=-1):
+def push(arr, float n=np.inf, int axis=-1):
+    """
+    Fill missing values (NaNs) with most recent non-missing values.
+
+    Filling proceeds along the specified axis from small index values to large
+    index values.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    n : float, optional
+        How far to push values. If the most recent non-NaN array element is
+        more than `n` index positions away, than a NaN is returned.
+    axis : int, optional
+        Axis along which the elements of the array are pushed. The default
+        (axis=-1) is to push along the last axis of the input array.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape and dtype as `arr`.
+
+    See also
+    --------
+    bottleneck.replace: Replace specified value of an array with new value.
+
+    Examples
+    --------
+    >>> arr = np.array([5, np.nan, np.nan, 6, np.nan])
+    >>> bn.push(arr)
+        array([ 5.,  5.,  5.,  6.,  6.])
+    >>> bn.push(arr, n=1)
+        array([  5.,   5.,  nan,   6.,   6.])
+    >>> bn.push(arr, n=2)
+        array([ 5.,  5.,  5.,  6.,  6.])
+
+
+    """
+    cdef int n_int
+    if n == np.inf:
+        n_int = -1
+    elif n < 0:
+        n_int = 0
+    else:
+        n_int = <int> n
     try:
         return nonreducer_axis(arr, axis,
                                push_float64,
                                push_float32,
                                push_int64,
                                push_int32,
-                               n)
+                               n_int)
     except TypeError:
         return slow.push(arr, n, axis)
 
@@ -536,10 +581,12 @@ cdef ndarray push_DTYPE0(ndarray a, int axis, int a_ndim, np.npy_intp* y_dims,
     cdef Py_ssize_t length = y.shape[axis]
     if length == 0 or a_ndim == 0:
         return y
-    if (n < 1):
-        raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
-                         (n, length))
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef float64_t n_float
+    if n < 0:
+        n_float = np.inf
+    else:
+        n_float = <float64_t> n
     with nogil:
         while PyArray_ITER_NOTDONE(ity):
             index = 0
@@ -550,11 +597,10 @@ cdef ndarray push_DTYPE0(ndarray a, int axis, int a_ndim, np.npy_intp* y_dims,
                     ai_last = ai
                     index = i
                 else:
-                    if i - index <= n:
+                    if i - index <= n_float:
                         (<DTYPE0_t*>((<char*>pid(ity)) + i*stride))[0] = ai_last
             PyArray_ITER_NEXT(ity)
     return y
-
 
 
 cdef ndarray push_DTYPE0(ndarray a, int axis, int a_ndim, np.npy_intp* y_dims,

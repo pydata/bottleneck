@@ -106,12 +106,14 @@ def test_nanrankdata():
 
 def test_push():
     "Test push."
-    yield reduce_unit_maker, push , push_slow
+    yield reduce_unit_maker, bn.push, bn.slow.push
 
 
-def push(arr, axis=-1):
-    return bn.push(arr, n=3, axis=axis)
-
-
-def push_slow(arr, axis=-1):
-    return bn.slow.push(arr, n=3, axis=axis)
+def test_push_2():
+    "Test push #2."
+    ns = (np.inf, -1, 0, 1, 2, 3, 4, 5, 1.1, 1.5, 1.9)
+    arr = np.array([np.nan, 1, 2, np.nan, np.nan, np.nan, np.nan, 3, np.nan])
+    for n in ns:
+        actual = bn.push(arr.copy(), n=n)
+        desired = bn.slow.push(arr.copy(), n=n)
+        assert_array_equal(actual, desired, "failed on n=%s" % str(n))

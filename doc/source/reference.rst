@@ -17,6 +17,7 @@ non-reduce                         :meth:`replace <bottleneck.replace>`
 
 non-reduce with axis               :meth:`rankdata <bottleneck.rankdata>`, :meth:`nanrankdata <bottleneck.nanrankdata>`,
                                    :meth:`partsort <bottleneck.partsort>`, :meth:`argpartsort <bottleneck.argpartsort>`,
+                                   :meth:`push <bottleneck.push>`
 
 moving window                      :meth:`move_sum <bottleneck.move_sum>`, :meth:`move_mean <bottleneck.move_mean>`,
                                    :meth:`move_std <bottleneck.move_std>`, :meth:`move_min <bottleneck.move_var>`,
@@ -89,7 +90,7 @@ Functions the reduce the input array along the specified axis.
 Non-reduce
 ----------
 
-Functions that do not reduce the input array.
+Functions that do not reduce the input array and do not take `axis` as input.
 
 ------------
 
@@ -118,12 +119,15 @@ axis.
 
 .. autofunction:: bottleneck.argpartsort
 
+------------
+
+.. autofunction:: bottleneck.push
+
 
 Moving window functions
 -----------------------
 
-Moving window functions (with a 1d window) that take `min_count` as an optional
-input.
+Functions that operate along a (1d) moving window.
 
 ------------
 

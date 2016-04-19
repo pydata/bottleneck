@@ -126,6 +126,11 @@ def test_nanrankdata():
     yield unit_maker, bn.nanrankdata, bn.slow.nanrankdata
 
 
+def test_push():
+    "Test push."
+    yield unit_maker, bn.push, bn.slow.push
+
+
 def test_move_sum():
     "Test move_sum."
     yield unit_maker, bn.move_sum, bn.slow.move_sum, (2,)

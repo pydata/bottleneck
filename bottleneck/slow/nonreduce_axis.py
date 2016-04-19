@@ -67,14 +67,14 @@ def argpartsort(arr, n, axis=-1):
     return np.argpartition(a, n - 1, axis)
 
 
-def push(arr, n, axis=-1):
+def push(arr, n=np.inf, axis=-1):
     "Slow push used for unaccelerated ndim/dtype combinations."
     if axis is None:
         raise ValueError("`axis` cannot be None")
-    ndim = arr.ndim
-    if axis != -1 or axis != ndim - 1:
-        arr = np.rollaxis(arr, axis, arr.ndim)
     y = np.array(arr)
+    ndim = y.ndim
+    if axis != -1 or axis != ndim - 1:
+        y = np.rollaxis(y, axis, ndim)
     if ndim == 1:
         y = y[None, :]
     elif ndim == 0:
