@@ -78,6 +78,7 @@ def test_modification():
              bn.argpartsort,
              bn.rankdata,
              bn.nanrankdata,
+             bn.push,
              bn.move_sum,
              bn.move_mean,
              bn.move_std,
