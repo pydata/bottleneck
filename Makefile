@@ -12,6 +12,7 @@ help:
 	@echo "build   -->  Build the Cython extension modules"
 	@echo "clean   -->  Remove all the build files for a fresh start"
 	@echo "test    -->  Run unit tests"
+	@echo "readme  -->  Update benchmark results in README.rst"
 	@echo "coverage-->  Unit test coverage (doesn't check compiled functions)"
 	@echo "all     -->  clean, pyx, build, test"
 	@echo "bench   -->  Run performance benchmark"
@@ -48,6 +49,9 @@ move:
 
 test:
 	${PYTHON} -c "import bottleneck;bottleneck.test()"
+
+readme:
+	${PYTHON} tools/update_readme.py
 
 coverage:
 	rm -rf .coverage
