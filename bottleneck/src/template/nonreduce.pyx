@@ -133,7 +133,7 @@ cdef ndarray replace_DTYPE0(ndarray a, np.flatiter ita,
     return a
 
 
-# nonreduce_axis ------------------------------------------------------------
+# nonreduce -----------------------------------------------------------------
 
 ctypedef ndarray (*nr_t)(ndarray, np.flatiter,
                          Py_ssize_t, Py_ssize_t,

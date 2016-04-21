@@ -758,7 +758,7 @@ typedef npy_cdouble __pyx_t_5numpy_complex_t;
 struct __pyx_opt_args_9nonreduce_nonreducer;
 
 /* "nonreduce.pyx":179
- * # nonreduce_axis ------------------------------------------------------------
+ * # nonreduce -----------------------------------------------------------------
  * 
  * ctypedef ndarray (*nr_t)(ndarray, np.flatiter,             # <<<<<<<<<<<<<<
  *                          Py_ssize_t, Py_ssize_t,
@@ -2496,7 +2496,7 @@ static PyArrayObject *__pyx_f_9nonreduce_replace_int32(PyArrayObject *__pyx_v_a,
  *                 PyArray_ITER_NEXT(ita)
  *     return a             # <<<<<<<<<<<<<<
  * 
- * # nonreduce_axis ------------------------------------------------------------
+ * # nonreduce -----------------------------------------------------------------
  */
   __Pyx_XDECREF(((PyObject *)__pyx_r));
   __Pyx_INCREF(((PyObject *)__pyx_v_a));
