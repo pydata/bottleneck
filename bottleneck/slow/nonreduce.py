@@ -1,6 +1,7 @@
 import numpy as np
+from numpy import exp as exp_approx
 
-__all__ = ['replace']
+__all__ = ['replace', 'exp_approx']
 
 
 def replace(arr, old, new):

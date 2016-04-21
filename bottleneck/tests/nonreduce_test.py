@@ -125,3 +125,14 @@ def test_replace_nan_int():
     bn.slow.replace(actual, np.nan, 0)
     msg = 'slow.replace failed on int input looking for nans'
     assert_array_equal(actual, desired, err_msg=msg)
+
+
+# ---------------------------------------------------------------------------
+# exp_approx
+
+from .reduce_test import unit_maker as reduce_unit_maker
+
+def test_exp_approx():
+    "Test exp_approx."
+    yield reduce_unit_maker, bn.exp_approx, bn.slow.exp_approx
+

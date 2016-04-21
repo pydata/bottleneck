@@ -19,6 +19,9 @@ from numpy cimport PyArray_TYPE
 from numpy cimport PyArray_NDIM
 from numpy cimport PyArray_ISBYTESWAPPED
 
+from numpy cimport PyArray_EMPTY
+from numpy cimport PyArray_Copy
+
 from numpy cimport ndarray
 from numpy cimport import_array
 import_array()
@@ -133,6 +136,82 @@ cdef ndarray replace_DTYPE0(ndarray a, np.flatiter ita,
     return a
 
 
+# exp_approx ----------------------------------------------------------------
+
+def exp_approx(arr):
+    try:
+        return nonreducer(arr,
+                          exp_approx_float64,
+                          exp_approx_float32,
+                          exp_approx_int64,
+                          exp_approx_int32,
+                          0.0,
+                          0.0,
+                          0)
+    except TypeError:
+        print 'slow'
+        return slow.exp_approx(arr)
+
+
+@cython.cdivision(True)
+cdef ndarray exp_approx_DTYPE0(ndarray a, np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims,
+                               double old, double new):
+    # bn.dtypes = [['float64', 'float64'], ['float32', 'float32'], ['int64', 'float64'], ['int32', 'float64']]
+    print '1'
+    cdef Py_ssize_t i
+    print '2'
+    cdef int axis = -1
+    print '3'
+    cdef DTYPE1_t x
+    if a_ndim == 0:
+        x = a[()]
+        if x > -1024:
+            x = 1 + x / 1024
+            x *= x
+            x *= x
+            x *= x
+            x *= x
+            x *= x
+            x *= x
+            x *= x
+            x *= x
+            x *= x
+            x *= x
+        else:
+            x = 0
+        return x
+    print '4'
+    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
+    print '5'
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    print '6'
+    cdef Py_ssize_t ystride = y.strides[axis]
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                x = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if x > -1024:
+                    x = 1 + x / 1024
+                    x *= x
+                    x *= x
+                    x *= x
+                    x *= x
+                    x *= x
+                    x *= x
+                    x *= x
+                    x *= x
+                    x *= x
+                    x *= x
+                else:
+                    x = 0
+                (<DTYPE1_t*>((<char*>pid(ity)) + i * ystride))[0] = x
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+    return y
+
+
 # nonreduce_axis ------------------------------------------------------------
 
 ctypedef ndarray (*nr_t)(ndarray, np.flatiter,
@@ -149,7 +228,7 @@ cdef ndarray nonreducer(arr,
                         double double_input_1,
                         double double_input_2,
                         int inplace=0):
-
+    print "nonr1"
     # convert to array if necessary
     cdef ndarray a
     if type(arr) is ndarray:
@@ -159,6 +238,7 @@ cdef ndarray nonreducer(arr,
             # works in place so input must be an array, not (e.g.) a list
             raise TypeError("`arr` must be a numpy array.")
         else:
+            print "nonr2"
             a = np.array(arr, copy=False)
 
     # check for byte swapped input array
@@ -169,16 +249,25 @@ cdef ndarray nonreducer(arr,
     # input array
     cdef int dtype = PyArray_TYPE(a)
     cdef int a_ndim = PyArray_NDIM(a)
+    print "nonr3"
 
     # input iterator
     cdef int axis = -1
     cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)
-    cdef Py_ssize_t stride = a.strides[axis]
-    cdef Py_ssize_t length = a.shape[axis]
+    print "nonr4"
+    cdef Py_ssize_t stride, length
+    if a_ndim == 0:
+        stride = 0
+        length = 0
+    else:
+        stride = a.strides[axis]
+        length = a.shape[axis]
+    print "nonr5"
 
     # output array
     cdef ndarray y
     cdef np.npy_intp *y_dims = np.PyArray_DIMS(a)
+    print "nonr6"
 
     # calc
     if dtype == NPY_float64:

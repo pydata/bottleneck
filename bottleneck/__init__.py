@@ -13,7 +13,7 @@ try:
 except:
     pass
 try:
-    from .nonreduce import replace
+    from .nonreduce import replace, exp_approx
 except:
     pass
 try:
