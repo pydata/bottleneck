@@ -1592,11 +1592,10 @@ def move_rank(arr, int window, min_count=None, int axis=-1):
         return mover(arr, window, min_count, axis,
                      move_rank_float64,
                      move_rank_float32,
-                     move_var_int64,
-                     move_var_int32,
+                     move_rank_int64,
+                     move_rank_int32,
                      0)
     except TypeError:
-        print 'slow'
         return slow.move_rank(arr, window, min_count, axis)
 
 
@@ -1605,16 +1604,17 @@ cdef ndarray move_rank_DTYPE0(ndarray a, int window, int min_count, int axis,
                               np.flatiter ita, Py_ssize_t stride,
                               Py_ssize_t length, int a_ndim,
                               np.npy_intp* y_dims, int ignore):
-    # bn.dtypes = [['float64', 'float64'], ['float32', 'foat32']]
+    # bn.dtypes = [['float64', 'float64'], ['float32', 'float32']]
     cdef Py_ssize_t i, j
-    cdef DTYPE0_t g, e, n, r, ai, aj
-    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
+    cdef DTYPE0_t ai, aj
+    cdef DTYPE1_t g, e, n, r
+    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
     cdef char* pita
     while PyArray_ITER_NOTDONE(ita):
         for i in range(min_count - 1):
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
         for i in range(min_count - 1, window - 1):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             if ai == ai:
@@ -1630,7 +1630,9 @@ cdef ndarray move_rank_DTYPE0(ndarray a, int window, int min_count, int axis,
                             g += 1
                         elif ai == aj:
                             e += 1
-                if n == 1:
+                if n < min_count:
+                    r = NAN
+                elif n == 1:
                     r = 0.0
                 else:
                     r = (g + g + e - 1.0) / 2.0
@@ -1638,7 +1640,7 @@ cdef ndarray move_rank_DTYPE0(ndarray a, int window, int min_count, int axis,
                     r = 2.0 * (r - 0.5)
             else:
                 r = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = r
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = r
         for i in range(window - 1, length):
             ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
             if ai == ai:
@@ -1654,7 +1656,9 @@ cdef ndarray move_rank_DTYPE0(ndarray a, int window, int min_count, int axis,
                             g += 1
                         elif ai == aj:
                             e += 1
-                if n == 1:
+                if n < min_count:
+                    r = NAN
+                elif n == 1:
                     r = 0.0
                 else:
                     r = (g + g + e - 1.0) / 2.0
@@ -1662,7 +1666,72 @@ cdef ndarray move_rank_DTYPE0(ndarray a, int window, int min_count, int axis,
                     r = 2.0 * (r - 0.5)
             else:
                 r = NAN
-            (<DTYPE0_t*>((<char*>pid(ity)) + i*ystride))[0] = r
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = r
+        PyArray_ITER_NEXT(ita)
+        PyArray_ITER_NEXT(ity)
+    return y
+
+
+@cython.cdivision(True)
+cdef ndarray move_rank_DTYPE0(ndarray a, int window, int min_count, int axis,
+                              np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int a_ndim,
+                              np.npy_intp* y_dims, int ignore):
+    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
+    cdef Py_ssize_t i, j
+    cdef DTYPE0_t ai, aj
+    cdef DTYPE1_t g, e, n, r
+    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef Py_ssize_t ystride = y.strides[axis]
+    cdef char* pita
+    while PyArray_ITER_NOTDONE(ita):
+        for i in range(min_count - 1):
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+        for i in range(min_count - 1, window - 1):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            g = 0
+            e = 1
+            n = 1
+            r = 0
+            for j in range(i):
+                aj = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                n += 1
+                if ai > aj:
+                    g += 1
+                elif ai == aj:
+                    e += 1
+            if n < min_count:
+                r = NAN
+            elif n == 1:
+                r = 0.0
+            else:
+                r = (g + g + e - 1.0) / 2.0
+                r = r / (n - 1.0)
+                r = 2.0 * (r - 0.5)
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = r
+        for i in range(window - 1, length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            g = 0
+            e = 1
+            n = 1
+            r = 0
+            for j in range(i - window + 1, i):
+                aj = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                n += 1
+                if ai > aj:
+                    g += 1
+                elif ai == aj:
+                    e += 1
+            if n < min_count:
+                r = NAN
+            elif n == 1:
+                r = 0.0
+            else:
+                r = (g + g + e - 1.0) / 2.0
+                r = r / (n - 1.0)
+                r = 2.0 * (r - 0.5)
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = r
         PyArray_ITER_NEXT(ita)
         PyArray_ITER_NEXT(ity)
     return y
