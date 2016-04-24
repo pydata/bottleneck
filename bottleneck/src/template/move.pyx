@@ -1552,12 +1552,16 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 def move_rank(arr, int window, min_count=None, int axis=-1):
     """
-    Moving window variance along the specified axis, optionally ignoring NaNs.
+    Moving window ranking along the specified axis, optionally ignoring NaNs.
 
-    Unlike bn.nanvar, which uses a two-pass algorithm, move_nanvar uses a
-    one-pass algorithm called Welford's method. The algorithm is slow but
-    numerically stable for cases where the mean is large compared to the
-    standard deviation.
+    The output is normalized to be between -1 and 1. For example, with a
+    window width of 3 (and with no ties), the possible output values are
+    -1, 0, 1.
+
+    Ties are broken by averaging the rankings. See the examples below.
+
+    The runtime depends almost linearly on `window`. The more NaNs there are
+    in the input array, the shorter the runtime.
 
     Parameters
     ----------
@@ -1576,16 +1580,25 @@ def move_rank(arr, int window, min_count=None, int axis=-1):
     Returns
     -------
     y : ndarray
-        The moving variance of the input array along the specified axis. The
-        output has the same shape as the input.
+        The moving ranking along the specified axis. The output has the same
+        shape as the input. For integer input arrays, the dtype of the output
+        is float64.
 
     Examples
     --------
-    >>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
-    >>> bn.move_var(arr, window=2)
-    array([ nan,  0.25,  0.25,  nan,  nan])
-    >>> bn.move_var(arr, window=2, min_count=1)
-    array([ 0. ,  0.25,  0.25,  0. ,  0. ])
+    >>> arr = np.array([1, 2, 3, 9, 8, 7, 5, 6, 4])
+    >>> bn.move_rank(arr, window=3)
+        array([ nan,  nan,   1.,   1.,   0.,  -1.,  -1.,   0.,  -1.])
+    >>> bn.move_rank(arr, window=5)
+        array([ nan,  nan,  nan,  nan,  0.5,  0. , -0.5, -0.5, -1. ])
+    >>> bn.move_rank(arr, window=5, min_count=1)
+        array([ 0. ,  1. ,  1. ,  1. ,  0.5,  0. , -0.5, -0.5, -1. ])
+
+    Input with ties:
+
+    >>> arr = np.array([1, 2, 3, 3, 4])
+    >>> bn.move_rank(arr, window=3)
+        array([ nan,  nan,  1. ,  0.5,  1. ])
 
     """
     try:
