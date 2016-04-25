@@ -37,6 +37,7 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 - C files are now generated with Cython 0.24 instead of 0.21.1
 - Added script to automate updating of benchmark results in readme file
 - Added unit tests for scalar (as opposed to array) input
+- Can now specify which functions to include in the benchmark suite
 
 **Thanks**
 

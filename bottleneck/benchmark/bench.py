@@ -8,7 +8,8 @@ __all__ = ['bench']
 
 def bench(dtype='float64', axis=-1,
           shapes=[(10,), (1000, 1000), (10,), (1000, 1000)],
-          nans=[False, False, True, True]):
+          nans=[False, False, True, True],
+          functions=None):
     """
     Bottleneck benchmark.
 
@@ -25,6 +26,10 @@ def bench(dtype='float64', axis=-1,
         A list of the bools (True or False), one for each tuple in the
         `shapes` list, that tells whether the input arrays should be randomly
         filled with one-third NaNs.
+    functions : {list, None}, optional
+        A list of strings specifying which functions to include in the
+        benchmark. By default (None) all functions are included in the
+        benchmark.
 
     Returns
     -------
@@ -59,7 +64,7 @@ def bench(dtype='float64', axis=-1,
     header = [" "*16] + header
     print("".join(header))
 
-    suite = benchsuite(shapes, dtype, axis, nans)
+    suite = benchsuite(shapes, dtype, axis, nans, functions)
     for test in suite:
         name = test["name"].ljust(12)
         fmt = tab + name + "%7.1f" + "%11.1f"*(len(shapes) - 1)
@@ -89,7 +94,7 @@ def getarray(shape, dtype, nans=False):
     return arr.reshape(*shape)
 
 
-def benchsuite(shapes, dtype, axis, nans):
+def benchsuite(shapes, dtype, axis, nans, functions):
 
     suite = []
 
@@ -109,6 +114,8 @@ def benchsuite(shapes, dtype, axis, nans):
              'median', 'nanmedian', 'ss', 'nanargmin', 'nanargmax', 'anynan',
              'allnan', 'rankdata', 'nanrankdata']
     for func in funcs:
+        if functions is not None and func not in functions:
+            continue
         run = {}
         run['name'] = func
         run['statements'] = ["bn_func(a, axis=AXIS)", "sl_func(a, axis=AXIS)"]
@@ -125,6 +132,8 @@ def benchsuite(shapes, dtype, axis, nans):
     # partsort, argpartsort
     funcs = ['partsort', 'argpartsort']
     for func in funcs:
+        if functions is not None and func not in functions:
+            continue
         run = {}
         run['name'] = func
         run['statements'] = ["bn_func(a, n, axis=AXIS)",
@@ -143,6 +152,8 @@ def benchsuite(shapes, dtype, axis, nans):
     # replace, push
     funcs = ['replace', 'push']
     for func in funcs:
+        if functions is not None and func not in functions:
+            continue
         run = {}
         run['name'] = func
         if func == 'replace':
@@ -165,6 +176,8 @@ def benchsuite(shapes, dtype, axis, nans):
              'move_max', 'move_argmin', 'move_argmax', 'move_median',
              'move_rank']
     for func in funcs:
+        if functions is not None and func not in functions:
+            continue
         run = {}
         run['name'] = func
         run['statements'] = ["bn_func(a, window=w, axis=AXIS)",
