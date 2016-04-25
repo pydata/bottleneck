@@ -1586,19 +1586,24 @@ def move_rank(arr, int window, min_count=None, int axis=-1):
 
     Examples
     --------
+    With window=3 and no ties, there are 3 possible output values, i.e.
+    [-1., 0., 1.]:
+
     >>> arr = np.array([1, 2, 3, 9, 8, 7, 5, 6, 4])
     >>> bn.move_rank(arr, window=3)
         array([ nan,  nan,   1.,   1.,   0.,  -1.,  -1.,   0.,  -1.])
-    >>> bn.move_rank(arr, window=5)
-        array([ nan,  nan,  nan,  nan,  0.5,  0. , -0.5, -0.5, -1. ])
-    >>> bn.move_rank(arr, window=5, min_count=1)
-        array([ 0. ,  1. ,  1. ,  1. ,  0.5,  0. , -0.5, -0.5, -1. ])
 
-    Input with ties:
+    Ties are broken by averaging the rankings of the tied elements:
 
-    >>> arr = np.array([1, 2, 3, 3, 4])
+    >>> arr = np.array([1, 2, 3, 3, 3, 4])
     >>> bn.move_rank(arr, window=3)
-        array([ nan,  nan,  1. ,  0.5,  1. ])
+        array([ nan,  nan,  1. ,  0.5,  0. ,  1. ])
+
+    In an increasing sequence, the moving window ranking is always equal to 1:
+
+    >>> arr = np.array([1, 2, 3, 4, 5])
+    >>> bn.move_rank(arr, window=2)
+        array([ nan,   1.,   1.,   1.,   1.])
 
     """
     try:
