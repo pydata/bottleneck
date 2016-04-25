@@ -123,6 +123,11 @@ def test_move_median():
     yield unit_maker, bn.move_median, bn.slow.move_median, 5
 
 
+def test_move_rank():
+    "Test move_rank."
+    yield unit_maker, bn.move_rank, bn.slow.move_rank, 5
+
+
 # ----------------------------------------------------------------------------
 # Regression test for square roots of negative numbers
 

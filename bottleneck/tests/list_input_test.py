@@ -174,3 +174,8 @@ def test_move_argmax():
 def test_move_median():
     "Test move_median."
     yield unit_maker, bn.move_median, bn.slow.move_median, (2,)
+
+
+def test_move_rank():
+    "Test move_rank."
+    yield unit_maker, bn.move_rank, bn.slow.move_rank, (2,)

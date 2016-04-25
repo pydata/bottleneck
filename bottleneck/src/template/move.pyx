@@ -1548,6 +1548,213 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
     return y
 
 
+# move_rank-----------------------------------------------------------------
+
+def move_rank(arr, int window, min_count=None, int axis=-1):
+    """
+    Moving window ranking along the specified axis, optionally ignoring NaNs.
+
+    The output is normalized to be between -1 and 1. For example, with a
+    window width of 3 (and with no ties), the possible output values are
+    -1, 0, 1.
+
+    Ties are broken by averaging the rankings. See the examples below.
+
+    The runtime depends almost linearly on `window`. The more NaNs there are
+    in the input array, the shorter the runtime.
+
+    Parameters
+    ----------
+    arr : ndarray
+        Input array. If `arr` is not an array, a conversion is attempted.
+    window : int
+        The number of elements in the moving window.
+    min_count: {int, None}, optional
+        If the number of non-NaN values in a window is less than `min_count`,
+        then a value of NaN is assigned to the window. By default `min_count`
+        is None, which is equivalent to setting `min_count` equal to `window`.
+    axis : int, optional
+        The axis over which the window is moved. By default the last axis
+        (axis=-1) is used. An axis of None is not allowed.
+
+    Returns
+    -------
+    y : ndarray
+        The moving ranking along the specified axis. The output has the same
+        shape as the input. For integer input arrays, the dtype of the output
+        is float64.
+
+    Examples
+    --------
+    With window=3 and no ties, there are 3 possible output values, i.e.
+    [-1., 0., 1.]:
+
+    >>> arr = np.array([1, 2, 3, 9, 8, 7, 5, 6, 4])
+    >>> bn.move_rank(arr, window=3)
+        array([ nan,  nan,   1.,   1.,   0.,  -1.,  -1.,   0.,  -1.])
+
+    Ties are broken by averaging the rankings of the tied elements:
+
+    >>> arr = np.array([1, 2, 3, 3, 3, 4])
+    >>> bn.move_rank(arr, window=3)
+        array([ nan,  nan,  1. ,  0.5,  0. ,  1. ])
+
+    In an increasing sequence, the moving window ranking is always equal to 1:
+
+    >>> arr = np.array([1, 2, 3, 4, 5])
+    >>> bn.move_rank(arr, window=2)
+        array([ nan,   1.,   1.,   1.,   1.])
+
+    """
+    try:
+        return mover(arr, window, min_count, axis,
+                     move_rank_float64,
+                     move_rank_float32,
+                     move_rank_int64,
+                     move_rank_int32,
+                     0)
+    except TypeError:
+        return slow.move_rank(arr, window, min_count, axis)
+
+
+@cython.cdivision(True)
+cdef ndarray move_rank_DTYPE0(ndarray a, int window, int min_count, int axis,
+                              np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int a_ndim,
+                              np.npy_intp* y_dims, int ignore):
+    # bn.dtypes = [['float64', 'float64'], ['float32', 'float32']]
+    cdef Py_ssize_t i, j
+    cdef DTYPE0_t ai, aj
+    cdef DTYPE1_t g, e, n, r
+    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef Py_ssize_t ystride = y.strides[axis]
+    cdef char* pita
+    while PyArray_ITER_NOTDONE(ita):
+        for i in range(min_count - 1):
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+        for i in range(min_count - 1, window - 1):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai == ai:
+                g = 0
+                e = 1
+                n = 1
+                r = 0
+                for j in range(i):
+                    aj = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                    if aj == aj:
+                        n += 1
+                        if ai > aj:
+                            g += 1
+                        elif ai == aj:
+                            e += 1
+                if n < min_count:
+                    r = NAN
+                elif n == 1:
+                    r = 0.0
+                else:
+                    r = (g + g + e - 1.0) / 2.0
+                    r = r / (n - 1.0)
+                    r = 2.0 * (r - 0.5)
+            else:
+                r = NAN
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = r
+        for i in range(window - 1, length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai == ai:
+                g = 0
+                e = 1
+                n = 1
+                r = 0
+                for j in range(i - window + 1, i):
+                    aj = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                    if aj == aj:
+                        n += 1
+                        if ai > aj:
+                            g += 1
+                        elif ai == aj:
+                            e += 1
+                if n < min_count:
+                    r = NAN
+                elif n == 1:
+                    r = 0.0
+                else:
+                    r = (g + g + e - 1.0) / 2.0
+                    r = r / (n - 1.0)
+                    r = 2.0 * (r - 0.5)
+            else:
+                r = NAN
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = r
+        PyArray_ITER_NEXT(ita)
+        PyArray_ITER_NEXT(ity)
+    return y
+
+
+@cython.cdivision(True)
+cdef ndarray move_rank_DTYPE0(ndarray a, int window, int min_count, int axis,
+                              np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int a_ndim,
+                              np.npy_intp* y_dims, int ignore):
+    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
+    cdef Py_ssize_t i, j
+    cdef DTYPE0_t ai, aj
+    cdef DTYPE1_t g, e, n, r
+    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef Py_ssize_t ystride = y.strides[axis]
+    cdef char* pita
+    while PyArray_ITER_NOTDONE(ita):
+        for i in range(min_count - 1):
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
+        for i in range(min_count - 1, window - 1):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            g = 0
+            e = 1
+            n = 1
+            r = 0
+            for j in range(i):
+                aj = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                n += 1
+                if ai > aj:
+                    g += 1
+                elif ai == aj:
+                    e += 1
+            if n < min_count:
+                r = NAN
+            elif n == 1:
+                r = 0.0
+            else:
+                r = (g + g + e - 1.0) / 2.0
+                r = r / (n - 1.0)
+                r = 2.0 * (r - 0.5)
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = r
+        for i in range(window - 1, length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            g = 0
+            e = 1
+            n = 1
+            r = 0
+            for j in range(i - window + 1, i):
+                aj = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                n += 1
+                if ai > aj:
+                    g += 1
+                elif ai == aj:
+                    e += 1
+            if n < min_count:
+                r = NAN
+            elif n == 1:
+                r = 0.0
+            else:
+                r = (g + g + e - 1.0) / 2.0
+                r = r / (n - 1.0)
+                r = 2.0 * (r - 0.5)
+            (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = r
+        PyArray_ITER_NEXT(ita)
+        PyArray_ITER_NEXT(ity)
+    return y
+
+
 # mover ---------------------------------------------------------------------
 
 ctypedef ndarray (*move_t)(ndarray, int, int, int, np.flatiter, Py_ssize_t,

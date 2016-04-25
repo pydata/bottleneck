@@ -162,7 +162,8 @@ def benchsuite(shapes, dtype, axis, nans):
 
     # moving window functions
     funcs = ['move_sum', 'move_mean', 'move_std', 'move_var', 'move_min',
-             'move_max', 'move_argmin', 'move_argmax', 'move_median']
+             'move_max', 'move_argmin', 'move_argmax', 'move_median',
+             'move_rank']
     for func in funcs:
         run = {}
         run['name'] = func

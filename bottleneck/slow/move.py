@@ -10,7 +10,8 @@ import numpy as np
 
 
 __all__ = ['move_sum', 'move_mean', 'move_std', 'move_var', 'move_min',
-           'move_max', 'move_argmin', 'move_argmax', 'move_median']
+           'move_max', 'move_argmin', 'move_argmax', 'move_median',
+           'move_rank']
 
 
 def move_sum(arr, window, min_count=None, axis=-1):
@@ -96,6 +97,11 @@ def move_median(arr, window, min_count=None, axis=-1):
     return move_func(np.nanmedian, arr, window, min_count, axis=axis)
 
 
+def move_rank(arr, window, min_count=None, axis=-1):
+    "Slow move_rank for unaccelerated dtype"
+    return move_func(lastrank, arr, window, min_count, axis=axis)
+
+
 # magic utility functions ---------------------------------------------------
 
 def move_func(func, arr, window, min_count=None, axis=-1, **kwargs):
@@ -147,3 +153,91 @@ def _mask(arr, window, min_count, axis):
     nidx1 = nidx1 - n[idx2]
     idx = n < min_count
     return idx
+
+
+# ---------------------------------------------------------------------------
+
+def lastrank(arr, axis=-1):
+    """
+    The ranking of the last element along the axis, ignoring NaNs.
+
+    The ranking is normalized to be between -1 and 1 instead of the more
+    common 1 and N. The results are adjusted for ties.
+
+    Parameters
+    ----------
+    arr : ndarray
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : int, optional
+        The axis over which to rank. By default (axis=-1) the ranking
+        (and reducing) is performed over the last axis.
+
+    Returns
+    -------
+    d : array
+        In the case of, for example, a 2d array of shape (n, m) and
+        axis=1, the output will contain the rank (normalized to be between
+        -1 and 1 and adjusted for ties) of the the last element of each row.
+        The output in this example will have shape (n,).
+
+    Examples
+    --------
+    Create an array:
+
+    >>> y1 = larry([1, 2, 3])
+
+    What is the rank of the last element (the value 3 in this example)?
+    It is the largest element so the rank is 1.0:
+
+    >>> import numpy as np
+    >>> from la.afunc import lastrank
+    >>> x1 = np.array([1, 2, 3])
+    >>> lastrank(x1)
+    1.0
+
+    Now let's try an example where the last element has the smallest
+    value:
+
+    >>> x2 = np.array([3, 2, 1])
+    >>> lastrank(x2)
+    -1.0
+
+    Here's an example where the last element is not the minimum or maximum
+    value:
+
+    >>> x3 = np.array([1, 3, 4, 5, 2])
+    >>> lastrank(x3)
+    -0.5
+
+    """
+    a = np.array(arr, copy=False)
+    ndim = a.ndim
+    if a.size == 0:
+        # At least one dimension has length 0
+        shape = list(a.shape)
+        shape.pop(axis)
+        r = np.empty(shape, dtype=a.dtype)
+        r.fill(np.nan)
+        if (r.ndim == 0) and (r.size == 1):
+            r = np.nan
+        return r
+    indlast = [slice(None)] * ndim
+    indlast[axis] = slice(-1, None)
+    indlast2 = [slice(None)] * ndim
+    indlast2[axis] = -1
+    n = (~np.isnan(a)).sum(axis)
+    a_indlast = a[indlast]
+    g = (a_indlast > a).sum(axis)
+    e = (a_indlast == a).sum(axis)
+    r = (g + g + e - 1.0) / 2.0
+    r = r / (n - 1.0)
+    r = 2.0 * (r - 0.5)
+    if ndim == 1:
+        if n == 1:
+            r = 0
+        if np.isnan(a[indlast2]):  # elif?
+            r = np.nan
+    else:
+        np.putmask(r, n == 1, 0)
+        np.putmask(r, np.isnan(a[indlast2]), np.nan)
+    return r

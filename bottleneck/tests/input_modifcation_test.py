@@ -88,6 +88,7 @@ def test_modification():
              bn.move_argmin,
              bn.move_argmax,
              bn.move_median,
+             bn.move_rank,
              ]
     for func in funcs:
         yield unit_maker, func

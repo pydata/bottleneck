@@ -29,6 +29,7 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 - bn.move_var
 - bn.move_argmin
 - bn.move_argmax
+- bn.move_rank
 - bn.push
 
 **Miscellaneous**
