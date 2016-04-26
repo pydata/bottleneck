@@ -135,7 +135,7 @@ def test_nanmax():
 
 def test_median():
     "Test median."
-    yield unit_maker, bn.median, bn.slow.median, np.inf, False
+    yield unit_maker, bn.median, bn.slow.median
 
 
 def test_nanmedian():

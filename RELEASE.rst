@@ -18,11 +18,12 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 - bn.move_std is slower but numerically more stable
 - bn.move_median is slower but can now handle NaNs and `min_count` parameter
 - Bottleneck no longer crashes on byte-swapped input arrays
-- Bottleneck now checks that calls to PyArray_FillWithScalar are successful
+- Bottleneck checks that calls to PyArray_FillWithScalar are successful
 
-**Multiple threads**
+**Faster**
 
-- All Bottleneck functions now release the GIL
+- All Bottleneck functions release the GIL
+- bn.median is faster if the input array contains NaN
 
 **New Functions**
 
@@ -32,12 +33,17 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 - bn.move_rank
 - bn.push
 
+**Beware**
+
+- bn.median now returns NaN for a slice that contains one or more NaNs
+- bn.move_std output changed when mean is large compared to standard deviation
+
 **Miscellaneous**
 
-- C files are now generated with Cython 0.24 instead of 0.21.1
-- Added script to automate updating of benchmark results in readme file
-- Added unit tests for scalar (as opposed to array) input
+- C files are generated with Cython 0.24 instead of 0.21.1
+- New script to automate updating of benchmark results in readme file
 - Can now specify which functions to include in the benchmark suite
+- New unit tests for scalar (as opposed to array) input
 
 **Thanks**
 

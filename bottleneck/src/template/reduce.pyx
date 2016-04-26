@@ -1492,29 +1492,22 @@ def median(arr, axis=None):
     y : ndarray
         An array with the same shape as `arr`, except that the specified axis
         has been removed. If `arr` is a 0d array, or if axis is None, a scalar
-        is returned. `float64` return values are used for integer inputs.
+        is returned. `float64` return values are used for integer inputs. NaN
+        is returned for a slice that contains one or more NaNs.
 
     See also
     --------
     bottleneck.nanmedian: Median along specified axis ignoring NaNs.
 
-    Notes
-    -----
-    This function returns the same output as NumPy's median except when the
-    input contains NaN.
-
     Examples
     --------
     >>> a = np.array([[10, 7, 4], [3, 2, 1]])
-    >>> a
-    array([[10,  7,  4],
-           [ 3,  2,  1]])
     >>> bn.median(a)
-    3.5
+        3.5
     >>> bn.median(a, axis=0)
-    array([ 6.5,  4.5,  2.5])
+        array([ 6.5,  4.5,  2.5])
     >>> bn.median(a, axis=1)
-    array([ 7.,  2.])
+        array([ 7.,  2.])
 
     """
     cdef int ravel = 0, copy = 1, int_input = 0
@@ -1540,9 +1533,78 @@ def median(arr, axis=None):
 
 cdef object median_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
                               Py_ssize_t length, int int_input):
-    # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int found_nan = 0
     cdef np.npy_intp i = 0, j = 0, l, r, k
-    cdef DTYPE0_t x, tmp, amax, ai, bi,
+    cdef DTYPE0_t x, tmp, amax, ai, bi, aj
+    cdef double out
+    if length == 0:
+        return NAN
+    k = length >> 1
+    l = 0
+    r = length - 1
+    with nogil:
+        while l < r:
+            x = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+            if x != x:
+                found_nan = 1
+                break
+            elif found_nan == 1:
+                break
+            i = l
+            j = r
+            while 1:
+                while 1:
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    if ai < x:
+                        i += 1
+                    elif ai != ai:
+                        found_nan = 1
+                        break
+                    else:
+                        break
+                if found_nan == 1:
+                    break
+                while 1:
+                    aj = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                    if x < aj:
+                        j -= 1
+                    elif aj != aj:
+                        found_nan = 1
+                        break
+                    else:
+                        break
+                if found_nan == 1:
+                    break
+                if i <= j:
+                    (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = aj
+                    (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = ai
+                    i += 1
+                    j -= 1
+                if i > j: break
+            if j < k: l = i
+            if k < i: r = j
+        if found_nan == 1:
+            out = NAN
+        else:
+            bi = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+            if length % 2 == 0:
+                amax = MINDTYPE0
+                for i in range(k):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    if ai >= amax:
+                        amax = ai
+                out = 0.5 * (bi + amax)
+            else:
+                out = 1.0 * bi
+    return out
+
+
+cdef object median_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef np.npy_intp i = 0, j = 0, l, r, k
+    cdef DTYPE0_t x, tmp, amax, ai, bi, aj
     cdef double out
     if length == 0:
         return NAN
@@ -1555,12 +1617,21 @@ cdef object median_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
             i = l
             j = r
             while 1:
-                while (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
-                while x < (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+                while 1:
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    if ai < x:
+                        i += 1
+                    else:
+                        break
+                while 1:
+                    aj = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                    if x < aj:
+                        j -= 1
+                    else:
+                        break
                 if i <= j:
-                    tmp = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                    (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
-                    (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+                    (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = aj
+                    (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = ai
                     i += 1
                     j -= 1
                 if i > j: break
@@ -1583,9 +1654,88 @@ cdef ndarray median_one_DTYPE0(np.flatiter ita,
                                Py_ssize_t stride, Py_ssize_t length,
                                int a_ndim, np.npy_intp* y_dims,
                                int int_input):
-    # bn.dtypes = [['float64', 'float64'], ['float32', 'float32'], ['int64', 'float64'], ['int32', 'float64']]
+    # bn.dtypes = [['float64', 'float64'], ['float32', 'float32']]
+    cdef int found_nan = 0
     cdef np.npy_intp i = 0, j = 0, l, r, k
-    cdef DTYPE0_t x, tmp, amax, ai, bi
+    cdef DTYPE0_t x, tmp, amax, ai, aj, bi
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        while PyArray_ITER_NOTDONE(ity):
+            (<DTYPE1_t*>((<char*>pid(ity))))[0] = NAN
+            PyArray_ITER_NEXT(ity)
+        return y
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            found_nan = 0
+            k = length >> 1
+            l = 0
+            r = length - 1
+            while l < r:
+                x = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+                if x != x:
+                    found_nan = 1
+                    break
+                if found_nan == 1:
+                    break
+                i = l
+                j = r
+                while 1:
+                    while 1:
+                        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                        if ai < x:
+                            i += 1
+                        elif ai != ai:
+                            found_nan = 1
+                            break
+                        else:
+                            break
+                    if found_nan == 1:
+                        break
+                    while 1:
+                        aj = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                        if x < aj:
+                            j -= 1
+                        elif aj != aj:
+                            found_nan = 1
+                            break
+                        else:
+                            break
+                    if found_nan == 1:
+                        break
+                    if i <= j:
+                        (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = aj
+                        (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = ai
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            if found_nan == 1:
+                (<DTYPE1_t*>((<char*>pid(ity))))[0] = NAN
+            else:
+                bi = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+                if length % 2 == 0:
+                    amax = MINDTYPE0
+                    for i in range(k):
+                        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                        if ai >= amax:
+                            amax = ai
+                    (<DTYPE1_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+                else:
+                    (<DTYPE1_t*>((<char*>pid(ity))))[0] = bi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+    return y
+
+
+cdef ndarray median_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims,
+                               int int_input):
+    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
+    cdef np.npy_intp i = 0, j = 0, l, r, k
+    cdef DTYPE0_t x, tmp, amax, ai, aj, bi
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE1, 0)
     cdef np.flatiter ity = PyArray_IterNew(y)
     if length == 0:
@@ -1603,12 +1753,21 @@ cdef ndarray median_one_DTYPE0(np.flatiter ita,
                 i = l
                 j = r
                 while 1:
-                    while (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
-                    while x < (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+                    while 1:
+                        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                        if ai < x:
+                            i += 1
+                        else:
+                            break
+                    while 1:
+                        aj = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                        if x < aj:
+                            j -= 1
+                        else:
+                            break
                     if i <= j:
-                        tmp = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                        (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
-                        (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+                        (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = aj
+                        (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = ai
                         i += 1
                         j -= 1
                     if i > j: break
