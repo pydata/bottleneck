@@ -44,8 +44,6 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 - C files are generated with Cython 0.24 instead of 0.21.1
 - New script to automate updating of benchmark results in readme file
 - Can now specify which functions to include in the benchmark suite
-- New unit tests for scalar (as opposed to array) input
-- New unit tests for moving window functions: various window, min_count combos
 - Made unit tests easier to maintain
 - Bottleneck is now flake8 clean; long may it last
 

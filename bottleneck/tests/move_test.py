@@ -1,40 +1,33 @@
 "Test moving window functions."
 
-import warnings
-
 from nose.tools import assert_true
 import numpy as np
-from numpy.testing import (assert_equal, assert_array_equal,
-                           assert_array_almost_equal)
-nan = np.nan
+from numpy.testing import assert_equal, assert_array_almost_equal
 import bottleneck as bn
 from .functions import move_functions
 
 DTYPES = [np.float64, np.float32, np.int64, np.int32]
 
 
-def arrays(dtypes=DTYPES, nans=True):
+def arrays(dtypes=DTYPES):
     "Iterator that yield arrays to use for unit testing."
     ss = {}
-    ss[1] = {'size':  4, 'shapes': [(4,)]}
-    ss[2] = {'size':  6, 'shapes': [(1, 6), (2, 3)]}
-    ss[3] = {'size':  6, 'shapes': [(1, 2, 3)]}
-    ss[4] = {'size': 24, 'shapes': [(1, 2, 3, 4)]}
+    ss[1] = {'size':  8, 'shapes': [(8,)]}
+    ss[2] = {'size': 12, 'shapes': [(2, 6), (4, 3)]}
+    ss[3] = {'size': 60, 'shapes': [(3, 4, 5)]}
+    ss[4] = {'size': 48, 'shapes': [(2, 2, 3, 4)]}
+    rs = np.random.RandomState([1, 2, 3])
     for ndim in ss:
         size = ss[ndim]['size']
         shapes = ss[ndim]['shapes']
         for dtype in dtypes:
             a = np.arange(size, dtype=dtype)
-            for shape in shapes:
-                a = a.reshape(shape)
-                yield a
-                yield -a
             if issubclass(a.dtype.type, np.inexact):
-                if nans:
-                    for i in range(a.size):
-                        a.flat[i] = np.nan
-                        yield a
-                        yield -a
+                idx = rs.rand(*a.shape) < 0.2
+                a[idx] = np.nan
+            rs.shuffle(a)
+            for shape in shapes:
+                yield a.reshape(shape)
     yield np.array([1, 2, 3]) + 1e9  # check that move_std is robust
     yield np.array([1, 2, 3], dtype='>f4')
     yield np.array([1, 2, 3], dtype='<f4')
@@ -42,74 +35,35 @@ def arrays(dtypes=DTYPES, nans=True):
     yield np.array([1, 2, 3], dtype=np.float16)  # make sure slow is called
 
 
-def unit_maker(func, func0, decimal=6, nans=True):
+def unit_maker(func, func0, decimal=4):
     "Test that bn.xxx gives the same output as a reference function."
-    msg = ('\nfunc %s | window %d | min_count %s | input %s (%s) | shape %s | '
+    fmt = ('\nfunc %s | window %d | min_count %s | input %s (%s) | shape %s | '
            'axis %s\n')
-    msg += '\nInput array:\n%s\n'
-    for i, arr in enumerate(arrays(nans=nans)):
-        for axis in range(-arr.ndim, arr.ndim):
+    fmt += '\nInput array:\n%s\n'
+    aaae = assert_array_almost_equal
+    for i, arr in enumerate(arrays()):
+        axes = range(-1, arr.ndim)
+        for axis in axes:
             windows = range(1, arr.shape[axis])
-            if len(windows) == 0:
-                windows = [1]
             for window in windows:
-                min_counts = [w for w in windows if w <= window]
-                min_counts.append(None)
+                min_counts = range(1, window + 1) + [None]
                 for min_count in min_counts:
-                    with np.errstate(invalid='ignore'):
-                        with warnings.catch_warnings():
-                            warnings.simplefilter("ignore")
-                            actual = func(arr, window, min_count,
-                                          axis=axis)
-                        with warnings.catch_warnings():
-                            warnings.simplefilter("ignore")
-                            desired = func0(arr, window, min_count,
-                                            axis=axis)
+                    actual = func(arr, window, min_count, axis=axis)
+                    desired = func0(arr, window, min_count, axis=axis)
                     tup = (func.__name__, window, str(min_count), 'a'+str(i),
                            str(arr.dtype), str(arr.shape), str(axis), arr)
-                    err_msg = msg % tup
-                    if (decimal < np.inf) and (np.isfinite(arr).sum() > 0):
-                        assert_array_almost_equal(actual, desired, decimal,
-                                                  err_msg)
-                    else:
-                        assert_array_equal(actual, desired, err_msg)
+                    err_msg = fmt % tup
+                    aaae(actual, desired, decimal, err_msg)
                     err_msg += '\n dtype mismatch %s %s'
-                    if hasattr(actual, 'dtype') or hasattr(desired, 'dtype'):
-                        da = actual.dtype
-                        dd = desired.dtype
-                        assert_equal(da, dd, err_msg % (da, dd))
+                    da = actual.dtype
+                    dd = desired.dtype
+                    assert_equal(da, dd, err_msg % (da, dd))
 
 
 def test_move():
     "test move functions"
     for func in move_functions():
         yield unit_maker, func, eval('bn.slow.%s' % func.__name__)
-
-
-# ---------------------------------------------------------------------------
-# Test various combinations of window and min_count
-
-def unit_maker2(func):
-    "Test that bn.xxx gives the same output as a reference function."
-    fmt = ('\nfunc %s | window %d | min_count %s\n')
-    fmt += '\nInput array:\n%s\n'
-    n = np.nan
-    a = np.array([1, 2, 3, 9, 8, 7, 6, 5, 8, 1, 5])
-    b = np.array([n, 2, 1, n, n, n, 4, 3, 5, 7, n])
-    slow = eval('bn.slow.%s' % func.__name__)
-    for window in range(1, a.size + 1):
-        for min_count in range(1, window + 1):
-            for arr in (a, b):
-                actual = func(arr, min_count=min_count, window=window)
-                desired = slow(arr, min_count=min_count, window=window)
-                msg = fmt % (func.__name__, window, min_count, arr)
-                assert_array_almost_equal(actual, desired, 6, err_msg=msg)
-
-
-def test_min_count():
-    "test min_count of move functions"
-    for func in move_functions():
-        yield unit_maker2, func
 
 
 # ----------------------------------------------------------------------------
