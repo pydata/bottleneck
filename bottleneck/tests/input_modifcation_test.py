@@ -5,7 +5,7 @@ import warnings
 import numpy as np
 from numpy.testing import assert_equal
 nan = np.nan
-import bottleneck as bn
+import bottleneck as bn  # noqa
 from .functions import all_functions
 
 DTYPES = [np.float64, np.float32, np.int64, np.int32]
@@ -49,12 +49,12 @@ def unit_maker(func, nans=True):
                         continue
                     with warnings.catch_warnings():
                         warnings.simplefilter("ignore")
-                        actual = func(arr1, 1, axis=axis)
+                        func(arr1, 1, axis=axis)
                 else:
                     try:
                         with warnings.catch_warnings():
                             warnings.simplefilter("ignore")
-                            actual = func(arr1, axis=axis)
+                            func(arr1, axis=axis)
                     except:
                         continue
                 assert_equal(arr1, arr2, msg % (func.__name__, arr1, arr2))

@@ -1,7 +1,7 @@
 "Check that functions can handle scalar input"
 
 from numpy.testing import assert_array_almost_equal
-import bottleneck as bn
+import bottleneck as bn  # noqa
 from .functions import reduce_functions, nonreduce_axis_functions
 
 

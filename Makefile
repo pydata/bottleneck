@@ -12,6 +12,7 @@ help:
 	@echo "build   -->  Build the Cython extension modules"
 	@echo "clean   -->  Remove all the build files for a fresh start"
 	@echo "test    -->  Run unit tests"
+	@echo "flake8  -->  Check for pep8 errors"
 	@echo "readme  -->  Update benchmark results in README.rst"
 	@echo "coverage-->  Unit test coverage (doesn't check compiled functions)"
 	@echo "all     -->  clean, pyx, build, test"
@@ -49,6 +50,9 @@ move:
 
 test:
 	${PYTHON} -c "import bottleneck;bottleneck.test()"
+
+flake8:
+	flake8 bottleneck
 
 readme:
 	${PYTHON} tools/update_readme.py

@@ -45,7 +45,7 @@ def expand_functions(src_str):
                     dtypes = re.sub(DTYPE, '', line)
                     dtypes = ast.literal_eval(dtypes)
                     line = None
-                elif re.match(FUNC + '|' + DEC + '|^\S',line):
+                elif re.match(FUNC + '|' + DEC + '|^\S', line):
                     i -= 1
                     func_str = '\n'.join(dec_list + func_list)
                     dec_list = []

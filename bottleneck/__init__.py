@@ -1,4 +1,4 @@
-# flak8: noqa
+# flake8: noqa
 
 from . import slow
 

@@ -4,7 +4,7 @@ import warnings
 
 import numpy as np
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
-                           assert_array_almost_equal, assert_almost_equal)
+                           assert_array_almost_equal)
 nan = np.nan
 import bottleneck as bn
 from .functions import reduce_functions
@@ -153,14 +153,14 @@ def test_nanstd_issue60():
             s = bn.slow.nanstd([1], ddof=1)
         assert_equal(f, s, err_msg="bn.nanstd([1], ddof=1) wrong")
 
-        b = bn.nanstd([1, np.nan], ddof=1)
+        f = bn.nanstd([1, np.nan], ddof=1)
         with np.errstate(invalid='ignore'):
-            b = bn.slow.nanstd([1, np.nan], ddof=1)
+            s = bn.slow.nanstd([1, np.nan], ddof=1)
         assert_equal(f, s, err_msg="bn.nanstd([1, nan], ddof=1) wrong")
 
-        b = bn.nanstd([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
+        f = bn.nanstd([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
         with np.errstate(invalid='ignore'):
-            b = bn.slow.nanstd([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
+            s = bn.slow.nanstd([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
         assert_equal(f, s, err_msg="issue #60 regression")
 
 
