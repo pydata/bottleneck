@@ -37,6 +37,7 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 
 - bn.median now returns NaN for a slice that contains one or more NaNs
 - bn.move_std output changed when mean is large compared to standard deviation
+- Fixed: Non-accelerated moving window functions used min_count incorrectly
 
 **Miscellaneous**
 
@@ -44,7 +45,9 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 - New script to automate updating of benchmark results in readme file
 - Can now specify which functions to include in the benchmark suite
 - New unit tests for scalar (as opposed to array) input
+- New unit tests for moving window functions: various window, min_count combos
 - Made unit tests easier to maintain
+- Bottleneck is now flake8 clean; long may it last
 
 **Thanks**
 

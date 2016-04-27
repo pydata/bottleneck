@@ -146,12 +146,16 @@ def move_func(func, arr, window, min_count=None, axis=-1, **kwargs):
 def _mask(arr, window, min_count, axis):
     n = (arr == arr).cumsum(axis)
     idx1 = [slice(None)] * arr.ndim
-    idx2 = list(idx1)
+    idx2 = [slice(None)] * arr.ndim
+    idx3 = [slice(None)] * arr.ndim
     idx1[axis] = slice(window, None)
     idx2[axis] = slice(None, -window)
+    idx3[axis] = slice(None, window)
     nidx1 = n[idx1]
     nidx1 = nidx1 - n[idx2]
-    idx = n < min_count
+    idx = np.empty(arr.shape, dtype=np.bool)
+    idx[idx1] = nidx1 < min_count
+    idx[idx3] = n[idx3] < min_count
     return idx
 
 

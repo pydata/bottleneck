@@ -86,6 +86,32 @@ def test_move():
         yield unit_maker, func, eval('bn.slow.%s' % func.__name__)
 
 
+# ---------------------------------------------------------------------------
+# Test various combinations of window and min_count
+
+def unit_maker2(func):
+    "Test that bn.xxx gives the same output as a reference function."
+    fmt = ('\nfunc %s | window %d | min_count %s\n')
+    fmt += '\nInput array:\n%s\n'
+    n = np.nan
+    a = np.array([1, 2, 3, 9, 8, 7, 6, 5, 8, 1, 5])
+    b = np.array([n, 2, 1, n, n, n, 4, 3, 5, 7, n])
+    slow = eval('bn.slow.%s' % func.__name__)
+    for window in range(1, a.size + 1):
+        for min_count in range(1, window + 1):
+            for arr in (a, b):
+                actual = func(arr, min_count=min_count, window=window)
+                desired = slow(arr, min_count=min_count, window=window)
+                msg = fmt % (func.__name__, window, min_count, arr)
+                assert_array_almost_equal(actual, desired, 6, err_msg=msg)
+
+
+def test_min_count():
+    "test min_count of move functions"
+    for func in move_functions():
+        yield unit_maker2, func
+
+
 # ----------------------------------------------------------------------------
 # Regression test for square roots of negative numbers
 
