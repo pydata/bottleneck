@@ -7,8 +7,9 @@ from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
                            assert_array_almost_equal, assert_almost_equal)
 nan = np.nan
 import bottleneck as bn
+from .functions import reduce_functions
 
-DTYPES = [np.float64, np.float32, np.int64, np.int32, np.float16]
+DTYPES = [np.float64, np.float32, np.int64, np.int32]
 
 
 def arrays(dtypes=DTYPES, nans=True):
@@ -42,6 +43,7 @@ def arrays(dtypes=DTYPES, nans=True):
                     yield -a
     yield np.array([1, 2, 3], dtype='>f4')
     yield np.array([1, 2, 3], dtype='<f4')
+    yield np.array([1, 2, 3], dtype=np.float16)  # make sure slow is called
     if nans:
         # nanmedian regression tests
         a = np.array([1, nan, nan, 2])
@@ -61,7 +63,7 @@ def arrays(dtypes=DTYPES, nans=True):
     yield np.array(np.nan)
 
 
-def unit_maker(func, func0, decimal=np.inf, nans=True, check_dtype=True):
+def unit_maker(func, func0, decimal=6, nans=True, check_dtype=True):
     "Test that bn.xxx gives the same output as bn.slow.xxx."
     msg = '\nfunc %s | input %s (%s) | shape %s | axis %s\n'
     msg += '\nInput array:\n%s\n'
@@ -103,69 +105,10 @@ def unit_maker(func, func0, decimal=np.inf, nans=True, check_dtype=True):
                         assert_equal(da, dd, err_msg % (da, dd))
 
 
-def test_nansum():
-    "Test nansum."
-    yield unit_maker, bn.nansum, bn.slow.nansum, np.inf, True, False
-
-
-def test_nanmean():
-    "Test nanmean."
-    yield unit_maker, bn.nanmean, bn.slow.nanmean, 5
-
-
-def test_nanstd():
-    "Test nanstd."
-    yield unit_maker, bn.nanstd, bn.slow.nanstd, 5
-
-
-def test_nanvar():
-    "Test nanvar."
-    yield unit_maker, bn.nanvar, bn.slow.nanvar, 5
-
-
-def test_nanmin():
-    "Test nanmin."
-    yield unit_maker, bn.nanmin, bn.slow.nanmin
-
-
-def test_nanmax():
-    "Test nanmax."
-    yield unit_maker, bn.nanmax, bn.slow.nanmax
-
-
-def test_median():
-    "Test median."
-    yield unit_maker, bn.median, bn.slow.median
-
-
-def test_nanmedian():
-    "Test nanmedian."
-    yield unit_maker, bn.nanmedian, bn.slow.nanmedian
-
-
-def test_ss():
-    "Test ss."
-    yield unit_maker, bn.ss, bn.slow.ss, np.inf, True, False
-
-
-def test_nanargmin():
-    "Test nanargmin."
-    yield unit_maker, bn.nanargmin, bn.slow.nanargmin
-
-
-def test_nanargmax():
-    "Test nanargmax."
-    yield unit_maker, bn.nanargmax, bn.slow.nanargmax
-
-
-def test_anynan():
-    "Test anynan."
-    yield unit_maker, bn.anynan, bn.slow.anynan
-
-
-def test_allnan():
-    "Test allnan."
-    yield unit_maker, bn.allnan, bn.slow.allnan
+def test_reduce():
+    "test reduce functions"
+    for func in reduce_functions():
+        yield unit_maker, func, eval('bn.slow.%s' % func.__name__)
 
 
 # ---------------------------------------------------------------------------

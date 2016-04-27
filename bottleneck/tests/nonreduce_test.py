@@ -7,7 +7,7 @@ from numpy.testing import assert_equal, assert_array_equal, assert_raises
 nan = np.nan
 import bottleneck as bn
 
-DTYPES = [np.float64, np.float32, np.int64, np.int32, np.float16]
+DTYPES = [np.float64, np.float32, np.int64, np.int32]
 
 
 def arrays(dtypes=DTYPES, nans=True):
@@ -36,6 +36,7 @@ def arrays(dtypes=DTYPES, nans=True):
                     yield a
     yield np.array([0, 2, 3], dtype='>f4')
     yield np.array([0, 2, 3], dtype='<f4')
+    yield np.array([1, 2, 3], dtype=np.float16)  # make sure slow is called
     if nans:
         # nanmedian regression tests
         a = np.array([1, nan, nan, 2])

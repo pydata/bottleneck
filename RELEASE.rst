@@ -44,6 +44,7 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 - New script to automate updating of benchmark results in readme file
 - Can now specify which functions to include in the benchmark suite
 - New unit tests for scalar (as opposed to array) input
+- Made unit tests easier to maintain
 
 **Thanks**
 

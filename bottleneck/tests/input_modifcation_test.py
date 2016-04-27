@@ -6,6 +6,7 @@ import numpy as np
 from numpy.testing import assert_equal
 nan = np.nan
 import bottleneck as bn
+from .functions import all_functions
 
 DTYPES = [np.float64, np.float32, np.int64, np.int32]
 
@@ -61,34 +62,5 @@ def unit_maker(func, nans=True):
 
 def test_modification():
     "Test for illegal inplace modification of input array"
-    funcs = [bn.nansum,
-             bn.nanmean,
-             bn.nanstd,
-             bn.nanvar,
-             bn.nanmin,
-             bn.nanmax,
-             bn.median,
-             bn.nanmedian,
-             bn.ss,
-             bn.nanargmin,
-             bn.nanargmax,
-             bn.anynan,
-             bn.allnan,
-             bn.partsort,
-             bn.argpartsort,
-             bn.rankdata,
-             bn.nanrankdata,
-             bn.push,
-             bn.move_sum,
-             bn.move_mean,
-             bn.move_std,
-             bn.move_var,
-             bn.move_min,
-             bn.move_max,
-             bn.move_argmin,
-             bn.move_argmax,
-             bn.move_median,
-             bn.move_rank,
-             ]
-    for func in funcs:
+    for func in all_functions():
         yield unit_maker, func

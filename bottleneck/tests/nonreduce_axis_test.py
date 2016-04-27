@@ -6,9 +6,8 @@ import numpy as np
 from numpy.testing import assert_equal, assert_array_equal
 nan = np.nan
 import bottleneck as bn
-from bottleneck.threads import make_unary
 
-DTYPES = [np.float64, np.float32, np.int64, np.int32, np.float16]
+DTYPES = [np.float64, np.float32, np.int64, np.int32]
 
 
 # ---------------------------------------------------------------------------
@@ -36,6 +35,7 @@ def arrays(dtypes=DTYPES):
                 yield a
     yield np.array([1, 2, 3], dtype='>f4')
     yield np.array([1, 2, 3], dtype='<f4')
+    yield np.array([1, 2, 3], dtype=np.float16)  # make sure slow is called
 
 
 def unit_maker(func, func0):
@@ -90,23 +90,16 @@ def test_transpose():
 
 
 # ---------------------------------------------------------------------------
-# rankdata, nanrankdata
+# rankdata, nanrankdata, push
 
 from .reduce_test import unit_maker as reduce_unit_maker
 
-def test_rankdata():
-    "Test rankdata."
-    yield reduce_unit_maker, bn.rankdata, bn.slow.rankdata
 
-
-def test_nanrankdata():
-    "Test nanrankdata."
-    yield reduce_unit_maker, bn.nanrankdata, bn.slow.nanrankdata
-
-
-def test_push():
-    "Test push."
-    yield reduce_unit_maker, bn.push, bn.slow.push
+def test_nonreduce_axis():
+    "Test nonreduce axis functions"
+    funcs = [bn.rankdata, bn.nanrankdata, bn.push]
+    for func in funcs:
+        yield reduce_unit_maker, func, eval('bn.slow.%s' % func.__name__)
 
 
 def test_push_2():

@@ -8,8 +8,9 @@ from numpy.testing import (assert_equal, assert_array_equal,
                            assert_array_almost_equal)
 nan = np.nan
 import bottleneck as bn
+from .functions import move_functions
 
-DTYPES = [np.float64, np.float32, np.int64, np.int32, np.float16]
+DTYPES = [np.float64, np.float32, np.int64, np.int32]
 
 
 def arrays(dtypes=DTYPES, nans=True):
@@ -38,9 +39,10 @@ def arrays(dtypes=DTYPES, nans=True):
     yield np.array([1, 2, 3], dtype='>f4')
     yield np.array([1, 2, 3], dtype='<f4')
     yield np.array([1, 1, 1])  # move_argmax should pick index of rightmost tie
+    yield np.array([1, 2, 3], dtype=np.float16)  # make sure slow is called
 
 
-def unit_maker(func, func0, decimal=np.inf, nans=True):
+def unit_maker(func, func0, decimal=6, nans=True):
     "Test that bn.xxx gives the same output as a reference function."
     msg = ('\nfunc %s | window %d | min_count %s | input %s (%s) | shape %s | '
            'axis %s\n')
@@ -78,54 +80,10 @@ def unit_maker(func, func0, decimal=np.inf, nans=True):
                         assert_equal(da, dd, err_msg % (da, dd))
 
 
-def test_move_sum():
-    "Test move_sum."
-    yield unit_maker, bn.move_sum, bn.slow.move_sum, 5
-
-
-def test_move_mean():
-    "Test move_mean."
-    yield unit_maker, bn.move_mean, bn.slow.move_mean, 5
-
-
-def test_move_std():
-    "Test move_std."
-    yield unit_maker, bn.move_std, bn.slow.move_std, 5
-
-
-def test_move_var():
-    "Test move_var."
-    yield unit_maker, bn.move_var, bn.slow.move_var, 5
-
-
-def test_move_min():
-    "Test move_min."
-    yield unit_maker, bn.move_min, bn.slow.move_min, 5
-
-
-def test_move_max():
-    "Test move_max."
-    yield unit_maker, bn.move_max, bn.slow.move_max, 5
-
-
-def test_move_argmin():
-    "Test move_argmin."
-    yield unit_maker, bn.move_argmin, bn.slow.move_argmin, 5
-
-
-def test_move_argmax():
-    "Test move_argmax."
-    yield unit_maker, bn.move_argmax, bn.slow.move_argmax, 5
-
-
-def test_move_median():
-    "Test move_median."
-    yield unit_maker, bn.move_median, bn.slow.move_median, 5
-
-
-def test_move_rank():
-    "Test move_rank."
-    yield unit_maker, bn.move_rank, bn.slow.move_rank, 5
+def test_move():
+    "test move functions"
+    for func in move_functions():
+        yield unit_maker, func, eval('bn.slow.%s' % func.__name__)
 
 
 # ----------------------------------------------------------------------------
