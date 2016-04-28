@@ -99,7 +99,7 @@ def test_nonreduce_axis():
     "Test nonreduce axis functions"
     funcs = [bn.rankdata, bn.nanrankdata, bn.push]
     for func in funcs:
-        yield reduce_unit_maker, func, eval('bn.slow.%s' % func.__name__)
+        yield reduce_unit_maker, func
 
 
 def test_push_2():
