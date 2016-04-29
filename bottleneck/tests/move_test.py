@@ -9,8 +9,20 @@ from .functions import move_functions
 DTYPES = [np.float64, np.float32, np.int64, np.int32]
 
 
+def test_move():
+    "test move functions"
+    for func in move_functions():
+        yield unit_maker, func
+
+
 def arrays(dtypes=DTYPES):
     "Iterator that yield arrays to use for unit testing."
+    nan = np.nan
+    yield np.array([1, 2, 3]) + 1e9  # check that move_std is robust
+    yield np.array([1, 2, 3], dtype='>f4')
+    yield np.array([1, 2, 3], dtype='<f4')
+    yield np.array([1, 1, 1])  # move_argmax should pick index of rightmost tie
+    yield np.array([1, 2, 3], dtype=np.float16)  # make sure slow is called
     ss = {}
     ss[1] = {'size':  8, 'shapes': [(8,)]}
     ss[2] = {'size': 12, 'shapes': [(2, 6), (4, 3)]}
@@ -24,23 +36,21 @@ def arrays(dtypes=DTYPES):
             a = np.arange(size, dtype=dtype)
             if issubclass(a.dtype.type, np.inexact):
                 idx = rs.rand(*a.shape) < 0.2
-                a[idx] = np.nan
+                a[idx] = nan
+                idx = rs.rand(*a.shape) < 0.2
+                a[idx] *= -1
             rs.shuffle(a)
             for shape in shapes:
                 yield a.reshape(shape)
-    yield np.array([1, 2, 3]) + 1e9  # check that move_std is robust
-    yield np.array([1, 2, 3], dtype='>f4')
-    yield np.array([1, 2, 3], dtype='<f4')
-    yield np.array([1, 1, 1])  # move_argmax should pick index of rightmost tie
-    yield np.array([1, 2, 3], dtype=np.float16)  # make sure slow is called
 
 
-def unit_maker(func, func0, decimal=4):
+def unit_maker(func, decimal=4):
     "Test that bn.xxx gives the same output as a reference function."
     fmt = ('\nfunc %s | window %d | min_count %s | input %s (%s) | shape %s | '
            'axis %s\n')
     fmt += '\nInput array:\n%s\n'
     aaae = assert_array_almost_equal
+    func0 = eval('bn.slow.%s' % func.__name__)
     for i, arr in enumerate(arrays()):
         axes = range(-1, arr.ndim)
         for axis in axes:
@@ -60,10 +70,29 @@ def unit_maker(func, func0, decimal=4):
                     assert_equal(da, dd, err_msg % (da, dd))
 
 
-def test_move():
-    "test move functions"
-    for func in move_functions():
-        yield unit_maker, func, eval('bn.slow.%s' % func.__name__)
+# ---------------------------------------------------------------------------
+# Only some moving window functions can handle input arrays that contains inf.
+#
+# Those that can't handle inf:
+# move_sum, move_mean, move_std, move_var, move_median
+#
+# Adding code to deal with the rare case of inf in the input array slows down
+# the functions and makes the code more complex and harder to maintain.
+
+def test_move_inf():
+    "test inf in input array"
+    fmt = '\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n'
+    funcs = [bn.move_min, bn.move_max, bn.move_argmin, bn.move_argmax,
+             bn.move_rank]
+    arr = np.array([1, 2, np.inf, 3, 4, 5])
+    window = 3
+    min_count = 2
+    for func in funcs:
+        actual = func(arr, window=window, min_count=min_count)
+        func0 = eval('bn.slow.%s' % func.__name__)
+        desired = func0(arr, window=window, min_count=min_count)
+        err_msg = fmt % (func.__name__, window, min_count, arr)
+        assert_array_almost_equal(actual, desired, decimal=5, err_msg=err_msg)
 
 
 # ----------------------------------------------------------------------------

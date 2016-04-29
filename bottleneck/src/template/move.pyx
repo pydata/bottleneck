@@ -61,6 +61,11 @@ def move_sum(arr, int window, min_count=None, int axis=-1):
     """
     Moving window sum along the specified axis, optionally ignoring NaNs.
 
+    This function cannot handle input arrays that contain Inf. When the
+    window contains Inf, the output will correctly be Inf. However, when Inf
+    moves out of the window, the remaining output values in the slice will
+    incorrectly be NaN.
+
     Parameters
     ----------
     arr : ndarray
@@ -189,6 +194,11 @@ cdef ndarray move_sum_DTYPE0(ndarray a, int window, int min_count, int axis,
 def move_mean(arr, int window, min_count=None, int axis=-1):
     """
     Moving window mean along the specified axis, optionally ignoring NaNs.
+
+    This function cannot handle input arrays that contain Inf. When the
+    window contains Inf, the output will correctly be Inf. However, when Inf
+    moves out of the window, the remaining output values in the slice will
+    incorrectly be NaN.
 
     Parameters
     ----------
@@ -321,6 +331,10 @@ def move_std(arr, int window, min_count=None, int axis=-1, int ddof=0):
     """
     Moving window standard deviation along the specified axis, optionally
     ignoring NaNs.
+
+    This function cannot handle input arrays that contain Inf. When Inf
+    enters the moving window, the outout becomes NaN and will continue to
+    be NaN for the remainer of the slice.
 
     Unlike bn.nanstd, which uses a two-pass algorithm, move_nanstd uses a
     one-pass algorithm called Welford's method. The algorithm is slow but
@@ -498,6 +512,10 @@ cdef ndarray move_std_DTYPE0(ndarray a, int window, int min_count, int axis,
 def move_var(arr, int window, min_count=None, int axis=-1, int ddof=0):
     """
     Moving window variance along the specified axis, optionally ignoring NaNs.
+
+    This function cannot handle input arrays that contain Inf. When Inf
+    enters the moving window, the outout becomes NaN and will continue to
+    be NaN for the remainer of the slice.
 
     Unlike bn.nanvar, which uses a two-pass algorithm, move_nanvar uses a
     one-pass algorithm called Welford's method. The algorithm is slow but

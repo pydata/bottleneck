@@ -1,6 +1,7 @@
 "Test reduce functions."
 
-import warnings, traceback
+import warnings
+import traceback
 
 from nose.tools import ok_
 import numpy as np
@@ -89,7 +90,7 @@ def unit_maker(func, decimal=5):
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
                     desired = func0(arr.copy(), axis=axis)
-            except: 
+            except:
                 desiredraised = True
             if actualraised and desiredraised:
                 pass
