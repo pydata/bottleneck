@@ -60,10 +60,10 @@ struct _mm_node {
 typedef struct _mm_node mm_node;
 
 struct _mm_handle {
-    _size_t   w_size;    // window size
+    _size_t   window;    // window size
     _size_t   n_s_nan;   // number of nans in min heap
     _size_t   n_l_nan;   // number of nans in max heap
-    int       init_wnd_complete; //if atleast w_size elements have been inserted
+    int       init_wnd_complete; //if atleast window elements have been inserted
     int       odd;       // 1 if the window size is odd, 0 otherwise.
     _size_t   n_s;       // The number of elements in the min heap.
     _size_t   n_l;       // The number of elements in the max heap.
@@ -96,7 +96,7 @@ typedef struct _mm_handle mm_handle;
 // --------------------------------------------------------------------------
 // prototypes
 
-mm_handle *mm_new(const _size_t size, _size_t min_count);
+mm_handle *mm_new(const _size_t window, _size_t min_count);
 void mm_reset(mm_handle* mm);
 void mm_free(mm_handle *mm);
 
@@ -118,16 +118,16 @@ void move_nan_from_l_to_s(mm_handle *mm);
 
 value_t mm_get_median(mm_handle *mm);
 
-_size_t get_smallest_child(mm_node **heap, _size_t size, _size_t idx,
+_size_t get_smallest_child(mm_node **heap, _size_t window, _size_t idx,
                            mm_node *node, mm_node **child);
-_size_t get_largest_child(mm_node **heap, _size_t size, _size_t idx,
+_size_t get_largest_child(mm_node **heap, _size_t window, _size_t idx,
                           mm_node *node, mm_node **child);
-void move_up_small(mm_node **heap, _size_t size, _size_t idx, mm_node *node,
+void move_up_small(mm_node **heap, _size_t window, _size_t idx, mm_node *node,
                    _size_t p_idx, mm_node *parent);
-void move_down_small(mm_node **heap, _size_t size, _size_t idx, mm_node *node);
-void move_down_large(mm_node **heap, _size_t size, _size_t idx, mm_node *node,
+void move_down_small(mm_node **heap, _size_t window, _size_t idx, mm_node *node);
+void move_down_large(mm_node **heap, _size_t window, _size_t idx, mm_node *node,
                     _size_t p_idx, mm_node *parent);
-void move_up_large(mm_node **heap, _size_t size, _size_t idx, mm_node *node);
+void move_up_large(mm_node **heap, _size_t window, _size_t idx, mm_node *node);
 void swap_heap_heads(mm_node **s_heap, _size_t n_s, mm_node **l_heap,
                      _size_t n_l, mm_node *s_node, mm_node *l_node);
 
@@ -147,15 +147,15 @@ void check_asserts(mm_handle* mm);
 //
 // After bn.move_median is done, memory is freed (mm_free).
 
-mm_handle *mm_new(const _size_t size, _size_t min_count)
+mm_handle *mm_new(const _size_t window, _size_t min_count)
 {
-    // size -- The total number of values in the double heap.
+    // window -- The total number of values in the double heap.
     // Return: The mm_handle structure, uninitialized.
 
     // only malloc once, this guarantees cache friendly execution
     // and easier code for cleanup
     // this change was profiled to make a 5%-10% difference in performance
-    char* memory_block = malloc(sizeof(mm_handle) + size * (sizeof(mm_node*) + sizeof(mm_node)));
+    char* memory_block = malloc(sizeof(mm_handle) + window * (sizeof(mm_node*) + sizeof(mm_node)));
 
     if (memory_block == NULL)
         return NULL;
@@ -167,11 +167,11 @@ mm_handle *mm_new(const _size_t size, _size_t min_count)
     curr_mem_ptr += sizeof(mm_handle);
     mm->nodes = (mm_node**) curr_mem_ptr;
 
-    curr_mem_ptr += sizeof(mm_node*) * size;
+    curr_mem_ptr += sizeof(mm_node*) * window;
     mm->node_data = (mm_node*) curr_mem_ptr;
 
-    mm->max_s_heap_size = size/2 + size % 2;
-    mm->w_size = size;
+    mm->max_s_heap_size = window/2 + window % 2;
+    mm->window = window;
     mm->s_heap = mm->nodes;
     mm->l_heap = &mm->nodes[mm->max_s_heap_size];
     mm->min_count = min_count;
@@ -248,7 +248,7 @@ void mm_insert_init(mm_handle *mm, value_t val)
      *
      * Arguments:
      * mm  -- The double heap structure.
-     * idx -- The index of the value running from 0 to size - 1.
+     * idx -- The index of the value running from 0 to window - 1.
      * val -- The value to insert.
      */
 
@@ -334,7 +334,7 @@ void mm_insert_init(mm_handle *mm, value_t val)
         }
     }
 
-    mm->init_wnd_complete = mm->init_wnd_complete | ((n_l + n_s + 1) >= (mm->w_size));
+    mm->init_wnd_complete = mm->init_wnd_complete | ((n_l + n_s + 1) >= (mm->window));
 }
 
 void mm_update_nonan(mm_handle* mm, value_t val)
@@ -431,7 +431,7 @@ void mm_insert_nan(mm_handle *mm)
 
     //check_asserts(mm);
 
-    int l_heap_full = (n_l == (mm->w_size - mm->max_s_heap_size));
+    int l_heap_full = (n_l == (mm->window - mm->max_s_heap_size));
     int s_heap_full = (n_s == mm->max_s_heap_size);
     if ( (s_heap_full | (n_s_nan > n_l_nan)) & (l_heap_full == 0) ) {
         // Add to the large heap.
@@ -741,7 +741,7 @@ value_t mm_get_median(mm_handle *mm)
     if (numel_total < mm->min_count)
         return NAN;
 
-    _size_t effective_window_size = min(mm->w_size, numel_total);
+    _size_t effective_window_size = min(mm->window, numel_total);
 
     if (effective_window_size % 2 == 1) {
         if (nonnan_n_l > nonnan_n_s)
@@ -762,14 +762,14 @@ value_t mm_get_median(mm_handle *mm)
  * child will also be set.
  */
 _size_t get_smallest_child(mm_node **heap,
-                           _size_t   size,
+                           _size_t   window,
                            _size_t   idx,
                            mm_node  *node,
                            mm_node  **child)
 {
     _size_t i0 = FC_IDX(idx);
     _size_t i1 = i0 + NUM_CHILDREN;
-    i1 = min(i1, size);
+    i1 = min(i1, window);
 
     switch(i1 - i0) {
         case  8: if(heap[i0 + 7]->val < heap[idx]->val) { idx = i0 + 7; }
@@ -792,14 +792,14 @@ _size_t get_smallest_child(mm_node **heap,
  * child will also be set.
  */
 _size_t get_largest_child(mm_node **heap,
-                          _size_t   size,
+                          _size_t   window,
                           _size_t   idx,
                           mm_node  *node,
                           mm_node  **child)
 {
     _size_t i0 = FC_IDX(idx);
     _size_t i1 = i0 + NUM_CHILDREN;
-    i1 = min(i1, size);
+    i1 = min(i1, window);
 
     switch(i1 - i0) {
         case  8: if(heap[i0 + 7]->val > heap[idx]->val) { idx = i0 + 7; }
@@ -832,7 +832,7 @@ idx1       = idx2
  * Move the given node up through the heap to the appropriate position.
  */
 void move_up_small(mm_node **heap,
-                   _size_t   size,
+                   _size_t   window,
                    _size_t   idx,
                    mm_node  *node,
                    _size_t   p_idx,
@@ -853,17 +853,17 @@ void move_up_small(mm_node **heap,
  * Move the given node down through the heap to the appropriate position.
  */
 void move_down_small(mm_node **heap,
-                     _size_t   size,
+                     _size_t   window,
                      _size_t   idx,
                      mm_node  *node)
 {
     mm_node *child;
     value_t val   = node->val;
-    _size_t c_idx = get_largest_child(heap, size, idx, node, &child);
+    _size_t c_idx = get_largest_child(heap, window, idx, node, &child);
 
     while(val < child->val) {
         SWAP_NODES(heap, idx, node, c_idx, child);
-        c_idx = get_largest_child(heap, size, idx, node, &child);
+        c_idx = get_largest_child(heap, window, idx, node, &child);
     }
 }
 
@@ -873,7 +873,7 @@ void move_down_small(mm_node **heap,
  * position.
  */
 void move_down_large(mm_node **heap,
-                     _size_t   size,
+                     _size_t   window,
                      _size_t   idx,
                      mm_node  *node,
                      _size_t   p_idx,
@@ -895,17 +895,17 @@ void move_down_large(mm_node **heap,
  * Move the given node up through the heap to the appropriate position.
  */
 void move_up_large(mm_node **heap,
-                   _size_t   size,
+                   _size_t   window,
                    _size_t   idx,
                    mm_node  *node)
 {
     mm_node *child;
     value_t val   = node->val;
-    _size_t c_idx = get_smallest_child(heap, size, idx, node, &child);
+    _size_t c_idx = get_smallest_child(heap, window, idx, node, &child);
 
     while(val > child->val) {
         SWAP_NODES(heap, idx, node, c_idx, child);
-        c_idx = get_smallest_child(heap, size, idx, node, &child);
+        c_idx = get_smallest_child(heap, window, idx, node, &child);
     }
 }
 

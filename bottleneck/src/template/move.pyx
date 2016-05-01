@@ -1444,7 +1444,7 @@ cdef extern from "csrc/move_median.c":
         _mm_node         *prev_nan
     ctypedef _mm_node mm_node
     struct _mm_handle:
-        np.npy_uint64    w_size
+        np.npy_uint64    window
         np.npy_uint64    n_s_nan
         np.npy_uint64    n_l_nan
         int              init_wnd_complete
@@ -1468,7 +1468,7 @@ cdef extern from "csrc/move_median.c":
     ctypedef _mm_handle mm_handle
 
     void mm_reset(mm_handle* mm) nogil
-    mm_handle *mm_new(np.npy_uint64 size, np.npy_uint64 min_count) nogil
+    mm_handle *mm_new(np.npy_uint64 window, np.npy_uint64 min_count) nogil
     void mm_update_movemedian_possiblenan(mm_handle *mm, np.npy_float64 val) nogil
     void mm_update_movemedian_nonan(mm_handle *mm, np.npy_float64 val) nogil
     np.npy_float64 mm_get_median(mm_handle *mm) nogil
