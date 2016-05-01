@@ -63,12 +63,14 @@ struct _mm_handle {
     _size_t   window;    // window size
     _size_t   n_s_nan;   // number of nans in min heap
     _size_t   n_l_nan;   // number of nans in max heap
-    int       init_wnd_complete; //if atleast window elements have been inserted
+    int       init_wnd_complete; //if atleast window elements have been
+                         // inserted
     int       odd;       // 1 if the window size is odd, 0 otherwise.
     _size_t   n_s;       // The number of elements in the min heap.
     _size_t   n_l;       // The number of elements in the max heap.
-    _size_t   min_count; // If the number of non-NaN values in a window is less
-                         // than min_count, then a value of NaN is assigned to the window
+    _size_t   min_count; // If the number of non-NaN values in a window is
+                         // less than min_count, then a value of NaN is
+                         // assigned to the window
     mm_node **s_heap;    // The min heap.
     mm_node **l_heap;    // The max heap.
     mm_node **nodes;     // All the nodes. s_heap and l_heap point into
@@ -124,9 +126,10 @@ _size_t get_largest_child(mm_node **heap, _size_t window, _size_t idx,
                           mm_node *node, mm_node **child);
 void move_up_small(mm_node **heap, _size_t window, _size_t idx, mm_node *node,
                    _size_t p_idx, mm_node *parent);
-void move_down_small(mm_node **heap, _size_t window, _size_t idx, mm_node *node);
-void move_down_large(mm_node **heap, _size_t window, _size_t idx, mm_node *node,
-                    _size_t p_idx, mm_node *parent);
+void move_down_small(mm_node **heap, _size_t window, _size_t idx,
+                     mm_node *node);
+void move_down_large(mm_node **heap, _size_t window, _size_t idx,
+                     mm_node *node, _size_t p_idx, mm_node *parent);
 void move_up_large(mm_node **heap, _size_t window, _size_t idx, mm_node *node);
 void swap_heap_heads(mm_node **s_heap, _size_t n_s, mm_node **l_heap,
                      _size_t n_l, mm_node *s_node, mm_node *l_node);
@@ -155,7 +158,8 @@ mm_handle *mm_new(const _size_t window, _size_t min_count)
     // only malloc once, this guarantees cache friendly execution
     // and easier code for cleanup
     // this change was profiled to make a 5%-10% difference in performance
-    char* memory_block = malloc(sizeof(mm_handle) + window * (sizeof(mm_node*) + sizeof(mm_node)));
+    char* memory_block = malloc(sizeof(mm_handle) + window * (sizeof(mm_node*)
+                                + sizeof(mm_node)));
 
     if (memory_block == NULL)
         return NULL;
@@ -334,7 +338,8 @@ void mm_insert_init(mm_handle *mm, value_t val)
         }
     }
 
-    mm->init_wnd_complete = mm->init_wnd_complete | ((n_l + n_s + 1) >= (mm->window));
+    mm->init_wnd_complete = (mm->init_wnd_complete |
+                             ((n_l + n_s + 1) >= (mm->window)));
 }
 
 void mm_update_nonan(mm_handle* mm, value_t val)
@@ -364,8 +369,9 @@ void mm_update_checknan(mm_handle *mm, value_t val)
         // double check these in debug, to catch overflows
         //check_asserts(mm);
 
-        // try to keep the heaps balanced, so we can try to avoid the nan rebalancing penalty
-        // makes significant difference when % of nans is large and window size is also large
+        // try to keep the heaps balanced, so we can try to avoid the nan
+        // rebalancing penalty. makes significant difference when % of nans
+        // is large and window size is also large
         mm_node* node_to_evict = mm->first;
         value_t to_evict = node_to_evict->val;
         _size_t evict_effect_s = 0;
@@ -382,7 +388,8 @@ void mm_update_checknan(mm_handle *mm, value_t val)
         else
             mm_update_withnan(mm, INFINITY); // add to max heap
     } else {
-        // Note: we could still be evicting nans here, so call the nan safe function
+        // Note: we could still be evicting nans here, so call the nan safe
+        // function
 
         // I tried an if-then here to call a non nan function if
         // we are not evicting nan, but penalty to check was
@@ -490,7 +497,9 @@ void mm_update_helper( mm_handle *mm, mm_node *node, value_t val)
                 move_up_small(s_heap, n_s, idx, node, idx2, node2);
 
                 // Maybe swap between heaps.
-                node2 = (n_l>0) ? l_heap[0] : NULL; // needed because we could've only inserted nan and then a #
+                node2 = (n_l>0) ? l_heap[0] : NULL; /* needed because we
+                                                     * could've only inserted
+                                                     * nan and then a # */
                 if((node2 != NULL) && (val > node2->val)) {
                     swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
                 }
@@ -504,7 +513,9 @@ void mm_update_helper( mm_handle *mm, mm_node *node, value_t val)
 
         // Head node.
         else {
-            node2 = (n_l>0) ? l_heap[0] : NULL; // needed because we could've only inserted nan and then a #
+            node2 = (n_l>0) ? l_heap[0] : NULL; /* needed because we could've
+                                                 *  only inserted nan and then
+                                                 *  a # */
             if((node2 != NULL) && (val > node2->val)) {
                 swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
             } else {
@@ -565,7 +576,8 @@ void mm_update_withnan(mm_handle *mm, value_t val) {
                 if (next_ptr == NULL)
                     mm->last_nan_s = NULL;
                 else
-                    next_ptr->prev_nan = NULL; // the current nan is the first one
+                    next_ptr->prev_nan = NULL; /* the current nan is the first
+                                                *  one */
             } else {
                 assert(node->prev_nan != NULL);
                 mm_node* last_node = node->prev_nan;
@@ -585,7 +597,8 @@ void mm_update_withnan(mm_handle *mm, value_t val) {
                 if (next_ptr == NULL)
                     mm->last_nan_l = NULL;
                 else
-                    next_ptr->prev_nan = NULL; // the current nan is the first one
+                    next_ptr->prev_nan = NULL; /* the current nan is the first
+                                                *  one */
             } else {
                 assert(node->prev_nan != NULL);
                 mm_node* last_node = node->prev_nan;
@@ -1026,7 +1039,8 @@ void check_asserts(mm_handle* mm)
         ++len;
     }
 
-    // since valid_l and valid_s are signed, these will overflow and we don't have to check for diffs of -5, etc.
+    // since valid_l and valid_s are signed, these will overflow and we don't
+    // have to check for diffs of -5, etc.
     assert(
            ((valid_l - valid_s) <= 1)
            || ((valid_s - valid_l) <= 1)
