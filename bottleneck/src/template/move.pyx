@@ -1434,47 +1434,6 @@ cdef ndarray move_argmax_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 # move_median ---------------------------------------------------------------
 
-cdef extern from "csrc/move_median.c":
-    struct _mm_node:
-        np.npy_uint32   small
-        np.npy_uint64   idx
-        np.npy_float64  val
-        _mm_node         *next
-        _mm_node         *next_nan
-        _mm_node         *prev_nan
-    ctypedef _mm_node mm_node
-    struct _mm_handle:
-        np.npy_uint64    window
-        np.npy_uint64    n_s_nan
-        np.npy_uint64    n_l_nan
-        int              init_wnd_complete
-        int              odd
-        np.npy_uint64    n_s
-        np.npy_uint64    n_l
-        np.npy_uint64    min_count
-        mm_node          **s_heap
-        mm_node          **l_heap
-        mm_node          **nodes
-        mm_node           *node_data
-        mm_node           *first
-        mm_node           *last
-        np.npy_uint64 s_first_leaf
-        np.npy_uint64 l_first_leaf
-        mm_node           *first_nan_s
-        mm_node           *last_nan_s
-        mm_node           *first_nan_l
-        mm_node           *last_nan_l
-        np.npy_uint64 max_s_heap_size
-    ctypedef _mm_handle mm_handle
-    mm_handle *mm_new(np.npy_uint64 window, np.npy_uint64 min_count) nogil
-    void mm_insert_init(mm_handle *mm, np.npy_float64 val) nogil
-    void mm_update_nonan(mm_handle* mm, np.npy_float64 val) nogil
-    void mm_update_checknan(mm_handle *mm, np.npy_float64 val) nogil
-    np.npy_float64 mm_get_median(mm_handle *mm) nogil
-    void mm_reset(mm_handle* mm) nogil
-    void mm_free(mm_handle *mm) nogil
-
-
 def move_median(arr, int window, min_count=None, axis=-1):
     """
     Moving window median along the specified axis, optionally ignoring NaNs.
@@ -1520,25 +1479,58 @@ def move_median(arr, int window, min_count=None, axis=-1):
         return slow.move_median(arr, window, min_count, axis)
 
 
+cdef extern from "csrc/move_median.c":
+    struct _mm_node:
+        np.npy_uint32   small
+        np.npy_uint64   idx
+        np.npy_float64  val
+        _mm_node         *next
+        _mm_node         *next_nan
+        _mm_node         *prev_nan
+    ctypedef _mm_node mm_node
+    struct _mm_handle:
+        np.npy_uint64    window
+        np.npy_uint64    n_s_nan
+        np.npy_uint64    n_l_nan
+        int              init_wnd_complete
+        int              odd
+        np.npy_uint64    n_s
+        np.npy_uint64    n_l
+        np.npy_uint64    min_count
+        mm_node          **s_heap
+        mm_node          **l_heap
+        mm_node          **nodes
+        mm_node           *node_data
+        mm_node           *first
+        mm_node           *last
+        np.npy_uint64 s_first_leaf
+        np.npy_uint64 l_first_leaf
+        mm_node           *first_nan_s
+        mm_node           *last_nan_s
+        mm_node           *first_nan_l
+        mm_node           *last_nan_l
+        np.npy_uint64 max_s_heap_size
+    ctypedef _mm_handle mm_handle
+    mm_handle *mm_new(np.npy_uint64 window, np.npy_uint64 min_count) nogil
+    void mm_insert_init(mm_handle *mm, np.npy_float64 val) nogil
+    void mm_update_nonan(mm_handle* mm, np.npy_float64 val) nogil
+    np.npy_float64 mm_get_median(mm_handle *mm) nogil
+    void mm_reset(mm_handle* mm) nogil
+    void mm_free(mm_handle *mm) nogil
+
+
 @cython.cdivision(True)
 cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
                                 np.flatiter ita, Py_ssize_t stride,
                                 Py_ssize_t length, int a_ndim,
                                 np.npy_intp* y_dims, int ignore):
-    # bn.dtypes = [['float64', 'float64'], ['float32', 'float32'], ['int64', 'float64'], ['int32', 'float64']]
+    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef mm_handle *mm
     cdef Py_ssize_t i
     cdef DTYPE0_t ai
     cdef DTYPE1_t yi
     if window == 1:
-        if DTYPE0 == 'float64':
-            return PyArray_Copy(a)
-        if DTYPE0 == 'float32':
-            return PyArray_Copy(a)
-        if DTYPE0 == 'int64':
-            return a.astype(np.float64)
-        if DTYPE0 == 'int32':
-            return a.astype(np.float64)
+        return a.astype(np.float64)
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
@@ -1554,20 +1546,90 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
                 (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
             for i in range(window, length):
                 ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                if DTYPE0 == 'float64':
-                    mm_update_checknan(mm, ai)
-                if DTYPE0 == 'float32':
-                    mm_update_checknan(mm, ai)
-                if DTYPE0 == 'int64':
-                    mm_update_nonan(mm, ai)
-                if DTYPE0 == 'int32':
-                    mm_update_nonan(mm, ai)
+                mm_update_nonan(mm, ai)
                 yi = mm_get_median(mm)
                 (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
             PyArray_ITER_NEXT(ita)
             PyArray_ITER_NEXT(ity)
             mm_reset(mm)
         mm_free(mm)
+    return y
+
+
+cdef extern from "csrc/move_median.c":
+    struct _zz_node:
+        np.npy_uint32   small
+        np.npy_uint64   idx
+        np.npy_float64  val
+        _zz_node         *next
+        _zz_node         *next_nan
+        _zz_node         *prev_nan
+    ctypedef _zz_node zz_node
+    struct _zz_handle:
+        np.npy_uint64    window
+        np.npy_uint64    n_s_nan
+        np.npy_uint64    n_l_nan
+        int              init_wnd_complete
+        int              odd
+        np.npy_uint64    n_s
+        np.npy_uint64    n_l
+        np.npy_uint64    min_count
+        zz_node          **s_heap
+        zz_node          **l_heap
+        zz_node          **nodes
+        zz_node           *node_data
+        zz_node           *first
+        zz_node           *last
+        np.npy_uint64 s_first_leaf
+        np.npy_uint64 l_first_leaf
+        zz_node           *first_nan_s
+        zz_node           *last_nan_s
+        zz_node           *first_nan_l
+        zz_node           *last_nan_l
+        np.npy_uint64 max_s_heap_size
+    ctypedef _zz_handle zz_handle
+    zz_handle *zz_new(np.npy_uint64 window, np.npy_uint64 min_count) nogil
+    void zz_insert_init(zz_handle *zz, np.npy_float64 val) nogil
+    void zz_update_checknan(zz_handle *zz, np.npy_float64 val) nogil
+    np.npy_float64 zz_get_median(zz_handle *zz) nogil
+    void zz_reset(zz_handle* zz) nogil
+    void zz_free(zz_handle *zz) nogil
+
+
+@cython.cdivision(True)
+cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
+                                np.flatiter ita, Py_ssize_t stride,
+                                Py_ssize_t length, int a_ndim,
+                                np.npy_intp* y_dims, int ignore):
+    # bn.dtypes = [['float64', 'float64'], ['float32', 'float32']]
+    cdef zz_handle *zz
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai
+    cdef DTYPE1_t yi
+    if window == 1:
+        return PyArray_Copy(a)
+    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef Py_ssize_t ystride = y.strides[axis]
+    zz = zz_new(window, min_count)
+    if zz is NULL:
+        raise MemoryError()
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(window):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                zz_insert_init(zz, ai)
+                yi = zz_get_median(zz)
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            for i in range(window, length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                zz_update_checknan(zz, ai)
+                yi = zz_get_median(zz)
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+            zz_reset(zz)
+        zz_free(zz)
     return y
 
 
