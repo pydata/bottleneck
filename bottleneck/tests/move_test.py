@@ -95,6 +95,26 @@ def test_move_inf():
         assert_array_almost_equal(actual, desired, decimal=5, err_msg=err_msg)
 
 
+# ---------------------------------------------------------------------------
+# Test various combinations of window and min_count
+
+def test_move_min_count():
+    "test min_count"
+    fmt = '\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n'
+    arrs = [np.array([3, 2, 1, 4, 6, 5]),
+            np.array([1., 3., 6., 3., 5., 4.])]
+    for func in move_functions():
+        for arr in arrs:
+            for window in range(arr.size):
+                for min_count in range(1, window + 1):
+                    actual = func(arr, window=window, min_count=min_count)
+                    func0 = eval('bn.slow.%s' % func.__name__)
+                    desired = func0(arr, window=window, min_count=min_count)
+                    err_msg = fmt % (func.__name__, window, min_count, arr)
+                    assert_array_almost_equal(actual, desired, decimal=5,
+                                              err_msg=err_msg)
+
+
 # ----------------------------------------------------------------------------
 # Regression test for square roots of negative numbers
 

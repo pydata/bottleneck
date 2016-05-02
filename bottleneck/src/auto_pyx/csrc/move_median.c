@@ -61,8 +61,6 @@ typedef struct _mm_node mm_node;
 
 struct _mm_handle {
     _size_t   window;    // window size
-    int       init_wnd_complete; //if atleast window elements have been
-                         // inserted
     int       odd;       // 1 if the window size is odd, 0 otherwise.
     _size_t   n_s;       // The number of elements in the min heap.
     _size_t   n_l;       // The number of elements in the max heap.
@@ -72,7 +70,7 @@ struct _mm_handle {
     mm_node **s_heap;    // The min heap.
     mm_node **l_heap;    // The max heap.
     mm_node **nodes;     // All the nodes. s_heap and l_heap point into
-    // this array.
+                         // this array.
     mm_node  *node_data; // Pointer to memory location where nodes live.
     mm_node  *first;     // The node added first to the list of nodes.
     mm_node  *last;      // The last (most recent) node added.
@@ -131,10 +129,10 @@ void mm_dump(mm_handle *mm);
 */
 
 
-/* At the start of bn.move_median a new double heap is created. One heap
- * contains the small values (max heap); the other heap contains the large
- * values (min heap). And the handle contains information about the heaps. It
- * is the handle that is returned by the function. */
+/* At the start of bn.move_median two heaps are created. One heap contains the
+ * small values (max heap); the other heap contains the large values
+ * (min heap). And the handle contains information about the heaps. It is the
+ * handle that is returned by the function. */
 static mm_handle *mm_new(const _size_t window, _size_t min_count)
 {
     // only malloc once, this guarantees cache friendly execution
@@ -169,10 +167,9 @@ static mm_handle *mm_new(const _size_t window, _size_t min_count)
 }
 
 
-/* Insert a new value, ai, into the double heap structure. Use this function
- * when double heap contains less than window-1 values. Returns the median
- * value. Once there are window-1 values in the heap, switch to using
- * mm_update. */
+/* Insert a new value, ai, into one of the heaps. Use this function when
+ * the heaps contains less than window-1 values. Returns the median value.
+ * Once there are window-1 values in the heap, switch to using mm_update. */
 static value_t mm_update_init(mm_handle *mm, value_t val)
 {
 
@@ -235,9 +232,6 @@ static value_t mm_update_init(mm_handle *mm, value_t val)
         mm_update(mm, val);
     }
 
-    mm->init_wnd_complete = (mm->init_wnd_complete |
-                             ((n_l + n_s + 1) >= (mm->window)));
-
     return mm_get_median_init(mm);
 }
 
@@ -283,9 +277,7 @@ static value_t mm_update(mm_handle* mm, value_t val)
                 mm_move_up_small(s_heap, n_s, idx, node, idx2, node2);
 
                 // Maybe swap between heaps.
-                node2 = (n_l>0) ? l_heap[0] : NULL; /* needed because we
-                                                     * could've only inserted
-                                                     * nan and then a # */
+                node2 = l_heap[0];
                 if((node2 != NULL) && (val > node2->val)) {
                     mm_swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
                 }
@@ -299,10 +291,8 @@ static value_t mm_update(mm_handle* mm, value_t val)
 
         // Head node.
         else {
-            node2 = (n_l>0) ? l_heap[0] : NULL; /* needed because we could've
-                                                 *  only inserted nan and then
-                                                 *  a # */
-            if((node2 != NULL) && (val > node2->val)) {
+            node2 = l_heap[0];
+                if((node2 != NULL) && (val > node2->val)) {
                 mm_swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
             } else {
                 mm_move_down_small(s_heap, n_s, idx, node);
@@ -323,7 +313,7 @@ static value_t mm_update(mm_handle* mm, value_t val)
                 mm_move_down_large(l_heap, n_l, idx, node, idx2, node2);
 
                 // Maybe swap between heaps.
-                node2 = (n_s>0) ? s_heap[0] : NULL;
+                node2 = s_heap[0];
                 if((node2 != NULL) && (val < node2->val)) {
                     mm_swap_heap_heads(s_heap, n_s, l_heap, n_l, node2, node);
                 }
@@ -337,8 +327,8 @@ static value_t mm_update(mm_handle* mm, value_t val)
 
         // Head node.
         else {
-            node2 = (n_s>0) ? s_heap[0] : NULL;
-            if((node2 != NULL) && (val < node2->val)) {
+            node2 = s_heap[0];
+            if (val < node2->val) {
                 mm_swap_heap_heads(s_heap, n_s, l_heap, n_l, node2, node);
             } else {
                 mm_move_up_large(l_heap, n_l, idx, node);
@@ -357,8 +347,6 @@ static void mm_reset(mm_handle* mm)
 {
     mm->n_l = 0;
     mm->n_s = 0;
-    mm->init_wnd_complete = 0;
-
     mm->first = NULL;
     mm->last = NULL;
 }
