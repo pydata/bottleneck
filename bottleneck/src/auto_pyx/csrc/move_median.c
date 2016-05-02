@@ -43,8 +43,12 @@ const int NUM_CHILDREN = 8;
 #define P_IDX(i) ((i) - 1) / NUM_CHILDREN
 #define FC_IDX(i) NUM_CHILDREN * (i) + 1
 
-// --------------------------------------------------------------------------
-// node and handle structs
+
+/*
+-----------------------------------------------------------------------------
+  Node and handle structs (no NaN handling)
+-----------------------------------------------------------------------------
+*/
 
 struct _mm_node {
     int              small; // 1 if the node is in the small heap.
@@ -83,56 +87,56 @@ struct _mm_handle {
 
 typedef struct _mm_handle mm_handle;
 
-// --------------------------------------------------------------------------
-// prototypes
+/*
+-----------------------------------------------------------------------------
+  Prototypes (no NaN handling)
+-----------------------------------------------------------------------------
+*/
 
+// top-level functions
 static mm_handle *mm_new(const _size_t window, _size_t min_count);
+static value_t mm_update_init(mm_handle *mm, value_t val);
+static value_t mm_update(mm_handle* mm, value_t val);
 static void mm_reset(mm_handle* mm);
 static void mm_free(mm_handle *mm);
 
-static void mm_insert_init(mm_handle *mm, value_t val);
-static void mm_update(mm_handle* mm, value_t val);
-
-static void mm_update_helper( mm_handle *mm, mm_node *node, value_t val);
-
+// helper functions
+static value_t mm_get_median_init(mm_handle *mm);
 static value_t mm_get_median(mm_handle *mm);
-
 static _size_t mm_get_smallest_child(mm_node **heap, _size_t window,
                                      _size_t idx, mm_node *node,
                                      mm_node **child);
-static _size_t mm_get_largest_child(mm_node **heap, _size_t window, _size_t idx,
-                          mm_node *node, mm_node **child);
-static void mm_move_up_small(mm_node **heap, _size_t window, _size_t idx, mm_node *node,
-                   _size_t p_idx, mm_node *parent);
+static _size_t mm_get_largest_child(mm_node **heap, _size_t window,
+                                    _size_t idx, mm_node *node,
+                                    mm_node **child);
+static void mm_move_up_small(mm_node **heap, _size_t window, _size_t idx,
+                             mm_node *node, _size_t p_idx, mm_node *parent);
 static void mm_move_down_small(mm_node **heap, _size_t window, _size_t idx,
-                     mm_node *node);
+                               mm_node *node);
 static void mm_move_down_large(mm_node **heap, _size_t window, _size_t idx,
-                     mm_node *node, _size_t p_idx, mm_node *parent);
-static void mm_move_up_large(mm_node **heap, _size_t window, _size_t idx, mm_node *node);
+                               mm_node *node, _size_t p_idx, mm_node *parent);
+static void mm_move_up_large(mm_node **heap, _size_t window, _size_t idx, 
+                             mm_node *node);
 static void mm_swap_heap_heads(mm_node **s_heap, _size_t n_s, mm_node **l_heap,
-                     _size_t n_l, mm_node *s_node, mm_node *l_node);
+                               _size_t n_l, mm_node *s_node, mm_node *l_node);
 
+// debug
 void mm_dump(mm_handle *mm);
-void mm_check_asserts(mm_handle* mm);
 
-// --------------------------------------------------------------------------
-// mm_new, mm_reset, mm_free
-//
-// At the start of bn.move_median a new double heap is created (mm_new). One
-// heap contains the small values; the other heap contains the large values.
-// And the hanlde contains information about the heaps.
-//
-// At the end of each slice the double heap is reset (mm_reset) to prepare
-// for the next slice. In the 2d input array case (with axis=1), each slice
-// is a row of the input array.
-//
-// After bn.move_median is done, memory is freed (mm_free).
 
+/*
+-----------------------------------------------------------------------------
+  Top-level functions (no NaN handling)
+-----------------------------------------------------------------------------
+*/
+
+
+/* At the start of bn.move_median a new double heap is created. One heap
+ * contains the small values (max heap); the other heap contains the large
+ * values (min heap). And the handle contains information about the heaps. It
+ * is the handle that is returned by the function. */
 static mm_handle *mm_new(const _size_t window, _size_t min_count)
 {
-    // window -- The total number of values in the double heap.
-    // Return: The mm_handle structure, initialized.
-
     // only malloc once, this guarantees cache friendly execution
     // and easier code for cleanup
     // this change was profiled to make a 5%-10% difference in performance
@@ -154,6 +158,7 @@ static mm_handle *mm_new(const _size_t window, _size_t min_count)
 
     mm->max_s_heap_size = window / 2 + window % 2;
     mm->window = window;
+    mm->odd = window % 2;
     mm->s_heap = mm->nodes;
     mm->l_heap = &mm->nodes[mm->max_s_heap_size];
     mm->min_count = min_count;
@@ -163,52 +168,13 @@ static mm_handle *mm_new(const _size_t window, _size_t min_count)
     return mm;
 }
 
-static void mm_reset(mm_handle* mm)
+
+/* Insert a new value, ai, into the double heap structure. Use this function
+ * when double heap contains less than window-1 values. Returns the median
+ * value. Once there are window-1 values in the heap, switch to using
+ * mm_update. */
+static value_t mm_update_init(mm_handle *mm, value_t val)
 {
-    mm->n_l = 0;
-    mm->n_s = 0;
-    mm->init_wnd_complete = 0;
-
-    mm->first = NULL;
-    mm->last = NULL;
-}
-
-static void mm_free(mm_handle *mm)
-{
-    free(mm);
-}
-
-// --------------------------------------------------------------------------
-// As we loop through a slice of the input array in bn.move_median, each
-// array element, ai, must be inserted into the heap.
-//
-// If you know that the input array does not contain NaNs (e.g. integer input
-// arrays) then you can use the faster mm_update_movemedian_nonan.
-//
-// If the input array may contain NaNs then use the slower
-// mm_update_movemedian_possiblenan
-
-
-// --------------------------------------------------------------------------
-// Insert a new value, ai, into the double heap structure.
-//
-// Don't call these directly. Instead these functions are called by
-// mm_update_movemedian_nonan and mm_update_movemedian_possiblenan
-//
-// mm_insert_init is for when double heap contains less than window values
-// mm_update ai is not NaN and double heap is already full
-// mm_update_checknan ai might be NaN and double heap is already full
-
-static void mm_insert_init(mm_handle *mm, value_t val)
-{
-    /*
-     * Insert initial values into the double heap structure.
-     *
-     * Arguments:
-     * mm  -- The double heap structure.
-     * idx -- The index of the value running from 0 to window - 1.
-     * val -- The value to insert.
-     */
 
     // Some local variables.
     mm_node *node = NULL;
@@ -271,9 +237,16 @@ static void mm_insert_init(mm_handle *mm, value_t val)
 
     mm->init_wnd_complete = (mm->init_wnd_complete |
                              ((n_l + n_s + 1) >= (mm->window)));
+
+    return mm_get_median_init(mm);
 }
 
-static void mm_update(mm_handle* mm, value_t val)
+
+/* Insert a new value, ai, into the double heap structure. Use this function
+ * when the double heap contains at least window-1 values. Returns the median
+ * value. If there are less than window-1 values in the heap, use
+ * mm_update_init. */
+static value_t mm_update(mm_handle* mm, value_t val)
 {
     // Nodes and indices.
     mm_node *node = mm->first;
@@ -283,16 +256,6 @@ static void mm_update(mm_handle* mm, value_t val)
     mm->last->next = node;
     mm->last = node;
 
-    mm_update_helper(mm, node, val);
-}
-
-
-// --------------------------------------------------------------------------
-// Helper functions for inserting new values into the heaps, i.e., updating
-// the heaps.
-
-static void mm_update_helper(mm_handle *mm, mm_node *node, value_t val)
-{
     // Replace value of node
     node->val = val;
 
@@ -306,7 +269,6 @@ static void mm_update_helper(mm_handle *mm, mm_node *node, value_t val)
 
     mm_node *node2;
     _size_t  idx2;
-
 
     // In small heap.
     if(node->small) {
@@ -383,16 +345,40 @@ static void mm_update_helper(mm_handle *mm, mm_node *node, value_t val)
             }
         }
     }
+
+    return mm_get_median(mm);
 }
 
 
-// --------------------------------------------------------------------------
+/* At the end of each slice the double heap is reset (mm_reset) to prepare
+ * for the next slice. In the 2d input array case (with axis=1), each slice
+ * is a row of the input array. */
+static void mm_reset(mm_handle* mm)
+{
+    mm->n_l = 0;
+    mm->n_s = 0;
+    mm->init_wnd_complete = 0;
+
+    mm->first = NULL;
+    mm->last = NULL;
+}
+
+/*  After bn.move_median is done, free the memory */
+static void mm_free(mm_handle *mm)
+{
+    free(mm);
+}
 
 
 /*
- * Return the current median value.
- */
-static value_t mm_get_median(mm_handle *mm)
+-----------------------------------------------------------------------------
+  Utility functions (no NaN handling)
+-----------------------------------------------------------------------------
+*/
+
+/* Return the current median value when there are less than window values
+ * in the double heap. */
+static value_t mm_get_median_init(mm_handle *mm)
 {
     _size_t n_s      = mm->n_s;
     _size_t n_l      = mm->n_l;
@@ -417,8 +403,17 @@ static value_t mm_get_median(mm_handle *mm)
 }
 
 
-// --------------------------------------------------------------------------
-// utility functions
+/* Return the current median value when there are at least window values
+ * in the double heap. */
+static value_t mm_get_median(mm_handle *mm)
+{
+    if(mm->odd) {
+        return mm->s_heap[0]->val;
+    } else {
+        return (mm->s_heap[0]->val + mm->l_heap[0]->val) / 2.0;
+    }
+}
+
 
 /*
  * Return the index of the smallest child of the node. The pointer

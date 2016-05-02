@@ -1512,9 +1512,8 @@ cdef extern from "csrc/move_median.c":
         np.npy_uint64 max_s_heap_size
     ctypedef _mm_handle mm_handle
     mm_handle *mm_new(np.npy_uint64 window, np.npy_uint64 min_count) nogil
-    void mm_insert_init(mm_handle *mm, np.npy_float64 val) nogil
-    void mm_update(mm_handle* mm, np.npy_float64 val) nogil
-    np.npy_float64 mm_get_median(mm_handle *mm) nogil
+    np.npy_float64 mm_update_init(mm_handle *mm, np.npy_float64 val) nogil
+    np.npy_float64 mm_update(mm_handle* mm, np.npy_float64 val) nogil
     void mm_reset(mm_handle* mm) nogil
     void mm_free(mm_handle *mm) nogil
 
@@ -1541,13 +1540,11 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
         while PyArray_ITER_NOTDONE(ita):
             for i in range(window):
                 ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                mm_insert_init(mm, ai)
-                yi = mm_get_median(mm)
+                yi = mm_update_init(mm, ai)
                 (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
             for i in range(window, length):
                 ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                mm_update(mm, ai)
-                yi = mm_get_median(mm)
+                yi = mm_update(mm, ai)
                 (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
             PyArray_ITER_NEXT(ita)
             PyArray_ITER_NEXT(ity)
