@@ -1466,12 +1466,12 @@ cdef extern from "csrc/move_median.c":
         mm_node           *last_nan_l
         np.npy_uint64 max_s_heap_size
     ctypedef _mm_handle mm_handle
-
-    void mm_reset(mm_handle* mm) nogil
     mm_handle *mm_new(np.npy_uint64 window, np.npy_uint64 min_count) nogil
-    void mm_update_movemedian_possiblenan(mm_handle *mm, np.npy_float64 val) nogil
-    void mm_update_movemedian_nonan(mm_handle *mm, np.npy_float64 val) nogil
+    void mm_insert_init(mm_handle *mm, np.npy_float64 val) nogil
+    void mm_update_nonan(mm_handle* mm, np.npy_float64 val) nogil
+    void mm_update_checknan(mm_handle *mm, np.npy_float64 val) nogil
     np.npy_float64 mm_get_median(mm_handle *mm) nogil
+    void mm_reset(mm_handle* mm) nogil
     void mm_free(mm_handle *mm) nogil
 
 
@@ -1547,16 +1547,21 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
         raise MemoryError()
     with nogil:
         while PyArray_ITER_NOTDONE(ita):
-            for i in range(length):
+            for i in range(window):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                mm_insert_init(mm, ai)
+                yi = mm_get_median(mm)
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            for i in range(window, length):
                 ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
                 if DTYPE0 == 'float64':
-                    mm_update_movemedian_possiblenan(mm, ai)
+                    mm_update_checknan(mm, ai)
                 if DTYPE0 == 'float32':
-                    mm_update_movemedian_possiblenan(mm, ai)
+                    mm_update_checknan(mm, ai)
                 if DTYPE0 == 'int64':
-                    mm_update_movemedian_nonan(mm, ai)
+                    mm_update_nonan(mm, ai)
                 if DTYPE0 == 'int32':
-                    mm_update_movemedian_nonan(mm, ai)
+                    mm_update_nonan(mm, ai)
                 yi = mm_get_median(mm)
                 (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
             PyArray_ITER_NEXT(ita)

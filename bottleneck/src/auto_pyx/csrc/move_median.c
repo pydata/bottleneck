@@ -98,44 +98,41 @@ typedef struct _mm_handle mm_handle;
 // --------------------------------------------------------------------------
 // prototypes
 
-mm_handle *mm_new(const _size_t window, _size_t min_count);
-void mm_reset(mm_handle* mm);
-void mm_free(mm_handle *mm);
+static mm_handle *mm_new(const _size_t window, _size_t min_count);
+static void mm_reset(mm_handle* mm);
+static void mm_free(mm_handle *mm);
 
-void mm_update_movemedian_nonan(mm_handle* mm, value_t val);
-void mm_update_movemedian_possiblenan(mm_handle* mm, value_t val);
+static void mm_insert_init(mm_handle *mm, value_t val);
+static void mm_update_nonan(mm_handle* mm, value_t val);
+static void mm_update_checknan(mm_handle *mm, value_t val);
 
-void mm_insert_init(mm_handle *mm, value_t val);
-void mm_update_nonan(mm_handle* mm, value_t val);
-void mm_update_checknan(mm_handle *mm, value_t val);
+static void mm_insert_nan(mm_handle *mm);
+static void mm_update_helper( mm_handle *mm, mm_node *node, value_t val);
+static void mm_update_withnan(mm_handle *mm, value_t val);
+static void mm_update_withnan_skipevict(mm_handle *mm, value_t val);
 
-void mm_insert_nan(mm_handle *mm);
-void mm_update_helper( mm_handle *mm, mm_node *node, value_t val);
-void mm_update_withnan(mm_handle *mm, value_t val);
-void mm_update_withnan_skipevict(mm_handle *mm, value_t val);
+static void move_nan_helper(mm_handle* mm, mm_node* new_last);
+static void move_nan_from_s_to_l(mm_handle *mm);
+static void move_nan_from_l_to_s(mm_handle *mm);
 
-void move_nan_helper(mm_handle* mm, mm_node* new_last);
-void move_nan_from_s_to_l(mm_handle *mm);
-void move_nan_from_l_to_s(mm_handle *mm);
+static value_t mm_get_median(mm_handle *mm);
 
-value_t mm_get_median(mm_handle *mm);
-
-_size_t get_smallest_child(mm_node **heap, _size_t window, _size_t idx,
+static _size_t get_smallest_child(mm_node **heap, _size_t window, _size_t idx,
                            mm_node *node, mm_node **child);
-_size_t get_largest_child(mm_node **heap, _size_t window, _size_t idx,
+static _size_t get_largest_child(mm_node **heap, _size_t window, _size_t idx,
                           mm_node *node, mm_node **child);
-void move_up_small(mm_node **heap, _size_t window, _size_t idx, mm_node *node,
+static void move_up_small(mm_node **heap, _size_t window, _size_t idx, mm_node *node,
                    _size_t p_idx, mm_node *parent);
-void move_down_small(mm_node **heap, _size_t window, _size_t idx,
+static void move_down_small(mm_node **heap, _size_t window, _size_t idx,
                      mm_node *node);
-void move_down_large(mm_node **heap, _size_t window, _size_t idx,
+static void move_down_large(mm_node **heap, _size_t window, _size_t idx,
                      mm_node *node, _size_t p_idx, mm_node *parent);
-void move_up_large(mm_node **heap, _size_t window, _size_t idx, mm_node *node);
-void swap_heap_heads(mm_node **s_heap, _size_t n_s, mm_node **l_heap,
+static void move_up_large(mm_node **heap, _size_t window, _size_t idx, mm_node *node);
+static void swap_heap_heads(mm_node **s_heap, _size_t n_s, mm_node **l_heap,
                      _size_t n_l, mm_node *s_node, mm_node *l_node);
 
-void mm_dump(mm_handle *mm);
-void check_asserts(mm_handle* mm);
+static void mm_dump(mm_handle *mm);
+static void check_asserts(mm_handle* mm);
 
 // --------------------------------------------------------------------------
 // mm_new, mm_reset, mm_free
@@ -145,12 +142,12 @@ void check_asserts(mm_handle* mm);
 // And the hanlde contains information about the heaps.
 //
 // At the end of each slice the double heap is reset (mm_reset) to prepare
-// for the next slice. In the 2d input array case, each slice is a row of the
-// input array.
+// for the next slice. In the 2d input array case (with axis=1), each slice
+// is a row of the input array.
 //
 // After bn.move_median is done, memory is freed (mm_free).
 
-mm_handle *mm_new(const _size_t window, _size_t min_count)
+static mm_handle *mm_new(const _size_t window, _size_t min_count)
 {
     // window -- The total number of values in the double heap.
     // Return: The mm_handle structure, uninitialized.
@@ -174,7 +171,7 @@ mm_handle *mm_new(const _size_t window, _size_t min_count)
     curr_mem_ptr += sizeof(mm_node*) * window;
     mm->node_data = (mm_node*) curr_mem_ptr;
 
-    mm->max_s_heap_size = window/2 + window % 2;
+    mm->max_s_heap_size = window / 2 + window % 2;
     mm->window = window;
     mm->s_heap = mm->nodes;
     mm->l_heap = &mm->nodes[mm->max_s_heap_size];
@@ -185,7 +182,7 @@ mm_handle *mm_new(const _size_t window, _size_t min_count)
     return mm;
 }
 
-void mm_reset(mm_handle* mm)
+static void mm_reset(mm_handle* mm)
 {
     mm->n_l = 0;
     mm->n_s = 0;
@@ -201,11 +198,10 @@ void mm_reset(mm_handle* mm)
     mm->last = NULL;
 }
 
-void mm_free(mm_handle *mm)
+static void mm_free(mm_handle *mm)
 {
     free(mm);
 }
-
 
 // --------------------------------------------------------------------------
 // As we loop through a slice of the input array in bn.move_median, each
@@ -217,23 +213,6 @@ void mm_free(mm_handle *mm)
 // If the input array may contain NaNs then use the slower
 // mm_update_movemedian_possiblenan
 
-void mm_update_movemedian_nonan(mm_handle* mm, value_t val)
-{
-    if (mm->init_wnd_complete == 0)
-        mm_insert_init(mm, val);
-    else
-        mm_update_nonan(mm, val);
-    //check_asserts(mm);
-}
-
-void mm_update_movemedian_possiblenan(mm_handle* mm, value_t val)
-{
-    if (mm->init_wnd_complete == 0)
-        mm_insert_init(mm, val);
-    else
-        mm_update_checknan(mm, val);
-    //check_asserts(mm);
-}
 
 // --------------------------------------------------------------------------
 // Insert a new value, ai, into the double heap structure.
@@ -245,7 +224,7 @@ void mm_update_movemedian_possiblenan(mm_handle* mm, value_t val)
 // mm_update_nonan ai is not NaN and double heap is already full
 // mm_update_checknan ai might be NaN and double heap is already full
 
-void mm_insert_init(mm_handle *mm, value_t val)
+static void mm_insert_init(mm_handle *mm, value_t val)
 {
     /*
      * Insert initial values into the double heap structure.
@@ -342,7 +321,7 @@ void mm_insert_init(mm_handle *mm, value_t val)
                              ((n_l + n_s + 1) >= (mm->window)));
 }
 
-void mm_update_nonan(mm_handle* mm, value_t val)
+static void mm_update_nonan(mm_handle* mm, value_t val)
 {
     // Nodes and indices.
     mm_node *node = mm->first;
@@ -355,7 +334,7 @@ void mm_update_nonan(mm_handle* mm, value_t val)
     mm_update_helper(mm, node, val);
 }
 
-void mm_update_checknan(mm_handle *mm, value_t val)
+static void mm_update_checknan(mm_handle *mm, value_t val)
 {
     _size_t n_s      = mm->n_s;
     _size_t n_l      = mm->n_l;
@@ -418,7 +397,7 @@ void mm_update_checknan(mm_handle *mm, value_t val)
 // Helper functions for inserting new values into the heaps, i.e., updating
 // the heaps.
 
-void mm_insert_nan(mm_handle *mm)
+static void mm_insert_nan(mm_handle *mm)
     // insert a nan, during initialization phase.
 {
     value_t val = 0;
@@ -467,7 +446,7 @@ void mm_insert_nan(mm_handle *mm)
     mm_update_withnan_skipevict(mm, val);
 }
 
-void mm_update_helper( mm_handle *mm, mm_node *node, value_t val)
+static void mm_update_helper( mm_handle *mm, mm_node *node, value_t val)
 {
     // Replace value of node
     node->val = val;
@@ -561,7 +540,7 @@ void mm_update_helper( mm_handle *mm, mm_node *node, value_t val)
     }
 }
 
-void mm_update_withnan(mm_handle *mm, value_t val) {
+static void mm_update_withnan(mm_handle *mm, value_t val) {
     // Nodes and indices.
     mm_node *node = mm->first;
 
@@ -615,7 +594,7 @@ void mm_update_withnan(mm_handle *mm, value_t val) {
     mm_update_withnan_skipevict(mm, val);
 }
 
-void mm_update_withnan_skipevict(mm_handle *mm, value_t val) {
+static void mm_update_withnan_skipevict(mm_handle *mm, value_t val) {
     if (isinf(val))
     {
         mm_node *node = mm->first;
@@ -655,7 +634,7 @@ void mm_update_withnan_skipevict(mm_handle *mm, value_t val) {
 
 // --------------------------------------------------------------------------
 
-void move_nan_helper(mm_handle* mm, mm_node* new_last)
+static void move_nan_helper(mm_handle* mm, mm_node* new_last)
 {
     assert(new_last != NULL);
 
@@ -668,7 +647,7 @@ void move_nan_helper(mm_handle* mm, mm_node* new_last)
     mm_update_helper(mm, new_last, new_val);
 }
 
-void move_nan_from_s_to_l(mm_handle *mm)
+static void move_nan_from_s_to_l(mm_handle *mm)
 {
     // move nan from s to l
     assert(mm->first_nan_s != NULL);
@@ -700,7 +679,7 @@ void move_nan_from_s_to_l(mm_handle *mm)
     move_nan_helper(mm, new_last);
 }
 
-void move_nan_from_l_to_s(mm_handle *mm)
+static void move_nan_from_l_to_s(mm_handle *mm)
 {
     // move nan from l to s
     assert(mm->first_nan_l != NULL);
@@ -738,7 +717,7 @@ void move_nan_from_l_to_s(mm_handle *mm)
 /*
  * Return the current median value.
  */
-value_t mm_get_median(mm_handle *mm)
+static value_t mm_get_median(mm_handle *mm)
 {
     _size_t n_s      = mm->n_s;
     _size_t n_l      = mm->n_l;
@@ -774,7 +753,7 @@ value_t mm_get_median(mm_handle *mm)
  * Return the index of the smallest child of the node. The pointer
  * child will also be set.
  */
-_size_t get_smallest_child(mm_node **heap,
+static _size_t get_smallest_child(mm_node **heap,
                            _size_t   window,
                            _size_t   idx,
                            mm_node  *node,
@@ -804,7 +783,7 @@ _size_t get_smallest_child(mm_node **heap,
  * Return the index of the largest child of the node. The pointer
  * child will also be set.
  */
-_size_t get_largest_child(mm_node **heap,
+static _size_t get_largest_child(mm_node **heap,
                           _size_t   window,
                           _size_t   idx,
                           mm_node  *node,
@@ -844,7 +823,7 @@ idx1       = idx2
 /*
  * Move the given node up through the heap to the appropriate position.
  */
-void move_up_small(mm_node **heap,
+static void move_up_small(mm_node **heap,
                    _size_t   window,
                    _size_t   idx,
                    mm_node  *node,
@@ -865,7 +844,7 @@ void move_up_small(mm_node **heap,
 /*
  * Move the given node down through the heap to the appropriate position.
  */
-void move_down_small(mm_node **heap,
+static void move_down_small(mm_node **heap,
                      _size_t   window,
                      _size_t   idx,
                      mm_node  *node)
@@ -885,7 +864,7 @@ void move_down_small(mm_node **heap,
  * Move the given node down through the heap to the appropriate
  * position.
  */
-void move_down_large(mm_node **heap,
+static void move_down_large(mm_node **heap,
                      _size_t   window,
                      _size_t   idx,
                      mm_node  *node,
@@ -907,7 +886,7 @@ void move_down_large(mm_node **heap,
 /*
  * Move the given node up through the heap to the appropriate position.
  */
-void move_up_large(mm_node **heap,
+static void move_up_large(mm_node **heap,
                    _size_t   window,
                    _size_t   idx,
                    mm_node  *node)
@@ -926,7 +905,7 @@ void move_up_large(mm_node **heap,
 /*
  * Swap the heap heads.
  */
-void swap_heap_heads(mm_node **s_heap,
+static void swap_heap_heads(mm_node **s_heap,
                      _size_t   n_s,
                      mm_node **l_heap,
                      _size_t   n_l,
@@ -947,7 +926,7 @@ void swap_heap_heads(mm_node **s_heap,
 /*
  * Print the two heaps to the screen.
  */
-void mm_dump(mm_handle *mm)
+static void mm_dump(mm_handle *mm)
 {
     if (!mm) {
         printf("mm is empty");
@@ -972,7 +951,7 @@ void mm_dump(mm_handle *mm)
     }
 }
 
-void check_asserts(mm_handle* mm)
+static void check_asserts(mm_handle* mm)
 {
     mm_dump(mm);
     assert(mm->n_s >= mm->n_s_nan);
