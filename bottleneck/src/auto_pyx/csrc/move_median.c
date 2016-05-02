@@ -51,18 +51,12 @@ struct _mm_node {
     _size_t          idx;   // The node's index in the heap array.
     value_t          val;   // The node's value.
     struct _mm_node *next;  // The next node in order of insertion.
-
-    // double linked list for nan tracking
-    struct _mm_node *next_nan;  // The next nan node in order of insertion.
-    struct _mm_node *prev_nan;  // The prev nan node in order of insertion.
 };
 
 typedef struct _mm_node mm_node;
 
 struct _mm_handle {
     _size_t   window;    // window size
-    _size_t   n_s_nan;   // number of nans in min heap
-    _size_t   n_l_nan;   // number of nans in max heap
     int       init_wnd_complete; //if atleast window elements have been
                          // inserted
     int       odd;       // 1 if the window size is odd, 0 otherwise.
@@ -84,12 +78,6 @@ struct _mm_handle {
     _size_t s_first_leaf; // First leaf index in the small heap.
     _size_t l_first_leaf; // First leaf index in the large heap.
 
-    // + and - infinity array
-    mm_node  *first_nan_s;     // The node added first to the list of nodes.
-    mm_node  *last_nan_s;      // The last (most recent) node added.
-    mm_node  *first_nan_l;     // The node added first to the list of nodes.
-    mm_node  *last_nan_l;      // The last (most recent) node added.
-
     _size_t max_s_heap_size;
 };
 
@@ -105,14 +93,13 @@ static void mm_free(mm_handle *mm);
 static void mm_insert_init(mm_handle *mm, value_t val);
 static void mm_update(mm_handle* mm, value_t val);
 
-static void mm_insert(mm_handle *mm);
 static void mm_update_helper( mm_handle *mm, mm_node *node, value_t val);
-static void mm_update_skipevict(mm_handle *mm, value_t val);
 
 static value_t mm_get_median(mm_handle *mm);
 
-static _size_t mm_get_smallest_child(mm_node **heap, _size_t window, _size_t idx,
-                           mm_node *node, mm_node **child);
+static _size_t mm_get_smallest_child(mm_node **heap, _size_t window,
+                                     _size_t idx, mm_node *node,
+                                     mm_node **child);
 static _size_t mm_get_largest_child(mm_node **heap, _size_t window, _size_t idx,
                           mm_node *node, mm_node **child);
 static void mm_move_up_small(mm_node **heap, _size_t window, _size_t idx, mm_node *node,
@@ -180,14 +167,8 @@ static void mm_reset(mm_handle* mm)
 {
     mm->n_l = 0;
     mm->n_s = 0;
-    mm->n_l_nan = 0;
-    mm->n_s_nan = 0;
     mm->init_wnd_complete = 0;
 
-    mm->first_nan_s = NULL;
-    mm->last_nan_s = NULL;
-    mm->first_nan_l = NULL;
-    mm->last_nan_l = NULL;
     mm->first = NULL;
     mm->last = NULL;
 }
@@ -233,19 +214,13 @@ static void mm_insert_init(mm_handle *mm, value_t val)
     mm_node *node = NULL;
     _size_t n_s = mm->n_s;
     _size_t n_l = mm->n_l;
-    _size_t n_s_nan  = mm->n_s_nan;
-    _size_t n_l_nan  = mm->n_l_nan;
     // double check these in debug, to catch overflows
     //check_asserts(mm);
 
-    int is_nan_val = isnan(val);
-
     node = &mm->node_data[n_s + n_l];
-    node->next_nan = NULL;
 
     // The first node.
     if(n_s == 0) {
-        mm->n_s_nan = is_nan_val;
 
         mm->s_heap[0] = node;
         node->small = 1;
@@ -256,59 +231,42 @@ static void mm_insert_init(mm_handle *mm, value_t val)
         mm->first = mm->last = node;
         mm->s_first_leaf = 0;
 
-        if (is_nan_val)
-        {
-            node->val = -INFINITY;
-            node->next_nan = NULL;
-            node->prev_nan = NULL;
-            mm->first_nan_s = node;
-            mm->last_nan_s = node;
-        }
-        else
-            node->val = val;
+        node->val = val;
     }
     else
     {
         // Nodes after the first.
 
-        if (is_nan_val)
+        node->next  = mm->first;
+        mm->first = node;
+
+        _size_t n_s = mm->n_s;
+        _size_t n_l = mm->n_l;
+
+        if ((n_s == mm->max_s_heap_size) | (n_s > n_l))
         {
-            mm_insert(mm);
-            //check_asserts(mm);
+            // Add to the large heap.
+
+            mm->l_heap[n_l] = node;
+            node->small = 0;
+            node->idx   = n_l;
+
+            ++mm->n_l;
+            mm->l_first_leaf = ceil((mm->n_l - 1) / (double)NUM_CHILDREN);
         }
         else
         {
-            node->next  = mm->first;
-            mm->first = node;
+            // Add to the small heap.
 
-            _size_t nonnan_n_s = n_s - n_s_nan;
-            _size_t nonnan_n_l = n_l - n_l_nan;
+            mm->s_heap[n_s] = node;
+            node->small = 1;
+            node->idx   = n_s;
 
-            if ((n_s == mm->max_s_heap_size) | (nonnan_n_s > nonnan_n_l))
-            {
-                // Add to the large heap.
-
-                mm->l_heap[n_l] = node;
-                node->small = 0;
-                node->idx   = n_l;
-
-                ++mm->n_l;
-                mm->l_first_leaf = ceil((mm->n_l - 1) / (double)NUM_CHILDREN);
-            }
-            else
-            {
-                // Add to the small heap.
-
-                mm->s_heap[n_s] = node;
-                node->small = 1;
-                node->idx   = n_s;
-
-                ++mm->n_s;
-                mm->s_first_leaf = ceil((mm->n_s - 1) / (double)NUM_CHILDREN);
-            }
-
-            mm_update(mm, val);
+            ++mm->n_s;
+            mm->s_first_leaf = ceil((mm->n_s - 1) / (double)NUM_CHILDREN);
         }
+
+        mm_update(mm, val);
     }
 
     mm->init_wnd_complete = (mm->init_wnd_complete |
@@ -332,55 +290,6 @@ static void mm_update(mm_handle* mm, value_t val)
 // --------------------------------------------------------------------------
 // Helper functions for inserting new values into the heaps, i.e., updating
 // the heaps.
-
-static void mm_insert(mm_handle *mm)
-    // insert a nan, during initialization phase.
-{
-    value_t val = 0;
-
-    assert(mm->init_wnd_complete == 0);
-
-    // Local variables.
-    _size_t n_s      = mm->n_s;
-    _size_t n_l      = mm->n_l;
-    _size_t n_s_nan  = mm->n_s_nan;
-    _size_t n_l_nan  = mm->n_l_nan;
-
-    // Nodes and indices.
-    mm_node *node = &mm->node_data[n_s + n_l];
-    node->next = mm->first;
-    mm->first = node;
-
-    //check_asserts(mm);
-
-    int l_heap_full = (n_l == (mm->window - mm->max_s_heap_size));
-    int s_heap_full = (n_s == mm->max_s_heap_size);
-    if ( (s_heap_full | (n_s_nan > n_l_nan)) & (l_heap_full == 0) ) {
-        // Add to the large heap.
-
-        mm->l_heap[n_l] = node;
-        node->small = 0;
-        node->idx   = n_l;
-
-        ++mm->n_l;
-        mm->l_first_leaf = ceil((mm->n_l - 1) / (double)NUM_CHILDREN);
-
-        val = INFINITY;
-    } else {
-        // Add to the small heap.
-
-        mm->s_heap[n_s] = node;
-        node->small = 1;
-        node->idx   = n_s;
-
-        ++mm->n_s;
-        mm->s_first_leaf = ceil((mm->n_s - 1) / (double)NUM_CHILDREN);
-
-        val = -INFINITY;
-    }
-
-    mm_update_skipevict(mm, val);
-}
 
 static void mm_update_helper(mm_handle *mm, mm_node *node, value_t val)
 {
@@ -477,45 +386,6 @@ static void mm_update_helper(mm_handle *mm, mm_node *node, value_t val)
 }
 
 
-static void mm_update_skipevict(mm_handle *mm, value_t val) {
-    if (isinf(val))
-    {
-        mm_node *node = mm->first;
-        // we are adding a new nan
-        node->next_nan = NULL;
-
-        if (val>0) {
-            ++mm->n_l_nan;
-            if (mm->first_nan_l == NULL) {
-                mm->first_nan_l = node;
-                mm->last_nan_l = node;
-                node->prev_nan = NULL;
-            } else {
-                assert(node->next_nan == NULL);
-                assert(node!=mm->last_nan_l);
-                mm->last_nan_l->next_nan = node;
-                node->prev_nan = mm->last_nan_l;
-                assert(node->next_nan == NULL);
-                mm->last_nan_l = node;
-            }
-        } else {
-            ++mm->n_s_nan;
-            if (mm->first_nan_s == NULL) {
-                mm->first_nan_s = node;
-                mm->last_nan_s = node;
-                node->prev_nan = NULL;
-            } else {
-                mm->last_nan_s->next_nan = node;
-                node->prev_nan = mm->last_nan_s;
-                mm->last_nan_s = node;
-            }
-        }
-    }
-
-    mm_update(mm, val);
-}
-
-
 // --------------------------------------------------------------------------
 
 
@@ -526,14 +396,10 @@ static value_t mm_get_median(mm_handle *mm)
 {
     _size_t n_s      = mm->n_s;
     _size_t n_l      = mm->n_l;
-    _size_t n_s_nan  = mm->n_s_nan;
-    _size_t n_l_nan  = mm->n_l_nan;
 
     //check_asserts(mm);
 
-    _size_t nonnan_n_l = n_l - n_l_nan;
-    _size_t nonnan_n_s = n_s - n_s_nan;
-    _size_t numel_total = nonnan_n_l + nonnan_n_s;
+    _size_t numel_total = n_l + n_s;
 
     if (numel_total < mm->min_count)
         return NAN;
@@ -541,7 +407,7 @@ static value_t mm_get_median(mm_handle *mm)
     _size_t effective_window_size = min(mm->window, numel_total);
 
     if (effective_window_size % 2 == 1) {
-        if (nonnan_n_l > nonnan_n_s)
+        if (n_l > n_s)
             return mm->l_heap[0]->val;
         else
             return mm->s_heap[0]->val;
@@ -756,83 +622,6 @@ void mm_dump(mm_handle *mm)
     }
 }
 
-void mm_check_asserts(mm_handle* mm)
-{
-    mm_dump(mm);
-    assert(mm->n_s >= mm->n_s_nan);
-    assert(mm->n_l >= mm->n_l_nan);
-    _size_t valid_s = mm->n_s - mm->n_s_nan;
-    _size_t valid_l = mm->n_l - mm->n_l_nan;
-
-    // use valid_s and valid_l or get compiler warnings
-    // these lines do nothing
-    _size_t dummy = valid_l + valid_s;
-    if (dummy > 100){dummy = 99;}
-
-    assert(valid_s < 5000000000); //most likely an overflow
-    assert(valid_l < 5000000000); //most likely an overflow
-
-    assert(mm->n_s_nan < 5000000000); //most likely an overflow
-    assert(mm->n_l_nan < 5000000000); //most likely an overflow
-
-    if (mm->first_nan_l)
-    {
-        assert(mm->last_nan_l);
-        assert(mm->last_nan_l->next_nan == NULL);
-        assert(mm->first_nan_l->prev_nan == NULL);
-    }
-    else
-        assert(mm->last_nan_l == NULL);
-
-    if (mm->first_nan_s)
-    {
-        assert(mm->last_nan_s);
-        assert(mm->last_nan_s->next_nan == NULL);
-        assert(mm->first_nan_s->prev_nan == NULL);
-    }
-    else
-        assert(mm->last_nan_s == NULL);
-
-    size_t len = 0;
-    mm_node* iter = mm->first_nan_l;
-    while (iter!=NULL)
-    {
-        assert(isinf(iter->val));
-        assert(len <= mm->n_l);
-        if (iter->next_nan != NULL)
-        {
-            assert(iter->prev_nan != iter->next_nan);
-            assert(iter->next_nan->prev_nan == iter);
-        }
-        iter = iter->next_nan;
-        ++len;
-    }
-
-    len = 0;
-    iter = mm->first_nan_s;
-    while (iter!=NULL)
-    {
-        assert(isinf(iter->val));
-        assert(len <= mm->n_s);
-        if (iter->next_nan != NULL)
-        {
-            assert(iter->prev_nan != iter->next_nan);
-            assert(iter->next_nan->prev_nan == iter);
-        }
-        iter = iter->next_nan;
-        ++len;
-    }
-
-    // since valid_l and valid_s are signed, these will overflow and we don't
-    // have to check for diffs of -5, etc.
-    assert(
-           ((valid_l - valid_s) <= 1)
-           || ((valid_s - valid_l) <= 1)
-           );
-
-
-    assert(mm->n_s <= mm->max_s_heap_size);
-}
 
 // --------------------------------------------------------------------------
 // node and handle structs
