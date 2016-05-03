@@ -99,23 +99,23 @@ static void mm_reset(mm_handle* mm);
 static void mm_free(mm_handle *mm);
 
 // helper functions
-static value_t mm_get_median_init(mm_handle *mm);
-static value_t mm_get_median(mm_handle *mm);
-static _size_t mm_get_smallest_child(mm_node **heap, _size_t window,
+inline value_t mm_get_median_init(mm_handle *mm);
+inline value_t mm_get_median(mm_handle *mm);
+inline _size_t mm_get_smallest_child(mm_node **heap, _size_t window,
                                      _size_t idx, mm_node *node,
                                      mm_node **child);
-static _size_t mm_get_largest_child(mm_node **heap, _size_t window,
+inline _size_t mm_get_largest_child(mm_node **heap, _size_t window,
                                     _size_t idx, mm_node *node,
                                     mm_node **child);
-static void mm_move_up_small(mm_node **heap, _size_t window, _size_t idx,
+inline void mm_move_up_small(mm_node **heap, _size_t window, _size_t idx,
                              mm_node *node, _size_t p_idx, mm_node *parent);
-static void mm_move_down_small(mm_node **heap, _size_t window, _size_t idx,
+inline void mm_move_down_small(mm_node **heap, _size_t window, _size_t idx,
                                mm_node *node);
-static void mm_move_down_large(mm_node **heap, _size_t window, _size_t idx,
+inline void mm_move_down_large(mm_node **heap, _size_t window, _size_t idx,
                                mm_node *node, _size_t p_idx, mm_node *parent);
-static void mm_move_up_large(mm_node **heap, _size_t window, _size_t idx, 
+inline void mm_move_up_large(mm_node **heap, _size_t window, _size_t idx, 
                              mm_node *node);
-static void mm_swap_heap_heads(mm_node **s_heap, _size_t n_s, mm_node **l_heap,
+inline void mm_swap_heap_heads(mm_node **s_heap, _size_t n_s, mm_node **l_heap,
                                _size_t n_l, mm_node *s_node, mm_node *l_node);
 
 // debug
@@ -366,7 +366,7 @@ static void mm_free(mm_handle *mm)
 
 /* Return the current median value when there are less than window values
  * in the double heap. */
-static value_t mm_get_median_init(mm_handle *mm)
+inline value_t mm_get_median_init(mm_handle *mm)
 {
     _size_t n_s      = mm->n_s;
     _size_t n_l      = mm->n_l;
@@ -393,7 +393,7 @@ static value_t mm_get_median_init(mm_handle *mm)
 
 /* Return the current median value when there are at least window values
  * in the double heap. */
-static value_t mm_get_median(mm_handle *mm)
+inline value_t mm_get_median(mm_handle *mm)
 {
     if(mm->odd) {
         return mm->s_heap[0]->val;
@@ -407,7 +407,7 @@ static value_t mm_get_median(mm_handle *mm)
  * Return the index of the smallest child of the node. The pointer
  * child will also be set.
  */
-static _size_t mm_get_smallest_child(mm_node **heap,
+inline _size_t mm_get_smallest_child(mm_node **heap,
                                      _size_t   window,
                                      _size_t   idx,
                                      mm_node  *node,
@@ -437,7 +437,7 @@ static _size_t mm_get_smallest_child(mm_node **heap,
  * Return the index of the largest child of the node. The pointer
  * child will also be set.
  */
-static _size_t mm_get_largest_child(mm_node **heap,
+inline _size_t mm_get_largest_child(mm_node **heap,
                                     _size_t   window,
                                     _size_t   idx,
                                     mm_node  *node,
@@ -477,7 +477,7 @@ idx1       = idx2
 /*
  * Move the given node up through the heap to the appropriate position.
  */
-static void mm_move_up_small(mm_node **heap,
+inline void mm_move_up_small(mm_node **heap,
                              _size_t   window,
                              _size_t   idx,
                              mm_node  *node,
@@ -498,7 +498,7 @@ static void mm_move_up_small(mm_node **heap,
 /*
  * Move the given node down through the heap to the appropriate position.
  */
-static void mm_move_down_small(mm_node **heap,
+inline void mm_move_down_small(mm_node **heap,
                                _size_t   window,
                                _size_t   idx,
                                mm_node  *node)
@@ -518,7 +518,7 @@ static void mm_move_down_small(mm_node **heap,
  * Move the given node down through the heap to the appropriate
  * position.
  */
-static void mm_move_down_large(mm_node **heap,
+inline void mm_move_down_large(mm_node **heap,
                                _size_t   window,
                                _size_t   idx,
                                mm_node  *node,
@@ -540,7 +540,7 @@ static void mm_move_down_large(mm_node **heap,
 /*
  * Move the given node up through the heap to the appropriate position.
  */
-static void mm_move_up_large(mm_node **heap,
+inline void mm_move_up_large(mm_node **heap,
                              _size_t   window,
                              _size_t   idx,
                              mm_node  *node)
@@ -559,7 +559,7 @@ static void mm_move_up_large(mm_node **heap,
 /*
  * Swap the heap heads.
  */
-static void mm_swap_heap_heads(mm_node **s_heap,
+inline void mm_swap_heap_heads(mm_node **s_heap,
                                _size_t   n_s,
                                mm_node **l_heap,
                                _size_t   n_l,
