@@ -187,26 +187,23 @@ inline value_t mm_update_init(mm_handle *mm, value_t val)
 
         mm->s_heap[0] = node;
         node->small = 1;
-        node->idx   = 0;
-        node->next  = mm->l_heap[0];
+        node->idx = 0;
+        node->val = val;
+        node->next = mm->l_heap[0];
 
         mm->n_s = 1;
         mm->first = mm->last = node;
         mm->s_first_leaf = 0;
 
-        node->val = val;
     }
     else
     {
         // Nodes after the first.
 
-        node->next  = mm->first;
+        node->next = mm->first;
         mm->first = node;
 
-        _size_t n_s = mm->n_s;
-        _size_t n_l = mm->n_l;
-
-        if ((n_s == mm->max_s_heap_size) | (n_s > n_l))
+        if (n_s > n_l)
         {
             // Add to the large heap.
 
@@ -292,7 +289,7 @@ inline value_t mm_update(mm_handle* mm, value_t val)
         // Head node.
         else {
             node2 = l_heap[0];
-                if((node2 != NULL) && (val > node2->val)) {
+            if (val > node2->val) {
                 mm_swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
             } else {
                 mm_move_down_small(s_heap, n_s, idx, node);
@@ -314,7 +311,7 @@ inline value_t mm_update(mm_handle* mm, value_t val)
 
                 // Maybe swap between heaps.
                 node2 = s_heap[0];
-                if((node2 != NULL) && (val < node2->val)) {
+                if (val < node2->val) {
                     mm_swap_heap_heads(s_heap, n_s, l_heap, n_l, node2, node);
                 }
             }
