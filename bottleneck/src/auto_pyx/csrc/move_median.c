@@ -27,8 +27,8 @@
  DAMAGE.
  */
 
-typedef size_t _size_t;
-typedef double value_t;
+typedef npy_intp _size_t;
+typedef npy_float64 value_t;
 
 /*
  * The number of children has a maximum of 8 due to the manual loop-
