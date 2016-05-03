@@ -92,11 +92,11 @@ typedef struct _mm_handle mm_handle;
 */
 
 // top-level functions
-static mm_handle *mm_new(const _size_t window, _size_t min_count);
-static value_t mm_update_init(mm_handle *mm, value_t val);
-static value_t mm_update(mm_handle* mm, value_t val);
-static void mm_reset(mm_handle* mm);
-static void mm_free(mm_handle *mm);
+inline mm_handle *mm_new(const _size_t window, _size_t min_count);
+inline value_t mm_update_init(mm_handle *mm, value_t val);
+inline value_t mm_update(mm_handle* mm, value_t val);
+inline void mm_reset(mm_handle* mm);
+inline void mm_free(mm_handle *mm);
 
 // helper functions
 inline value_t mm_get_median_init(mm_handle *mm);
@@ -133,7 +133,7 @@ void mm_dump(mm_handle *mm);
  * small values (max heap); the other heap contains the large values
  * (min heap). And the handle contains information about the heaps. It is the
  * handle that is returned by the function. */
-static mm_handle *mm_new(const _size_t window, _size_t min_count)
+inline mm_handle *mm_new(const _size_t window, _size_t min_count)
 {
     // only malloc once, this guarantees cache friendly execution
     // and easier code for cleanup
@@ -170,7 +170,7 @@ static mm_handle *mm_new(const _size_t window, _size_t min_count)
 /* Insert a new value, ai, into one of the heaps. Use this function when
  * the heaps contains less than window-1 values. Returns the median value.
  * Once there are window-1 values in the heap, switch to using mm_update. */
-static value_t mm_update_init(mm_handle *mm, value_t val)
+inline value_t mm_update_init(mm_handle *mm, value_t val)
 {
 
     // Some local variables.
@@ -240,7 +240,7 @@ static value_t mm_update_init(mm_handle *mm, value_t val)
  * when the double heap contains at least window-1 values. Returns the median
  * value. If there are less than window-1 values in the heap, use
  * mm_update_init. */
-static value_t mm_update(mm_handle* mm, value_t val)
+inline value_t mm_update(mm_handle* mm, value_t val)
 {
     // Nodes and indices.
     mm_node *node = mm->first;
@@ -343,7 +343,7 @@ static value_t mm_update(mm_handle* mm, value_t val)
 /* At the end of each slice the double heap is reset (mm_reset) to prepare
  * for the next slice. In the 2d input array case (with axis=1), each slice
  * is a row of the input array. */
-static void mm_reset(mm_handle* mm)
+inline void mm_reset(mm_handle* mm)
 {
     mm->n_l = 0;
     mm->n_s = 0;
@@ -352,7 +352,7 @@ static void mm_reset(mm_handle* mm)
 }
 
 /*  After bn.move_median is done, free the memory */
-static void mm_free(mm_handle *mm)
+inline void mm_free(mm_handle *mm)
 {
     free(mm);
 }
@@ -606,8 +606,11 @@ void mm_dump(mm_handle *mm)
 }
 
 
-// --------------------------------------------------------------------------
-// node and handle structs
+/*
+-----------------------------------------------------------------------------
+  Node and handle structs (NaN capable)
+-----------------------------------------------------------------------------
+*/
 
 struct _zz_node {
     int              small; // 1 if the node is in the small heap.
@@ -626,9 +629,6 @@ struct _zz_handle {
     _size_t   window;    // window size
     _size_t   n_s_nan;   // number of nans in min heap
     _size_t   n_l_nan;   // number of nans in max heap
-    int       init_wnd_complete; //if atleast window elements have been
-                         // inserted
-    int       odd;       // 1 if the window size is odd, 0 otherwise.
     _size_t   n_s;       // The number of elements in the min heap.
     _size_t   n_l;       // The number of elements in the max heap.
     _size_t   min_count; // If the number of non-NaN values in a window is
@@ -658,42 +658,45 @@ struct _zz_handle {
 
 typedef struct _zz_handle zz_handle;
 
-// --------------------------------------------------------------------------
-// prototypes
 
-static zz_handle *zz_new(const _size_t window, _size_t min_count);
-static void zz_reset(zz_handle* zz);
-static void zz_free(zz_handle *zz);
+/*
+-----------------------------------------------------------------------------
+  Prototypes (NaN capable)
+-----------------------------------------------------------------------------
+*/
 
-static void zz_insert_init(zz_handle *zz, value_t val);
-static void zz_update_nonan(zz_handle* zz, value_t val);
-static void zz_update_checknan(zz_handle *zz, value_t val);
+// top-level functions
+inline zz_handle *zz_new(const _size_t window, _size_t min_count);
+inline value_t zz_update_init(zz_handle *zz, value_t val);
+inline value_t zz_update(zz_handle *zz, value_t val);
+inline void zz_reset(zz_handle* zz);
+inline void zz_free(zz_handle *zz);
 
-static void zz_insert_nan(zz_handle *zz);
-static void zz_update_helper( zz_handle *zz, zz_node *node, value_t val);
-static void zz_update_withnan(zz_handle *zz, value_t val);
-static void zz_update_withnan_skipevict(zz_handle *zz, value_t val);
-
-static void move_nan_helper(zz_handle* zz, zz_node* new_last);
-static void move_nan_from_s_to_l(zz_handle *zz);
-static void move_nan_from_l_to_s(zz_handle *zz);
-
-static value_t zz_get_median(zz_handle *zz);
-
-static _size_t get_smallest_child(zz_node **heap, _size_t window, _size_t idx,
+// helper functions
+inline void zz_update_withnan(zz_handle *zz, value_t val);
+inline void zz_update_nonan(zz_handle* zz, value_t val);
+inline void zz_insert_nan(zz_handle *zz);
+inline void zz_update_helper( zz_handle *zz, zz_node *node, value_t val);
+inline void zz_update_withnan_skipevict(zz_handle *zz, value_t val);
+inline void move_nan_helper(zz_handle* zz, zz_node* new_last);
+inline void move_nan_from_s_to_l(zz_handle *zz);
+inline void move_nan_from_l_to_s(zz_handle *zz);
+inline value_t zz_get_median(zz_handle *zz);
+inline _size_t get_smallest_child(zz_node **heap, _size_t window, _size_t idx,
                            zz_node *node, zz_node **child);
-static _size_t get_largest_child(zz_node **heap, _size_t window, _size_t idx,
+inline _size_t get_largest_child(zz_node **heap, _size_t window, _size_t idx,
                           zz_node *node, zz_node **child);
-static void move_up_small(zz_node **heap, _size_t window, _size_t idx, zz_node *node,
+inline void move_up_small(zz_node **heap, _size_t window, _size_t idx, zz_node *node,
                    _size_t p_idx, zz_node *parent);
-static void move_down_small(zz_node **heap, _size_t window, _size_t idx,
+inline void move_down_small(zz_node **heap, _size_t window, _size_t idx,
                      zz_node *node);
-static void move_down_large(zz_node **heap, _size_t window, _size_t idx,
+inline void move_down_large(zz_node **heap, _size_t window, _size_t idx,
                      zz_node *node, _size_t p_idx, zz_node *parent);
-static void move_up_large(zz_node **heap, _size_t window, _size_t idx, zz_node *node);
-static void swap_heap_heads(zz_node **s_heap, _size_t n_s, zz_node **l_heap,
+inline void move_up_large(zz_node **heap, _size_t window, _size_t idx, zz_node *node);
+inline void swap_heap_heads(zz_node **s_heap, _size_t n_s, zz_node **l_heap,
                      _size_t n_l, zz_node *s_node, zz_node *l_node);
 
+// debug
 void zz_dump(zz_handle *zz);
 void check_asserts(zz_handle* zz);
 
@@ -710,7 +713,7 @@ void check_asserts(zz_handle* zz);
 //
 // After bn.move_median is done, memory is freed (zz_free).
 
-static zz_handle *zz_new(const _size_t window, _size_t min_count)
+inline zz_handle *zz_new(const _size_t window, _size_t min_count)
 {
     // window -- The total number of values in the double heap.
     // Return: The zz_handle structure, uninitialized.
@@ -745,49 +748,8 @@ static zz_handle *zz_new(const _size_t window, _size_t min_count)
     return zz;
 }
 
-static void zz_reset(zz_handle* zz)
-{
-    zz->n_l = 0;
-    zz->n_s = 0;
-    zz->n_l_nan = 0;
-    zz->n_s_nan = 0;
-    zz->init_wnd_complete = 0;
 
-    zz->first_nan_s = NULL;
-    zz->last_nan_s = NULL;
-    zz->first_nan_l = NULL;
-    zz->last_nan_l = NULL;
-    zz->first = NULL;
-    zz->last = NULL;
-}
-
-static void zz_free(zz_handle *zz)
-{
-    free(zz);
-}
-
-// --------------------------------------------------------------------------
-// As we loop through a slice of the input array in bn.move_median, each
-// array element, ai, must be inserted into the heap.
-//
-// If you know that the input array does not contain NaNs (e.g. integer input
-// arrays) then you can use the faster zz_update_movemedian_nonan.
-//
-// If the input array may contain NaNs then use the slower
-// zz_update_movemedian_possiblenan
-
-
-// --------------------------------------------------------------------------
-// Insert a new value, ai, into the double heap structure.
-//
-// Don't call these directly. Instead these functions are called by
-// zz_update_movemedian_nonan and zz_update_movemedian_possiblenan
-//
-// zz_insert_init is for when double heap contains less than window values
-// zz_update_nonan ai is not NaN and double heap is already full
-// zz_update_checknan ai might be NaN and double heap is already full
-
-static void zz_insert_init(zz_handle *zz, value_t val)
+inline value_t zz_update_init(zz_handle *zz, value_t val)
 {
     /*
      * Insert initial values into the double heap structure.
@@ -880,24 +842,11 @@ static void zz_insert_init(zz_handle *zz, value_t val)
         }
     }
 
-    zz->init_wnd_complete = (zz->init_wnd_complete |
-                             ((n_l + n_s + 1) >= (zz->window)));
+    return zz_get_median(zz);
 }
 
-static void zz_update_nonan(zz_handle* zz, value_t val)
-{
-    // Nodes and indices.
-    zz_node *node = zz->first;
 
-    // and update first, last
-    zz->first = zz->first->next;
-    zz->last->next = node;
-    zz->last = node;
-
-    zz_update_helper(zz, node, val);
-}
-
-static void zz_update_checknan(zz_handle *zz, value_t val)
+inline value_t zz_update(zz_handle *zz, value_t val)
 {
     _size_t n_s      = zz->n_s;
     _size_t n_l      = zz->n_l;
@@ -954,18 +903,129 @@ static void zz_update_checknan(zz_handle *zz, value_t val)
 
     // double check these in debug, to catch overflows
     //check_asserts(zz);
+
+    return zz_get_median(zz);
 }
+
+
+inline void zz_reset(zz_handle* zz)
+{
+    zz->n_l = 0;
+    zz->n_s = 0;
+    zz->n_l_nan = 0;
+    zz->n_s_nan = 0;
+
+    zz->first_nan_s = NULL;
+    zz->last_nan_s = NULL;
+    zz->first_nan_l = NULL;
+    zz->last_nan_l = NULL;
+    zz->first = NULL;
+    zz->last = NULL;
+}
+
+inline void zz_free(zz_handle *zz)
+{
+    free(zz);
+}
+
+// --------------------------------------------------------------------------
+// As we loop through a slice of the input array in bn.move_median, each
+// array element, ai, must be inserted into the heap.
+//
+// If you know that the input array does not contain NaNs (e.g. integer input
+// arrays) then you can use the faster zz_update_movemedian_nonan.
+//
+// If the input array may contain NaNs then use the slower
+// zz_update_movemedian_possiblenan
+
+
+// --------------------------------------------------------------------------
+// Insert a new value, ai, into the double heap structure.
+//
+// Don't call these directly. Instead these functions are called by
+// zz_update_movemedian_nonan and zz_update_movemedian_possiblenan
+//
+// zz_update_init is for when double heap contains less than window values
+// zz_update_nonan ai is not NaN and double heap is already full
+// zz_update ai might be NaN and double heap is already full
+
+inline void zz_update_withnan(zz_handle *zz, value_t val) {
+    // Nodes and indices.
+    zz_node *node = zz->first;
+
+    if (isinf(node->val)) {
+        // if we are removing a nan
+        if (node->small) {
+            --zz->n_s_nan;
+
+            if (node == zz->first_nan_s) {
+                zz_node* next_ptr = zz->first_nan_s->next_nan;
+                zz->first_nan_s = next_ptr;
+                if (next_ptr == NULL)
+                    zz->last_nan_s = NULL;
+                else
+                    next_ptr->prev_nan = NULL; /* the current nan is the first
+                                                *  one */
+            } else {
+                assert(node->prev_nan != NULL);
+                zz_node* last_node = node->prev_nan;
+                last_node->next_nan = node->next_nan;
+                if (node->next_nan == NULL)
+                    zz->last_nan_s = last_node;
+                else
+                    node->next_nan->prev_nan = last_node;
+                node->next_nan = NULL;
+            }
+        } else {
+            --zz->n_l_nan;
+
+            if (node == zz->first_nan_l) {
+                zz_node* next_ptr = zz->first_nan_l->next_nan;
+                zz->first_nan_l = next_ptr;
+                if (next_ptr == NULL)
+                    zz->last_nan_l = NULL;
+                else
+                    next_ptr->prev_nan = NULL; /* the current nan is the first
+                                                *  one */
+            } else {
+                assert(node->prev_nan != NULL);
+                zz_node* last_node = node->prev_nan;
+                last_node->next_nan = node->next_nan;
+                if (node->next_nan == NULL)
+                    zz->last_nan_l = last_node;
+                else
+                    node->next_nan->prev_nan = last_node;
+                node->next_nan = NULL;
+            }
+        }
+    }
+
+    zz_update_withnan_skipevict(zz, val);
+}
+
+
+inline void zz_update_nonan(zz_handle* zz, value_t val)
+{
+    // Nodes and indices.
+    zz_node *node = zz->first;
+
+    // and update first, last
+    zz->first = zz->first->next;
+    zz->last->next = node;
+    zz->last = node;
+
+    zz_update_helper(zz, node, val);
+}
+
 
 // --------------------------------------------------------------------------
 // Helper functions for inserting new values into the heaps, i.e., updating
 // the heaps.
 
-static void zz_insert_nan(zz_handle *zz)
+inline void zz_insert_nan(zz_handle *zz)
     // insert a nan, during initialization phase.
 {
     value_t val = 0;
-
-    assert(zz->init_wnd_complete == 0);
 
     // Local variables.
     _size_t n_s      = zz->n_s;
@@ -1009,7 +1069,7 @@ static void zz_insert_nan(zz_handle *zz)
     zz_update_withnan_skipevict(zz, val);
 }
 
-static void zz_update_helper( zz_handle *zz, zz_node *node, value_t val)
+inline void zz_update_helper( zz_handle *zz, zz_node *node, value_t val)
 {
     // Replace value of node
     node->val = val;
@@ -1103,61 +1163,8 @@ static void zz_update_helper( zz_handle *zz, zz_node *node, value_t val)
     }
 }
 
-static void zz_update_withnan(zz_handle *zz, value_t val) {
-    // Nodes and indices.
-    zz_node *node = zz->first;
 
-    if (isinf(node->val)) {
-        // if we are removing a nan
-        if (node->small) {
-            --zz->n_s_nan;
-
-            if (node == zz->first_nan_s) {
-                zz_node* next_ptr = zz->first_nan_s->next_nan;
-                zz->first_nan_s = next_ptr;
-                if (next_ptr == NULL)
-                    zz->last_nan_s = NULL;
-                else
-                    next_ptr->prev_nan = NULL; /* the current nan is the first
-                                                *  one */
-            } else {
-                assert(node->prev_nan != NULL);
-                zz_node* last_node = node->prev_nan;
-                last_node->next_nan = node->next_nan;
-                if (node->next_nan == NULL)
-                    zz->last_nan_s = last_node;
-                else
-                    node->next_nan->prev_nan = last_node;
-                node->next_nan = NULL;
-            }
-        } else {
-            --zz->n_l_nan;
-
-            if (node == zz->first_nan_l) {
-                zz_node* next_ptr = zz->first_nan_l->next_nan;
-                zz->first_nan_l = next_ptr;
-                if (next_ptr == NULL)
-                    zz->last_nan_l = NULL;
-                else
-                    next_ptr->prev_nan = NULL; /* the current nan is the first
-                                                *  one */
-            } else {
-                assert(node->prev_nan != NULL);
-                zz_node* last_node = node->prev_nan;
-                last_node->next_nan = node->next_nan;
-                if (node->next_nan == NULL)
-                    zz->last_nan_l = last_node;
-                else
-                    node->next_nan->prev_nan = last_node;
-                node->next_nan = NULL;
-            }
-        }
-    }
-
-    zz_update_withnan_skipevict(zz, val);
-}
-
-static void zz_update_withnan_skipevict(zz_handle *zz, value_t val) {
+inline void zz_update_withnan_skipevict(zz_handle *zz, value_t val) {
     if (isinf(val))
     {
         zz_node *node = zz->first;
@@ -1197,7 +1204,7 @@ static void zz_update_withnan_skipevict(zz_handle *zz, value_t val) {
 
 // --------------------------------------------------------------------------
 
-static void move_nan_helper(zz_handle* zz, zz_node* new_last)
+inline void move_nan_helper(zz_handle* zz, zz_node* new_last)
 {
     assert(new_last != NULL);
 
@@ -1210,7 +1217,7 @@ static void move_nan_helper(zz_handle* zz, zz_node* new_last)
     zz_update_helper(zz, new_last, new_val);
 }
 
-static void move_nan_from_s_to_l(zz_handle *zz)
+inline void move_nan_from_s_to_l(zz_handle *zz)
 {
     // move nan from s to l
     assert(zz->first_nan_s != NULL);
@@ -1242,7 +1249,7 @@ static void move_nan_from_s_to_l(zz_handle *zz)
     move_nan_helper(zz, new_last);
 }
 
-static void move_nan_from_l_to_s(zz_handle *zz)
+inline void move_nan_from_l_to_s(zz_handle *zz)
 {
     // move nan from l to s
     assert(zz->first_nan_l != NULL);
@@ -1280,7 +1287,7 @@ static void move_nan_from_l_to_s(zz_handle *zz)
 /*
  * Return the current median value.
  */
-static value_t zz_get_median(zz_handle *zz)
+inline value_t zz_get_median(zz_handle *zz)
 {
     _size_t n_s      = zz->n_s;
     _size_t n_l      = zz->n_l;
@@ -1316,7 +1323,7 @@ static value_t zz_get_median(zz_handle *zz)
  * Return the index of the smallest child of the node. The pointer
  * child will also be set.
  */
-static _size_t get_smallest_child(zz_node **heap,
+inline _size_t get_smallest_child(zz_node **heap,
                            _size_t   window,
                            _size_t   idx,
                            zz_node  *node,
@@ -1346,7 +1353,7 @@ static _size_t get_smallest_child(zz_node **heap,
  * Return the index of the largest child of the node. The pointer
  * child will also be set.
  */
-static _size_t get_largest_child(zz_node **heap,
+inline _size_t get_largest_child(zz_node **heap,
                           _size_t   window,
                           _size_t   idx,
                           zz_node  *node,
@@ -1386,7 +1393,7 @@ idx1       = idx2
 /*
  * Move the given node up through the heap to the appropriate position.
  */
-static void move_up_small(zz_node **heap,
+inline void move_up_small(zz_node **heap,
                    _size_t   window,
                    _size_t   idx,
                    zz_node  *node,
@@ -1407,7 +1414,7 @@ static void move_up_small(zz_node **heap,
 /*
  * Move the given node down through the heap to the appropriate position.
  */
-static void move_down_small(zz_node **heap,
+inline void move_down_small(zz_node **heap,
                      _size_t   window,
                      _size_t   idx,
                      zz_node  *node)
@@ -1427,7 +1434,7 @@ static void move_down_small(zz_node **heap,
  * Move the given node down through the heap to the appropriate
  * position.
  */
-static void move_down_large(zz_node **heap,
+inline void move_down_large(zz_node **heap,
                      _size_t   window,
                      _size_t   idx,
                      zz_node  *node,
@@ -1449,7 +1456,7 @@ static void move_down_large(zz_node **heap,
 /*
  * Move the given node up through the heap to the appropriate position.
  */
-static void move_up_large(zz_node **heap,
+inline void move_up_large(zz_node **heap,
                    _size_t   window,
                    _size_t   idx,
                    zz_node  *node)
@@ -1468,7 +1475,7 @@ static void move_up_large(zz_node **heap,
 /*
  * Swap the heap heads.
  */
-static void swap_heap_heads(zz_node **s_heap,
+inline void swap_heap_heads(zz_node **s_heap,
                      _size_t   n_s,
                      zz_node **l_heap,
                      _size_t   n_l,

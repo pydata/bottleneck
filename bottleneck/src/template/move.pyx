@@ -1586,8 +1586,8 @@ cdef extern from "csrc/move_median.c":
         np.npy_uint64 max_s_heap_size
     ctypedef _zz_handle zz_handle
     zz_handle *zz_new(np.npy_uint64 window, np.npy_uint64 min_count) nogil
-    void zz_insert_init(zz_handle *zz, np.npy_float64 val) nogil
-    void zz_update_checknan(zz_handle *zz, np.npy_float64 val) nogil
+    np.npy_float64 zz_update_init(zz_handle *zz, np.npy_float64 val) nogil
+    np.npy_float64 zz_update(zz_handle *zz, np.npy_float64 val) nogil
     np.npy_float64 zz_get_median(zz_handle *zz) nogil
     void zz_reset(zz_handle* zz) nogil
     void zz_free(zz_handle *zz) nogil
@@ -1615,13 +1615,11 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
         while PyArray_ITER_NOTDONE(ita):
             for i in range(window):
                 ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                zz_insert_init(zz, ai)
-                yi = zz_get_median(zz)
+                yi = zz_update_init(zz, ai)
                 (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
             for i in range(window, length):
                 ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                zz_update_checknan(zz, ai)
-                yi = zz_get_median(zz)
+                yi = zz_update(zz, ai)
                 (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
             PyArray_ITER_NEXT(ita)
             PyArray_ITER_NEXT(ity)
