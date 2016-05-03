@@ -113,7 +113,7 @@ inline void mm_move_down_small(mm_node **heap, _size_t window, _size_t idx,
                                mm_node *node);
 inline void mm_move_down_large(mm_node **heap, _size_t window, _size_t idx,
                                mm_node *node, _size_t p_idx, mm_node *parent);
-inline void mm_move_up_large(mm_node **heap, _size_t window, _size_t idx, 
+inline void mm_move_up_large(mm_node **heap, _size_t window, _size_t idx,
                              mm_node *node);
 inline void mm_swap_heap_heads(mm_node **s_heap, _size_t n_s, mm_node **l_heap,
                                _size_t n_l, mm_node *s_node, mm_node *l_node);
@@ -183,7 +183,7 @@ inline value_t mm_update_init(mm_handle *mm, value_t val)
     node = &mm->node_data[n_s + n_l];
 
     // The first node.
-    if(n_s == 0) {
+    if (n_s == 0) {
 
         mm->s_heap[0] = node;
         node->small = 1;
@@ -209,7 +209,7 @@ inline value_t mm_update_init(mm_handle *mm, value_t val)
 
             mm->l_heap[n_l] = node;
             node->small = 0;
-            node->idx   = n_l;
+            node->idx = n_l;
 
             ++mm->n_l;
             mm->l_first_leaf = ceil((mm->n_l - 1) / (double)NUM_CHILDREN);
@@ -220,7 +220,7 @@ inline value_t mm_update_init(mm_handle *mm, value_t val)
 
             mm->s_heap[n_s] = node;
             node->small = 1;
-            node->idx   = n_s;
+            node->idx = n_s;
 
             ++mm->n_s;
             mm->s_first_leaf = ceil((mm->n_s - 1) / (double)NUM_CHILDREN);
@@ -251,37 +251,37 @@ inline value_t mm_update(mm_handle* mm, value_t val)
     node->val = val;
 
     // Local variables.
-    _size_t  idx  = node->idx;
+    _size_t  idx = node->idx;
 
     mm_node **l_heap = mm->l_heap;
     mm_node **s_heap = mm->s_heap;
-    _size_t n_s      = mm->n_s;
-    _size_t n_l      = mm->n_l;
+    _size_t n_s = mm->n_s;
+    _size_t n_l = mm->n_l;
 
     mm_node *node2;
     _size_t  idx2;
 
     // In small heap.
-    if(node->small) {
+    if (node->small) {
 
         // Internal or leaf node.
-        if(idx > 0) {
+        if (idx > 0) {
             idx2 = P_IDX(idx);
             node2 = s_heap[idx2];
 
             // Move up.
-            if(val > node2->val) {
+            if (val > node2->val) {
                 mm_move_up_small(s_heap, n_s, idx, node, idx2, node2);
 
                 // Maybe swap between heaps.
                 node2 = l_heap[0];
-                if((node2 != NULL) && (val > node2->val)) {
+                if ((node2 != NULL) && (val > node2->val)) {
                     mm_swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
                 }
             }
 
             // Move down.
-            else if(idx < mm->s_first_leaf) {
+            else if (idx < mm->s_first_leaf) {
                 mm_move_down_small(s_heap, n_s, idx, node);
             }
         }
@@ -301,12 +301,12 @@ inline value_t mm_update(mm_handle* mm, value_t val)
     else {
 
         // Internal or leaf node.
-        if(idx > 0) {
+        if (idx > 0) {
             idx2 = P_IDX(idx);
             node2 = l_heap[idx2];
 
             // Move down.
-            if(val < node2->val) {
+            if (val < node2->val) {
                 mm_move_down_large(l_heap, n_l, idx, node, idx2, node2);
 
                 // Maybe swap between heaps.
@@ -317,7 +317,7 @@ inline value_t mm_update(mm_handle* mm, value_t val)
             }
 
             // Move up.
-            else if(idx < mm->l_first_leaf) {
+            else if (idx < mm->l_first_leaf) {
                 mm_move_up_large(l_heap, n_l, idx, node);
             }
         }
@@ -365,8 +365,8 @@ inline void mm_free(mm_handle *mm)
  * in the double heap. */
 inline value_t mm_get_median_init(mm_handle *mm)
 {
-    _size_t n_s      = mm->n_s;
-    _size_t n_l      = mm->n_l;
+    _size_t n_s = mm->n_s;
+    _size_t n_l = mm->n_l;
 
     //check_asserts(mm);
 
@@ -392,7 +392,7 @@ inline value_t mm_get_median_init(mm_handle *mm)
  * in the double heap. */
 inline value_t mm_get_median(mm_handle *mm)
 {
-    if(mm->odd) {
+    if (mm->odd) {
         return mm->s_heap[0]->val;
     } else {
         return (mm->s_heap[0]->val + mm->l_heap[0]->val) / 2.0;
@@ -415,14 +415,14 @@ inline _size_t mm_get_smallest_child(mm_node **heap,
     i1 = min(i1, window);
 
     switch(i1 - i0) {
-        case  8: if(heap[i0 + 7]->val < heap[idx]->val) { idx = i0 + 7; }
-        case  7: if(heap[i0 + 6]->val < heap[idx]->val) { idx = i0 + 6; }
-        case  6: if(heap[i0 + 5]->val < heap[idx]->val) { idx = i0 + 5; }
-        case  5: if(heap[i0 + 4]->val < heap[idx]->val) { idx = i0 + 4; }
-        case  4: if(heap[i0 + 3]->val < heap[idx]->val) { idx = i0 + 3; }
-        case  3: if(heap[i0 + 2]->val < heap[idx]->val) { idx = i0 + 2; }
-        case  2: if(heap[i0 + 1]->val < heap[idx]->val) { idx = i0 + 1; }
-        case  1: if(heap[i0    ]->val < heap[idx]->val) { idx = i0;     }
+        case  8: if (heap[i0 + 7]->val < heap[idx]->val) { idx = i0 + 7; }
+        case  7: if (heap[i0 + 6]->val < heap[idx]->val) { idx = i0 + 6; }
+        case  6: if (heap[i0 + 5]->val < heap[idx]->val) { idx = i0 + 5; }
+        case  5: if (heap[i0 + 4]->val < heap[idx]->val) { idx = i0 + 4; }
+        case  4: if (heap[i0 + 3]->val < heap[idx]->val) { idx = i0 + 3; }
+        case  3: if (heap[i0 + 2]->val < heap[idx]->val) { idx = i0 + 2; }
+        case  2: if (heap[i0 + 1]->val < heap[idx]->val) { idx = i0 + 1; }
+        case  1: if (heap[i0    ]->val < heap[idx]->val) { idx = i0;     }
     }
 
     *child = heap[idx];
@@ -445,14 +445,14 @@ inline _size_t mm_get_largest_child(mm_node **heap,
     i1 = min(i1, window);
 
     switch(i1 - i0) {
-        case  8: if(heap[i0 + 7]->val > heap[idx]->val) { idx = i0 + 7; }
-        case  7: if(heap[i0 + 6]->val > heap[idx]->val) { idx = i0 + 6; }
-        case  6: if(heap[i0 + 5]->val > heap[idx]->val) { idx = i0 + 5; }
-        case  5: if(heap[i0 + 4]->val > heap[idx]->val) { idx = i0 + 4; }
-        case  4: if(heap[i0 + 3]->val > heap[idx]->val) { idx = i0 + 3; }
-        case  3: if(heap[i0 + 2]->val > heap[idx]->val) { idx = i0 + 2; }
-        case  2: if(heap[i0 + 1]->val > heap[idx]->val) { idx = i0 + 1; }
-        case  1: if(heap[i0    ]->val > heap[idx]->val) { idx = i0;     }
+        case  8: if (heap[i0 + 7]->val > heap[idx]->val) { idx = i0 + 7; }
+        case  7: if (heap[i0 + 6]->val > heap[idx]->val) { idx = i0 + 6; }
+        case  6: if (heap[i0 + 5]->val > heap[idx]->val) { idx = i0 + 5; }
+        case  5: if (heap[i0 + 4]->val > heap[idx]->val) { idx = i0 + 4; }
+        case  4: if (heap[i0 + 3]->val > heap[idx]->val) { idx = i0 + 3; }
+        case  3: if (heap[i0 + 2]->val > heap[idx]->val) { idx = i0 + 2; }
+        case  2: if (heap[i0 + 1]->val > heap[idx]->val) { idx = i0 + 1; }
+        case  1: if (heap[i0    ]->val > heap[idx]->val) { idx = i0;     }
     }
 
     *child = heap[idx];
@@ -483,7 +483,7 @@ inline void mm_move_up_small(mm_node **heap,
 {
     do {
         MM_SWAP_NODES(heap, idx, node, p_idx, parent);
-        if(idx == 0) {
+        if (idx == 0) {
             break;
         }
         p_idx = P_IDX(idx);
@@ -501,10 +501,10 @@ inline void mm_move_down_small(mm_node **heap,
                                mm_node  *node)
 {
     mm_node *child;
-    value_t val   = node->val;
+    value_t val = node->val;
     _size_t c_idx = mm_get_largest_child(heap, window, idx, node, &child);
 
-    while(val < child->val) {
+    while (val < child->val) {
         MM_SWAP_NODES(heap, idx, node, c_idx, child);
         c_idx = mm_get_largest_child(heap, window, idx, node, &child);
     }
@@ -524,7 +524,7 @@ inline void mm_move_down_large(mm_node **heap,
 {
     do {
         MM_SWAP_NODES(heap, idx, node, p_idx, parent);
-        if(idx == 0) {
+        if (idx == 0) {
             break;
         }
         p_idx = P_IDX(idx);
@@ -543,10 +543,10 @@ inline void mm_move_up_large(mm_node **heap,
                              mm_node  *node)
 {
     mm_node *child;
-    value_t val   = node->val;
+    value_t val = node->val;
     _size_t c_idx = mm_get_smallest_child(heap, window, idx, node, &child);
 
-    while(val > child->val) {
+    while (val > child->val) {
         MM_SWAP_NODES(heap, idx, node, c_idx, child);
         c_idx = mm_get_smallest_child(heap, window, idx, node, &child);
     }
@@ -634,7 +634,7 @@ struct _zz_handle {
     zz_node **s_heap;    // The min heap.
     zz_node **l_heap;    // The max heap.
     zz_node **nodes;     // All the nodes. s_heap and l_heap point into
-    // this array.
+                         // this array.
     zz_node  *node_data; // Pointer to memory location where nodes live.
     zz_node  *first;     // The node added first to the list of nodes.
     zz_node  *last;      // The last (most recent) node added.
@@ -673,25 +673,26 @@ inline void zz_free(zz_handle *zz);
 inline void zz_update_withnan(zz_handle *zz, value_t val);
 inline void zz_update_nonan(zz_handle* zz, value_t val);
 inline void zz_insert_nan(zz_handle *zz);
-inline void zz_update_helper( zz_handle *zz, zz_node *node, value_t val);
+inline void zz_update_helper(zz_handle *zz, zz_node *node, value_t val);
 inline void zz_update_withnan_skipevict(zz_handle *zz, value_t val);
 inline void move_nan_helper(zz_handle* zz, zz_node* new_last);
 inline void move_nan_from_s_to_l(zz_handle *zz);
 inline void move_nan_from_l_to_s(zz_handle *zz);
 inline value_t zz_get_median(zz_handle *zz);
 inline _size_t get_smallest_child(zz_node **heap, _size_t window, _size_t idx,
-                           zz_node *node, zz_node **child);
+                                  zz_node *node, zz_node **child);
 inline _size_t get_largest_child(zz_node **heap, _size_t window, _size_t idx,
-                          zz_node *node, zz_node **child);
-inline void move_up_small(zz_node **heap, _size_t window, _size_t idx, zz_node *node,
-                   _size_t p_idx, zz_node *parent);
+                                 zz_node *node, zz_node **child);
+inline void move_up_small(zz_node **heap, _size_t window, _size_t idx,
+                          zz_node *node, _size_t p_idx, zz_node *parent);
 inline void move_down_small(zz_node **heap, _size_t window, _size_t idx,
-                     zz_node *node);
+                            zz_node *node);
 inline void move_down_large(zz_node **heap, _size_t window, _size_t idx,
                      zz_node *node, _size_t p_idx, zz_node *parent);
-inline void move_up_large(zz_node **heap, _size_t window, _size_t idx, zz_node *node);
+inline void move_up_large(zz_node **heap, _size_t window, _size_t idx,
+                          zz_node *node);
 inline void swap_heap_heads(zz_node **s_heap, _size_t n_s, zz_node **l_heap,
-                     _size_t n_l, zz_node *s_node, zz_node *l_node);
+                            _size_t n_l, zz_node *s_node, zz_node *l_node);
 
 // debug
 void zz_dump(zz_handle *zz);
@@ -761,8 +762,8 @@ inline value_t zz_update_init(zz_handle *zz, value_t val)
     zz_node *node = NULL;
     _size_t n_s = zz->n_s;
     _size_t n_l = zz->n_l;
-    _size_t n_s_nan  = zz->n_s_nan;
-    _size_t n_l_nan  = zz->n_l_nan;
+    _size_t n_s_nan = zz->n_s_nan;
+    _size_t n_l_nan = zz->n_l_nan;
     // double check these in debug, to catch overflows
     //check_asserts(zz);
 
@@ -772,13 +773,13 @@ inline value_t zz_update_init(zz_handle *zz, value_t val)
     node->next_nan = NULL;
 
     // The first node.
-    if(n_s == 0) {
+    if (n_s == 0) {
         zz->n_s_nan = is_nan_val;
 
         zz->s_heap[0] = node;
         node->small = 1;
-        node->idx   = 0;
-        node->next  = zz->l_heap[0];
+        node->idx = 0;
+        node->next = zz->l_heap[0];
 
         zz->n_s = 1;
         zz->first = zz->last = node;
@@ -806,7 +807,7 @@ inline value_t zz_update_init(zz_handle *zz, value_t val)
         }
         else
         {
-            node->next  = zz->first;
+            node->next = zz->first;
             zz->first = node;
 
             _size_t nonnan_n_s = n_s - n_s_nan;
@@ -818,7 +819,7 @@ inline value_t zz_update_init(zz_handle *zz, value_t val)
 
                 zz->l_heap[n_l] = node;
                 node->small = 0;
-                node->idx   = n_l;
+                node->idx = n_l;
 
                 ++zz->n_l;
                 zz->l_first_leaf = ceil((zz->n_l - 1) / (double)NUM_CHILDREN);
@@ -829,7 +830,7 @@ inline value_t zz_update_init(zz_handle *zz, value_t val)
 
                 zz->s_heap[n_s] = node;
                 node->small = 1;
-                node->idx   = n_s;
+                node->idx = n_s;
 
                 ++zz->n_s;
                 zz->s_first_leaf = ceil((zz->n_s - 1) / (double)NUM_CHILDREN);
@@ -845,10 +846,10 @@ inline value_t zz_update_init(zz_handle *zz, value_t val)
 
 inline value_t zz_update(zz_handle *zz, value_t val)
 {
-    _size_t n_s      = zz->n_s;
-    _size_t n_l      = zz->n_l;
-    _size_t n_s_nan  = zz->n_s_nan;
-    _size_t n_l_nan  = zz->n_l_nan;
+    _size_t n_s = zz->n_s;
+    _size_t n_l = zz->n_l;
+    _size_t n_s_nan = zz->n_s_nan;
+    _size_t n_l_nan = zz->n_l_nan;
     _size_t nonnan_n_s = n_s - n_s_nan;
     _size_t nonnan_n_l = n_l - n_l_nan;
 
@@ -871,7 +872,7 @@ inline value_t zz_update(zz_handle *zz, value_t val)
                 evict_effect_l = 1;
         }
 
-        if((nonnan_n_s + evict_effect_s) > (nonnan_n_l + evict_effect_l))
+        if ((nonnan_n_s + evict_effect_s) > (nonnan_n_l + evict_effect_l))
             zz_update_withnan(zz, -INFINITY); // add to min heap
         else
             zz_update_withnan(zz, INFINITY); // add to max heap
@@ -893,9 +894,9 @@ inline value_t zz_update(zz_handle *zz, value_t val)
     nonnan_n_s = n_s - n_s_nan;
     nonnan_n_l = n_l - n_l_nan;
 
-    if ( nonnan_n_l == nonnan_n_s + 2)
+    if (nonnan_n_l == nonnan_n_s + 2)
         move_nan_from_s_to_l(zz); // max heap is too big...
-    else if ( nonnan_n_s == nonnan_n_l + 2)
+    else if (nonnan_n_s == nonnan_n_l + 2)
         move_nan_from_l_to_s(zz); // min heap is too big...
 
     // double check these in debug, to catch overflows
@@ -1025,10 +1026,10 @@ inline void zz_insert_nan(zz_handle *zz)
     value_t val = 0;
 
     // Local variables.
-    _size_t n_s      = zz->n_s;
-    _size_t n_l      = zz->n_l;
-    _size_t n_s_nan  = zz->n_s_nan;
-    _size_t n_l_nan  = zz->n_l_nan;
+    _size_t n_s = zz->n_s;
+    _size_t n_l = zz->n_l;
+    _size_t n_s_nan = zz->n_s_nan;
+    _size_t n_l_nan = zz->n_l_nan;
 
     // Nodes and indices.
     zz_node *node = &zz->node_data[n_s + n_l];
@@ -1039,12 +1040,12 @@ inline void zz_insert_nan(zz_handle *zz)
 
     int l_heap_full = (n_l == (zz->window - zz->max_s_heap_size));
     int s_heap_full = (n_s == zz->max_s_heap_size);
-    if ( (s_heap_full | (n_s_nan > n_l_nan)) & (l_heap_full == 0) ) {
+    if ((s_heap_full | (n_s_nan > n_l_nan)) & (l_heap_full == 0)) {
         // Add to the large heap.
 
         zz->l_heap[n_l] = node;
         node->small = 0;
-        node->idx   = n_l;
+        node->idx = n_l;
 
         ++zz->n_l;
         zz->l_first_leaf = ceil((zz->n_l - 1) / (double)NUM_CHILDREN);
@@ -1055,7 +1056,7 @@ inline void zz_insert_nan(zz_handle *zz)
 
         zz->s_heap[n_s] = node;
         node->small = 1;
-        node->idx   = n_s;
+        node->idx = n_s;
 
         ++zz->n_s;
         zz->s_first_leaf = ceil((zz->n_s - 1) / (double)NUM_CHILDREN);
@@ -1066,46 +1067,46 @@ inline void zz_insert_nan(zz_handle *zz)
     zz_update_withnan_skipevict(zz, val);
 }
 
-inline void zz_update_helper( zz_handle *zz, zz_node *node, value_t val)
+inline void zz_update_helper(zz_handle *zz, zz_node *node, value_t val)
 {
     // Replace value of node
     node->val = val;
 
     // Local variables.
-    _size_t  idx  = node->idx;
+    _size_t  idx = node->idx;
 
     zz_node **l_heap = zz->l_heap;
     zz_node **s_heap = zz->s_heap;
-    _size_t n_s      = zz->n_s;
-    _size_t n_l      = zz->n_l;
+    _size_t n_s = zz->n_s;
+    _size_t n_l = zz->n_l;
 
     zz_node *node2;
     _size_t  idx2;
 
 
     // In small heap.
-    if(node->small) {
+    if (node->small) {
 
         // Internal or leaf node.
-        if(idx > 0) {
+        if (idx > 0) {
             idx2 = P_IDX(idx);
             node2 = s_heap[idx2];
 
             // Move up.
-            if(val > node2->val) {
+            if (val > node2->val) {
                 move_up_small(s_heap, n_s, idx, node, idx2, node2);
 
                 // Maybe swap between heaps.
                 node2 = (n_l>0) ? l_heap[0] : NULL; /* needed because we
                                                      * could've only inserted
                                                      * nan and then a # */
-                if((node2 != NULL) && (val > node2->val)) {
+                if ((node2 != NULL) && (val > node2->val)) {
                     swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
                 }
             }
 
             // Move down.
-            else if(idx < zz->s_first_leaf) {
+            else if (idx < zz->s_first_leaf) {
                 move_down_small(s_heap, n_s, idx, node);
             }
         }
@@ -1115,7 +1116,7 @@ inline void zz_update_helper( zz_handle *zz, zz_node *node, value_t val)
             node2 = (n_l>0) ? l_heap[0] : NULL; /* needed because we could've
                                                  *  only inserted nan and then
                                                  *  a # */
-            if((node2 != NULL) && (val > node2->val)) {
+            if ((node2 != NULL) && (val > node2->val)) {
                 swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
             } else {
                 move_down_small(s_heap, n_s, idx, node);
@@ -1127,23 +1128,23 @@ inline void zz_update_helper( zz_handle *zz, zz_node *node, value_t val)
     else {
 
         // Internal or leaf node.
-        if(idx > 0) {
+        if (idx > 0) {
             idx2 = P_IDX(idx);
             node2 = l_heap[idx2];
 
             // Move down.
-            if(val < node2->val) {
+            if (val < node2->val) {
                 move_down_large(l_heap, n_l, idx, node, idx2, node2);
 
                 // Maybe swap between heaps.
                 node2 = (n_s>0) ? s_heap[0] : NULL;
-                if((node2 != NULL) && (val < node2->val)) {
+                if ((node2 != NULL) && (val < node2->val)) {
                     swap_heap_heads(s_heap, n_s, l_heap, n_l, node2, node);
                 }
             }
 
             // Move up.
-            else if(idx < zz->l_first_leaf) {
+            else if (idx < zz->l_first_leaf) {
                 move_up_large(l_heap, n_l, idx, node);
             }
         }
@@ -1151,7 +1152,7 @@ inline void zz_update_helper( zz_handle *zz, zz_node *node, value_t val)
         // Head node.
         else {
             node2 = (n_s>0) ? s_heap[0] : NULL;
-            if((node2 != NULL) && (val < node2->val)) {
+            if ((node2 != NULL) && (val < node2->val)) {
                 swap_heap_heads(s_heap, n_s, l_heap, n_l, node2, node);
             } else {
                 move_up_large(l_heap, n_l, idx, node);
@@ -1286,10 +1287,10 @@ inline void move_nan_from_l_to_s(zz_handle *zz)
  */
 inline value_t zz_get_median(zz_handle *zz)
 {
-    _size_t n_s      = zz->n_s;
-    _size_t n_l      = zz->n_l;
-    _size_t n_s_nan  = zz->n_s_nan;
-    _size_t n_l_nan  = zz->n_l_nan;
+    _size_t n_s = zz->n_s;
+    _size_t n_l = zz->n_l;
+    _size_t n_s_nan = zz->n_s_nan;
+    _size_t n_l_nan = zz->n_l_nan;
 
     //check_asserts(zz);
 
@@ -1321,24 +1322,24 @@ inline value_t zz_get_median(zz_handle *zz)
  * child will also be set.
  */
 inline _size_t get_smallest_child(zz_node **heap,
-                           _size_t   window,
-                           _size_t   idx,
-                           zz_node  *node,
-                           zz_node  **child)
+                                  _size_t   window,
+                                  _size_t   idx,
+                                  zz_node  *node,
+                                  zz_node  **child)
 {
     _size_t i0 = FC_IDX(idx);
     _size_t i1 = i0 + NUM_CHILDREN;
     i1 = min(i1, window);
 
     switch(i1 - i0) {
-        case  8: if(heap[i0 + 7]->val < heap[idx]->val) { idx = i0 + 7; }
-        case  7: if(heap[i0 + 6]->val < heap[idx]->val) { idx = i0 + 6; }
-        case  6: if(heap[i0 + 5]->val < heap[idx]->val) { idx = i0 + 5; }
-        case  5: if(heap[i0 + 4]->val < heap[idx]->val) { idx = i0 + 4; }
-        case  4: if(heap[i0 + 3]->val < heap[idx]->val) { idx = i0 + 3; }
-        case  3: if(heap[i0 + 2]->val < heap[idx]->val) { idx = i0 + 2; }
-        case  2: if(heap[i0 + 1]->val < heap[idx]->val) { idx = i0 + 1; }
-        case  1: if(heap[i0    ]->val < heap[idx]->val) { idx = i0;     }
+        case  8: if (heap[i0 + 7]->val < heap[idx]->val) { idx = i0 + 7; }
+        case  7: if (heap[i0 + 6]->val < heap[idx]->val) { idx = i0 + 6; }
+        case  6: if (heap[i0 + 5]->val < heap[idx]->val) { idx = i0 + 5; }
+        case  5: if (heap[i0 + 4]->val < heap[idx]->val) { idx = i0 + 4; }
+        case  4: if (heap[i0 + 3]->val < heap[idx]->val) { idx = i0 + 3; }
+        case  3: if (heap[i0 + 2]->val < heap[idx]->val) { idx = i0 + 2; }
+        case  2: if (heap[i0 + 1]->val < heap[idx]->val) { idx = i0 + 1; }
+        case  1: if (heap[i0    ]->val < heap[idx]->val) { idx = i0;     }
     }
 
     *child = heap[idx];
@@ -1361,14 +1362,14 @@ inline _size_t get_largest_child(zz_node **heap,
     i1 = min(i1, window);
 
     switch(i1 - i0) {
-        case  8: if(heap[i0 + 7]->val > heap[idx]->val) { idx = i0 + 7; }
-        case  7: if(heap[i0 + 6]->val > heap[idx]->val) { idx = i0 + 6; }
-        case  6: if(heap[i0 + 5]->val > heap[idx]->val) { idx = i0 + 5; }
-        case  5: if(heap[i0 + 4]->val > heap[idx]->val) { idx = i0 + 4; }
-        case  4: if(heap[i0 + 3]->val > heap[idx]->val) { idx = i0 + 3; }
-        case  3: if(heap[i0 + 2]->val > heap[idx]->val) { idx = i0 + 2; }
-        case  2: if(heap[i0 + 1]->val > heap[idx]->val) { idx = i0 + 1; }
-        case  1: if(heap[i0    ]->val > heap[idx]->val) { idx = i0;     }
+        case  8: if (heap[i0 + 7]->val > heap[idx]->val) { idx = i0 + 7; }
+        case  7: if (heap[i0 + 6]->val > heap[idx]->val) { idx = i0 + 6; }
+        case  6: if (heap[i0 + 5]->val > heap[idx]->val) { idx = i0 + 5; }
+        case  5: if (heap[i0 + 4]->val > heap[idx]->val) { idx = i0 + 4; }
+        case  4: if (heap[i0 + 3]->val > heap[idx]->val) { idx = i0 + 3; }
+        case  3: if (heap[i0 + 2]->val > heap[idx]->val) { idx = i0 + 2; }
+        case  2: if (heap[i0 + 1]->val > heap[idx]->val) { idx = i0 + 1; }
+        case  1: if (heap[i0    ]->val > heap[idx]->val) { idx = i0;     }
     }
 
     *child = heap[idx];
@@ -1391,15 +1392,15 @@ idx1       = idx2
  * Move the given node up through the heap to the appropriate position.
  */
 inline void move_up_small(zz_node **heap,
-                   _size_t   window,
-                   _size_t   idx,
-                   zz_node  *node,
-                   _size_t   p_idx,
-                   zz_node  *parent)
+                          _size_t   window,
+                          _size_t   idx,
+                          zz_node  *node,
+                          _size_t   p_idx,
+                          zz_node  *parent)
 {
     do {
         SWAP_NODES(heap, idx, node, p_idx, parent);
-        if(idx == 0) {
+        if (idx == 0) {
             break;
         }
         p_idx = P_IDX(idx);
@@ -1412,15 +1413,15 @@ inline void move_up_small(zz_node **heap,
  * Move the given node down through the heap to the appropriate position.
  */
 inline void move_down_small(zz_node **heap,
-                     _size_t   window,
-                     _size_t   idx,
-                     zz_node  *node)
+                            _size_t   window,
+                            _size_t   idx,
+                            zz_node  *node)
 {
     zz_node *child;
-    value_t val   = node->val;
+    value_t val = node->val;
     _size_t c_idx = get_largest_child(heap, window, idx, node, &child);
 
-    while(val < child->val) {
+    while (val < child->val) {
         SWAP_NODES(heap, idx, node, c_idx, child);
         c_idx = get_largest_child(heap, window, idx, node, &child);
     }
@@ -1432,15 +1433,15 @@ inline void move_down_small(zz_node **heap,
  * position.
  */
 inline void move_down_large(zz_node **heap,
-                     _size_t   window,
-                     _size_t   idx,
-                     zz_node  *node,
-                     _size_t   p_idx,
-                     zz_node  *parent)
+                            _size_t   window,
+                            _size_t   idx,
+                            zz_node  *node,
+                            _size_t   p_idx,
+                            zz_node  *parent)
 {
     do {
         SWAP_NODES(heap, idx, node, p_idx, parent);
-        if(idx == 0) {
+        if (idx == 0) {
             break;
         }
         p_idx = P_IDX(idx);
@@ -1454,15 +1455,15 @@ inline void move_down_large(zz_node **heap,
  * Move the given node up through the heap to the appropriate position.
  */
 inline void move_up_large(zz_node **heap,
-                   _size_t   window,
-                   _size_t   idx,
-                   zz_node  *node)
+                          _size_t   window,
+                          _size_t   idx,
+                          zz_node  *node)
 {
     zz_node *child;
-    value_t val   = node->val;
+    value_t val = node->val;
     _size_t c_idx = get_smallest_child(heap, window, idx, node, &child);
 
-    while(val > child->val) {
+    while (val > child->val) {
         SWAP_NODES(heap, idx, node, c_idx, child);
         c_idx = get_smallest_child(heap, window, idx, node, &child);
     }
@@ -1473,11 +1474,11 @@ inline void move_up_large(zz_node **heap,
  * Swap the heap heads.
  */
 inline void swap_heap_heads(zz_node **s_heap,
-                     _size_t   n_s,
-                     zz_node **l_heap,
-                     _size_t   n_l,
-                     zz_node  *s_node,
-                     zz_node  *l_node)
+                            _size_t   n_s,
+                            zz_node **l_heap,
+                            _size_t   n_l,
+                            zz_node  *s_node,
+                            zz_node  *l_node)
 {
     s_node->small = 0;
     l_node->small = 1;
@@ -1529,7 +1530,7 @@ void check_asserts(zz_handle* zz)
     // use valid_s and valid_l or get compiler warnings
     // these lines do nothing
     _size_t duzzy = valid_l + valid_s;
-    if (duzzy > 100){duzzy = 99;}
+    if (duzzy > 100) {duzzy = 99;}
 
     assert(valid_s < 5000000000); //most likely an overflow
     assert(valid_l < 5000000000); //most likely an overflow
