@@ -53,7 +53,7 @@ const int NUM_CHILDREN = 8;
 struct _mm_node {
     int              small; // 1 if the node is in the small heap.
     idx_t            idx;   // The node's index in the heap array.
-    ai_t             ai;   // The node's ai.
+    ai_t             ai;    // The node's value.
     struct _mm_node *next;  // The next node in order of insertion.
 };
 
@@ -64,8 +64,8 @@ struct _mm_handle {
     int       odd;       // 1 if the window size is odd, 0 otherwise.
     idx_t     n_s;       // The number of elements in the min heap.
     idx_t     n_l;       // The number of elements in the max heap.
-    idx_t     min_count; // If the number of non-NaN ais in a window is
-                         // less than min_count, then a ai of NaN is
+    idx_t     min_count; // If the number of non-NaN ai's in a window is
+                         // less than min_count, then a value of NaN is
                          // assigned to the window
     mm_node **s_heap;    // The min heap.
     mm_node **l_heap;    // The max heap.
@@ -94,15 +94,15 @@ typedef struct _mm_handle mm_handle;
 // top-level functions
 inline mm_handle *mm_new(const idx_t window, idx_t min_count);
 inline ai_t mm_update_init(mm_handle *mm, ai_t ai);
-inline ai_t mm_update(mm_handle* mm, ai_t ai);
-inline void mm_reset(mm_handle* mm);
+inline ai_t mm_update(mm_handle *mm, ai_t ai);
+inline void mm_reset(mm_handle *mm);
 inline void mm_free(mm_handle *mm);
 
 // helper functions
 inline ai_t mm_get_median_init(mm_handle *mm);
 inline ai_t mm_get_median(mm_handle *mm);
 inline idx_t mm_get_smallest_child(mm_node **heap, idx_t window, idx_t idx,
-                                  mm_node **child);
+                                   mm_node **child);
 inline idx_t mm_get_largest_child(mm_node **heap, idx_t window, idx_t idx,
                                   mm_node **child);
 inline void mm_move_up_small(mm_node **heap, idx_t window, idx_t idx,
@@ -131,14 +131,14 @@ void mm_dump(mm_handle *mm);
  * small values (max heap); the other heap contains the large values
  * (min heap). And the handle contains information about the heaps. It is the
  * handle that is returned by the function. */
-inline mm_handle *mm_new(const idx_t window, idx_t min_count)
+inline mm_handle *
+mm_new(const idx_t window, idx_t min_count)
 {
     // only malloc once, this guarantees cache friendly execution
     // and easier code for cleanup
     // this change was profiled to make a 5%-10% difference in performance
-    char* memory_block = malloc(sizeof(mm_handle) + window * (sizeof(mm_node*)
-                                + sizeof(mm_node)));
-
+    char* memory_block = malloc(sizeof(mm_handle) +
+                                window * (sizeof(mm_node*) + sizeof(mm_node)));
     if (memory_block == NULL)
         return NULL;
 
@@ -168,10 +168,11 @@ inline mm_handle *mm_new(const idx_t window, idx_t min_count)
 /* Insert a new value, ai, into one of the heaps. Use this function when
  * the heaps contains less than window-1 values. Returns the median value.
  * Once there are window-1 values in the heap, switch to using mm_update. */
-inline ai_t mm_update_init(mm_handle *mm, ai_t ai)
+inline ai_t
+mm_update_init(mm_handle *mm, ai_t ai)
 {
 
-    // Some local variables.
+    // local variables
     mm_node *node = NULL;
     idx_t n_s = mm->n_s;
     idx_t n_l = mm->n_l;
@@ -180,8 +181,8 @@ inline ai_t mm_update_init(mm_handle *mm, ai_t ai)
 
     node = &mm->node_data[n_s + n_l];
 
-    // The first node.
     if (n_s == 0) {
+        // The first node.
 
         mm->s_heap[0] = node;
         node->small = 1;
@@ -210,7 +211,7 @@ inline ai_t mm_update_init(mm_handle *mm, ai_t ai)
             node->idx = n_l;
 
             ++mm->n_l;
-            mm->l_first_leaf = ceil((mm->n_l - 1) / (double)NUM_CHILDREN);
+            mm->l_first_leaf = ceil((n_l - 1) / (double)NUM_CHILDREN);
         }
         else
         {
@@ -221,7 +222,7 @@ inline ai_t mm_update_init(mm_handle *mm, ai_t ai)
             node->idx = n_s;
 
             ++mm->n_s;
-            mm->s_first_leaf = ceil((mm->n_s - 1) / (double)NUM_CHILDREN);
+            mm->s_first_leaf = ceil((n_s - 1) / (double)NUM_CHILDREN);
         }
 
         mm_update(mm, ai);
@@ -235,7 +236,8 @@ inline ai_t mm_update_init(mm_handle *mm, ai_t ai)
  * when the double heap contains at least window-1 values. Returns the median
  * value. If there are less than window-1 values in the heap, use
  * mm_update_init. */
-inline ai_t mm_update(mm_handle* mm, ai_t ai)
+inline ai_t
+mm_update(mm_handle *mm, ai_t ai)
 {
     // Nodes and indices.
     mm_node *node = mm->first;
@@ -249,7 +251,7 @@ inline ai_t mm_update(mm_handle* mm, ai_t ai)
     node->ai = ai;
 
     // Local variables.
-    idx_t    idx = node->idx;
+    idx_t idx = node->idx;
 
     mm_node **l_heap = mm->l_heap;
     mm_node **s_heap = mm->s_heap;
@@ -257,7 +259,7 @@ inline ai_t mm_update(mm_handle* mm, ai_t ai)
     idx_t n_l = mm->n_l;
 
     mm_node *node2;
-    idx_t    idx2;
+    idx_t idx2;
 
     // In small heap.
     if (node->small) {
@@ -338,7 +340,8 @@ inline ai_t mm_update(mm_handle* mm, ai_t ai)
 /* At the end of each slice the double heap is reset (mm_reset) to prepare
  * for the next slice. In the 2d input array case (with axis=1), each slice
  * is a row of the input array. */
-inline void mm_reset(mm_handle* mm)
+inline void
+mm_reset(mm_handle *mm)
 {
     mm->n_l = 0;
     mm->n_s = 0;
@@ -347,7 +350,8 @@ inline void mm_reset(mm_handle* mm)
 }
 
 /*  After bn.move_median is done, free the memory */
-inline void mm_free(mm_handle *mm)
+inline void
+mm_free(mm_handle *mm)
 {
     free(mm);
 }
@@ -361,7 +365,8 @@ inline void mm_free(mm_handle *mm)
 
 /* Return the current median value when there are less than window values
  * in the double heap. */
-inline ai_t mm_get_median_init(mm_handle *mm)
+inline ai_t
+mm_get_median_init(mm_handle *mm)
 {
     idx_t n_s = mm->n_s;
     idx_t n_l = mm->n_l;
@@ -388,7 +393,8 @@ inline ai_t mm_get_median_init(mm_handle *mm)
 
 /* Return the current median value when there are at least window values
  * in the double heap. */
-inline ai_t mm_get_median(mm_handle *mm)
+inline ai_t
+mm_get_median(mm_handle *mm)
 {
     if (mm->odd) {
         return mm->s_heap[0]->ai;
@@ -402,10 +408,8 @@ inline ai_t mm_get_median(mm_handle *mm)
  * Return the index of the smallest child of the node. The pointer
  * child will also be set.
  */
-inline idx_t mm_get_smallest_child(mm_node **heap,
-                                     idx_t     window,
-                                     idx_t     idx,
-                                     mm_node  **child)
+inline idx_t
+mm_get_smallest_child(mm_node **heap, idx_t window, idx_t idx, mm_node **child)
 {
     idx_t i0 = FC_IDX(idx);
     idx_t i1 = i0 + NUM_CHILDREN;
@@ -431,10 +435,8 @@ inline idx_t mm_get_smallest_child(mm_node **heap,
  * Return the index of the largest child of the node. The pointer
  * child will also be set.
  */
-inline idx_t mm_get_largest_child(mm_node **heap,
-                                    idx_t     window,
-                                    idx_t     idx,
-                                    mm_node  **child)
+inline idx_t
+mm_get_largest_child(mm_node **heap, idx_t window, idx_t idx, mm_node **child)
 {
     idx_t i0 = FC_IDX(idx);
     idx_t i1 = i0 + NUM_CHILDREN;
@@ -470,12 +472,9 @@ idx1       = idx2
 /*
  * Move the given node up through the heap to the appropriate position.
  */
-inline void mm_move_up_small(mm_node **heap,
-                             idx_t     window,
-                             idx_t     idx,
-                             mm_node  *node,
-                             idx_t     p_idx,
-                             mm_node  *parent)
+inline void
+mm_move_up_small(mm_node **heap, idx_t window, idx_t idx, mm_node *node,
+                 idx_t p_idx, mm_node *parent)
 {
     do {
         MM_SWAP_NODES(heap, idx, node, p_idx, parent);
@@ -491,10 +490,8 @@ inline void mm_move_up_small(mm_node **heap,
 /*
  * Move the given node down through the heap to the appropriate position.
  */
-inline void mm_move_down_small(mm_node **heap,
-                               idx_t     window,
-                               idx_t     idx,
-                               mm_node  *node)
+inline void
+mm_move_down_small(mm_node **heap, idx_t window, idx_t idx, mm_node *node)
 {
     mm_node *child;
     ai_t ai = node->ai;
@@ -511,12 +508,9 @@ inline void mm_move_down_small(mm_node **heap,
  * Move the given node down through the heap to the appropriate
  * position.
  */
-inline void mm_move_down_large(mm_node **heap,
-                               idx_t     window,
-                               idx_t     idx,
-                               mm_node  *node,
-                               idx_t     p_idx,
-                               mm_node  *parent)
+inline void
+mm_move_down_large(mm_node **heap, idx_t window, idx_t idx, mm_node *node,
+                   idx_t p_idx, mm_node *parent)
 {
     do {
         MM_SWAP_NODES(heap, idx, node, p_idx, parent);
@@ -533,10 +527,8 @@ inline void mm_move_down_large(mm_node **heap,
 /*
  * Move the given node up through the heap to the appropriate position.
  */
-inline void mm_move_up_large(mm_node **heap,
-                             idx_t     window,
-                             idx_t     idx,
-                             mm_node  *node)
+inline void
+mm_move_up_large(mm_node **heap, idx_t window, idx_t idx, mm_node *node)
 {
     mm_node *child;
     ai_t ai = node->ai;
@@ -552,12 +544,9 @@ inline void mm_move_up_large(mm_node **heap,
 /*
  * Swap the heap heads.
  */
-inline void mm_swap_heap_heads(mm_node **s_heap,
-                               idx_t     n_s,
-                               mm_node **l_heap,
-                               idx_t     n_l,
-                               mm_node  *s_node,
-                               mm_node  *l_node)
+inline void
+mm_swap_heap_heads(mm_node **s_heap, idx_t n_s, mm_node **l_heap, idx_t n_l,
+                   mm_node *s_node, mm_node *l_node)
 {
     s_node->small = 0;
     l_node->small = 1;
@@ -662,16 +651,16 @@ typedef struct _zz_handle zz_handle;
 inline zz_handle *zz_new(const idx_t window, idx_t min_count);
 inline ai_t zz_update_init(zz_handle *zz, ai_t ai);
 inline ai_t zz_update(zz_handle *zz, ai_t ai);
-inline void zz_reset(zz_handle* zz);
+inline void zz_reset(zz_handle *zz);
 inline void zz_free(zz_handle *zz);
 
 // helper functions
 inline void zz_update_withnan(zz_handle *zz, ai_t ai);
-inline void zz_update_nonan(zz_handle* zz, ai_t ai);
+inline void zz_update_nonan(zz_handle *zz, ai_t ai);
 inline void zz_insert_nan(zz_handle *zz);
 inline void zz_update_helper(zz_handle *zz, zz_node *node, ai_t ai);
 inline void zz_update_withnan_skipevict(zz_handle *zz, ai_t ai);
-inline void move_nan_helper(zz_handle* zz, zz_node* new_last);
+inline void move_nan_helper(zz_handle *zz, zz_node* new_last);
 inline void move_nan_from_s_to_l(zz_handle *zz);
 inline void move_nan_from_l_to_s(zz_handle *zz);
 inline ai_t zz_get_median(zz_handle *zz);
@@ -692,7 +681,7 @@ inline void swap_heap_heads(zz_node **s_heap, idx_t n_s, zz_node **l_heap,
 
 // debug
 void zz_dump(zz_handle *zz);
-void check_asserts(zz_handle* zz);
+void check_asserts(zz_handle *zz);
 
 // --------------------------------------------------------------------------
 // zz_new, zz_reset, zz_free
@@ -818,7 +807,7 @@ inline ai_t zz_update_init(zz_handle *zz, ai_t ai)
                 node->idx = n_l;
 
                 ++zz->n_l;
-                zz->l_first_leaf = ceil((zz->n_l - 1) / (double)NUM_CHILDREN);
+                zz->l_first_leaf = ceil((n_l - 1) / (double)NUM_CHILDREN);
             }
             else
             {
@@ -829,7 +818,7 @@ inline ai_t zz_update_init(zz_handle *zz, ai_t ai)
                 node->idx = n_s;
 
                 ++zz->n_s;
-                zz->s_first_leaf = ceil((zz->n_s - 1) / (double)NUM_CHILDREN);
+                zz->s_first_leaf = ceil((n_s - 1) / (double)NUM_CHILDREN);
             }
 
             zz_update_nonan(zz, ai);
@@ -902,7 +891,7 @@ inline ai_t zz_update(zz_handle *zz, ai_t ai)
 }
 
 
-inline void zz_reset(zz_handle* zz)
+inline void zz_reset(zz_handle *zz)
 {
     zz->n_l = 0;
     zz->n_s = 0;
@@ -998,7 +987,7 @@ inline void zz_update_withnan(zz_handle *zz, ai_t ai) {
 }
 
 
-inline void zz_update_nonan(zz_handle* zz, ai_t ai)
+inline void zz_update_nonan(zz_handle *zz, ai_t ai)
 {
     // Nodes and indices.
     zz_node *node = zz->first;
@@ -1019,9 +1008,9 @@ inline void zz_update_nonan(zz_handle* zz, ai_t ai)
 inline void zz_insert_nan(zz_handle *zz)
     // insert a nan, during initialization phase.
 {
-    ai_t ai = 0;
 
     // Local variables.
+    ai_t ai = 0;
     idx_t n_s = zz->n_s;
     idx_t n_l = zz->n_l;
     idx_t n_s_nan = zz->n_s_nan;
@@ -1044,7 +1033,7 @@ inline void zz_insert_nan(zz_handle *zz)
         node->idx = n_l;
 
         ++zz->n_l;
-        zz->l_first_leaf = ceil((zz->n_l - 1) / (double)NUM_CHILDREN);
+        zz->l_first_leaf = ceil((n_l - 1) / (double)NUM_CHILDREN);
 
         ai = INFINITY;
     } else {
@@ -1055,7 +1044,7 @@ inline void zz_insert_nan(zz_handle *zz)
         node->idx = n_s;
 
         ++zz->n_s;
-        zz->s_first_leaf = ceil((zz->n_s - 1) / (double)NUM_CHILDREN);
+        zz->s_first_leaf = ceil((n_s - 1) / (double)NUM_CHILDREN);
 
         ai = -INFINITY;
     }
@@ -1198,7 +1187,7 @@ inline void zz_update_withnan_skipevict(zz_handle *zz, ai_t ai) {
 
 // --------------------------------------------------------------------------
 
-inline void move_nan_helper(zz_handle* zz, zz_node* new_last)
+inline void move_nan_helper(zz_handle *zz, zz_node* new_last)
 {
     assert(new_last != NULL);
 
@@ -1513,7 +1502,7 @@ void zz_dump(zz_handle *zz)
     }
 }
 
-void check_asserts(zz_handle* zz)
+void check_asserts(zz_handle *zz)
 {
     zz_dump(zz);
     assert(zz->n_s >= zz->n_s_nan);
