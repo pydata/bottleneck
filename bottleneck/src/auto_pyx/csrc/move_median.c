@@ -102,11 +102,9 @@ inline void mm_free(mm_handle *mm);
 inline value_t mm_get_median_init(mm_handle *mm);
 inline value_t mm_get_median(mm_handle *mm);
 inline _size_t mm_get_smallest_child(mm_node **heap, _size_t window,
-                                     _size_t idx, mm_node *node,
-                                     mm_node **child);
+                                     _size_t idx, mm_node **child);
 inline _size_t mm_get_largest_child(mm_node **heap, _size_t window,
-                                    _size_t idx, mm_node *node,
-                                    mm_node **child);
+                                    _size_t idx, mm_node **child);
 inline void mm_move_up_small(mm_node **heap, _size_t window, _size_t idx,
                              mm_node *node, _size_t p_idx, mm_node *parent);
 inline void mm_move_down_small(mm_node **heap, _size_t window, _size_t idx,
@@ -407,7 +405,6 @@ inline value_t mm_get_median(mm_handle *mm)
 inline _size_t mm_get_smallest_child(mm_node **heap,
                                      _size_t   window,
                                      _size_t   idx,
-                                     mm_node  *node,
                                      mm_node  **child)
 {
     _size_t i0 = FC_IDX(idx);
@@ -437,7 +434,6 @@ inline _size_t mm_get_smallest_child(mm_node **heap,
 inline _size_t mm_get_largest_child(mm_node **heap,
                                     _size_t   window,
                                     _size_t   idx,
-                                    mm_node  *node,
                                     mm_node  **child)
 {
     _size_t i0 = FC_IDX(idx);
@@ -502,11 +498,11 @@ inline void mm_move_down_small(mm_node **heap,
 {
     mm_node *child;
     value_t val = node->val;
-    _size_t c_idx = mm_get_largest_child(heap, window, idx, node, &child);
+    _size_t c_idx = mm_get_largest_child(heap, window, idx, &child);
 
     while (val < child->val) {
         MM_SWAP_NODES(heap, idx, node, c_idx, child);
-        c_idx = mm_get_largest_child(heap, window, idx, node, &child);
+        c_idx = mm_get_largest_child(heap, window, idx, &child);
     }
 }
 
@@ -544,11 +540,11 @@ inline void mm_move_up_large(mm_node **heap,
 {
     mm_node *child;
     value_t val = node->val;
-    _size_t c_idx = mm_get_smallest_child(heap, window, idx, node, &child);
+    _size_t c_idx = mm_get_smallest_child(heap, window, idx, &child);
 
     while (val > child->val) {
         MM_SWAP_NODES(heap, idx, node, c_idx, child);
-        c_idx = mm_get_smallest_child(heap, window, idx, node, &child);
+        c_idx = mm_get_smallest_child(heap, window, idx, &child);
     }
 }
 
@@ -680,9 +676,9 @@ inline void move_nan_from_s_to_l(zz_handle *zz);
 inline void move_nan_from_l_to_s(zz_handle *zz);
 inline value_t zz_get_median(zz_handle *zz);
 inline _size_t get_smallest_child(zz_node **heap, _size_t window, _size_t idx,
-                                  zz_node *node, zz_node **child);
+                                  zz_node **child);
 inline _size_t get_largest_child(zz_node **heap, _size_t window, _size_t idx,
-                                 zz_node *node, zz_node **child);
+                                 zz_node **child);
 inline void move_up_small(zz_node **heap, _size_t window, _size_t idx,
                           zz_node *node, _size_t p_idx, zz_node *parent);
 inline void move_down_small(zz_node **heap, _size_t window, _size_t idx,
@@ -1324,7 +1320,6 @@ inline value_t zz_get_median(zz_handle *zz)
 inline _size_t get_smallest_child(zz_node **heap,
                                   _size_t   window,
                                   _size_t   idx,
-                                  zz_node  *node,
                                   zz_node  **child)
 {
     _size_t i0 = FC_IDX(idx);
@@ -1354,7 +1349,6 @@ inline _size_t get_smallest_child(zz_node **heap,
 inline _size_t get_largest_child(zz_node **heap,
                           _size_t   window,
                           _size_t   idx,
-                          zz_node  *node,
                           zz_node  **child)
 {
     _size_t i0 = FC_IDX(idx);
@@ -1419,11 +1413,11 @@ inline void move_down_small(zz_node **heap,
 {
     zz_node *child;
     value_t val = node->val;
-    _size_t c_idx = get_largest_child(heap, window, idx, node, &child);
+    _size_t c_idx = get_largest_child(heap, window, idx, &child);
 
     while (val < child->val) {
         SWAP_NODES(heap, idx, node, c_idx, child);
-        c_idx = get_largest_child(heap, window, idx, node, &child);
+        c_idx = get_largest_child(heap, window, idx, &child);
     }
 }
 
@@ -1461,11 +1455,11 @@ inline void move_up_large(zz_node **heap,
 {
     zz_node *child;
     value_t val = node->val;
-    _size_t c_idx = get_smallest_child(heap, window, idx, node, &child);
+    _size_t c_idx = get_smallest_child(heap, window, idx, &child);
 
     while (val > child->val) {
         SWAP_NODES(heap, idx, node, c_idx, child);
-        c_idx = get_smallest_child(heap, window, idx, node, &child);
+        c_idx = get_smallest_child(heap, window, idx, &child);
     }
 }
 
