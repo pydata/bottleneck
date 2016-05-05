@@ -118,6 +118,8 @@ inline void mm_swap_heap_heads(mm_node **s_heap, idx_t n_s, mm_node **l_heap,
 
 // debug
 void mm_dump(mm_handle *mm);
+void print_binary_heap(mm_node **heap, idx_t n_heap, idx_t first_idx,
+                       idx_t last_idx);
 
 
 /*
@@ -125,7 +127,6 @@ void mm_dump(mm_handle *mm);
   Top-level functions (no NaN handling)
 -----------------------------------------------------------------------------
 */
-
 
 /* At the start of bn.move_median two heaps are created. One heap contains the
  * small values (max heap); the other heap contains the large values
@@ -349,6 +350,7 @@ mm_reset(mm_handle *mm)
     mm->last = NULL;
 }
 
+
 /*  After bn.move_median is done, free the memory */
 inline void
 mm_free(mm_handle *mm)
@@ -556,8 +558,12 @@ mm_swap_heap_heads(mm_node **s_heap, idx_t n_s, mm_node **l_heap, idx_t n_l,
     mm_move_up_large(l_heap, n_l, 0, s_node);
 }
 
-// --------------------------------------------------------------------------
-// debug utilities
+
+/*
+-----------------------------------------------------------------------------
+  Debug utilities (no NaN handling)
+-----------------------------------------------------------------------------
+*/
 
 /*
  * Print the two heaps to the screen.
@@ -568,22 +574,88 @@ void mm_dump(mm_handle *mm)
         printf("mm is empty");
         return;
     }
-    idx_t i;
-    if (mm->first)
-        printf("\n\nFirst: %f\n", (double)mm->first->ai);
 
-    if (mm->last)
-        printf("Last: %f\n", (double)mm->last->ai);
+    if (NUM_CHILDREN == 2) {
 
+        // binary heap
 
-    printf("\n\nSmall heap:\n");
-    for(i = 0; i < mm->n_s; ++i) {
-        printf("%i %f\n", (int)mm->s_heap[i]->idx, mm->s_heap[i]->ai);
+        int idx0;
+        int idx1;
+
+        printf("\n\nSmall heap:\n");
+        idx0 = -1;
+        if (mm->first->small == 1) {
+            idx0 = mm->first->idx;
+        }
+        idx1 = -1;
+        if (mm->last->small == 1) {
+            idx1 = mm->last->idx;
+        }
+        print_binary_heap(mm->s_heap, mm->n_s, idx0, idx1);
+        printf("\n\nLarge heap:\n");
+        idx0 = -1;
+        if (mm->first->small == 0) {
+            idx0 = mm->first->idx;
+        }
+        idx1 = -1;
+        if (mm->last->small == 0) {
+            idx1 = mm->last->idx;
+        }
+        print_binary_heap(mm->l_heap, mm->n_l, idx0, idx1);
+    
+    } else {
+
+        // not a binary heap
+
+        idx_t i;
+        if (mm->first)
+            printf("\n\nFirst: %f\n", (double)mm->first->ai);
+        if (mm->last)
+            printf("Last: %f\n", (double)mm->last->ai);
+
+        printf("\n\nSmall heap:\n");
+        for(i = 0; i < mm->n_s; ++i) {
+            printf("%i %f\n", (int)mm->s_heap[i]->idx, mm->s_heap[i]->ai);
+        }
+        printf("\n\nLarge heap:\n");
+        for(i = 0; i < mm->n_l; ++i) {
+            printf("%i %f\n", (int)mm->l_heap[i]->idx, mm->l_heap[i]->ai);
+        }
     }
+}
 
-    printf("\n\nLarge heap:\n");
-    for(i = 0; i < mm->n_l; ++i) {
-        printf("%i %f\n", (int)mm->l_heap[i]->idx, mm->l_heap[i]->ai);
+
+/* Code to print a binary tree from http://stackoverflow.com/a/13755783
+ * Code modified for bottleneck's needs. */
+void
+print_binary_heap(mm_node **heap, idx_t n_heap, idx_t first_idx,
+                  idx_t last_idx)
+{
+    const int line_width = 77;
+    int print_pos[n_heap];
+    int i, j, k, pos, x=1, level=0;
+
+    print_pos[0] = 0;
+    for(i=0,j=1; i<n_heap; i++,j++) {
+        pos = print_pos[(i-1)/2];
+        pos +=  (i%2?-1:1)*(line_width/(pow(2,level+1))+1);
+
+        for (k=0; k<pos-x; k++) printf("%c",i==0||i%2?' ':'-');
+        if (i == first_idx) {
+            printf(">%.2f", heap[i]->ai);
+        } else if (i == last_idx) {
+            printf("%.2f<", heap[i]->ai);
+        } else {
+            printf("%.2f", heap[i]->ai);
+        }
+
+        print_pos[i] = x = pos+1;
+        if (j==pow(2,level)) {
+            printf("\n");
+            level++;
+            x = 1;
+            j = 0;
+        }
     }
 }
 
