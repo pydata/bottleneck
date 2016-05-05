@@ -39,7 +39,7 @@ const int NUM_CHILDREN = 8;
 // Minimum of two numbers.
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 
-// Find indices of parent, first, and last child.
+// Find indices of parent and first child
 #define P_IDX(i) ((i) - 1) / NUM_CHILDREN
 #define FC_IDX(i) NUM_CHILDREN * (i) + 1
 
@@ -56,7 +56,6 @@ struct _mm_node {
     ai_t             ai;    // The node's value.
     struct _mm_node *next;  // The next node in order of insertion.
 };
-
 typedef struct _mm_node mm_node;
 
 struct _mm_handle {
@@ -67,13 +66,13 @@ struct _mm_handle {
     idx_t     min_count; // If the number of non-NaN ai's in a window is
                          // less than min_count, then a value of NaN is
                          // assigned to the window
-    mm_node **s_heap;    // The min heap.
-    mm_node **l_heap;    // The max heap.
+    mm_node **s_heap;    // The max heap.
+    mm_node **l_heap;    // The min heap.
     mm_node **nodes;     // All the nodes. s_heap and l_heap point into
                          // this array.
     mm_node  *node_data; // Pointer to memory location where nodes live.
-    mm_node  *first;     // The node added first to the list of nodes.
-    mm_node  *last;      // The last (most recent) node added.
+    mm_node  *oldest;    // The oldest node
+    mm_node  *newest;    // The newest node (most recent insert)
 
     // Most nodes are leaf nodes, therefore it makes sense to have a
     // quick way to check if a node is a leaf to avoid processing.
@@ -82,7 +81,6 @@ struct _mm_handle {
 
     idx_t max_s_heap_size;
 };
-
 typedef struct _mm_handle mm_handle;
 
 /*
@@ -118,8 +116,8 @@ inline void mm_swap_heap_heads(mm_node **s_heap, idx_t n_s, mm_node **l_heap,
 
 // debug
 void mm_dump(mm_handle *mm);
-void print_binary_heap(mm_node **heap, idx_t n_heap, idx_t first_idx,
-                       idx_t last_idx);
+void print_binary_heap(mm_node **heap, idx_t n_heap, idx_t oldest_idx,
+                       idx_t newest_idx);
 
 
 /*
@@ -192,7 +190,7 @@ mm_update_init(mm_handle *mm, ai_t ai)
         node->next = mm->l_heap[0];
 
         mm->n_s = 1;
-        mm->first = mm->last = node;
+        mm->oldest = mm->newest = node;
         mm->s_first_leaf = 0;
 
     }
@@ -200,8 +198,8 @@ mm_update_init(mm_handle *mm, ai_t ai)
     {
         // Nodes after the first.
 
-        node->next = mm->first;
-        mm->first = node;
+        node->next = mm->oldest;
+        mm->oldest = node;
 
         if (n_s > n_l)
         {
@@ -241,12 +239,12 @@ inline ai_t
 mm_update(mm_handle *mm, ai_t ai)
 {
     // Nodes and indices.
-    mm_node *node = mm->first;
+    mm_node *node = mm->oldest;
 
-    // and update first, last
-    mm->first = mm->first->next;
-    mm->last->next = node;
-    mm->last = node;
+    // and update oldest, newest
+    mm->oldest = mm->oldest->next;
+    mm->newest->next = node;
+    mm->newest = node;
 
     // Replace value of node
     node->ai = ai;
@@ -346,8 +344,8 @@ mm_reset(mm_handle *mm)
 {
     mm->n_l = 0;
     mm->n_s = 0;
-    mm->first = NULL;
-    mm->last = NULL;
+    mm->oldest = NULL;
+    mm->newest = NULL;
 }
 
 
@@ -584,22 +582,22 @@ void mm_dump(mm_handle *mm)
 
         printf("\n\nSmall heap:\n");
         idx0 = -1;
-        if (mm->first->small == 1) {
-            idx0 = mm->first->idx;
+        if (mm->oldest->small == 1) {
+            idx0 = mm->oldest->idx;
         }
         idx1 = -1;
-        if (mm->last->small == 1) {
-            idx1 = mm->last->idx;
+        if (mm->newest->small == 1) {
+            idx1 = mm->newest->idx;
         }
         print_binary_heap(mm->s_heap, mm->n_s, idx0, idx1);
         printf("\n\nLarge heap:\n");
         idx0 = -1;
-        if (mm->first->small == 0) {
-            idx0 = mm->first->idx;
+        if (mm->oldest->small == 0) {
+            idx0 = mm->oldest->idx;
         }
         idx1 = -1;
-        if (mm->last->small == 0) {
-            idx1 = mm->last->idx;
+        if (mm->newest->small == 0) {
+            idx1 = mm->newest->idx;
         }
         print_binary_heap(mm->l_heap, mm->n_l, idx0, idx1);
     
@@ -608,10 +606,10 @@ void mm_dump(mm_handle *mm)
         // not a binary heap
 
         idx_t i;
-        if (mm->first)
-            printf("\n\nFirst: %f\n", (double)mm->first->ai);
-        if (mm->last)
-            printf("Last: %f\n", (double)mm->last->ai);
+        if (mm->oldest)
+            printf("\n\nFirst: %f\n", (double)mm->oldest->ai);
+        if (mm->newest)
+            printf("Last: %f\n", (double)mm->newest->ai);
 
         printf("\n\nSmall heap:\n");
         for(i = 0; i < mm->n_s; ++i) {
@@ -628,8 +626,8 @@ void mm_dump(mm_handle *mm)
 /* Code to print a binary tree from http://stackoverflow.com/a/13755783
  * Code modified for bottleneck's needs. */
 void
-print_binary_heap(mm_node **heap, idx_t n_heap, idx_t first_idx,
-                  idx_t last_idx)
+print_binary_heap(mm_node **heap, idx_t n_heap, idx_t oldest_idx,
+                  idx_t newest_idx)
 {
     const int line_width = 77;
     int print_pos[n_heap];
@@ -641,9 +639,9 @@ print_binary_heap(mm_node **heap, idx_t n_heap, idx_t first_idx,
         pos +=  (i%2?-1:1)*(line_width/(pow(2,level+1))+1);
 
         for (k=0; k<pos-x; k++) printf("%c",i==0||i%2?' ':'-');
-        if (i == first_idx) {
+        if (i == oldest_idx) {
             printf(">%.2f", heap[i]->ai);
-        } else if (i == last_idx) {
+        } else if (i == newest_idx) {
             printf("%.2f<", heap[i]->ai);
         } else {
             printf("%.2f", heap[i]->ai);
@@ -669,14 +667,13 @@ print_binary_heap(mm_node **heap, idx_t n_heap, idx_t first_idx,
 struct _zz_node {
     int              small; // 1 if the node is in the small heap.
     idx_t            idx;   // The node's index in the heap array.
-    ai_t             ai;   // The node's aiue.
+    ai_t             ai;    // The node's aiue.
     struct _zz_node *next;  // The next node in order of insertion.
 
     // double linked list for nan tracking
     struct _zz_node *next_nan;  // The next nan node in order of insertion.
     struct _zz_node *prev_nan;  // The prev nan node in order of insertion.
 };
-
 typedef struct _zz_node zz_node;
 
 struct _zz_handle {
@@ -685,16 +682,16 @@ struct _zz_handle {
     idx_t     n_l_nan;   // number of nans in max heap
     idx_t     n_s;       // The number of elements in the min heap.
     idx_t     n_l;       // The number of elements in the max heap.
-    idx_t     min_count; // If the number of non-NaN aiues in a window is
-                         // less than min_count, then a aiue of NaN is
-                         // assigned to the window
-    zz_node **s_heap;    // The min heap.
-    zz_node **l_heap;    // The max heap.
+    idx_t     min_count; // If the number of non-NaN ai's in a window is
+                         // less than min_count, then NaN is assigned to
+                         // the window
+    zz_node **s_heap;    // The max heap.
+    zz_node **l_heap;    // The min heap.
     zz_node **nodes;     // All the nodes. s_heap and l_heap point into
                          // this array.
     zz_node  *node_data; // Pointer to memory location where nodes live.
-    zz_node  *first;     // The node added first to the list of nodes.
-    zz_node  *last;      // The last (most recent) node added.
+    zz_node  *oldest;    // The oldest node
+    zz_node  *newest;    // The newest node (most recent insert)
 
     // Most nodes are leaf nodes, therefore it makes sense to have a
     // quick way to check if a node is a leaf to avoid processing.
@@ -702,14 +699,13 @@ struct _zz_handle {
     idx_t l_first_leaf; // First leaf index in the large heap.
 
     // + and - infinity array
-    zz_node  *first_nan_s;     // The node added first to the list of nodes.
-    zz_node  *last_nan_s;      // The last (most recent) node added.
-    zz_node  *first_nan_l;     // The node added first to the list of nodes.
-    zz_node  *last_nan_l;      // The last (most recent) node added.
+    zz_node  *oldest_nan_s;     // The node added first to the list of nodes.
+    zz_node  *newest_nan_s;     // The last (most recent) node added.
+    zz_node  *oldest_nan_l;     // The node added first to the list of nodes.
+    zz_node  *newest_nan_l;     // The last (most recent) node added.
 
     idx_t max_s_heap_size;
 };
-
 typedef struct _zz_handle zz_handle;
 
 
@@ -732,7 +728,7 @@ inline void zz_update_nonan(zz_handle *zz, ai_t ai);
 inline void zz_insert_nan(zz_handle *zz);
 inline void zz_update_helper(zz_handle *zz, zz_node *node, ai_t ai);
 inline void zz_update_withnan_skipevict(zz_handle *zz, ai_t ai);
-inline void move_nan_helper(zz_handle *zz, zz_node* new_last);
+inline void move_nan_helper(zz_handle *zz, zz_node* new_newest);
 inline void move_nan_from_s_to_l(zz_handle *zz);
 inline void move_nan_from_l_to_s(zz_handle *zz);
 inline ai_t zz_get_median(zz_handle *zz);
@@ -839,7 +835,7 @@ inline ai_t zz_update_init(zz_handle *zz, ai_t ai)
         node->next = zz->l_heap[0];
 
         zz->n_s = 1;
-        zz->first = zz->last = node;
+        zz->oldest = zz->newest = node;
         zz->s_first_leaf = 0;
 
         if (is_nan_ai)
@@ -847,8 +843,8 @@ inline ai_t zz_update_init(zz_handle *zz, ai_t ai)
             node->ai = -INFINITY;
             node->next_nan = NULL;
             node->prev_nan = NULL;
-            zz->first_nan_s = node;
-            zz->last_nan_s = node;
+            zz->oldest_nan_s = node;
+            zz->newest_nan_s = node;
         }
         else
             node->ai = ai;
@@ -864,8 +860,8 @@ inline ai_t zz_update_init(zz_handle *zz, ai_t ai)
         }
         else
         {
-            node->next = zz->first;
-            zz->first = node;
+            node->next = zz->oldest;
+            zz->oldest = node;
 
             idx_t nonnan_n_s = n_s - n_s_nan;
             idx_t nonnan_n_l = n_l - n_l_nan;
@@ -918,7 +914,7 @@ inline ai_t zz_update(zz_handle *zz, ai_t ai)
         // try to keep the heaps balanced, so we can try to avoid the nan
         // rebalancing penalty. makes significant difference when % of nans
         // is large and window size is also large
-        zz_node* node_to_evict = zz->first;
+        zz_node* node_to_evict = zz->oldest;
         ai_t to_evict = node_to_evict->ai;
         idx_t evict_effect_s = 0;
         idx_t evict_effect_l = 0;
@@ -970,12 +966,12 @@ inline void zz_reset(zz_handle *zz)
     zz->n_l_nan = 0;
     zz->n_s_nan = 0;
 
-    zz->first_nan_s = NULL;
-    zz->last_nan_s = NULL;
-    zz->first_nan_l = NULL;
-    zz->last_nan_l = NULL;
-    zz->first = NULL;
-    zz->last = NULL;
+    zz->oldest_nan_s = NULL;
+    zz->newest_nan_s = NULL;
+    zz->oldest_nan_l = NULL;
+    zz->newest_nan_l = NULL;
+    zz->oldest = NULL;
+    zz->newest = NULL;
 }
 
 inline void zz_free(zz_handle *zz)
@@ -1006,50 +1002,50 @@ inline void zz_free(zz_handle *zz)
 
 inline void zz_update_withnan(zz_handle *zz, ai_t ai) {
     // Nodes and indices.
-    zz_node *node = zz->first;
+    zz_node *node = zz->oldest;
 
     if (isinf(node->ai)) {
         // if we are removing a nan
         if (node->small) {
             --zz->n_s_nan;
 
-            if (node == zz->first_nan_s) {
-                zz_node* next_ptr = zz->first_nan_s->next_nan;
-                zz->first_nan_s = next_ptr;
+            if (node == zz->oldest_nan_s) {
+                zz_node* next_ptr = zz->oldest_nan_s->next_nan;
+                zz->oldest_nan_s = next_ptr;
                 if (next_ptr == NULL)
-                    zz->last_nan_s = NULL;
+                    zz->newest_nan_s = NULL;
                 else
                     next_ptr->prev_nan = NULL; /* the current nan is the first
                                                 *  one */
             } else {
                 assert(node->prev_nan != NULL);
-                zz_node* last_node = node->prev_nan;
-                last_node->next_nan = node->next_nan;
+                zz_node* newest_node = node->prev_nan;
+                newest_node->next_nan = node->next_nan;
                 if (node->next_nan == NULL)
-                    zz->last_nan_s = last_node;
+                    zz->newest_nan_s = newest_node;
                 else
-                    node->next_nan->prev_nan = last_node;
+                    node->next_nan->prev_nan = newest_node;
                 node->next_nan = NULL;
             }
         } else {
             --zz->n_l_nan;
 
-            if (node == zz->first_nan_l) {
-                zz_node* next_ptr = zz->first_nan_l->next_nan;
-                zz->first_nan_l = next_ptr;
+            if (node == zz->oldest_nan_l) {
+                zz_node* next_ptr = zz->oldest_nan_l->next_nan;
+                zz->oldest_nan_l = next_ptr;
                 if (next_ptr == NULL)
-                    zz->last_nan_l = NULL;
+                    zz->newest_nan_l = NULL;
                 else
                     next_ptr->prev_nan = NULL; /* the current nan is the first
                                                 *  one */
             } else {
                 assert(node->prev_nan != NULL);
-                zz_node* last_node = node->prev_nan;
-                last_node->next_nan = node->next_nan;
+                zz_node* newest_node = node->prev_nan;
+                newest_node->next_nan = node->next_nan;
                 if (node->next_nan == NULL)
-                    zz->last_nan_l = last_node;
+                    zz->newest_nan_l = newest_node;
                 else
-                    node->next_nan->prev_nan = last_node;
+                    node->next_nan->prev_nan = newest_node;
                 node->next_nan = NULL;
             }
         }
@@ -1062,12 +1058,12 @@ inline void zz_update_withnan(zz_handle *zz, ai_t ai) {
 inline void zz_update_nonan(zz_handle *zz, ai_t ai)
 {
     // Nodes and indices.
-    zz_node *node = zz->first;
+    zz_node *node = zz->oldest;
 
-    // and update first, last
-    zz->first = zz->first->next;
-    zz->last->next = node;
-    zz->last = node;
+    // and update first, newest
+    zz->oldest = zz->oldest->next;
+    zz->newest->next = node;
+    zz->newest = node;
 
     zz_update_helper(zz, node, ai);
 }
@@ -1090,8 +1086,8 @@ inline void zz_insert_nan(zz_handle *zz)
 
     // Nodes and indices.
     zz_node *node = &zz->node_data[n_s + n_l];
-    node->next = zz->first;
-    zz->first = node;
+    node->next = zz->oldest;
+    zz->oldest = node;
 
     //check_asserts(zz);
 
@@ -1222,34 +1218,34 @@ inline void zz_update_helper(zz_handle *zz, zz_node *node, ai_t ai)
 inline void zz_update_withnan_skipevict(zz_handle *zz, ai_t ai) {
     if (isinf(ai))
     {
-        zz_node *node = zz->first;
+        zz_node *node = zz->oldest;
         // we are adding a new nan
         node->next_nan = NULL;
 
         if (ai>0) {
             ++zz->n_l_nan;
-            if (zz->first_nan_l == NULL) {
-                zz->first_nan_l = node;
-                zz->last_nan_l = node;
+            if (zz->oldest_nan_l == NULL) {
+                zz->oldest_nan_l = node;
+                zz->newest_nan_l = node;
                 node->prev_nan = NULL;
             } else {
                 assert(node->next_nan == NULL);
-                assert(node!=zz->last_nan_l);
-                zz->last_nan_l->next_nan = node;
-                node->prev_nan = zz->last_nan_l;
+                assert(node!=zz->newest_nan_l);
+                zz->newest_nan_l->next_nan = node;
+                node->prev_nan = zz->newest_nan_l;
                 assert(node->next_nan == NULL);
-                zz->last_nan_l = node;
+                zz->newest_nan_l = node;
             }
         } else {
             ++zz->n_s_nan;
-            if (zz->first_nan_s == NULL) {
-                zz->first_nan_s = node;
-                zz->last_nan_s = node;
+            if (zz->oldest_nan_s == NULL) {
+                zz->oldest_nan_s = node;
+                zz->newest_nan_s = node;
                 node->prev_nan = NULL;
             } else {
-                zz->last_nan_s->next_nan = node;
-                node->prev_nan = zz->last_nan_s;
-                zz->last_nan_s = node;
+                zz->newest_nan_s->next_nan = node;
+                node->prev_nan = zz->newest_nan_s;
+                zz->newest_nan_s = node;
             }
         }
     }
@@ -1259,81 +1255,81 @@ inline void zz_update_withnan_skipevict(zz_handle *zz, ai_t ai) {
 
 // --------------------------------------------------------------------------
 
-inline void move_nan_helper(zz_handle *zz, zz_node* new_last)
+inline void move_nan_helper(zz_handle *zz, zz_node* new_newest)
 {
-    assert(new_last != NULL);
+    assert(new_newest != NULL);
 
-    ai_t old_ai = new_last->ai;
+    ai_t old_ai = new_newest->ai;
     ai_t new_ai = -old_ai;
 
     assert(isinf(old_ai));
 
-    new_last->ai = new_ai;
-    zz_update_helper(zz, new_last, new_ai);
+    new_newest->ai = new_ai;
+    zz_update_helper(zz, new_newest, new_ai);
 }
 
 inline void move_nan_from_s_to_l(zz_handle *zz)
 {
     // move nan from s to l
-    assert(zz->first_nan_s != NULL);
+    assert(zz->oldest_nan_s != NULL);
 
-    zz_node* new_last = zz->first_nan_s;
-    assert(isinf(new_last->ai));
-    zz->first_nan_s = zz->first_nan_s->next_nan;
+    zz_node* new_newest = zz->oldest_nan_s;
+    assert(isinf(new_newest->ai));
+    zz->oldest_nan_s = zz->oldest_nan_s->next_nan;
 
-    if (zz->first_nan_s != NULL)
-        zz->first_nan_s->prev_nan = NULL;
+    if (zz->oldest_nan_s != NULL)
+        zz->oldest_nan_s->prev_nan = NULL;
     else
-        zz->last_nan_s = NULL; // that was our last nan on this side
+        zz->newest_nan_s = NULL; // that was our last nan on this side
 
-    new_last->next_nan = NULL;
+    new_newest->next_nan = NULL;
 
-    if (zz->first_nan_l == NULL) {
-        zz->first_nan_l = new_last;
-        new_last->prev_nan = NULL;
+    if (zz->oldest_nan_l == NULL) {
+        zz->oldest_nan_l = new_newest;
+        new_newest->prev_nan = NULL;
     } else {
-        zz->last_nan_l->next_nan = new_last;
-        new_last->prev_nan = zz->last_nan_l;
+        zz->newest_nan_l->next_nan = new_newest;
+        new_newest->prev_nan = zz->newest_nan_l;
     }
 
-    zz->last_nan_l = new_last;
+    zz->newest_nan_l = new_newest;
 
     --zz->n_s_nan;
     ++zz->n_l_nan;
 
-    move_nan_helper(zz, new_last);
+    move_nan_helper(zz, new_newest);
 }
 
 inline void move_nan_from_l_to_s(zz_handle *zz)
 {
     // move nan from l to s
-    assert(zz->first_nan_l != NULL);
+    assert(zz->oldest_nan_l != NULL);
 
-    zz_node* new_last = zz->first_nan_l;
-    assert(isinf(new_last->ai));
-    zz->first_nan_l = zz->first_nan_l->next_nan;
+    zz_node* new_newest = zz->oldest_nan_l;
+    assert(isinf(new_newest->ai));
+    zz->oldest_nan_l = zz->oldest_nan_l->next_nan;
 
-    if (zz->first_nan_l != NULL)
-        zz->first_nan_l->prev_nan = NULL;
+    if (zz->oldest_nan_l != NULL)
+        zz->oldest_nan_l->prev_nan = NULL;
     else
-        zz->last_nan_l = NULL; // that was our last nan on this side
+        zz->newest_nan_l = NULL; // that was our last nan on this side
 
-    new_last->next_nan = NULL;
+    new_newest->next_nan = NULL;
 
-    if (zz->first_nan_s == NULL) {
-        zz->first_nan_s = new_last;
-        new_last->prev_nan = NULL;
+    if (zz->oldest_nan_s == NULL) {
+        zz->oldest_nan_s = new_newest;
+        new_newest->prev_nan = NULL;
     } else {
-        zz->last_nan_s->next_nan = new_last;
-        new_last->prev_nan = zz->last_nan_s;
+        zz->newest_nan_s->next_nan = new_newest;
+        new_newest->prev_nan = zz->newest_nan_s;
     }
 
-    zz->last_nan_s = new_last;
+    zz->newest_nan_s = new_newest;
 
     --zz->n_l_nan;
     ++zz->n_s_nan;
 
-    move_nan_helper(zz, new_last);
+    move_nan_helper(zz, new_newest);
 }
 
 // --------------------------------------------------------------------------
@@ -1556,11 +1552,11 @@ void zz_dump(zz_handle *zz)
         return;
     }
     idx_t i;
-    if (zz->first)
-        printf("\n\nFirst: %f\n", (double)zz->first->ai);
+    if (zz->oldest)
+        printf("\n\nFirst: %f\n", (double)zz->oldest->ai);
 
-    if (zz->last)
-        printf("Last: %f\n", (double)zz->last->ai);
+    if (zz->newest)
+        printf("Last: %f\n", (double)zz->newest->ai);
 
 
     printf("\n\nSmall heap:\n");
@@ -1593,26 +1589,26 @@ void check_asserts(zz_handle *zz)
     assert(zz->n_s_nan < 5000000000); //most likely an overflow
     assert(zz->n_l_nan < 5000000000); //most likely an overflow
 
-    if (zz->first_nan_l)
+    if (zz->oldest_nan_l)
     {
-        assert(zz->last_nan_l);
-        assert(zz->last_nan_l->next_nan == NULL);
-        assert(zz->first_nan_l->prev_nan == NULL);
+        assert(zz->newest_nan_l);
+        assert(zz->newest_nan_l->next_nan == NULL);
+        assert(zz->oldest_nan_l->prev_nan == NULL);
     }
     else
-        assert(zz->last_nan_l == NULL);
+        assert(zz->newest_nan_l == NULL);
 
-    if (zz->first_nan_s)
+    if (zz->oldest_nan_s)
     {
-        assert(zz->last_nan_s);
-        assert(zz->last_nan_s->next_nan == NULL);
-        assert(zz->first_nan_s->prev_nan == NULL);
+        assert(zz->newest_nan_s);
+        assert(zz->newest_nan_s->next_nan == NULL);
+        assert(zz->oldest_nan_s->prev_nan == NULL);
     }
     else
-        assert(zz->last_nan_s == NULL);
+        assert(zz->newest_nan_s == NULL);
 
     size_t len = 0;
-    zz_node* iter = zz->first_nan_l;
+    zz_node* iter = zz->oldest_nan_l;
     while (iter!=NULL)
     {
         assert(isinf(iter->ai));
@@ -1627,7 +1623,7 @@ void check_asserts(zz_handle *zz)
     }
 
     len = 0;
-    iter = zz->first_nan_s;
+    iter = zz->oldest_nan_s;
     while (iter!=NULL)
     {
         assert(isinf(iter->ai));
