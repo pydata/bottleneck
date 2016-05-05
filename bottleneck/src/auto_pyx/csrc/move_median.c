@@ -51,35 +51,27 @@ const int NUM_CHILDREN = 8;
 */
 
 struct _mm_node {
-    int              small; // 1 if the node is in the small heap.
-    idx_t            idx;   // The node's index in the heap array.
-    ai_t             ai;    // The node's value.
-    struct _mm_node *next;  // The next node in order of insertion.
+    int              small; // 1 if the node is in the small heap
+    idx_t            idx;   // The node's index in the heap array
+    ai_t             ai;    // The node's value
+    struct _mm_node *next;  // The next node in order of insertion
 };
 typedef struct _mm_node mm_node;
 
 struct _mm_handle {
     idx_t     window;    // window size
-    int       odd;       // 1 if the window size is odd, 0 otherwise.
-    idx_t     n_s;       // The number of elements in the min heap.
-    idx_t     n_l;       // The number of elements in the max heap.
-    idx_t     min_count; // If the number of non-NaN ai's in a window is
-                         // less than min_count, then a value of NaN is
-                         // assigned to the window
-    mm_node **s_heap;    // The max heap.
-    mm_node **l_heap;    // The min heap.
-    mm_node **nodes;     // All the nodes. s_heap and l_heap point into
-                         // this array.
-    mm_node  *node_data; // Pointer to memory location where nodes live.
+    int       odd;       // 1 if the window size is odd, 0 otherwise
+    idx_t     n_s;       // The number of elements in the small heap
+    idx_t     n_l;       // The number of elements in the large heap
+    idx_t     min_count; // Same meaning as in bn.move_median
+    mm_node **s_heap;    // The max heap
+    mm_node **l_heap;    // The min heap
+    mm_node **nodes;     // All nodes. s_heap and l_heap point into this array
+    mm_node  *node_data; // Pointer to memory location where nodes live
     mm_node  *oldest;    // The oldest node
     mm_node  *newest;    // The newest node (most recent insert)
-
-    // Most nodes are leaf nodes, therefore it makes sense to have a
-    // quick way to check if a node is a leaf to avoid processing.
-    idx_t s_first_leaf; // First leaf index in the small heap.
-    idx_t l_first_leaf; // First leaf index in the large heap.
-
-    idx_t max_s_heap_size;
+    idx_t s_first_leaf;  // All nodes at this index or greater are leaf nodes
+    idx_t l_first_leaf;  // All nodes at this index or greater are leaf nodes
 };
 typedef struct _mm_handle mm_handle;
 
@@ -151,11 +143,10 @@ mm_new(const idx_t window, idx_t min_count)
     curr_mem_ptr += sizeof(mm_node*) * window;
     mm->node_data = (mm_node*) curr_mem_ptr;
 
-    mm->max_s_heap_size = window / 2 + window % 2;
     mm->window = window;
     mm->odd = window % 2;
     mm->s_heap = mm->nodes;
-    mm->l_heap = &mm->nodes[mm->max_s_heap_size];
+    mm->l_heap = &mm->nodes[window / 2 + window % 2];
     mm->min_count = min_count;
 
     mm_reset(mm);
@@ -665,14 +656,14 @@ print_binary_heap(mm_node **heap, idx_t n_heap, idx_t oldest_idx,
 */
 
 struct _zz_node {
-    int              small; // 1 if the node is in the small heap.
-    idx_t            idx;   // The node's index in the heap array.
-    ai_t             ai;    // The node's aiue.
-    struct _zz_node *next;  // The next node in order of insertion.
+    int              small; // 1 if the node is in the small heap
+    idx_t            idx;   // The node's index in the heap array
+    ai_t             ai;    // The node's value
+    struct _zz_node *next;  // The next node in order of insertion
 
     // double linked list for nan tracking
-    struct _zz_node *next_nan;  // The next nan node in order of insertion.
-    struct _zz_node *prev_nan;  // The prev nan node in order of insertion.
+    struct _zz_node *next_nan;  // The next nan node in order of insertion
+    struct _zz_node *prev_nan;  // The prev nan node in order of insertion
 };
 typedef struct _zz_node zz_node;
 
@@ -680,29 +671,23 @@ struct _zz_handle {
     idx_t     window;    // window size
     idx_t     n_s_nan;   // number of nans in min heap
     idx_t     n_l_nan;   // number of nans in max heap
-    idx_t     n_s;       // The number of elements in the min heap.
-    idx_t     n_l;       // The number of elements in the max heap.
-    idx_t     min_count; // If the number of non-NaN ai's in a window is
-                         // less than min_count, then NaN is assigned to
-                         // the window
-    zz_node **s_heap;    // The max heap.
-    zz_node **l_heap;    // The min heap.
-    zz_node **nodes;     // All the nodes. s_heap and l_heap point into
-                         // this array.
-    zz_node  *node_data; // Pointer to memory location where nodes live.
+    idx_t     n_s;       // The number of elements in the min heap
+    idx_t     n_l;       // The number of elements in the max heap
+    idx_t     min_count; // Same as in bn.move_median
+    zz_node **s_heap;    // The max heap
+    zz_node **l_heap;    // The min heap
+    zz_node **nodes;     // All nodes. s_heap and l_heap point into this array
+    zz_node  *node_data; // Pointer to memory location where nodes live
     zz_node  *oldest;    // The oldest node
     zz_node  *newest;    // The newest node (most recent insert)
-
-    // Most nodes are leaf nodes, therefore it makes sense to have a
-    // quick way to check if a node is a leaf to avoid processing.
-    idx_t s_first_leaf; // First leaf index in the small heap.
-    idx_t l_first_leaf; // First leaf index in the large heap.
+    idx_t s_first_leaf;  // All nodes at this index or greater are leaf nodes
+    idx_t l_first_leaf;  // All nodes at this index or greater are leaf nodes
 
     // + and - infinity array
-    zz_node  *oldest_nan_s;     // The node added first to the list of nodes.
-    zz_node  *newest_nan_s;     // The last (most recent) node added.
-    zz_node  *oldest_nan_l;     // The node added first to the list of nodes.
-    zz_node  *newest_nan_l;     // The last (most recent) node added.
+    zz_node  *oldest_nan_s;  // The node added first to the list of nodes
+    zz_node  *newest_nan_s;  // The last (most recent) node added
+    zz_node  *oldest_nan_l;  // The node added first to the list of nodes
+    zz_node  *newest_nan_l;  // The last (most recent) node added
 
     idx_t max_s_heap_size;
 };
