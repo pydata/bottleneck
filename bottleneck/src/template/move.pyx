@@ -1553,44 +1553,36 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
     return y
 
 
-cdef extern from "csrc/move_median.c":
-    struct _zz_node:
+cdef extern from "csrc/move_nanmedian.c":
+    struct _ww_node:
         np.npy_uint32   small
         np.npy_uint64   idx
         np.npy_float64  val
-        _zz_node         *next
-        _zz_node         *next_nan
-        _zz_node         *prev_nan
-    ctypedef _zz_node zz_node
-    struct _zz_handle:
+        _ww_node         *next
+    ctypedef _ww_node ww_node
+    struct _ww_handle:
         np.npy_uint64    window
-        np.npy_uint64    n_s_nan
-        np.npy_uint64    n_l_nan
-        int              init_wnd_complete
-        int              odd
+        np.npy_uint64    odd
         np.npy_uint64    n_s
         np.npy_uint64    n_l
+        np.npy_uint64    n_n
         np.npy_uint64    min_count
-        zz_node          **s_heap
-        zz_node          **l_heap
-        zz_node          **nodes
-        zz_node           *node_data
-        zz_node           *first
-        zz_node           *last
+        ww_node          **s_heap
+        ww_node          **l_heap
+        ww_node          **n_heap
+        ww_node          **nodes
+        ww_node           *node_data
+        ww_node           *nan_data
+        ww_node           *newest
+        ww_node           *oldest
         np.npy_uint64 s_first_leaf
         np.npy_uint64 l_first_leaf
-        zz_node           *first_nan_s
-        zz_node           *last_nan_s
-        zz_node           *first_nan_l
-        zz_node           *last_nan_l
-        np.npy_uint64 max_s_heap_size
-    ctypedef _zz_handle zz_handle
-    zz_handle *zz_new(np.npy_uint64 window, np.npy_uint64 min_count) nogil
-    np.npy_float64 zz_update_init(zz_handle *zz, np.npy_float64 val) nogil
-    np.npy_float64 zz_update(zz_handle *zz, np.npy_float64 val) nogil
-    np.npy_float64 zz_get_median(zz_handle *zz) nogil
-    void zz_reset(zz_handle* zz) nogil
-    void zz_free(zz_handle *zz) nogil
+    ctypedef _ww_handle ww_handle
+    ww_handle *ww_new(np.npy_uint64 window, np.npy_uint64 min_count) nogil
+    np.npy_float64 ww_update_init(ww_handle *ww, np.npy_float64 val) nogil
+    np.npy_float64 ww_update(ww_handle *ww, np.npy_float64 val) nogil
+    void ww_reset(ww_handle* ww) nogil
+    void ww_free(ww_handle *ww) nogil
 
 
 @cython.cdivision(True)
@@ -1599,7 +1591,7 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
                                 Py_ssize_t length, int a_ndim,
                                 np.npy_intp* y_dims, int ignore):
     # bn.dtypes = [['float64', 'float64'], ['float32', 'float32']]
-    cdef zz_handle *zz
+    cdef ww_handle *ww
     cdef Py_ssize_t i
     cdef DTYPE0_t ai
     cdef DTYPE1_t yi
@@ -1608,23 +1600,23 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
-    zz = zz_new(window, min_count)
-    if zz is NULL:
+    ww = ww_new(window, min_count)
+    if ww is NULL:
         raise MemoryError()
     with nogil:
         while PyArray_ITER_NOTDONE(ita):
             for i in range(window):
                 ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                yi = zz_update_init(zz, ai)
+                yi = ww_update_init(ww, ai)
                 (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
             for i in range(window, length):
                 ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                yi = zz_update(zz, ai)
+                yi = ww_update(ww, ai)
                 (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
             PyArray_ITER_NEXT(ita)
             PyArray_ITER_NEXT(ity)
-            zz_reset(zz)
-        zz_free(zz)
+            ww_reset(ww)
+        ww_free(ww)
     return y
 
 
