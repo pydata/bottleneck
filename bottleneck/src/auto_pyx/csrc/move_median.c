@@ -43,6 +43,14 @@ const int NUM_CHILDREN = 8;
 #define P_IDX(i) ((i) - 1) / NUM_CHILDREN
 #define FC_IDX(i) NUM_CHILDREN * (i) + 1
 
+// Swap nodes
+#define SWAP_NODES(heap, idx1, node1, idx2, node2) \
+heap[idx1] = node2;                              \
+heap[idx2] = node1;                              \
+node1->idx = idx2;                               \
+node2->idx = idx1;                               \
+idx1       = idx2
+
 
 /*
 -----------------------------------------------------------------------------
@@ -449,16 +457,6 @@ mm_get_largest_child(mm_node **heap, idx_t window, idx_t idx, mm_node **child)
 }
 
 
-/*
- * Swap nodes.
- */
-#define MM_SWAP_NODES(heap, idx1, node1, idx2, node2) \
-heap[idx1] = node2;                              \
-heap[idx2] = node1;                              \
-node1->idx = idx2;                               \
-node2->idx = idx1;                               \
-idx1       = idx2
-
 
 /*
  * Move the given node up through the heap to the appropriate position.
@@ -468,7 +466,7 @@ mm_move_up_small(mm_node **heap, idx_t window, idx_t idx, mm_node *node,
                  idx_t p_idx, mm_node *parent)
 {
     do {
-        MM_SWAP_NODES(heap, idx, node, p_idx, parent);
+        SWAP_NODES(heap, idx, node, p_idx, parent);
         if (idx == 0) {
             break;
         }
@@ -489,7 +487,7 @@ mm_move_down_small(mm_node **heap, idx_t window, idx_t idx, mm_node *node)
     idx_t c_idx = mm_get_largest_child(heap, window, idx, &child);
 
     while (ai < child->ai) {
-        MM_SWAP_NODES(heap, idx, node, c_idx, child);
+        SWAP_NODES(heap, idx, node, c_idx, child);
         c_idx = mm_get_largest_child(heap, window, idx, &child);
     }
 }
@@ -504,7 +502,7 @@ mm_move_down_large(mm_node **heap, idx_t window, idx_t idx, mm_node *node,
                    idx_t p_idx, mm_node *parent)
 {
     do {
-        MM_SWAP_NODES(heap, idx, node, p_idx, parent);
+        SWAP_NODES(heap, idx, node, p_idx, parent);
         if (idx == 0) {
             break;
         }
@@ -512,7 +510,6 @@ mm_move_down_large(mm_node **heap, idx_t window, idx_t idx, mm_node *node,
         parent = heap[p_idx];
     } while (node->ai < parent->ai);
 }
-
 
 
 /*
@@ -526,7 +523,7 @@ mm_move_up_large(mm_node **heap, idx_t window, idx_t idx, mm_node *node)
     idx_t c_idx = mm_get_smallest_child(heap, window, idx, &child);
 
     while (ai > child->ai) {
-        MM_SWAP_NODES(heap, idx, node, c_idx, child);
+        SWAP_NODES(heap, idx, node, c_idx, child);
         c_idx = mm_get_smallest_child(heap, window, idx, &child);
     }
 }
