@@ -21,10 +21,10 @@
     #define FC_IDX(i) NUM_CHILDREN * (i) + 1
 
     #define SWAP_NODES(heap, idx1, node1, idx2, node2) \
-    heap[idx1] = node2;                              \
-    heap[idx2] = node1;                              \
-    node1->idx = idx2;                               \
-    node2->idx = idx1;                               \
+    heap[idx1] = node2;                                \
+    heap[idx2] = node1;                                \
+    node1->idx = idx2;                                 \
+    node2->idx = idx1;                                 \
     idx1       = idx2
 
 #endif
@@ -79,6 +79,8 @@ inline void ww_free(ww_handle *ww);
 
 // helper functions
 inline ai_t ww_get_median(ww_handle *ww);
+inline void heapify_small_node(ww_handle *ww, idx_t idx);
+inline void heapify_large_node(ww_handle *ww, idx_t idx);
 inline idx_t ww_get_smallest_child(ww_node **heap, idx_t window, idx_t idx,
                                    ww_node **child);
 inline idx_t ww_get_largest_child(ww_node **heap, idx_t window, idx_t idx,
@@ -255,8 +257,6 @@ ww_update(ww_handle *ww, ai_t ai)
     idx_t n_n = ww->n_n;
 
     ww_node *node2;
-    idx_t idx2;
-
 
     if (isnan(ai)) {
 
@@ -278,40 +278,8 @@ ww_update(ww_handle *ww, ai_t ai)
             s_heap[idx] = s_heap[n_s - 1];
             --ww->n_s;
 
-            // reorder small heap if ne
-            node = s_heap[idx];
-
-            // Internal or leaf node.
-            if (idx > 0) {
-                idx2 = P_IDX(idx);
-                node2 = s_heap[idx2];
-
-                // Move up.
-                if (ai > node2->ai) {
-                    ww_move_up_small(s_heap, idx, node, idx2, node2);
-
-                    // Maybe swap between heaps.
-                    node2 = l_heap[0];
-                    if ((node2 != NULL) && (ai > node2->ai)) {
-                        ww_swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
-                    }
-                }
-
-                // Move down.
-                else if (idx < ww->s_first_leaf) {
-                    ww_move_down_small(s_heap, n_s, idx, node);
-                }
-            }
-
-            // Head node.
-            else {
-                node2 = l_heap[0];
-                if (ai > node2->ai) {
-                    ww_swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
-                } else {
-                    ww_move_down_small(s_heap, n_s, idx, node);
-                }
-            }
+            // reorder small heap if needed
+            heapify_small_node(ww, idx);
 
         } else if (node->region == 0) {
 
@@ -332,7 +300,7 @@ ww_update(ww_handle *ww, ai_t ai)
             --ww->n_l;
 
             if (ww->n_l < ww->n_s - 1) {
-                // move a node from the small heap to the large
+                // move head node from the small heap to the large heap
 
                 node2 = ww->s_heap[0];
                 node2->idx = ww->n_l;
@@ -340,50 +308,18 @@ ww_update(ww_handle *ww, ai_t ai)
                 l_heap[ww->n_l] = node2;
                 ++ww->n_l;
                 ww->l_first_leaf = ceil((ww->n_l - 1) / (double)NUM_CHILDREN);
-                // TODO reorder heap
+                heapify_large_node(ww, node2->idx);
 
                 node2= ww->s_heap[ww->n_s - 1];
                 node2->idx = 0;
                 s_heap[0] = node2;
                 --ww->n_s;
                 ww->s_first_leaf = ceil((ww->n_s - 1) / (double)NUM_CHILDREN);
-                // TODO reorder heap
+                heapify_small_node(ww, 0);
             }
 
-            // reorder small heap if needed
-            node = l_heap[idx];
-
-            // Internal or leaf node.
-            if (idx > 0) {
-                idx2 = P_IDX(idx);
-                node2 = l_heap[idx2];
-
-                // Move down.
-                if (ai < node2->ai) {
-                    ww_move_down_large(l_heap, idx, node, idx2, node2);
-
-                    // Maybe swap between heaps.
-                    node2 = s_heap[0];
-                    if (ai < node2->ai) {
-                        ww_swap_heap_heads(s_heap, n_s, l_heap, n_l, node2, node);
-                    }
-                }
-
-                // Move up.
-                else if (idx < ww->l_first_leaf) {
-                    ww_move_up_large(l_heap, n_l, idx, node);
-                }
-            }
-
-            // Head node.
-            else {
-                node2 = s_heap[0];
-                if (ai < node2->ai) {
-                    ww_swap_heap_heads(s_heap, n_s, l_heap, n_l, node2, node);
-                } else {
-                    ww_move_up_large(l_heap, n_l, idx, node);
-                }
-            }
+            // reorder large heap if needed
+            heapify_large_node(ww, idx);
 
         } else if (node->region == 2) {
 
@@ -393,84 +329,19 @@ ww_update(ww_handle *ww, ai_t ai)
         }
     } else {
 
-        // In small heap.
         if (node->region == 1) {
-
-            // Internal or leaf node.
-            if (idx > 0) {
-                idx2 = P_IDX(idx);
-                node2 = s_heap[idx2];
-
-                // Move up.
-                if (ai > node2->ai) {
-                    ww_move_up_small(s_heap, idx, node, idx2, node2);
-
-                    // Maybe swap between heaps.
-                    node2 = l_heap[0];
-                    if ((node2 != NULL) && (ai > node2->ai)) {
-                        ww_swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
-                    }
-                }
-
-                // Move down.
-                else if (idx < ww->s_first_leaf) {
-                    ww_move_down_small(s_heap, n_s, idx, node);
-                }
-            }
-
-            // Head node.
-            else {
-                node2 = l_heap[0];
-                if (ai > node2->ai) {
-                    ww_swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
-                } else {
-                    ww_move_down_small(s_heap, n_s, idx, node);
-                }
-            }
+            heapify_small_node(ww, idx);
         }
-
-        // In large heap.
         else if (node->region == 0) {
-
-            // Internal or leaf node.
-            if (idx > 0) {
-                idx2 = P_IDX(idx);
-                node2 = l_heap[idx2];
-
-                // Move down.
-                if (ai < node2->ai) {
-                    ww_move_down_large(l_heap, idx, node, idx2, node2);
-
-                    // Maybe swap between heaps.
-                    node2 = s_heap[0];
-                    if (ai < node2->ai) {
-                        ww_swap_heap_heads(s_heap, n_s, l_heap, n_l, node2, node);
-                    }
-                }
-
-                // Move up.
-                else if (idx < ww->l_first_leaf) {
-                    ww_move_up_large(l_heap, n_l, idx, node);
-                }
-            }
-
-            // Head node.
-            else {
-                node2 = s_heap[0];
-                if (ai < node2->ai) {
-                    ww_swap_heap_heads(s_heap, n_s, l_heap, n_l, node2, node);
-                } else {
-                    ww_move_up_large(l_heap, n_l, idx, node);
-                }
-            }
+            heapify_large_node(ww, idx);
         }
-
         else {
+
             // ai is not NaN and oldest node is in nan array
 
             if (n_s > n_l) {
-                // insert into large heap
 
+                // insert into large heap
                 node->region = 0;
                 node->idx = n_l;
                 node->ai = ai;
@@ -483,43 +354,11 @@ ww_update(ww_handle *ww, ai_t ai)
                 --ww->n_n;
 
                 // reorder large heap if needed
-
-                idx = n_l;
-                // Internal or leaf node.
-                if (idx > 0) {
-                    idx2 = P_IDX(idx);
-                    node2 = l_heap[idx2];
-
-                    // Move down.
-                    if (ai < node2->ai) {
-                        ww_move_down_large(l_heap, idx, node, idx2, node2);
-
-                        // Maybe swap between heaps.
-                        node2 = s_heap[0];
-                        if (ai < node2->ai) {
-                            ww_swap_heap_heads(s_heap, n_s, l_heap, n_l, node2, node);
-                        }
-                    }
-
-                    // Move up.
-                    else if (idx < ww->l_first_leaf) {
-                        ww_move_up_large(l_heap, n_l, idx, node);
-                    }
-                }
-
-                // Head node.
-                else {
-                    node2 = s_heap[0];
-                    if (ai < node2->ai) {
-                        ww_swap_heap_heads(s_heap, n_s, l_heap, n_l, node2, node);
-                    } else {
-                        ww_move_up_large(l_heap, n_l, idx, node);
-                    }
-                }
+                heapify_large_node(ww, n_l);
 
             } else {
-                // insert into small heap
 
+                // insert into small heap
                 node->region = 1;
                 node->idx = n_s;
                 node->ai = ai;
@@ -532,39 +371,7 @@ ww_update(ww_handle *ww, ai_t ai)
                 --ww->n_n;
 
                 // reorder small heap if needed
-
-                idx = n_s;
-                // Internal or leaf node.
-                if (idx > 0) {
-                    idx2 = P_IDX(idx);
-                    node2 = s_heap[idx2];
-
-                    // Move up.
-                    if (ai > node2->ai) {
-                        ww_move_up_small(s_heap, idx, node, idx2, node2);
-
-                        // Maybe swap between heaps.
-                        node2 = l_heap[0];
-                        if ((node2 != NULL) && (ai > node2->ai)) {
-                            ww_swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
-                        }
-                    }
-
-                    // Move down.
-                    else if (idx < ww->s_first_leaf) {
-                        ww_move_down_small(s_heap, n_s, idx, node);
-                    }
-                }
-
-                // Head node.
-                else {
-                    node2 = l_heap[0];
-                    if (ai > node2->ai) {
-                        ww_swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
-                    } else {
-                        ww_move_down_small(s_heap, n_s, idx, node);
-                    }
-                }
+                heapify_small_node(ww, n_s);
 
             }
         }
@@ -629,6 +436,111 @@ ww_get_median(ww_handle *ww)
     }
     else
         return (ww->s_heap[0]->ai + ww->l_heap[0]->ai) / 2;
+}
+
+
+inline void
+heapify_small_node(ww_handle *ww, idx_t idx)
+{
+    idx_t idx2;
+    ww_node *node;
+    ww_node *node2;
+    ww_node **s_heap;
+    ww_node **l_heap;
+    idx_t n_s, n_l;
+    ai_t ai;
+
+    s_heap = ww->s_heap;
+    l_heap = ww->l_heap;
+    node = s_heap[idx];
+    n_s = ww->n_s;
+    n_l = ww->n_l;
+    ai = node->ai;
+
+    // Internal or leaf node.
+    if (idx > 0) {
+        idx2 = P_IDX(idx);
+        node2 = s_heap[idx2];
+
+        // Move up.
+        if (ai > node2->ai) {
+            ww_move_up_small(s_heap, idx, node, idx2, node2);
+
+            // Maybe swap between heaps.
+            node2 = l_heap[0];
+            if ((node2 != NULL) && (ai > node2->ai)) {
+                ww_swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
+            }
+        }
+
+        // Move down.
+        else if (idx < ww->s_first_leaf) {
+            ww_move_down_small(s_heap, n_s, idx, node);
+        }
+    }
+
+    // Head node.
+    else {
+        node2 = l_heap[0];
+        if (ai > node2->ai) {
+            ww_swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
+        } else {
+            ww_move_down_small(s_heap, n_s, idx, node);
+        }
+    }
+}
+
+
+inline void
+heapify_large_node(ww_handle *ww, idx_t idx)
+{
+    idx_t idx2;
+    ww_node *node;
+    ww_node *node2;
+    ww_node **s_heap;
+    ww_node **l_heap;
+    idx_t n_s, n_l;
+    ai_t ai;
+
+    s_heap = ww->s_heap;
+    l_heap = ww->l_heap;
+    node = l_heap[idx];
+    n_s = ww->n_s;
+    n_l = ww->n_l;
+    ai = node->ai;
+
+    // Internal or leaf node.
+    if (idx > 0) {
+        idx2 = P_IDX(idx);
+        node2 = l_heap[idx2];
+
+        // Move down.
+        if (ai < node2->ai) {
+            ww_move_down_large(l_heap, idx, node, idx2, node2);
+
+            // Maybe swap between heaps.
+            node2 = s_heap[0];
+            if (ai < node2->ai) {
+                ww_swap_heap_heads(s_heap, n_s, l_heap, n_l, node2, node);
+            }
+        }
+
+        // Move up.
+        else if (idx < ww->l_first_leaf) {
+            ww_move_up_large(l_heap, n_l, idx, node);
+        }
+    }
+
+    // Head node.
+    else {
+        node2 = s_heap[0];
+        if (ai < node2->ai) {
+            ww_swap_heap_heads(s_heap, n_s, l_heap, n_l, node2, node);
+        } else {
+            ww_move_up_large(l_heap, n_l, idx, node);
+        }
+    }
+
 }
 
 
