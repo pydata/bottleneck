@@ -45,10 +45,10 @@ const int NUM_CHILDREN = 8;
 
 // Swap nodes
 #define SWAP_NODES(heap, idx1, node1, idx2, node2) \
-heap[idx1] = node2;                              \
-heap[idx2] = node1;                              \
-node1->idx = idx2;                               \
-node2->idx = idx1;                               \
+heap[idx1] = node2;                                \
+heap[idx2] = node1;                                \
+node1->idx = idx2;                                 \
+node2->idx = idx1;                                 \
 idx1       = idx2
 
 
