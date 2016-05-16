@@ -15,8 +15,8 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 
 **More Robust**
 
+- bn.move_median can now handle NaNs and `min_count` parameter
 - bn.move_std is slower but numerically more stable
-- bn.move_median is slower but can now handle NaNs and `min_count` parameter
 - Bottleneck no longer crashes on byte-swapped input arrays
 - Bottleneck checks that calls to PyArray_FillWithScalar are successful
 
@@ -24,6 +24,7 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 
 - All Bottleneck functions release the GIL
 - bn.median is faster if the input array contains NaN
+- bn.move_median is faster for input arrays that contain lots of NaNs
 
 **New Functions**
 
@@ -38,6 +39,7 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 - bn.median now returns NaN for a slice that contains one or more NaNs
 - bn.move_std output changed when mean is large compared to standard deviation
 - Fixed: Non-accelerated moving window functions used min_count incorrectly
+- bn.move_median is a bit slower for float input arrays that do not contain NaN
 
 **Miscellaneous**
 
