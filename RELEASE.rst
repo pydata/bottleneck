@@ -18,7 +18,6 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 - bn.move_median can now handle NaNs and `min_count` parameter
 - bn.move_std is slower but numerically more stable
 - Bottleneck no longer crashes on byte-swapped input arrays
-- Bottleneck checks that calls to PyArray_FillWithScalar are successful
 
 **Faster**
 
@@ -46,8 +45,6 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 - C files are generated with Cython 0.24 instead of 0.21.1
 - New script to automate updating of benchmark results in readme file
 - Can now specify which functions to include in the benchmark suite
-- Made unit tests easier to maintain
-- Bottleneck is now flake8 clean; long may it last
 
 **Thanks**
 
