@@ -95,8 +95,7 @@ def test_move_inf():
 
 
 # ---------------------------------------------------------------------------
-# The algorithm in move_nanmedian.c is complicated. Let's give it an extra
-# workout.
+# move_nanmedian.c is complicated. Let's test it some more.
 
 def test_move_nanmedian():
     "test move_nanmedian.c"
@@ -113,12 +112,9 @@ def test_move_nanmedian():
         a[idx] = np.inf
         idx = rs.rand(*a.shape) < 0.2
         a[idx] = np.nan
-        idx = rs.rand(*a.shape) < 0.2
-        a[idx] *= -1
         rs.shuffle(a)
         for window in range(2, size + 1):
             actual = func(a, window=window, min_count=min_count)
-            func0 = eval('bn.slow.%s' % func.__name__)
             desired = func0(a, window=window, min_count=min_count)
             err_msg = fmt % (func.__name__, window, min_count, a)
             aaae(actual, desired, decimal=5, err_msg=err_msg)

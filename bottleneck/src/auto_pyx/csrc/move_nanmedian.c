@@ -107,6 +107,7 @@ void ww_print_binary_heap(ww_node **heap, idx_t n_array, idx_t oldest_idx,
 void ww_check(ww_handle *ww);
 void ww_print_chain(ww_handle *ww);
 void ww_print_line(void);
+void ww_print_node(ww_node *node);
 
 
 /*
@@ -243,9 +244,6 @@ ww_update(ww_handle *ww, ai_t ai)
     ww->newest->next = node;
     ww->newest = node;
 
-    // Replace value of node
-    node->ai = ai;
-
     // Local variables.
     idx_t idx = node->idx;
 
@@ -262,12 +260,12 @@ ww_update(ww_handle *ww, ai_t ai)
 
         if (node->region == 1) {
 
-            /* Oldest node, node, is in the small heap and needs to be moved
+            /* Oldest node is in the small heap and needs to be moved
              * to the nan array. Resulting hole in the small heap will be
              * filled with the rightmost leaf of the last row of the small
              * heap. */
 
-            //  insert node into nan heap
+            //  insert node into nan array
             node->region = 2;
             node->idx = n_n;
             node->ai = ai;
@@ -276,6 +274,7 @@ ww_update(ww_handle *ww, ai_t ai)
 
             // plug small heap hole
             s_heap[idx] = s_heap[n_s - 1];
+            s_heap[idx]->idx = idx;
             --ww->n_s;
             if (ww->n_s == 0) {
                 ww->s_first_leaf = 0;
@@ -288,12 +287,12 @@ ww_update(ww_handle *ww, ai_t ai)
 
         } else if (node->region == 0) {
 
-            /* Oldest node, node, is in the large heap and needs to be moved
+            /* Oldest node is in the large heap and needs to be moved
              * to the nan array. Resulting hole in the large heap will be
              * filled with the rightmost leaf of the last row of the large
              * heap. */
 
-            //  insert node into nan heap
+            // insert node into nan array
             node->region = 2;
             node->idx = n_n;
             node->ai = ai;
@@ -302,6 +301,7 @@ ww_update(ww_handle *ww, ai_t ai)
 
             // plug small heap hole
             l_heap[idx] = l_heap[n_l - 1];
+            l_heap[idx]->idx = idx;
             --ww->n_l;
             if (ww->n_l == 0) {
                 ww->l_first_leaf = 0;
@@ -344,14 +344,16 @@ ww_update(ww_handle *ww, ai_t ai)
     } else {
 
         if (node->region == 1) {
+            node->ai = ai;
             heapify_small_node(ww, idx);
         }
         else if (node->region == 0) {
+            node->ai = ai;
             heapify_large_node(ww, idx);
         }
         else {
 
-            // ai is not NaN and oldest node is in nan array
+            // ai is not NaN but oldest node is in nan array
 
             if (n_s > n_l) {
 
@@ -364,8 +366,10 @@ ww_update(ww_handle *ww, ai_t ai)
                 ww->l_first_leaf = ceil((ww->n_l - 1) / (double)NUM_CHILDREN);
 
                 // plug nan array hole
-                n_array[idx] = n_array[n_n - 1];
-                n_array[idx]->idx = idx;
+                if (n_n > 2) {
+                    n_array[idx] = n_array[n_n - 1];
+                    n_array[idx]->idx = idx;
+                }
                 --ww->n_n;
 
                 // reorder large heap if needed
@@ -382,8 +386,10 @@ ww_update(ww_handle *ww, ai_t ai)
                 ww->s_first_leaf = ceil((ww->n_s - 1) / (double)NUM_CHILDREN);
 
                 // plug nan array hole
-                n_array[idx] = n_array[n_n - 1];
-                n_array[idx]->idx = idx;
+                if (n_n > 2) {
+                    n_array[idx] = n_array[n_n - 1];
+                    n_array[idx]->idx = idx;
+                }
                 --ww->n_n;
 
                 // reorder small heap if needed
@@ -766,10 +772,10 @@ int ww_assert_equal(ai_t *actual, ai_t *desired, ai_t *input, idx_t length,
 
 int ww_unit_test(void)
 {
-    ai_t arr_input[] = {NAN,    NAN,   0.,   4,   6.,  NAN,   2,   1};
-    ai_t desired[] = {NAN,  NAN,  0. ,  2. ,  5. ,  6. ,  2. ,  1.5};
+    ai_t arr_input[] = {NAN,  NAN,  5.,  NAN,   1.,   7,    0,    NAN};
+    ai_t desired[] =   {NAN,  NAN,  5. ,  5. ,  3. ,  4. ,  1. ,  3.5};
     ai_t *actual;
-    int window = 2;
+    int window = 3;
     int min_count = 1;
     int length;
     char *err_msg;
@@ -798,6 +804,7 @@ void ww_print_node(ww_node *node)
     printf("%p next\n\n", node->next);
 }
 
+
 void ww_print_chain(ww_handle *ww)
 {
     idx_t i;
@@ -825,37 +832,30 @@ void ww_check(ww_handle *ww)
 
     // small heap
     for (i=0; i<ww->n_s; i++) {
-         if (isnan(ww->s_heap[i]->ai)) {
-            printf(">>>>>>>>> small heap contains NaN <<<<<<<<\n");
-         }
-    }
-    for (i=1; i<ww->n_s; i++) {
-        child = ww->s_heap[i];
-        parent = ww->s_heap[P_IDX(child->idx)];
-        if (child->ai > parent->ai) {
-           printf("-----------> small heap is BAD <---------\n");
+        assert(ww->s_heap[i]->idx == i);
+        assert(ww->s_heap[i]->ai == ww->s_heap[i]->ai);
+        if (i > 0) {
+            child = ww->s_heap[i];
+            parent = ww->s_heap[P_IDX(child->idx)];
+            assert(child->ai <= parent->ai);
         }
     }
 
     // large heap
     for (i=0; i<ww->n_l; i++) {
-         if (isnan(ww->l_heap[i]->ai)) {
-            printf(">>>>>>>>> large heap contains NaN <<<<<<<<\n");
-         }
-    }
-    for (i=1; i<ww->n_l; i++) {
-        child = ww->l_heap[i];
-        parent = ww->l_heap[P_IDX(child->idx)];
-        if (child->ai < parent->ai) {
-           printf("-----------> large heap is BAD <---------\n");
+        assert(ww->l_heap[i]->idx == i);
+        assert(ww->l_heap[i]->ai == ww->l_heap[i]->ai);
+        if (i > 0) {
+            child = ww->l_heap[i];
+            parent = ww->l_heap[P_IDX(child->idx)];
+            assert(child->ai >= parent->ai);
         }
     }
 
     // nan array
     for (i=0; i<ww->n_n; i++) {
-         if (!isnan(ww->n_array[i]->ai)) {
-            printf(">>>>>>>>> nan array contains non-NaN <<<<<<<<\n");
-         }
+         assert(ww->n_array[i]->idx == i);
+         assert(ww->n_array[i]->ai != ww->n_array[i]->ai);
     }
 
     // handle
