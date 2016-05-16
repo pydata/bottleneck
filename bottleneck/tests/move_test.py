@@ -73,8 +73,7 @@ def unit_maker(func, decimal=4):
 # ---------------------------------------------------------------------------
 # Only some moving window functions can handle input arrays that contains inf.
 #
-# Those that can't handle inf:
-# move_sum, move_mean, move_std, move_var, move_median
+# Those that can't handle inf: move_sum, move_mean, move_std, move_var
 #
 # Adding code to deal with the rare case of inf in the input array slows down
 # the functions and makes the code more complex and harder to maintain.
@@ -83,7 +82,7 @@ def test_move_inf():
     "test inf in input array"
     fmt = '\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n'
     funcs = [bn.move_min, bn.move_max, bn.move_argmin, bn.move_argmax,
-             bn.move_rank]
+             bn.move_rank, bn.move_median]
     arr = np.array([1, 2, np.inf, 3, 4, 5])
     window = 3
     min_count = 2
@@ -93,6 +92,35 @@ def test_move_inf():
         desired = func0(arr, window=window, min_count=min_count)
         err_msg = fmt % (func.__name__, window, min_count, arr)
         assert_array_almost_equal(actual, desired, decimal=5, err_msg=err_msg)
+
+
+# ---------------------------------------------------------------------------
+# move_nanmedian.c is complicated. Let's test it some more.
+#
+# If you make changes to move_median.c then do lots of tests by increasing
+# range(100) in the function below to range(10000).
+
+def test_move_nanmedian():
+    "test move_nanmedian.c"
+    fmt = '\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n'
+    aaae = assert_array_almost_equal
+    min_count = 1
+    size = 8
+    func = bn.move_median
+    func0 = bn.slow.move_median
+    rs = np.random.RandomState([1, 2, 3])
+    for i in range(100):
+        a = np.arange(size, dtype=np.float64)
+        idx = rs.rand(*a.shape) < 0.1
+        a[idx] = np.inf
+        idx = rs.rand(*a.shape) < 0.2
+        a[idx] = np.nan
+        rs.shuffle(a)
+        for window in range(2, size + 1):
+            actual = func(a, window=window, min_count=min_count)
+            desired = func0(a, window=window, min_count=min_count)
+            err_msg = fmt % (func.__name__, window, min_count, a)
+            aaae(actual, desired, decimal=5, err_msg=err_msg)
 
 
 # ----------------------------------------------------------------------------
