@@ -301,11 +301,34 @@ ww_update(ww_handle *ww, ai_t ai)
             } else {
                 s_heap[idx] = s_heap[n_s - 1];
                 s_heap[idx]->idx = idx;
-                ww->s_first_leaf = ceil((ww->n_s - 1) / (double)NUM_CHILDREN);
-            }
+                if (ww->n_s < ww->n_l) {
 
-            // reorder small heap if needed
-            heapify_small_node(ww, idx);
+                    // move head node from the large heap to the small heap
+                    node2 = ww->l_heap[0];
+                    node2->idx = ww->n_s;
+                    node2->region = 1;
+                    s_heap[ww->n_s] = node2;
+                    ++ww->n_s;
+                    ww->l_first_leaf = ceil((ww->n_s - 1) / (double)NUM_CHILDREN);
+                    heapify_small_node(ww, node2->idx);
+
+                    // plug hole in large heap
+                    node2= ww->l_heap[ww->n_l - 1];
+                    node2->idx = 0;
+                    l_heap[0] = node2;
+                    --ww->n_l;
+                    if (ww->n_l == 0) {
+                        ww->l_first_leaf = 0;
+                    } else {
+                        ww->l_first_leaf = ceil((ww->n_l - 1) / (double)NUM_CHILDREN);
+                    }
+                    heapify_large_node(ww, 0);
+
+                } else {
+                ww->s_first_leaf = ceil((ww->n_s - 1) / (double)NUM_CHILDREN);
+                heapify_small_node(ww, idx);
+                }
+            }
 
         } else if (node->region == 0) {
 
@@ -796,10 +819,10 @@ int ww_assert_equal(ai_t *actual, ai_t *desired, ai_t *input, idx_t length,
 
 int ww_unit_test(void)
 {
-    ai_t arr_input[] = {1,  5,  0,  4,   NAN,   6,   NAN,    NAN};
-    ai_t desired[] =   {1,  3,  1,  2.5 ,  4,   4,   5,      5};
+    ai_t arr_input[] = {6,  5,   7, INFINITY,  1,  INFINITY,   NAN,    NAN};
+    ai_t desired[] =   {6,  5.5, 6, 6.5,       6,  6.5,       7,    INFINITY};
     ai_t *actual;
-    int window = 3;
+    int window = 6;
     int min_count = 1;
     int length;
     char *err_msg;

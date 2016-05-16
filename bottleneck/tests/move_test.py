@@ -96,6 +96,9 @@ def test_move_inf():
 
 # ---------------------------------------------------------------------------
 # move_nanmedian.c is complicated. Let's test it some more.
+#
+# If you make changes to move_median.c then do lots of tests by increasing
+# range(100) in the function below to range(10000).
 
 def test_move_nanmedian():
     "test move_nanmedian.c"
