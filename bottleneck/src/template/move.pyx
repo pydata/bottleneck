@@ -1571,7 +1571,6 @@ cdef extern from "csrc/move_nanmedian.c":
         ww_node          **n_heap
         ww_node          **nodes
         ww_node           *node_data
-        ww_node           *nan_data
         ww_node           *newest
         ww_node           *oldest
         np.npy_uint64 s_first_leaf

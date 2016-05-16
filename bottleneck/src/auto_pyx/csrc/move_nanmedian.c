@@ -60,7 +60,6 @@ struct _ww_handle {
     ww_node **n_array;   // The nan array
     ww_node **nodes;     // All nodes. s_heap and l_heap point into this array
     ww_node  *node_data; // Pointer to memory location where nodes live
-    ww_node  *nan_data;  // Pointer to memory location where nodes live
     ww_node  *oldest;    // The oldest node
     ww_node  *newest;    // The newest node (most recent insert)
     idx_t s_first_leaf;  // All nodes at this index or greater are leaf nodes
@@ -132,7 +131,6 @@ ww_new(const idx_t window, idx_t min_count)
     ww_handle *ww = malloc(sizeof(ww_handle));
     ww->nodes = malloc(2 * window * sizeof(ww_node*));
     ww->node_data = malloc(window * sizeof(ww_node));
-    ww->nan_data = malloc(window * sizeof(ww_node));
 
     ww->s_heap = ww->nodes;
     ww->l_heap = &ww->nodes[window / 2 + window % 2];
@@ -160,8 +158,8 @@ ww_update_init(ww_handle *ww, ai_t ai)
     idx_t n_l = ww->n_l;
     idx_t n_n = ww->n_n;
 
+    node = &ww->node_data[n_s + n_l + n_n];
     if (isnan(ai)) {
-        node = &ww->nan_data[n_n];
         ww->n_array[n_n] = node;
         node->region = NA;
         node->idx = n_n;
@@ -175,7 +173,6 @@ ww_update_init(ww_handle *ww, ai_t ai)
         ww->newest = node;
         ++ww->n_n;
     } else {
-        node = &ww->node_data[n_s + n_l];
         if (n_s == 0) {
             // The first node.
 
@@ -476,7 +473,6 @@ ww_reset(ww_handle *ww)
 inline void
 ww_free(ww_handle *ww)
 {
-    free(ww->nan_data);
     free(ww->node_data);
     free(ww->nodes);
     free(ww);
