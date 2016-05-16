@@ -265,7 +265,7 @@ ww_update(ww_handle *ww, ai_t ai)
              * filled with the rightmost leaf of the last row of the small
              * heap. */
 
-            //  insert node into nan array
+            // insert node into nan array
             node->region = 2;
             node->idx = n_n;
             node->ai = ai;
@@ -273,12 +273,34 @@ ww_update(ww_handle *ww, ai_t ai)
             ++ww->n_n;
 
             // plug small heap hole
-            s_heap[idx] = s_heap[n_s - 1];
-            s_heap[idx]->idx = idx;
             --ww->n_s;
             if (ww->n_s == 0) {
                 ww->s_first_leaf = 0;
+                if (n_l > 0) {
+
+                    // move head node from the large heap to the small heap
+                    node2 = ww->l_heap[0];
+                    node2->region = 1;
+                    s_heap[0] = node2;
+                    ww->n_s = 1;
+                    ww->s_first_leaf = 0;
+
+                    // plug hole in large heap
+                    node2= ww->l_heap[ww->n_l - 1];
+                    node2->idx = 0;
+                    l_heap[0] = node2;
+                    --ww->n_l;
+                    if (ww->n_l == 0) {
+                        ww->l_first_leaf = 0;
+                    } else {
+                        ww->l_first_leaf = ceil((ww->n_l - 1) / (double)NUM_CHILDREN);
+                    }
+                    heapify_large_node(ww, 0);
+
+                }
             } else {
+                s_heap[idx] = s_heap[n_s - 1];
+                s_heap[idx]->idx = idx;
                 ww->s_first_leaf = ceil((ww->n_s - 1) / (double)NUM_CHILDREN);
             }
 
@@ -299,7 +321,7 @@ ww_update(ww_handle *ww, ai_t ai)
             n_array[n_n] = node;
             ++ww->n_n;
 
-            // plug small heap hole
+            // plug large heap hole
             l_heap[idx] = l_heap[n_l - 1];
             l_heap[idx]->idx = idx;
             --ww->n_l;
@@ -310,8 +332,8 @@ ww_update(ww_handle *ww, ai_t ai)
             }
 
             if (ww->n_l < ww->n_s - 1) {
-                // move head node from the small heap to the large heap
 
+                // move head node from the small heap to the large heap
                 node2 = ww->s_heap[0];
                 node2->idx = ww->n_l;
                 node2->region = 0;
@@ -320,6 +342,7 @@ ww_update(ww_handle *ww, ai_t ai)
                 ww->l_first_leaf = ceil((ww->n_l - 1) / (double)NUM_CHILDREN);
                 heapify_large_node(ww, node2->idx);
 
+                // plug hole in small heap
                 node2= ww->s_heap[ww->n_s - 1];
                 node2->idx = 0;
                 s_heap[0] = node2;
@@ -330,6 +353,7 @@ ww_update(ww_handle *ww, ai_t ai)
                     ww->s_first_leaf = ceil((ww->n_s - 1) / (double)NUM_CHILDREN);
                 }
                 heapify_small_node(ww, 0);
+
             }
 
             // reorder large heap if needed
@@ -772,8 +796,8 @@ int ww_assert_equal(ai_t *actual, ai_t *desired, ai_t *input, idx_t length,
 
 int ww_unit_test(void)
 {
-    ai_t arr_input[] = {NAN,  NAN,  5.,  NAN,   1.,   7,    0,    NAN};
-    ai_t desired[] =   {NAN,  NAN,  5. ,  5. ,  3. ,  4. ,  1. ,  3.5};
+    ai_t arr_input[] = {1,  5,  0,  4,   NAN,   6,   NAN,    NAN};
+    ai_t desired[] =   {1,  3,  1,  2.5 ,  4,   4,   5,      5};
     ai_t *actual;
     int window = 3;
     int min_count = 1;
