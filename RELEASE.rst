@@ -40,12 +40,6 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 - Fixed: Non-accelerated moving window functions used min_count incorrectly
 - bn.move_median is a bit slower for float input arrays that do not contain NaN
 
-**Miscellaneous**
-
-- C files are generated with Cython 0.24 instead of 0.21.1
-- New script to automate updating of benchmark results in readme file
-- Can now specify which functions to include in the benchmark suite
-
 **Thanks**
 
 - Jennifer Olsen worked on bn.move_median
