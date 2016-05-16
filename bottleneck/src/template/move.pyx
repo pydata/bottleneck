@@ -1555,7 +1555,7 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 cdef extern from "csrc/move_nanmedian.c":
     struct _ww_node:
-        char            region
+        int             region
         np.npy_uint64   idx
         np.npy_float64  ai
         _ww_node       *next
@@ -1578,8 +1578,8 @@ cdef extern from "csrc/move_nanmedian.c":
         np.npy_uint64 l_first_leaf
     ctypedef _ww_handle ww_handle
     ww_handle *ww_new(np.npy_uint64 window, np.npy_uint64 min_count) nogil
-    np.npy_float64 ww_update_init(ww_handle *ww, np.npy_float64 val) nogil
-    np.npy_float64 ww_update(ww_handle *ww, np.npy_float64 val) nogil
+    np.npy_float64 ww_update_init(ww_handle *ww, np.npy_float64 ai) nogil
+    np.npy_float64 ww_update(ww_handle *ww, np.npy_float64 ai) nogil
     void ww_reset(ww_handle* ww) nogil
     void ww_free(ww_handle *ww) nogil
 

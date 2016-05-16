@@ -30,9 +30,9 @@
 #endif
 
 // are we in the small heap (SM), large heap (LH) or NaN array (NA)?
-#define SH 'S'
-#define LH 'L'
-#define NA 'N'
+#define SH 0
+#define LH 1
+#define NA 2
 
 
 /*
@@ -42,7 +42,7 @@
 */
 
 struct _ww_node {
-    char             region; // SH small heap, LH large heap, NA nan array
+    int              region; // SH small heap, LH large heap, NA nan array
     ai_t             ai;     // The node's value
     idx_t            idx;    // The node's index in the heap or nan array
     struct _ww_node *next;   // The next node in order of insertion
