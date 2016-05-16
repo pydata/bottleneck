@@ -29,6 +29,11 @@
 
 #endif
 
+// are we in the small heap (SM), large heap (LH) or NaN array (NA)?
+#define SH 'S'
+#define LH 'L'
+#define NA 'N'
+
 
 /*
 -----------------------------------------------------------------------------
@@ -37,21 +42,21 @@
 */
 
 struct _ww_node {
-    int              region; // 0 for large heap; 1 small; 2 nan array
-    idx_t            idx;    // The node's index in the heap or nan array
+    char             region; // SH small heap, LH large heap, NA nan array
     ai_t             ai;     // The node's value
+    idx_t            idx;    // The node's index in the heap or nan array
     struct _ww_node *next;   // The next node in order of insertion
 };
 typedef struct _ww_node ww_node;
 
 struct _ww_handle {
     idx_t     window;    // window size
-    idx_t     n_s;       // The number of elements in the small heap
-    idx_t     n_l;       // The number of elements in the large heap
-    idx_t     n_n;       // The number of nodes in the nan array
+    idx_t     n_s;       // Number of nodes in the small heap
+    idx_t     n_l;       // Number of nodes in the large heap
+    idx_t     n_n;       // Number of nodes in the nan array
     idx_t     min_count; // Same meaning as in bn.move_median
-    ww_node **s_heap;    // The max heap
-    ww_node **l_heap;    // The min heap
+    ww_node **s_heap;    // The max heap of small ai
+    ww_node **l_heap;    // The min heap of large ai
     ww_node **n_array;   // The nan array
     ww_node **nodes;     // All nodes. s_heap and l_heap point into this array
     ww_node  *node_data; // Pointer to memory location where nodes live
@@ -158,7 +163,7 @@ ww_update_init(ww_handle *ww, ai_t ai)
     if (isnan(ai)) {
         node = &ww->nan_data[n_n];
         ww->n_array[n_n] = node;
-        node->region = 2;
+        node->region = NA;
         node->idx = n_n;
         node->ai = ai;
         if (n_s + n_l + n_n == 0) {
@@ -175,7 +180,7 @@ ww_update_init(ww_handle *ww, ai_t ai)
             // The first node.
 
             ww->s_heap[0] = node;
-            node->region = 1;
+            node->region = SH;
             node->idx = 0;
             node->ai = ai;
             if (n_s + n_l + n_n == 0) {
@@ -202,7 +207,7 @@ ww_update_init(ww_handle *ww, ai_t ai)
                 // Add to the large heap.
 
                 ww->l_heap[n_l] = node;
-                node->region = 0;
+                node->region = LH;
                 node->idx = n_l;
 
                 ++ww->n_l;
@@ -213,7 +218,7 @@ ww_update_init(ww_handle *ww, ai_t ai)
                 // Add to the small heap.
 
                 ww->s_heap[n_s] = node;
-                node->region = 1;
+                node->region = SH;
                 node->idx = n_s;
 
                 ++ww->n_s;
@@ -258,7 +263,7 @@ ww_update(ww_handle *ww, ai_t ai)
 
     if (isnan(ai)) {
 
-        if (node->region == 1) {
+        if (node->region == SH) {
 
             /* Oldest node is in the small heap and needs to be moved
              * to the nan array. Resulting hole in the small heap will be
@@ -266,7 +271,7 @@ ww_update(ww_handle *ww, ai_t ai)
              * heap. */
 
             // insert node into nan array
-            node->region = 2;
+            node->region = NA;
             node->idx = n_n;
             node->ai = ai;
             n_array[n_n] = node;
@@ -280,7 +285,7 @@ ww_update(ww_handle *ww, ai_t ai)
 
                     // move head node from the large heap to the small heap
                     node2 = ww->l_heap[0];
-                    node2->region = 1;
+                    node2->region = SH;
                     s_heap[0] = node2;
                     ww->n_s = 1;
                     ww->s_first_leaf = 0;
@@ -306,7 +311,7 @@ ww_update(ww_handle *ww, ai_t ai)
                     // move head node from the large heap to the small heap
                     node2 = ww->l_heap[0];
                     node2->idx = ww->n_s;
-                    node2->region = 1;
+                    node2->region = SH;
                     s_heap[ww->n_s] = node2;
                     ++ww->n_s;
                     ww->l_first_leaf = ceil((ww->n_s - 1) / (double)NUM_CHILDREN);
@@ -330,7 +335,7 @@ ww_update(ww_handle *ww, ai_t ai)
                 }
             }
 
-        } else if (node->region == 0) {
+        } else if (node->region == LH) {
 
             /* Oldest node is in the large heap and needs to be moved
              * to the nan array. Resulting hole in the large heap will be
@@ -338,7 +343,7 @@ ww_update(ww_handle *ww, ai_t ai)
              * heap. */
 
             // insert node into nan array
-            node->region = 2;
+            node->region = NA;
             node->idx = n_n;
             node->ai = ai;
             n_array[n_n] = node;
@@ -359,7 +364,7 @@ ww_update(ww_handle *ww, ai_t ai)
                 // move head node from the small heap to the large heap
                 node2 = ww->s_heap[0];
                 node2->idx = ww->n_l;
-                node2->region = 0;
+                node2->region = LH;
                 l_heap[ww->n_l] = node2;
                 ++ww->n_l;
                 ww->l_first_leaf = ceil((ww->n_l - 1) / (double)NUM_CHILDREN);
@@ -382,7 +387,7 @@ ww_update(ww_handle *ww, ai_t ai)
             // reorder large heap if needed
             heapify_large_node(ww, idx);
 
-        } else if (node->region == 2) {
+        } else if (node->region == NA) {
 
             //  insert node into nan heap
             n_array[idx] = node;
@@ -390,11 +395,11 @@ ww_update(ww_handle *ww, ai_t ai)
         }
     } else {
 
-        if (node->region == 1) {
+        if (node->region == SH) {
             node->ai = ai;
             heapify_small_node(ww, idx);
         }
-        else if (node->region == 0) {
+        else if (node->region == LH) {
             node->ai = ai;
             heapify_large_node(ww, idx);
         }
@@ -405,7 +410,7 @@ ww_update(ww_handle *ww, ai_t ai)
             if (n_s > n_l) {
 
                 // insert into large heap
-                node->region = 0;
+                node->region = LH;
                 node->idx = n_l;
                 node->ai = ai;
                 l_heap[n_l] = node;
@@ -425,7 +430,7 @@ ww_update(ww_handle *ww, ai_t ai)
             } else {
 
                 // insert into small heap
-                node->region = 1;
+                node->region = SH;
                 node->idx = n_s;
                 node->ai = ai;
                 s_heap[n_s] = node;
@@ -736,8 +741,8 @@ inline void
 ww_swap_heap_heads(ww_node **s_heap, idx_t n_s, ww_node **l_heap, idx_t n_l,
                    ww_node *s_node, ww_node *l_node)
 {
-    s_node->region = 0;
-    l_node->region = 1;
+    s_node->region = LH;
+    l_node->region = SH;
     s_heap[0] = l_node;
     l_heap[0] = s_node;
     ww_move_down_small(s_heap, n_s, 0, l_node);
@@ -959,31 +964,31 @@ void ww_dump(ww_handle *ww)
 
         printf("\nsmall heap\n");
         idx0 = -1;
-        if (ww->oldest->region == 1) {
+        if (ww->oldest->region == SH) {
             idx0 = ww->oldest->idx;
         }
         idx1 = -1;
-        if (ww->newest->region == 1) {
+        if (ww->newest->region == SH) {
             idx1 = ww->newest->idx;
         }
         ww_print_binary_heap(ww->s_heap, ww->n_s, idx0, idx1);
         printf("\nlarge heap\n");
         idx0 = -1;
-        if (ww->oldest->region == 0) {
+        if (ww->oldest->region == LH) {
             idx0 = ww->oldest->idx;
         }
         idx1 = -1;
-        if (ww->newest->region == 0) {
+        if (ww->newest->region == LH) {
             idx1 = ww->newest->idx;
         }
         ww_print_binary_heap(ww->l_heap, ww->n_l, idx0, idx1);
         printf("\nnan array\n");
         idx0 = -1;
-        if (ww->oldest->region == 2) {
+        if (ww->oldest->region == NA) {
             idx0 = ww->oldest->idx;
         }
         idx1 = -1;
-        if (ww->newest->region == 2) {
+        if (ww->newest->region == NA) {
             idx1 = ww->newest->idx;
         }
         for(i = 0; i < (int)ww->n_n; ++i) {

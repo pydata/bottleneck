@@ -1555,14 +1555,13 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 cdef extern from "csrc/move_nanmedian.c":
     struct _ww_node:
-        np.npy_uint32   small
+        char            region
         np.npy_uint64   idx
-        np.npy_float64  val
-        _ww_node         *next
+        np.npy_float64  ai
+        _ww_node       *next
     ctypedef _ww_node ww_node
     struct _ww_handle:
         np.npy_uint64    window
-        np.npy_uint64    odd
         np.npy_uint64    n_s
         np.npy_uint64    n_l
         np.npy_uint64    n_n
