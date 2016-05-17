@@ -1479,7 +1479,7 @@ def move_median(arr, int window, min_count=None, axis=-1):
         return slow.move_median(arr, window, min_count, axis)
 
 
-cdef extern from "csrc/move_nanmedian.c":
+cdef extern from "csrc/move_median.c":
     struct _mm_node:
         np.npy_uint32   small
         np.npy_uint64   idx
@@ -1491,12 +1491,12 @@ cdef extern from "csrc/move_nanmedian.c":
         np.npy_uint64    n_s
         np.npy_uint64    n_l
         np.npy_uint64    min_count
-        mm_node          **s_heap
-        mm_node          **l_heap
-        mm_node          **nodes
-        mm_node           *node_data
-        mm_node           *first
-        mm_node           *last
+        mm_node        **s_heap
+        mm_node        **l_heap
+        mm_node        **nodes
+        mm_node         *node_data
+        mm_node         *first
+        mm_node         *last
         np.npy_uint64 s_first_leaf
         np.npy_uint64 l_first_leaf
     ctypedef _mm_handle mm_handle
@@ -1508,41 +1508,6 @@ cdef extern from "csrc/move_nanmedian.c":
     np.npy_float64 mm_update_nan(mm_handle* mm, np.npy_float64 val) nogil
     void mm_reset(mm_handle* mm) nogil
     void mm_free(mm_handle *mm) nogil
-
-
-@cython.cdivision(True)
-cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
-                                np.flatiter ita, Py_ssize_t stride,
-                                Py_ssize_t length, int a_ndim,
-                                np.npy_intp* y_dims, int ignore):
-    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
-    cdef mm_handle *mm
-    cdef Py_ssize_t i
-    cdef DTYPE0_t ai
-    cdef DTYPE1_t yi
-    if window == 1:
-        return a.astype(np.float64)
-    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
-    cdef Py_ssize_t ystride = y.strides[axis]
-    mm = mm_new(window, min_count)
-    if mm is NULL:
-        raise MemoryError()
-    with nogil:
-        while PyArray_ITER_NOTDONE(ita):
-            for i in range(window):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                yi = mm_update_init(mm, ai)
-                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-            for i in range(window, length):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
-                yi = mm_update(mm, ai)
-                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
-            PyArray_ITER_NEXT(ita)
-            PyArray_ITER_NEXT(ity)
-            mm_reset(mm)
-        mm_free(mm)
-    return y
 
 
 @cython.cdivision(True)
@@ -1572,6 +1537,41 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
             for i in range(window, length):
                 ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
                 yi = mm_update_nan(mm, ai)
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+            mm_reset(mm)
+        mm_free(mm)
+    return y
+
+
+@cython.cdivision(True)
+cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
+                                np.flatiter ita, Py_ssize_t stride,
+                                Py_ssize_t length, int a_ndim,
+                                np.npy_intp* y_dims, int ignore):
+    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
+    cdef mm_handle *mm
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai
+    cdef DTYPE1_t yi
+    if window == 1:
+        return a.astype(np.float64)
+    cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef Py_ssize_t ystride = y.strides[axis]
+    mm = mm_new(window, min_count)
+    if mm is NULL:
+        raise MemoryError()
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(window):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                yi = mm_update_init(mm, ai)
+                (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
+            for i in range(window, length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                yi = mm_update(mm, ai)
                 (<DTYPE1_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
             PyArray_ITER_NEXT(ita)
             PyArray_ITER_NEXT(ity)
