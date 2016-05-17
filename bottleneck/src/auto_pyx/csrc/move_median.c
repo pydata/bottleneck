@@ -59,6 +59,7 @@ mm_new(const idx_t window, idx_t min_count)
     mm->l_heap = &mm->nodes[window / 2 + window % 2];
 
     mm->window = window;
+    mm->odd = window % 2;
     mm->min_count = min_count;
 
     mm_reset(mm);
@@ -144,13 +145,18 @@ mm_update(mm_handle *mm, ai_t ai)
     mm->newest->next = node;
     mm->newest = node;
 
+    // adjust position of new node in heap if needed
     if (node->region == SH) {
         heapify_small_node(mm, node->idx);
     } else {
         heapify_large_node(mm, node->idx);
     }
 
-    return mm_get_median(mm);
+    // return the median
+    if (mm->odd)
+        return mm->s_heap[0]->ai;
+    else
+        return (mm->s_heap[0]->ai + mm->l_heap[0]->ai) / 2.0;
 }
 
 
@@ -187,7 +193,8 @@ mm_new_nan(const idx_t window, idx_t min_count)
 
 /* Insert a new value, ai, into one of the heaps. Use this function when
  * the heaps contains less than window-1 values. Returns the median value.
- * Once there are window-1 values in the heap, switch to using mm_update. */
+ * Once there are window-1 values in the heap, switch to using
+ * mm_update_nan. */
 inline ai_t
 mm_update_init_nan(mm_handle *mm, ai_t ai)
 {
@@ -263,7 +270,7 @@ mm_update_init_nan(mm_handle *mm, ai_t ai)
 /* Insert a new value, ai, into the double heap structure. Use this function
  * when the double heap contains at least window-1 values. Returns the median
  * value. If there are less than window-1 values in the heap, use
- * mm_update_init. */
+ * mm_update_init_nan. */
 inline ai_t
 mm_update_nan(mm_handle *mm, ai_t ai)
 {
@@ -515,29 +522,16 @@ mm_free(mm_handle *mm)
 -----------------------------------------------------------------------------
 */
 
-/* Return the current median value when there are less than window values
- * in the double heap. */
+/* Return the current median */
 inline ai_t
 mm_get_median(mm_handle *mm)
 {
-    idx_t n_s = mm->n_s;
-    idx_t n_l = mm->n_l;
-
-    idx_t numel_total = n_l + n_s;
-
-    if (numel_total < mm->min_count)
+    idx_t n_total = mm->n_l + mm->n_s;
+    if (n_total < mm->min_count)
         return NAN;
-
-    idx_t effective_window_size = min(mm->window, numel_total);
-
-    if (effective_window_size % 2 == 1) {
-        if (n_l > n_s)
-            return mm->l_heap[0]->ai;
-        else
-            return mm->s_heap[0]->ai;
-    }
-    else
-        return (mm->s_heap[0]->ai + mm->l_heap[0]->ai) / 2;
+    if (min(mm->window, n_total) % 2 == 1)
+        return mm->s_heap[0]->ai;
+    return (mm->s_heap[0]->ai + mm->l_heap[0]->ai) / 2.0;
 }
 
 
@@ -646,10 +640,8 @@ heapify_large_node(mm_handle *mm, idx_t idx)
 }
 
 
-/*
- * Return the index of the smallest child of the node. The pointer
- * child will also be set.
- */
+/* Return the index of the smallest child of the node. The pointer
+ * child will also be set. */
 inline idx_t
 mm_get_smallest_child(mm_node **heap, idx_t window, idx_t idx, mm_node **child)
 {
@@ -673,10 +665,8 @@ mm_get_smallest_child(mm_node **heap, idx_t window, idx_t idx, mm_node **child)
 }
 
 
-/*
- * Return the index of the largest child of the node. The pointer
- * child will also be set.
- */
+/* Return the index of the largest child of the node. The pointer
+ * child will also be set. */
 inline idx_t
 mm_get_largest_child(mm_node **heap, idx_t window, idx_t idx, mm_node **child)
 {

@@ -772,7 +772,7 @@ struct __pyx_t_4move_pairs {
   int death;
 };
 
-/* "move.pyx":2858
+/* "move.pyx":2861
  * # mover ---------------------------------------------------------------------
  * 
  * ctypedef ndarray (*move_t)(ndarray, int, int, int, np.flatiter, Py_ssize_t,             # <<<<<<<<<<<<<<
@@ -781,7 +781,7 @@ struct __pyx_t_4move_pairs {
  */
 typedef PyArrayObject *(*__pyx_t_4move_move_t)(PyArrayObject *, int, int, int, PyArrayIterObject *, Py_ssize_t, Py_ssize_t, int, npy_intp *, int);
 
-/* "move.pyx":2862
+/* "move.pyx":2865
  * 
  * 
  * cdef ndarray mover(arr, int window, min_count, int axis,             # <<<<<<<<<<<<<<
@@ -1291,7 +1291,7 @@ static const char __pyx_k_move_max_line_1377[] = "move_max (line 1377)";
 static const char __pyx_k_move_mean_line_270[] = "move_mean (line 270)";
 static const char __pyx_k_move_min_line_1075[] = "move_min (line 1075)";
 static const char __pyx_k_Unsupported_dtype_s[] = "Unsupported dtype (%s).";
-static const char __pyx_k_move_rank_line_2521[] = "move_rank (line 2521)";
+static const char __pyx_k_move_rank_line_2524[] = "move_rank (line 2524)";
 static const char __pyx_k_axis_d_out_of_bounds[] = "axis(=%d) out of bounds";
 static const char __pyx_k_bottleneck_slow_move[] = "bottleneck.slow.move";
 static const char __pyx_k_move_argmax_line_1995[] = "move_argmax (line 1995)";
@@ -1369,7 +1369,7 @@ static PyObject *__pyx_kp_u_move_median_line_2311;
 static PyObject *__pyx_n_s_move_min;
 static PyObject *__pyx_kp_u_move_min_line_1075;
 static PyObject *__pyx_n_s_move_rank;
-static PyObject *__pyx_kp_u_move_rank_line_2521;
+static PyObject *__pyx_kp_u_move_rank_line_2524;
 static PyObject *__pyx_n_s_move_std;
 static PyObject *__pyx_kp_u_move_std_line_484;
 static PyObject *__pyx_n_s_move_sum;
@@ -21482,7 +21482,7 @@ static PyObject *__pyx_pf_4move_16move_median(CYTHON_UNUSED PyObject *__pyx_self
   return __pyx_r;
 }
 
-/* "move.pyx":2388
+/* "move.pyx":2391
  * 
  * @cython.cdivision(True)
  * cdef ndarray move_median_float64(ndarray a, int window, int min_count, int axis,             # <<<<<<<<<<<<<<
@@ -21507,7 +21507,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
   Py_ssize_t __pyx_t_5;
   __Pyx_RefNannySetupContext("move_median_float64", 0);
 
-  /* "move.pyx":2396
+  /* "move.pyx":2399
  *     cdef float64_t ai
  *     cdef float64_t yi
  *     if window == 1:             # <<<<<<<<<<<<<<
@@ -21517,7 +21517,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
   __pyx_t_1 = ((__pyx_v_window == 1) != 0);
   if (__pyx_t_1) {
 
-    /* "move.pyx":2397
+    /* "move.pyx":2400
  *     cdef float64_t yi
  *     if window == 1:
  *         return PyArray_Copy(a)             # <<<<<<<<<<<<<<
@@ -21525,14 +21525,14 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  */
     __Pyx_XDECREF(((PyObject *)__pyx_r));
-    __pyx_t_2 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2397, __pyx_L1_error)
+    __pyx_t_2 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2400, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2397, __pyx_L1_error)
+    if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2400, __pyx_L1_error)
     __pyx_r = ((PyArrayObject *)__pyx_t_2);
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "move.pyx":2396
+    /* "move.pyx":2399
  *     cdef float64_t ai
  *     cdef float64_t yi
  *     if window == 1:             # <<<<<<<<<<<<<<
@@ -21541,33 +21541,33 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
  */
   }
 
-  /* "move.pyx":2398
+  /* "move.pyx":2401
  *     if window == 1:
  *         return PyArray_Copy(a)
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  */
-  __pyx_t_2 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2398, __pyx_L1_error)
+  __pyx_t_2 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2401, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2398, __pyx_L1_error)
+  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2401, __pyx_L1_error)
   __pyx_v_y = ((PyArrayObject *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "move.pyx":2399
+  /* "move.pyx":2402
  *         return PyArray_Copy(a)
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     mm = mm_new_nan(window, min_count)
  */
-  __pyx_t_2 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2399, __pyx_L1_error)
+  __pyx_t_2 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2402, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2399, __pyx_L1_error)
+  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2402, __pyx_L1_error)
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "move.pyx":2400
+  /* "move.pyx":2403
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -21576,7 +21576,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
  */
   __pyx_v_ystride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "move.pyx":2401
+  /* "move.pyx":2404
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     mm = mm_new_nan(window, min_count)             # <<<<<<<<<<<<<<
@@ -21585,7 +21585,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
  */
   __pyx_v_mm = mm_new_nan(__pyx_v_window, __pyx_v_min_count);
 
-  /* "move.pyx":2402
+  /* "move.pyx":2405
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     mm = mm_new_nan(window, min_count)
  *     if mm is NULL:             # <<<<<<<<<<<<<<
@@ -21595,16 +21595,16 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
   __pyx_t_1 = ((__pyx_v_mm == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "move.pyx":2403
+    /* "move.pyx":2406
  *     mm = mm_new_nan(window, min_count)
  *     if mm is NULL:
  *         raise MemoryError()             # <<<<<<<<<<<<<<
  *     with nogil:
  *         while PyArray_ITER_NOTDONE(ita):
  */
-    PyErr_NoMemory(); __PYX_ERR(0, 2403, __pyx_L1_error)
+    PyErr_NoMemory(); __PYX_ERR(0, 2406, __pyx_L1_error)
 
-    /* "move.pyx":2402
+    /* "move.pyx":2405
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     mm = mm_new_nan(window, min_count)
  *     if mm is NULL:             # <<<<<<<<<<<<<<
@@ -21613,7 +21613,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
  */
   }
 
-  /* "move.pyx":2404
+  /* "move.pyx":2407
  *     if mm is NULL:
  *         raise MemoryError()
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -21627,7 +21627,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
       #endif
       /*try:*/ {
 
-        /* "move.pyx":2405
+        /* "move.pyx":2408
  *         raise MemoryError()
  *     with nogil:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -21638,7 +21638,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
           __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
           if (!__pyx_t_1) break;
 
-          /* "move.pyx":2406
+          /* "move.pyx":2409
  *     with nogil:
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(window):             # <<<<<<<<<<<<<<
@@ -21649,7 +21649,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
           for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
             __pyx_v_i = __pyx_t_4;
 
-            /* "move.pyx":2407
+            /* "move.pyx":2410
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(window):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -21658,7 +21658,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
  */
             __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-            /* "move.pyx":2408
+            /* "move.pyx":2411
  *             for i in range(window):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 yi = mm_update_init_nan(mm, ai)             # <<<<<<<<<<<<<<
@@ -21667,7 +21667,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
  */
             __pyx_v_yi = mm_update_init_nan(__pyx_v_mm, __pyx_v_ai);
 
-            /* "move.pyx":2409
+            /* "move.pyx":2412
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 yi = mm_update_init_nan(mm, ai)
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi             # <<<<<<<<<<<<<<
@@ -21677,7 +21677,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
             (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_yi;
           }
 
-          /* "move.pyx":2410
+          /* "move.pyx":2413
  *                 yi = mm_update_init_nan(mm, ai)
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *             for i in range(window, length):             # <<<<<<<<<<<<<<
@@ -21688,7 +21688,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
           for (__pyx_t_5 = __pyx_v_window; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
             __pyx_v_i = __pyx_t_5;
 
-            /* "move.pyx":2411
+            /* "move.pyx":2414
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *             for i in range(window, length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -21697,7 +21697,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
  */
             __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-            /* "move.pyx":2412
+            /* "move.pyx":2415
  *             for i in range(window, length):
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 yi = mm_update_nan(mm, ai)             # <<<<<<<<<<<<<<
@@ -21706,7 +21706,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
  */
             __pyx_v_yi = mm_update_nan(__pyx_v_mm, __pyx_v_ai);
 
-            /* "move.pyx":2413
+            /* "move.pyx":2416
  *                 ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 yi = mm_update_nan(mm, ai)
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi             # <<<<<<<<<<<<<<
@@ -21716,7 +21716,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
             (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_yi;
           }
 
-          /* "move.pyx":2414
+          /* "move.pyx":2417
  *                 yi = mm_update_nan(mm, ai)
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -21725,7 +21725,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
  */
           PyArray_ITER_NEXT(__pyx_v_ita);
 
-          /* "move.pyx":2415
+          /* "move.pyx":2418
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -21734,7 +21734,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
  */
           PyArray_ITER_NEXT(__pyx_v_ity);
 
-          /* "move.pyx":2416
+          /* "move.pyx":2419
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *             mm_reset(mm)             # <<<<<<<<<<<<<<
@@ -21744,7 +21744,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
           mm_reset(__pyx_v_mm);
         }
 
-        /* "move.pyx":2417
+        /* "move.pyx":2420
  *             PyArray_ITER_NEXT(ity)
  *             mm_reset(mm)
  *         mm_free(mm)             # <<<<<<<<<<<<<<
@@ -21754,7 +21754,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
         mm_free(__pyx_v_mm);
       }
 
-      /* "move.pyx":2404
+      /* "move.pyx":2407
  *     if mm is NULL:
  *         raise MemoryError()
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -21772,7 +21772,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
       }
   }
 
-  /* "move.pyx":2418
+  /* "move.pyx":2421
  *             mm_reset(mm)
  *         mm_free(mm)
  *     return y             # <<<<<<<<<<<<<<
@@ -21784,7 +21784,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "move.pyx":2388
+  /* "move.pyx":2391
  * 
  * @cython.cdivision(True)
  * cdef ndarray move_median_float64(ndarray a, int window, int min_count, int axis,             # <<<<<<<<<<<<<<
@@ -21805,7 +21805,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float64(PyArrayObject *__pyx_v_a
   return __pyx_r;
 }
 
-/* "move.pyx":2421
+/* "move.pyx":2424
  * 
  * @cython.cdivision(True)
  * cdef ndarray move_median_float32(ndarray a, int window, int min_count, int axis,             # <<<<<<<<<<<<<<
@@ -21830,7 +21830,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
   Py_ssize_t __pyx_t_5;
   __Pyx_RefNannySetupContext("move_median_float32", 0);
 
-  /* "move.pyx":2429
+  /* "move.pyx":2432
  *     cdef float32_t ai
  *     cdef float32_t yi
  *     if window == 1:             # <<<<<<<<<<<<<<
@@ -21840,7 +21840,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
   __pyx_t_1 = ((__pyx_v_window == 1) != 0);
   if (__pyx_t_1) {
 
-    /* "move.pyx":2430
+    /* "move.pyx":2433
  *     cdef float32_t yi
  *     if window == 1:
  *         return PyArray_Copy(a)             # <<<<<<<<<<<<<<
@@ -21848,14 +21848,14 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  */
     __Pyx_XDECREF(((PyObject *)__pyx_r));
-    __pyx_t_2 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2430, __pyx_L1_error)
+    __pyx_t_2 = PyArray_Copy(__pyx_v_a); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2433, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2430, __pyx_L1_error)
+    if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2433, __pyx_L1_error)
     __pyx_r = ((PyArrayObject *)__pyx_t_2);
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "move.pyx":2429
+    /* "move.pyx":2432
  *     cdef float32_t ai
  *     cdef float32_t yi
  *     if window == 1:             # <<<<<<<<<<<<<<
@@ -21864,33 +21864,33 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
  */
   }
 
-  /* "move.pyx":2431
+  /* "move.pyx":2434
  *     if window == 1:
  *         return PyArray_Copy(a)
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float32, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  */
-  __pyx_t_2 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2431, __pyx_L1_error)
+  __pyx_t_2 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2434, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2431, __pyx_L1_error)
+  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2434, __pyx_L1_error)
   __pyx_v_y = ((PyArrayObject *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "move.pyx":2432
+  /* "move.pyx":2435
  *         return PyArray_Copy(a)
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     mm = mm_new_nan(window, min_count)
  */
-  __pyx_t_2 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2432, __pyx_L1_error)
+  __pyx_t_2 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2435, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2432, __pyx_L1_error)
+  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2435, __pyx_L1_error)
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "move.pyx":2433
+  /* "move.pyx":2436
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -21899,7 +21899,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
  */
   __pyx_v_ystride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "move.pyx":2434
+  /* "move.pyx":2437
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     mm = mm_new_nan(window, min_count)             # <<<<<<<<<<<<<<
@@ -21908,7 +21908,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
  */
   __pyx_v_mm = mm_new_nan(__pyx_v_window, __pyx_v_min_count);
 
-  /* "move.pyx":2435
+  /* "move.pyx":2438
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     mm = mm_new_nan(window, min_count)
  *     if mm is NULL:             # <<<<<<<<<<<<<<
@@ -21918,16 +21918,16 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
   __pyx_t_1 = ((__pyx_v_mm == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "move.pyx":2436
+    /* "move.pyx":2439
  *     mm = mm_new_nan(window, min_count)
  *     if mm is NULL:
  *         raise MemoryError()             # <<<<<<<<<<<<<<
  *     with nogil:
  *         while PyArray_ITER_NOTDONE(ita):
  */
-    PyErr_NoMemory(); __PYX_ERR(0, 2436, __pyx_L1_error)
+    PyErr_NoMemory(); __PYX_ERR(0, 2439, __pyx_L1_error)
 
-    /* "move.pyx":2435
+    /* "move.pyx":2438
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     mm = mm_new_nan(window, min_count)
  *     if mm is NULL:             # <<<<<<<<<<<<<<
@@ -21936,7 +21936,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
  */
   }
 
-  /* "move.pyx":2437
+  /* "move.pyx":2440
  *     if mm is NULL:
  *         raise MemoryError()
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -21950,7 +21950,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
       #endif
       /*try:*/ {
 
-        /* "move.pyx":2438
+        /* "move.pyx":2441
  *         raise MemoryError()
  *     with nogil:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -21961,7 +21961,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
           __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
           if (!__pyx_t_1) break;
 
-          /* "move.pyx":2439
+          /* "move.pyx":2442
  *     with nogil:
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(window):             # <<<<<<<<<<<<<<
@@ -21972,7 +21972,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
           for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
             __pyx_v_i = __pyx_t_4;
 
-            /* "move.pyx":2440
+            /* "move.pyx":2443
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(window):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -21981,7 +21981,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
  */
             __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-            /* "move.pyx":2441
+            /* "move.pyx":2444
  *             for i in range(window):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 yi = mm_update_init_nan(mm, ai)             # <<<<<<<<<<<<<<
@@ -21990,7 +21990,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
  */
             __pyx_v_yi = mm_update_init_nan(__pyx_v_mm, __pyx_v_ai);
 
-            /* "move.pyx":2442
+            /* "move.pyx":2445
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 yi = mm_update_init_nan(mm, ai)
  *                 (<float32_t*>((<char*>pid(ity)) + i*ystride))[0] = yi             # <<<<<<<<<<<<<<
@@ -22000,7 +22000,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
             (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_yi;
           }
 
-          /* "move.pyx":2443
+          /* "move.pyx":2446
  *                 yi = mm_update_init_nan(mm, ai)
  *                 (<float32_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *             for i in range(window, length):             # <<<<<<<<<<<<<<
@@ -22011,7 +22011,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
           for (__pyx_t_5 = __pyx_v_window; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
             __pyx_v_i = __pyx_t_5;
 
-            /* "move.pyx":2444
+            /* "move.pyx":2447
  *                 (<float32_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *             for i in range(window, length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -22020,7 +22020,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
  */
             __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-            /* "move.pyx":2445
+            /* "move.pyx":2448
  *             for i in range(window, length):
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 yi = mm_update_nan(mm, ai)             # <<<<<<<<<<<<<<
@@ -22029,7 +22029,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
  */
             __pyx_v_yi = mm_update_nan(__pyx_v_mm, __pyx_v_ai);
 
-            /* "move.pyx":2446
+            /* "move.pyx":2449
  *                 ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 yi = mm_update_nan(mm, ai)
  *                 (<float32_t*>((<char*>pid(ity)) + i*ystride))[0] = yi             # <<<<<<<<<<<<<<
@@ -22039,7 +22039,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
             (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_yi;
           }
 
-          /* "move.pyx":2447
+          /* "move.pyx":2450
  *                 yi = mm_update_nan(mm, ai)
  *                 (<float32_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -22048,7 +22048,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
  */
           PyArray_ITER_NEXT(__pyx_v_ita);
 
-          /* "move.pyx":2448
+          /* "move.pyx":2451
  *                 (<float32_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -22057,7 +22057,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
  */
           PyArray_ITER_NEXT(__pyx_v_ity);
 
-          /* "move.pyx":2449
+          /* "move.pyx":2452
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *             mm_reset(mm)             # <<<<<<<<<<<<<<
@@ -22067,7 +22067,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
           mm_reset(__pyx_v_mm);
         }
 
-        /* "move.pyx":2450
+        /* "move.pyx":2453
  *             PyArray_ITER_NEXT(ity)
  *             mm_reset(mm)
  *         mm_free(mm)             # <<<<<<<<<<<<<<
@@ -22077,7 +22077,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
         mm_free(__pyx_v_mm);
       }
 
-      /* "move.pyx":2437
+      /* "move.pyx":2440
  *     if mm is NULL:
  *         raise MemoryError()
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -22095,7 +22095,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
       }
   }
 
-  /* "move.pyx":2451
+  /* "move.pyx":2454
  *             mm_reset(mm)
  *         mm_free(mm)
  *     return y             # <<<<<<<<<<<<<<
@@ -22107,7 +22107,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "move.pyx":2421
+  /* "move.pyx":2424
  * 
  * @cython.cdivision(True)
  * cdef ndarray move_median_float32(ndarray a, int window, int min_count, int axis,             # <<<<<<<<<<<<<<
@@ -22128,7 +22128,7 @@ static PyArrayObject *__pyx_f_4move_move_median_float32(PyArrayObject *__pyx_v_a
   return __pyx_r;
 }
 
-/* "move.pyx":2454
+/* "move.pyx":2457
  * 
  * @cython.cdivision(True)
  * cdef ndarray move_median_int64(ndarray a, int window, int min_count, int axis,             # <<<<<<<<<<<<<<
@@ -22157,7 +22157,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
   Py_ssize_t __pyx_t_9;
   __Pyx_RefNannySetupContext("move_median_int64", 0);
 
-  /* "move.pyx":2462
+  /* "move.pyx":2465
  *     cdef int64_t ai
  *     cdef float64_t yi
  *     if window == 1:             # <<<<<<<<<<<<<<
@@ -22167,7 +22167,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
   __pyx_t_1 = ((__pyx_v_window == 1) != 0);
   if (__pyx_t_1) {
 
-    /* "move.pyx":2463
+    /* "move.pyx":2466
  *     cdef float64_t yi
  *     if window == 1:
  *         return a.astype(np.float64)             # <<<<<<<<<<<<<<
@@ -22175,11 +22175,11 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  */
     __Pyx_XDECREF(((PyObject *)__pyx_r));
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_astype); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2463, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_astype); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2466, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 2463, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 2466, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_float64); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2463, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_float64); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2466, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_4 = NULL;
@@ -22193,27 +22193,27 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
       }
     }
     if (!__pyx_t_4) {
-      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2463, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2466, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else {
-      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 2463, __pyx_L1_error)
+      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 2466, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
       __Pyx_GIVEREF(__pyx_t_5);
       PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_5);
       __pyx_t_5 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2463, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2466, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2463, __pyx_L1_error)
+    if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2466, __pyx_L1_error)
     __pyx_r = ((PyArrayObject *)__pyx_t_2);
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "move.pyx":2462
+    /* "move.pyx":2465
  *     cdef int64_t ai
  *     cdef float64_t yi
  *     if window == 1:             # <<<<<<<<<<<<<<
@@ -22222,33 +22222,33 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
  */
   }
 
-  /* "move.pyx":2464
+  /* "move.pyx":2467
  *     if window == 1:
  *         return a.astype(np.float64)
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  */
-  __pyx_t_2 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2464, __pyx_L1_error)
+  __pyx_t_2 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2467, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2464, __pyx_L1_error)
+  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2467, __pyx_L1_error)
   __pyx_v_y = ((PyArrayObject *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "move.pyx":2465
+  /* "move.pyx":2468
  *         return a.astype(np.float64)
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     mm = mm_new(window, min_count)
  */
-  __pyx_t_2 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2465, __pyx_L1_error)
+  __pyx_t_2 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2468, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2465, __pyx_L1_error)
+  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2468, __pyx_L1_error)
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "move.pyx":2466
+  /* "move.pyx":2469
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -22257,7 +22257,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
  */
   __pyx_v_ystride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "move.pyx":2467
+  /* "move.pyx":2470
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     mm = mm_new(window, min_count)             # <<<<<<<<<<<<<<
@@ -22266,7 +22266,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
  */
   __pyx_v_mm = mm_new(__pyx_v_window, __pyx_v_min_count);
 
-  /* "move.pyx":2468
+  /* "move.pyx":2471
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     mm = mm_new(window, min_count)
  *     if mm is NULL:             # <<<<<<<<<<<<<<
@@ -22276,16 +22276,16 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
   __pyx_t_1 = ((__pyx_v_mm == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "move.pyx":2469
+    /* "move.pyx":2472
  *     mm = mm_new(window, min_count)
  *     if mm is NULL:
  *         raise MemoryError()             # <<<<<<<<<<<<<<
  *     with nogil:
  *         while PyArray_ITER_NOTDONE(ita):
  */
-    PyErr_NoMemory(); __PYX_ERR(0, 2469, __pyx_L1_error)
+    PyErr_NoMemory(); __PYX_ERR(0, 2472, __pyx_L1_error)
 
-    /* "move.pyx":2468
+    /* "move.pyx":2471
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     mm = mm_new(window, min_count)
  *     if mm is NULL:             # <<<<<<<<<<<<<<
@@ -22294,7 +22294,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
  */
   }
 
-  /* "move.pyx":2470
+  /* "move.pyx":2473
  *     if mm is NULL:
  *         raise MemoryError()
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -22308,7 +22308,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
       #endif
       /*try:*/ {
 
-        /* "move.pyx":2471
+        /* "move.pyx":2474
  *         raise MemoryError()
  *     with nogil:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -22319,7 +22319,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
           __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
           if (!__pyx_t_1) break;
 
-          /* "move.pyx":2472
+          /* "move.pyx":2475
  *     with nogil:
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(window):             # <<<<<<<<<<<<<<
@@ -22330,7 +22330,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
           for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
             __pyx_v_i = __pyx_t_8;
 
-            /* "move.pyx":2473
+            /* "move.pyx":2476
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(window):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -22339,7 +22339,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
  */
             __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-            /* "move.pyx":2474
+            /* "move.pyx":2477
  *             for i in range(window):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 yi = mm_update_init(mm, ai)             # <<<<<<<<<<<<<<
@@ -22348,7 +22348,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
  */
             __pyx_v_yi = mm_update_init(__pyx_v_mm, __pyx_v_ai);
 
-            /* "move.pyx":2475
+            /* "move.pyx":2478
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 yi = mm_update_init(mm, ai)
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi             # <<<<<<<<<<<<<<
@@ -22358,7 +22358,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
             (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_yi;
           }
 
-          /* "move.pyx":2476
+          /* "move.pyx":2479
  *                 yi = mm_update_init(mm, ai)
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *             for i in range(window, length):             # <<<<<<<<<<<<<<
@@ -22369,7 +22369,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
           for (__pyx_t_9 = __pyx_v_window; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
             __pyx_v_i = __pyx_t_9;
 
-            /* "move.pyx":2477
+            /* "move.pyx":2480
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *             for i in range(window, length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -22378,7 +22378,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
  */
             __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-            /* "move.pyx":2478
+            /* "move.pyx":2481
  *             for i in range(window, length):
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 yi = mm_update(mm, ai)             # <<<<<<<<<<<<<<
@@ -22387,7 +22387,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
  */
             __pyx_v_yi = mm_update(__pyx_v_mm, __pyx_v_ai);
 
-            /* "move.pyx":2479
+            /* "move.pyx":2482
  *                 ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 yi = mm_update(mm, ai)
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi             # <<<<<<<<<<<<<<
@@ -22397,7 +22397,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
             (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_yi;
           }
 
-          /* "move.pyx":2480
+          /* "move.pyx":2483
  *                 yi = mm_update(mm, ai)
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -22406,7 +22406,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
  */
           PyArray_ITER_NEXT(__pyx_v_ita);
 
-          /* "move.pyx":2481
+          /* "move.pyx":2484
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -22415,7 +22415,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
  */
           PyArray_ITER_NEXT(__pyx_v_ity);
 
-          /* "move.pyx":2482
+          /* "move.pyx":2485
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *             mm_reset(mm)             # <<<<<<<<<<<<<<
@@ -22425,7 +22425,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
           mm_reset(__pyx_v_mm);
         }
 
-        /* "move.pyx":2483
+        /* "move.pyx":2486
  *             PyArray_ITER_NEXT(ity)
  *             mm_reset(mm)
  *         mm_free(mm)             # <<<<<<<<<<<<<<
@@ -22435,7 +22435,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
         mm_free(__pyx_v_mm);
       }
 
-      /* "move.pyx":2470
+      /* "move.pyx":2473
  *     if mm is NULL:
  *         raise MemoryError()
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -22453,7 +22453,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
       }
   }
 
-  /* "move.pyx":2484
+  /* "move.pyx":2487
  *             mm_reset(mm)
  *         mm_free(mm)
  *     return y             # <<<<<<<<<<<<<<
@@ -22465,7 +22465,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "move.pyx":2454
+  /* "move.pyx":2457
  * 
  * @cython.cdivision(True)
  * cdef ndarray move_median_int64(ndarray a, int window, int min_count, int axis,             # <<<<<<<<<<<<<<
@@ -22490,7 +22490,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int64(PyArrayObject *__pyx_v_a, 
   return __pyx_r;
 }
 
-/* "move.pyx":2487
+/* "move.pyx":2490
  * 
  * @cython.cdivision(True)
  * cdef ndarray move_median_int32(ndarray a, int window, int min_count, int axis,             # <<<<<<<<<<<<<<
@@ -22519,7 +22519,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
   Py_ssize_t __pyx_t_9;
   __Pyx_RefNannySetupContext("move_median_int32", 0);
 
-  /* "move.pyx":2495
+  /* "move.pyx":2498
  *     cdef int32_t ai
  *     cdef float64_t yi
  *     if window == 1:             # <<<<<<<<<<<<<<
@@ -22529,7 +22529,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
   __pyx_t_1 = ((__pyx_v_window == 1) != 0);
   if (__pyx_t_1) {
 
-    /* "move.pyx":2496
+    /* "move.pyx":2499
  *     cdef float64_t yi
  *     if window == 1:
  *         return a.astype(np.float64)             # <<<<<<<<<<<<<<
@@ -22537,11 +22537,11 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  */
     __Pyx_XDECREF(((PyObject *)__pyx_r));
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_astype); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2496, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_astype); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2499, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 2496, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 2499, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_float64); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2496, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_float64); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2499, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_4 = NULL;
@@ -22555,27 +22555,27 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
       }
     }
     if (!__pyx_t_4) {
-      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2496, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2499, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else {
-      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 2496, __pyx_L1_error)
+      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 2499, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
       __Pyx_GIVEREF(__pyx_t_5);
       PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_5);
       __pyx_t_5 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2496, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2499, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2496, __pyx_L1_error)
+    if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2499, __pyx_L1_error)
     __pyx_r = ((PyArrayObject *)__pyx_t_2);
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "move.pyx":2495
+    /* "move.pyx":2498
  *     cdef int32_t ai
  *     cdef float64_t yi
  *     if window == 1:             # <<<<<<<<<<<<<<
@@ -22584,33 +22584,33 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
  */
   }
 
-  /* "move.pyx":2497
+  /* "move.pyx":2500
  *     if window == 1:
  *         return a.astype(np.float64)
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  */
-  __pyx_t_2 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2497, __pyx_L1_error)
+  __pyx_t_2 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2500, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2497, __pyx_L1_error)
+  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2500, __pyx_L1_error)
   __pyx_v_y = ((PyArrayObject *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "move.pyx":2498
+  /* "move.pyx":2501
  *         return a.astype(np.float64)
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     mm = mm_new(window, min_count)
  */
-  __pyx_t_2 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2498, __pyx_L1_error)
+  __pyx_t_2 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2501, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2498, __pyx_L1_error)
+  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2501, __pyx_L1_error)
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "move.pyx":2499
+  /* "move.pyx":2502
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -22619,7 +22619,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
  */
   __pyx_v_ystride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "move.pyx":2500
+  /* "move.pyx":2503
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     mm = mm_new(window, min_count)             # <<<<<<<<<<<<<<
@@ -22628,7 +22628,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
  */
   __pyx_v_mm = mm_new(__pyx_v_window, __pyx_v_min_count);
 
-  /* "move.pyx":2501
+  /* "move.pyx":2504
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     mm = mm_new(window, min_count)
  *     if mm is NULL:             # <<<<<<<<<<<<<<
@@ -22638,16 +22638,16 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
   __pyx_t_1 = ((__pyx_v_mm == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "move.pyx":2502
+    /* "move.pyx":2505
  *     mm = mm_new(window, min_count)
  *     if mm is NULL:
  *         raise MemoryError()             # <<<<<<<<<<<<<<
  *     with nogil:
  *         while PyArray_ITER_NOTDONE(ita):
  */
-    PyErr_NoMemory(); __PYX_ERR(0, 2502, __pyx_L1_error)
+    PyErr_NoMemory(); __PYX_ERR(0, 2505, __pyx_L1_error)
 
-    /* "move.pyx":2501
+    /* "move.pyx":2504
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     mm = mm_new(window, min_count)
  *     if mm is NULL:             # <<<<<<<<<<<<<<
@@ -22656,7 +22656,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
  */
   }
 
-  /* "move.pyx":2503
+  /* "move.pyx":2506
  *     if mm is NULL:
  *         raise MemoryError()
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -22670,7 +22670,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
       #endif
       /*try:*/ {
 
-        /* "move.pyx":2504
+        /* "move.pyx":2507
  *         raise MemoryError()
  *     with nogil:
  *         while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -22681,7 +22681,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
           __pyx_t_1 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
           if (!__pyx_t_1) break;
 
-          /* "move.pyx":2505
+          /* "move.pyx":2508
  *     with nogil:
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(window):             # <<<<<<<<<<<<<<
@@ -22692,7 +22692,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
           for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
             __pyx_v_i = __pyx_t_8;
 
-            /* "move.pyx":2506
+            /* "move.pyx":2509
  *         while PyArray_ITER_NOTDONE(ita):
  *             for i in range(window):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -22701,7 +22701,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
  */
             __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-            /* "move.pyx":2507
+            /* "move.pyx":2510
  *             for i in range(window):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 yi = mm_update_init(mm, ai)             # <<<<<<<<<<<<<<
@@ -22710,7 +22710,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
  */
             __pyx_v_yi = mm_update_init(__pyx_v_mm, __pyx_v_ai);
 
-            /* "move.pyx":2508
+            /* "move.pyx":2511
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 yi = mm_update_init(mm, ai)
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi             # <<<<<<<<<<<<<<
@@ -22720,7 +22720,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
             (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_yi;
           }
 
-          /* "move.pyx":2509
+          /* "move.pyx":2512
  *                 yi = mm_update_init(mm, ai)
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *             for i in range(window, length):             # <<<<<<<<<<<<<<
@@ -22731,7 +22731,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
           for (__pyx_t_9 = __pyx_v_window; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
             __pyx_v_i = __pyx_t_9;
 
-            /* "move.pyx":2510
+            /* "move.pyx":2513
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *             for i in range(window, length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -22740,7 +22740,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
  */
             __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-            /* "move.pyx":2511
+            /* "move.pyx":2514
  *             for i in range(window, length):
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 yi = mm_update(mm, ai)             # <<<<<<<<<<<<<<
@@ -22749,7 +22749,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
  */
             __pyx_v_yi = mm_update(__pyx_v_mm, __pyx_v_ai);
 
-            /* "move.pyx":2512
+            /* "move.pyx":2515
  *                 ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
  *                 yi = mm_update(mm, ai)
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi             # <<<<<<<<<<<<<<
@@ -22759,7 +22759,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
             (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_yi;
           }
 
-          /* "move.pyx":2513
+          /* "move.pyx":2516
  *                 yi = mm_update(mm, ai)
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *             PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -22768,7 +22768,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
  */
           PyArray_ITER_NEXT(__pyx_v_ita);
 
-          /* "move.pyx":2514
+          /* "move.pyx":2517
  *                 (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = yi
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -22777,7 +22777,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
  */
           PyArray_ITER_NEXT(__pyx_v_ity);
 
-          /* "move.pyx":2515
+          /* "move.pyx":2518
  *             PyArray_ITER_NEXT(ita)
  *             PyArray_ITER_NEXT(ity)
  *             mm_reset(mm)             # <<<<<<<<<<<<<<
@@ -22787,7 +22787,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
           mm_reset(__pyx_v_mm);
         }
 
-        /* "move.pyx":2516
+        /* "move.pyx":2519
  *             PyArray_ITER_NEXT(ity)
  *             mm_reset(mm)
  *         mm_free(mm)             # <<<<<<<<<<<<<<
@@ -22797,7 +22797,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
         mm_free(__pyx_v_mm);
       }
 
-      /* "move.pyx":2503
+      /* "move.pyx":2506
  *     if mm is NULL:
  *         raise MemoryError()
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -22815,7 +22815,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
       }
   }
 
-  /* "move.pyx":2517
+  /* "move.pyx":2520
  *             mm_reset(mm)
  *         mm_free(mm)
  *     return y             # <<<<<<<<<<<<<<
@@ -22827,7 +22827,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "move.pyx":2487
+  /* "move.pyx":2490
  * 
  * @cython.cdivision(True)
  * cdef ndarray move_median_int32(ndarray a, int window, int min_count, int axis,             # <<<<<<<<<<<<<<
@@ -22852,7 +22852,7 @@ static PyArrayObject *__pyx_f_4move_move_median_int32(PyArrayObject *__pyx_v_a, 
   return __pyx_r;
 }
 
-/* "move.pyx":2521
+/* "move.pyx":2524
  * # move_rank-----------------------------------------------------------------
  * 
  * def move_rank(arr, int window, min_count=None, int axis=-1):             # <<<<<<<<<<<<<<
@@ -22895,7 +22895,7 @@ static PyObject *__pyx_pw_4move_19move_rank(PyObject *__pyx_self, PyObject *__py
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_window)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("move_rank", 0, 2, 4, 1); __PYX_ERR(0, 2521, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("move_rank", 0, 2, 4, 1); __PYX_ERR(0, 2524, __pyx_L3_error)
         }
         case  2:
         if (kw_args > 0) {
@@ -22909,7 +22909,7 @@ static PyObject *__pyx_pw_4move_19move_rank(PyObject *__pyx_self, PyObject *__py
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "move_rank") < 0)) __PYX_ERR(0, 2521, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "move_rank") < 0)) __PYX_ERR(0, 2524, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -22922,17 +22922,17 @@ static PyObject *__pyx_pw_4move_19move_rank(PyObject *__pyx_self, PyObject *__py
       }
     }
     __pyx_v_arr = values[0];
-    __pyx_v_window = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_window == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 2521, __pyx_L3_error)
+    __pyx_v_window = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_window == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 2524, __pyx_L3_error)
     __pyx_v_min_count = values[2];
     if (values[3]) {
-      __pyx_v_axis = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_axis == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 2521, __pyx_L3_error)
+      __pyx_v_axis = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_axis == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 2524, __pyx_L3_error)
     } else {
       __pyx_v_axis = ((int)-1);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("move_rank", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 2521, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("move_rank", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 2524, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("move.move_rank", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -22965,7 +22965,7 @@ static PyObject *__pyx_pf_4move_18move_rank(CYTHON_UNUSED PyObject *__pyx_self, 
   PyObject *__pyx_t_15 = NULL;
   __Pyx_RefNannySetupContext("move_rank", 0);
 
-  /* "move.pyx":2577
+  /* "move.pyx":2580
  * 
  *     """
  *     try:             # <<<<<<<<<<<<<<
@@ -22981,7 +22981,7 @@ static PyObject *__pyx_pf_4move_18move_rank(CYTHON_UNUSED PyObject *__pyx_self, 
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "move.pyx":2578
+      /* "move.pyx":2581
  *     """
  *     try:
  *         return mover(arr, window, min_count, axis,             # <<<<<<<<<<<<<<
@@ -22990,7 +22990,7 @@ static PyObject *__pyx_pf_4move_18move_rank(CYTHON_UNUSED PyObject *__pyx_self, 
  */
       __Pyx_XDECREF(__pyx_r);
 
-      /* "move.pyx":2582
+      /* "move.pyx":2585
  *                      move_rank_float32,
  *                      move_rank_int64,
  *                      move_rank_int32,             # <<<<<<<<<<<<<<
@@ -22999,13 +22999,13 @@ static PyObject *__pyx_pf_4move_18move_rank(CYTHON_UNUSED PyObject *__pyx_self, 
  */
       __pyx_t_5.__pyx_n = 1;
       __pyx_t_5.int_input = 0;
-      __pyx_t_4 = ((PyObject *)__pyx_f_4move_mover(__pyx_v_arr, __pyx_v_window, __pyx_v_min_count, __pyx_v_axis, __pyx_f_4move_move_rank_float64, __pyx_f_4move_move_rank_float32, __pyx_f_4move_move_rank_int64, __pyx_f_4move_move_rank_int32, &__pyx_t_5)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 2578, __pyx_L3_error)
+      __pyx_t_4 = ((PyObject *)__pyx_f_4move_mover(__pyx_v_arr, __pyx_v_window, __pyx_v_min_count, __pyx_v_axis, __pyx_f_4move_move_rank_float64, __pyx_f_4move_move_rank_float32, __pyx_f_4move_move_rank_int64, __pyx_f_4move_move_rank_int32, &__pyx_t_5)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 2581, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
       goto __pyx_L7_try_return;
 
-      /* "move.pyx":2577
+      /* "move.pyx":2580
  * 
  *     """
  *     try:             # <<<<<<<<<<<<<<
@@ -23017,7 +23017,7 @@ static PyObject *__pyx_pf_4move_18move_rank(CYTHON_UNUSED PyObject *__pyx_self, 
     __Pyx_PyThreadState_assign
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "move.pyx":2584
+    /* "move.pyx":2587
  *                      move_rank_int32,
  *                      0)
  *     except TypeError:             # <<<<<<<<<<<<<<
@@ -23027,12 +23027,12 @@ static PyObject *__pyx_pf_4move_18move_rank(CYTHON_UNUSED PyObject *__pyx_self, 
     __pyx_t_6 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_TypeError);
     if (__pyx_t_6) {
       __Pyx_AddTraceback("move.move_rank", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_7, &__pyx_t_8) < 0) __PYX_ERR(0, 2584, __pyx_L5_except_error)
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_7, &__pyx_t_8) < 0) __PYX_ERR(0, 2587, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_GOTREF(__pyx_t_8);
 
-      /* "move.pyx":2585
+      /* "move.pyx":2588
  *                      0)
  *     except TypeError:
  *         return slow.move_rank(arr, window, min_count, axis)             # <<<<<<<<<<<<<<
@@ -23040,14 +23040,14 @@ static PyObject *__pyx_pf_4move_18move_rank(CYTHON_UNUSED PyObject *__pyx_self, 
  * 
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_10 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 2585, __pyx_L5_except_error)
+      __pyx_t_10 = __Pyx_GetModuleGlobalName(__pyx_n_s_slow); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 2588, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_10);
-      __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_move_rank); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 2585, __pyx_L5_except_error)
+      __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_move_rank); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 2588, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_11);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-      __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_window); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 2585, __pyx_L5_except_error)
+      __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_window); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 2588, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_10);
-      __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_axis); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 2585, __pyx_L5_except_error)
+      __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_axis); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 2588, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_12);
       __pyx_t_13 = NULL;
       __pyx_t_14 = 0;
@@ -23061,7 +23061,7 @@ static PyObject *__pyx_pf_4move_18move_rank(CYTHON_UNUSED PyObject *__pyx_self, 
           __pyx_t_14 = 1;
         }
       }
-      __pyx_t_15 = PyTuple_New(4+__pyx_t_14); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 2585, __pyx_L5_except_error)
+      __pyx_t_15 = PyTuple_New(4+__pyx_t_14); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 2588, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_15);
       if (__pyx_t_13) {
         __Pyx_GIVEREF(__pyx_t_13); PyTuple_SET_ITEM(__pyx_t_15, 0, __pyx_t_13); __pyx_t_13 = NULL;
@@ -23078,7 +23078,7 @@ static PyObject *__pyx_pf_4move_18move_rank(CYTHON_UNUSED PyObject *__pyx_self, 
       PyTuple_SET_ITEM(__pyx_t_15, 3+__pyx_t_14, __pyx_t_12);
       __pyx_t_10 = 0;
       __pyx_t_12 = 0;
-      __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_15, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 2585, __pyx_L5_except_error)
+      __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_15, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 2588, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
@@ -23092,7 +23092,7 @@ static PyObject *__pyx_pf_4move_18move_rank(CYTHON_UNUSED PyObject *__pyx_self, 
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
 
-    /* "move.pyx":2577
+    /* "move.pyx":2580
  * 
  *     """
  *     try:             # <<<<<<<<<<<<<<
@@ -23121,7 +23121,7 @@ static PyObject *__pyx_pf_4move_18move_rank(CYTHON_UNUSED PyObject *__pyx_self, 
     goto __pyx_L0;
   }
 
-  /* "move.pyx":2521
+  /* "move.pyx":2524
  * # move_rank-----------------------------------------------------------------
  * 
  * def move_rank(arr, int window, min_count=None, int axis=-1):             # <<<<<<<<<<<<<<
@@ -23148,7 +23148,7 @@ static PyObject *__pyx_pf_4move_18move_rank(CYTHON_UNUSED PyObject *__pyx_self, 
   return __pyx_r;
 }
 
-/* "move.pyx":2589
+/* "move.pyx":2592
  * 
  * @cython.cdivision(True)
  * cdef ndarray move_rank_float64(ndarray a, int window, int min_count, int axis,             # <<<<<<<<<<<<<<
@@ -23179,33 +23179,33 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
   Py_ssize_t __pyx_t_7;
   __Pyx_RefNannySetupContext("move_rank_float64", 0);
 
-  /* "move.pyx":2596
+  /* "move.pyx":2599
  *     cdef float64_t ai, aj
  *     cdef float64_t g, e, n, r
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  */
-  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2596, __pyx_L1_error)
+  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2599, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2596, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2599, __pyx_L1_error)
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "move.pyx":2597
+  /* "move.pyx":2600
  *     cdef float64_t g, e, n, r
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     cdef char* pita
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2597, __pyx_L1_error)
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2600, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2597, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2600, __pyx_L1_error)
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "move.pyx":2598
+  /* "move.pyx":2601
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -23214,7 +23214,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
   __pyx_v_ystride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "move.pyx":2600
+  /* "move.pyx":2603
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     cdef char* pita
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -23225,7 +23225,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "move.pyx":2601
+    /* "move.pyx":2604
  *     cdef char* pita
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(min_count - 1):             # <<<<<<<<<<<<<<
@@ -23236,7 +23236,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "move.pyx":2602
+      /* "move.pyx":2605
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(min_count - 1):
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN             # <<<<<<<<<<<<<<
@@ -23246,7 +23246,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
       (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_4move_NAN;
     }
 
-    /* "move.pyx":2603
+    /* "move.pyx":2606
  *         for i in range(min_count - 1):
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
  *         for i in range(min_count - 1, window - 1):             # <<<<<<<<<<<<<<
@@ -23257,7 +23257,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
     for (__pyx_t_4 = (__pyx_v_min_count - 1); __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "move.pyx":2604
+      /* "move.pyx":2607
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
  *         for i in range(min_count - 1, window - 1):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -23266,7 +23266,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "move.pyx":2605
+      /* "move.pyx":2608
  *         for i in range(min_count - 1, window - 1):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
  *             if ai == ai:             # <<<<<<<<<<<<<<
@@ -23276,7 +23276,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
       __pyx_t_2 = ((__pyx_v_ai == __pyx_v_ai) != 0);
       if (__pyx_t_2) {
 
-        /* "move.pyx":2606
+        /* "move.pyx":2609
  *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
  *             if ai == ai:
  *                 g = 0             # <<<<<<<<<<<<<<
@@ -23285,7 +23285,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
         __pyx_v_g = 0.0;
 
-        /* "move.pyx":2607
+        /* "move.pyx":2610
  *             if ai == ai:
  *                 g = 0
  *                 e = 1             # <<<<<<<<<<<<<<
@@ -23294,7 +23294,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
         __pyx_v_e = 1.0;
 
-        /* "move.pyx":2608
+        /* "move.pyx":2611
  *                 g = 0
  *                 e = 1
  *                 n = 1             # <<<<<<<<<<<<<<
@@ -23303,7 +23303,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
         __pyx_v_n = 1.0;
 
-        /* "move.pyx":2609
+        /* "move.pyx":2612
  *                 e = 1
  *                 n = 1
  *                 r = 0             # <<<<<<<<<<<<<<
@@ -23312,7 +23312,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
         __pyx_v_r = 0.0;
 
-        /* "move.pyx":2610
+        /* "move.pyx":2613
  *                 n = 1
  *                 r = 0
  *                 for j in range(i):             # <<<<<<<<<<<<<<
@@ -23323,7 +23323,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
         for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
           __pyx_v_j = __pyx_t_6;
 
-          /* "move.pyx":2611
+          /* "move.pyx":2614
  *                 r = 0
  *                 for j in range(i):
  *                     aj = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
@@ -23332,7 +23332,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
           __pyx_v_aj = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
 
-          /* "move.pyx":2612
+          /* "move.pyx":2615
  *                 for j in range(i):
  *                     aj = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
  *                     if aj == aj:             # <<<<<<<<<<<<<<
@@ -23342,7 +23342,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
           __pyx_t_2 = ((__pyx_v_aj == __pyx_v_aj) != 0);
           if (__pyx_t_2) {
 
-            /* "move.pyx":2613
+            /* "move.pyx":2616
  *                     aj = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
  *                     if aj == aj:
  *                         n += 1             # <<<<<<<<<<<<<<
@@ -23351,7 +23351,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
             __pyx_v_n = (__pyx_v_n + 1.0);
 
-            /* "move.pyx":2614
+            /* "move.pyx":2617
  *                     if aj == aj:
  *                         n += 1
  *                         if ai > aj:             # <<<<<<<<<<<<<<
@@ -23361,7 +23361,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
             __pyx_t_2 = ((__pyx_v_ai > __pyx_v_aj) != 0);
             if (__pyx_t_2) {
 
-              /* "move.pyx":2615
+              /* "move.pyx":2618
  *                         n += 1
  *                         if ai > aj:
  *                             g += 1             # <<<<<<<<<<<<<<
@@ -23370,7 +23370,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
               __pyx_v_g = (__pyx_v_g + 1.0);
 
-              /* "move.pyx":2614
+              /* "move.pyx":2617
  *                     if aj == aj:
  *                         n += 1
  *                         if ai > aj:             # <<<<<<<<<<<<<<
@@ -23380,7 +23380,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
               goto __pyx_L13;
             }
 
-            /* "move.pyx":2616
+            /* "move.pyx":2619
  *                         if ai > aj:
  *                             g += 1
  *                         elif ai == aj:             # <<<<<<<<<<<<<<
@@ -23390,7 +23390,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
             __pyx_t_2 = ((__pyx_v_ai == __pyx_v_aj) != 0);
             if (__pyx_t_2) {
 
-              /* "move.pyx":2617
+              /* "move.pyx":2620
  *                             g += 1
  *                         elif ai == aj:
  *                             e += 1             # <<<<<<<<<<<<<<
@@ -23399,7 +23399,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
               __pyx_v_e = (__pyx_v_e + 1.0);
 
-              /* "move.pyx":2616
+              /* "move.pyx":2619
  *                         if ai > aj:
  *                             g += 1
  *                         elif ai == aj:             # <<<<<<<<<<<<<<
@@ -23409,7 +23409,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
             }
             __pyx_L13:;
 
-            /* "move.pyx":2612
+            /* "move.pyx":2615
  *                 for j in range(i):
  *                     aj = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
  *                     if aj == aj:             # <<<<<<<<<<<<<<
@@ -23419,7 +23419,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
           }
         }
 
-        /* "move.pyx":2618
+        /* "move.pyx":2621
  *                         elif ai == aj:
  *                             e += 1
  *                 if n < min_count:             # <<<<<<<<<<<<<<
@@ -23429,7 +23429,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
         __pyx_t_2 = ((__pyx_v_n < __pyx_v_min_count) != 0);
         if (__pyx_t_2) {
 
-          /* "move.pyx":2619
+          /* "move.pyx":2622
  *                             e += 1
  *                 if n < min_count:
  *                     r = NAN             # <<<<<<<<<<<<<<
@@ -23438,7 +23438,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
           __pyx_v_r = __pyx_v_4move_NAN;
 
-          /* "move.pyx":2618
+          /* "move.pyx":2621
  *                         elif ai == aj:
  *                             e += 1
  *                 if n < min_count:             # <<<<<<<<<<<<<<
@@ -23448,7 +23448,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
           goto __pyx_L14;
         }
 
-        /* "move.pyx":2620
+        /* "move.pyx":2623
  *                 if n < min_count:
  *                     r = NAN
  *                 elif n == 1:             # <<<<<<<<<<<<<<
@@ -23458,7 +23458,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
         __pyx_t_2 = ((__pyx_v_n == 1.0) != 0);
         if (__pyx_t_2) {
 
-          /* "move.pyx":2621
+          /* "move.pyx":2624
  *                     r = NAN
  *                 elif n == 1:
  *                     r = 0.0             # <<<<<<<<<<<<<<
@@ -23467,7 +23467,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
           __pyx_v_r = 0.0;
 
-          /* "move.pyx":2620
+          /* "move.pyx":2623
  *                 if n < min_count:
  *                     r = NAN
  *                 elif n == 1:             # <<<<<<<<<<<<<<
@@ -23477,7 +23477,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
           goto __pyx_L14;
         }
 
-        /* "move.pyx":2623
+        /* "move.pyx":2626
  *                     r = 0.0
  *                 else:
  *                     r = (g + g + e - 1.0) / 2.0             # <<<<<<<<<<<<<<
@@ -23487,7 +23487,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
         /*else*/ {
           __pyx_v_r = ((((__pyx_v_g + __pyx_v_g) + __pyx_v_e) - 1.0) / 2.0);
 
-          /* "move.pyx":2624
+          /* "move.pyx":2627
  *                 else:
  *                     r = (g + g + e - 1.0) / 2.0
  *                     r = r / (n - 1.0)             # <<<<<<<<<<<<<<
@@ -23496,7 +23496,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
           __pyx_v_r = (__pyx_v_r / (__pyx_v_n - 1.0));
 
-          /* "move.pyx":2625
+          /* "move.pyx":2628
  *                     r = (g + g + e - 1.0) / 2.0
  *                     r = r / (n - 1.0)
  *                     r = 2.0 * (r - 0.5)             # <<<<<<<<<<<<<<
@@ -23507,7 +23507,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
         }
         __pyx_L14:;
 
-        /* "move.pyx":2605
+        /* "move.pyx":2608
  *         for i in range(min_count - 1, window - 1):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
  *             if ai == ai:             # <<<<<<<<<<<<<<
@@ -23517,7 +23517,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
         goto __pyx_L9;
       }
 
-      /* "move.pyx":2627
+      /* "move.pyx":2630
  *                     r = 2.0 * (r - 0.5)
  *             else:
  *                 r = NAN             # <<<<<<<<<<<<<<
@@ -23529,7 +23529,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
       }
       __pyx_L9:;
 
-      /* "move.pyx":2628
+      /* "move.pyx":2631
  *             else:
  *                 r = NAN
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r             # <<<<<<<<<<<<<<
@@ -23539,7 +23539,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
       (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_r;
     }
 
-    /* "move.pyx":2629
+    /* "move.pyx":2632
  *                 r = NAN
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r
  *         for i in range(window - 1, length):             # <<<<<<<<<<<<<<
@@ -23550,7 +23550,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
     for (__pyx_t_5 = (__pyx_v_window - 1); __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
 
-      /* "move.pyx":2630
+      /* "move.pyx":2633
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r
  *         for i in range(window - 1, length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -23559,7 +23559,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "move.pyx":2631
+      /* "move.pyx":2634
  *         for i in range(window - 1, length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
  *             if ai == ai:             # <<<<<<<<<<<<<<
@@ -23569,7 +23569,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
       __pyx_t_2 = ((__pyx_v_ai == __pyx_v_ai) != 0);
       if (__pyx_t_2) {
 
-        /* "move.pyx":2632
+        /* "move.pyx":2635
  *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
  *             if ai == ai:
  *                 g = 0             # <<<<<<<<<<<<<<
@@ -23578,7 +23578,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
         __pyx_v_g = 0.0;
 
-        /* "move.pyx":2633
+        /* "move.pyx":2636
  *             if ai == ai:
  *                 g = 0
  *                 e = 1             # <<<<<<<<<<<<<<
@@ -23587,7 +23587,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
         __pyx_v_e = 1.0;
 
-        /* "move.pyx":2634
+        /* "move.pyx":2637
  *                 g = 0
  *                 e = 1
  *                 n = 1             # <<<<<<<<<<<<<<
@@ -23596,7 +23596,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
         __pyx_v_n = 1.0;
 
-        /* "move.pyx":2635
+        /* "move.pyx":2638
  *                 e = 1
  *                 n = 1
  *                 r = 0             # <<<<<<<<<<<<<<
@@ -23605,7 +23605,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
         __pyx_v_r = 0.0;
 
-        /* "move.pyx":2636
+        /* "move.pyx":2639
  *                 n = 1
  *                 r = 0
  *                 for j in range(i - window + 1, i):             # <<<<<<<<<<<<<<
@@ -23616,7 +23616,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
         for (__pyx_t_7 = ((__pyx_v_i - __pyx_v_window) + 1); __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
           __pyx_v_j = __pyx_t_7;
 
-          /* "move.pyx":2637
+          /* "move.pyx":2640
  *                 r = 0
  *                 for j in range(i - window + 1, i):
  *                     aj = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
@@ -23625,7 +23625,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
           __pyx_v_aj = (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
 
-          /* "move.pyx":2638
+          /* "move.pyx":2641
  *                 for j in range(i - window + 1, i):
  *                     aj = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
  *                     if aj == aj:             # <<<<<<<<<<<<<<
@@ -23635,7 +23635,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
           __pyx_t_2 = ((__pyx_v_aj == __pyx_v_aj) != 0);
           if (__pyx_t_2) {
 
-            /* "move.pyx":2639
+            /* "move.pyx":2642
  *                     aj = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
  *                     if aj == aj:
  *                         n += 1             # <<<<<<<<<<<<<<
@@ -23644,7 +23644,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
             __pyx_v_n = (__pyx_v_n + 1.0);
 
-            /* "move.pyx":2640
+            /* "move.pyx":2643
  *                     if aj == aj:
  *                         n += 1
  *                         if ai > aj:             # <<<<<<<<<<<<<<
@@ -23654,7 +23654,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
             __pyx_t_2 = ((__pyx_v_ai > __pyx_v_aj) != 0);
             if (__pyx_t_2) {
 
-              /* "move.pyx":2641
+              /* "move.pyx":2644
  *                         n += 1
  *                         if ai > aj:
  *                             g += 1             # <<<<<<<<<<<<<<
@@ -23663,7 +23663,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
               __pyx_v_g = (__pyx_v_g + 1.0);
 
-              /* "move.pyx":2640
+              /* "move.pyx":2643
  *                     if aj == aj:
  *                         n += 1
  *                         if ai > aj:             # <<<<<<<<<<<<<<
@@ -23673,7 +23673,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
               goto __pyx_L21;
             }
 
-            /* "move.pyx":2642
+            /* "move.pyx":2645
  *                         if ai > aj:
  *                             g += 1
  *                         elif ai == aj:             # <<<<<<<<<<<<<<
@@ -23683,7 +23683,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
             __pyx_t_2 = ((__pyx_v_ai == __pyx_v_aj) != 0);
             if (__pyx_t_2) {
 
-              /* "move.pyx":2643
+              /* "move.pyx":2646
  *                             g += 1
  *                         elif ai == aj:
  *                             e += 1             # <<<<<<<<<<<<<<
@@ -23692,7 +23692,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
               __pyx_v_e = (__pyx_v_e + 1.0);
 
-              /* "move.pyx":2642
+              /* "move.pyx":2645
  *                         if ai > aj:
  *                             g += 1
  *                         elif ai == aj:             # <<<<<<<<<<<<<<
@@ -23702,7 +23702,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
             }
             __pyx_L21:;
 
-            /* "move.pyx":2638
+            /* "move.pyx":2641
  *                 for j in range(i - window + 1, i):
  *                     aj = (<float64_t*>((<char*>pid(ita)) + j*stride))[0]
  *                     if aj == aj:             # <<<<<<<<<<<<<<
@@ -23712,7 +23712,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
           }
         }
 
-        /* "move.pyx":2644
+        /* "move.pyx":2647
  *                         elif ai == aj:
  *                             e += 1
  *                 if n < min_count:             # <<<<<<<<<<<<<<
@@ -23722,7 +23722,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
         __pyx_t_2 = ((__pyx_v_n < __pyx_v_min_count) != 0);
         if (__pyx_t_2) {
 
-          /* "move.pyx":2645
+          /* "move.pyx":2648
  *                             e += 1
  *                 if n < min_count:
  *                     r = NAN             # <<<<<<<<<<<<<<
@@ -23731,7 +23731,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
           __pyx_v_r = __pyx_v_4move_NAN;
 
-          /* "move.pyx":2644
+          /* "move.pyx":2647
  *                         elif ai == aj:
  *                             e += 1
  *                 if n < min_count:             # <<<<<<<<<<<<<<
@@ -23741,7 +23741,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
           goto __pyx_L22;
         }
 
-        /* "move.pyx":2646
+        /* "move.pyx":2649
  *                 if n < min_count:
  *                     r = NAN
  *                 elif n == 1:             # <<<<<<<<<<<<<<
@@ -23751,7 +23751,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
         __pyx_t_2 = ((__pyx_v_n == 1.0) != 0);
         if (__pyx_t_2) {
 
-          /* "move.pyx":2647
+          /* "move.pyx":2650
  *                     r = NAN
  *                 elif n == 1:
  *                     r = 0.0             # <<<<<<<<<<<<<<
@@ -23760,7 +23760,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
           __pyx_v_r = 0.0;
 
-          /* "move.pyx":2646
+          /* "move.pyx":2649
  *                 if n < min_count:
  *                     r = NAN
  *                 elif n == 1:             # <<<<<<<<<<<<<<
@@ -23770,7 +23770,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
           goto __pyx_L22;
         }
 
-        /* "move.pyx":2649
+        /* "move.pyx":2652
  *                     r = 0.0
  *                 else:
  *                     r = (g + g + e - 1.0) / 2.0             # <<<<<<<<<<<<<<
@@ -23780,7 +23780,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
         /*else*/ {
           __pyx_v_r = ((((__pyx_v_g + __pyx_v_g) + __pyx_v_e) - 1.0) / 2.0);
 
-          /* "move.pyx":2650
+          /* "move.pyx":2653
  *                 else:
  *                     r = (g + g + e - 1.0) / 2.0
  *                     r = r / (n - 1.0)             # <<<<<<<<<<<<<<
@@ -23789,7 +23789,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
           __pyx_v_r = (__pyx_v_r / (__pyx_v_n - 1.0));
 
-          /* "move.pyx":2651
+          /* "move.pyx":2654
  *                     r = (g + g + e - 1.0) / 2.0
  *                     r = r / (n - 1.0)
  *                     r = 2.0 * (r - 0.5)             # <<<<<<<<<<<<<<
@@ -23800,7 +23800,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
         }
         __pyx_L22:;
 
-        /* "move.pyx":2631
+        /* "move.pyx":2634
  *         for i in range(window - 1, length):
  *             ai = (<float64_t*>((<char*>pid(ita)) + i*stride))[0]
  *             if ai == ai:             # <<<<<<<<<<<<<<
@@ -23810,7 +23810,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
         goto __pyx_L17;
       }
 
-      /* "move.pyx":2653
+      /* "move.pyx":2656
  *                     r = 2.0 * (r - 0.5)
  *             else:
  *                 r = NAN             # <<<<<<<<<<<<<<
@@ -23822,7 +23822,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
       }
       __pyx_L17:;
 
-      /* "move.pyx":2654
+      /* "move.pyx":2657
  *             else:
  *                 r = NAN
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r             # <<<<<<<<<<<<<<
@@ -23832,7 +23832,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
       (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_r;
     }
 
-    /* "move.pyx":2655
+    /* "move.pyx":2658
  *                 r = NAN
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -23841,7 +23841,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "move.pyx":2656
+    /* "move.pyx":2659
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -23851,7 +23851,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
     PyArray_ITER_NEXT(__pyx_v_ity);
   }
 
-  /* "move.pyx":2657
+  /* "move.pyx":2660
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -23863,7 +23863,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "move.pyx":2589
+  /* "move.pyx":2592
  * 
  * @cython.cdivision(True)
  * cdef ndarray move_rank_float64(ndarray a, int window, int min_count, int axis,             # <<<<<<<<<<<<<<
@@ -23884,7 +23884,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float64(CYTHON_UNUSED PyArrayObjec
   return __pyx_r;
 }
 
-/* "move.pyx":2660
+/* "move.pyx":2663
  * 
  * @cython.cdivision(True)
  * cdef ndarray move_rank_float32(ndarray a, int window, int min_count, int axis,             # <<<<<<<<<<<<<<
@@ -23915,33 +23915,33 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
   Py_ssize_t __pyx_t_7;
   __Pyx_RefNannySetupContext("move_rank_float32", 0);
 
-  /* "move.pyx":2667
+  /* "move.pyx":2670
  *     cdef float32_t ai, aj
  *     cdef float32_t g, e, n, r
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float32, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  */
-  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2667, __pyx_L1_error)
+  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT32, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2670, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2667, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2670, __pyx_L1_error)
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "move.pyx":2668
+  /* "move.pyx":2671
  *     cdef float32_t g, e, n, r
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     cdef char* pita
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2668, __pyx_L1_error)
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2671, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2668, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2671, __pyx_L1_error)
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "move.pyx":2669
+  /* "move.pyx":2672
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float32, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -23950,7 +23950,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
   __pyx_v_ystride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "move.pyx":2671
+  /* "move.pyx":2674
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     cdef char* pita
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -23961,7 +23961,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "move.pyx":2672
+    /* "move.pyx":2675
  *     cdef char* pita
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(min_count - 1):             # <<<<<<<<<<<<<<
@@ -23972,7 +23972,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "move.pyx":2673
+      /* "move.pyx":2676
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(min_count - 1):
  *             (<float32_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN             # <<<<<<<<<<<<<<
@@ -23982,7 +23982,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
       (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_4move_NAN;
     }
 
-    /* "move.pyx":2674
+    /* "move.pyx":2677
  *         for i in range(min_count - 1):
  *             (<float32_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
  *         for i in range(min_count - 1, window - 1):             # <<<<<<<<<<<<<<
@@ -23993,7 +23993,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
     for (__pyx_t_4 = (__pyx_v_min_count - 1); __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "move.pyx":2675
+      /* "move.pyx":2678
  *             (<float32_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
  *         for i in range(min_count - 1, window - 1):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -24002,7 +24002,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "move.pyx":2676
+      /* "move.pyx":2679
  *         for i in range(min_count - 1, window - 1):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
  *             if ai == ai:             # <<<<<<<<<<<<<<
@@ -24012,7 +24012,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
       __pyx_t_2 = ((__pyx_v_ai == __pyx_v_ai) != 0);
       if (__pyx_t_2) {
 
-        /* "move.pyx":2677
+        /* "move.pyx":2680
  *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
  *             if ai == ai:
  *                 g = 0             # <<<<<<<<<<<<<<
@@ -24021,7 +24021,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
         __pyx_v_g = 0.0;
 
-        /* "move.pyx":2678
+        /* "move.pyx":2681
  *             if ai == ai:
  *                 g = 0
  *                 e = 1             # <<<<<<<<<<<<<<
@@ -24030,7 +24030,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
         __pyx_v_e = 1.0;
 
-        /* "move.pyx":2679
+        /* "move.pyx":2682
  *                 g = 0
  *                 e = 1
  *                 n = 1             # <<<<<<<<<<<<<<
@@ -24039,7 +24039,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
         __pyx_v_n = 1.0;
 
-        /* "move.pyx":2680
+        /* "move.pyx":2683
  *                 e = 1
  *                 n = 1
  *                 r = 0             # <<<<<<<<<<<<<<
@@ -24048,7 +24048,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
         __pyx_v_r = 0.0;
 
-        /* "move.pyx":2681
+        /* "move.pyx":2684
  *                 n = 1
  *                 r = 0
  *                 for j in range(i):             # <<<<<<<<<<<<<<
@@ -24059,7 +24059,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
         for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
           __pyx_v_j = __pyx_t_6;
 
-          /* "move.pyx":2682
+          /* "move.pyx":2685
  *                 r = 0
  *                 for j in range(i):
  *                     aj = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
@@ -24068,7 +24068,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
           __pyx_v_aj = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
 
-          /* "move.pyx":2683
+          /* "move.pyx":2686
  *                 for j in range(i):
  *                     aj = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
  *                     if aj == aj:             # <<<<<<<<<<<<<<
@@ -24078,7 +24078,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
           __pyx_t_2 = ((__pyx_v_aj == __pyx_v_aj) != 0);
           if (__pyx_t_2) {
 
-            /* "move.pyx":2684
+            /* "move.pyx":2687
  *                     aj = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
  *                     if aj == aj:
  *                         n += 1             # <<<<<<<<<<<<<<
@@ -24087,7 +24087,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
             __pyx_v_n = (__pyx_v_n + 1.0);
 
-            /* "move.pyx":2685
+            /* "move.pyx":2688
  *                     if aj == aj:
  *                         n += 1
  *                         if ai > aj:             # <<<<<<<<<<<<<<
@@ -24097,7 +24097,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
             __pyx_t_2 = ((__pyx_v_ai > __pyx_v_aj) != 0);
             if (__pyx_t_2) {
 
-              /* "move.pyx":2686
+              /* "move.pyx":2689
  *                         n += 1
  *                         if ai > aj:
  *                             g += 1             # <<<<<<<<<<<<<<
@@ -24106,7 +24106,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
               __pyx_v_g = (__pyx_v_g + 1.0);
 
-              /* "move.pyx":2685
+              /* "move.pyx":2688
  *                     if aj == aj:
  *                         n += 1
  *                         if ai > aj:             # <<<<<<<<<<<<<<
@@ -24116,7 +24116,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
               goto __pyx_L13;
             }
 
-            /* "move.pyx":2687
+            /* "move.pyx":2690
  *                         if ai > aj:
  *                             g += 1
  *                         elif ai == aj:             # <<<<<<<<<<<<<<
@@ -24126,7 +24126,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
             __pyx_t_2 = ((__pyx_v_ai == __pyx_v_aj) != 0);
             if (__pyx_t_2) {
 
-              /* "move.pyx":2688
+              /* "move.pyx":2691
  *                             g += 1
  *                         elif ai == aj:
  *                             e += 1             # <<<<<<<<<<<<<<
@@ -24135,7 +24135,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
               __pyx_v_e = (__pyx_v_e + 1.0);
 
-              /* "move.pyx":2687
+              /* "move.pyx":2690
  *                         if ai > aj:
  *                             g += 1
  *                         elif ai == aj:             # <<<<<<<<<<<<<<
@@ -24145,7 +24145,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
             }
             __pyx_L13:;
 
-            /* "move.pyx":2683
+            /* "move.pyx":2686
  *                 for j in range(i):
  *                     aj = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
  *                     if aj == aj:             # <<<<<<<<<<<<<<
@@ -24155,7 +24155,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
           }
         }
 
-        /* "move.pyx":2689
+        /* "move.pyx":2692
  *                         elif ai == aj:
  *                             e += 1
  *                 if n < min_count:             # <<<<<<<<<<<<<<
@@ -24165,7 +24165,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
         __pyx_t_2 = ((__pyx_v_n < __pyx_v_min_count) != 0);
         if (__pyx_t_2) {
 
-          /* "move.pyx":2690
+          /* "move.pyx":2693
  *                             e += 1
  *                 if n < min_count:
  *                     r = NAN             # <<<<<<<<<<<<<<
@@ -24174,7 +24174,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
           __pyx_v_r = __pyx_v_4move_NAN;
 
-          /* "move.pyx":2689
+          /* "move.pyx":2692
  *                         elif ai == aj:
  *                             e += 1
  *                 if n < min_count:             # <<<<<<<<<<<<<<
@@ -24184,7 +24184,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
           goto __pyx_L14;
         }
 
-        /* "move.pyx":2691
+        /* "move.pyx":2694
  *                 if n < min_count:
  *                     r = NAN
  *                 elif n == 1:             # <<<<<<<<<<<<<<
@@ -24194,7 +24194,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
         __pyx_t_2 = ((__pyx_v_n == 1.0) != 0);
         if (__pyx_t_2) {
 
-          /* "move.pyx":2692
+          /* "move.pyx":2695
  *                     r = NAN
  *                 elif n == 1:
  *                     r = 0.0             # <<<<<<<<<<<<<<
@@ -24203,7 +24203,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
           __pyx_v_r = 0.0;
 
-          /* "move.pyx":2691
+          /* "move.pyx":2694
  *                 if n < min_count:
  *                     r = NAN
  *                 elif n == 1:             # <<<<<<<<<<<<<<
@@ -24213,7 +24213,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
           goto __pyx_L14;
         }
 
-        /* "move.pyx":2694
+        /* "move.pyx":2697
  *                     r = 0.0
  *                 else:
  *                     r = (g + g + e - 1.0) / 2.0             # <<<<<<<<<<<<<<
@@ -24223,7 +24223,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
         /*else*/ {
           __pyx_v_r = ((((__pyx_v_g + __pyx_v_g) + __pyx_v_e) - 1.0) / 2.0);
 
-          /* "move.pyx":2695
+          /* "move.pyx":2698
  *                 else:
  *                     r = (g + g + e - 1.0) / 2.0
  *                     r = r / (n - 1.0)             # <<<<<<<<<<<<<<
@@ -24232,7 +24232,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
           __pyx_v_r = (__pyx_v_r / (__pyx_v_n - 1.0));
 
-          /* "move.pyx":2696
+          /* "move.pyx":2699
  *                     r = (g + g + e - 1.0) / 2.0
  *                     r = r / (n - 1.0)
  *                     r = 2.0 * (r - 0.5)             # <<<<<<<<<<<<<<
@@ -24243,7 +24243,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
         }
         __pyx_L14:;
 
-        /* "move.pyx":2676
+        /* "move.pyx":2679
  *         for i in range(min_count - 1, window - 1):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
  *             if ai == ai:             # <<<<<<<<<<<<<<
@@ -24253,7 +24253,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
         goto __pyx_L9;
       }
 
-      /* "move.pyx":2698
+      /* "move.pyx":2701
  *                     r = 2.0 * (r - 0.5)
  *             else:
  *                 r = NAN             # <<<<<<<<<<<<<<
@@ -24265,7 +24265,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
       }
       __pyx_L9:;
 
-      /* "move.pyx":2699
+      /* "move.pyx":2702
  *             else:
  *                 r = NAN
  *             (<float32_t*>((<char*>pid(ity)) + i*ystride))[0] = r             # <<<<<<<<<<<<<<
@@ -24275,7 +24275,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
       (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_r;
     }
 
-    /* "move.pyx":2700
+    /* "move.pyx":2703
  *                 r = NAN
  *             (<float32_t*>((<char*>pid(ity)) + i*ystride))[0] = r
  *         for i in range(window - 1, length):             # <<<<<<<<<<<<<<
@@ -24286,7 +24286,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
     for (__pyx_t_5 = (__pyx_v_window - 1); __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
 
-      /* "move.pyx":2701
+      /* "move.pyx":2704
  *             (<float32_t*>((<char*>pid(ity)) + i*ystride))[0] = r
  *         for i in range(window - 1, length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -24295,7 +24295,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
       __pyx_v_ai = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "move.pyx":2702
+      /* "move.pyx":2705
  *         for i in range(window - 1, length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
  *             if ai == ai:             # <<<<<<<<<<<<<<
@@ -24305,7 +24305,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
       __pyx_t_2 = ((__pyx_v_ai == __pyx_v_ai) != 0);
       if (__pyx_t_2) {
 
-        /* "move.pyx":2703
+        /* "move.pyx":2706
  *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
  *             if ai == ai:
  *                 g = 0             # <<<<<<<<<<<<<<
@@ -24314,7 +24314,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
         __pyx_v_g = 0.0;
 
-        /* "move.pyx":2704
+        /* "move.pyx":2707
  *             if ai == ai:
  *                 g = 0
  *                 e = 1             # <<<<<<<<<<<<<<
@@ -24323,7 +24323,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
         __pyx_v_e = 1.0;
 
-        /* "move.pyx":2705
+        /* "move.pyx":2708
  *                 g = 0
  *                 e = 1
  *                 n = 1             # <<<<<<<<<<<<<<
@@ -24332,7 +24332,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
         __pyx_v_n = 1.0;
 
-        /* "move.pyx":2706
+        /* "move.pyx":2709
  *                 e = 1
  *                 n = 1
  *                 r = 0             # <<<<<<<<<<<<<<
@@ -24341,7 +24341,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
         __pyx_v_r = 0.0;
 
-        /* "move.pyx":2707
+        /* "move.pyx":2710
  *                 n = 1
  *                 r = 0
  *                 for j in range(i - window + 1, i):             # <<<<<<<<<<<<<<
@@ -24352,7 +24352,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
         for (__pyx_t_7 = ((__pyx_v_i - __pyx_v_window) + 1); __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
           __pyx_v_j = __pyx_t_7;
 
-          /* "move.pyx":2708
+          /* "move.pyx":2711
  *                 r = 0
  *                 for j in range(i - window + 1, i):
  *                     aj = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
@@ -24361,7 +24361,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
           __pyx_v_aj = (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
 
-          /* "move.pyx":2709
+          /* "move.pyx":2712
  *                 for j in range(i - window + 1, i):
  *                     aj = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
  *                     if aj == aj:             # <<<<<<<<<<<<<<
@@ -24371,7 +24371,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
           __pyx_t_2 = ((__pyx_v_aj == __pyx_v_aj) != 0);
           if (__pyx_t_2) {
 
-            /* "move.pyx":2710
+            /* "move.pyx":2713
  *                     aj = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
  *                     if aj == aj:
  *                         n += 1             # <<<<<<<<<<<<<<
@@ -24380,7 +24380,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
             __pyx_v_n = (__pyx_v_n + 1.0);
 
-            /* "move.pyx":2711
+            /* "move.pyx":2714
  *                     if aj == aj:
  *                         n += 1
  *                         if ai > aj:             # <<<<<<<<<<<<<<
@@ -24390,7 +24390,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
             __pyx_t_2 = ((__pyx_v_ai > __pyx_v_aj) != 0);
             if (__pyx_t_2) {
 
-              /* "move.pyx":2712
+              /* "move.pyx":2715
  *                         n += 1
  *                         if ai > aj:
  *                             g += 1             # <<<<<<<<<<<<<<
@@ -24399,7 +24399,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
               __pyx_v_g = (__pyx_v_g + 1.0);
 
-              /* "move.pyx":2711
+              /* "move.pyx":2714
  *                     if aj == aj:
  *                         n += 1
  *                         if ai > aj:             # <<<<<<<<<<<<<<
@@ -24409,7 +24409,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
               goto __pyx_L21;
             }
 
-            /* "move.pyx":2713
+            /* "move.pyx":2716
  *                         if ai > aj:
  *                             g += 1
  *                         elif ai == aj:             # <<<<<<<<<<<<<<
@@ -24419,7 +24419,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
             __pyx_t_2 = ((__pyx_v_ai == __pyx_v_aj) != 0);
             if (__pyx_t_2) {
 
-              /* "move.pyx":2714
+              /* "move.pyx":2717
  *                             g += 1
  *                         elif ai == aj:
  *                             e += 1             # <<<<<<<<<<<<<<
@@ -24428,7 +24428,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
               __pyx_v_e = (__pyx_v_e + 1.0);
 
-              /* "move.pyx":2713
+              /* "move.pyx":2716
  *                         if ai > aj:
  *                             g += 1
  *                         elif ai == aj:             # <<<<<<<<<<<<<<
@@ -24438,7 +24438,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
             }
             __pyx_L21:;
 
-            /* "move.pyx":2709
+            /* "move.pyx":2712
  *                 for j in range(i - window + 1, i):
  *                     aj = (<float32_t*>((<char*>pid(ita)) + j*stride))[0]
  *                     if aj == aj:             # <<<<<<<<<<<<<<
@@ -24448,7 +24448,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
           }
         }
 
-        /* "move.pyx":2715
+        /* "move.pyx":2718
  *                         elif ai == aj:
  *                             e += 1
  *                 if n < min_count:             # <<<<<<<<<<<<<<
@@ -24458,7 +24458,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
         __pyx_t_2 = ((__pyx_v_n < __pyx_v_min_count) != 0);
         if (__pyx_t_2) {
 
-          /* "move.pyx":2716
+          /* "move.pyx":2719
  *                             e += 1
  *                 if n < min_count:
  *                     r = NAN             # <<<<<<<<<<<<<<
@@ -24467,7 +24467,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
           __pyx_v_r = __pyx_v_4move_NAN;
 
-          /* "move.pyx":2715
+          /* "move.pyx":2718
  *                         elif ai == aj:
  *                             e += 1
  *                 if n < min_count:             # <<<<<<<<<<<<<<
@@ -24477,7 +24477,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
           goto __pyx_L22;
         }
 
-        /* "move.pyx":2717
+        /* "move.pyx":2720
  *                 if n < min_count:
  *                     r = NAN
  *                 elif n == 1:             # <<<<<<<<<<<<<<
@@ -24487,7 +24487,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
         __pyx_t_2 = ((__pyx_v_n == 1.0) != 0);
         if (__pyx_t_2) {
 
-          /* "move.pyx":2718
+          /* "move.pyx":2721
  *                     r = NAN
  *                 elif n == 1:
  *                     r = 0.0             # <<<<<<<<<<<<<<
@@ -24496,7 +24496,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
           __pyx_v_r = 0.0;
 
-          /* "move.pyx":2717
+          /* "move.pyx":2720
  *                 if n < min_count:
  *                     r = NAN
  *                 elif n == 1:             # <<<<<<<<<<<<<<
@@ -24506,7 +24506,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
           goto __pyx_L22;
         }
 
-        /* "move.pyx":2720
+        /* "move.pyx":2723
  *                     r = 0.0
  *                 else:
  *                     r = (g + g + e - 1.0) / 2.0             # <<<<<<<<<<<<<<
@@ -24516,7 +24516,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
         /*else*/ {
           __pyx_v_r = ((((__pyx_v_g + __pyx_v_g) + __pyx_v_e) - 1.0) / 2.0);
 
-          /* "move.pyx":2721
+          /* "move.pyx":2724
  *                 else:
  *                     r = (g + g + e - 1.0) / 2.0
  *                     r = r / (n - 1.0)             # <<<<<<<<<<<<<<
@@ -24525,7 +24525,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
           __pyx_v_r = (__pyx_v_r / (__pyx_v_n - 1.0));
 
-          /* "move.pyx":2722
+          /* "move.pyx":2725
  *                     r = (g + g + e - 1.0) / 2.0
  *                     r = r / (n - 1.0)
  *                     r = 2.0 * (r - 0.5)             # <<<<<<<<<<<<<<
@@ -24536,7 +24536,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
         }
         __pyx_L22:;
 
-        /* "move.pyx":2702
+        /* "move.pyx":2705
  *         for i in range(window - 1, length):
  *             ai = (<float32_t*>((<char*>pid(ita)) + i*stride))[0]
  *             if ai == ai:             # <<<<<<<<<<<<<<
@@ -24546,7 +24546,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
         goto __pyx_L17;
       }
 
-      /* "move.pyx":2724
+      /* "move.pyx":2727
  *                     r = 2.0 * (r - 0.5)
  *             else:
  *                 r = NAN             # <<<<<<<<<<<<<<
@@ -24558,7 +24558,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
       }
       __pyx_L17:;
 
-      /* "move.pyx":2725
+      /* "move.pyx":2728
  *             else:
  *                 r = NAN
  *             (<float32_t*>((<char*>pid(ity)) + i*ystride))[0] = r             # <<<<<<<<<<<<<<
@@ -24568,7 +24568,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
       (((__pyx_t_5numpy_float32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_r;
     }
 
-    /* "move.pyx":2726
+    /* "move.pyx":2729
  *                 r = NAN
  *             (<float32_t*>((<char*>pid(ity)) + i*ystride))[0] = r
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -24577,7 +24577,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "move.pyx":2727
+    /* "move.pyx":2730
  *             (<float32_t*>((<char*>pid(ity)) + i*ystride))[0] = r
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -24587,7 +24587,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
     PyArray_ITER_NEXT(__pyx_v_ity);
   }
 
-  /* "move.pyx":2728
+  /* "move.pyx":2731
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -24599,7 +24599,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "move.pyx":2660
+  /* "move.pyx":2663
  * 
  * @cython.cdivision(True)
  * cdef ndarray move_rank_float32(ndarray a, int window, int min_count, int axis,             # <<<<<<<<<<<<<<
@@ -24620,7 +24620,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_float32(CYTHON_UNUSED PyArrayObjec
   return __pyx_r;
 }
 
-/* "move.pyx":2731
+/* "move.pyx":2734
  * 
  * @cython.cdivision(True)
  * cdef ndarray move_rank_int64(ndarray a, int window, int min_count, int axis,             # <<<<<<<<<<<<<<
@@ -24651,33 +24651,33 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
   Py_ssize_t __pyx_t_7;
   __Pyx_RefNannySetupContext("move_rank_int64", 0);
 
-  /* "move.pyx":2738
+  /* "move.pyx":2741
  *     cdef int64_t ai, aj
  *     cdef float64_t g, e, n, r
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  */
-  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2738, __pyx_L1_error)
+  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2741, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2738, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2741, __pyx_L1_error)
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "move.pyx":2739
+  /* "move.pyx":2742
  *     cdef float64_t g, e, n, r
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     cdef char* pita
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2739, __pyx_L1_error)
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2742, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2739, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2742, __pyx_L1_error)
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "move.pyx":2740
+  /* "move.pyx":2743
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -24686,7 +24686,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
   __pyx_v_ystride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "move.pyx":2742
+  /* "move.pyx":2745
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     cdef char* pita
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -24697,7 +24697,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "move.pyx":2743
+    /* "move.pyx":2746
  *     cdef char* pita
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(min_count - 1):             # <<<<<<<<<<<<<<
@@ -24708,7 +24708,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "move.pyx":2744
+      /* "move.pyx":2747
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(min_count - 1):
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN             # <<<<<<<<<<<<<<
@@ -24718,7 +24718,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
       (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_4move_NAN;
     }
 
-    /* "move.pyx":2745
+    /* "move.pyx":2748
  *         for i in range(min_count - 1):
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
  *         for i in range(min_count - 1, window - 1):             # <<<<<<<<<<<<<<
@@ -24729,7 +24729,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
     for (__pyx_t_4 = (__pyx_v_min_count - 1); __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "move.pyx":2746
+      /* "move.pyx":2749
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
  *         for i in range(min_count - 1, window - 1):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -24738,7 +24738,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "move.pyx":2747
+      /* "move.pyx":2750
  *         for i in range(min_count - 1, window - 1):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
  *             g = 0             # <<<<<<<<<<<<<<
@@ -24747,7 +24747,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_g = 0.0;
 
-      /* "move.pyx":2748
+      /* "move.pyx":2751
  *             ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
  *             g = 0
  *             e = 1             # <<<<<<<<<<<<<<
@@ -24756,7 +24756,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_e = 1.0;
 
-      /* "move.pyx":2749
+      /* "move.pyx":2752
  *             g = 0
  *             e = 1
  *             n = 1             # <<<<<<<<<<<<<<
@@ -24765,7 +24765,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_n = 1.0;
 
-      /* "move.pyx":2750
+      /* "move.pyx":2753
  *             e = 1
  *             n = 1
  *             r = 0             # <<<<<<<<<<<<<<
@@ -24774,7 +24774,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_r = 0.0;
 
-      /* "move.pyx":2751
+      /* "move.pyx":2754
  *             n = 1
  *             r = 0
  *             for j in range(i):             # <<<<<<<<<<<<<<
@@ -24785,7 +24785,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
       for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
         __pyx_v_j = __pyx_t_6;
 
-        /* "move.pyx":2752
+        /* "move.pyx":2755
  *             r = 0
  *             for j in range(i):
  *                 aj = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
@@ -24794,7 +24794,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_aj = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
 
-        /* "move.pyx":2753
+        /* "move.pyx":2756
  *             for j in range(i):
  *                 aj = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]
  *                 n += 1             # <<<<<<<<<<<<<<
@@ -24803,7 +24803,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_n = (__pyx_v_n + 1.0);
 
-        /* "move.pyx":2754
+        /* "move.pyx":2757
  *                 aj = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]
  *                 n += 1
  *                 if ai > aj:             # <<<<<<<<<<<<<<
@@ -24813,7 +24813,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
         __pyx_t_2 = ((__pyx_v_ai > __pyx_v_aj) != 0);
         if (__pyx_t_2) {
 
-          /* "move.pyx":2755
+          /* "move.pyx":2758
  *                 n += 1
  *                 if ai > aj:
  *                     g += 1             # <<<<<<<<<<<<<<
@@ -24822,7 +24822,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
           __pyx_v_g = (__pyx_v_g + 1.0);
 
-          /* "move.pyx":2754
+          /* "move.pyx":2757
  *                 aj = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]
  *                 n += 1
  *                 if ai > aj:             # <<<<<<<<<<<<<<
@@ -24832,7 +24832,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
           goto __pyx_L11;
         }
 
-        /* "move.pyx":2756
+        /* "move.pyx":2759
  *                 if ai > aj:
  *                     g += 1
  *                 elif ai == aj:             # <<<<<<<<<<<<<<
@@ -24842,7 +24842,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
         __pyx_t_2 = ((__pyx_v_ai == __pyx_v_aj) != 0);
         if (__pyx_t_2) {
 
-          /* "move.pyx":2757
+          /* "move.pyx":2760
  *                     g += 1
  *                 elif ai == aj:
  *                     e += 1             # <<<<<<<<<<<<<<
@@ -24851,7 +24851,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
           __pyx_v_e = (__pyx_v_e + 1.0);
 
-          /* "move.pyx":2756
+          /* "move.pyx":2759
  *                 if ai > aj:
  *                     g += 1
  *                 elif ai == aj:             # <<<<<<<<<<<<<<
@@ -24862,7 +24862,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
         __pyx_L11:;
       }
 
-      /* "move.pyx":2758
+      /* "move.pyx":2761
  *                 elif ai == aj:
  *                     e += 1
  *             if n < min_count:             # <<<<<<<<<<<<<<
@@ -24872,7 +24872,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
       __pyx_t_2 = ((__pyx_v_n < __pyx_v_min_count) != 0);
       if (__pyx_t_2) {
 
-        /* "move.pyx":2759
+        /* "move.pyx":2762
  *                     e += 1
  *             if n < min_count:
  *                 r = NAN             # <<<<<<<<<<<<<<
@@ -24881,7 +24881,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_r = __pyx_v_4move_NAN;
 
-        /* "move.pyx":2758
+        /* "move.pyx":2761
  *                 elif ai == aj:
  *                     e += 1
  *             if n < min_count:             # <<<<<<<<<<<<<<
@@ -24891,7 +24891,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
         goto __pyx_L12;
       }
 
-      /* "move.pyx":2760
+      /* "move.pyx":2763
  *             if n < min_count:
  *                 r = NAN
  *             elif n == 1:             # <<<<<<<<<<<<<<
@@ -24901,7 +24901,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
       __pyx_t_2 = ((__pyx_v_n == 1.0) != 0);
       if (__pyx_t_2) {
 
-        /* "move.pyx":2761
+        /* "move.pyx":2764
  *                 r = NAN
  *             elif n == 1:
  *                 r = 0.0             # <<<<<<<<<<<<<<
@@ -24910,7 +24910,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_r = 0.0;
 
-        /* "move.pyx":2760
+        /* "move.pyx":2763
  *             if n < min_count:
  *                 r = NAN
  *             elif n == 1:             # <<<<<<<<<<<<<<
@@ -24920,7 +24920,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
         goto __pyx_L12;
       }
 
-      /* "move.pyx":2763
+      /* "move.pyx":2766
  *                 r = 0.0
  *             else:
  *                 r = (g + g + e - 1.0) / 2.0             # <<<<<<<<<<<<<<
@@ -24930,7 +24930,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
       /*else*/ {
         __pyx_v_r = ((((__pyx_v_g + __pyx_v_g) + __pyx_v_e) - 1.0) / 2.0);
 
-        /* "move.pyx":2764
+        /* "move.pyx":2767
  *             else:
  *                 r = (g + g + e - 1.0) / 2.0
  *                 r = r / (n - 1.0)             # <<<<<<<<<<<<<<
@@ -24939,7 +24939,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_r = (__pyx_v_r / (__pyx_v_n - 1.0));
 
-        /* "move.pyx":2765
+        /* "move.pyx":2768
  *                 r = (g + g + e - 1.0) / 2.0
  *                 r = r / (n - 1.0)
  *                 r = 2.0 * (r - 0.5)             # <<<<<<<<<<<<<<
@@ -24950,7 +24950,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
       }
       __pyx_L12:;
 
-      /* "move.pyx":2766
+      /* "move.pyx":2769
  *                 r = r / (n - 1.0)
  *                 r = 2.0 * (r - 0.5)
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r             # <<<<<<<<<<<<<<
@@ -24960,7 +24960,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
       (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_r;
     }
 
-    /* "move.pyx":2767
+    /* "move.pyx":2770
  *                 r = 2.0 * (r - 0.5)
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r
  *         for i in range(window - 1, length):             # <<<<<<<<<<<<<<
@@ -24971,7 +24971,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
     for (__pyx_t_5 = (__pyx_v_window - 1); __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
 
-      /* "move.pyx":2768
+      /* "move.pyx":2771
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r
  *         for i in range(window - 1, length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -24980,7 +24980,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "move.pyx":2769
+      /* "move.pyx":2772
  *         for i in range(window - 1, length):
  *             ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
  *             g = 0             # <<<<<<<<<<<<<<
@@ -24989,7 +24989,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_g = 0.0;
 
-      /* "move.pyx":2770
+      /* "move.pyx":2773
  *             ai = (<int64_t*>((<char*>pid(ita)) + i*stride))[0]
  *             g = 0
  *             e = 1             # <<<<<<<<<<<<<<
@@ -24998,7 +24998,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_e = 1.0;
 
-      /* "move.pyx":2771
+      /* "move.pyx":2774
  *             g = 0
  *             e = 1
  *             n = 1             # <<<<<<<<<<<<<<
@@ -25007,7 +25007,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_n = 1.0;
 
-      /* "move.pyx":2772
+      /* "move.pyx":2775
  *             e = 1
  *             n = 1
  *             r = 0             # <<<<<<<<<<<<<<
@@ -25016,7 +25016,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_r = 0.0;
 
-      /* "move.pyx":2773
+      /* "move.pyx":2776
  *             n = 1
  *             r = 0
  *             for j in range(i - window + 1, i):             # <<<<<<<<<<<<<<
@@ -25027,7 +25027,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
       for (__pyx_t_7 = ((__pyx_v_i - __pyx_v_window) + 1); __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
         __pyx_v_j = __pyx_t_7;
 
-        /* "move.pyx":2774
+        /* "move.pyx":2777
  *             r = 0
  *             for j in range(i - window + 1, i):
  *                 aj = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
@@ -25036,7 +25036,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_aj = (((__pyx_t_5numpy_int64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
 
-        /* "move.pyx":2775
+        /* "move.pyx":2778
  *             for j in range(i - window + 1, i):
  *                 aj = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]
  *                 n += 1             # <<<<<<<<<<<<<<
@@ -25045,7 +25045,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_n = (__pyx_v_n + 1.0);
 
-        /* "move.pyx":2776
+        /* "move.pyx":2779
  *                 aj = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]
  *                 n += 1
  *                 if ai > aj:             # <<<<<<<<<<<<<<
@@ -25055,7 +25055,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
         __pyx_t_2 = ((__pyx_v_ai > __pyx_v_aj) != 0);
         if (__pyx_t_2) {
 
-          /* "move.pyx":2777
+          /* "move.pyx":2780
  *                 n += 1
  *                 if ai > aj:
  *                     g += 1             # <<<<<<<<<<<<<<
@@ -25064,7 +25064,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
           __pyx_v_g = (__pyx_v_g + 1.0);
 
-          /* "move.pyx":2776
+          /* "move.pyx":2779
  *                 aj = (<int64_t*>((<char*>pid(ita)) + j*stride))[0]
  *                 n += 1
  *                 if ai > aj:             # <<<<<<<<<<<<<<
@@ -25074,7 +25074,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
           goto __pyx_L17;
         }
 
-        /* "move.pyx":2778
+        /* "move.pyx":2781
  *                 if ai > aj:
  *                     g += 1
  *                 elif ai == aj:             # <<<<<<<<<<<<<<
@@ -25084,7 +25084,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
         __pyx_t_2 = ((__pyx_v_ai == __pyx_v_aj) != 0);
         if (__pyx_t_2) {
 
-          /* "move.pyx":2779
+          /* "move.pyx":2782
  *                     g += 1
  *                 elif ai == aj:
  *                     e += 1             # <<<<<<<<<<<<<<
@@ -25093,7 +25093,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
           __pyx_v_e = (__pyx_v_e + 1.0);
 
-          /* "move.pyx":2778
+          /* "move.pyx":2781
  *                 if ai > aj:
  *                     g += 1
  *                 elif ai == aj:             # <<<<<<<<<<<<<<
@@ -25104,7 +25104,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
         __pyx_L17:;
       }
 
-      /* "move.pyx":2780
+      /* "move.pyx":2783
  *                 elif ai == aj:
  *                     e += 1
  *             if n < min_count:             # <<<<<<<<<<<<<<
@@ -25114,7 +25114,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
       __pyx_t_2 = ((__pyx_v_n < __pyx_v_min_count) != 0);
       if (__pyx_t_2) {
 
-        /* "move.pyx":2781
+        /* "move.pyx":2784
  *                     e += 1
  *             if n < min_count:
  *                 r = NAN             # <<<<<<<<<<<<<<
@@ -25123,7 +25123,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_r = __pyx_v_4move_NAN;
 
-        /* "move.pyx":2780
+        /* "move.pyx":2783
  *                 elif ai == aj:
  *                     e += 1
  *             if n < min_count:             # <<<<<<<<<<<<<<
@@ -25133,7 +25133,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
         goto __pyx_L18;
       }
 
-      /* "move.pyx":2782
+      /* "move.pyx":2785
  *             if n < min_count:
  *                 r = NAN
  *             elif n == 1:             # <<<<<<<<<<<<<<
@@ -25143,7 +25143,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
       __pyx_t_2 = ((__pyx_v_n == 1.0) != 0);
       if (__pyx_t_2) {
 
-        /* "move.pyx":2783
+        /* "move.pyx":2786
  *                 r = NAN
  *             elif n == 1:
  *                 r = 0.0             # <<<<<<<<<<<<<<
@@ -25152,7 +25152,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_r = 0.0;
 
-        /* "move.pyx":2782
+        /* "move.pyx":2785
  *             if n < min_count:
  *                 r = NAN
  *             elif n == 1:             # <<<<<<<<<<<<<<
@@ -25162,7 +25162,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
         goto __pyx_L18;
       }
 
-      /* "move.pyx":2785
+      /* "move.pyx":2788
  *                 r = 0.0
  *             else:
  *                 r = (g + g + e - 1.0) / 2.0             # <<<<<<<<<<<<<<
@@ -25172,7 +25172,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
       /*else*/ {
         __pyx_v_r = ((((__pyx_v_g + __pyx_v_g) + __pyx_v_e) - 1.0) / 2.0);
 
-        /* "move.pyx":2786
+        /* "move.pyx":2789
  *             else:
  *                 r = (g + g + e - 1.0) / 2.0
  *                 r = r / (n - 1.0)             # <<<<<<<<<<<<<<
@@ -25181,7 +25181,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_r = (__pyx_v_r / (__pyx_v_n - 1.0));
 
-        /* "move.pyx":2787
+        /* "move.pyx":2790
  *                 r = (g + g + e - 1.0) / 2.0
  *                 r = r / (n - 1.0)
  *                 r = 2.0 * (r - 0.5)             # <<<<<<<<<<<<<<
@@ -25192,7 +25192,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
       }
       __pyx_L18:;
 
-      /* "move.pyx":2788
+      /* "move.pyx":2791
  *                 r = r / (n - 1.0)
  *                 r = 2.0 * (r - 0.5)
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r             # <<<<<<<<<<<<<<
@@ -25202,7 +25202,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
       (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_r;
     }
 
-    /* "move.pyx":2789
+    /* "move.pyx":2792
  *                 r = 2.0 * (r - 0.5)
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -25211,7 +25211,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "move.pyx":2790
+    /* "move.pyx":2793
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -25221,7 +25221,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
     PyArray_ITER_NEXT(__pyx_v_ity);
   }
 
-  /* "move.pyx":2791
+  /* "move.pyx":2794
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -25233,7 +25233,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "move.pyx":2731
+  /* "move.pyx":2734
  * 
  * @cython.cdivision(True)
  * cdef ndarray move_rank_int64(ndarray a, int window, int min_count, int axis,             # <<<<<<<<<<<<<<
@@ -25254,7 +25254,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int64(CYTHON_UNUSED PyArrayObject 
   return __pyx_r;
 }
 
-/* "move.pyx":2794
+/* "move.pyx":2797
  * 
  * @cython.cdivision(True)
  * cdef ndarray move_rank_int32(ndarray a, int window, int min_count, int axis,             # <<<<<<<<<<<<<<
@@ -25285,33 +25285,33 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
   Py_ssize_t __pyx_t_7;
   __Pyx_RefNannySetupContext("move_rank_int32", 0);
 
-  /* "move.pyx":2801
+  /* "move.pyx":2804
  *     cdef int32_t ai, aj
  *     cdef float64_t g, e, n, r
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)             # <<<<<<<<<<<<<<
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]
  */
-  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2801, __pyx_L1_error)
+  __pyx_t_1 = PyArray_EMPTY(__pyx_v_a_ndim, __pyx_v_y_dims, NPY_FLOAT64, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2804, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2801, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2804, __pyx_L1_error)
   __pyx_v_y = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "move.pyx":2802
+  /* "move.pyx":2805
  *     cdef float64_t g, e, n, r
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     cdef char* pita
  */
-  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2802, __pyx_L1_error)
+  __pyx_t_1 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_y), (&__pyx_v_axis)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2805, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2802, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2805, __pyx_L1_error)
   __pyx_v_ity = ((PyArrayIterObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "move.pyx":2803
+  /* "move.pyx":2806
  *     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_float64, 0)
  *     cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
  *     cdef Py_ssize_t ystride = y.strides[axis]             # <<<<<<<<<<<<<<
@@ -25320,7 +25320,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
   __pyx_v_ystride = (__pyx_v_y->strides[__pyx_v_axis]);
 
-  /* "move.pyx":2805
+  /* "move.pyx":2808
  *     cdef Py_ssize_t ystride = y.strides[axis]
  *     cdef char* pita
  *     while PyArray_ITER_NOTDONE(ita):             # <<<<<<<<<<<<<<
@@ -25331,7 +25331,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
     __pyx_t_2 = (PyArray_ITER_NOTDONE(__pyx_v_ita) != 0);
     if (!__pyx_t_2) break;
 
-    /* "move.pyx":2806
+    /* "move.pyx":2809
  *     cdef char* pita
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(min_count - 1):             # <<<<<<<<<<<<<<
@@ -25342,7 +25342,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "move.pyx":2807
+      /* "move.pyx":2810
  *     while PyArray_ITER_NOTDONE(ita):
  *         for i in range(min_count - 1):
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN             # <<<<<<<<<<<<<<
@@ -25352,7 +25352,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
       (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_4move_NAN;
     }
 
-    /* "move.pyx":2808
+    /* "move.pyx":2811
  *         for i in range(min_count - 1):
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
  *         for i in range(min_count - 1, window - 1):             # <<<<<<<<<<<<<<
@@ -25363,7 +25363,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
     for (__pyx_t_4 = (__pyx_v_min_count - 1); __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "move.pyx":2809
+      /* "move.pyx":2812
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = NAN
  *         for i in range(min_count - 1, window - 1):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -25372,7 +25372,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "move.pyx":2810
+      /* "move.pyx":2813
  *         for i in range(min_count - 1, window - 1):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
  *             g = 0             # <<<<<<<<<<<<<<
@@ -25381,7 +25381,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_g = 0.0;
 
-      /* "move.pyx":2811
+      /* "move.pyx":2814
  *             ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
  *             g = 0
  *             e = 1             # <<<<<<<<<<<<<<
@@ -25390,7 +25390,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_e = 1.0;
 
-      /* "move.pyx":2812
+      /* "move.pyx":2815
  *             g = 0
  *             e = 1
  *             n = 1             # <<<<<<<<<<<<<<
@@ -25399,7 +25399,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_n = 1.0;
 
-      /* "move.pyx":2813
+      /* "move.pyx":2816
  *             e = 1
  *             n = 1
  *             r = 0             # <<<<<<<<<<<<<<
@@ -25408,7 +25408,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_r = 0.0;
 
-      /* "move.pyx":2814
+      /* "move.pyx":2817
  *             n = 1
  *             r = 0
  *             for j in range(i):             # <<<<<<<<<<<<<<
@@ -25419,7 +25419,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
       for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
         __pyx_v_j = __pyx_t_6;
 
-        /* "move.pyx":2815
+        /* "move.pyx":2818
  *             r = 0
  *             for j in range(i):
  *                 aj = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
@@ -25428,7 +25428,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_aj = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
 
-        /* "move.pyx":2816
+        /* "move.pyx":2819
  *             for j in range(i):
  *                 aj = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]
  *                 n += 1             # <<<<<<<<<<<<<<
@@ -25437,7 +25437,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_n = (__pyx_v_n + 1.0);
 
-        /* "move.pyx":2817
+        /* "move.pyx":2820
  *                 aj = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]
  *                 n += 1
  *                 if ai > aj:             # <<<<<<<<<<<<<<
@@ -25447,7 +25447,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
         __pyx_t_2 = ((__pyx_v_ai > __pyx_v_aj) != 0);
         if (__pyx_t_2) {
 
-          /* "move.pyx":2818
+          /* "move.pyx":2821
  *                 n += 1
  *                 if ai > aj:
  *                     g += 1             # <<<<<<<<<<<<<<
@@ -25456,7 +25456,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
           __pyx_v_g = (__pyx_v_g + 1.0);
 
-          /* "move.pyx":2817
+          /* "move.pyx":2820
  *                 aj = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]
  *                 n += 1
  *                 if ai > aj:             # <<<<<<<<<<<<<<
@@ -25466,7 +25466,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
           goto __pyx_L11;
         }
 
-        /* "move.pyx":2819
+        /* "move.pyx":2822
  *                 if ai > aj:
  *                     g += 1
  *                 elif ai == aj:             # <<<<<<<<<<<<<<
@@ -25476,7 +25476,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
         __pyx_t_2 = ((__pyx_v_ai == __pyx_v_aj) != 0);
         if (__pyx_t_2) {
 
-          /* "move.pyx":2820
+          /* "move.pyx":2823
  *                     g += 1
  *                 elif ai == aj:
  *                     e += 1             # <<<<<<<<<<<<<<
@@ -25485,7 +25485,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
           __pyx_v_e = (__pyx_v_e + 1.0);
 
-          /* "move.pyx":2819
+          /* "move.pyx":2822
  *                 if ai > aj:
  *                     g += 1
  *                 elif ai == aj:             # <<<<<<<<<<<<<<
@@ -25496,7 +25496,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
         __pyx_L11:;
       }
 
-      /* "move.pyx":2821
+      /* "move.pyx":2824
  *                 elif ai == aj:
  *                     e += 1
  *             if n < min_count:             # <<<<<<<<<<<<<<
@@ -25506,7 +25506,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
       __pyx_t_2 = ((__pyx_v_n < __pyx_v_min_count) != 0);
       if (__pyx_t_2) {
 
-        /* "move.pyx":2822
+        /* "move.pyx":2825
  *                     e += 1
  *             if n < min_count:
  *                 r = NAN             # <<<<<<<<<<<<<<
@@ -25515,7 +25515,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_r = __pyx_v_4move_NAN;
 
-        /* "move.pyx":2821
+        /* "move.pyx":2824
  *                 elif ai == aj:
  *                     e += 1
  *             if n < min_count:             # <<<<<<<<<<<<<<
@@ -25525,7 +25525,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
         goto __pyx_L12;
       }
 
-      /* "move.pyx":2823
+      /* "move.pyx":2826
  *             if n < min_count:
  *                 r = NAN
  *             elif n == 1:             # <<<<<<<<<<<<<<
@@ -25535,7 +25535,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
       __pyx_t_2 = ((__pyx_v_n == 1.0) != 0);
       if (__pyx_t_2) {
 
-        /* "move.pyx":2824
+        /* "move.pyx":2827
  *                 r = NAN
  *             elif n == 1:
  *                 r = 0.0             # <<<<<<<<<<<<<<
@@ -25544,7 +25544,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_r = 0.0;
 
-        /* "move.pyx":2823
+        /* "move.pyx":2826
  *             if n < min_count:
  *                 r = NAN
  *             elif n == 1:             # <<<<<<<<<<<<<<
@@ -25554,7 +25554,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
         goto __pyx_L12;
       }
 
-      /* "move.pyx":2826
+      /* "move.pyx":2829
  *                 r = 0.0
  *             else:
  *                 r = (g + g + e - 1.0) / 2.0             # <<<<<<<<<<<<<<
@@ -25564,7 +25564,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
       /*else*/ {
         __pyx_v_r = ((((__pyx_v_g + __pyx_v_g) + __pyx_v_e) - 1.0) / 2.0);
 
-        /* "move.pyx":2827
+        /* "move.pyx":2830
  *             else:
  *                 r = (g + g + e - 1.0) / 2.0
  *                 r = r / (n - 1.0)             # <<<<<<<<<<<<<<
@@ -25573,7 +25573,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_r = (__pyx_v_r / (__pyx_v_n - 1.0));
 
-        /* "move.pyx":2828
+        /* "move.pyx":2831
  *                 r = (g + g + e - 1.0) / 2.0
  *                 r = r / (n - 1.0)
  *                 r = 2.0 * (r - 0.5)             # <<<<<<<<<<<<<<
@@ -25584,7 +25584,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
       }
       __pyx_L12:;
 
-      /* "move.pyx":2829
+      /* "move.pyx":2832
  *                 r = r / (n - 1.0)
  *                 r = 2.0 * (r - 0.5)
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r             # <<<<<<<<<<<<<<
@@ -25594,7 +25594,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
       (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_r;
     }
 
-    /* "move.pyx":2830
+    /* "move.pyx":2833
  *                 r = 2.0 * (r - 0.5)
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r
  *         for i in range(window - 1, length):             # <<<<<<<<<<<<<<
@@ -25605,7 +25605,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
     for (__pyx_t_5 = (__pyx_v_window - 1); __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
 
-      /* "move.pyx":2831
+      /* "move.pyx":2834
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r
  *         for i in range(window - 1, length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]             # <<<<<<<<<<<<<<
@@ -25614,7 +25614,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_ai = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_i * __pyx_v_stride)))[0]);
 
-      /* "move.pyx":2832
+      /* "move.pyx":2835
  *         for i in range(window - 1, length):
  *             ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
  *             g = 0             # <<<<<<<<<<<<<<
@@ -25623,7 +25623,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_g = 0.0;
 
-      /* "move.pyx":2833
+      /* "move.pyx":2836
  *             ai = (<int32_t*>((<char*>pid(ita)) + i*stride))[0]
  *             g = 0
  *             e = 1             # <<<<<<<<<<<<<<
@@ -25632,7 +25632,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_e = 1.0;
 
-      /* "move.pyx":2834
+      /* "move.pyx":2837
  *             g = 0
  *             e = 1
  *             n = 1             # <<<<<<<<<<<<<<
@@ -25641,7 +25641,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_n = 1.0;
 
-      /* "move.pyx":2835
+      /* "move.pyx":2838
  *             e = 1
  *             n = 1
  *             r = 0             # <<<<<<<<<<<<<<
@@ -25650,7 +25650,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
       __pyx_v_r = 0.0;
 
-      /* "move.pyx":2836
+      /* "move.pyx":2839
  *             n = 1
  *             r = 0
  *             for j in range(i - window + 1, i):             # <<<<<<<<<<<<<<
@@ -25661,7 +25661,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
       for (__pyx_t_7 = ((__pyx_v_i - __pyx_v_window) + 1); __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
         __pyx_v_j = __pyx_t_7;
 
-        /* "move.pyx":2837
+        /* "move.pyx":2840
  *             r = 0
  *             for j in range(i - window + 1, i):
  *                 aj = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]             # <<<<<<<<<<<<<<
@@ -25670,7 +25670,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_aj = (((__pyx_t_5numpy_int32_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ita)) + (__pyx_v_j * __pyx_v_stride)))[0]);
 
-        /* "move.pyx":2838
+        /* "move.pyx":2841
  *             for j in range(i - window + 1, i):
  *                 aj = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]
  *                 n += 1             # <<<<<<<<<<<<<<
@@ -25679,7 +25679,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_n = (__pyx_v_n + 1.0);
 
-        /* "move.pyx":2839
+        /* "move.pyx":2842
  *                 aj = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]
  *                 n += 1
  *                 if ai > aj:             # <<<<<<<<<<<<<<
@@ -25689,7 +25689,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
         __pyx_t_2 = ((__pyx_v_ai > __pyx_v_aj) != 0);
         if (__pyx_t_2) {
 
-          /* "move.pyx":2840
+          /* "move.pyx":2843
  *                 n += 1
  *                 if ai > aj:
  *                     g += 1             # <<<<<<<<<<<<<<
@@ -25698,7 +25698,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
           __pyx_v_g = (__pyx_v_g + 1.0);
 
-          /* "move.pyx":2839
+          /* "move.pyx":2842
  *                 aj = (<int32_t*>((<char*>pid(ita)) + j*stride))[0]
  *                 n += 1
  *                 if ai > aj:             # <<<<<<<<<<<<<<
@@ -25708,7 +25708,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
           goto __pyx_L17;
         }
 
-        /* "move.pyx":2841
+        /* "move.pyx":2844
  *                 if ai > aj:
  *                     g += 1
  *                 elif ai == aj:             # <<<<<<<<<<<<<<
@@ -25718,7 +25718,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
         __pyx_t_2 = ((__pyx_v_ai == __pyx_v_aj) != 0);
         if (__pyx_t_2) {
 
-          /* "move.pyx":2842
+          /* "move.pyx":2845
  *                     g += 1
  *                 elif ai == aj:
  *                     e += 1             # <<<<<<<<<<<<<<
@@ -25727,7 +25727,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
           __pyx_v_e = (__pyx_v_e + 1.0);
 
-          /* "move.pyx":2841
+          /* "move.pyx":2844
  *                 if ai > aj:
  *                     g += 1
  *                 elif ai == aj:             # <<<<<<<<<<<<<<
@@ -25738,7 +25738,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
         __pyx_L17:;
       }
 
-      /* "move.pyx":2843
+      /* "move.pyx":2846
  *                 elif ai == aj:
  *                     e += 1
  *             if n < min_count:             # <<<<<<<<<<<<<<
@@ -25748,7 +25748,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
       __pyx_t_2 = ((__pyx_v_n < __pyx_v_min_count) != 0);
       if (__pyx_t_2) {
 
-        /* "move.pyx":2844
+        /* "move.pyx":2847
  *                     e += 1
  *             if n < min_count:
  *                 r = NAN             # <<<<<<<<<<<<<<
@@ -25757,7 +25757,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_r = __pyx_v_4move_NAN;
 
-        /* "move.pyx":2843
+        /* "move.pyx":2846
  *                 elif ai == aj:
  *                     e += 1
  *             if n < min_count:             # <<<<<<<<<<<<<<
@@ -25767,7 +25767,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
         goto __pyx_L18;
       }
 
-      /* "move.pyx":2845
+      /* "move.pyx":2848
  *             if n < min_count:
  *                 r = NAN
  *             elif n == 1:             # <<<<<<<<<<<<<<
@@ -25777,7 +25777,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
       __pyx_t_2 = ((__pyx_v_n == 1.0) != 0);
       if (__pyx_t_2) {
 
-        /* "move.pyx":2846
+        /* "move.pyx":2849
  *                 r = NAN
  *             elif n == 1:
  *                 r = 0.0             # <<<<<<<<<<<<<<
@@ -25786,7 +25786,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_r = 0.0;
 
-        /* "move.pyx":2845
+        /* "move.pyx":2848
  *             if n < min_count:
  *                 r = NAN
  *             elif n == 1:             # <<<<<<<<<<<<<<
@@ -25796,7 +25796,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
         goto __pyx_L18;
       }
 
-      /* "move.pyx":2848
+      /* "move.pyx":2851
  *                 r = 0.0
  *             else:
  *                 r = (g + g + e - 1.0) / 2.0             # <<<<<<<<<<<<<<
@@ -25806,7 +25806,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
       /*else*/ {
         __pyx_v_r = ((((__pyx_v_g + __pyx_v_g) + __pyx_v_e) - 1.0) / 2.0);
 
-        /* "move.pyx":2849
+        /* "move.pyx":2852
  *             else:
  *                 r = (g + g + e - 1.0) / 2.0
  *                 r = r / (n - 1.0)             # <<<<<<<<<<<<<<
@@ -25815,7 +25815,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
         __pyx_v_r = (__pyx_v_r / (__pyx_v_n - 1.0));
 
-        /* "move.pyx":2850
+        /* "move.pyx":2853
  *                 r = (g + g + e - 1.0) / 2.0
  *                 r = r / (n - 1.0)
  *                 r = 2.0 * (r - 0.5)             # <<<<<<<<<<<<<<
@@ -25826,7 +25826,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
       }
       __pyx_L18:;
 
-      /* "move.pyx":2851
+      /* "move.pyx":2854
  *                 r = r / (n - 1.0)
  *                 r = 2.0 * (r - 0.5)
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r             # <<<<<<<<<<<<<<
@@ -25836,7 +25836,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
       (((__pyx_t_5numpy_float64_t *)(((char *)PyArray_ITER_DATA(__pyx_v_ity)) + (__pyx_v_i * __pyx_v_ystride)))[0]) = __pyx_v_r;
     }
 
-    /* "move.pyx":2852
+    /* "move.pyx":2855
  *                 r = 2.0 * (r - 0.5)
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r
  *         PyArray_ITER_NEXT(ita)             # <<<<<<<<<<<<<<
@@ -25845,7 +25845,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
  */
     PyArray_ITER_NEXT(__pyx_v_ita);
 
-    /* "move.pyx":2853
+    /* "move.pyx":2856
  *             (<float64_t*>((<char*>pid(ity)) + i*ystride))[0] = r
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)             # <<<<<<<<<<<<<<
@@ -25855,7 +25855,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
     PyArray_ITER_NEXT(__pyx_v_ity);
   }
 
-  /* "move.pyx":2854
+  /* "move.pyx":2857
  *         PyArray_ITER_NEXT(ita)
  *         PyArray_ITER_NEXT(ity)
  *     return y             # <<<<<<<<<<<<<<
@@ -25867,7 +25867,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "move.pyx":2794
+  /* "move.pyx":2797
  * 
  * @cython.cdivision(True)
  * cdef ndarray move_rank_int32(ndarray a, int window, int min_count, int axis,             # <<<<<<<<<<<<<<
@@ -25888,7 +25888,7 @@ static PyArrayObject *__pyx_f_4move_move_rank_int32(CYTHON_UNUSED PyArrayObject 
   return __pyx_r;
 }
 
-/* "move.pyx":2862
+/* "move.pyx":2865
  * 
  * 
  * cdef ndarray mover(arr, int window, min_count, int axis,             # <<<<<<<<<<<<<<
@@ -25925,7 +25925,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
     }
   }
 
-  /* "move.pyx":2871
+  /* "move.pyx":2874
  *     # convert to array if necessary
  *     cdef ndarray a
  *     if type(arr) is ndarray:             # <<<<<<<<<<<<<<
@@ -25936,20 +25936,20 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "move.pyx":2872
+    /* "move.pyx":2875
  *     cdef ndarray a
  *     if type(arr) is ndarray:
  *         a = arr             # <<<<<<<<<<<<<<
  *     else:
  *         a = np.array(arr, copy=False)
  */
-    if (!(likely(((__pyx_v_arr) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_arr, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2872, __pyx_L1_error)
+    if (!(likely(((__pyx_v_arr) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_arr, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2875, __pyx_L1_error)
     __pyx_t_3 = __pyx_v_arr;
     __Pyx_INCREF(__pyx_t_3);
     __pyx_v_a = ((PyArrayObject *)__pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "move.pyx":2871
+    /* "move.pyx":2874
  *     # convert to array if necessary
  *     cdef ndarray a
  *     if type(arr) is ndarray:             # <<<<<<<<<<<<<<
@@ -25959,7 +25959,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
     goto __pyx_L3;
   }
 
-  /* "move.pyx":2874
+  /* "move.pyx":2877
  *         a = arr
  *     else:
  *         a = np.array(arr, copy=False)             # <<<<<<<<<<<<<<
@@ -25967,31 +25967,31 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  *     # check for byte swapped input array
  */
   /*else*/ {
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2874, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2877, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 2874, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 2877, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2874, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2877, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_v_arr);
     __Pyx_GIVEREF(__pyx_v_arr);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_arr);
-    __pyx_t_5 = PyDict_New(); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2874, __pyx_L1_error)
+    __pyx_t_5 = PyDict_New(); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2877, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_copy, Py_False) < 0) __PYX_ERR(0, 2874, __pyx_L1_error)
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 2874, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_copy, Py_False) < 0) __PYX_ERR(0, 2877, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 2877, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2874, __pyx_L1_error)
+    if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 2877, __pyx_L1_error)
     __pyx_v_a = ((PyArrayObject *)__pyx_t_6);
     __pyx_t_6 = 0;
   }
   __pyx_L3:;
 
-  /* "move.pyx":2877
+  /* "move.pyx":2880
  * 
  *     # check for byte swapped input array
  *     cdef bint is_swapped = PyArray_ISBYTESWAPPED(a)             # <<<<<<<<<<<<<<
@@ -26000,7 +26000,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
   __pyx_v_is_swapped = PyArray_ISBYTESWAPPED(__pyx_v_a);
 
-  /* "move.pyx":2878
+  /* "move.pyx":2881
  *     # check for byte swapped input array
  *     cdef bint is_swapped = PyArray_ISBYTESWAPPED(a)
  *     if is_swapped:             # <<<<<<<<<<<<<<
@@ -26010,7 +26010,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
   __pyx_t_2 = (__pyx_v_is_swapped != 0);
   if (__pyx_t_2) {
 
-    /* "move.pyx":2879
+    /* "move.pyx":2882
  *     cdef bint is_swapped = PyArray_ISBYTESWAPPED(a)
  *     if is_swapped:
  *         raise TypeError             # <<<<<<<<<<<<<<
@@ -26018,9 +26018,9 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  *     # min_count
  */
     __Pyx_Raise(__pyx_builtin_TypeError, 0, 0, 0);
-    __PYX_ERR(0, 2879, __pyx_L1_error)
+    __PYX_ERR(0, 2882, __pyx_L1_error)
 
-    /* "move.pyx":2878
+    /* "move.pyx":2881
  *     # check for byte swapped input array
  *     cdef bint is_swapped = PyArray_ISBYTESWAPPED(a)
  *     if is_swapped:             # <<<<<<<<<<<<<<
@@ -26029,7 +26029,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
   }
 
-  /* "move.pyx":2883
+  /* "move.pyx":2886
  *     # min_count
  *     cdef int mc
  *     if min_count is None:             # <<<<<<<<<<<<<<
@@ -26040,7 +26040,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
   __pyx_t_1 = (__pyx_t_2 != 0);
   if (__pyx_t_1) {
 
-    /* "move.pyx":2884
+    /* "move.pyx":2887
  *     cdef int mc
  *     if min_count is None:
  *         mc = window             # <<<<<<<<<<<<<<
@@ -26049,7 +26049,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
     __pyx_v_mc = __pyx_v_window;
 
-    /* "move.pyx":2883
+    /* "move.pyx":2886
  *     # min_count
  *     cdef int mc
  *     if min_count is None:             # <<<<<<<<<<<<<<
@@ -26059,7 +26059,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
     goto __pyx_L5;
   }
 
-  /* "move.pyx":2886
+  /* "move.pyx":2889
  *         mc = window
  *     else:
  *         mc = <int>min_count             # <<<<<<<<<<<<<<
@@ -26067,10 +26067,10 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  *             msg = "min_count (%d) cannot be greater than window (%d)"
  */
   /*else*/ {
-    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_min_count); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 2886, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_min_count); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 2889, __pyx_L1_error)
     __pyx_v_mc = ((int)__pyx_t_7);
 
-    /* "move.pyx":2887
+    /* "move.pyx":2890
  *     else:
  *         mc = <int>min_count
  *         if mc > window:             # <<<<<<<<<<<<<<
@@ -26080,7 +26080,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
     __pyx_t_1 = ((__pyx_v_mc > __pyx_v_window) != 0);
     if (__pyx_t_1) {
 
-      /* "move.pyx":2888
+      /* "move.pyx":2891
  *         mc = <int>min_count
  *         if mc > window:
  *             msg = "min_count (%d) cannot be greater than window (%d)"             # <<<<<<<<<<<<<<
@@ -26090,18 +26090,18 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
       __Pyx_INCREF(__pyx_kp_s_min_count_d_cannot_be_greater_th);
       __pyx_v_msg = __pyx_kp_s_min_count_d_cannot_be_greater_th;
 
-      /* "move.pyx":2889
+      /* "move.pyx":2892
  *         if mc > window:
  *             msg = "min_count (%d) cannot be greater than window (%d)"
  *             raise ValueError(msg % (mc, window))             # <<<<<<<<<<<<<<
  *         elif mc <= 0:
  *             raise ValueError("`min_count` must be greater than zero.")
  */
-      __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_mc); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 2889, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_mc); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 2892, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_window); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2889, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_window); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2892, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2889, __pyx_L1_error)
+      __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2892, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_GIVEREF(__pyx_t_6);
       PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_6);
@@ -26109,22 +26109,22 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
       PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_5);
       __pyx_t_6 = 0;
       __pyx_t_5 = 0;
-      __pyx_t_5 = PyNumber_Remainder(__pyx_v_msg, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2889, __pyx_L1_error)
+      __pyx_t_5 = PyNumber_Remainder(__pyx_v_msg, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2892, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2889, __pyx_L1_error)
+      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2892, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_GIVEREF(__pyx_t_5);
       PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_5);
       __pyx_t_5 = 0;
-      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_3, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2889, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_3, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2892, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_Raise(__pyx_t_5, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __PYX_ERR(0, 2889, __pyx_L1_error)
+      __PYX_ERR(0, 2892, __pyx_L1_error)
 
-      /* "move.pyx":2887
+      /* "move.pyx":2890
  *     else:
  *         mc = <int>min_count
  *         if mc > window:             # <<<<<<<<<<<<<<
@@ -26133,7 +26133,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
     }
 
-    /* "move.pyx":2890
+    /* "move.pyx":2893
  *             msg = "min_count (%d) cannot be greater than window (%d)"
  *             raise ValueError(msg % (mc, window))
  *         elif mc <= 0:             # <<<<<<<<<<<<<<
@@ -26143,20 +26143,20 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
     __pyx_t_1 = ((__pyx_v_mc <= 0) != 0);
     if (__pyx_t_1) {
 
-      /* "move.pyx":2891
+      /* "move.pyx":2894
  *             raise ValueError(msg % (mc, window))
  *         elif mc <= 0:
  *             raise ValueError("`min_count` must be greater than zero.")             # <<<<<<<<<<<<<<
  * 
  *     # input array
  */
-      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2891, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2894, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_Raise(__pyx_t_5, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __PYX_ERR(0, 2891, __pyx_L1_error)
+      __PYX_ERR(0, 2894, __pyx_L1_error)
 
-      /* "move.pyx":2890
+      /* "move.pyx":2893
  *             msg = "min_count (%d) cannot be greater than window (%d)"
  *             raise ValueError(msg % (mc, window))
  *         elif mc <= 0:             # <<<<<<<<<<<<<<
@@ -26167,7 +26167,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
   }
   __pyx_L5:;
 
-  /* "move.pyx":2896
+  /* "move.pyx":2899
  *     cdef np.flatiter ita
  *     cdef Py_ssize_t stride, length
  *     cdef int dtype = PyArray_TYPE(a)             # <<<<<<<<<<<<<<
@@ -26176,7 +26176,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
   __pyx_v_dtype = PyArray_TYPE(__pyx_v_a);
 
-  /* "move.pyx":2897
+  /* "move.pyx":2900
  *     cdef Py_ssize_t stride, length
  *     cdef int dtype = PyArray_TYPE(a)
  *     cdef int a_ndim = PyArray_NDIM(a)             # <<<<<<<<<<<<<<
@@ -26185,7 +26185,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
   __pyx_v_a_ndim = PyArray_NDIM(__pyx_v_a);
 
-  /* "move.pyx":2900
+  /* "move.pyx":2903
  * 
  *     # defend against 0d beings
  *     if a_ndim == 0:             # <<<<<<<<<<<<<<
@@ -26195,20 +26195,20 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
   __pyx_t_1 = ((__pyx_v_a_ndim == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "move.pyx":2901
+    /* "move.pyx":2904
  *     # defend against 0d beings
  *     if a_ndim == 0:
  *         raise ValueError("moving window functions require ndim > 0")             # <<<<<<<<<<<<<<
  * 
  *     # defend against the axis of negativity
  */
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2901, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2904, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __PYX_ERR(0, 2901, __pyx_L1_error)
+    __PYX_ERR(0, 2904, __pyx_L1_error)
 
-    /* "move.pyx":2900
+    /* "move.pyx":2903
  * 
  *     # defend against 0d beings
  *     if a_ndim == 0:             # <<<<<<<<<<<<<<
@@ -26217,7 +26217,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
   }
 
-  /* "move.pyx":2904
+  /* "move.pyx":2907
  * 
  *     # defend against the axis of negativity
  *     if axis < 0:             # <<<<<<<<<<<<<<
@@ -26227,7 +26227,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
   __pyx_t_1 = ((__pyx_v_axis < 0) != 0);
   if (__pyx_t_1) {
 
-    /* "move.pyx":2905
+    /* "move.pyx":2908
  *     # defend against the axis of negativity
  *     if axis < 0:
  *         axis += a_ndim             # <<<<<<<<<<<<<<
@@ -26236,7 +26236,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
     __pyx_v_axis = (__pyx_v_axis + __pyx_v_a_ndim);
 
-    /* "move.pyx":2906
+    /* "move.pyx":2909
  *     if axis < 0:
  *         axis += a_ndim
  *         if axis < 0:             # <<<<<<<<<<<<<<
@@ -26246,31 +26246,31 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
     __pyx_t_1 = ((__pyx_v_axis < 0) != 0);
     if (__pyx_t_1) {
 
-      /* "move.pyx":2907
+      /* "move.pyx":2910
  *         axis += a_ndim
  *         if axis < 0:
  *             raise ValueError("axis(=%d) out of bounds" % axis)             # <<<<<<<<<<<<<<
  *     elif axis >= a_ndim:
  *         raise ValueError("axis(=%d) out of bounds" % axis)
  */
-      __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_axis); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2907, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_axis); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2910, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_3 = __Pyx_PyString_Format(__pyx_kp_s_axis_d_out_of_bounds, __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2907, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyString_Format(__pyx_kp_s_axis_d_out_of_bounds, __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2910, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2907, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2910, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_3);
       PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3);
       __pyx_t_3 = 0;
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2907, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2910, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 2907, __pyx_L1_error)
+      __PYX_ERR(0, 2910, __pyx_L1_error)
 
-      /* "move.pyx":2906
+      /* "move.pyx":2909
  *     if axis < 0:
  *         axis += a_ndim
  *         if axis < 0:             # <<<<<<<<<<<<<<
@@ -26279,7 +26279,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
     }
 
-    /* "move.pyx":2904
+    /* "move.pyx":2907
  * 
  *     # defend against the axis of negativity
  *     if axis < 0:             # <<<<<<<<<<<<<<
@@ -26289,7 +26289,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
     goto __pyx_L8;
   }
 
-  /* "move.pyx":2908
+  /* "move.pyx":2911
  *         if axis < 0:
  *             raise ValueError("axis(=%d) out of bounds" % axis)
  *     elif axis >= a_ndim:             # <<<<<<<<<<<<<<
@@ -26299,31 +26299,31 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
   __pyx_t_1 = ((__pyx_v_axis >= __pyx_v_a_ndim) != 0);
   if (__pyx_t_1) {
 
-    /* "move.pyx":2909
+    /* "move.pyx":2912
  *             raise ValueError("axis(=%d) out of bounds" % axis)
  *     elif axis >= a_ndim:
  *         raise ValueError("axis(=%d) out of bounds" % axis)             # <<<<<<<<<<<<<<
  * 
  *     # output array info
  */
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_axis); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2909, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_axis); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2912, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = __Pyx_PyString_Format(__pyx_kp_s_axis_d_out_of_bounds, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2909, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyString_Format(__pyx_kp_s_axis_d_out_of_bounds, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2912, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2909, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2912, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_GIVEREF(__pyx_t_5);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_5);
     __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_3, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2909, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_3, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2912, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __PYX_ERR(0, 2909, __pyx_L1_error)
+    __PYX_ERR(0, 2912, __pyx_L1_error)
 
-    /* "move.pyx":2908
+    /* "move.pyx":2911
  *         if axis < 0:
  *             raise ValueError("axis(=%d) out of bounds" % axis)
  *     elif axis >= a_ndim:             # <<<<<<<<<<<<<<
@@ -26333,7 +26333,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
   }
   __pyx_L8:;
 
-  /* "move.pyx":2913
+  /* "move.pyx":2916
  *     # output array info
  *     cdef ndarray y
  *     cdef np.npy_intp *y_dims = np.PyArray_DIMS(a)             # <<<<<<<<<<<<<<
@@ -26342,20 +26342,20 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
   __pyx_v_y_dims = PyArray_DIMS(__pyx_v_a);
 
-  /* "move.pyx":2916
+  /* "move.pyx":2919
  * 
  *     # input iterator
  *     ita = PyArray_IterAllButAxis(a, &axis)             # <<<<<<<<<<<<<<
  *     stride = a.strides[axis]
  *     length = a.shape[axis]
  */
-  __pyx_t_5 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2916, __pyx_L1_error)
+  __pyx_t_5 = PyArray_IterAllButAxis(((PyObject *)__pyx_v_a), (&__pyx_v_axis)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2919, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2916, __pyx_L1_error)
+  if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_flatiter))))) __PYX_ERR(0, 2919, __pyx_L1_error)
   __pyx_v_ita = ((PyArrayIterObject *)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "move.pyx":2917
+  /* "move.pyx":2920
  *     # input iterator
  *     ita = PyArray_IterAllButAxis(a, &axis)
  *     stride = a.strides[axis]             # <<<<<<<<<<<<<<
@@ -26364,7 +26364,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
   __pyx_v_stride = (__pyx_v_a->strides[__pyx_v_axis]);
 
-  /* "move.pyx":2918
+  /* "move.pyx":2921
  *     ita = PyArray_IterAllButAxis(a, &axis)
  *     stride = a.strides[axis]
  *     length = a.shape[axis]             # <<<<<<<<<<<<<<
@@ -26373,7 +26373,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
   __pyx_v_length = (__pyx_v_a->dimensions[__pyx_v_axis]);
 
-  /* "move.pyx":2921
+  /* "move.pyx":2924
  * 
  *     # window
  *     if (window < 1) or (window > length):             # <<<<<<<<<<<<<<
@@ -26391,7 +26391,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
   __pyx_L11_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "move.pyx":2922
+    /* "move.pyx":2925
  *     # window
  *     if (window < 1) or (window > length):
  *         msg = "Moving window (=%d) must between 1 and %d, inclusive"             # <<<<<<<<<<<<<<
@@ -26401,18 +26401,18 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
     __Pyx_INCREF(__pyx_kp_s_Moving_window_d_must_between_1_a);
     __pyx_v_msg = __pyx_kp_s_Moving_window_d_must_between_1_a;
 
-    /* "move.pyx":2923
+    /* "move.pyx":2926
  *     if (window < 1) or (window > length):
  *         msg = "Moving window (=%d) must between 1 and %d, inclusive"
  *         raise ValueError(msg % (window, length))             # <<<<<<<<<<<<<<
  * 
  *     if dtype == NPY_float64:
  */
-    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_window); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2923, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_window); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 2926, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_3 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2923, __pyx_L1_error)
+    __pyx_t_3 = PyInt_FromSsize_t(__pyx_v_length); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2926, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 2923, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 2926, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_GIVEREF(__pyx_t_5);
     PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5);
@@ -26420,22 +26420,22 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
     PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_3);
     __pyx_t_5 = 0;
     __pyx_t_3 = 0;
-    __pyx_t_3 = PyNumber_Remainder(__pyx_v_msg, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2923, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Remainder(__pyx_v_msg, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2926, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 2923, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 2926, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2923, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2926, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 2923, __pyx_L1_error)
+    __PYX_ERR(0, 2926, __pyx_L1_error)
 
-    /* "move.pyx":2921
+    /* "move.pyx":2924
  * 
  *     # window
  *     if (window < 1) or (window > length):             # <<<<<<<<<<<<<<
@@ -26444,7 +26444,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
   }
 
-  /* "move.pyx":2925
+  /* "move.pyx":2928
  *         raise ValueError(msg % (window, length))
  * 
  *     if dtype == NPY_float64:             # <<<<<<<<<<<<<<
@@ -26454,19 +26454,19 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
   switch (__pyx_v_dtype) {
     case NPY_FLOAT64:
 
-    /* "move.pyx":2926
+    /* "move.pyx":2929
  * 
  *     if dtype == NPY_float64:
  *         y = move_float64(a, window, mc, axis, ita, stride, length,             # <<<<<<<<<<<<<<
  *                          a_ndim, y_dims, int_input)
  *     elif dtype == NPY_float32:
  */
-    __pyx_t_3 = ((PyObject *)__pyx_v_move_float64(__pyx_v_a, __pyx_v_window, __pyx_v_mc, __pyx_v_axis, __pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2926, __pyx_L1_error)
+    __pyx_t_3 = ((PyObject *)__pyx_v_move_float64(__pyx_v_a, __pyx_v_window, __pyx_v_mc, __pyx_v_axis, __pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2929, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_v_y = ((PyArrayObject *)__pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "move.pyx":2925
+    /* "move.pyx":2928
  *         raise ValueError(msg % (window, length))
  * 
  *     if dtype == NPY_float64:             # <<<<<<<<<<<<<<
@@ -26475,7 +26475,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
     break;
 
-    /* "move.pyx":2928
+    /* "move.pyx":2931
  *         y = move_float64(a, window, mc, axis, ita, stride, length,
  *                          a_ndim, y_dims, int_input)
  *     elif dtype == NPY_float32:             # <<<<<<<<<<<<<<
@@ -26484,19 +26484,19 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
     case NPY_FLOAT32:
 
-    /* "move.pyx":2929
+    /* "move.pyx":2932
  *                          a_ndim, y_dims, int_input)
  *     elif dtype == NPY_float32:
  *         y = move_float32(a, window, mc, axis, ita, stride, length,             # <<<<<<<<<<<<<<
  *                          a_ndim, y_dims, int_input)
  *     elif dtype == NPY_int64:
  */
-    __pyx_t_3 = ((PyObject *)__pyx_v_move_float32(__pyx_v_a, __pyx_v_window, __pyx_v_mc, __pyx_v_axis, __pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2929, __pyx_L1_error)
+    __pyx_t_3 = ((PyObject *)__pyx_v_move_float32(__pyx_v_a, __pyx_v_window, __pyx_v_mc, __pyx_v_axis, __pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2932, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_v_y = ((PyArrayObject *)__pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "move.pyx":2928
+    /* "move.pyx":2931
  *         y = move_float64(a, window, mc, axis, ita, stride, length,
  *                          a_ndim, y_dims, int_input)
  *     elif dtype == NPY_float32:             # <<<<<<<<<<<<<<
@@ -26505,7 +26505,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
     break;
 
-    /* "move.pyx":2931
+    /* "move.pyx":2934
  *         y = move_float32(a, window, mc, axis, ita, stride, length,
  *                          a_ndim, y_dims, int_input)
  *     elif dtype == NPY_int64:             # <<<<<<<<<<<<<<
@@ -26514,19 +26514,19 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
     case NPY_INT64:
 
-    /* "move.pyx":2932
+    /* "move.pyx":2935
  *                          a_ndim, y_dims, int_input)
  *     elif dtype == NPY_int64:
  *         y = move_int64(a, window, mc, axis, ita, stride, length,             # <<<<<<<<<<<<<<
  *                        a_ndim, y_dims, int_input)
  *     elif dtype == NPY_int32:
  */
-    __pyx_t_3 = ((PyObject *)__pyx_v_move_int64(__pyx_v_a, __pyx_v_window, __pyx_v_mc, __pyx_v_axis, __pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2932, __pyx_L1_error)
+    __pyx_t_3 = ((PyObject *)__pyx_v_move_int64(__pyx_v_a, __pyx_v_window, __pyx_v_mc, __pyx_v_axis, __pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2935, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_v_y = ((PyArrayObject *)__pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "move.pyx":2931
+    /* "move.pyx":2934
  *         y = move_float32(a, window, mc, axis, ita, stride, length,
  *                          a_ndim, y_dims, int_input)
  *     elif dtype == NPY_int64:             # <<<<<<<<<<<<<<
@@ -26535,7 +26535,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
     break;
 
-    /* "move.pyx":2934
+    /* "move.pyx":2937
  *         y = move_int64(a, window, mc, axis, ita, stride, length,
  *                        a_ndim, y_dims, int_input)
  *     elif dtype == NPY_int32:             # <<<<<<<<<<<<<<
@@ -26544,19 +26544,19 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
  */
     case NPY_INT32:
 
-    /* "move.pyx":2935
+    /* "move.pyx":2938
  *                        a_ndim, y_dims, int_input)
  *     elif dtype == NPY_int32:
  *         y = move_int32(a, window, mc, axis, ita, stride, length,             # <<<<<<<<<<<<<<
  *                        a_ndim, y_dims, int_input)
  *     else:
  */
-    __pyx_t_3 = ((PyObject *)__pyx_v_move_int32(__pyx_v_a, __pyx_v_window, __pyx_v_mc, __pyx_v_axis, __pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2935, __pyx_L1_error)
+    __pyx_t_3 = ((PyObject *)__pyx_v_move_int32(__pyx_v_a, __pyx_v_window, __pyx_v_mc, __pyx_v_axis, __pyx_v_ita, __pyx_v_stride, __pyx_v_length, __pyx_v_a_ndim, __pyx_v_y_dims, __pyx_v_int_input)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2938, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_v_y = ((PyArrayObject *)__pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "move.pyx":2934
+    /* "move.pyx":2937
  *         y = move_int64(a, window, mc, axis, ita, stride, length,
  *                        a_ndim, y_dims, int_input)
  *     elif dtype == NPY_int32:             # <<<<<<<<<<<<<<
@@ -26566,32 +26566,32 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
     break;
     default:
 
-    /* "move.pyx":2938
+    /* "move.pyx":2941
  *                        a_ndim, y_dims, int_input)
  *     else:
  *         raise TypeError("Unsupported dtype (%s)." % a.dtype)             # <<<<<<<<<<<<<<
  *     return y
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_dtype); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2938, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_dtype); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2941, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_Unsupported_dtype_s, __pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 2938, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyString_Format(__pyx_kp_s_Unsupported_dtype_s, __pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 2941, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2938, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 2941, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_GIVEREF(__pyx_t_6);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_6);
     __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 2938, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 2941, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 2938, __pyx_L1_error)
+    __PYX_ERR(0, 2941, __pyx_L1_error)
     break;
   }
 
-  /* "move.pyx":2939
+  /* "move.pyx":2942
  *     else:
  *         raise TypeError("Unsupported dtype (%s)." % a.dtype)
  *     return y             # <<<<<<<<<<<<<<
@@ -26601,7 +26601,7 @@ static PyArrayObject *__pyx_f_4move_mover(PyObject *__pyx_v_arr, int __pyx_v_win
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "move.pyx":2862
+  /* "move.pyx":2865
  * 
  * 
  * cdef ndarray mover(arr, int window, min_count, int axis,             # <<<<<<<<<<<<<<
@@ -28823,7 +28823,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_move_min, __pyx_k_move_min, sizeof(__pyx_k_move_min), 0, 0, 1, 1},
   {&__pyx_kp_u_move_min_line_1075, __pyx_k_move_min_line_1075, sizeof(__pyx_k_move_min_line_1075), 0, 1, 0, 0},
   {&__pyx_n_s_move_rank, __pyx_k_move_rank, sizeof(__pyx_k_move_rank), 0, 0, 1, 1},
-  {&__pyx_kp_u_move_rank_line_2521, __pyx_k_move_rank_line_2521, sizeof(__pyx_k_move_rank_line_2521), 0, 1, 0, 0},
+  {&__pyx_kp_u_move_rank_line_2524, __pyx_k_move_rank_line_2524, sizeof(__pyx_k_move_rank_line_2524), 0, 1, 0, 0},
   {&__pyx_n_s_move_std, __pyx_k_move_std, sizeof(__pyx_k_move_std), 0, 0, 1, 1},
   {&__pyx_kp_u_move_std_line_484, __pyx_k_move_std_line_484, sizeof(__pyx_k_move_std_line_484), 0, 1, 0, 0},
   {&__pyx_n_s_move_sum, __pyx_k_move_sum, sizeof(__pyx_k_move_sum), 0, 0, 1, 1},
@@ -28846,8 +28846,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
 static int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 104, __pyx_L1_error)
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 121, __pyx_L1_error)
-  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 2403, __pyx_L1_error)
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 2889, __pyx_L1_error)
+  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 2406, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 2892, __pyx_L1_error)
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(1, 799, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
@@ -28858,25 +28858,25 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "move.pyx":2891
+  /* "move.pyx":2894
  *             raise ValueError(msg % (mc, window))
  *         elif mc <= 0:
  *             raise ValueError("`min_count` must be greater than zero.")             # <<<<<<<<<<<<<<
  * 
  *     # input array
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_min_count_must_be_greater_than); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 2891, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_min_count_must_be_greater_than); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 2894, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "move.pyx":2901
+  /* "move.pyx":2904
  *     # defend against 0d beings
  *     if a_ndim == 0:
  *         raise ValueError("moving window functions require ndim > 0")             # <<<<<<<<<<<<<<
  * 
  *     # defend against the axis of negativity
  */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_moving_window_functions_require); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 2901, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_moving_window_functions_require); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 2904, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
@@ -29054,17 +29054,17 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__26);
   __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(4, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_move_median, 2311, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 2311, __pyx_L1_error)
 
-  /* "move.pyx":2521
+  /* "move.pyx":2524
  * # move_rank-----------------------------------------------------------------
  * 
  * def move_rank(arr, int window, min_count=None, int axis=-1):             # <<<<<<<<<<<<<<
  *     """
  *     Moving window ranking along the specified axis, optionally ignoring NaNs.
  */
-  __pyx_tuple__28 = PyTuple_Pack(4, __pyx_n_s_arr, __pyx_n_s_window, __pyx_n_s_min_count, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 2521, __pyx_L1_error)
+  __pyx_tuple__28 = PyTuple_Pack(4, __pyx_n_s_arr, __pyx_n_s_window, __pyx_n_s_min_count, __pyx_n_s_axis); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 2524, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__28);
   __Pyx_GIVEREF(__pyx_tuple__28);
-  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(4, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_move_rank, 2521, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 2521, __pyx_L1_error)
+  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(4, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_devel_bottleneck_bottleneck_src, __pyx_n_s_move_rank, 2524, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 2524, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -29421,16 +29421,16 @@ PyMODINIT_FUNC PyInit_move(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_move_median, __pyx_t_1) < 0) __PYX_ERR(0, 2311, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "move.pyx":2521
+  /* "move.pyx":2524
  * # move_rank-----------------------------------------------------------------
  * 
  * def move_rank(arr, int window, min_count=None, int axis=-1):             # <<<<<<<<<<<<<<
  *     """
  *     Moving window ranking along the specified axis, optionally ignoring NaNs.
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4move_19move_rank, NULL, __pyx_n_s_move); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2521, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4move_19move_rank, NULL, __pyx_n_s_move); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2524, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_move_rank, __pyx_t_1) < 0) __PYX_ERR(0, 2521, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_move_rank, __pyx_t_1) < 0) __PYX_ERR(0, 2524, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "move.pyx":1
@@ -29449,7 +29449,7 @@ PyMODINIT_FUNC PyInit_move(void)
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_move_argmin_line_1679, __pyx_kp_u_Moving_window_index_of_minimum) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_move_argmax_line_1995, __pyx_kp_u_Moving_window_index_of_maximum) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_move_median_line_2311, __pyx_kp_u_Moving_window_median_along_the) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_move_rank_line_2521, __pyx_kp_u_Moving_window_ranking_along_the) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_move_rank_line_2524, __pyx_kp_u_Moving_window_ranking_along_the) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 

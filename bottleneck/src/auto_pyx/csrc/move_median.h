@@ -41,10 +41,11 @@ typedef struct _mm_node mm_node;
 
 struct _mm_handle {
     idx_t     window;    // window size
+    int       odd;       // is window even (0) or odd (1)
+    idx_t     min_count; // Same meaning as in bn.move_median
     idx_t     n_s;       // Number of nodes in the small heap
     idx_t     n_l;       // Number of nodes in the large heap
     idx_t     n_n;       // Number of nodes in the nan array
-    idx_t     min_count; // Same meaning as in bn.move_median
     mm_node **s_heap;    // The max heap of small ai
     mm_node **l_heap;    // The min heap of large ai
     mm_node **n_array;   // The nan array
