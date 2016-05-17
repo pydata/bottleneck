@@ -109,7 +109,8 @@ def test_move_nanmedian():
     func = bn.move_median
     func0 = bn.slow.move_median
     rs = np.random.RandomState([1, 2, 3])
-    for i in range(100):
+    for i in range(10000):
+        print i
         a = np.arange(size, dtype=np.float64)
         idx = rs.rand(*a.shape) < 0.1
         a[idx] = np.inf

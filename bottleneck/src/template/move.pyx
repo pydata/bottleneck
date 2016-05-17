@@ -1484,16 +1484,10 @@ cdef extern from "csrc/move_median.c":
         np.npy_uint32   small
         np.npy_uint64   idx
         np.npy_float64  val
-        _mm_node         *next
-        _mm_node         *next_nan
-        _mm_node         *prev_nan
+        _mm_node       *next
     ctypedef _mm_node mm_node
     struct _mm_handle:
         np.npy_uint64    window
-        np.npy_uint64    n_s_nan
-        np.npy_uint64    n_l_nan
-        int              init_wnd_complete
-        int              odd
         np.npy_uint64    n_s
         np.npy_uint64    n_l
         np.npy_uint64    min_count
@@ -1505,11 +1499,6 @@ cdef extern from "csrc/move_median.c":
         mm_node           *last
         np.npy_uint64 s_first_leaf
         np.npy_uint64 l_first_leaf
-        mm_node           *first_nan_s
-        mm_node           *last_nan_s
-        mm_node           *first_nan_l
-        mm_node           *last_nan_l
-        np.npy_uint64 max_s_heap_size
     ctypedef _mm_handle mm_handle
     mm_handle *mm_new(np.npy_uint64 window, np.npy_uint64 min_count) nogil
     np.npy_float64 mm_update_init(mm_handle *mm, np.npy_float64 val) nogil
