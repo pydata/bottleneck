@@ -34,10 +34,12 @@
 #define LH 1
 #define NA 2
 
+#define FIRST_LEAF(n) ceil((n - 1) / (double)NUM_CHILDREN)
+
 
 /*
 -----------------------------------------------------------------------------
-  Node and handle structs
+  Data structures
 -----------------------------------------------------------------------------
 */
 
@@ -121,9 +123,9 @@ void ww_print_node(ww_node *node);
 */
 
 /* At the start of bn.move_median two heaps are created. One heap contains the
- * small values (max heap); the other heap contains the large values
- * (min heap). And the handle contains information about the heaps. It is the
- * handle that is returned by the function. */
+ * small values (a max heap); the other heap contains the large values
+ * (a min heap). And the handle contains information about the heaps. It is
+ * the handle that is returned by the function. */
 inline ww_handle *
 ww_new(const idx_t window, idx_t min_count)
 {
@@ -152,7 +154,6 @@ inline ai_t
 ww_update_init(ww_handle *ww, ai_t ai)
 {
 
-    // local variables
     ww_node *node = NULL;
     idx_t n_s = ww->n_s;
     idx_t n_l = ww->n_l;
@@ -165,6 +166,7 @@ ww_update_init(ww_handle *ww, ai_t ai)
         node->idx = n_n;
         node->ai = ai;
         if (n_s + n_l + n_n == 0) {
+            // only need to set the oldest node once
             ww->oldest = node;
         } else {
             ww->newest->next = node;
@@ -174,13 +176,15 @@ ww_update_init(ww_handle *ww, ai_t ai)
         ++ww->n_n;
     } else {
         if (n_s == 0) {
-            // The first node.
+
+            // the first node to appear in a heap
 
             ww->s_heap[0] = node;
             node->region = SH;
             node->idx = 0;
             node->ai = ai;
             if (n_s + n_l + n_n == 0) {
+                // only need to set the oldest node once
                 ww->oldest = node;
             } else {
                 ww->newest->next = node;
@@ -194,7 +198,7 @@ ww_update_init(ww_handle *ww, ai_t ai)
         }
         else
         {
-            // Nodes after the first.
+            // at least one node already exists in the heaps
 
             node->next = ww->oldest;
             ww->oldest = node;
@@ -208,7 +212,7 @@ ww_update_init(ww_handle *ww, ai_t ai)
                 node->idx = n_l;
 
                 ++ww->n_l;
-                ww->l_first_leaf = ceil((ww->n_l - 1) / (double)NUM_CHILDREN);
+                ww->l_first_leaf = FIRST_LEAF(ww->n_l);
             }
             else
             {
@@ -219,7 +223,7 @@ ww_update_init(ww_handle *ww, ai_t ai)
                 node->idx = n_s;
 
                 ++ww->n_s;
-                ww->s_first_leaf = ceil((ww->n_s - 1) / (double)NUM_CHILDREN);
+                ww->s_first_leaf = FIRST_LEAF(ww->n_s);
             }
 
             ww_update(ww, ai);
@@ -238,20 +242,20 @@ inline ai_t
 ww_update(ww_handle *ww, ai_t ai)
 {
 
-    // Nodes and indices.
+    // node is oldest node with ai of newest node
     ww_node *node = ww->oldest;
+    idx_t idx = node->idx;
+    node->ai = ai;
 
-    // and update oldest, newest
+    // update oldest, newest
     ww->oldest = ww->oldest->next;
     ww->newest->next = node;
     ww->newest = node;
 
-    // Local variables.
-    idx_t idx = node->idx;
-
     ww_node **l_heap = ww->l_heap;
     ww_node **s_heap = ww->s_heap;
     ww_node **n_array = ww->n_array;
+
     idx_t n_s = ww->n_s;
     idx_t n_l = ww->n_l;
     idx_t n_n = ww->n_n;
@@ -270,7 +274,6 @@ ww_update(ww_handle *ww, ai_t ai)
             // insert node into nan array
             node->region = NA;
             node->idx = n_n;
-            node->ai = ai;
             n_array[n_n] = node;
             ++ww->n_n;
 
@@ -295,7 +298,7 @@ ww_update(ww_handle *ww, ai_t ai)
                     if (ww->n_l == 0) {
                         ww->l_first_leaf = 0;
                     } else {
-                        ww->l_first_leaf = ceil((ww->n_l - 1) / (double)NUM_CHILDREN);
+                        ww->l_first_leaf = FIRST_LEAF(ww->n_l);
                     }
                     heapify_large_node(ww, 0);
 
@@ -311,7 +314,7 @@ ww_update(ww_handle *ww, ai_t ai)
                     node2->region = SH;
                     s_heap[ww->n_s] = node2;
                     ++ww->n_s;
-                    ww->l_first_leaf = ceil((ww->n_s - 1) / (double)NUM_CHILDREN);
+                    ww->l_first_leaf = FIRST_LEAF(ww->n_s);
                     heapify_small_node(ww, node2->idx);
 
                     // plug hole in large heap
@@ -322,12 +325,12 @@ ww_update(ww_handle *ww, ai_t ai)
                     if (ww->n_l == 0) {
                         ww->l_first_leaf = 0;
                     } else {
-                        ww->l_first_leaf = ceil((ww->n_l - 1) / (double)NUM_CHILDREN);
+                        ww->l_first_leaf = FIRST_LEAF(ww->n_l);
                     }
                     heapify_large_node(ww, 0);
 
                 } else {
-                ww->s_first_leaf = ceil((ww->n_s - 1) / (double)NUM_CHILDREN);
+                ww->s_first_leaf = FIRST_LEAF(ww->n_s);
                 heapify_small_node(ww, idx);
                 }
             }
@@ -342,7 +345,6 @@ ww_update(ww_handle *ww, ai_t ai)
             // insert node into nan array
             node->region = NA;
             node->idx = n_n;
-            node->ai = ai;
             n_array[n_n] = node;
             ++ww->n_n;
 
@@ -353,7 +355,7 @@ ww_update(ww_handle *ww, ai_t ai)
             if (ww->n_l == 0) {
                 ww->l_first_leaf = 0;
             } else {
-                ww->l_first_leaf = ceil((ww->n_l - 1) / (double)NUM_CHILDREN);
+                ww->l_first_leaf = FIRST_LEAF(ww->n_l);
             }
 
             if (ww->n_l < ww->n_s - 1) {
@@ -364,7 +366,7 @@ ww_update(ww_handle *ww, ai_t ai)
                 node2->region = LH;
                 l_heap[ww->n_l] = node2;
                 ++ww->n_l;
-                ww->l_first_leaf = ceil((ww->n_l - 1) / (double)NUM_CHILDREN);
+                ww->l_first_leaf = FIRST_LEAF(ww->n_l);
                 heapify_large_node(ww, node2->idx);
 
                 // plug hole in small heap
@@ -375,7 +377,7 @@ ww_update(ww_handle *ww, ai_t ai)
                 if (ww->n_s == 0) {
                     ww->s_first_leaf = 0;
                 } else {
-                    ww->s_first_leaf = ceil((ww->n_s - 1) / (double)NUM_CHILDREN);
+                    ww->s_first_leaf = FIRST_LEAF(ww->n_s);
                 }
                 heapify_small_node(ww, 0);
 
@@ -393,11 +395,9 @@ ww_update(ww_handle *ww, ai_t ai)
     } else {
 
         if (node->region == SH) {
-            node->ai = ai;
             heapify_small_node(ww, idx);
         }
         else if (node->region == LH) {
-            node->ai = ai;
             heapify_large_node(ww, idx);
         }
         else {
@@ -409,10 +409,9 @@ ww_update(ww_handle *ww, ai_t ai)
                 // insert into large heap
                 node->region = LH;
                 node->idx = n_l;
-                node->ai = ai;
                 l_heap[n_l] = node;
                 ++ww->n_l;
-                ww->l_first_leaf = ceil((ww->n_l - 1) / (double)NUM_CHILDREN);
+                ww->l_first_leaf = FIRST_LEAF(ww->n_l);
 
                 // plug nan array hole
                 if (n_n > 2) {
@@ -429,10 +428,9 @@ ww_update(ww_handle *ww, ai_t ai)
                 // insert into small heap
                 node->region = SH;
                 node->idx = n_s;
-                node->ai = ai;
                 s_heap[n_s] = node;
                 ++ww->n_s;
-                ww->s_first_leaf = ceil((ww->n_s - 1) / (double)NUM_CHILDREN);
+                ww->s_first_leaf = FIRST_LEAF(ww->n_s);
 
                 // plug nan array hole
                 if (n_n > 2) {
@@ -912,12 +910,12 @@ void ww_check(ww_handle *ww)
     if (ww->n_s == 0) {
         assert(ww->s_first_leaf == 0);
     } else {
-        assert(ww->s_first_leaf == ceil((ww->n_s - 1) / (double)NUM_CHILDREN));
+        assert(ww->s_first_leaf == FIRST_LEAF(ww->n_s));
     }
     if (ww->n_l == 0) {
         assert(ww->l_first_leaf == 0);
     } else {
-        assert(ww->l_first_leaf == ceil((ww->n_l - 1) / (double)NUM_CHILDREN));
+        assert(ww->l_first_leaf == FIRST_LEAF(ww->n_l));
     }
     ndiff = (int)ww->n_s - (int)ww->n_l;
     if (ndiff < 0) {
