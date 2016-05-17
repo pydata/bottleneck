@@ -160,75 +160,63 @@ ww_update_init(ww_handle *ww, ai_t ai)
     idx_t n_n = ww->n_n;
 
     node = &ww->node_data[n_s + n_l + n_n];
+    node->ai = ai;
+
     if (isnan(ai)) {
         ww->n_array[n_n] = node;
         node->region = NA;
         node->idx = n_n;
-        node->ai = ai;
         if (n_s + n_l + n_n == 0) {
             // only need to set the oldest node once
             ww->oldest = node;
         } else {
             ww->newest->next = node;
         }
-        node->next = NULL;
-        ww->newest = node;
         ++ww->n_n;
     } else {
         if (n_s == 0) {
-
             // the first node to appear in a heap
-
             ww->s_heap[0] = node;
             node->region = SH;
             node->idx = 0;
-            node->ai = ai;
             if (n_s + n_l + n_n == 0) {
                 // only need to set the oldest node once
                 ww->oldest = node;
             } else {
                 ww->newest->next = node;
             }
-            node->next = NULL;
-            ww->newest = node;
-
             ww->n_s = 1;
             ww->s_first_leaf = 0;
-
         }
         else
         {
             // at least one node already exists in the heaps
 
-            node->next = ww->oldest;
-            ww->oldest = node;
-
+            ww->newest->next = node;
             if (n_s > n_l)
             {
-                // Add to the large heap.
-
+                // add new node to large heap
                 ww->l_heap[n_l] = node;
                 node->region = LH;
                 node->idx = n_l;
-
                 ++ww->n_l;
                 ww->l_first_leaf = FIRST_LEAF(ww->n_l);
+                heapify_large_node(ww, n_l);
             }
             else
             {
-                // Add to the small heap.
-
+                // add new node to small heap
                 ww->s_heap[n_s] = node;
                 node->region = SH;
                 node->idx = n_s;
-
                 ++ww->n_s;
                 ww->s_first_leaf = FIRST_LEAF(ww->n_s);
+                heapify_small_node(ww, n_s);
             }
-
-            ww_update(ww, ai);
         }
     }
+
+    ww->newest = node;
 
     return ww_get_median(ww);
 }

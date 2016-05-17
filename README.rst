@@ -33,35 +33,35 @@ Bottleneck comes with a benchmark suite::
 
                      no NaN     no NaN      NaN        NaN
                        (10,)   (1000,1000)   (10,)   (1000,1000)
-        nansum         34.4        4.0       33.9        6.4
-        nanmean       117.9        5.5      117.5        7.3
-        nanstd        200.8        4.3      203.2        7.0
-        nanvar        193.6        4.4      195.7        6.8
-        nanmin         30.0        1.1       30.3        1.4
-        nanmax         30.0        1.0       29.7        1.7
-        median         48.7        0.8       60.3        2.9
-        nanmedian      47.9        2.4       55.6        6.0
-        ss             13.6        3.9        3.1        1.1
-        nanargmin      54.2        4.0       53.8        5.5
-        nanargmax      54.0        4.0       53.5        6.7
-        anynan         14.5        1.5       14.7      183.4
-        allnan         14.3      211.0       14.3      201.9
-        rankdata       31.2        1.5       34.3        2.3
-        nanrankdata    46.7       20.2       42.9       28.8
-        partsort        4.7        0.8        4.8        1.1
-        argpartsort     2.5        0.7        2.6        0.6
-        replace         8.2        2.0        8.2        2.0
-        push          159.5       11.0      159.1       14.0
-        move_sum      307.9      211.3      309.0      337.3
-        move_mean     696.8      253.4      703.9      469.5
-        move_std     1138.0      129.2     1214.6      383.9
-        move_var     1164.8      187.9     1152.1      398.6
-        move_min      227.8       23.2      222.8       45.4
-        move_max      230.2       23.8      237.4       76.2
-        move_argmin   353.7       81.2      379.0      238.1
-        move_argmax   363.5       83.9      370.2      255.7
-        move_median   427.2       47.2      407.5      128.3
-        move_rank     597.7        3.7      652.0       10.9
+        nansum         34.0        3.9       34.1        6.4
+        nanmean       117.1        5.6      118.5        7.3
+        nanstd        196.5        4.2      202.6        7.0
+        nanvar        190.0        4.5      195.6        6.8
+        nanmin         29.9        1.1       30.4        1.4
+        nanmax         29.8        1.0       30.6        1.8
+        median         52.6        0.7       60.0        2.9
+        nanmedian      48.0        2.4       55.9        6.0
+        ss             13.4        3.8        3.1        1.1
+        nanargmin      54.3        4.0       54.3        5.5
+        nanargmax      54.7        4.0       55.3        6.6
+        anynan         13.9        1.5       14.2      179.1
+        allnan         14.4      209.0       14.1      194.1
+        rankdata       34.4        1.5       36.1        2.2
+        nanrankdata    47.4       20.8       41.6       34.6
+        partsort        4.5        0.8        4.9        1.1
+        argpartsort     2.5        0.7        2.5        0.5
+        replace         8.2        1.9        8.2        2.0
+        push          149.9       10.4      152.7       14.5
+        move_sum      294.7      219.7      301.4      336.1
+        move_mean     709.9      248.0      729.5      489.8
+        move_std     1191.6      133.3     1223.3      363.8
+        move_var     1165.8      183.3     1202.6      379.1
+        move_min      237.6       22.2      235.3       48.6
+        move_max      242.4       22.6      239.9       73.1
+        move_argmin   364.6       79.9      385.0      235.4
+        move_argmax   368.7       80.7      384.2      257.4
+        move_median   435.8       48.7      435.2      138.5
+        move_rank     587.4        3.8      653.6       10.8
 
 Only arrays with data type (dtype) int32, int64, float32, and float64 are
 accelerated. All other dtypes result in calls to slower, unaccelerated
