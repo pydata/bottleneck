@@ -44,9 +44,8 @@ inline void mm_swap_heap_heads(mm_node **s_heap, idx_t n_s, mm_node **l_heap,
 */
 
 /* At the start of bn.move_median two heaps are created. One heap contains the
- * small values (a max heap); the other heap contains the large values
- * (a min heap). And the handle contains information about the heaps. It is
- * the handle that is returned by the function. */
+ * small values (a max heap); the other heap contains the large values (a min
+ * heap). The handle, containing information about the heaps, is returned. */
 inline mm_handle *
 mm_new(const idx_t window, idx_t min_count)
 {
@@ -69,13 +68,13 @@ mm_new(const idx_t window, idx_t min_count)
 
 
 /* Insert a new value, ai, into one of the heaps. Use this function when
- * the heaps contains less than window-1 values. Returns the median value.
- * Once there are window-1 values in the heap, switch to using mm_update. */
+ * the heaps contain less than window-1 nodes. Returns the median value.
+ * Once there are window-1 nodes in the heap, switch to using mm_update. */
 inline ai_t
 mm_update_init(mm_handle *mm, ai_t ai)
 {
 
-    mm_node *node = NULL;
+    mm_node *node;
     idx_t n_s = mm->n_s;
     idx_t n_l = mm->n_l;
 
@@ -87,19 +86,13 @@ mm_update_init(mm_handle *mm, ai_t ai)
         mm->s_heap[0] = node;
         node->region = SH;
         node->idx = 0;
-        if (n_s + n_l == 0) {
-            // only need to set the oldest node once
-            mm->oldest = node;
-        } else {
-            mm->newest->next = node;
-        }
+        mm->oldest = node; // only need to set the oldest node once
         mm->n_s = 1;
         mm->s_first_leaf = 0;
     }
     else
     {
         // at least one node already exists in the heaps
-
         mm->newest->next = node;
         if (n_s > n_l)
         {
@@ -130,8 +123,8 @@ mm_update_init(mm_handle *mm, ai_t ai)
 
 
 /* Insert a new value, ai, into the double heap structure. Use this function
- * when the double heap contains at least window-1 values. Returns the median
- * value. If there are less than window-1 values in the heap, use
+ * when the double heap contains at least window-1 nodes. Returns the median
+ * value. If there are less than window-1 nodes in the heap, use
  * mm_update_init. */
 inline ai_t
 mm_update(mm_handle *mm, ai_t ai)
@@ -166,10 +159,10 @@ mm_update(mm_handle *mm, ai_t ai)
 -----------------------------------------------------------------------------
 */
 
-/* At the start of bn.move_median two heaps are created. One heap contains the
- * small values (a max heap); the other heap contains the large values
- * (a min heap). And the handle contains information about the heaps. It is
- * the handle that is returned by the function. */
+/* At the start of bn.move_median two heaps and a nan array are created. One
+ * heap contains the small values (a max heap); the other heap contains the
+ * large values (a min heap); the nan array contains the NaNs. The handle,
+ * containing information about the heaps and the nan array is returned. */
 inline mm_handle *
 mm_new_nan(const idx_t window, idx_t min_count)
 {
@@ -191,15 +184,15 @@ mm_new_nan(const idx_t window, idx_t min_count)
 }
 
 
-/* Insert a new value, ai, into one of the heaps. Use this function when
- * the heaps contains less than window-1 values. Returns the median value.
- * Once there are window-1 values in the heap, switch to using
+/* Insert a new value, ai, into one of the heaps or the nan array. Use this
+ * function when there are less than window-1 nodes. Returns the median
+ * value. Once there are window-1 nodes in the heap, switch to using
  * mm_update_nan. */
 inline ai_t
 mm_update_init_nan(mm_handle *mm, ai_t ai)
 {
 
-    mm_node *node = NULL;
+    mm_node *node;
     idx_t n_s = mm->n_s;
     idx_t n_l = mm->n_l;
     idx_t n_n = mm->n_n;
@@ -207,7 +200,7 @@ mm_update_init_nan(mm_handle *mm, ai_t ai)
     node = &mm->node_data[n_s + n_l + n_n];
     node->ai = ai;
 
-    if (isnan(ai)) {
+    if (ai != ai) {
         mm->n_array[n_n] = node;
         node->region = NA;
         node->idx = n_n;
@@ -236,7 +229,6 @@ mm_update_init_nan(mm_handle *mm, ai_t ai)
         else
         {
             // at least one node already exists in the heaps
-
             mm->newest->next = node;
             if (n_s > n_l)
             {
@@ -260,17 +252,15 @@ mm_update_init_nan(mm_handle *mm, ai_t ai)
             }
         }
     }
-
     mm->newest = node;
 
     return mm_get_median(mm);
 }
 
 
-/* Insert a new value, ai, into the double heap structure. Use this function
- * when the double heap contains at least window-1 values. Returns the median
- * value. If there are less than window-1 values in the heap, use
- * mm_update_init_nan. */
+/* Insert a new value, ai, into one of the heaps or the nan array. Use this
+ * function when there are at least window-1 nodes. Returns the median value.
+ * If there are less than window-1 nodes, use mm_update_init_nan. */
 inline ai_t
 mm_update_nan(mm_handle *mm, ai_t ai)
 {
@@ -295,7 +285,7 @@ mm_update_nan(mm_handle *mm, ai_t ai)
 
     mm_node *node2;
 
-    if (isnan(ai)) {
+    if (ai != ai) {
 
         if (node->region == SH) {
 
@@ -328,11 +318,10 @@ mm_update_nan(mm_handle *mm, ai_t ai)
                     node2->idx = 0;
                     l_heap[0] = node2;
                     --mm->n_l;
-                    if (mm->n_l == 0) {
+                    if (mm->n_l == 0)
                         mm->l_first_leaf = 0;
-                    } else {
+                    else
                         mm->l_first_leaf = FIRST_LEAF(mm->n_l);
-                    }
                     heapify_large_node(mm, 0);
 
                 }
@@ -355,16 +344,15 @@ mm_update_nan(mm_handle *mm, ai_t ai)
                     node2->idx = 0;
                     l_heap[0] = node2;
                     --mm->n_l;
-                    if (mm->n_l == 0) {
+                    if (mm->n_l == 0)
                         mm->l_first_leaf = 0;
-                    } else {
+                    else
                         mm->l_first_leaf = FIRST_LEAF(mm->n_l);
-                    }
                     heapify_large_node(mm, 0);
 
                 } else {
-                mm->s_first_leaf = FIRST_LEAF(mm->n_s);
-                heapify_small_node(mm, idx);
+                    mm->s_first_leaf = FIRST_LEAF(mm->n_s);
+                    heapify_small_node(mm, idx);
                 }
             }
 
@@ -385,12 +373,10 @@ mm_update_nan(mm_handle *mm, ai_t ai)
             l_heap[idx] = l_heap[n_l - 1];
             l_heap[idx]->idx = idx;
             --mm->n_l;
-            if (mm->n_l == 0) {
+            if (mm->n_l == 0)
                 mm->l_first_leaf = 0;
-            } else {
+            else
                 mm->l_first_leaf = FIRST_LEAF(mm->n_l);
-            }
-
             if (mm->n_l < mm->n_s - 1) {
 
                 // move head node from the small heap to the large heap
@@ -407,11 +393,10 @@ mm_update_nan(mm_handle *mm, ai_t ai)
                 node2->idx = 0;
                 s_heap[0] = node2;
                 --mm->n_s;
-                if (mm->n_s == 0) {
+                if (mm->n_s == 0)
                     mm->s_first_leaf = 0;
-                } else {
+                else
                     mm->s_first_leaf = FIRST_LEAF(mm->n_s);
-                }
                 heapify_small_node(mm, 0);
 
             }
@@ -427,12 +412,10 @@ mm_update_nan(mm_handle *mm, ai_t ai)
         }
     } else {
 
-        if (node->region == SH) {
+        if (node->region == SH)
             heapify_small_node(mm, idx);
-        }
-        else if (node->region == LH) {
+        else if (node->region == LH)
             heapify_large_node(mm, idx);
-        }
         else {
 
             // ai is not NaN but oldest node is in nan array
@@ -445,15 +428,6 @@ mm_update_nan(mm_handle *mm, ai_t ai)
                 l_heap[n_l] = node;
                 ++mm->n_l;
                 mm->l_first_leaf = FIRST_LEAF(mm->n_l);
-
-                // plug nan array hole
-                if (n_n > 2) {
-                    n_array[idx] = n_array[n_n - 1];
-                    n_array[idx]->idx = idx;
-                }
-                --mm->n_n;
-
-                // reorder large heap if needed
                 heapify_large_node(mm, n_l);
 
             } else {
@@ -464,18 +438,16 @@ mm_update_nan(mm_handle *mm, ai_t ai)
                 s_heap[n_s] = node;
                 ++mm->n_s;
                 mm->s_first_leaf = FIRST_LEAF(mm->n_s);
-
-                // plug nan array hole
-                if (n_n > 2) {
-                    n_array[idx] = n_array[n_n - 1];
-                    n_array[idx]->idx = idx;
-                }
-                --mm->n_n;
-
-                // reorder small heap if needed
                 heapify_small_node(mm, n_s);
 
+            }   
+
+            // plug nan array hole
+            if (n_n > 2) {
+                n_array[idx] = n_array[n_n - 1];
+                n_array[idx]->idx = idx;
             }
+            --mm->n_n;
         }
 
     }
@@ -490,17 +462,15 @@ mm_update_nan(mm_handle *mm, ai_t ai)
 -----------------------------------------------------------------------------
 */
 
-/* At the end of each slice the double heap is reset (mm_reset) to prepare
- * for the next slice. In the 2d input array case (with axis=1), each slice
- * is a row of the input array. */
+/* At the end of each slice the double heap and nan array are reset (mm_reset)
+ * to prepare for the next slice. In the 2d input array case (with axis=1),
+ * each slice is a row of the input array. */
 inline void
 mm_reset(mm_handle *mm)
 {
     mm->n_l = 0;
     mm->n_s = 0;
     mm->n_n = 0;
-    mm->oldest = NULL;
-    mm->newest = NULL;
     mm->s_first_leaf = 0;
     mm->l_first_leaf = 0;
 }
@@ -564,7 +534,7 @@ heapify_small_node(mm_handle *mm, idx_t idx)
 
             // Maybe swap between heaps.
             node2 = l_heap[0];
-            if ((node2 != NULL) && (ai > node2->ai)) {
+            if (ai > node2->ai) {
                 mm_swap_heap_heads(s_heap, n_s, l_heap, n_l, node, node2);
             }
         }
