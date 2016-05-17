@@ -95,13 +95,13 @@ def test_move_inf():
 
 
 # ---------------------------------------------------------------------------
-# move_nanmedian.c is complicated. Let's test it some more.
+# move_median.c is complicated. Let's do some more testing.
 #
 # If you make changes to move_median.c then do lots of tests by increasing
-# range(100) in the function below to range(10000).
+# range(100) in the two functions below to range(10000).
 
-def test_move_nanmedian():
-    "test move_nanmedian.c"
+def test_move_median_with_nans():
+    "test move_median.c with nans"
     fmt = '\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n'
     aaae = assert_array_almost_equal
     min_count = 1
@@ -109,13 +109,31 @@ def test_move_nanmedian():
     func = bn.move_median
     func0 = bn.slow.move_median
     rs = np.random.RandomState([1, 2, 3])
-    for i in range(10000):
-        print i
+    for i in range(100):
         a = np.arange(size, dtype=np.float64)
         idx = rs.rand(*a.shape) < 0.1
         a[idx] = np.inf
         idx = rs.rand(*a.shape) < 0.2
         a[idx] = np.nan
+        rs.shuffle(a)
+        for window in range(2, size + 1):
+            actual = func(a, window=window, min_count=min_count)
+            desired = func0(a, window=window, min_count=min_count)
+            err_msg = fmt % (func.__name__, window, min_count, a)
+            aaae(actual, desired, decimal=5, err_msg=err_msg)
+
+
+def test_move_median_without_nans():
+    "test move_median.c without nans"
+    fmt = '\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n'
+    aaae = assert_array_almost_equal
+    min_count = 1
+    size = 8
+    func = bn.move_median
+    func0 = bn.slow.move_median
+    rs = np.random.RandomState([1, 2, 3])
+    for i in range(100):
+        a = np.arange(size, dtype=np.int64)
         rs.shuffle(a)
         for window in range(2, size + 1):
             actual = func(a, window=window, min_count=min_count)
