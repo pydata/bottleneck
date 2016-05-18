@@ -98,7 +98,9 @@ def test_move_inf():
 # move_median.c is complicated. Let's do some more testing.
 #
 # If you make changes to move_median.c then do lots of tests by increasing
-# range(100) in the two functions below to range(10000).
+# range(100) in the two functions below to range(10000). And for extra credit
+# increase size to 30. With those two changes the unit tests will take a
+# LONG time to run.
 
 def test_move_median_with_nans():
     "test move_median.c with nans"

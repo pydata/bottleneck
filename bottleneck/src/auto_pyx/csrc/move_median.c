@@ -329,6 +329,7 @@ mm_update_nan(mm_handle *mm, ai_t ai)
                 if (idx != n_s - 1) {
                     s_heap[idx] = s_heap[n_s - 1];
                     s_heap[idx]->idx = idx;
+                    heapify_small_node(mm, idx);
                 }
                 if (mm->n_s < mm->n_l) {
 
@@ -375,6 +376,7 @@ mm_update_nan(mm_handle *mm, ai_t ai)
             if (idx != n_l - 1) {
                 l_heap[idx] = l_heap[n_l - 1];
                 l_heap[idx]->idx = idx;
+                heapify_large_node(mm, idx);
             }
             --mm->n_l;
             if (mm->n_l == 0)
