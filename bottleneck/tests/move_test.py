@@ -56,7 +56,7 @@ def unit_maker(func, decimal=4):
         for axis in axes:
             windows = range(1, arr.shape[axis])
             for window in windows:
-                min_counts = range(1, window + 1) + [None]
+                min_counts = list(range(1, window + 1)) + [None]
                 for min_count in min_counts:
                     actual = func(arr, window, min_count, axis=axis)
                     desired = func0(arr, window, min_count, axis=axis)
