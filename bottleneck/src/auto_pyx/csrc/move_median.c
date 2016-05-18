@@ -326,8 +326,10 @@ mm_update_nan(mm_handle *mm, ai_t ai)
 
                 }
             } else {
-                s_heap[idx] = s_heap[n_s - 1];
-                s_heap[idx]->idx = idx;
+                if (idx != n_s - 1) {
+                    s_heap[idx] = s_heap[n_s - 1];
+                    s_heap[idx]->idx = idx;
+                }
                 if (mm->n_s < mm->n_l) {
 
                     // move head node from the large heap to the small heap
@@ -370,8 +372,10 @@ mm_update_nan(mm_handle *mm, ai_t ai)
             ++mm->n_n;
 
             // plug large heap hole
-            l_heap[idx] = l_heap[n_l - 1];
-            l_heap[idx]->idx = idx;
+            if (idx != n_l - 1) {
+                l_heap[idx] = l_heap[n_l - 1];
+                l_heap[idx]->idx = idx;
+            }
             --mm->n_l;
             if (mm->n_l == 0)
                 mm->l_first_leaf = 0;
@@ -389,9 +393,11 @@ mm_update_nan(mm_handle *mm, ai_t ai)
                 heapify_large_node(mm, node2->idx);
 
                 // plug hole in small heap
-                node2= mm->s_heap[mm->n_s - 1];
-                node2->idx = 0;
-                s_heap[0] = node2;
+                if (n_s != 1) {
+                    node2 = mm->s_heap[mm->n_s - 1];
+                    node2->idx = 0;
+                    s_heap[0] = node2;
+                }
                 --mm->n_s;
                 if (mm->n_s == 0)
                     mm->s_first_leaf = 0;
@@ -443,7 +449,7 @@ mm_update_nan(mm_handle *mm, ai_t ai)
             }   
 
             // plug nan array hole
-            if (n_n > 2) {
+            if (idx != n_n - 1) {
                 n_array[idx] = n_array[n_n - 1];
                 n_array[idx]->idx = idx;
             }

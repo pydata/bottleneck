@@ -81,10 +81,10 @@ int mm_assert_equal(ai_t *actual, ai_t *desired, ai_t *input, idx_t length,
 
 int mm_unit_test(void)
 {
-    ai_t arr_input[] = {6,  5,   7, INFINITY,  1,  INFINITY,   NAN,    NAN};
-    ai_t desired[] =   {6,  5.5, 6, 6.5,       6,  6.5,       7,    INFINITY};
+    ai_t arr_input[] = {0,   3,   7,  NAN, 1,   5,   8,   9,   2,  NAN};
+    ai_t desired[] =   {0 ,  1.5, 3,  5,   4,   3,   5,   8,   8,  5.5};
     ai_t *actual;
-    int window = 6;
+    int window = 3;
     int min_count = 1;
     int length;
     char *err_msg;

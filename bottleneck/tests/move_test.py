@@ -105,7 +105,7 @@ def test_move_median_with_nans():
     fmt = '\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n'
     aaae = assert_array_almost_equal
     min_count = 1
-    size = 8
+    size = 10
     func = bn.move_median
     func0 = bn.slow.move_median
     rs = np.random.RandomState([1, 2, 3])
@@ -128,7 +128,7 @@ def test_move_median_without_nans():
     fmt = '\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n'
     aaae = assert_array_almost_equal
     min_count = 1
-    size = 8
+    size = 10
     func = bn.move_median
     func0 = bn.slow.move_median
     rs = np.random.RandomState([1, 2, 3])
