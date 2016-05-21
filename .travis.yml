@@ -3,27 +3,27 @@ sudo: false
 matrix:
     include:
         #        - os: osx
-        #          env: DEPS="numpy" PYTHON_VERSION="2.7" PYTHON_ARCH="32"
+        #          env: DEPS="numpy nose" PYTHON_VERSION="2.7" PYTHON_ARCH="32"
         - os: osx
           env: DEPS="numpy nose" PYTHON_VERSION="2.7" PYTHON_ARCH="64"
         #        - os: osx
-        #          env: DEPS="numpy" PYTHON_VERSION="3.4" PYTHON_ARCH="32"
+        #          env: DEPS="numpy nose" PYTHON_VERSION="3.4" PYTHON_ARCH="32"
         - os: osx
           env: DEPS="numpy nose" PYTHON_VERSION="3.4" PYTHON_ARCH="64"
         #        - os: osx
-        #          env: DEPS="numpy" PYTHON_VERSION="3.5" PYTHON_ARCH="32"
+        #          env: DEPS="numpy nose" PYTHON_VERSION="3.5" PYTHON_ARCH="32"
         - os: osx
           env: DEPS="numpy nose" PYTHON_VERSION="3.5" PYTHON_ARCH="64"
         #        - os: linux
-        #          env: DEPS="numpy" PYTHON_VERSION="2.7" PYTHON_ARCH="32"
+        #          env: DEPS="numpy nose" PYTHON_VERSION="2.7" PYTHON_ARCH="32"
         - os: linux
           env: DEPS="numpy nose" PYTHON_VERSION="2.7" PYTHON_ARCH="64"
         #        - os: linux
-        #          env: DEPS="numpy" PYTHON_VERSION="3.4" PYTHON_ARCH="32"
+        #          env: DEPS="numpy nose" PYTHON_VERSION="3.4" PYTHON_ARCH="32"
         - os: linux
           env: DEPS="numpy nose" PYTHON_VERSION="3.4" PYTHON_ARCH="64"
         #        - os: linux
-        #          env: DEPS="numpy" PYTHON_VERSION="3.5" PYTHON_ARCH="32"
+        #          env: DEPS="numpy nose" PYTHON_VERSION="3.5" PYTHON_ARCH="32"
         - os: linux
           env: DEPS="numpy nose" PYTHON_VERSION="3.5" PYTHON_ARCH="64"
 
