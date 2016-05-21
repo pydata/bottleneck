@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -uev # error if unset variables, exit on first error, print commands
+set -ev # exit on first error, print commands
 
 MINICONDA_URL="http://repo.continuum.io/miniconda"
 

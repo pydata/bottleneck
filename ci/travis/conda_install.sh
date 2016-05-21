@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -uev # error if unset variables, exit on first error, print commands
+set -ev # exit on first error, print commands
 
 if [ "${PYTHON_ARCH}" == "32" ]; then
   set CONDA_FORCE_32BIT=1
