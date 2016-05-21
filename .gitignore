@@ -6,3 +6,4 @@ MANIFEST
 .tox
 .coverage
 *.egg-info
+.*.swp
