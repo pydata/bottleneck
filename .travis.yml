@@ -35,6 +35,7 @@ install:
     - source "ci/travis/conda_install.sh"
 
 script:
+    - pip install .
     - python "tools/test-installed-bottleneck.py"
 
 notifications:
