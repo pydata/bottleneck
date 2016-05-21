@@ -29,7 +29,6 @@ matrix:
 
 before_install:
     - uname -a
-    - lsb_release -a
     - source "ci/travis/conda_setup.sh"
 
 install:
