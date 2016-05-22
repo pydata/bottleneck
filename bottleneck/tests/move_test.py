@@ -44,13 +44,18 @@ def arrays(dtypes=DTYPES):
                 yield a.reshape(shape)
 
 
-def unit_maker(func, decimal=4):
+def unit_maker(func):
     "Test that bn.xxx gives the same output as a reference function."
     fmt = ('\nfunc %s | window %d | min_count %s | input %s (%s) | shape %s | '
            'axis %s\n')
     fmt += '\nInput array:\n%s\n'
     aaae = assert_array_almost_equal
-    func0 = eval('bn.slow.%s' % func.__name__)
+    func_name = func.__name__
+    func0 = eval('bn.slow.%s' % func_name)
+    if func_name == "move_var":
+        decimal = 3
+    else:
+        decimal = 5
     for i, arr in enumerate(arrays()):
         axes = range(-1, arr.ndim)
         for axis in axes:
@@ -60,7 +65,7 @@ def unit_maker(func, decimal=4):
                 for min_count in min_counts:
                     actual = func(arr, window, min_count, axis=axis)
                     desired = func0(arr, window, min_count, axis=axis)
-                    tup = (func.__name__, window, str(min_count), 'a'+str(i),
+                    tup = (func_name, window, str(min_count), 'a'+str(i),
                            str(arr.dtype), str(arr.shape), str(axis), arr)
                     err_msg = fmt % tup
                     aaae(actual, desired, decimal, err_msg)

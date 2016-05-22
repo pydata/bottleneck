@@ -7,7 +7,16 @@ __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
 
 rankdata_func = None
 
-from numpy import nansum, nanmean, nanstd, nanvar, nanmin, nanmax, nanmedian
+from numpy import nanmean, nanstd, nanvar, nanmin, nanmax, nanmedian
+
+
+def nansum(arr, axis=None):
+    "Slow nansum function used for unaccelerated dtype."
+    arr = np.asarray(arr)
+    y = np.nansum(arr, axis=axis)
+    if y.dtype != arr.dtype:
+        y = y.astype(arr.dtype)
+    return y
 
 
 def nanargmin(arr, axis=None):
@@ -33,7 +42,11 @@ def median(arr, axis=None):
 
 def ss(arr, axis=None):
     "Slow sum of squares used for unaccelerated dtypes."
-    return np.multiply(arr, arr).sum(axis)
+    arr = np.asarray(arr)
+    y = np.multiply(arr, arr).sum(axis)
+    if y.dtype != arr.dtype:
+        y = y.astype(arr.dtype)
+    return y
 
 
 def anynan(arr, axis=None):
