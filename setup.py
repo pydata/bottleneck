@@ -106,7 +106,8 @@ metadata = dict(name=NAME,
             )
 
 if not(len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or \
-       sys.argv[1] in ('--help-commands', 'egg_info', '--version', 'clean'))):
+       sys.argv[1] in ('--help-commands', 'egg_info', '--version', 'clean',
+                       'build_sphinx'))):
 
     metadata['ext_modules'] = prepare_modules()
 
