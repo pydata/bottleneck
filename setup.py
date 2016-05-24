@@ -9,8 +9,33 @@ except ImportError:
     from ez_setup import use_setuptools
     use_setuptools()
 
+try:
+    from Cython.Build import cythonize
+    CYTHON_AVAILABLE = True
+except ImportError:
+    CYTHON_AVAILABLE = False
+
+
+modules = ['reduce', 'nonreduce', 'nonreduce_axis', 'move']
+
+def prepare_modules():
+    if CYTHON_AVAILABLE:
+        from bottleneck.template import make_pyx
+        make_pyx()
+        return cythonize(["bottleneck/%s.pyx" % module for module in modules])
+    else:
+        # Don't attempt to import numpy when it isn't actually needed; this
+        # enables pip to install numpy before bottleneck:
+        import numpy as np
+        # Assume the presence of shipped C files
+        return [Extension("bottleneck.%s" % module,
+                sources=["bottleneck/%s.c" % module],
+                include_dirs=[np.get_include()])
+                for module in modules]
+
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
+
 
 CLASSIFIERS = ["Development Status :: 4 - Beta",
                "Environment :: Console",
@@ -80,21 +105,9 @@ metadata = dict(name=NAME,
                 install_requires = ['numpy']
             )
 
-# Don't attempt to import numpy when it isn't actually needed; this enables pip
-# to install numpy before bottleneck:
 if not(len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or \
        sys.argv[1] in ('--help-commands', 'egg_info', '--version', 'clean'))):
 
-    import numpy as np
-    metadata['ext_modules'] = \
-                              [Extension("bottleneck.reduce", sources=["bottleneck/src/auto_pyx/reduce.c"],
-                                         include_dirs=[np.get_include()]),
-                               Extension("bottleneck.nonreduce", sources=["bottleneck/src/auto_pyx/nonreduce.c"],
-                                         include_dirs=[np.get_include()]),
-                               Extension("bottleneck.nonreduce_axis", sources=["bottleneck/src/auto_pyx/nonreduce_axis.c"],
-                                         include_dirs=[np.get_include()]),
-                               Extension("bottleneck.move", sources=["bottleneck/src/auto_pyx/move.c"],
-                                         extra_compile_args=["-std=gnu89"],
-                                         include_dirs=[np.get_include()])]
+    metadata['ext_modules'] = prepare_modules()
 
 setup(**metadata)
