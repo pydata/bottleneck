@@ -26,7 +26,7 @@ def prepare_modules():
     kwargs['move']['extra_compile_args'] = ["-std=gnu89"]
 
     if CYTHON_AVAILABLE:
-        from bottleneck.template import make_pyx
+        from bottleneck.template.template import make_pyx
         make_pyx()
         return cythonize([Extension("bottleneck.%s" % module,
                                     sources=["bottleneck/%s.pyx" % module],
