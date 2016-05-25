@@ -25,8 +25,10 @@ def prepare_modules():
     if CYTHON_AVAILABLE:
         from bottleneck.template import make_pyx
         make_pyx()
-        return cythonize(["bottleneck/%s.pyx" % module for module in modules],
-                         include_path=[np.get_include()])
+        return cythonize([Extension("bottleneck.%s" % module,
+                                    sources=["bottleneck/%s.pyx" % module],
+                                    include_dirs=[np.get_include()])
+                          for module in modules])
     else:
         # Assume the presence of shipped C files
         return [Extension("bottleneck.%s" % module,
