@@ -19,14 +19,15 @@ except ImportError:
 modules = ['reduce', 'nonreduce', 'nonreduce_axis', 'move']
 
 def prepare_modules():
+    # Don't attempt to import numpy when it isn't actually needed; this
+    # enables pip to install numpy before bottleneck:
+    import numpy as np
     if CYTHON_AVAILABLE:
         from bottleneck.template import make_pyx
         make_pyx()
-        return cythonize(["bottleneck/%s.pyx" % module for module in modules])
+        return cythonize(["bottleneck/%s.pyx" % module for module in modules],
+                         include_path=[np.get_include()])
     else:
-        # Don't attempt to import numpy when it isn't actually needed; this
-        # enables pip to install numpy before bottleneck:
-        import numpy as np
         # Assume the presence of shipped C files
         return [Extension("bottleneck.%s" % module,
                 sources=["bottleneck/%s.c" % module],
