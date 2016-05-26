@@ -42,9 +42,12 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 
 **Thanks**
 
-- Jennifer Olsen worked on bn.move_median
-- Jaime Frio worked on bn.move_std
+Alphabeticaly by last name:
 - Alessandro Amici worked on setup.py
+- Pietro Battiston modernized bottleneck installation
+- Moritz E. Beber set up continuous integration with Travis CI
+- Jaime Frio worked on bn.move_std
+- Jennifer Olsen worked on bn.move_median
 
 
 Older versions

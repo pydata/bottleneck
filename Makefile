@@ -1,36 +1,25 @@
 # Bottleneck Makefile
 
-PYTHON=python3
+PYTHON=python
 
 srcdir := bottleneck/
 
 help:
 	@echo "Available tasks:"
 	@echo "help    -->  This help page"
-	@echo "pyx     -->  Create Cython pyx files from templates"
-	@echo "cfiles  -->  Convert pyx files to C files"
+	@echo "all     -->  clean, build, flake8, test"
 	@echo "build   -->  Build the Cython extension modules"
 	@echo "clean   -->  Remove all the build files for a fresh start"
 	@echo "test    -->  Run unit tests"
 	@echo "flake8  -->  Check for pep8 errors"
 	@echo "readme  -->  Update benchmark results in README.rst"
 	@echo "coverage-->  Unit test coverage (doesn't check compiled functions)"
-	@echo "all     -->  clean, pyx, build, test"
 	@echo "bench   -->  Run performance benchmark"
 	@echo "sdist   -->  Make source distribution"
 
-all: clean pyx cfiles build test
+all: clean build flake8 test
 
-pyx:
-	${PYTHON} -c "from bottleneck.template.template import make_pyx; make_pyx();"
-
-cfiles:
-	cython ${srcdir}/reduce.pyx
-	cython ${srcdir}/nonreduce.pyx
-	cython ${srcdir}/nonreduce_axis.pyx
-	cython ${srcdir}/move.pyx
-
-build: reduce nonreduce nonreduce_axis move
+build:
 	${PYTHON} setup.py build_ext --inplace
 
 test:

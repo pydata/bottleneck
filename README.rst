@@ -91,7 +91,7 @@ Install
 Requirements:
 
 ======================== ====================================================
-Bottleneck               Python 2.7, 3.4; NumPy 1.11.0
+Bottleneck               Python 2.7, 3.4, 3.5; NumPy 1.11.0
 Compile                  gcc or clang or MinGW
 Unit tests               nose
 ======================== ====================================================
@@ -100,19 +100,25 @@ Optional:
 
 ======================== ====================================================
 tox, virtualenv          Run unit tests across multiple python/numpy versions
-Cython                   Development of bottleneck
+Cython                   Development of Bottleneck
 ======================== ====================================================
+
+If Cython is installed on your computer then you can install either a released
+version of Bottleneck (PyPI) or a development version (GitHub).
+
+If Cython is not installed on your computer then you can only install a
+released version of Bottleneck (PyPI). Cython is not required because the
+Cython files have already been converted to C source files in Bottleneck
+releases.
 
 To install Bottleneck on GNU/Linux, Mac OS X, et al.::
 
-    $ python setup.py build
     $ sudo python setup.py install
 
 To install bottleneck on Windows, first install MinGW and add it to your
 system path. Then install Bottleneck with the commands::
 
-    python setup.py build --compiler=mingw32
-    python setup.py install
+    python setup.py install --compiler=mingw32
 
 Alternatively, you can use the Windows binaries created by Christoph Gohlke:
 http://www.lfd.uci.edu/~gohlke/pythonlibs/#bottleneck
