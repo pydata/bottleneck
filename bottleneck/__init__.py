@@ -13,6 +13,22 @@ try:
 except:
     pass
 try:
+    from .reduce2 import nansum as nansum2
+    from .reduce2 import nanmean as nanmean2
+    from .reduce2 import nanstd as nanstd2
+    from .reduce2 import nanvar as nanvar2
+    from .reduce2 import nanmin as nanmin2
+    from .reduce2 import nanmax as nanmax2
+    from .reduce2 import median as median2
+    from .reduce2 import nanmedian as nanmedian2
+    from .reduce2 import ss as ss2
+    from .reduce2 import nanargmin as nanargmin2
+    from .reduce2 import nanargmax as nanargmax2
+    from .reduce2 import anynan as anynan2
+    from .reduce2 import allnan as allnan2
+except:
+    pass
+try:
     from .nonreduce import replace
 except:
     pass
@@ -30,6 +46,7 @@ except:
 
 from bottleneck.version import __version__
 from bottleneck.benchmark.bench import bench
+from bottleneck.benchmark.bench2 import bench as bench2
 
 try:
     from numpy.testing import Tester
