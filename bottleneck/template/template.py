@@ -12,7 +12,7 @@ def make_pyx():
         with open(filepath, 'r') as f:
             src = f.read()
         src = expand_functions(src)
-        filepath = os.path.join(dirpath, '..', 'auto_pyx', filename)
+        filepath = os.path.join(dirpath, '..', filename)
         with open(filepath, 'w') as f:
             f.write(src)
 

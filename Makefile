@@ -1,8 +1,8 @@
 # Bottleneck Makefile
 
-PYTHON=python
+PYTHON=python3
 
-srcdir := bottleneck/src/auto_pyx
+srcdir := bottleneck/
 
 help:
 	@echo "Available tasks:"
@@ -22,7 +22,7 @@ help:
 all: clean pyx cfiles build test
 
 pyx:
-	${PYTHON} -c "from bottleneck.src.template.template import make_pyx; make_pyx();"
+	${PYTHON} -c "from bottleneck.template.template import make_pyx; make_pyx();"
 
 cfiles:
 	cython ${srcdir}/reduce.pyx
@@ -31,22 +31,7 @@ cfiles:
 	cython ${srcdir}/move.pyx
 
 build: reduce nonreduce nonreduce_axis move
-
-reduce:
-	rm -rf ${srcdir}/../reduce.so
-	${PYTHON} ${srcdir}/reduce_setup.py build_ext --inplace
-
-nonreduce:
-	rm -rf ${srcdir}/../nonreduce.so
-	${PYTHON} ${srcdir}/nonreduce_setup.py build_ext --inplace
-
-nonreduce_axis:
-	rm -rf ${srcdir}/../nonreduce_axis.so
-	${PYTHON} ${srcdir}/nonreduce_axis_setup.py build_ext --inplace
-
-move:
-	rm -rf ${srcdir}/../move.so
-	${PYTHON} ${srcdir}/move_setup.py build_ext --inplace
+	${PYTHON} setup.py build_ext --inplace
 
 test:
 	${PYTHON} -c "import bottleneck;bottleneck.test()"
@@ -55,11 +40,11 @@ flake8:
 	flake8 bottleneck
 
 readme:
-	${PYTHON} tools/update_readme.py
+	PYTHONPATH=`pwd`:PYTHONPATH ${PYTHON} tools/update_readme.py
 
 coverage:
 	rm -rf .coverage
-	python -c "import bottleneck; bottleneck.test(coverage=True)"
+	${PYTHON} -c "import bottleneck; bottleneck.test(coverage=True)"
 
 bench:
 	${PYTHON} -c "import bottleneck; bottleneck.bench()"
@@ -75,4 +60,4 @@ sdist: pyx
 clean:
 	rm -rf build dist Bottleneck.egg-info
 	find . -name \*.pyc -delete
-	rm -rf ${srcdir}/*.c ${srcdir}/*.html ${srcdir}/build ${srcdir}/../../*.so
+	rm -rf ${srcdir}/*.c ${srcdir}/*.html ${srcdir}/build ${srcdir}/*.so ${srcdir}/*.pyx
