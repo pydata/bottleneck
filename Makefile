@@ -16,8 +16,9 @@ help:
 	@echo "coverage-->  Unit test coverage (doesn't check compiled functions)"
 	@echo "bench   -->  Run performance benchmark"
 	@echo "sdist   -->  Make source distribution"
+	@echo "doc     -->  Build Sphinx manual"
 
-all: clean build flake8 test
+all: clean build test flake8
 
 build:
 	${PYTHON} setup.py build_ext --inplace
@@ -38,15 +39,19 @@ coverage:
 bench:
 	${PYTHON} -c "import bottleneck; bottleneck.bench()"
 
-sdist: pyx
+sdist:
 	rm -f MANIFEST
 	${PYTHON} setup.py sdist
 	git status
 
-# Phony targets for cleanup and similar uses
+# doc directory exists so use phony
+.PHONY: doc
+doc:
+	rm -rf build/sphinx
+	${PYTHON} setup.py build_sphinx
 
-.PHONY: clean
 clean:
 	rm -rf build dist Bottleneck.egg-info
 	find . -name \*.pyc -delete
-	rm -rf ${srcdir}/*.c ${srcdir}/*.html ${srcdir}/build ${srcdir}/*.so ${srcdir}/*.pyx
+	rm -rf ${srcdir}/*.c ${srcdir}/*.html ${srcdir}/build
+	rm -rf ${srcdir}/*.so ${srcdir}/*.pyx

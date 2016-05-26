@@ -42,7 +42,8 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 
 **Thanks**
 
-Alphabeticaly by last name:
+Alphabeticaly by last name
+
 - Alessandro Amici worked on setup.py
 - Pietro Battiston modernized bottleneck installation
 - Moritz E. Beber set up continuous integration with Travis CI
