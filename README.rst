@@ -2,6 +2,9 @@
 Bottleneck
 ==========
 
+.. image:: https://travis-ci.org/kwgoodman/bottleneck.svg?branch=master
+    :target: https://travis-ci.org/kwgoodman/bottleneck
+    
 Bottleneck is a collection of fast NumPy array functions written in Cython.
 
 Let's give it a try. Create a NumPy array::
