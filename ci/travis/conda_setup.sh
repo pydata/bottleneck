@@ -2,24 +2,29 @@
 
 set -ev # exit on first error, print commands
 
-MINICONDA_URL="http://repo.continuum.io/miniconda"
+CONDA_URL="http://repo.continuum.io/miniconda"
 
 if [ "${PYTHON_VERSION:0:1}" == "2" ]; then
-    MINICONDA="Miniconda2"
+    CONDA="Miniconda2"
 else
-    MINICONDA="Miniconda3"
+    CONDA="Miniconda3"
 fi
 if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
-    MINICONDA_OS="MacOSX"
+    CONDA_OS="MacOSX"
 else
-    MINICONDA_OS="Linux"
+    CONDA_OS="Linux"
 fi
 if [ "${PYTHON_ARCH}" == "64" ]; then
-    URL="${MINICONDA_URL}/${MINICONDA}-latest-${MINICONDA_OS}-x86_64.sh"
+    URL="${CONDA_URL}/${CONDA}-latest-${CONDA_OS}-x86_64.sh"
 else
-    URL="${MINICONDA_URL}/${MINICONDA}-latest-${MINICONDA_OS}-x86.sh"
+    URL="${CONDA_URL}/${CONDA}-latest-${CONDA_OS}-x86.sh"
 fi
+echo "Downloading '${URL}'..."
+
+set +e
 travis_retry wget "${URL}" -O miniconda.sh
+set -e
+
 chmod +x miniconda.sh
 ./miniconda.sh -b -p "${HOME}/miniconda"
 export PATH="${HOME}/miniconda/bin:${PATH}"
