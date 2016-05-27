@@ -7,9 +7,9 @@ __all__ = ['bench']
 
 
 def bench(dtype='float64', axis=-1,
-          shapes=[(10,), (1000, 1000), (10,), (1000, 1000)],
-          nans=[False, False, True, True],
-          functions=None):
+          shapes=[(1000, 1000), (1000, 1000)],
+          nans=[False, True],
+          functions=['nansum']):
     """
     Bottleneck benchmark.
 
@@ -67,7 +67,7 @@ def bench(dtype='float64', axis=-1,
     suite = benchsuite(shapes, dtype, axis, nans, functions)
     for test in suite:
         name = test["name"].ljust(12)
-        fmt = tab + name + "%7.1f" + "%11.1f"*(len(shapes) - 1)
+        fmt = tab + name + "%7.2f" + "%11.2f"*(len(shapes) - 1)
         speed = timer(test['statements'], test['setups'])
         print(fmt % tuple(speed))
 
