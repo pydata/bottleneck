@@ -3,17 +3,31 @@ sudo: false
 matrix:
     include:
         - os: linux
+          env: DEPS="flake8" PYTHON_VERSION="2.7" PYTHON_ARCH="64" RUN="style"
+        - os: linux
           env: DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="2.7" PYTHON_ARCH="64"
         - os: linux
           env: DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="3.4" PYTHON_ARCH="64"
         - os: linux
           env: DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="3.5" PYTHON_ARCH="64"
+        - os: linux
+          env: DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="2.7" PYTHON_ARCH="64" RUN="sdist"
+        - os: linux
+          env: DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="3.4" PYTHON_ARCH="64" RUN="sdist"
+        - os: linux
+          env: DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="3.5" PYTHON_ARCH="64" RUN="sdist"
         - os: osx
           env: DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="2.7" PYTHON_ARCH="64"
         - os: osx
           env: DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="3.4" PYTHON_ARCH="64"
         - os: osx
           env: DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="3.5" PYTHON_ARCH="64"
+        - os: osx
+          env: DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="2.7" PYTHON_ARCH="64" RUN="sdist"
+        - os: osx
+          env: DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="3.4" PYTHON_ARCH="64" RUN="sdist"
+        - os: osx
+          env: DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="3.5" PYTHON_ARCH="64" RUN="sdist"
 
 before_install:
     - uname -a
@@ -23,10 +37,9 @@ install:
     - source "ci/travis/conda_install.sh"
 
 script:
-    - pip install .
-    - python "tools/test-installed-bottleneck.py"
+    - source "ci/travis/bn_setup.sh"
 
 notifications:
     email:
         on_success: never
-        on_failure: never
+        on_failure: always
