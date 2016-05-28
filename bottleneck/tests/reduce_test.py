@@ -116,6 +116,51 @@ def unit_maker(func, decimal=5):
 
 
 # ---------------------------------------------------------------------------
+# Manual loop unrolling in bottleneck increase the number of possible code
+# paths. Let's test the paths.
+
+def test_loop_unrolling(dtypes=DTYPES):
+    "test loop unrolling"
+
+    fmt = '\nfunc %s | dtype %s | shape %s | axis %s\n\nInput array:\n%s\n'
+    aaae = assert_array_almost_equal
+    funcs = [bn.nansum2]
+
+    # 1d input
+    rs = np.random.RandomState([1, 2, 3])
+    for func in funcs:
+        func0 = eval('bn.slow.%s' % func.__name__)
+        for size in range(32):
+            arr = np.arange(size)
+            rs.shuffle(arr)
+            for dtype in dtypes:
+                a = arr.astype(dtype)
+                actual = func(a)
+                desired = func0(a)
+                err_msg = fmt % (func.__name__, str(a.dtype),
+                                 str(a.shape), str(None), a)
+                aaae(actual, desired, decimal=5, err_msg=err_msg)
+
+    # 2d input
+    axes = (0, 1, None)
+    rs = np.random.RandomState([1, 2, 3])
+    for func in funcs:
+        func0 = eval('bn.slow.%s' % func.__name__)
+        for width in range(2, 32):
+            arr = np.arange(width * width)
+            rs.shuffle(arr)
+            arr = arr.reshape(width, width)
+            for dtype in dtypes:
+                a = arr.astype(dtype)
+                for axis in axes:
+                    actual = func(a, axis)
+                    desired = func0(a, axis)
+                    err_msg = fmt % (func.__name__, str(a.dtype),
+                                     str(a.shape), str(axis), a)
+                    aaae(actual, desired, decimal=5, err_msg=err_msg)
+
+
+# ---------------------------------------------------------------------------
 # Check that exceptions are raised
 
 def test_nanmax_size_zero(dtypes=DTYPES):
