@@ -219,8 +219,9 @@ cdef object nansum2_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
 cdef ndarray nansum2_one_DTYPE0(np.flatiter ita,
                                Py_ssize_t stride, Py_ssize_t length,
                                int a_ndim, np.npy_intp* y_dims, int int_input):
-    # bn.dtypes = [['float32']]
+    # bn.dtypes = [['float64'], ['float32']]
     cdef Py_ssize_t i, j
+    cdef Py_ssize_t range_limit = length - (length % 4)
     cdef DTYPE0_t ai, asum=0
     cdef DTYPE0_t x[4]
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
@@ -233,20 +234,9 @@ cdef ndarray nansum2_one_DTYPE0(np.flatiter ita,
                 PyArray_ITER_NEXT(ity)
         elif length >= 8:
             while PyArray_ITER_NOTDONE(ita):
-                x[0] = 0
-                x[1] = 0
-                x[2] = 0
-                x[3] = 0
                 p = <char*>pid(ita)
-                ai = (<DTYPE0_t*>p)[0]
-                if ai == ai: x[0] += ai
-                ai = (<DTYPE0_t*>(p + 1 * stride))[0]
-                if ai == ai: x[1] += ai
-                ai = (<DTYPE0_t*>(p + 2 * stride))[0]
-                if ai == ai: x[2] += ai
-                ai = (<DTYPE0_t*>(p + 3 * stride))[0]
-                if ai == ai: x[3] += ai
-                for i in range(4, length - (length % 4), 4):
+                x[0] = x[1] = x[2] = x[3] = 0
+                for i in range(0, range_limit, 4):
                     ai = (<DTYPE0_t*>(p + i * stride))[0]
                     if ai == ai: x[0] += ai
                     ai = (<DTYPE0_t*>(p + (i+1) * stride))[0]
@@ -255,10 +245,10 @@ cdef ndarray nansum2_one_DTYPE0(np.flatiter ita,
                     if ai == ai: x[2] += ai
                     ai = (<DTYPE0_t*>(p + (i+3) * stride))[0]
                     if ai == ai: x[3] += ai
-                asum = (x[0] + x[1]) + (x[2] + x[3])
                 for j in range(i + 4, length):
                     ai = (<DTYPE0_t*>(p + j * stride))[0]
-                    if ai == ai: asum += ai
+                    if ai == ai: x[0] += ai
+                asum = (x[0] + x[1]) + (x[2] + x[3])
                 (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
                 PyArray_ITER_NEXT(ita)
                 PyArray_ITER_NEXT(ity)
@@ -272,66 +262,6 @@ cdef ndarray nansum2_one_DTYPE0(np.flatiter ita,
                 PyArray_ITER_NEXT(ita)
                 PyArray_ITER_NEXT(ity)
     return y
-
-
-cdef ndarray nansum2_one_DTYPE0(np.flatiter ita,
-                               Py_ssize_t stride, Py_ssize_t length,
-                               int a_ndim, np.npy_intp* y_dims, int int_input):
-    # bn.dtypes = [['float64']]
-    cdef Py_ssize_t i
-    cdef DTYPE0_t ai, asum=0
-    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
-    cdef np.flatiter ity = PyArray_IterNew(y)
-    if length == 0:
-        while PyArray_ITER_NOTDONE(ity):
-            (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ity)
-    elif length >= 8:
-        unroll(ita, ity, stride, length, nansum_i)
-    else:
-        while PyArray_ITER_NOTDONE(ita):
-            asum = 0
-            for i in range(length):
-                ai = (<DTYPE0_t*>(<char*>pid(ita) + i * stride))[0]
-                if ai == ai: asum += ai
-            (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
-            PyArray_ITER_NEXT(ita)
-            PyArray_ITER_NEXT(ity)
-    return y
-
-
-cdef inline void nansum_i(char *p, float64_t *x, Py_ssize_t idx) nogil:
-    cdef float64_t ai
-    ai = (<float64_t*>p)[0]
-    if ai == ai:
-        x[idx] += ai
-
-
-ctypedef void (*unroll_t)(char *p, float64_t *x, Py_ssize_t idx) nogil
-
-
-cdef void unroll(np.flatiter ita, np.flatiter ity, Py_ssize_t stride,
-                 Py_ssize_t length, unroll_t func) nogil:
-    cdef Py_ssize_t i, j, range_limit
-    cdef float64_t ai, asum=0
-    cdef float64_t x[4]
-    cdef char *p
-    range_limit = length - (length % 4)
-    while PyArray_ITER_NOTDONE(ita):
-        p = <char*>pid(ita)
-        x[0] = x[1] = x[2] = x[3] = 0
-        for i in range(0, range_limit, 4):
-            func(p + i * stride, x, 0)
-            func(p + (i+1) * stride, x, 1)
-            func(p + (i+2) * stride, x, 2)
-            func(p + (i+3) * stride, x, 3)
-        asum = (x[0] + x[1]) + (x[2] + x[3])
-        for j in range(i + 4, length):
-            ai = (<float64_t*>(p + j * stride))[0]
-            if ai == ai: asum += ai
-        (<float64_t*>((<char*>pid(ity))))[0] = asum
-        PyArray_ITER_NEXT(ita)
-        PyArray_ITER_NEXT(ity)
 
 
 cdef ndarray nansum2_one_DTYPE0(np.flatiter ita,

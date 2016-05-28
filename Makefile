@@ -18,7 +18,7 @@ help:
 	@echo "sdist   -->  Make source distribution"
 	@echo "doc     -->  Build Sphinx manual"
 
-all: clean build test flake8
+all: clean build test bench
 
 build:
 	${PYTHON} setup.py build_ext --inplace
@@ -37,7 +37,7 @@ coverage:
 	${PYTHON} -c "import bottleneck; bottleneck.test(coverage=True)"
 
 bench:
-	${PYTHON} -c "import bottleneck; bottleneck.bench()"
+	${PYTHON} -c "import bottleneck; bottleneck.bench2()"
 
 sdist:
 	rm -f MANIFEST
