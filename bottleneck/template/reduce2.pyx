@@ -318,16 +318,9 @@ cdef void unroll(np.flatiter ita, np.flatiter ity, Py_ssize_t stride,
     cdef char *p
     range_limit = length - (length % 4)
     while PyArray_ITER_NOTDONE(ita):
-        x[0] = 0
-        x[1] = 0
-        x[2] = 0
-        x[3] = 0
         p = <char*>pid(ita)
-        func(p, x, 0)
-        func(p + stride, x, 1)
-        func(p + 2 * stride, x, 2)
-        func(p + 3 * stride, x, 4)
-        for i in range(4, range_limit, 4):
+        x[0] = x[1] = x[2] = x[3] = 0
+        for i in range(0, range_limit, 4):
             func(p + i * stride, x, 0)
             func(p + (i+1) * stride, x, 1)
             func(p + (i+2) * stride, x, 2)
