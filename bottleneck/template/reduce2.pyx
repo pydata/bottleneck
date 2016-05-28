@@ -477,36 +477,90 @@ cdef object nanmean_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
 
 
 @cython.cdivision(True)
-cdef ndarray nanmean_one_DTYPE0(np.flatiter ita,
-                                Py_ssize_t stride, Py_ssize_t length,
-                                int a_ndim, np.npy_intp* y_dims,
-                                int int_input):
+cdef ndarray nanmean_one_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                                Py_ssize_t length, int a_ndim,
+                                np.npy_intp* y_dims, int int_input):
     # bn.dtypes = [['float64'], ['float32']]
-    cdef Py_ssize_t i, count
-    cdef DTYPE0_t asum = 0, ai
+
+    cdef Py_ssize_t i
+    cdef Py_ssize_t count
+    cdef DTYPE0_t ai
+    cdef DTYPE0_t amean
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
     cdef np.flatiter ity = PyArray_IterNew(y)
+
+    cdef Py_ssize_t remainder = length % 4
+    cdef Py_ssize_t stride2 = 2 * stride
+    cdef Py_ssize_t stride3 = 3 * stride
+    cdef Py_ssize_t stride4 = 4 * stride
+    cdef Py_ssize_t width = (length - (length % 4)) * stride
+    cdef DTYPE0_t x[4]
+    cdef Py_ssize_t c[4]
+    cdef char *p
+    cdef char *pstop
+
     with nogil:
         if length == 0:
             while PyArray_ITER_NOTDONE(ity):
                 (<DTYPE0_t*>((<char*>pid(ity))))[0] = NAN
                 PyArray_ITER_NEXT(ity)
-        else:
+        elif length >= 8:
             while PyArray_ITER_NOTDONE(ita):
-                asum = 0
-                count = 0
-                for i in range(length):
-                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                p = <char*>pid(ita)
+                pstop = p + width
+                x[0] = x[1] = x[2] = x[3] = 0
+                c[0] = c[1] = c[2] = c[3] = 0
+                while 1:
+                    if p >= pstop:
+                        break
+                    ai = (<DTYPE0_t*>p)[0]
                     if ai == ai:
-                        asum += ai
-                        count += 1
+                        x[0] += ai
+                        c[0] += 1
+                    ai = (<DTYPE0_t*>(p + stride))[0]
+                    if ai == ai:
+                        x[1] += ai
+                        c[1] += 1
+                    ai = (<DTYPE0_t*>(p + stride2))[0]
+                    if ai == ai:
+                        x[2] += ai
+                        c[2] += 1
+                    ai = (<DTYPE0_t*>(p + stride3))[0]
+                    if ai == ai:
+                        x[3] += ai
+                        c[3] += 1
+                    p += stride4
+                for i in range(remainder):
+                    ai = (<DTYPE0_t*>p)[0]
+                    if ai == ai:
+                        x[0] += ai
+                        c[0] += 1
+                    p += stride
+                count = c[0] + c[1] + c[2] + c[3]
                 if count > 0:
-                    asum = asum / count
+                    amean = (x[0] + x[1] + x[2] + x[3]) / count
                 else:
-                    asum = NAN
-                (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
+                    amean = NAN
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = amean
                 PyArray_ITER_NEXT(ita)
                 PyArray_ITER_NEXT(ity)
+        else:
+            while PyArray_ITER_NOTDONE(ita):
+                amean = 0
+                count = 0
+                for i in range(length):
+                    ai = (<DTYPE0_t*>(<char*>pid(ita) + i * stride))[0]
+                    if ai == ai:
+                        amean += ai
+                        count += 1
+                if count > 0:
+                    amean /= count
+                else:
+                    amean = NAN
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = amean
+                PyArray_ITER_NEXT(ita)
+                PyArray_ITER_NEXT(ity)
+
     return y
 
 

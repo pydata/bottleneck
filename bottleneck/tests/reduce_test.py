@@ -124,7 +124,7 @@ def test_loop_unrolling(dtypes=DTYPES):
 
     fmt = '\nfunc %s | dtype %s | shape %s | axis %s\n\nInput array:\n%s\n'
     aaae = assert_array_almost_equal
-    funcs = [bn.nansum2]
+    funcs = [bn.nansum2, bn.nanmean2]
 
     # 1d input
     rs = np.random.RandomState([1, 2, 3])

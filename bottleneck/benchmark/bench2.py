@@ -9,7 +9,7 @@ __all__ = ['bench']
 def bench(dtype='float64', axis=-1,
           shapes=[(1000, 1000), (1000, 1000)],
           nans=[False, True],
-          functions=['nansum']):
+          functions=['nansum', 'nanmean']):
     """
     Bottleneck benchmark.
 
