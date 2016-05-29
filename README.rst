@@ -94,13 +94,7 @@ Requirements:
 Bottleneck               Python 2.7, 3.4, 3.5; NumPy 1.11.0
 Compile                  gcc or clang or MinGW
 Unit tests               nose
-======================== ====================================================
-
-Optional:
-
-======================== ====================================================
-tox, virtualenv          Run unit tests across multiple python/numpy versions
-Cython                   Development of Bottleneck
+Cython                   Optional for released version of Bottleneck
 ======================== ====================================================
 
 If Cython is installed on your computer then you can install either a released
