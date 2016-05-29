@@ -4,10 +4,12 @@ import warnings
 
 import numpy as np
 from numpy.testing import assert_equal, assert_array_equal
-nan = np.nan
+
 import bottleneck as bn
+from .reduce_test import unit_maker as reduce_unit_maker
 
 DTYPES = [np.float64, np.float32, np.int64, np.int32]
+nan = np.nan
 
 
 # ---------------------------------------------------------------------------
@@ -91,9 +93,6 @@ def test_transpose():
 
 # ---------------------------------------------------------------------------
 # rankdata, nanrankdata, push
-
-from .reduce_test import unit_maker as reduce_unit_maker
-
 
 def test_nonreduce_axis():
     "Test nonreduce axis functions"

@@ -1,11 +1,10 @@
 import warnings
 import numpy as np
+from numpy import nanmean, nanmedian
 
 __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
            'nanmin', 'nanmax', 'nanargmin', 'nanargmax', 'ss', 'anynan',
            'allnan']
-
-from numpy import nanmean, nanmedian
 
 
 def nansum(arr, axis=None):

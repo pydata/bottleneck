@@ -4,11 +4,11 @@ import warnings
 
 import numpy as np
 from numpy.testing import assert_equal
-nan = np.nan
 import bottleneck as bn  # noqa
 from .functions import all_functions
 
 DTYPES = [np.float64, np.float32, np.int64, np.int32]
+nan = np.nan
 
 
 def arrays(dtypes=DTYPES, nans=True):
