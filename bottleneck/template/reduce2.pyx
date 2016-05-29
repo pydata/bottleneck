@@ -245,13 +245,14 @@ cdef ndarray nansum2_one_DTYPE0(np.flatiter ita, Py_ssize_t stride,
     cdef np.flatiter ity = PyArray_IterNew(y)
 
     cdef Py_ssize_t remainder = length % 4
-    cdef Py_ssize_t stride2 = 2 * stride
-    cdef Py_ssize_t stride3 = 3 * stride
-    cdef Py_ssize_t stride4 = 4 * stride
-    cdef Py_ssize_t width = (length - (length % 4)) * stride
+    cdef Py_ssize_t stride1 = stride / sizeof(DTYPE0_t)
+    cdef Py_ssize_t stride2 = 2 * stride1
+    cdef Py_ssize_t stride3 = 3 * stride1
+    cdef Py_ssize_t stride4 = 4 * stride1
+    cdef Py_ssize_t width = (length - (length % 4)) * stride1
     cdef DTYPE0_t x[4]
-    cdef char *p
-    cdef char *pstop
+    cdef DTYPE0_t *p
+    cdef DTYPE0_t *pstop
 
     with nogil:
         if length == 0:
@@ -260,25 +261,25 @@ cdef ndarray nansum2_one_DTYPE0(np.flatiter ita, Py_ssize_t stride,
                 PyArray_ITER_NEXT(ity)
         elif length >= 8:
             while PyArray_ITER_NOTDONE(ita):
-                p = <char*>pid(ita)
+                p = <DTYPE0_t*>pid(ita)
                 pstop = p + width
                 x[0] = x[1] = x[2] = x[3] = 0
                 while 1:
                     if p >= pstop:
                         break
-                    ai = (<DTYPE0_t*>p)[0]
+                    ai = p[0]
                     if ai == ai: x[0] += ai
-                    ai = (<DTYPE0_t*>(p + stride))[0]
+                    ai = (p + stride1)[0]
                     if ai == ai: x[1] += ai
-                    ai = (<DTYPE0_t*>(p + stride2))[0]
+                    ai = (p + stride2)[0]
                     if ai == ai: x[2] += ai
-                    ai = (<DTYPE0_t*>(p + stride3))[0]
+                    ai = (p + stride3)[0]
                     if ai == ai: x[3] += ai
                     p += stride4
                 for i in range(remainder):
-                    ai = (<DTYPE0_t*>p)[0]
+                    ai = p[0]
                     if ai == ai: x[0] += ai
-                    p += stride
+                    p += stride1
                 asum = (x[0] + x[1]) + (x[2] + x[3])
                 (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
                 PyArray_ITER_NEXT(ita)
