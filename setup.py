@@ -16,7 +16,7 @@ except ImportError:
     CYTHON_AVAILABLE = False
 
 
-modules = ['reduce', 'nonreduce', 'nonreduce_axis', 'move']
+modules = ['reduce', 'reduce2' , 'nonreduce', 'nonreduce_axis', 'move']
 
 def prepare_modules():
     # Don't attempt to import numpy when it isn't actually needed; this
