@@ -14,6 +14,7 @@ except:
     pass
 try:
     from .reduce2 import nansum as nansum2
+    from .reduce2 import nanmean as nanmean2
 except:
     pass
 try:

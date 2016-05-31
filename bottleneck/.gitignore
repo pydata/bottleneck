@@ -1,5 +1,5 @@
-reduce.*
-reduce2.*
-nonreduce.*
-nonreduce_axis.*
-move.*
+/reduce.*
+/reduce2.*
+/nonreduce.*
+/nonreduce_axis.*
+/move.*
