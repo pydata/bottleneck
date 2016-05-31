@@ -294,17 +294,6 @@ ctypedef int32_t (*one_int32_t)(char *, Py_ssize_t, Py_ssize_t, int) nogil
 ctypedef object (*f0d_t)(ndarray, int)
 
 
-cdef object all_DTYPE0(np.flatiter ita, Py_ssize_t stride, Py_ssize_t length,
-                       int int_input, one_DTYPE0_t func):
-    # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
-    cdef DTYPE0_t out
-    cdef char *p
-    with nogil:
-        p = <char*>pid(ita)
-        out = func(p, stride, length, int_input)
-    return out
-
-
 cdef ndarray one_DTYPE0(np.flatiter ita, Py_ssize_t stride, Py_ssize_t length,
                         int a_ndim, np.npy_intp* y_dims, int int_input,
                         one_DTYPE0_t func):
@@ -316,6 +305,9 @@ cdef ndarray one_DTYPE0(np.flatiter ita, Py_ssize_t stride, Py_ssize_t length,
     with nogil:
         if length == 0:
             while PyArray_ITER_NOTDONE(ity):
+                # TODO not every functions uses 0; move this to reducer
+                # and each function can pass in a python object like 0,
+                # NaN, True etc
                 (<DTYPE0_t*>((<char*>pid(ity))))[0] = 0
                 PyArray_ITER_NEXT(ity)
         else:
@@ -400,22 +392,24 @@ cdef reducer(arr, axis,
     stride = a.strides[axis_reduce]
     length = a.shape[axis_reduce]
 
+    cdef char *p
     if reduce_all == 1:
         # reduce over all axes
+        p = <char*>pid(ita)
         if dtype == NPY_float64:
-            return all_float64(ita, stride, length, int_input, func_f64)
+            return func_f64(p, stride, length, int_input)
         elif dtype == NPY_float32:
-            return all_float32(ita, stride, length, int_input, func_f32)
+            return func_f32(p, stride, length, int_input)
         elif dtype == NPY_int64:
             if is_int_to_float == 1:
-                return all_float64(ita, stride, length, int_input, func_i64f64)
+                return func_i64f64(p, stride, length, int_input)
             else:
-                return all_int64(ita, stride, length, int_input, func_i64)
+                return func_i64(p, stride, length, int_input)
         elif dtype == NPY_int32:
             if is_int_to_float == 1:
-                return all_float64(ita, stride, length, int_input, func_i32f64)
+                return func_i32f64(p, stride, length, int_input)
             else:
-                return all_int32(ita, stride, length, int_input, func_i32)
+                return func_i32(p, stride, length, int_input)
         else:
             raise TypeError("Unsupported dtype (%s)." % a.dtype)
     else:
