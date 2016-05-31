@@ -247,10 +247,8 @@ cdef inline DTYPE0_t nanmean_DTYPE0(char *p,
                                     Py_ssize_t length,
                                     int int_input) nogil:
     # bn.dtypes = [['float64'], ['float32']]
-    cdef Py_ssize_t i, count
-    cdef DTYPE0_t ai, asum
-    asum = 0
-    count = 0
+    cdef Py_ssize_t i, count = 0
+    cdef DTYPE0_t ai, asum = 0
     for i in range(length):
         ai = (<DTYPE0_t*>(p + i * stride))[0]
         if ai == ai:
