@@ -24,6 +24,7 @@ def prepare_modules():
     import numpy as np
     kwargs = {m : {'include_dirs' : [np.get_include()]} for m in modules}
     kwargs['move']['extra_compile_args'] = ["-std=gnu89"]
+    #kwargs['reduce']['extra_compile_args'] = ["-finline-functions"]
 
     if CYTHON_AVAILABLE:
         from bottleneck.template.template import make_pyx

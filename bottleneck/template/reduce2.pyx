@@ -38,7 +38,7 @@ from numpy cimport PyArray_IterNew
 
 from numpy cimport PyArray_TYPE
 from numpy cimport PyArray_NDIM
-from numpy cimport NPY_CORDER
+from numpy cimport NPY_ANYORDER
 from numpy cimport PyArray_ISBYTESWAPPED
 
 from numpy cimport PyArray_FillWithScalar
@@ -136,8 +136,10 @@ def nansum(arr, axis=None):
         return slow.nansum(arr, axis)
 
 
-cdef inline DTYPE0_t nansum_DTYPE0(char *p, Py_ssize_t stride,
-                                   Py_ssize_t length, int int_input) nogil:
+cdef inline DTYPE0_t nansum_DTYPE0(char *p,
+                                   Py_ssize_t stride,
+                                   Py_ssize_t length,
+                                   int int_input) nogil:
     # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
     cdef Py_ssize_t i
     cdef DTYPE0_t ai, asum=0
@@ -224,11 +226,7 @@ def nanmean(arr, axis=None):
     >>> bn.nanmean([1, np.nan, np.inf, np.NINF])
     nan
     """
-    cdef int ravel = 1
-    cdef int int_input = 0
     cdef int is_int_to_float = 1
-    if axis is None:
-        ravel = 1
     try:
         return reducer(arr, axis,
                        nanmean_float64,
@@ -238,19 +236,21 @@ def nanmean(arr, axis=None):
                        nanmean_int64,
                        nanmean_int32,
                        nanmean_0d,
-                       is_int_to_float,
-                       int_input,
-                       ravel=ravel)
+                       is_int_to_float)
     except TypeError:
         return slow.nanmean(arr, axis)
 
 
 @cython.cdivision(True)
-cdef inline DTYPE0_t nanmean_DTYPE0(char *p, Py_ssize_t stride,
-                                    Py_ssize_t length, int int_input) nogil:
+cdef inline DTYPE0_t nanmean_DTYPE0(char *p,
+                                    Py_ssize_t stride,
+                                    Py_ssize_t length,
+                                    int int_input) nogil:
     # bn.dtypes = [['float64'], ['float32']]
-    cdef Py_ssize_t i, count=0
-    cdef DTYPE0_t ai, asum=0
+    cdef Py_ssize_t i, count
+    cdef DTYPE0_t ai, asum
+    asum = 0
+    count = 0
     for i in range(length):
         ai = (<DTYPE0_t*>(p + i * stride))[0]
         if ai == ai:
@@ -263,8 +263,10 @@ cdef inline DTYPE0_t nanmean_DTYPE0(char *p, Py_ssize_t stride,
 
 
 @cython.cdivision(True)
-cdef inline DTYPE1_t nanmean_DTYPE0(char *p, Py_ssize_t stride,
-                                    Py_ssize_t length, int int_input) nogil:
+cdef inline DTYPE1_t nanmean_DTYPE0(char *p,
+                                    Py_ssize_t stride,
+                                    Py_ssize_t length,
+                                    int int_input) nogil:
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef Py_ssize_t i, count=0
     cdef DTYPE0_t ai
@@ -285,44 +287,27 @@ cdef nanmean_0d(ndarray a, int int_input):
 
 # reducer -------------------------------------------------------------------
 
-cdef float64_t dummy_i64f64(char *p, Py_ssize_t stride, Py_ssize_t length,
-                            int int_input):
-    return 1.0
-cdef float64_t dummy_i32f64(char *p, Py_ssize_t stride, Py_ssize_t length,
-                            int int_input):
-    return 1.0
-cdef int64_t dummy_i64i64(char *p, Py_ssize_t stride, Py_ssize_t length,
-                            int int_input):
-    return 1
-cdef int32_t dummy_i32i32(char *p, Py_ssize_t stride, Py_ssize_t length,
-                            int int_input):
-    return 1
-
-ctypedef float64_t (*one_float64_t)(char *p, Py_ssize_t, Py_ssize_t, int) nogil
-ctypedef float32_t (*one_float32_t)(char *p, Py_ssize_t, Py_ssize_t, int) nogil
-ctypedef int64_t (*one_int64_t)(char *p, Py_ssize_t, Py_ssize_t, int) nogil
-ctypedef int32_t (*one_int32_t)(char *p, Py_ssize_t, Py_ssize_t, int) nogil
-ctypedef float64_t (*one_int64_float64_t)(char *p, Py_ssize_t, Py_ssize_t, int) nogil
-ctypedef float64_t (*one_int32_float64_t)(char *p, Py_ssize_t, Py_ssize_t, int) nogil
+ctypedef float64_t (*one_float64_t)(char *, Py_ssize_t, Py_ssize_t, int) nogil
+ctypedef float32_t (*one_float32_t)(char *, Py_ssize_t, Py_ssize_t, int) nogil
+ctypedef int64_t (*one_int64_t)(char *, Py_ssize_t, Py_ssize_t, int) nogil
+ctypedef int32_t (*one_int32_t)(char *, Py_ssize_t, Py_ssize_t, int) nogil
 ctypedef object (*f0d_t)(ndarray, int)
 
 
 cdef object all_DTYPE0(np.flatiter ita, Py_ssize_t stride, Py_ssize_t length,
-                       int int_input, one_DTYPE0_t nansum_1d_DTYPE0):
+                       int int_input, one_DTYPE0_t func):
     # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
-    cdef DTYPE0_t asum = 0
+    cdef DTYPE0_t out
     cdef char *p
     with nogil:
-        while PyArray_ITER_NOTDONE(ita):
-            p = <char*>pid(ita)
-            asum += nansum_1d_DTYPE0(p, stride, length, int_input)
-            PyArray_ITER_NEXT(ita)
-    return asum
+        p = <char*>pid(ita)
+        out = func(p, stride, length, int_input)
+    return out
 
 
 cdef ndarray one_DTYPE0(np.flatiter ita, Py_ssize_t stride, Py_ssize_t length,
                         int a_ndim, np.npy_intp* y_dims, int int_input,
-                        one_DTYPE0_t nansum_1d_DTYPE0):
+                        one_DTYPE0_t func):
     # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
     cdef DTYPE0_t yi
     cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
@@ -336,7 +321,7 @@ cdef ndarray one_DTYPE0(np.flatiter ita, Py_ssize_t stride, Py_ssize_t length,
         else:
             while PyArray_ITER_NOTDONE(ita):
                 p = <char*>pid(ita)
-                yi = nansum_1d_DTYPE0(p, stride, length, int_input)
+                yi = func(p, stride, length, int_input)
                 (<DTYPE0_t*>((<char*>pid(ity))))[0] = yi
                 PyArray_ITER_NEXT(ita)
                 PyArray_ITER_NEXT(ity)
@@ -353,7 +338,6 @@ cdef reducer(arr, axis,
              f0d_t f0d,
              int is_int_to_float=0,
              int int_input=0,
-             int ravel=0,
              int copy=0):
 
     # convert to array if necessary
@@ -369,8 +353,6 @@ cdef reducer(arr, axis,
         raise TypeError
 
     # input array
-    if ravel == 1:
-        a = PyArray_Ravel(a, NPY_CORDER)
     if copy == 1:
         a = PyArray_Copy(a)
 
@@ -398,6 +380,9 @@ cdef reducer(arr, axis,
     if axis is None:
         reduce_all = 1
         axis_reduce = -1
+        if a_ndim != 1:
+            a = PyArray_Ravel(a, NPY_ANYORDER)
+            a_ndim = 1
     else:
         axis_int = <int>axis
         if axis_int < 0:
