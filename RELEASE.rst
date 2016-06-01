@@ -36,6 +36,7 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 **Beware**
 
 - bn.median now returns NaN for a slice that contains one or more NaNs
+- Instead of using the distutils default, the '-O2' C compiler flag is forced
 - bn.move_std output changed when mean is large compared to standard deviation
 - Fixed: Non-accelerated moving window functions used min_count incorrectly
 - bn.move_median is a bit slower for float input arrays that do not contain NaN
@@ -47,8 +48,8 @@ Alphabeticaly by last name
 - Alessandro Amici worked on setup.py
 - Pietro Battiston modernized bottleneck installation
 - Moritz E. Beber set up continuous integration with Travis CI
-- Jaime Frio worked on bn.move_std
-- Jennifer Olsen worked on bn.move_median
+- Jaime Frio improved the numerical stability of bn.move_std
+- Jennifer Olsen added NaN support to bn.move_median
 
 
 Older versions
