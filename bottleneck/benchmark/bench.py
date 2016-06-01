@@ -9,6 +9,7 @@ __all__ = ['bench']
 def bench(dtype='float64', axis=-1,
           shapes=[(10,), (1000, 1000), (10,), (1000, 1000)],
           nans=[False, False, True, True],
+          order='C',
           functions=None):
     """
     Bottleneck benchmark.
@@ -26,7 +27,10 @@ def bench(dtype='float64', axis=-1,
         A list of the bools (True or False), one for each tuple in the
         `shapes` list, that tells whether the input arrays should be randomly
         filled with one-third NaNs.
-    functions : {list, None}, optional
+    order : {'C', 'F'}, optional
+        Whether to store multidimensional data in C- or Fortran-contiguous
+        (row- or column-wise) order in memory.
+        functions : {list, None}, optional
         A list of strings specifying which functions to include in the
         benchmark. By default (None) all functions are included in the
         benchmark.
@@ -64,7 +68,7 @@ def bench(dtype='float64', axis=-1,
     header = [" "*16] + header
     print("".join(header))
 
-    suite = benchsuite(shapes, dtype, axis, nans, functions)
+    suite = benchsuite(shapes, dtype, axis, nans, order, functions)
     for test in suite:
         name = test["name"].ljust(12)
         fmt = tab + name + "%7.1f" + "%11.1f"*(len(shapes) - 1)
@@ -84,29 +88,29 @@ def timer(statements, setups):
     return speed
 
 
-def getarray(shape, dtype, nans=False):
+def getarray(shape, dtype, nans=False, order='C'):
     arr = np.arange(np.prod(shape), dtype=dtype)
     if nans and issubclass(arr.dtype.type, np.inexact):
         arr[::3] = np.nan
     else:
         rs = np.random.RandomState(shape)
         rs.shuffle(arr)
-    return arr.reshape(*shape)
+    return np.array(arr.reshape(*shape), order=order)
 
 
-def benchsuite(shapes, dtype, axis, nans, functions):
+def benchsuite(shapes, dtype, axis, nans, order, functions):
 
     suite = []
 
-    def getsetups(setup, shapes, nans):
+    def getsetups(setup, shapes, nans, order):
         template = """import numpy as np
         import bottleneck as bn
         from bottleneck.benchmark.bench import getarray
-        a = getarray(%s, 'DTYPE', %s)
+        a = getarray(%s, 'DTYPE', %s, '%s')
         %s"""
         setups = []
         for shape, nan in zip(shapes, nans):
-            setups.append(template % (str(shape), str(nan), setup))
+            setups.append(template % (str(shape), str(nan), order, setup))
         return setups
 
     # non-moving window functions
@@ -126,7 +130,7 @@ def benchsuite(shapes, dtype, axis, nans, functions):
             if "%s" == "rankdata": sl_func([1, 2, 3])
             if "%s" == "median": from bottleneck.slow import median as sl_func
         """ % (func, func, func, func, func)
-        run['setups'] = getsetups(setup, shapes, nans)
+        run['setups'] = getsetups(setup, shapes, nans, order)
         suite.append(run)
 
     # partsort, argpartsort
@@ -146,7 +150,7 @@ def benchsuite(shapes, dtype, axis, nans, functions):
             n = max(n / 2, 1)
             m = n - 1
         """ % (func, func)
-        run['setups'] = getsetups(setup, shapes, nans)
+        run['setups'] = getsetups(setup, shapes, nans, order)
         suite.append(run)
 
     # replace, push
@@ -168,7 +172,7 @@ def benchsuite(shapes, dtype, axis, nans, functions):
             from bottleneck import %s as bn_func
             from bottleneck.slow import %s as slow_func
         """ % (func, func)
-        run['setups'] = getsetups(setup, shapes, nans)
+        run['setups'] = getsetups(setup, shapes, nans, order)
         suite.append(run)
 
     # moving window functions
@@ -187,7 +191,7 @@ def benchsuite(shapes, dtype, axis, nans, functions):
             from bottleneck import %s as bn_func
             w = a.shape[AXIS] // 5
         """ % (func, func)
-        run['setups'] = getsetups(setup, shapes, nans)
+        run['setups'] = getsetups(setup, shapes, nans, order)
         if axis != 'None':
             suite.append(run)
 

@@ -15,31 +15,33 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 
 **More Robust**
 
-- bn.move_median can now handle NaNs and `min_count` parameter
-- bn.move_std is slower but numerically more stable
+- move_median can now handle NaNs and `min_count` parameter
+- move_std is slower but numerically more stable
 - Bottleneck no longer crashes on byte-swapped input arrays
 
 **Faster**
 
 - All Bottleneck functions release the GIL
-- bn.median is faster if the input array contains NaN
-- bn.move_median is faster for input arrays that contain lots of NaNs
+- median is faster if the input array contains NaN
+- move_median is faster for input arrays that contain lots of NaNs
+- No speed penalty for median, nanmedian, nanargmin, nanargmax for Fortran
+  ordered input arrays when axis is None
 
 **New Functions**
 
-- bn.move_var
-- bn.move_argmin
-- bn.move_argmax
-- bn.move_rank
-- bn.push
+- move_var
+- move_argmin
+- move_argmax
+- move_rank
+- push
 
 **Beware**
 
-- bn.median now returns NaN for a slice that contains one or more NaNs
+- median now returns NaN for a slice that contains one or more NaNs
 - Instead of using the distutils default, the '-O2' C compiler flag is forced
-- bn.move_std output changed when mean is large compared to standard deviation
+- move_std output changed when mean is large compared to standard deviation
 - Fixed: Non-accelerated moving window functions used min_count incorrectly
-- bn.move_median is a bit slower for float input arrays that do not contain NaN
+- move_median is a bit slower for float input arrays that do not contain NaN
 
 **Thanks**
 
@@ -48,8 +50,8 @@ Alphabeticaly by last name
 - Alessandro Amici worked on setup.py
 - Pietro Battiston modernized bottleneck installation
 - Moritz E. Beber set up continuous integration with Travis CI
-- Jaime Frio improved the numerical stability of bn.move_std
-- Jennifer Olsen added NaN support to bn.move_median
+- Jaime Frio improved the numerical stability of move_std
+- Jennifer Olsen added NaN support to move_median
 
 
 Older versions
