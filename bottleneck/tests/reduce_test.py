@@ -22,18 +22,30 @@ def test_reduce():
 
 def arrays(dtypes=DTYPES):
     "Iterator that yields arrays to use for unit testing."
+
+    # nan and inf
     nan = np.nan
     inf = np.inf
+    yield np.array([inf, nan])
+    yield np.array([inf, -inf])
+    # yield np.array([nan, inf])  np.nanargmin can't handle this one
+
+    # byte swapped
     yield np.array([1, 2, 3], dtype='>f4')
     yield np.array([1, 2, 3], dtype='<f4')
-    yield np.array([1, 2, 3], dtype=np.float16)  # make sure slow is called
-    yield np.array([0, 0, 0])  # nanargmax/nanargmin regression tests
+
+    # make sure slow is called
+    yield np.array([1, 2, 3], dtype=np.float16)
+
+    # regression tests
+    yield np.array([0, 0, 0])  # nanargmax/nanargmin
+    yield np.array([1, nan, nan, 2])  # nanmedian
+
+    # ties
     yield np.array([0, 0, 0], dtype=np.float64)
-    yield np.array([inf, nan])
-    # yield np.array([nan, inf])  np.nanargmin can't handle this one
-    yield np.array([inf, -inf])
-    yield np.array([1, nan, nan, 2])  # nanmedian regression tests
-    # check 0d input
+    yield np.array([1, 1, 1], dtype=np.float64)
+
+    # 0d input
     yield np.array(-9)
     yield np.array(0)
     yield np.array(9)
@@ -43,13 +55,22 @@ def arrays(dtypes=DTYPES):
     yield np.array(-inf)
     yield np.array(inf)
     yield np.array(nan)
+
+    # not the standard C ordered array
+    rs = np.random.RandomState([1, 2, 4])
+    a = np.arange(12).reshape(4, 3)
+    rs.shuffle(a)
+    yield a[::2]
+    yield a[:, ::2]
+    yield a[::2][:, ::2]
+
+    # Automate a bunch of arrays to test
     ss = {}
     ss[0] = {'size':  0, 'shapes': [(0,), (0, 0), (2, 0), (2, 0, 1)]}
     ss[1] = {'size':  8, 'shapes': [(8,)]}
     ss[2] = {'size': 12, 'shapes': [(2, 6), (3, 4)]}
     ss[3] = {'size': 16, 'shapes': [(2, 2, 4)]}
     ss[4] = {'size': 24, 'shapes': [(1, 2, 3, 4)]}
-    rs = np.random.RandomState([1, 2, 4])
     for ndim in ss:
         size = ss[ndim]['size']
         shapes = ss[ndim]['shapes']
@@ -82,14 +103,15 @@ def unit_maker(func, decimal=5):
             desired = 'Crashed'
             actualraised = False
             try:
-                actual = func(arr.copy(), axis=axis)
+                # do not use arr.copy() here because it will C order the array
+                actual = func(arr, axis=axis)
             except:
                 actualraised = True
             desiredraised = False
             try:
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
-                    desired = func0(arr.copy(), axis=axis)
+                    desired = func0(arr, axis=axis)
             except:
                 desiredraised = True
             if actualraised and desiredraised:
