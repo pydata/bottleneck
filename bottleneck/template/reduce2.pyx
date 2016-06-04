@@ -37,6 +37,7 @@ from numpy cimport PyArray_IterAllButAxis
 from numpy cimport PyArray_IterNew
 
 from numpy cimport PyArray_DATA
+from numpy cimport PyArray_STRIDE
 from numpy cimport PyArray_STRIDES
 from numpy cimport PyArray_SIZE
 
@@ -142,17 +143,37 @@ def nansum(arr, axis=None):
         return slow.nansum(arr, axis)
 
 
-cdef object nansum_all_DTYPE0(char * p,
-                              Py_ssize_t stride,
-                              Py_ssize_t size,
+cdef object nansum_all_DTYPE0(ndarray a,
+                              int axis,
+                              np.npy_intp *shape,
+                              int ndim,
                               int int_input):
     # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
-    cdef Py_ssize_t i
+
+    # all ndim
+    cdef Py_ssize_t i0, i1
     cdef DTYPE0_t ai
     cdef DTYPE0_t asum = 0
-    with nogil:
-        for i in range(size):
-            ai = (<DTYPE0_t*>(p + i * stride))[0]
+    cdef Py_ssize_t stride0
+
+    # ndim==1, ndim==2
+    cdef char *p
+
+    # ndim==2
+    cdef Py_ssize_t stride1
+    cdef np.npy_intp *strides
+    cdef Py_ssize_t length0
+    cdef Py_ssize_t length1
+
+    # ndim > 2
+    cdef np.flatiter ita
+
+    if ndim == 1:
+        p = <char *>PyArray_DATA(a)
+        stride0 = PyArray_STRIDE(a, 0)
+        length0 = shape[0]
+        for i0 in range(length0):
+            ai = (<DTYPE0_t*>(p + i0 * stride0))[0]
             if DTYPE0 == 'float64':
                 if ai == ai:
                     asum += ai
@@ -163,6 +184,53 @@ cdef object nansum_all_DTYPE0(char * p,
                 asum += ai
             if DTYPE0 == 'int32':
                 asum += ai
+    elif ndim == 2:
+        strides = PyArray_STRIDES(a)
+        if strides[0] < strides[1]:
+            stride0 = strides[0]
+            stride1 = strides[1]
+            length0 = shape[0]
+            length1 = shape[1]
+        else:
+            stride0 = strides[1]
+            stride1 = strides[0]
+            length0 = shape[1]
+            length1 = shape[0]
+        p = <char *>PyArray_DATA(a)
+        for i1 in range(length1):
+            for i0 in range(length0):
+                ai = (<DTYPE0_t*>(p + i0 * stride0))[0]
+                if DTYPE0 == 'float64':
+                    if ai == ai:
+                        asum += ai
+                if DTYPE0 == 'float32':
+                    if ai == ai:
+                        asum += ai
+                if DTYPE0 == 'int64':
+                    asum += ai
+                if DTYPE0 == 'int32':
+                    asum += ai
+            p += stride1
+    else:
+        axis = -1
+        ita = PyArray_IterAllButAxis(a, &axis)
+        stride0 = PyArray_STRIDE(a, axis)
+        length0 = shape[axis]
+        while PyArray_ITER_NOTDONE(ita):
+            for i0 in range(length0):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i0 * stride0))[0]
+                if DTYPE0 == 'float64':
+                    if ai == ai:
+                        asum += ai
+                if DTYPE0 == 'float32':
+                    if ai == ai:
+                        asum += ai
+                if DTYPE0 == 'int64':
+                    asum += ai
+                if DTYPE0 == 'int32':
+                    asum += ai
+            PyArray_ITER_NEXT(ita)
+
     return asum
 
 
@@ -211,7 +279,7 @@ cdef nansum_0d(ndarray a, int int_input):
 # reducer -------------------------------------------------------------------
 
 # pointer to functions that reduce along ALL axes
-ctypedef object (*fall_t)(char *, Py_ssize_t, Py_ssize_t, int)
+ctypedef object (*fall_t)(ndarray, int, np.npy_intp *, int, int)
 
 # pointer to functions that reduce along ONE axis
 ctypedef ndarray (*fone_t)(np.flatiter, Py_ssize_t, Py_ssize_t, int,
@@ -284,27 +352,19 @@ cdef reducer(arr, axis,
             reduce_all = 1
         axis_reduce = axis_int
 
-    # for reduction over all axes
-    cdef char *p
-    cdef np.npy_intp *strides
+    cdef np.npy_intp *shape
+    shape = np.PyArray_DIMS(a)
 
     if reduce_all == 1:
         # reduce over all axes
-        p = <char *>PyArray_DATA(a)
-        strides = PyArray_STRIDES(a)
-        stride = strides[0]
-        for i in range(1, a_ndim):
-            if strides[i] < stride:
-                stride = strides[i]
-        length = PyArray_SIZE(a)
         if dtype == NPY_float64:
-            return fall_float64(p, stride, length, int_input)
+            return fall_float64(a, axis_reduce, shape, a_ndim, int_input)
         elif dtype == NPY_float32:
-            return fall_float32(p, stride, length, int_input)
+            return fall_float32(a, axis_reduce, shape, a_ndim, int_input)
         elif dtype == NPY_int64:
-            return fall_int64(p, stride, length, int_input)
+            return fall_int64(a, axis_reduce, shape, a_ndim, int_input)
         elif dtype == NPY_int32:
-            return fall_int32(p, stride, length, int_input)
+            return fall_int32(a, axis_reduce, shape, a_ndim, int_input)
         else:
             raise TypeError("Unsupported dtype (%s)." % a.dtype)
 
@@ -313,7 +373,6 @@ cdef reducer(arr, axis,
 
     # output array
     cdef ndarray y
-    cdef np.npy_intp *adim
     cdef np.npy_intp *y_dims = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     # input iterator
@@ -324,11 +383,10 @@ cdef reducer(arr, axis,
     # reduce over a single axis; a_ndim > 1
     if a_ndim > 11:
         raise ValueError("arr.ndim must be less than 12")
-    adim = np.PyArray_DIMS(a)
     j = 0
     for i in range(a_ndim):
         if i != axis_reduce:
-            y_dims[j] = adim[i]
+            y_dims[j] = shape[i]
             j += 1
     if dtype == NPY_float64:
         y = fone_float64(ita, stride, length, a_ndim, y_dims, int_input)
