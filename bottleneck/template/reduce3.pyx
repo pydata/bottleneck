@@ -332,7 +332,7 @@ cdef reducer(arr, axis,
     if reduce_all == 1:
         # reduce over all axes
 
-        if (PyArray_CHKFLAGS(a, NPY_CONTIGUOUS) or 
+        if (a_ndim==1 or PyArray_CHKFLAGS(a, NPY_CONTIGUOUS) or
             PyArray_CHKFLAGS(a, NPY_FORTRAN)):
             stride_min = strides[0]
             for i in range(1, a_ndim):
