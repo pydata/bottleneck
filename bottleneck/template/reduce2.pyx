@@ -138,6 +138,10 @@ def nansum(arr, axis=None):
                        nansum_all_float32,
                        nansum_all_int64,
                        nansum_all_int32,
+                       nansum_all12_float64,
+                       nansum_all12_float32,
+                       nansum_all12_int64,
+                       nansum_all12_int32,
                        nansum_one_float64,
                        nansum_one_float32,
                        nansum_one_int64,
@@ -147,34 +151,21 @@ def nansum(arr, axis=None):
         return slow.nansum(arr, axis)
 
 
-cdef object nansum_all_DTYPE0(ndarray a,
-                              int axis,
-                              npy_intp *shape,
-                              int ndim,
-                              int int_input):
+cdef object nansum_all12_DTYPE0(char *p,
+                                npy_intp *shape,
+                                npy_intp *strides,
+                                int ndim,
+                                int int_input):
     # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
-
-    # all ndim
     cdef Py_ssize_t i0, i1
     cdef DTYPE0_t ai
     cdef DTYPE0_t asum = 0
     cdef Py_ssize_t stride0
-
-    # ndim==1, ndim==2
-    cdef char *p
-
-    # ndim==2
     cdef Py_ssize_t stride1
-    cdef npy_intp *strides
     cdef Py_ssize_t length0
     cdef Py_ssize_t length1
-
-    # ndim > 2
-    cdef flatiter ita
-
     if ndim == 1:
-        p = <char *>PyArray_DATA(a)
-        stride0 = PyArray_STRIDE(a, 0)
+        stride0 = strides[0]
         length0 = shape[0]
         for i0 in range(length0):
             ai = (<DTYPE0_t*>(p + i0 * stride0))[0]
@@ -189,7 +180,6 @@ cdef object nansum_all_DTYPE0(ndarray a,
             if DTYPE0 == 'int32':
                 asum += ai
     elif ndim == 2:
-        strides = PyArray_STRIDES(a)
         if strides[0] < strides[1]:
             stride0 = strides[0]
             stride1 = strides[1]
@@ -200,7 +190,6 @@ cdef object nansum_all_DTYPE0(ndarray a,
             stride1 = strides[0]
             length0 = shape[1]
             length1 = shape[0]
-        p = <char *>PyArray_DATA(a)
         for i1 in range(length1):
             for i0 in range(length0):
                 ai = (<DTYPE0_t*>(p + i0 * stride0))[0]
@@ -215,14 +204,19 @@ cdef object nansum_all_DTYPE0(ndarray a,
                 if DTYPE0 == 'int32':
                     asum += ai
             p += stride1
-    else:
-        axis = -1
-        ita = PyArray_IterAllButAxis(a, &axis)
-        stride0 = PyArray_STRIDE(a, axis)
-        length0 = shape[axis]
+
+    return asum
+
+
+cdef object nansum_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int int_input):
+    # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
+    cdef Py_ssize_t i
+    cdef DTYPE0_t asum = 0, ai
+    with nogil:
         while PyArray_ITER_NOTDONE(ita):
-            for i0 in range(length0):
-                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i0 * stride0))[0]
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
                 if DTYPE0 == 'float64':
                     if ai == ai:
                         asum += ai
@@ -234,7 +228,6 @@ cdef object nansum_all_DTYPE0(ndarray a,
                 if DTYPE0 == 'int32':
                     asum += ai
             PyArray_ITER_NEXT(ita)
-
     return asum
 
 
@@ -283,7 +276,8 @@ cdef nansum_0d(ndarray a, int int_input):
 # reducer -------------------------------------------------------------------
 
 # pointer to functions that reduce along ALL axes
-ctypedef object (*fall_t)(ndarray, int, npy_intp *, int, int)
+ctypedef object (*fall12_t)(char *, npy_intp *, npy_intp *, int, int)
+ctypedef object (*fall_t)(np.flatiter, Py_ssize_t, Py_ssize_t, int)
 
 # pointer to functions that reduce along ONE axis
 ctypedef ndarray (*fone_t)(flatiter, Py_ssize_t, Py_ssize_t, int,
@@ -298,6 +292,10 @@ cdef reducer(arr, axis,
              fall_t fall_float32,
              fall_t fall_int64,
              fall_t fall_int32,
+             fall12_t fall12_float64,
+             fall12_t fall12_float32,
+             fall12_t fall12_int64,
+             fall12_t fall12_int32,
              fone_t fone_float64,
              fone_t fone_float32,
              fone_t fone_int64,
@@ -355,19 +353,38 @@ cdef reducer(arr, axis,
 
     cdef npy_intp *shape
     shape = PyArray_DIMS(a)
+    cdef npy_intp *strides
+    cdef char *p
 
     if reduce_all == 1:
         # reduce over all axes
-        if dtype == NPY_float64:
-            return fall_float64(a, axis_reduce, shape, a_ndim, int_input)
-        elif dtype == NPY_float32:
-            return fall_float32(a, axis_reduce, shape, a_ndim, int_input)
-        elif dtype == NPY_int64:
-            return fall_int64(a, axis_reduce, shape, a_ndim, int_input)
-        elif dtype == NPY_int32:
-            return fall_int32(a, axis_reduce, shape, a_ndim, int_input)
+        if a_ndim ==1 or a_ndim == 2:
+            p = <char *>PyArray_DATA(a)
+            strides = PyArray_STRIDES(a)
+            if dtype == NPY_float64:
+                return fall12_float64(p, shape, strides, a_ndim, int_input)
+            elif dtype == NPY_float32:
+                return fall12_float32(p, shape, strides, a_ndim, int_input)
+            elif dtype == NPY_int64:
+                return fall12_int64(p, shape, strides, a_ndim, int_input)
+            elif dtype == NPY_int32:
+                return fall12_int32(p, shape, strides, a_ndim, int_input)
+            else:
+                raise TypeError
         else:
-            raise TypeError("Unsupported dtype (%s)." % a.dtype)
+            ita = PyArray_IterAllButAxis(a, &axis_reduce)
+            stride = a.strides[axis_reduce]
+            length = shape[axis_reduce]
+            if dtype == NPY_float64:
+                return fall_float64(ita, stride, length, int_input)
+            elif dtype == NPY_float32:
+                return fall_float32(ita, stride, length, int_input)
+            elif dtype == NPY_int64:
+                return fall_int64(ita, stride, length, int_input)
+            elif dtype == NPY_int32:
+                return fall_int32(ita, stride, length, int_input)
+            else:
+                raise TypeError
 
     # if we have reached this point then we are reducing an array with
     # ndim > 1 over a single axis
@@ -398,5 +415,5 @@ cdef reducer(arr, axis,
     elif dtype == NPY_int32:
         y = fone_int32(ita, stride, length, a_ndim, y_dims, int_input)
     else:
-        raise TypeError("Unsupported dtype (%s)." % a.dtype)
+        raise TypeError
     return y
