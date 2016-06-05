@@ -19,7 +19,8 @@ from setuptools import setup, find_packages
 from setuptools.extension import Extension
 
 
-modules = ['reduce', 'reduce2', 'nonreduce', 'nonreduce_axis', 'move']
+modules = ['reduce', 'reduce2', 'reduce3',  'nonreduce', 'nonreduce_axis',
+           'move']
 
 
 def prepare_modules():
