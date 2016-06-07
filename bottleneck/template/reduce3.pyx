@@ -56,6 +56,7 @@ from numpy cimport PyArray_ITEMSIZE
 from numpy cimport NPY_ANYORDER
 from numpy cimport PyArray_ISBYTESWAPPED
 
+from numpy cimport PyArray_FROM_O
 from numpy cimport PyArray_FillWithScalar
 from numpy cimport PyArray_Copy
 from numpy cimport PyArray_Ravel
@@ -144,10 +145,10 @@ def nansum(arr, axis=None):
                        nansum_all_float32,
                        nansum_all_int64,
                        nansum_all_int32,
-                       nansum_all12_float64,
-                       nansum_all12_float32,
-                       nansum_all12_int64,
-                       nansum_all12_int32,
+                       nansum_all_ss_float64,
+                       nansum_all_ss_float32,
+                       nansum_all_ss_int64,
+                       nansum_all_ss_int32,
                        nansum_one_float64,
                        nansum_one_float32,
                        nansum_one_int64,
@@ -157,7 +158,7 @@ def nansum(arr, axis=None):
         return slow.nansum(arr, axis)
 
 
-cdef object nansum_all12_DTYPE0(char *p,
+cdef object nansum_all_ss_DTYPE0(char *p,
                                 npy_intp stride,
                                 npy_intp length,
                                 int int_input):
@@ -248,7 +249,7 @@ cdef nansum_0d(ndarray a, int int_input):
 # reducer -------------------------------------------------------------------
 
 # pointer to functions that reduce along ALL axes
-ctypedef object (*fall12_t)(char *, npy_intp, npy_intp, int)
+ctypedef object (*fall_ss_t)(char *, npy_intp, npy_intp, int)
 ctypedef object (*fall_t)(np.flatiter, Py_ssize_t, Py_ssize_t, int)
 
 # pointer to functions that reduce along ONE axis
@@ -264,16 +265,17 @@ cdef reducer(arr, axis,
              fall_t fall_float32,
              fall_t fall_int64,
              fall_t fall_int32,
-             fall12_t fall12_float64,
-             fall12_t fall12_float32,
-             fall12_t fall12_int64,
-             fall12_t fall12_int32,
+             fall_ss_t fall_ss_float64,
+             fall_ss_t fall_ss_float32,
+             fall_ss_t fall_ss_int64,
+             fall_ss_t fall_ss_int32,
              fone_t fone_float64,
              fone_t fone_float32,
              fone_t fone_int64,
              fone_t fone_int32,
              f0d_t f0d,
              int int_input=0,
+             int ravel=0,
              int copy=0):
 
     # convert to array if necessary
@@ -281,11 +283,10 @@ cdef reducer(arr, axis,
     if PyArray_Check(arr):
         a = arr
     else:
-        a = np.array(arr, copy=False)
+        a = PyArray_FROM_O(arr)
 
     # check for byte swapped input array
-    cdef bint is_swapped = PyArray_ISBYTESWAPPED(a)
-    if is_swapped:
+    if PyArray_ISBYTESWAPPED(a):
         raise TypeError
 
     # input array
@@ -341,13 +342,13 @@ cdef reducer(arr, axis,
             size = PyArray_SIZE(a)
             p = <char *>PyArray_DATA(a)
             if dtype == NPY_float64:
-                return fall12_float64(p, stride_min, size, int_input)
+                return fall_ss_float64(p, stride_min, size, int_input)
             elif dtype == NPY_float32:
-                return fall12_float32(p, stride_min, size, int_input)
+                return fall_ss_float32(p, stride_min, size, int_input)
             elif dtype == NPY_int64:
-                return fall12_int64(p, stride_min, size, int_input)
+                return fall_ss_int64(p, stride_min, size, int_input)
             elif dtype == NPY_int32:
-                return fall12_int32(p, stride_min, size, int_input)
+                return fall_ss_int32(p, stride_min, size, int_input)
             else:
                 raise TypeError
         else:
