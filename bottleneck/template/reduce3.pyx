@@ -336,11 +336,12 @@ cdef object nanmean_all_ss_DTYPE0(char *p,
     cdef Py_ssize_t count = 0
     cdef DTYPE0_t ai
     cdef DTYPE0_t asum = 0
-    for i in range(length):
-        ai = (<DTYPE0_t*>(p + i * stride))[0]
-        if ai == ai:
-            asum += ai
-            count += 1
+    with nogil:
+        for i in range(length):
+            ai = (<DTYPE0_t*>(p + i * stride))[0]
+            if ai == ai:
+                asum += ai
+                count += 1
     if count > 0:
         return asum / count
     else:
@@ -355,8 +356,9 @@ cdef object nanmean_all_ss_DTYPE0(char *p,
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef Py_ssize_t i
     cdef DTYPE1_t asum = 0
-    for i in range(length):
-        asum += (<DTYPE0_t*>(p + i * stride))[0]
+    with nogil:
+        for i in range(length):
+            asum += (<DTYPE0_t*>(p + i * stride))[0]
     if length == 0:
         return NAN
     else:
@@ -467,6 +469,313 @@ cdef ndarray nanmean_one_DTYPE0(np.flatiter ita,
 
 cdef nanmean_0d(ndarray a, int int_input):
     return <double>a[()]
+
+
+# nanstd --------------------------------------------------------------------
+
+def nanstd(arr, axis=None, int ddof=0):
+    """
+    Standard deviation along the specified axis, ignoring NaNs.
+
+    `float64` intermediate and return values are used for integer inputs.
+
+    Instead of a faster one-pass algorithm, a more stable two-pass algorithm
+    is used.
+
+    An example of a one-pass algorithm:
+
+        >>> np.sqrt((arr*arr).mean() - arr.mean()**2)
+
+    An example of a two-pass algorithm:
+
+        >>> np.sqrt(((arr - arr.mean())**2).mean())
+
+    Note in the two-pass algorithm the mean must be found (first pass) before
+    the squared deviation (second pass) can be found.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the standard deviation is computed. The default
+        (axis=None) is to compute the standard deviation of the flattened
+        array.
+    ddof : int, optional
+        Means Delta Degrees of Freedom. The divisor used in calculations
+        is ``N - ddof``, where ``N`` represents the number of non-NaN elements.
+        By default `ddof` is zero.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape as `arr`, with the specified axis removed.
+        If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+        `float64` intermediate and return values are used for integer inputs.
+        If ddof is >= the number of non-NaN elements in a slice or the slice
+        contains only NaNs, then the result for that slice is NaN.
+
+    See also
+    --------
+    bottleneck.nanvar: Variance along specified axis ignoring NaNs
+
+    Notes
+    -----
+    If positive or negative infinity are present the result is Not A Number
+    (NaN).
+
+    Examples
+    --------
+    >>> bn.nanstd(1)
+    0.0
+    >>> bn.nanstd([1])
+    0.0
+    >>> bn.nanstd([1, np.nan])
+    0.0
+    >>> a = np.array([[1, 4], [1, np.nan]])
+    >>> bn.nanstd(a)
+    1.4142135623730951
+    >>> bn.nanstd(a, axis=0)
+    array([ 0.,  0.])
+
+    When positive infinity or negative infinity are present NaN is returned:
+
+    >>> bn.nanstd([1, np.nan, np.inf])
+    nan
+
+    """
+    try:
+        return reducer(arr, axis,
+                       nanstd_all_float64,
+                       nanstd_all_float32,
+                       nanstd_all_int64,
+                       nanstd_all_int32,
+                       nanstd_all_ss_float64,
+                       nanstd_all_ss_float32,
+                       nanstd_all_ss_int64,
+                       nanstd_all_ss_int32,
+                       nanstd_one_float64,
+                       nanstd_one_float32,
+                       nanstd_one_int64,
+                       nanstd_one_int32,
+                       nanstd_0d,
+                       ddof)
+    except TypeError:
+        return slow.nanstd(arr, axis, ddof=ddof)
+
+
+@cython.cdivision(True)
+cdef object nanstd_all_ss_DTYPE0(char *p,
+                                 npy_intp stride,
+                                 npy_intp length,
+                                 int ddof):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i
+    cdef Py_ssize_t count = 0
+    cdef DTYPE0_t ai
+    cdef DTYPE0_t asum = 0
+    cdef DTYPE0_t amean
+    cdef DTYPE0_t out
+    with nogil:
+        for i in range(length):
+            ai = (<DTYPE0_t*>(p + i * stride))[0]
+            if ai == ai:
+                asum += ai
+                count += 1
+        if count > ddof:
+            amean = asum / count
+            asum = 0
+            for i in range(length):
+                ai = (<DTYPE0_t*>(p + i * stride))[0]
+                if ai == ai:
+                    ai -= amean
+                    asum += ai * ai
+            out = sqrt(asum / (count - ddof))
+        else:
+            out = NAN
+    return out
+
+
+@cython.cdivision(True)
+cdef object nanstd_all_ss_DTYPE0(char *p,
+                                 npy_intp stride,
+                                 npy_intp length,
+                                 int ddof):
+    # bn.dtypes = [['int64', 'float64'], ['int32', 'float32']]
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai
+    cdef DTYPE1_t aj
+    cdef DTYPE1_t asum = 0
+    cdef DTYPE1_t amean
+    cdef DTYPE1_t out
+    with nogil:
+        for i in range(length):
+            ai = (<DTYPE0_t*>(p + i * stride))[0]
+            if ai == ai:
+                asum += ai
+        if length > ddof:
+            amean = asum / length
+            asum = 0
+            for i in range(length):
+                ai = (<DTYPE0_t*>(p + i * stride))[0]
+                if ai == ai:
+                    aj = ai - amean
+                    asum += aj * aj
+            out = sqrt(asum / (length - ddof))
+        else:
+            out = NAN
+    return out
+
+
+@cython.cdivision(True)
+cdef object nanstd_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int ddof):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i, count = 0
+    cdef DTYPE0_t asum = 0, amean, ai, out
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+            PyArray_ITER_NEXT(ita)
+        if count > ddof:
+            amean = asum / count
+            asum = 0
+            PyArray_ITER_RESET(ita)
+            while PyArray_ITER_NOTDONE(ita):
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                    if ai == ai:
+                        ai -= amean
+                        asum += ai * ai
+                PyArray_ITER_NEXT(ita)
+            out = sqrt(asum / (count - ddof))
+        else:
+            out = NAN
+    return out
+
+
+@cython.cdivision(True)
+cdef object nanstd_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int ddof):
+    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
+    cdef Py_ssize_t i, size = 0
+    cdef DTYPE1_t asum = 0, amean, aj, out
+    cdef DTYPE0_t ai
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                asum += ai
+            size += length
+            PyArray_ITER_NEXT(ita)
+        if size > ddof:
+            amean = asum / size
+            asum = 0
+            PyArray_ITER_RESET(ita)
+            while PyArray_ITER_NOTDONE(ita):
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                    aj = ai - amean
+                    asum += aj * aj
+                PyArray_ITER_NEXT(ita)
+            out =  sqrt(asum / (size - ddof))
+        else:
+            out =  NAN
+    return out
+
+
+@cython.cdivision(True)
+cdef ndarray nanstd_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims,
+                               int ddof):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i, count = 0
+    cdef DTYPE0_t asum = 0, ai, amean
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    with nogil:
+        if length == 0:
+            while PyArray_ITER_NOTDONE(ity):
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = NAN
+                PyArray_ITER_NEXT(ity)
+        else:
+            while PyArray_ITER_NOTDONE(ita):
+                asum = 0
+                count = 0
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                    if ai == ai:
+                        asum += ai
+                        count += 1
+                if count > ddof:
+                    amean = asum / count
+                    asum = 0
+                    for i in range(length):
+                        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                        if ai == ai:
+                            ai -= amean
+                            asum += ai * ai
+                    asum = sqrt(asum / (count - ddof))
+                else:
+                    asum = NAN
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
+                PyArray_ITER_NEXT(ita)
+                PyArray_ITER_NEXT(ity)
+    return y
+
+
+@cython.cdivision(True)
+cdef ndarray nanstd_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims,
+                               int ddof):
+    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
+    cdef Py_ssize_t i
+    cdef DTYPE1_t asum = 0, amean, aj
+    cdef DTYPE0_t ai
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    with nogil:
+        if length == 0:
+            while PyArray_ITER_NOTDONE(ity):
+                (<DTYPE1_t*>((<char*>pid(ity))))[0] = NAN
+                PyArray_ITER_NEXT(ity)
+        else:
+            while PyArray_ITER_NOTDONE(ita):
+                asum = 0
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                    asum += ai
+                if length > ddof:
+                    amean = asum / length
+                    asum = 0
+                    for i in range(length):
+                        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                        aj = ai - amean
+                        asum += aj * aj
+                    asum = sqrt(asum / (length - ddof))
+                else:
+                    asum = NAN
+                (<DTYPE1_t*>((<char*>pid(ity))))[0] = asum
+                PyArray_ITER_NEXT(ita)
+                PyArray_ITER_NEXT(ity)
+    return y
+
+
+cdef nanstd_0d(ndarray a, int int_input):
+    out = a[()]
+    if out == out:
+        if out == np.inf or out == -np.inf:
+            return NAN
+        else:
+            return 0.0
+    else:
+        return NAN
 
 
 # reducer -------------------------------------------------------------------

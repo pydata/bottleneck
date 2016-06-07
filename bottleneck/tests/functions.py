@@ -34,6 +34,7 @@ def func_dict():
                    bn.nanmean,
                    bn.nanmean3,
                    bn.nanstd,
+                   bn.nanstd3,
                    bn.nanvar,
                    bn.nanmin,
                    bn.nanmax,
