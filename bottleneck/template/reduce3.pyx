@@ -36,31 +36,30 @@ from numpy cimport PyArray_ITER_NEXT
 from numpy cimport PyArray_ITER_RESET
 from numpy cimport PyArray_IterAllButAxis
 from numpy cimport PyArray_IterNew
+from numpy cimport flatiter
 
 from numpy cimport PyArray_DATA
+from numpy cimport PyArray_SIZE
+from numpy cimport PyArray_DIMS
+from numpy cimport PyArray_NDIM
+from numpy cimport PyArray_TYPE
 from numpy cimport PyArray_STRIDE
 from numpy cimport PyArray_STRIDES
-from numpy cimport PyArray_SIZE
-from numpy cimport flatiter
 
 from numpy cimport NPY_CONTIGUOUS
 from numpy cimport NPY_FORTRAN
-from numpy cimport PyArray_CHKFLAGS
-from numpy cimport PyArray_Check
-from numpy cimport PyArray_TYPE
-from numpy cimport PyArray_DIMS
-from numpy cimport PyArray_NDIM
-from numpy cimport PyArray_SIZE
-from numpy cimport PyArray_NBYTES
-from numpy cimport PyArray_ITEMSIZE
 from numpy cimport NPY_ANYORDER
+from numpy cimport PyArray_CHKFLAGS
 from numpy cimport PyArray_ISBYTESWAPPED
 
 from numpy cimport PyArray_FROM_O
-from numpy cimport PyArray_FillWithScalar
 from numpy cimport PyArray_Copy
-from numpy cimport PyArray_Ravel
 from numpy cimport PyArray_EMPTY
+
+from numpy cimport PyArray_Ravel
+from numpy cimport PyArray_Check
+from numpy cimport PyArray_FillWithScalar
+
 from numpy cimport ndarray
 from numpy cimport import_array
 import_array()
@@ -275,7 +274,6 @@ cdef reducer(arr, axis,
              fone_t fone_int32,
              f0d_t f0d,
              int int_input=0,
-             int ravel=0,
              int copy=0):
 
     # convert to array if necessary
