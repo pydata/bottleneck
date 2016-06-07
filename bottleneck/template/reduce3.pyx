@@ -165,18 +165,19 @@ cdef object nansum_all_ss_DTYPE0(char *p,
     cdef Py_ssize_t i
     cdef DTYPE0_t ai
     cdef DTYPE0_t asum = 0
-    for i in range(length):
-        ai = (<DTYPE0_t*>(p + i * stride))[0]
-        if DTYPE0 == 'float64':
-            if ai == ai:
+    with nogil:
+        for i in range(length):
+            ai = (<DTYPE0_t*>(p + i * stride))[0]
+            if DTYPE0 == 'float64':
+                if ai == ai:
+                    asum += ai
+            if DTYPE0 == 'float32':
+                if ai == ai:
+                    asum += ai
+            if DTYPE0 == 'int64':
                 asum += ai
-        if DTYPE0 == 'float32':
-            if ai == ai:
+            if DTYPE0 == 'int32':
                 asum += ai
-        if DTYPE0 == 'int64':
-            asum += ai
-        if DTYPE0 == 'int32':
-            asum += ai
     return asum
 
 
@@ -243,6 +244,229 @@ cdef nansum_0d(ndarray a, int int_input):
         return out
     else:
         return 0.0
+
+
+# nanmean --------------------------------------------------------------------
+
+def nanmean(arr, axis=None):
+    """
+    Mean of array elements along given axis ignoring NaNs.
+
+    `float64` intermediate and return values are used for integer inputs.
+
+    Parameters
+    ----------
+    arr : array_like
+        Array containing numbers whose mean is desired. If `arr` is not an
+        array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the means are computed. The default (axis=None) is to
+        compute the mean of the flattened array.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape as `arr`, with the specified axis removed.
+        If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+        `float64` intermediate and return values are used for integer inputs.
+
+    See also
+    --------
+    bottleneck.nanmedian: Median along specified axis, ignoring NaNs.
+
+    Notes
+    -----
+    No error is raised on overflow. (The sum is computed and then the result
+    is divided by the number of non-NaN elements.)
+
+    If positive or negative infinity are present the result is positive or
+    negative infinity. But if both positive and negative infinity are present,
+    the result is Not A Number (NaN).
+
+    Examples
+    --------
+    >>> bn.nanmean(1)
+    1.0
+    >>> bn.nanmean([1])
+    1.0
+    >>> bn.nanmean([1, np.nan])
+    1.0
+    >>> a = np.array([[1, 4], [1, np.nan]])
+    >>> bn.nanmean(a)
+    2.0
+    >>> bn.nanmean(a, axis=0)
+    array([ 1.,  4.])
+
+    When positive infinity and negative infinity are present:
+
+    >>> bn.nanmean([1, np.nan, np.inf])
+    inf
+    >>> bn.nanmean([1, np.nan, np.NINF])
+    -inf
+    >>> bn.nanmean([1, np.nan, np.inf, np.NINF])
+    nan
+
+    """
+    try:
+        return reducer(arr, axis,
+                       nanmean_all_float64,
+                       nanmean_all_float32,
+                       nanmean_all_int64,
+                       nanmean_all_int32,
+                       nanmean_all_ss_float64,
+                       nanmean_all_ss_float32,
+                       nanmean_all_ss_int64,
+                       nanmean_all_ss_int32,
+                       nanmean_one_float64,
+                       nanmean_one_float32,
+                       nanmean_one_int64,
+                       nanmean_one_int32,
+                       nanmean_0d)
+    except TypeError:
+        return slow.nanmean(arr, axis)
+
+
+@cython.cdivision(True)
+cdef object nanmean_all_ss_DTYPE0(char *p,
+                                  npy_intp stride,
+                                  npy_intp length,
+                                  int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i
+    cdef Py_ssize_t count = 0
+    cdef DTYPE0_t ai
+    cdef DTYPE0_t asum = 0
+    for i in range(length):
+        ai = (<DTYPE0_t*>(p + i * stride))[0]
+        if ai == ai:
+            asum += ai
+            count += 1
+    if count > 0:
+        return asum / count
+    else:
+        return NAN
+
+
+@cython.cdivision(True)
+cdef object nanmean_all_ss_DTYPE0(char *p,
+                                  npy_intp stride,
+                                  npy_intp length,
+                                  int int_input):
+    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
+    cdef Py_ssize_t i
+    cdef DTYPE1_t asum = 0
+    for i in range(length):
+        asum += (<DTYPE0_t*>(p + i * stride))[0]
+    if length == 0:
+        return NAN
+    else:
+        return asum / length
+
+
+@cython.cdivision(True)
+cdef object nanmean_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                               Py_ssize_t length, int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i, count = 0
+    cdef DTYPE0_t asum = 0, ai
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if ai == ai:
+                    asum += ai
+                    count += 1
+            PyArray_ITER_NEXT(ita)
+    if count > 0:
+        return asum / count
+    else:
+        return NAN
+
+
+@cython.cdivision(True)
+cdef object nanmean_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                               Py_ssize_t length, int int_input):
+    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
+    cdef Py_ssize_t i, size = 0
+    cdef DTYPE1_t asum = 0
+    cdef DTYPE0_t ai
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                asum += ai
+            size += length
+            PyArray_ITER_NEXT(ita)
+    if size == 0:
+        return NAN
+    else:
+        return asum / size
+
+
+@cython.cdivision(True)
+cdef ndarray nanmean_one_DTYPE0(np.flatiter ita,
+                                Py_ssize_t stride, Py_ssize_t length,
+                                int a_ndim, np.npy_intp* y_dims,
+                                int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i, count
+    cdef DTYPE0_t asum = 0, ai
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    with nogil:
+        if length == 0:
+            while PyArray_ITER_NOTDONE(ity):
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = NAN
+                PyArray_ITER_NEXT(ity)
+        else:
+            while PyArray_ITER_NOTDONE(ita):
+                asum = 0
+                count = 0
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    if ai == ai:
+                        asum += ai
+                        count += 1
+                if count > 0:
+                    asum = asum / count
+                else:
+                    asum = NAN
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
+                PyArray_ITER_NEXT(ita)
+                PyArray_ITER_NEXT(ity)
+    return y
+
+
+@cython.cdivision(True)
+cdef ndarray nanmean_one_DTYPE0(np.flatiter ita,
+                                Py_ssize_t stride, Py_ssize_t length,
+                                int a_ndim, np.npy_intp* y_dims,
+                                int int_input):
+    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
+    cdef Py_ssize_t i
+    cdef DTYPE1_t asum = 0
+    cdef DTYPE0_t ai
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    with nogil:
+        if length == 0:
+            while PyArray_ITER_NOTDONE(ity):
+                (<DTYPE1_t*>((<char*>pid(ity))))[0] = NAN
+                PyArray_ITER_NEXT(ity)
+        else:
+            while PyArray_ITER_NOTDONE(ita):
+                asum = 0
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    asum += ai
+                (<DTYPE1_t*>((<char*>pid(ity))))[0] = asum / length
+                PyArray_ITER_NEXT(ita)
+                PyArray_ITER_NEXT(ity)
+    return y
+
+
+cdef nanmean_0d(ndarray a, int int_input):
+    return <double>a[()]
 
 
 # reducer -------------------------------------------------------------------

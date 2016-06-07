@@ -15,6 +15,7 @@ except:
 try:
     from .reduce2 import nansum as nansum2
     from .reduce3 import nansum as nansum3
+    from .reduce3 import nanmean as nanmean3
 except:
     pass
 try:
