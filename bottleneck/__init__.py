@@ -18,6 +18,8 @@ try:
     from .reduce3 import nanmean as nanmean3
     from .reduce3 import nanstd as nanstd3
     from .reduce3 import nanvar as nanvar3
+    from .reduce3 import nanmin as nanmin3
+    from .reduce3 import nanmax as nanmax3
 except:
     pass
 try:
