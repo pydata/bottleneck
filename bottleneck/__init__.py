@@ -20,6 +20,7 @@ try:
     from .reduce3 import nanvar as nanvar3
     from .reduce3 import nanmin as nanmin3
     from .reduce3 import nanmax as nanmax3
+    from .reduce3 import ss as ss3
 except:
     pass
 try:

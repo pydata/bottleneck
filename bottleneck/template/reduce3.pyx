@@ -1497,6 +1497,117 @@ cdef nanmax_0d(ndarray a, int int_input):
     return a[()]
 
 
+# ss ------------------------------------------------------------------------
+
+def ss(arr, axis=None):
+    """
+    Sum of the square of each element along the specified axis.
+
+    Parameters
+    ----------
+    arr : array_like
+        Array whose sum of squares is desired. If `arr` is not an array, a
+        conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the sum of squares is computed. The default
+        (axis=None) is to sum the squares of the flattened array.
+
+    Returns
+    -------
+    y : ndarray
+        The sum of a**2 along the given axis.
+
+    Examples
+    --------
+    >>> a = np.array([1., 2., 5.])
+    >>> bn.ss(a)
+    30.0
+
+    And calculating along an axis:
+
+    >>> b = np.array([[1., 2., 5.], [2., 5., 6.]])
+    >>> bn.ss(b, axis=1)
+    array([ 30., 65.])
+
+    """
+    try:
+        return reducer(arr, axis,
+                       ss_all_float64,
+                       ss_all_float32,
+                       ss_all_int64,
+                       ss_all_int32,
+                       ss_all_ss_float64,
+                       ss_all_ss_float32,
+                       ss_all_ss_int64,
+                       ss_all_ss_int32,
+                       ss_one_float64,
+                       ss_one_float32,
+                       ss_one_int64,
+                       ss_one_int32,
+                       ss_0d)
+    except TypeError:
+        return slow.ss(arr, axis)
+
+
+cdef object ss_all_ss_DTYPE0(char *p,
+                             npy_intp stride,
+                             npy_intp length,
+                             int int_input):
+    # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai
+    cdef DTYPE0_t asum = 0
+    with nogil:
+        for i in range(length):
+            ai = (<DTYPE0_t*>(p + i * stride))[0]
+            asum += ai * ai
+    return asum
+
+
+cdef object ss_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                          Py_ssize_t length, int int_input):
+    # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
+    cdef Py_ssize_t i
+    cdef DTYPE0_t asum = 0, ai
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                asum += ai * ai
+            PyArray_ITER_NEXT(ita)
+    return asum
+
+
+cdef ndarray ss_one_DTYPE0(np.flatiter ita,
+                           Py_ssize_t stride, Py_ssize_t length,
+                           int a_ndim, np.npy_intp* y_dims, int int_input):
+    # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
+    cdef Py_ssize_t i
+    cdef DTYPE0_t asum = 0, ai
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    with nogil:
+        if length == 0:
+            while PyArray_ITER_NOTDONE(ity):
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
+                PyArray_ITER_NEXT(ity)
+        else:
+            while PyArray_ITER_NOTDONE(ita):
+                asum = 0
+                for i in range(length):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    asum += ai * ai
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = asum
+                PyArray_ITER_NEXT(ita)
+                PyArray_ITER_NEXT(ity)
+    return y
+
+
+cdef ss_0d(ndarray a, int int_input):
+    out = a[()]
+    return out * out
+
+
 # reducer -------------------------------------------------------------------
 
 # pointer to functions that reduce along ALL axes
