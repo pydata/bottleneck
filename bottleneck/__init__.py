@@ -17,6 +17,7 @@ try:
     from .reduce3 import nansum as nansum3
     from .reduce3 import nanmean as nanmean3
     from .reduce3 import nanstd as nanstd3
+    from .reduce3 import nanvar as nanvar3
 except:
     pass
 try:
