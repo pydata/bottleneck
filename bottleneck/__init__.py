@@ -21,6 +21,7 @@ try:
     from .reduce3 import nanmin as nanmin3
     from .reduce3 import nanmax as nanmax3
     from .reduce3 import ss as ss3
+    from .reduce3 import median as median3
 except:
     pass
 try:

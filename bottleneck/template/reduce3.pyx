@@ -1608,6 +1608,451 @@ cdef ss_0d(ndarray a, int int_input):
     return out * out
 
 
+# median -----------------------------------------------------------------
+
+def median(arr, axis=None):
+    """
+    Median of array elements along given axis.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the median is computed. The default (axis=None) is to
+        compute the median of the flattened array.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape as `arr`, except that the specified axis
+        has been removed. If `arr` is a 0d array, or if axis is None, a scalar
+        is returned. `float64` return values are used for integer inputs. NaN
+        is returned for a slice that contains one or more NaNs.
+
+    See also
+    --------
+    bottleneck.nanmedian: Median along specified axis ignoring NaNs.
+
+    Examples
+    --------
+    >>> a = np.array([[10, 7, 4], [3, 2, 1]])
+    >>> bn.median(a)
+        3.5
+    >>> bn.median(a, axis=0)
+        array([ 6.5,  4.5,  2.5])
+    >>> bn.median(a, axis=1)
+        array([ 7.,  2.])
+
+    """
+    cdef int ravel = 0, copy = 1, int_input = 0
+    try:
+        if axis is None:
+            ravel = 1
+        return reducer(arr, axis,
+                       median_all_float64,
+                       median_all_float32,
+                       median_all_int64,
+                       median_all_int32,
+                       median_all_ss_float64,
+                       median_all_ss_float32,
+                       median_all_ss_int64,
+                       median_all_ss_int32,
+                       median_one_float64,
+                       median_one_float32,
+                       median_one_int64,
+                       median_one_int32,
+                       median_0d,
+                       int_input,
+                       ravel,
+                       copy)
+    except TypeError:
+        return slow.median(arr, axis)
+
+
+cdef object median_all_ss_DTYPE0(char *p,
+                                 npy_intp stride,
+                                 npy_intp length,
+                                 int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int found_nan = 0
+    cdef np.npy_intp i = 0, j = 0, l, r, k
+    cdef DTYPE0_t x, tmp, amax, ai, bi, aj
+    cdef double out
+    if length == 0:
+        return NAN
+    k = length >> 1
+    l = 0
+    r = length - 1
+    with nogil:
+        while l < r:
+            x = (<DTYPE0_t*>(p + k*stride))[0]
+            if x != x:
+                found_nan = 1
+                break
+            elif found_nan == 1:
+                break
+            i = l
+            j = r
+            while 1:
+                while 1:
+                    ai = (<DTYPE0_t*>(p + i*stride))[0]
+                    if ai < x:
+                        i += 1
+                    elif ai != ai:
+                        found_nan = 1
+                        break
+                    else:
+                        break
+                if found_nan == 1:
+                    break
+                while 1:
+                    aj = (<DTYPE0_t*>(p + j*stride))[0]
+                    if x < aj:
+                        j -= 1
+                    elif aj != aj:
+                        found_nan = 1
+                        break
+                    else:
+                        break
+                if found_nan == 1:
+                    break
+                if i <= j:
+                    (<DTYPE0_t*>(p + i*stride))[0] = aj
+                    (<DTYPE0_t*>(p + j*stride))[0] = ai
+                    i += 1
+                    j -= 1
+                if i > j: break
+            if j < k: l = i
+            if k < i: r = j
+        if found_nan == 1:
+            out = NAN
+        else:
+            bi = (<DTYPE0_t*>(p + k*stride))[0]
+            if length % 2 == 0:
+                amax = MINDTYPE0
+                for i in range(k):
+                    ai = (<DTYPE0_t*>(p + i*stride))[0]
+                    if ai >= amax:
+                        amax = ai
+                out = 0.5 * (bi + amax)
+            else:
+                out = 1.0 * bi
+    return out
+
+cdef object median_all_ss_DTYPE0(char *p,
+                                 npy_intp stride,
+                                 npy_intp length,
+                                 int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef np.npy_intp i = 0, j = 0, l, r, k
+    cdef DTYPE0_t x, tmp, amax, ai, bi, aj
+    cdef double out
+    if length == 0:
+        return NAN
+    k = length >> 1
+    l = 0
+    r = length - 1
+    with nogil:
+        while l < r:
+            x = (<DTYPE0_t*>(p + k*stride))[0]
+            i = l
+            j = r
+            while 1:
+                while 1:
+                    ai = (<DTYPE0_t*>(p + i*stride))[0]
+                    if ai < x:
+                        i += 1
+                    else:
+                        break
+                while 1:
+                    aj = (<DTYPE0_t*>(p + j*stride))[0]
+                    if x < aj:
+                        j -= 1
+                    else:
+                        break
+                if i <= j:
+                    (<DTYPE0_t*>(p + i*stride))[0] = aj
+                    (<DTYPE0_t*>(p + j*stride))[0] = ai
+                    i += 1
+                    j -= 1
+                if i > j: break
+            if j < k: l = i
+            if k < i: r = j
+        bi = (<DTYPE0_t*>(p + k*stride))[0]
+        if length % 2 == 0:
+            amax = MINDTYPE0
+            for i in range(k):
+                ai = (<DTYPE0_t*>(p + i*stride))[0]
+                if ai >= amax:
+                    amax = ai
+            out = 0.5 * (bi + amax)
+        else:
+            out = 1.0 * bi
+    return out
+
+
+cdef object median_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int found_nan = 0
+    cdef np.npy_intp i = 0, j = 0, l, r, k
+    cdef DTYPE0_t x, tmp, amax, ai, bi, aj
+    cdef double out
+    if length == 0:
+        return NAN
+    k = length >> 1
+    l = 0
+    r = length - 1
+    with nogil:
+        while l < r:
+            x = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+            if x != x:
+                found_nan = 1
+                break
+            elif found_nan == 1:
+                break
+            i = l
+            j = r
+            while 1:
+                while 1:
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    if ai < x:
+                        i += 1
+                    elif ai != ai:
+                        found_nan = 1
+                        break
+                    else:
+                        break
+                if found_nan == 1:
+                    break
+                while 1:
+                    aj = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                    if x < aj:
+                        j -= 1
+                    elif aj != aj:
+                        found_nan = 1
+                        break
+                    else:
+                        break
+                if found_nan == 1:
+                    break
+                if i <= j:
+                    (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = aj
+                    (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = ai
+                    i += 1
+                    j -= 1
+                if i > j: break
+            if j < k: l = i
+            if k < i: r = j
+        if found_nan == 1:
+            out = NAN
+        else:
+            bi = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+            if length % 2 == 0:
+                amax = MINDTYPE0
+                for i in range(k):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    if ai >= amax:
+                        amax = ai
+                out = 0.5 * (bi + amax)
+            else:
+                out = 1.0 * bi
+    return out
+
+
+cdef object median_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef np.npy_intp i = 0, j = 0, l, r, k
+    cdef DTYPE0_t x, tmp, amax, ai, bi, aj
+    cdef double out
+    if length == 0:
+        return NAN
+    k = length >> 1
+    l = 0
+    r = length - 1
+    with nogil:
+        while l < r:
+            x = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+            i = l
+            j = r
+            while 1:
+                while 1:
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    if ai < x:
+                        i += 1
+                    else:
+                        break
+                while 1:
+                    aj = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                    if x < aj:
+                        j -= 1
+                    else:
+                        break
+                if i <= j:
+                    (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = aj
+                    (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = ai
+                    i += 1
+                    j -= 1
+                if i > j: break
+            if j < k: l = i
+            if k < i: r = j
+        bi = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+        if length % 2 == 0:
+            amax = MINDTYPE0
+            for i in range(k):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai >= amax:
+                    amax = ai
+            out = 0.5 * (bi + amax)
+        else:
+            out = 1.0 * bi
+    return out
+
+
+cdef ndarray median_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims,
+                               int int_input):
+    # bn.dtypes = [['float64', 'float64'], ['float32', 'float32']]
+    cdef int found_nan = 0
+    cdef np.npy_intp i = 0, j = 0, l, r, k
+    cdef DTYPE0_t x, tmp, amax, ai, aj, bi
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        while PyArray_ITER_NOTDONE(ity):
+            (<DTYPE1_t*>((<char*>pid(ity))))[0] = NAN
+            PyArray_ITER_NEXT(ity)
+        return y
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            found_nan = 0
+            k = length >> 1
+            l = 0
+            r = length - 1
+            while l < r:
+                x = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+                if x != x:
+                    found_nan = 1
+                    break
+                if found_nan == 1:
+                    break
+                i = l
+                j = r
+                while 1:
+                    while 1:
+                        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                        if ai < x:
+                            i += 1
+                        elif ai != ai:
+                            found_nan = 1
+                            break
+                        else:
+                            break
+                    if found_nan == 1:
+                        break
+                    while 1:
+                        aj = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                        if x < aj:
+                            j -= 1
+                        elif aj != aj:
+                            found_nan = 1
+                            break
+                        else:
+                            break
+                    if found_nan == 1:
+                        break
+                    if i <= j:
+                        (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = aj
+                        (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = ai
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            if found_nan == 1:
+                (<DTYPE1_t*>((<char*>pid(ity))))[0] = NAN
+            else:
+                bi = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+                if length % 2 == 0:
+                    amax = MINDTYPE0
+                    for i in range(k):
+                        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                        if ai >= amax:
+                            amax = ai
+                    (<DTYPE1_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+                else:
+                    (<DTYPE1_t*>((<char*>pid(ity))))[0] = bi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+    return y
+
+
+cdef ndarray median_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims,
+                               int int_input):
+    # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
+    cdef np.npy_intp i = 0, j = 0, l, r, k
+    cdef DTYPE0_t x, tmp, amax, ai, aj, bi
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE1, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        while PyArray_ITER_NOTDONE(ity):
+            (<DTYPE1_t*>((<char*>pid(ity))))[0] = NAN
+            PyArray_ITER_NEXT(ity)
+        return y
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            k = length >> 1
+            l = 0
+            r = length - 1
+            while l < r:
+                x = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+                i = l
+                j = r
+                while 1:
+                    while 1:
+                        ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                        if ai < x:
+                            i += 1
+                        else:
+                            break
+                    while 1:
+                        aj = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                        if x < aj:
+                            j -= 1
+                        else:
+                            break
+                    if i <= j:
+                        (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = aj
+                        (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = ai
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            bi = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+            if length % 2 == 0:
+                amax = MINDTYPE0
+                for i in range(k):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    if ai >= amax:
+                        amax = ai
+                (<DTYPE1_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+            else:
+                (<DTYPE1_t*>((<char*>pid(ity))))[0] = bi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+    return y
+
+
+cdef median_0d(ndarray a, int int_input):
+    return <double>a[()]
+
+
 # reducer -------------------------------------------------------------------
 
 # pointer to functions that reduce along ALL axes
@@ -1637,6 +2082,7 @@ cdef reducer(arr, axis,
              fone_t fone_int32,
              f0d_t f0d,
              int int_input=0,
+             int ravel=0,
              int copy=0):
 
     # convert to array if necessary
@@ -1687,8 +2133,6 @@ cdef reducer(arr, axis,
 
     cdef npy_intp *shape = PyArray_DIMS(a)
     cdef npy_intp *strides = PyArray_STRIDES(a)
-    cdef npy_intp size
-    cdef npy_intp stride_min
     cdef char *p
 
     if reduce_all == 1:
@@ -1696,26 +2140,36 @@ cdef reducer(arr, axis,
 
         if (a_ndim==1 or PyArray_CHKFLAGS(a, NPY_CONTIGUOUS) or
             PyArray_CHKFLAGS(a, NPY_FORTRAN)):
-            stride_min = strides[0]
+            stride = strides[0]
             for i in range(1, a_ndim):
-                if strides[i] < stride_min:
-                    stride_min = strides[i]
-            size = PyArray_SIZE(a)
+                if strides[i] < stride:
+                    stride = strides[i]
+            length = PyArray_SIZE(a)
             p = <char *>PyArray_DATA(a)
             if dtype == NPY_float64:
-                return fall_ss_float64(p, stride_min, size, int_input)
+                return fall_ss_float64(p, stride, length, int_input)
             elif dtype == NPY_float32:
-                return fall_ss_float32(p, stride_min, size, int_input)
+                return fall_ss_float32(p, stride, length, int_input)
             elif dtype == NPY_int64:
-                return fall_ss_int64(p, stride_min, size, int_input)
+                return fall_ss_int64(p, stride, length, int_input)
             elif dtype == NPY_int32:
-                return fall_ss_int32(p, stride_min, size, int_input)
+                return fall_ss_int32(p, stride, length, int_input)
             else:
                 raise TypeError
         else:
-            ita = PyArray_IterAllButAxis(a, &axis_reduce)
-            stride = strides[axis_reduce]
-            length = shape[axis_reduce]
+            if ravel == 0:
+                ita = PyArray_IterAllButAxis(a, &axis_reduce)
+                stride = strides[axis_reduce]
+                length = shape[axis_reduce]
+            else:
+                stride = strides[0]
+                for i in range(1, a_ndim):
+                    if strides[i] < stride:
+                        stride = strides[i]
+                length = PyArray_SIZE(a)
+                a = PyArray_Ravel(a, NPY_ANYORDER)
+                axis_reduce = -1
+                ita = PyArray_IterAllButAxis(a, &axis_reduce)
             if dtype == NPY_float64:
                 return fall_float64(ita, stride, length, int_input)
             elif dtype == NPY_float32:
