@@ -2315,6 +2315,450 @@ cdef ndarray nanmedian_one_DTYPE0(np.flatiter ita,
     return y
 
 
+# nanargmin -----------------------------------------------------------------
+
+def nanargmin(arr, axis=None):
+    """
+    Indices of the minimum values along an axis, ignoring NaNs.
+
+    For all-NaN slices ``ValueError`` is raised. Unlike NumPy, the results
+    can be trusted if a slice contains only NaNs and Infs.
+
+    Parameters
+    ----------
+    a : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which to operate. By default (axis=None) flattened input
+        is used.
+
+    See also
+    --------
+    bottleneck.nanargmax: Indices of the maximum values along an axis.
+    bottleneck.nanmin: Minimum values along specified axis, ignoring NaNs.
+
+    Returns
+    -------
+    index_array : ndarray
+        An array of indices or a single index value.
+
+    Examples
+    --------
+    >>> a = np.array([[np.nan, 4], [2, 3]])
+    >>> bn.nanargmin(a)
+    2
+    >>> a.flat[1]
+    2.0
+    >>> bn.nanargmax(a, axis=0)
+    array([1, 1])
+    >>> bn.nanargmax(a, axis=1)
+    array([1, 0])
+
+    """
+    cdef int ravel = 0, copy = 0, int_input = 0
+    try:
+        if axis is None:
+            ravel = 1
+        return reducer(arr, axis,
+                       nanargmin_all_float64,
+                       nanargmin_all_float32,
+                       nanargmin_all_int64,
+                       nanargmin_all_int32,
+                       nanargmin_all_ss_float64,
+                       nanargmin_all_ss_float32,
+                       nanargmin_all_ss_int64,
+                       nanargmin_all_ss_int32,
+                       nanargmin_one_float64,
+                       nanargmin_one_float32,
+                       nanargmin_one_int64,
+                       nanargmin_one_int32,
+                       nanargmin_0d,
+                       int_input,
+                       ravel,
+                       copy)
+    except TypeError:
+        return slow.nanargmin(arr, axis)
+
+
+cdef object nanargmin_all_ss_DTYPE0(char *p,
+                                    npy_intp stride,
+                                    npy_intp length,
+                                    int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int allnan = 1
+    cdef DTYPE0_t amin, ai
+    cdef Py_ssize_t i, idx = 0
+    if length == 0:
+        msg = "numpy.nanargmin raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
+    with nogil:
+        amin = MAXDTYPE0
+        allnan = 1
+        for i in range(length - 1, -1, -1):
+            ai = (<DTYPE0_t*>(p + i*stride))[0]
+            if ai <= amin:
+                amin = ai
+                allnan = 0
+                idx = i
+    if allnan == 0:
+        return idx
+    else:
+        raise ValueError("All-NaN slice encountered")
+
+
+cdef object nanargmin_all_ss_DTYPE0(char *p,
+                                    npy_intp stride,
+                                    npy_intp length,
+                                    int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef DTYPE0_t amin, ai
+    cdef Py_ssize_t i, idx = 0
+    if length == 0:
+        msg = "numpy.nanargmin raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
+    with nogil:
+        amin = MAXDTYPE0
+        for i in range(length - 1, -1, -1):
+            ai = (<DTYPE0_t*>(p + i*stride))[0]
+            if ai <= amin:
+                amin = ai
+                idx = i
+    return idx
+
+
+cdef object nanargmin_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                                 Py_ssize_t length, int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int allnan = 1
+    cdef DTYPE0_t amin, ai
+    cdef Py_ssize_t i, idx = 0
+    if length == 0:
+        msg = "numpy.nanargmin raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
+    with nogil:
+        amin = MAXDTYPE0
+        allnan = 1
+        for i in range(length - 1, -1, -1):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai <= amin:
+                amin = ai
+                allnan = 0
+                idx = i
+    if allnan == 0:
+        return idx
+    else:
+        raise ValueError("All-NaN slice encountered")
+
+
+cdef object nanargmin_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                                 Py_ssize_t length, int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef DTYPE0_t amin, ai
+    cdef Py_ssize_t i, idx = 0
+    if length == 0:
+        msg = "numpy.nanargmin raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
+    with nogil:
+        amin = MAXDTYPE0
+        allnan = 1
+        for i in range(length - 1, -1, -1):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai <= amin:
+                amin = ai
+                idx = i
+    return idx
+
+
+cdef ndarray nanargmin_one_DTYPE0(np.flatiter ita,
+                                  Py_ssize_t stride, Py_ssize_t length,
+                                  int a_ndim, np.npy_intp* y_dims,
+                                  int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int allnan = 1, err_code = 0
+    cdef DTYPE0_t amin, ai
+    cdef Py_ssize_t i, idx = 0
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_intp, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        msg = "numpy.nanargmin raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            amin = MAXDTYPE0
+            allnan = 1
+            for i in range(length - 1, -1, -1):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai <= amin:
+                    amin = ai
+                    allnan = 0
+                    idx = i
+            if allnan == 0:
+                (<intp_t*>((<char*>pid(ity))))[0] = idx
+            else:
+                err_code = 1
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+    if err_code == 1:
+        raise ValueError("All-NaN slice encountered")
+    return y
+
+
+cdef ndarray nanargmin_one_DTYPE0(np.flatiter ita,
+                                  Py_ssize_t stride, Py_ssize_t length,
+                                  int a_ndim, np.npy_intp* y_dims,
+                                  int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef DTYPE0_t amin, ai
+    cdef Py_ssize_t i, idx = 0
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_intp, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        msg = "numpy.nanargmin raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            amin = MAXDTYPE0
+            for i in range(length - 1, -1, -1):
+                ai = (<intp_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai <= amin:
+                    amin = ai
+                    idx = i
+            (<intp_t*>((<char*>pid(ity))))[0] = idx
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+    return y
+
+
+cdef nanargmin_0d(ndarray a, int int_input):
+    out = a[()]
+    if out == out:
+        return 0
+    else:
+        raise ValueError("All-NaN slice encountered")
+
+
+# nanargmax -----------------------------------------------------------------
+
+def nanargmax(arr, axis=None):
+    """
+    Indices of the maximum values along an axis, ignoring NaNs.
+
+    For all-NaN slices ``ValueError`` is raised. Unlike NumPy, the results
+    can be trusted if a slice contains only NaNs and Infs.
+
+    Parameters
+    ----------
+    a : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which to operate. By default (axis=None) flattened input
+        is used.
+
+    See also
+    --------
+    bottleneck.nanargmin: Indices of the minimum values along an axis.
+    bottleneck.nanmax: Maximum values along specified axis, ignoring NaNs.
+
+    Returns
+    -------
+    index_array : ndarray
+        An array of indices or a single index value.
+
+    Examples
+    --------
+    >>> a = np.array([[np.nan, 4], [2, 3]])
+    >>> bn.nanargmax(a)
+    1
+    >>> a.flat[1]
+    4.0
+    >>> bn.nanargmax(a, axis=0)
+    array([1, 0])
+    >>> bn.nanargmax(a, axis=1)
+    array([1, 1])
+
+    """
+    cdef int ravel = 0, copy = 0, int_input = 0
+    try:
+        if axis is None:
+            ravel = 1
+        return reducer(arr, axis,
+                       nanargmax_all_float64,
+                       nanargmax_all_float32,
+                       nanargmax_all_int64,
+                       nanargmax_all_int32,
+                       nanargmax_all_ss_float64,
+                       nanargmax_all_ss_float32,
+                       nanargmax_all_ss_int64,
+                       nanargmax_all_ss_int32,
+                       nanargmax_one_float64,
+                       nanargmax_one_float32,
+                       nanargmax_one_int64,
+                       nanargmax_one_int32,
+                       nanargmax_0d,
+                       int_input,
+                       ravel,
+                       copy)
+    except TypeError:
+        return slow.nanargmax(arr, axis)
+
+
+cdef object nanargmax_all_ss_DTYPE0(char *p,
+                                    npy_intp stride,
+                                    npy_intp length,
+                                    int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int allnan = 1
+    cdef DTYPE0_t amax, ai
+    cdef Py_ssize_t i, idx = 0
+    if length == 0:
+        msg = "numpy.nanargmax raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
+    with nogil:
+        amax = MINDTYPE0
+        allnan = 1
+        for i in range(length - 1, -1, -1):
+            ai = (<DTYPE0_t*>(p + i*stride))[0]
+            if ai >= amax:
+                amax = ai
+                allnan = 0
+                idx = i
+    if allnan == 0:
+        return idx
+    else:
+        raise ValueError("All-NaN slice encountered")
+
+
+cdef object nanargmax_all_ss_DTYPE0(char *p,
+                                    npy_intp stride,
+                                    npy_intp length,
+                                    int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef DTYPE0_t amax, ai
+    cdef Py_ssize_t i, idx = 0
+    if length == 0:
+        msg = "numpy.nanargmax raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
+    with nogil:
+        amax = MINDTYPE0
+        for i in range(length - 1, -1, -1):
+            ai = (<DTYPE0_t*>(p + i*stride))[0]
+            if ai >= amax:
+                amax = ai
+                idx = i
+    return idx
+
+
+cdef object nanargmax_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                                 Py_ssize_t length, int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int allnan = 1
+    cdef DTYPE0_t amax, ai
+    cdef Py_ssize_t i, idx = 0
+    if length == 0:
+        msg = "numpy.nanargmax raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
+    with nogil:
+        amax = MINDTYPE0
+        allnan = 1
+        for i in range(length - 1, -1, -1):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai >= amax:
+                amax = ai
+                allnan = 0
+                idx = i
+    if allnan == 0:
+        return idx
+    else:
+        raise ValueError("All-NaN slice encountered")
+
+
+cdef object nanargmax_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                                 Py_ssize_t length, int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef DTYPE0_t amax, ai
+    cdef Py_ssize_t i, idx = 0
+    if length == 0:
+        msg = "numpy.nanargmax raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
+    with nogil:
+        amax = MINDTYPE0
+        allnan = 1
+        for i in range(length - 1, -1, -1):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+            if ai >= amax:
+                amax = ai
+                idx = i
+    return idx
+
+
+cdef ndarray nanargmax_one_DTYPE0(np.flatiter ita,
+                                  Py_ssize_t stride, Py_ssize_t length,
+                                  int a_ndim, np.npy_intp* y_dims,
+                                  int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int allnan = 1, err_code = 0
+    cdef DTYPE0_t amax, ai
+    cdef Py_ssize_t i, idx = 0
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_intp, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        msg = "numpy.nanargmax raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            amax = MINDTYPE0
+            allnan = 1
+            for i in range(length - 1, -1, -1):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai >= amax:
+                    amax = ai
+                    allnan = 0
+                    idx = i
+            if allnan == 0:
+                (<intp_t*>((<char*>pid(ity))))[0] = idx
+            else:
+                err_code = 1
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+    if err_code == 1:
+        raise ValueError("All-NaN slice encountered")
+    return y
+
+
+cdef ndarray nanargmax_one_DTYPE0(np.flatiter ita,
+                                  Py_ssize_t stride, Py_ssize_t length,
+                                  int a_ndim, np.npy_intp* y_dims,
+                                  int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef DTYPE0_t amax, ai
+    cdef Py_ssize_t i, idx = 0
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_intp, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        msg = "numpy.nanargmax raises on a.shape[axis]==0; Bottleneck too."
+        raise ValueError(msg)
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            amax = MINDTYPE0
+            for i in range(length - 1, -1, -1):
+                ai = (<intp_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai >= amax:
+                    amax = ai
+                    idx = i
+            (<intp_t*>((<char*>pid(ity))))[0] = idx
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+    return y
+
+
+cdef nanargmax_0d(ndarray a, int int_input):
+    out = a[()]
+    if out == out:
+        return 0
+    else:
+        raise ValueError("All-NaN slice encountered")
+
+
 # reducer -------------------------------------------------------------------
 
 # pointer to functions that reduce along ALL axes
@@ -2424,14 +2868,11 @@ cdef reducer(arr, axis,
                 stride = strides[axis_reduce]
                 length = shape[axis_reduce]
             else:
-                stride = strides[0]
-                for i in range(1, a_ndim):
-                    if strides[i] < stride:
-                        stride = strides[i]
-                length = PyArray_SIZE(a)
                 a = PyArray_Ravel(a, NPY_ANYORDER)
-                axis_reduce = -1
+                axis_reduce = 0
                 ita = PyArray_IterAllButAxis(a, &axis_reduce)
+                stride = PyArray_STRIDE(a, 0)
+                length = PyArray_SIZE(a)
             if dtype == NPY_float64:
                 return fall_float64(ita, stride, length, int_input)
             elif dtype == NPY_float32:

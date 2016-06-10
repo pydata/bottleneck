@@ -23,6 +23,8 @@ try:
     from .reduce3 import ss as ss3
     from .reduce3 import median as median3
     from .reduce3 import nanmedian as nanmedian3
+    from .reduce3 import nanargmin as nanargmin3
+    from .reduce3 import nanargmax as nanargmax3
 except:
     pass
 try:
