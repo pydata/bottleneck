@@ -2053,6 +2053,268 @@ cdef median_0d(ndarray a, int int_input):
     return <double>a[()]
 
 
+# nanmedian -----------------------------------------------------------------
+
+def nanmedian(arr, axis=None):
+    """
+    Median of array elements along given axis ignoring NaNs.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which the median is computed. The default (axis=None) is to
+        compute the median of the flattened array.
+
+    Returns
+    -------
+    y : ndarray
+        An array with the same shape as `arr`, except that the specified axis
+        has been removed. If `arr` is a 0d array, or if axis is None, a scalar
+        is returned. `float64` return values are used for integer inputs.
+
+    See also
+    --------
+    bottleneck.median: Median along specified axis.
+
+    Examples
+    --------
+    >>> a = np.array([[np.nan, 7, 4], [3, 2, 1]])
+    >>> a
+    array([[ nan,   7.,   4.],
+           [  3.,   2.,   1.]])
+    >>> bn.nanmedian(a)
+    3.0
+    >> bn.nanmedian(a, axis=0)
+    array([ 3. ,  4.5,  2.5])
+    >> bn.nanmedian(a, axis=1)
+    array([ 5.5,  2. ])
+
+    """
+    cdef int ravel = 0, copy = 1, int_input = 0
+    try:
+        if axis is None:
+            ravel = 1
+        return reducer(arr, axis,
+                       nanmedian_all_float64,
+                       nanmedian_all_float32,
+                       median_all_int64,
+                       median_all_int32,
+                       nanmedian_all_ss_float64,
+                       nanmedian_all_ss_float32,
+                       median_all_ss_int64,
+                       median_all_ss_int32,
+                       nanmedian_one_float64,
+                       nanmedian_one_float32,
+                       median_one_int64,
+                       median_one_int32,
+                       median_0d,
+                       int_input,
+                       ravel,
+                       copy)
+    except TypeError:
+        return slow.nanmedian(arr, axis)
+
+
+cdef object nanmedian_all_ss_DTYPE0(char *p,
+                                    npy_intp stride,
+                                    npy_intp length,
+                                    int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int allnan = 1, flag = 0
+    cdef np.npy_intp i = 0, j = 0, l, r, k, n
+    cdef DTYPE0_t x, tmp, amax, ai, bi, out
+    if length == 0:
+        return NAN
+    with nogil:
+        j = length - 1
+        flag = 1
+        for i in range(length):
+            bi = (<DTYPE0_t*>(p + i * stride))[0]
+            if bi != bi:
+                while (<DTYPE0_t*>(p + j*stride))[0] != (<DTYPE0_t*>(p + j*stride))[0]:
+                    if j <= 0:
+                        break
+                    j -= 1
+                if i >= j:
+                    flag = 0
+                    break
+                tmp = (<DTYPE0_t*>(p + j*stride))[0]
+                (<DTYPE0_t*>(p + i*stride))[0] = (<DTYPE0_t*>(p + j*stride))[0]
+                (<DTYPE0_t*>(p + j*stride))[0] = bi
+        n = i + flag
+        k = n >> 1
+        l = 0
+        r = n - 1
+        while l < r:
+            x = (<DTYPE0_t*>(p + k*stride))[0]
+            i = l
+            j = r
+            while 1:
+                while (<DTYPE0_t*>(p + i*stride))[0] < x: i += 1
+                while x < (<DTYPE0_t*>(p + j*stride))[0]: j -= 1
+                if i <= j:
+                    tmp = (<DTYPE0_t*>(p + i*stride))[0]
+                    (<DTYPE0_t*>(p + i*stride))[0] = (<DTYPE0_t*>(p + j*stride))[0]
+                    (<DTYPE0_t*>(p + j*stride))[0] = tmp
+                    i += 1
+                    j -= 1
+                if i > j: break
+            if j < k: l = i
+            if k < i: r = j
+        bi = (<DTYPE0_t*>(p + k*stride))[0]
+        if n % 2 == 0:
+            amax = MINDTYPE0
+            allnan = 1
+            for i in range(k):
+                ai = (<DTYPE0_t*>(p + i*stride))[0]
+                if ai >= amax:
+                    amax = ai
+                    allnan = 0
+            if allnan == 0:
+                out = 0.5 * (bi + amax)
+            else:
+                out = bi
+        else:
+            out = bi
+    return out
+
+
+cdef object nanmedian_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                                 Py_ssize_t length, int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int allnan = 1, flag = 0
+    cdef np.npy_intp i = 0, j = 0, l, r, k, n
+    cdef DTYPE0_t x, tmp, amax, ai, bi, out
+    if length == 0:
+        return NAN
+    with nogil:
+        j = length - 1
+        flag = 1
+        for i in range(length):
+            bi = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+            if bi != bi:
+                while (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] != (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]:
+                    if j <= 0:
+                        break
+                    j -= 1
+                if i >= j:
+                    flag = 0
+                    break
+                tmp = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+        n = i + flag
+        k = n >> 1
+        l = 0
+        r = n - 1
+        while l < r:
+            x = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+            i = l
+            j = r
+            while 1:
+                while (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+                while x < (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+                if i <= j:
+                    tmp = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                    (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+                    i += 1
+                    j -= 1
+                if i > j: break
+            if j < k: l = i
+            if k < i: r = j
+        bi = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+        if n % 2 == 0:
+            amax = MINDTYPE0
+            allnan = 1
+            for i in range(k):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai >= amax:
+                    amax = ai
+                    allnan = 0
+            if allnan == 0:
+                out = 0.5 * (bi + amax)
+            else:
+                out = bi
+        else:
+            out = bi
+    return out
+
+
+cdef ndarray nanmedian_one_DTYPE0(np.flatiter ita,
+                                  Py_ssize_t stride, Py_ssize_t length,
+                                  int a_ndim, np.npy_intp* y_dims,
+                                  int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int allnan = 1, flag = 0
+    cdef np.npy_intp i = 0, j = 0, l, r, k, n
+    cdef DTYPE0_t x, tmp, amax, ai, bi
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_DTYPE0, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        while PyArray_ITER_NOTDONE(ity):
+            (<DTYPE0_t*>((<char*>pid(ity))))[0] = NAN
+            PyArray_ITER_NEXT(ity)
+        return y
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            j = length - 1
+            flag = 1
+            for i in range(length):
+                bi = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+                if bi != bi:
+                    while (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] != (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]:
+                        if j <= 0:
+                            break
+                        j -= 1
+                    if i >= j:
+                        flag = 0
+                        break
+                    tmp = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                    (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                    (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = bi
+            n = i + flag
+            k = n >> 1
+            l = 0
+            r = n - 1
+            while l < r:
+                x = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+                i = l
+                j = r
+                while 1:
+                    while (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] < x: i += 1
+                    while x < (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]: j -= 1
+                    if i <= j:
+                        tmp = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                        (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0] = (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0]
+                        (<DTYPE0_t*>((<char*>pid(ita)) + j*stride))[0] = tmp
+                        i += 1
+                        j -= 1
+                    if i > j: break
+                if j < k: l = i
+                if k < i: r = j
+            bi = (<DTYPE0_t*>((<char*>pid(ita)) + k*stride))[0]
+            if n % 2 == 0:
+                amax = MINDTYPE0
+                allnan = 1
+                for i in range(k):
+                    ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                    if ai >= amax:
+                        amax = ai
+                        allnan = 0
+                if allnan == 0:
+                    (<DTYPE0_t*>((<char*>pid(ity))))[0] = 0.5 * (bi + amax)
+                else:
+                    (<DTYPE0_t*>((<char*>pid(ity))))[0] = bi
+            else:
+                (<DTYPE0_t*>((<char*>pid(ity))))[0] = bi
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+    return y
+
+
 # reducer -------------------------------------------------------------------
 
 # pointer to functions that reduce along ALL axes
