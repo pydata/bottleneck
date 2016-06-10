@@ -52,7 +52,9 @@ def func_dict():
                    bn.nanargmax,
                    bn.nanargmax3,
                    bn.anynan,
+                   bn.anynan3,
                    bn.allnan,
+                   bn.allnan3,
                    ]
     d['move'] = [bn.move_sum,
                  bn.move_mean,

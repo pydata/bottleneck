@@ -2759,6 +2759,337 @@ cdef nanargmax_0d(ndarray a, int int_input):
         raise ValueError("All-NaN slice encountered")
 
 
+# anynan --------------------------------------------------------------------
+
+def anynan(arr, axis=None):
+    """
+    Test whether any array element along a given axis is NaN.
+
+    Returns the same output as np.isnan(arr).any(axis)
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which NaNs are searched. The default (`axis` = ``None``)
+        is to search for NaNs over a flattened input array.
+
+    Returns
+    -------
+    y : bool or ndarray
+        A boolean or new `ndarray` is returned.
+
+    See also
+    --------
+    bottleneck.allnan: Test if all array elements along given axis are NaN
+
+    Examples
+    --------
+    >>> bn.anynan(1)
+    False
+    >>> bn.anynan(np.nan)
+    True
+    >>> bn.anynan([1, np.nan])
+    True
+    >>> a = np.array([[1, 4], [1, np.nan]])
+    >>> bn.anynan(a)
+    True
+    >>> bn.anynan(a, axis=0)
+    array([False,  True], dtype=bool)
+
+    """
+    try:
+        return reducer(arr, axis,
+                       anynan_all_float64,
+                       anynan_all_float32,
+                       anynan_all_int64,
+                       anynan_all_int32,
+                       anynan_all_ss_float64,
+                       anynan_all_ss_float32,
+                       anynan_all_ss_int64,
+                       anynan_all_ss_int32,
+                       anynan_one_float64,
+                       anynan_one_float32,
+                       anynan_one_int64,
+                       anynan_one_int32,
+                       anynan_0d)
+    except TypeError:
+        return slow.anynan(arr, axis)
+
+
+cdef object anynan_all_ss_DTYPE0(char *p,
+                                 npy_intp stride,
+                                 npy_intp length,
+                                 int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai
+    for i in range(length):
+        ai = (<DTYPE0_t*>(p + i * stride))[0]
+        if ai != ai:
+            return True
+    return False
+
+
+cdef object anynan_all_ss_DTYPE0(char *p,
+                                 npy_intp stride,
+                                 npy_intp length,
+                                 int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    return False
+
+
+cdef object anynan_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai
+    while PyArray_ITER_NOTDONE(ita):
+        for i in range(length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+            if ai != ai:
+                return True
+        PyArray_ITER_NEXT(ita)
+    return False
+
+
+cdef object anynan_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    return False
+
+
+cdef ndarray anynan_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims, int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int f, err_code
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_BOOL, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        err_code = PyArray_FillWithScalar(y, 0)
+        if err_code == -1:
+            raise RuntimeError("`PyArray_FillWithScalar` returned an error")
+        return y
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            f = 1
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai != ai:
+                    (<np.uint8_t*>((<char*>pid(ity))))[0] = 1
+                    f = 0
+                    break
+            if f == 1:
+                (<np.uint8_t*>((<char*>pid(ity))))[0] = 0
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+    return y
+
+
+cdef ndarray anynan_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims, int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_BOOL, 0)
+    cdef int err_code
+    err_code = PyArray_FillWithScalar(y, 0)
+    if err_code == -1:
+        raise RuntimeError("`PyArray_FillWithScalar` returned an error")
+    return y
+
+
+cdef anynan_0d(ndarray a, int int_input):
+    out = a[()]
+    if out == out:
+        return False
+    else:
+        return True
+
+
+# allnan --------------------------------------------------------------------
+
+def allnan(arr, axis=None):
+    """
+    Test whether all array elements along a given axis are NaN.
+
+    Returns the same output as np.isnan(arr).all(axis)
+
+    Note that allnan([]) is True to match np.isnan([]).all() and all([])
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array. If `arr` is not an array, a conversion is attempted.
+    axis : {int, None}, optional
+        Axis along which NaNs are searched. The default (`axis` = ``None``)
+        is to search for NaNs over a flattened input array.
+
+    Returns
+    -------
+    y : bool or ndarray
+        A boolean or new `ndarray` is returned.
+
+    See also
+    --------
+    bottleneck.anynan: Test if any array element along given axis is NaN
+
+    Examples
+    --------
+    >>> bn.allnan(1)
+    False
+    >>> bn.allnan(np.nan)
+    True
+    >>> bn.allnan([1, np.nan])
+    False
+    >>> a = np.array([[1, np.nan], [1, np.nan]])
+    >>> bn.allnan(a)
+    False
+    >>> bn.allnan(a, axis=0)
+    array([False,  True], dtype=bool)
+
+    An empty array returns True:
+
+    >>> bn.allnan([])
+    True
+
+    which is similar to:
+
+    >>> all([])
+    True
+    >>> np.isnan([]).all()
+    True
+
+    """
+    try:
+        return reducer(arr, axis,
+                       allnan_all_float64,
+                       allnan_all_float32,
+                       allnan_all_int64,
+                       allnan_all_int32,
+                       allnan_all_ss_float64,
+                       allnan_all_ss_float32,
+                       allnan_all_ss_int64,
+                       allnan_all_ss_int32,
+                       allnan_one_float64,
+                       allnan_one_float32,
+                       allnan_one_int64,
+                       allnan_one_int32,
+                       allnan_0d)
+    except TypeError:
+        return slow.allnan(arr, axis)
+
+
+cdef object allnan_all_ss_DTYPE0(char *p,
+                                 npy_intp stride,
+                                 npy_intp length,
+                                 int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai
+    for i in range(length):
+        ai = (<DTYPE0_t*>(p + i * stride))[0]
+        if ai == ai:
+            return False
+    return True
+
+
+cdef object allnan_all_ss_DTYPE0(char *p,
+                                 npy_intp stride,
+                                 npy_intp length,
+                                 int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    if length == 0:
+        return True
+    return False
+
+
+cdef object allnan_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai
+    while PyArray_ITER_NOTDONE(ita):
+        for i in range(length):
+            ai = (<DTYPE0_t*>((<char*>pid(ita)) + i * stride))[0]
+            if ai == ai:
+                return False
+        PyArray_ITER_NEXT(ita)
+    return True
+
+
+cdef object allnan_all_DTYPE0(np.flatiter ita, Py_ssize_t stride,
+                              Py_ssize_t length, int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef DTYPE0_t size = 0
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            size += length
+            PyArray_ITER_NEXT(ita)
+    if size == 0:
+        return True
+    return False
+
+
+cdef ndarray allnan_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims, int int_input):
+    # bn.dtypes = [['float64'], ['float32']]
+    cdef int f, err_code
+    cdef Py_ssize_t i
+    cdef DTYPE0_t ai
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_BOOL, 0)
+    cdef np.flatiter ity = PyArray_IterNew(y)
+    if length == 0:
+        err_code = PyArray_FillWithScalar(y, 1)
+        if err_code == -1:
+            raise RuntimeError("`PyArray_FillWithScalar` returned an error")
+        return y
+    with nogil:
+        while PyArray_ITER_NOTDONE(ita):
+            f = 1
+            for i in range(length):
+                ai = (<DTYPE0_t*>((<char*>pid(ita)) + i*stride))[0]
+                if ai == ai:
+                    (<np.uint8_t*>((<char*>pid(ity))))[0] = 0
+                    f = 0
+                    break
+            if f == 1:
+                (<np.uint8_t*>((<char*>pid(ity))))[0] = 1
+            PyArray_ITER_NEXT(ita)
+            PyArray_ITER_NEXT(ity)
+    return y
+
+
+cdef ndarray allnan_one_DTYPE0(np.flatiter ita,
+                               Py_ssize_t stride, Py_ssize_t length,
+                               int a_ndim, np.npy_intp* y_dims, int int_input):
+    # bn.dtypes = [['int64'], ['int32']]
+    cdef ndarray y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_BOOL, 0)
+    cdef Py_ssize_t i, size = 1
+    cdef int f = 0, err_code
+    for i in range(a_ndim - 1):
+        size *= y_dims[i]
+    size *= length
+    if size == 0:
+        f = 1
+    err_code = PyArray_FillWithScalar(y, f)
+    if err_code == -1:
+        raise RuntimeError("`PyArray_FillWithScalar` returned an error")
+    return y
+
+
+cdef allnan_0d(ndarray a, int int_input):
+    out = a[()]
+    if out == out:
+        return False
+    else:
+        return True
+
+
 # reducer -------------------------------------------------------------------
 
 # pointer to functions that reduce along ALL axes

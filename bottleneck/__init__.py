@@ -25,6 +25,8 @@ try:
     from .reduce3 import nanmedian as nanmedian3
     from .reduce3 import nanargmin as nanargmin3
     from .reduce3 import nanargmax as nanargmax3
+    from .reduce3 import anynan as anynan3
+    from .reduce3 import allnan as allnan3
 except:
     pass
 try:
