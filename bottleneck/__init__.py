@@ -13,22 +13,6 @@ try:
 except:
     pass
 try:
-    from .reduce3 import nansum as nansum3
-    from .reduce3 import nanmean as nanmean3
-    from .reduce3 import nanstd as nanstd3
-    from .reduce3 import nanvar as nanvar3
-    from .reduce3 import nanmin as nanmin3
-    from .reduce3 import nanmax as nanmax3
-    from .reduce3 import ss as ss3
-    from .reduce3 import median as median3
-    from .reduce3 import nanmedian as nanmedian3
-    from .reduce3 import nanargmin as nanargmin3
-    from .reduce3 import nanargmax as nanargmax3
-    from .reduce3 import anynan as anynan3
-    from .reduce3 import allnan as allnan3
-except:
-    pass
-try:
     from .nonreduce import replace
 except:
     pass

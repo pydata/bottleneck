@@ -4,8 +4,8 @@ import ast
 
 
 def make_pyx():
-    filenames = ['reduce.pyx', 'reduce3.pyx', 'nonreduce.pyx',
-                 'nonreduce_axis.pyx', 'move.pyx']
+    filenames = ['reduce.pyx', 'nonreduce.pyx', 'nonreduce_axis.pyx',
+                 'move.pyx']
     dirpath = os.path.dirname(__file__)
     for filename in filenames:
         filepath = os.path.join(dirpath, filename)
