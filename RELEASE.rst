@@ -26,6 +26,12 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 - move_median is faster for input arrays that contain lots of NaNs
 - No speed penalty for median, nanmedian, nanargmin, nanargmax for Fortran
   ordered input arrays when axis is None
+- Function call overhead cut in half for reduction along all axes (axis=None)
+  if the input array satisfies at least one of the following properties: 1d,
+  C contiguous, F contiguous
+- Reduction along all axes (axis=None) is more than twice as fast for long,
+  narrow input arrays such as a (1000000, 2) C contiguous array and a
+  (2, 1000000) F contiguous array
 
 **New Functions**
 
