@@ -9,15 +9,20 @@ from numpy cimport NPY_FLOAT64 as NPY_float64
 from numpy cimport NPY_FLOAT32 as NPY_float32
 from numpy cimport NPY_INT64 as NPY_int64
 from numpy cimport NPY_INT32 as NPY_int32
+from numpy cimport npy_intp
 
 from numpy cimport PyArray_ITER_DATA as pid
 from numpy cimport PyArray_ITER_NOTDONE
 from numpy cimport PyArray_ITER_NEXT
 from numpy cimport PyArray_IterAllButAxis
+from numpy cimport flatiter
 
 from numpy cimport PyArray_TYPE
 from numpy cimport PyArray_NDIM
 from numpy cimport PyArray_ISBYTESWAPPED
+from numpy cimport PyArray_STRIDE
+from numpy cimport PyArray_Check
+from numpy cimport PyArray_FROM_O
 
 from numpy cimport ndarray
 from numpy cimport import_array
@@ -84,9 +89,9 @@ def replace(arr, double old, double new):
         slow.replace(arr, old, new)
 
 
-cdef ndarray replace_DTYPE0(ndarray a, np.flatiter ita,
+cdef ndarray replace_DTYPE0(ndarray a, flatiter ita,
                             Py_ssize_t stride, Py_ssize_t length,
-                            int a_ndim, np.npy_intp* y_dims,
+                            int a_ndim, npy_intp* y_dims,
                             double old, double new):
     # bn.dtypes = [['float64'], ['float32']]
     cdef Py_ssize_t i
@@ -109,9 +114,9 @@ cdef ndarray replace_DTYPE0(ndarray a, np.flatiter ita,
     return a
 
 
-cdef ndarray replace_DTYPE0(ndarray a, np.flatiter ita,
+cdef ndarray replace_DTYPE0(ndarray a, flatiter ita,
                             Py_ssize_t stride, Py_ssize_t length,
-                            int a_ndim, np.npy_intp* y_dims,
+                            int a_ndim, npy_intp* y_dims,
                             double old, double new):
     # bn.dtypes = [['int64'], ['int32']]
     cdef Py_ssize_t i
@@ -135,9 +140,9 @@ cdef ndarray replace_DTYPE0(ndarray a, np.flatiter ita,
 
 # nonreduce -----------------------------------------------------------------
 
-ctypedef ndarray (*nr_t)(ndarray, np.flatiter,
+ctypedef ndarray (*nr_t)(ndarray, flatiter,
                          Py_ssize_t, Py_ssize_t,
-                         int, np.npy_intp*,
+                         int, npy_intp*,
                          double, double)
 
 
@@ -152,18 +157,17 @@ cdef ndarray nonreducer(arr,
 
     # convert to array if necessary
     cdef ndarray a
-    if type(arr) is ndarray:
+    if PyArray_Check(arr):
         a = arr
     else:
         if inplace == 1:
             # works in place so input must be an array, not (e.g.) a list
-            raise TypeError("`arr` must be a numpy array.")
+            raise TypeError
         else:
-            a = np.array(arr, copy=False)
+            a = PyArray_FROM_O(arr)
 
     # check for byte swapped input array
-    cdef bint is_swapped = PyArray_ISBYTESWAPPED(a)
-    if is_swapped:
+    if PyArray_ISBYTESWAPPED(a):
         raise TypeError
 
     # input array
@@ -172,13 +176,13 @@ cdef ndarray nonreducer(arr,
 
     # input iterator
     cdef int axis = -1
-    cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)
-    cdef Py_ssize_t stride = a.strides[axis]
-    cdef Py_ssize_t length = a.shape[axis]
+    cdef flatiter ita = PyArray_IterAllButAxis(a, &axis)
+    cdef Py_ssize_t stride = PyArray_STRIDE(a, axis)
 
     # output array
     cdef ndarray y
-    cdef np.npy_intp *y_dims = np.PyArray_DIMS(a)
+    cdef npy_intp *y_dims = np.PyArray_DIMS(a)
+    cdef Py_ssize_t length = y_dims[axis]
 
     # calc
     if dtype == NPY_float64:
@@ -190,6 +194,6 @@ cdef ndarray nonreducer(arr,
     elif dtype == NPY_int32:
         y = nr_int32(a, ita, stride, length, a_ndim, y_dims, double_input_1, double_input_2)
     else:
-        raise TypeError("Unsupported dtype (%s)." % a.dtype)
+        raise TypeError
 
     return y

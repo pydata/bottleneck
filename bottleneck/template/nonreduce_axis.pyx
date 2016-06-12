@@ -10,23 +10,30 @@ from numpy cimport NPY_FLOAT32 as NPY_float32
 from numpy cimport NPY_INT64 as NPY_int64
 from numpy cimport NPY_INT32 as NPY_int32
 from numpy cimport NPY_INTP as NPY_intp
+from numpy cimport npy_intp
 
 from numpy cimport PyArray_ITER_DATA as pid
 from numpy cimport PyArray_ITER_NOTDONE
 from numpy cimport PyArray_ITER_NEXT
 from numpy cimport PyArray_ITER_RESET
 from numpy cimport PyArray_IterAllButAxis
+from numpy cimport flatiter
+
+from numpy cimport PyArray_Copy
+from numpy cimport PyArray_EMPTY
+from numpy cimport PyArray_FROM_O
 
 from numpy cimport PyArray_TYPE
 from numpy cimport PyArray_NDIM
+from numpy cimport PyArray_DIMS
+
 from numpy cimport NPY_CORDER
-from numpy cimport PyArray_Copy
-from numpy cimport PyArray_EMPTY
 from numpy cimport PyArray_Ravel
 from numpy cimport PyArray_ArgSort
 from numpy cimport NPY_QUICKSORT
 from numpy cimport PyArray_FillWithScalar
 from numpy cimport PyArray_ISBYTESWAPPED
+from numpy cimport PyArray_Check
 
 from numpy cimport ndarray
 from numpy cimport import_array
@@ -112,9 +119,9 @@ def partsort(arr, int n, axis=-1):
 
 
 cdef ndarray partsort_DTYPE0(ndarray a, int axis,
-                             int a_ndim, np.npy_intp* y_dims, int n):
+                             int a_ndim, npy_intp* y_dims, int n):
     # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
-    cdef np.npy_intp i, j = 0, l, r, k = n-1
+    cdef npy_intp i, j = 0, l, r, k = n-1
     cdef DTYPE0_t x, tmpi, tmpj
     cdef ndarray y = PyArray_Copy(a)
     cdef Py_ssize_t stride = y.strides[axis]
@@ -124,7 +131,7 @@ cdef ndarray partsort_DTYPE0(ndarray a, int axis,
     if (n < 1) or (n > length):
         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
                          (n, length))
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     with nogil:
         while PyArray_ITER_NOTDONE(ity):
             l = 0
@@ -226,10 +233,10 @@ def argpartsort(arr, int n, axis=-1):
 
 
 cdef ndarray argpartsort_DTYPE0(ndarray a, int axis,
-                                int a_ndim, np.npy_intp* y_dims, int n):
+                                int a_ndim, npy_intp* y_dims, int n):
     # bn.dtypes = [['float64'], ['float32'], ['int64'], ['int32']]
 
-    cdef np.npy_intp i, j = 0, l, r, k = n-1
+    cdef npy_intp i, j = 0, l, r, k = n-1
     cdef DTYPE0_t x, tmpi, tmpj
     cdef intp_t itmpi, itmpj
     cdef ndarray y = PyArray_Copy(a)
@@ -238,7 +245,7 @@ cdef ndarray argpartsort_DTYPE0(ndarray a, int axis,
 
     cdef ndarray index = PyArray_EMPTY(a_ndim, y_dims, NPY_intp, 0)
     cdef Py_ssize_t istride = index.strides[axis]
-    cdef np.flatiter iti = PyArray_IterAllButAxis(index, &axis)
+    cdef flatiter iti = PyArray_IterAllButAxis(index, &axis)
     with nogil:
         while PyArray_ITER_NOTDONE(iti):
             for i in range(length):
@@ -252,7 +259,7 @@ cdef ndarray argpartsort_DTYPE0(ndarray a, int axis,
         raise ValueError("`n` (=%d) must be between 1 and %d, inclusive." %
                          (n, length))
 
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     with nogil:
         while PyArray_ITER_NOTDONE(ity):
             l = 0
@@ -338,7 +345,7 @@ def nanrankdata(arr, axis=None):
 
 
 cdef ndarray nanrankdata_DTYPE0(ndarray a, int axis,
-                                int a_ndim, np.npy_intp* y_dims, int ignore):
+                                int a_ndim, npy_intp* y_dims, int ignore):
     # bn.dtypes = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp']]
 
     cdef Py_ssize_t j=0, k, idx, dupcount=0, i
@@ -346,15 +353,15 @@ cdef ndarray nanrankdata_DTYPE0(ndarray a, int axis,
     cdef Py_ssize_t length = a.shape[axis]
     cdef int err_code
 
-    cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)
+    cdef flatiter ita = PyArray_IterAllButAxis(a, &axis)
     cdef Py_ssize_t astride = a.strides[axis]
 
     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)
-    cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
+    cdef flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
     cdef Py_ssize_t istride = ivec.strides[axis]
 
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
     if length == 0:
@@ -455,7 +462,7 @@ def rankdata(arr, axis=None):
 
 
 cdef ndarray rankdata_DTYPE0(ndarray a, int axis,
-                             int a_ndim, np.npy_intp* y_dims, int ignore):
+                             int a_ndim, npy_intp* y_dims, int ignore):
     # bn.dtypes = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp'], ['int64', 'float64', 'intp'], ['int32', 'float64', 'intp']]
 
     cdef Py_ssize_t j=0, k, idx, dupcount=0, i
@@ -463,15 +470,15 @@ cdef ndarray rankdata_DTYPE0(ndarray a, int axis,
     cdef Py_ssize_t length = a.shape[axis]
     cdef int err_code
 
-    cdef np.flatiter ita = PyArray_IterAllButAxis(a, &axis)
+    cdef flatiter ita = PyArray_IterAllButAxis(a, &axis)
     cdef Py_ssize_t astride = a.strides[axis]
 
     cdef ndarray ivec = PyArray_ArgSort(a, axis, NPY_QUICKSORT)
-    cdef np.flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
+    cdef flatiter iti = PyArray_IterAllButAxis(ivec, &axis)
     cdef Py_ssize_t istride = ivec.strides[axis]
 
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
     if length == 0:
@@ -571,17 +578,17 @@ def push(arr, float n=np.inf, int axis=-1):
         return slow.push(arr, n, axis)
 
 
-cdef ndarray push_DTYPE0(ndarray a, int axis, int a_ndim, np.npy_intp* y_dims,
+cdef ndarray push_DTYPE0(ndarray a, int axis, int a_ndim, npy_intp* y_dims,
                          int n):
     # bn.dtypes = [['float64'], ['float32']]
-    cdef np.npy_intp i, index
+    cdef npy_intp i, index
     cdef DTYPE0_t ai, ai_last
     cdef ndarray y = PyArray_Copy(a)
     cdef Py_ssize_t stride = y.strides[axis]
     cdef Py_ssize_t length = y.shape[axis]
     if length == 0 or a_ndim == 0:
         return y
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef float64_t n_float
     if n < 0:
         n_float = np.inf
@@ -603,7 +610,7 @@ cdef ndarray push_DTYPE0(ndarray a, int axis, int a_ndim, np.npy_intp* y_dims,
     return y
 
 
-cdef ndarray push_DTYPE0(ndarray a, int axis, int a_ndim, np.npy_intp* y_dims,
+cdef ndarray push_DTYPE0(ndarray a, int axis, int a_ndim, npy_intp* y_dims,
                          int n):
     # bn.dtypes = [['int64'], ['int32']]
     cdef ndarray y = PyArray_Copy(a)
@@ -612,7 +619,7 @@ cdef ndarray push_DTYPE0(ndarray a, int axis, int a_ndim, np.npy_intp* y_dims,
 
 # nonreduce_axis ------------------------------------------------------------
 
-ctypedef ndarray (*nra_t)(ndarray, int, int, np.npy_intp*, int)
+ctypedef ndarray (*nra_t)(ndarray, int, int, npy_intp*, int)
 
 
 cdef ndarray nonreducer_axis(arr, axis,
@@ -624,14 +631,13 @@ cdef ndarray nonreducer_axis(arr, axis,
 
     # convert to array if necessary
     cdef ndarray a
-    if type(arr) is ndarray:
+    if PyArray_Check(arr):
         a = arr
     else:
-        a = np.array(arr, copy=False)
+        a = PyArray_FROM_O(arr)
 
     # check for byte swapped input array
-    cdef bint is_swapped = PyArray_ISBYTESWAPPED(a)
-    if is_swapped:
+    if PyArray_ISBYTESWAPPED(a):
         raise TypeError
 
     # input array
@@ -656,7 +662,7 @@ cdef ndarray nonreducer_axis(arr, axis,
 
     # output array
     cdef ndarray y
-    cdef np.npy_intp *y_dims = np.PyArray_DIMS(a)
+    cdef npy_intp *y_dims = PyArray_DIMS(a)
 
     # calc
     if dtype == NPY_float64:

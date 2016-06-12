@@ -21,18 +21,26 @@ from numpy cimport NPY_FLOAT64 as NPY_float64
 from numpy cimport NPY_FLOAT32 as NPY_float32
 from numpy cimport NPY_INT64 as NPY_int64
 from numpy cimport NPY_INT32 as NPY_int32
+from numpy cimport npy_intp
 
 from numpy cimport PyArray_ITER_DATA as pid
 from numpy cimport PyArray_ITER_NOTDONE
 from numpy cimport PyArray_ITER_NEXT
 from numpy cimport PyArray_IterAllButAxis
+from numpy cimport flatiter
 
 from numpy cimport PyArray_TYPE
 from numpy cimport PyArray_NDIM
+from numpy cimport PyArray_DIMS
+from numpy cimport PyArray_STRIDE
+
 from numpy cimport PyArray_ISBYTESWAPPED
+from numpy cimport PyArray_Check
 
 from numpy cimport PyArray_Copy
 from numpy cimport PyArray_EMPTY
+from numpy cimport PyArray_FROM_O
+
 from numpy cimport ndarray
 from numpy cimport import_array
 import_array()
@@ -106,14 +114,14 @@ def move_sum(arr, int window, min_count=None, int axis=-1):
 
 
 cdef ndarray move_sum_DTYPE0(ndarray a, int window, int min_count, int axis,
-                             np.flatiter ita, Py_ssize_t stride,
+                             flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
-                             np.npy_intp* y_dims, int ignore):
+                             npy_intp* y_dims, int ignore):
     # bn.dtypes = [['float64'], ['float32']]
     cdef Py_ssize_t i, count
     cdef DTYPE0_t asum, ai, aold, yi
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
     with nogil:
         while PyArray_ITER_NOTDONE(ita):
@@ -155,15 +163,15 @@ cdef ndarray move_sum_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 
 cdef ndarray move_sum_DTYPE0(ndarray a, int window, int min_count, int axis,
-                             np.flatiter ita, Py_ssize_t stride,
+                             flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
-                             np.npy_intp* y_dims, int int_input):
+                             npy_intp* y_dims, int int_input):
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef Py_ssize_t i
     cdef DTYPE1_t asum, aold, yi
     cdef DTYPE0_t ai
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
     with nogil:
         while PyArray_ITER_NOTDONE(ita):
@@ -241,14 +249,14 @@ def move_mean(arr, int window, min_count=None, int axis=-1):
 
 @cython.cdivision(True)
 cdef ndarray move_mean_DTYPE0(ndarray a, int window, int min_count, int axis,
-                              np.flatiter ita, Py_ssize_t stride,
+                              flatiter ita, Py_ssize_t stride,
                               Py_ssize_t length, int a_ndim,
-                              np.npy_intp* y_dims, int int_input):
+                              npy_intp* y_dims, int int_input):
     # bn.dtypes = [['float64'], ['float32']]
     cdef Py_ssize_t i, count
     cdef DTYPE0_t asum, ai, aold, yi
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
     with nogil:
         while PyArray_ITER_NOTDONE(ita):
@@ -291,15 +299,15 @@ cdef ndarray move_mean_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 @cython.cdivision(True)
 cdef ndarray move_mean_DTYPE0(ndarray a, int window, int min_count, int axis,
-                              np.flatiter ita, Py_ssize_t stride,
+                              flatiter ita, Py_ssize_t stride,
                               Py_ssize_t length, int a_ndim,
-                              np.npy_intp* y_dims, int int_input):
+                              npy_intp* y_dims, int int_input):
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef Py_ssize_t i
     cdef DTYPE1_t asum, aold, yi
     cdef DTYPE0_t ai
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
     with nogil:
         while PyArray_ITER_NOTDONE(ita):
@@ -387,14 +395,14 @@ def move_std(arr, int window, min_count=None, int axis=-1, int ddof=0):
 
 @cython.cdivision(True)
 cdef ndarray move_std_DTYPE0(ndarray a, int window, int min_count, int axis,
-                             np.flatiter ita, Py_ssize_t stride,
+                             flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
-                             np.npy_intp* y_dims, int ddof):
+                             npy_intp* y_dims, int ddof):
     # bn.dtypes = [['float64'], ['float32']]
     cdef Py_ssize_t i, count
     cdef DTYPE0_t delta, amean, assqdm, ai, aold, yi
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
     with nogil:
         while PyArray_ITER_NOTDONE(ita):
@@ -462,15 +470,15 @@ cdef ndarray move_std_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 @cython.cdivision(True)
 cdef ndarray move_std_DTYPE0(ndarray a, int window, int min_count, int axis,
-                             np.flatiter ita, Py_ssize_t stride,
+                             flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
-                             np.npy_intp* y_dims, int ddof):
+                             npy_intp* y_dims, int ddof):
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef Py_ssize_t i
     cdef int winddof
     cdef DTYPE1_t delta, amean, assqdm, yi, ai, aold
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
     with nogil:
         winddof = window - ddof
@@ -568,14 +576,14 @@ def move_var(arr, int window, min_count=None, int axis=-1, int ddof=0):
 
 @cython.cdivision(True)
 cdef ndarray move_var_DTYPE0(ndarray a, int window, int min_count, int axis,
-                             np.flatiter ita, Py_ssize_t stride,
+                             flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
-                             np.npy_intp* y_dims, int ddof):
+                             npy_intp* y_dims, int ddof):
     # bn.dtypes = [['float64'], ['float32']]
     cdef Py_ssize_t i, count
     cdef DTYPE0_t delta, amean, assqdm, ai, aold, yi
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
     with nogil:
         while PyArray_ITER_NOTDONE(ita):
@@ -643,15 +651,15 @@ cdef ndarray move_var_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 @cython.cdivision(True)
 cdef ndarray move_var_DTYPE0(ndarray a, int window, int min_count, int axis,
-                             np.flatiter ita, Py_ssize_t stride,
+                             flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
-                             np.npy_intp* y_dims, int ddof):
+                             npy_intp* y_dims, int ddof):
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef Py_ssize_t i
     cdef int winddof
     cdef DTYPE1_t delta, amean, assqdm, yi, ai, aold
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
     with nogil:
         winddof = window - ddof
@@ -737,9 +745,9 @@ def move_min(arr, int window, min_count=None, int axis=-1):
 
 
 cdef ndarray move_min_DTYPE0(ndarray a, int window, int min_count, int axis,
-                             np.flatiter ita, Py_ssize_t stride,
+                             flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
-                             np.npy_intp* y_dims, int ignore):
+                             npy_intp* y_dims, int ignore):
     # bn.dtypes = [['float64'], ['float32']]
     cdef DTYPE0_t ai, aold, yi
     cdef Py_ssize_t i, count
@@ -748,7 +756,7 @@ cdef ndarray move_min_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef pairs* end
     cdef pairs* last
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
     with nogil:
@@ -808,9 +816,9 @@ cdef ndarray move_min_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 
 cdef ndarray move_min_DTYPE0(ndarray a, int window, int min_count, int axis,
-                             np.flatiter ita, Py_ssize_t stride,
+                             flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
-                             np.npy_intp* y_dims, int ignore):
+                             npy_intp* y_dims, int ignore):
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef DTYPE0_t ai
     cdef DTYPE1_t yi
@@ -820,7 +828,7 @@ cdef ndarray move_min_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef pairs* end
     cdef pairs* last
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
     with nogil:
@@ -916,9 +924,9 @@ def move_max(arr, int window, min_count=None, int axis=-1):
 
 
 cdef ndarray move_max_DTYPE0(ndarray a, int window, int min_count, int axis,
-                             np.flatiter ita, Py_ssize_t stride,
+                             flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
-                             np.npy_intp* y_dims, int ignore):
+                             npy_intp* y_dims, int ignore):
     # bn.dtypes = [['float64'], ['float32']]
     cdef DTYPE0_t ai, aold, yi
     cdef Py_ssize_t i, count
@@ -927,7 +935,7 @@ cdef ndarray move_max_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef pairs* end
     cdef pairs* last
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
     with nogil:
@@ -987,9 +995,9 @@ cdef ndarray move_max_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 
 cdef ndarray move_max_DTYPE0(ndarray a, int window, int min_count, int axis,
-                             np.flatiter ita, Py_ssize_t stride,
+                             flatiter ita, Py_ssize_t stride,
                              Py_ssize_t length, int a_ndim,
-                             np.npy_intp* y_dims, int ignore):
+                             npy_intp* y_dims, int ignore):
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef DTYPE0_t ai
     cdef DTYPE1_t yi
@@ -999,7 +1007,7 @@ cdef ndarray move_max_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef pairs* end
     cdef pairs* last
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
     with nogil:
@@ -1109,9 +1117,9 @@ def move_argmin(arr, int window, min_count=None, int axis=-1):
 
 
 cdef ndarray move_argmin_DTYPE0(ndarray a, int window, int min_count, int axis,
-                                np.flatiter ita, Py_ssize_t stride,
+                                flatiter ita, Py_ssize_t stride,
                                 Py_ssize_t length, int a_ndim,
-                                np.npy_intp* y_dims, int ignore):
+                                npy_intp* y_dims, int ignore):
     # bn.dtypes = [['float64'], ['float32']]
     cdef DTYPE0_t ai, aold, yi
     cdef Py_ssize_t i, count
@@ -1120,7 +1128,7 @@ cdef ndarray move_argmin_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef pairs* end
     cdef pairs* last
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
     with nogil:
@@ -1180,9 +1188,9 @@ cdef ndarray move_argmin_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 
 cdef ndarray move_argmin_DTYPE0(ndarray a, int window, int min_count, int axis,
-                                np.flatiter ita, Py_ssize_t stride,
+                                flatiter ita, Py_ssize_t stride,
                                 Py_ssize_t length, int a_ndim,
-                                np.npy_intp* y_dims, int ignore):
+                                npy_intp* y_dims, int ignore):
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef DTYPE0_t ai
     cdef DTYPE1_t yi
@@ -1192,7 +1200,7 @@ cdef ndarray move_argmin_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef pairs* end
     cdef pairs* last
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
     with nogil:
@@ -1302,9 +1310,9 @@ def move_argmax(arr, int window, min_count=None, int axis=-1):
 
 
 cdef ndarray move_argmax_DTYPE0(ndarray a, int window, int min_count, int axis,
-                                np.flatiter ita, Py_ssize_t stride,
+                                flatiter ita, Py_ssize_t stride,
                                 Py_ssize_t length, int a_ndim,
-                                np.npy_intp* y_dims, int ignore):
+                                npy_intp* y_dims, int ignore):
     # bn.dtypes = [['float64'], ['float32']]
     cdef DTYPE0_t ai, aold, yi
     cdef Py_ssize_t i, count
@@ -1313,7 +1321,7 @@ cdef ndarray move_argmax_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef pairs* end
     cdef pairs* last
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
     with nogil:
@@ -1373,9 +1381,9 @@ cdef ndarray move_argmax_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 
 cdef ndarray move_argmax_DTYPE0(ndarray a, int window, int min_count, int axis,
-                                np.flatiter ita, Py_ssize_t stride,
+                                flatiter ita, Py_ssize_t stride,
                                 Py_ssize_t length, int a_ndim,
-                                np.npy_intp* y_dims, int ignore):
+                                npy_intp* y_dims, int ignore):
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef DTYPE0_t ai
     cdef DTYPE1_t yi
@@ -1385,7 +1393,7 @@ cdef ndarray move_argmax_DTYPE0(ndarray a, int window, int min_count, int axis,
     cdef pairs* end
     cdef pairs* last
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
 
     with nogil:
@@ -1515,9 +1523,9 @@ cdef extern from "csrc/move_median.c":
 
 @cython.cdivision(True)
 cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
-                                np.flatiter ita, Py_ssize_t stride,
+                                flatiter ita, Py_ssize_t stride,
                                 Py_ssize_t length, int a_ndim,
-                                np.npy_intp* y_dims, int ignore):
+                                npy_intp* y_dims, int ignore):
     # bn.dtypes = [['float64', 'float64'], ['float32', 'float32']]
     cdef mm_handle *mm
     cdef Py_ssize_t i
@@ -1526,7 +1534,7 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
     if window == 1:
         return PyArray_Copy(a)
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
     mm = mm_new_nan(window, min_count)
     if mm is NULL:
@@ -1550,9 +1558,9 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 @cython.cdivision(True)
 cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
-                                np.flatiter ita, Py_ssize_t stride,
+                                flatiter ita, Py_ssize_t stride,
                                 Py_ssize_t length, int a_ndim,
-                                np.npy_intp* y_dims, int ignore):
+                                npy_intp* y_dims, int ignore):
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef mm_handle *mm
     cdef Py_ssize_t i
@@ -1561,7 +1569,7 @@ cdef ndarray move_median_DTYPE0(ndarray a, int window, int min_count, int axis,
     if window == 1:
         return a.astype(np.float64)
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
     mm = mm_new(window, min_count)
     if mm is NULL:
@@ -1654,15 +1662,15 @@ def move_rank(arr, int window, min_count=None, int axis=-1):
 
 @cython.cdivision(True)
 cdef ndarray move_rank_DTYPE0(ndarray a, int window, int min_count, int axis,
-                              np.flatiter ita, Py_ssize_t stride,
+                              flatiter ita, Py_ssize_t stride,
                               Py_ssize_t length, int a_ndim,
-                              np.npy_intp* y_dims, int ignore):
+                              npy_intp* y_dims, int ignore):
     # bn.dtypes = [['float64', 'float64'], ['float32', 'float32']]
     cdef Py_ssize_t i, j
     cdef DTYPE0_t ai, aj
     cdef DTYPE1_t g, e, n, r
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
     cdef char* pita
     while PyArray_ITER_NOTDONE(ita):
@@ -1727,15 +1735,15 @@ cdef ndarray move_rank_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 @cython.cdivision(True)
 cdef ndarray move_rank_DTYPE0(ndarray a, int window, int min_count, int axis,
-                              np.flatiter ita, Py_ssize_t stride,
+                              flatiter ita, Py_ssize_t stride,
                               Py_ssize_t length, int a_ndim,
-                              np.npy_intp* y_dims, int ignore):
+                              npy_intp* y_dims, int ignore):
     # bn.dtypes = [['int64', 'float64'], ['int32', 'float64']]
     cdef Py_ssize_t i, j
     cdef DTYPE0_t ai, aj
     cdef DTYPE1_t g, e, n, r
     cdef ndarray y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0)
-    cdef np.flatiter ity = PyArray_IterAllButAxis(y, &axis)
+    cdef flatiter ity = PyArray_IterAllButAxis(y, &axis)
     cdef Py_ssize_t ystride = y.strides[axis]
     cdef char* pita
     while PyArray_ITER_NOTDONE(ita):
@@ -1792,8 +1800,8 @@ cdef ndarray move_rank_DTYPE0(ndarray a, int window, int min_count, int axis,
 
 # mover ---------------------------------------------------------------------
 
-ctypedef ndarray (*move_t)(ndarray, int, int, int, np.flatiter, Py_ssize_t,
-                           Py_ssize_t, int, np.npy_intp*, int)
+ctypedef ndarray (*move_t)(ndarray, int, int, int, flatiter, Py_ssize_t,
+                           Py_ssize_t, int, npy_intp*, int)
 
 
 cdef ndarray mover(arr, int window, min_count, int axis,
@@ -1805,14 +1813,13 @@ cdef ndarray mover(arr, int window, min_count, int axis,
 
     # convert to array if necessary
     cdef ndarray a
-    if type(arr) is ndarray:
+    if PyArray_Check(arr):
         a = arr
     else:
-        a = np.array(arr, copy=False)
+        a = PyArray_FROM_O(arr)
 
     # check for byte swapped input array
-    cdef bint is_swapped = PyArray_ISBYTESWAPPED(a)
-    if is_swapped:
+    if PyArray_ISBYTESWAPPED(a):
         raise TypeError
 
     # min_count
@@ -1828,7 +1835,7 @@ cdef ndarray mover(arr, int window, min_count, int axis,
             raise ValueError("`min_count` must be greater than zero.")
 
     # input array
-    cdef np.flatiter ita
+    cdef flatiter ita
     cdef Py_ssize_t stride, length
     cdef int dtype = PyArray_TYPE(a)
     cdef int a_ndim = PyArray_NDIM(a)
@@ -1847,12 +1854,12 @@ cdef ndarray mover(arr, int window, min_count, int axis,
 
     # output array info
     cdef ndarray y
-    cdef np.npy_intp *y_dims = np.PyArray_DIMS(a)
+    cdef npy_intp *y_dims = PyArray_DIMS(a)
 
     # input iterator
     ita = PyArray_IterAllButAxis(a, &axis)
-    stride = a.strides[axis]
-    length = a.shape[axis]
+    stride = PyArray_STRIDE(a, axis)
+    length = y_dims[axis]
 
     # window
     if (window < 1) or (window > length):
@@ -1872,5 +1879,5 @@ cdef ndarray mover(arr, int window, min_count, int axis,
         y = move_int32(a, window, mc, axis, ita, stride, length,
                        a_ndim, y_dims, int_input)
     else:
-        raise TypeError("Unsupported dtype (%s)." % a.dtype)
+        raise TypeError
     return y
