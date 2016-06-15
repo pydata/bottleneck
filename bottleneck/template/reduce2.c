@@ -223,7 +223,6 @@ reducer(PyObject *arr,
     Py_ssize_t stride, length, i; /*  , j; */
     int dtype = PyArray_TYPE(a);
     int a_ndim = PyArray_NDIM(a);
-    PyObject *out = NULL;
 
     /* defend against 0d beings */
     if (a_ndim == 0) {
@@ -283,8 +282,7 @@ reducer(PyObject *arr,
             length = PyArray_SIZE(a);
             p = (char *)PyArray_DATA(a);
             if (dtype == NPY_FLOAT64) {
-                out = fall_ss_float64(p, stride, length, int_input);
-                return out;
+                return fall_ss_float64(p, stride, length, int_input);
             }
             else {
                 PyErr_SetString(PyExc_TypeError, "dtype not yet supported");
@@ -305,8 +303,7 @@ reducer(PyObject *arr,
                 length = PyArray_SIZE(a);
             }
             if (dtype == NPY_FLOAT64) {
-                out = fall_float64(ita, stride, length, int_input);
-                return out;
+                return fall_float64(ita, stride, length, int_input);
             }
             else {
                 PyErr_SetString(PyExc_TypeError, "dtype not yet supported");
