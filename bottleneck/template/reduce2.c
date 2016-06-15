@@ -89,12 +89,12 @@ nansum(PyObject *self, PyObject *args, PyObject *kwds)
         goto fail;
     }
 
-    reducer(arr_obj,
-            axis_obj,
-            nansum_all_float64,
-            nansum_all_ss_float64,
-            nansum_one_float64,
-            0, 0, 0);
+    return reducer(arr_obj,
+                   axis_obj,
+                   nansum_all_float64,
+                   nansum_all_ss_float64,
+                   nansum_one_float64,
+                   0, 0, 0);
 
     fail:
         Py_XDECREF(arr_obj);
