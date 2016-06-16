@@ -48,8 +48,8 @@ nansum_one_float64(PyObject *ita,
                    int int_input);
 
 static PyObject *
-reducer(PyObject *arr,
-        PyObject *axis,
+reducer(PyObject *args,
+        PyObject *kwds,
         fall_t fall_float64,
         fall_ss_t fall_ss_float64,
         fone_t fone_float64,
@@ -81,41 +81,12 @@ initnansum(void)
 static PyObject *
 nansum(PyObject *self, PyObject *args, PyObject *kwds)
 {
-    const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
-    PyObject *arr_obj = NULL;
-    PyObject *axis_obj = Py_None;
-    if (kwds) {
-        const Py_ssize_t nkwds = PyDict_Size(kwds);
-        if (nkwds == 1) {
-            axis_obj = PyDict_GetItem(kwds, pystr_axis);
-            if (nargs == 1) {
-                arr_obj = PyTuple_GET_ITEM(args, 0);
-            }
-        }
-        else {
-            PyErr_SetString(PyExc_TypeError, "err#1: wrong number of inputs");
-            return NULL;
-        }
-    }
-    else if (nargs == 1) {
-        arr_obj = PyTuple_GET_ITEM(args, 0);
-    }
-    else if (nargs == 2) {
-        arr_obj = PyTuple_GET_ITEM(args, 0);
-        axis_obj = PyTuple_GET_ITEM(args, 1);
-    }
-    else {
-        PyErr_SetString(PyExc_TypeError, "err#2: wrong number of inputs");
-        return NULL;
-    }
-
-    return reducer(arr_obj,
-                   axis_obj,
+    return reducer(args,
+                   kwds,
                    nansum_all_float64,
                    nansum_all_ss_float64,
                    nansum_one_float64,
                    0, 0, 0);
-
 }
 
 
@@ -198,8 +169,8 @@ nansum_one_float64(PyObject *ita,
 /* reducer --------------------------------------------------------------- */
 
 static PyObject *
-reducer(PyObject *arr,
-        PyObject *axis,
+reducer(PyObject *args,
+        PyObject *kwds,
         fall_t fall_float64,
         fall_ss_t fall_ss_float64,
         fone_t fone_float64,
@@ -207,13 +178,41 @@ reducer(PyObject *arr,
         int ravel,
         int copy)
 {
+    /* parse inputs: args and kwds */
+    const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+    PyObject *arr_obj = NULL;
+    PyObject *axis_obj = Py_None;
+    if (kwds) {
+        const Py_ssize_t nkwds = PyDict_Size(kwds);
+        if (nkwds == 1) {
+            axis_obj = PyDict_GetItem(kwds, pystr_axis);
+            if (nargs == 1) {
+                arr_obj = PyTuple_GET_ITEM(args, 0);
+            }
+        }
+        else {
+            PyErr_SetString(PyExc_TypeError, "err#1: wrong number of inputs");
+            return NULL;
+        }
+    }
+    else if (nargs == 1) {
+        arr_obj = PyTuple_GET_ITEM(args, 0);
+    }
+    else if (nargs == 2) {
+        arr_obj = PyTuple_GET_ITEM(args, 0);
+        axis_obj = PyTuple_GET_ITEM(args, 1);
+    }
+    else {
+        PyErr_SetString(PyExc_TypeError, "err#2: wrong number of inputs");
+        return NULL;
+    }
 
     /* convert to array if necessary */
     PyObject *a;
-    if PyArray_Check(arr) {
-        a = arr;
+    if PyArray_Check(arr_obj) {
+        a = arr_obj;
     } else {
-        a = PyArray_FROM_O(arr);
+        a = PyArray_FROM_O(arr_obj);
         if (a == NULL) {
             return NULL;
         }
@@ -234,9 +233,6 @@ reducer(PyObject *arr,
     }
     */
 
-    PyObject *ita;
-    Py_ssize_t stride, length, i; /*  , j; */
-    int dtype = PyArray_TYPE(a);
     int a_ndim = PyArray_NDIM(a);
 
     /* defend against 0d beings */
@@ -255,12 +251,12 @@ reducer(PyObject *arr,
     int reduce_all = 0;
     int axis_int;
     int axis_reduce;
-    if (axis == Py_None) {
+    if (axis_obj == Py_None) {
         reduce_all = 1;
         axis_reduce = -1;
     }
     else {
-        axis_int = PyArray_PyIntAsInt(axis); /* TODO check for -1 returned */
+        axis_int = PyArray_PyIntAsInt(axis_obj); /* TODO check for -1 returned */
         if (axis_int < 0) {
             axis_int += a_ndim;
             if (axis_int < 0) {
@@ -278,6 +274,10 @@ reducer(PyObject *arr,
         }
         axis_reduce = axis_int;
     }
+
+    PyObject *ita;
+    Py_ssize_t stride, length, i; /*  , j; */
+    int dtype = PyArray_TYPE(a);
 
     npy_intp *shape = PyArray_DIMS(a);
     npy_intp *strides = PyArray_STRIDES(a);
