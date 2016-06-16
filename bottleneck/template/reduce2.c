@@ -9,13 +9,16 @@ static char module_docstring[] =
 static char nansum_docstring[] =
     "Sum of array elements along given axis treating NaNs as zero.";
 
+
+/* python strings -------------------------------------------------------- */
+
+PyObject *pystr_axis = NULL;
+
+
 /* function pointers ----------------------------------------------------- */
 
-/* pointer to functions that reduce along ALL axes */
 typedef PyObject *(*fall_ss_t)(char *, npy_intp, npy_intp, int);
 typedef PyObject *(*fall_t)(PyObject *, Py_ssize_t, Py_ssize_t, int);
-
-/* pointer to functions that reduce along ONE axis */
 typedef PyObject *(*fone_t)(PyObject *, Py_ssize_t, Py_ssize_t, int, npy_intp*, int);
 
 
@@ -55,38 +58,55 @@ reducer(PyObject *arr,
         int copy);
 
 
-/* python ---------------------------------------------------------------- */
+/* nansum ---------------------------------------------------------------- */
 
-/* module specification */
-static PyMethodDef module_methods[] = {
+static PyMethodDef
+module_methods[] = {
     {"nansum", (PyCFunction)nansum, METH_VARARGS | METH_KEYWORDS, nansum_docstring},
     {NULL, NULL, 0, NULL}
 };
 
-/* initialize the module */
-PyMODINIT_FUNC initnansum(void)
+
+PyMODINIT_FUNC
+initnansum(void)
 {
     PyObject *m = Py_InitModule3("nansum", module_methods, module_docstring);
     if (m == NULL)
         return;
-
-    /* load `numpy` functionality. */
     import_array();
+    pystr_axis = PyString_FromString("axis");
 }
-
-/* nansum ---------------------------------------------------------------- */
 
 
 static PyObject *
 nansum(PyObject *self, PyObject *args, PyObject *kwds)
 {
-    PyObject *arr_obj;
+    const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+    PyObject *arr_obj = NULL;
     PyObject *axis_obj = Py_None;
-    static char *kwlist[] = {"arr", "axis", NULL};
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|O", kwlist,
-                                     &arr_obj, &axis_obj)) {
-        goto fail;
+    if (kwds) {
+        const Py_ssize_t nkwds = PyDict_Size(kwds);
+        if (nkwds == 1) {
+            axis_obj = PyDict_GetItem(kwds, pystr_axis);
+            if (nargs == 1) {
+                arr_obj = PyTuple_GET_ITEM(args, 0);
+            }
+        }
+        else {
+            PyErr_SetString(PyExc_TypeError, "err#1: wrong number of inputs");
+            return NULL;
+        }
+    }
+    else if (nargs == 1) {
+        arr_obj = PyTuple_GET_ITEM(args, 0);
+    }
+    else if (nargs == 2) {
+        arr_obj = PyTuple_GET_ITEM(args, 0);
+        axis_obj = PyTuple_GET_ITEM(args, 1);
+    }
+    else {
+        PyErr_SetString(PyExc_TypeError, "err#2: wrong number of inputs");
+        return NULL;
     }
 
     return reducer(arr_obj,
@@ -96,21 +116,16 @@ nansum(PyObject *self, PyObject *args, PyObject *kwds)
                    nansum_one_float64,
                    0, 0, 0);
 
-    fail:
-        Py_XDECREF(arr_obj);
-        Py_XDECREF(axis_obj);
-        return NULL;
-
 }
 
 
 static PyObject *
 nansum_all_ss_float64(char *p,
-                      npy_intp stride,
-                      npy_intp length,
-                      int int_input)
+                  npy_intp stride,
+                  npy_intp length,
+                  int int_input)
 {
-    Py_ssize_t i;
+Py_ssize_t i;
     npy_float64 ai;
     npy_float64 asum = 0;
     for (i = 0; i < length; i++) {
