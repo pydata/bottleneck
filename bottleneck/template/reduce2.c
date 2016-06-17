@@ -1,5 +1,8 @@
 #include <Python.h>
+#define NPY_NO_DEPRECATED_API NPY_1_11_API_VERSION
 #include <numpy/arrayobject.h>
+
+#define error_converting(x) (((x) == -1) && PyErr_Occurred())
 
 /* docstrings ------------------------------------------------------------- */
 
@@ -14,7 +17,15 @@ static char nansum_docstring[] =
 
 PyObject *pystr_arr = NULL;
 PyObject *pystr_axis = NULL;
+PyObject *pystr_ddof = NULL;
 
+static int
+intern_strings(void) {
+    pystr_arr = PyString_FromString("arr");
+    pystr_axis = PyString_FromString("axis");
+    pystr_ddof = PyString_FromString("ddof");
+    return pystr_arr && pystr_axis && pystr_ddof;
+}
 
 /* function pointers ----------------------------------------------------- */
 
@@ -74,8 +85,9 @@ initnansum(void)
     PyObject *m = Py_InitModule3("nansum", module_methods, module_docstring);
     if (m == NULL) return;
     import_array();
-    pystr_arr = PyString_FromString("arr");
-    pystr_axis = PyString_FromString("axis");
+    if (!intern_strings()) {
+        return;
+    }
 }
 
 
@@ -176,18 +188,18 @@ reducer(PyObject *args,
         int ravel,
         int copy)
 {
-    PyObject *arr_obj = NULL;
+    PyObject *arr_obj;
     PyObject *axis_obj = Py_None;
     if (!parse_args(args, kwds, &arr_obj, &axis_obj)) {
         return NULL;
     }
 
     /* convert to array if necessary */
-    PyObject *a;
+    PyArrayObject *a;
     if PyArray_Check(arr_obj) {
-        a = arr_obj;
+        a = (PyArrayObject *)arr_obj;
     } else {
-        a = PyArray_FROM_O(arr_obj);
+        a = (PyArrayObject *)PyArray_FROM_O(arr_obj);
         if (a == NULL) {
             return NULL;
         }
@@ -225,14 +237,13 @@ reducer(PyObject *args,
     /* does user want to reduce over all axes? */
     int reduce_all = 0;
     int axis;
-    int axis_reduce;
     if (axis_obj == Py_None) {
         reduce_all = 1;
-        axis_reduce = -1;
+        axis = -1;
     }
     else {
         axis = PyArray_PyIntAsInt(axis_obj);
-        if (axis == -1) {
+        if (error_converting(axis)) {
             PyErr_SetString(PyExc_TypeError, "`axis` must be an integer");
             return NULL;
         }
@@ -251,29 +262,32 @@ reducer(PyObject *args,
         if (ndim == 1 && axis == 0) {
             reduce_all = 1;
         }
-        axis_reduce = axis;
     }
 
+    Py_ssize_t i;
     PyObject *ita;
-    Py_ssize_t stride, length, i; /*  , j; */
-    int dtype = PyArray_TYPE(a);
+    Py_ssize_t stride;
+    Py_ssize_t length;
+    char *p;
 
+    int dtype = PyArray_TYPE(a);
     npy_intp *shape = PyArray_DIMS(a);
     npy_intp *strides = PyArray_STRIDES(a);
-    char *p;
 
     if (reduce_all == 1) {
         /* reduce over all axes */
 
-        if (ndim==1 || PyArray_CHKFLAGS(a, NPY_C_CONTIGUOUS) ||
-            PyArray_CHKFLAGS(a, NPY_F_CONTIGUOUS)) {
+        if (ndim==1 || PyArray_CHKFLAGS(a, NPY_ARRAY_C_CONTIGUOUS) ||
+            PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS)) {
+            /* low function call overhead reduction */
+            length = shape[0];
             stride = strides[0];
             for (i=1; i < ndim; i++) {
+                length *= shape[i];
                 if (strides[i] < stride) {
                     stride = strides[i];
                 }
             }
-            length = PyArray_SIZE(a);
             p = (char *)PyArray_DATA(a);
             if (dtype == NPY_FLOAT64) {
                 return fall_ss_float64(p, stride, length);
@@ -285,14 +299,14 @@ reducer(PyObject *args,
         }
         else {
             if (ravel == 0) {
-                ita = PyArray_IterAllButAxis(a, &axis_reduce);
-                stride = strides[axis_reduce];
-                length = shape[axis_reduce];
+                ita = PyArray_IterAllButAxis((PyObject *)a, &axis);
+                stride = strides[axis];
+                length = shape[axis];
             }
             else {
                 /* TODO a = PyArray_Ravel(a, NPY_ANYORDER);*/
-                axis_reduce = 0;
-                ita = PyArray_IterAllButAxis(a, &axis_reduce);
+                axis = 0;
+                ita = PyArray_IterAllButAxis((PyObject *)a, &axis);
                 stride = PyArray_STRIDE(a, 0);
                 length = PyArray_SIZE(a);
             }
@@ -314,9 +328,9 @@ reducer(PyObject *args,
     npy_intp *y_dims[NPY_MAXDIMS];
 
     input iterator
-    ita = PyArray_IterAllButAxis(a, &axis_reduce);
-    stride = strides[axis_reduce];
-    length = shape[axis_reduce];
+    ita = PyArray_IterAllButAxis(a, &axis);
+    stride = strides[axis];
+    length = shape[axis];
     */
 
     PyErr_SetString(PyExc_TypeError, "can only reduce along all axes");
@@ -325,7 +339,7 @@ reducer(PyObject *args,
     /* TODO reduce over a single axis; ndim > 1
     j = 0;
     for (i=0, j=0; i < ndim; i++, j++) {
-        if (i != axis_reduce) {
+        if (i != axis) {
             y_dims[j] = shape[i];
         }
     }
