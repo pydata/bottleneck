@@ -18,9 +18,10 @@ PyObject *pystr_axis = NULL;
 
 /* function pointers ----------------------------------------------------- */
 
-typedef PyObject *(*fall_ss_t)(char *, npy_intp, npy_intp, int);
-typedef PyObject *(*fall_t)(PyObject *, Py_ssize_t, Py_ssize_t, int);
-typedef PyObject *(*fone_t)(PyObject *, Py_ssize_t, Py_ssize_t, int, npy_intp*, int);
+typedef PyObject *(*fall_ss_t)(char *, npy_intp, npy_intp);
+typedef PyObject *(*fall_t)(PyObject *, Py_ssize_t, Py_ssize_t);
+typedef PyObject *(*fone_t)(PyObject *, Py_ssize_t, Py_ssize_t, int,
+                            npy_intp*);
 
 
 /* prototypes ------------------------------------------------------------ */
@@ -29,24 +30,17 @@ static PyObject *
 nansum(PyObject *self, PyObject *args, PyObject *kwds);
 
 static PyObject *
-nansum_all_ss_float64(char *p,
-                      npy_intp stride,
-                      npy_intp length,
-                      int int_input);
+nansum_all_ss_float64(char *p, npy_intp stride, npy_intp length);
 
 static PyObject *
-nansum_all_float64(PyObject *ita,
-                   Py_ssize_t stride,
-                   Py_ssize_t length,
-                   int int_input);
+nansum_all_float64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length);
 
 static PyObject *
 nansum_one_float64(PyObject *ita,
                    Py_ssize_t stride,
                    Py_ssize_t length,
                    int a_ndim,
-                   npy_intp* y_dims,
-                   int int_input);
+                   npy_intp* y_dims);
 
 static PyObject *
 reducer(PyObject *args,
@@ -54,7 +48,6 @@ reducer(PyObject *args,
         fall_t fall_float64,
         fall_ss_t fall_ss_float64,
         fone_t fone_float64,
-        int int_input,
         int ravel,
         int copy);
 
@@ -63,7 +56,8 @@ reducer(PyObject *args,
 
 static PyMethodDef
 module_methods[] = {
-    {"nansum", (PyCFunction)nansum, METH_VARARGS | METH_KEYWORDS, nansum_docstring},
+    {"nansum", (PyCFunction)nansum, METH_VARARGS | METH_KEYWORDS,
+      nansum_docstring},
     {NULL, NULL, 0, NULL}
 };
 
@@ -87,15 +81,14 @@ nansum(PyObject *self, PyObject *args, PyObject *kwds)
                    nansum_all_float64,
                    nansum_all_ss_float64,
                    nansum_one_float64,
-                   0, 0, 0);
+                   0, 0);
 }
 
 
 static PyObject *
 nansum_all_ss_float64(char *p,
-                  npy_intp stride,
-                  npy_intp length,
-                  int int_input)
+                      npy_intp stride,
+                      npy_intp length)
 {
 Py_ssize_t i;
     npy_float64 ai;
@@ -113,14 +106,13 @@ Py_ssize_t i;
 static PyObject *
 nansum_all_float64(PyObject *ita,
                    Py_ssize_t stride,
-                   Py_ssize_t length,
-                   int int_input)
+                   Py_ssize_t length)
 {
     Py_ssize_t i;
     npy_float64 asum = 0, ai;
     while (PyArray_ITER_NOTDONE(ita)) {
         for (i = 0; i < length; i++) {
-            ai = (*(npy_float64*)(((char*)PyArray_ITER_DATA(ita)) + i * stride));
+            ai = (*(npy_float64*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
             if (ai == ai) {
                 asum += ai;
             }
@@ -136,8 +128,7 @@ nansum_one_float64(PyObject *ita,
                    Py_ssize_t stride,
                    Py_ssize_t length,
                    int a_ndim,
-                   npy_intp* y_dims,
-                   int int_input)
+                   npy_intp* y_dims)
 {
     Py_ssize_t i;
     npy_float64 asum = 0, ai;
@@ -153,7 +144,8 @@ nansum_one_float64(PyObject *ita,
         while (PyArray_ITER_NOTDONE(ita)) {
             asum = 0;
             for (i = 0; i < length; i++) {
-                ai = (*(npy_float64*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
+                ai = (*(npy_float64*)(((char*)PyArray_ITER_DATA(ita)) +
+                                                                  i*stride));
                 if (ai == ai) {
                     asum += ai;
                 }
@@ -175,7 +167,6 @@ reducer(PyObject *args,
         fall_t fall_float64,
         fall_ss_t fall_ss_float64,
         fone_t fone_float64,
-        int int_input,
         int ravel,
         int copy)
 {
@@ -283,34 +274,34 @@ reducer(PyObject *args,
 
     /* does user want to reduce over all axes? */
     int reduce_all = 0;
-    int axis_int;
+    int axis;
     int axis_reduce;
     if (axis_obj == Py_None) {
         reduce_all = 1;
         axis_reduce = -1;
     }
     else {
-        axis_int = PyArray_PyIntAsInt(axis_obj);
-        if (axis_int == -1) {
+        axis = PyArray_PyIntAsInt(axis_obj);
+        if (axis == -1) {
             PyErr_SetString(PyExc_TypeError, "`axis` must be an integer");
             return NULL;
         }
-        if (axis_int < 0) {
-            axis_int += a_ndim;
-            if (axis_int < 0) {
+        if (axis < 0) {
+            axis += a_ndim;
+            if (axis < 0) {
                 PyErr_Format(PyExc_ValueError,
-                             "axis(=%d) out of bounds", axis_int);
+                             "axis(=%d) out of bounds", axis);
                 return NULL;
             }
         }
-        else if (axis_int >= a_ndim) {
-            PyErr_Format(PyExc_ValueError, "axis(=%d) out of bounds", axis_int);
+        else if (axis >= a_ndim) {
+            PyErr_Format(PyExc_ValueError, "axis(=%d) out of bounds", axis);
             return NULL;
         }
-        if (a_ndim == 1 && axis_int == 0) {
+        if (a_ndim == 1 && axis == 0) {
             reduce_all = 1;
         }
-        axis_reduce = axis_int;
+        axis_reduce = axis;
     }
 
     PyObject *ita;
@@ -335,7 +326,7 @@ reducer(PyObject *args,
             length = PyArray_SIZE(a);
             p = (char *)PyArray_DATA(a);
             if (dtype == NPY_FLOAT64) {
-                return fall_ss_float64(p, stride, length, int_input);
+                return fall_ss_float64(p, stride, length);
             }
             else {
                 PyErr_SetString(PyExc_TypeError, "dtype not yet supported");
@@ -356,7 +347,7 @@ reducer(PyObject *args,
                 length = PyArray_SIZE(a);
             }
             if (dtype == NPY_FLOAT64) {
-                return fall_float64(ita, stride, length, int_input);
+                return fall_float64(ita, stride, length);
             }
             else {
                 PyErr_SetString(PyExc_TypeError, "dtype not yet supported");
@@ -389,7 +380,7 @@ reducer(PyObject *args,
         }
     }
     if (dtype == NPY_FLOAT64) {
-        y = fone_float64(ita, stride, length, a_ndim, y_dims, int_input);
+        y = fone_float64(ita, stride, length, a_ndim, y_dims);
     }
     else {
         PyErr_SetString(PyExc_TypeError, "dtype not yet supported");
