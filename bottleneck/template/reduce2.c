@@ -42,23 +42,50 @@ nansum(PyObject *self, PyObject *args, PyObject *kwds);
 
 static PyObject *
 nansum_all_ss_float64(char *p, npy_intp stride, npy_intp length);
+static PyObject *
+nansum_all_ss_float32(char *p, npy_intp stride, npy_intp length);
+static PyObject *
+nansum_all_ss_int64(char *p, npy_intp stride, npy_intp length);
+static PyObject *
+nansum_all_ss_int32(char *p, npy_intp stride, npy_intp length);
 
 static PyObject *
 nansum_all_float64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length);
+static PyObject *
+nansum_all_float32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length);
+static PyObject *
+nansum_all_int64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length);
+static PyObject *
+nansum_all_int32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length);
 
 static PyObject *
-nansum_one_float64(PyObject *ita,
-                   Py_ssize_t stride,
-                   Py_ssize_t length,
-                   int ndim,
-                   npy_intp* y_dims);
+nansum_one_float64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
+                   int ndim, npy_intp* y_dims);
+static PyObject *
+nansum_one_float32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
+                   int ndim, npy_intp* y_dims);
+static PyObject *
+nansum_one_int64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
+                 int ndim, npy_intp* y_dims);
+static PyObject *
+nansum_one_int32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
+                 int ndim, npy_intp* y_dims);
 
 static PyObject *
 reducer(PyObject *args,
         PyObject *kwds,
         fall_t fall_float64,
+        fall_t fall_float32,
+        fall_t fall_int64,
+        fall_t fall_int32,
         fall_ss_t fall_ss_float64,
+        fall_ss_t fall_ss_float32,
+        fall_ss_t fall_ss_int64,
+        fall_ss_t fall_ss_int32,
         fone_t fone_float64,
+        fone_t fone_float32,
+        fone_t fone_int64,
+        fone_t fone_int32,
         int ravel,
         int copy);
 
@@ -97,18 +124,25 @@ nansum(PyObject *self, PyObject *args, PyObject *kwds)
     return reducer(args,
                    kwds,
                    nansum_all_float64,
+                   nansum_all_float32,
+                   nansum_all_int64,
+                   nansum_all_int32,
                    nansum_all_ss_float64,
+                   nansum_all_ss_float32,
+                   nansum_all_ss_int64,
+                   nansum_all_ss_int32,
                    nansum_one_float64,
+                   nansum_one_float32,
+                   nansum_one_int64,
+                   nansum_one_int32,
                    0, 0);
 }
 
 
 static PyObject *
-nansum_all_ss_float64(char *p,
-                      npy_intp stride,
-                      npy_intp length)
+nansum_all_ss_float64(char *p, npy_intp stride, npy_intp length)
 {
-Py_ssize_t i;
+    Py_ssize_t i;
     npy_float64 ai;
     npy_float64 asum = 0;
     for (i = 0; i < length; i++) {
@@ -122,9 +156,45 @@ Py_ssize_t i;
 
 
 static PyObject *
-nansum_all_float64(PyObject *ita,
-                   Py_ssize_t stride,
-                   Py_ssize_t length)
+nansum_all_ss_float32(char *p, npy_intp stride, npy_intp length)
+{
+    Py_ssize_t i;
+    npy_float32 ai;
+    npy_float32 asum = 0;
+    for (i = 0; i < length; i++) {
+        ai = (*(npy_float32*)(p + i * stride));
+        if (ai == ai) {
+            asum += ai;
+        }
+    }
+    return PyFloat_FromDouble(asum);
+}
+
+
+static PyObject *
+nansum_all_ss_int64(char *p, npy_intp stride, npy_intp length)
+{
+    Py_ssize_t i;
+    npy_int64 asum = 0;
+    for (i = 0; i < length; i++) {
+        asum += (*(npy_int64*)(p + i * stride));
+    }
+    return PyInt_FromLong(asum);
+}
+
+static PyObject *
+nansum_all_ss_int32(char *p, npy_intp stride, npy_intp length)
+{
+    Py_ssize_t i;
+    npy_int32 asum = 0;
+    for (i = 0; i < length; i++) {
+        asum += (*(npy_int32*)(p + i * stride));
+    }
+    return PyInt_FromLong(asum);
+}
+
+static PyObject *
+nansum_all_float64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 {
     Py_ssize_t i;
     npy_float64 asum = 0, ai;
@@ -138,6 +208,54 @@ nansum_all_float64(PyObject *ita,
         PyArray_ITER_NEXT(ita);
     }
     return PyFloat_FromDouble(asum);
+}
+
+
+static PyObject *
+nansum_all_float32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+{
+    Py_ssize_t i;
+    npy_float32 asum = 0, ai;
+    while (PyArray_ITER_NOTDONE(ita)) {
+        for (i = 0; i < length; i++) {
+            ai = (*(npy_float32*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
+            if (ai == ai) {
+                asum += ai;
+            }
+        }
+        PyArray_ITER_NEXT(ita);
+    }
+    return PyFloat_FromDouble(asum);
+}
+
+
+static PyObject *
+nansum_all_int64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+{
+    Py_ssize_t i;
+    npy_int64 asum = 0;
+    while (PyArray_ITER_NOTDONE(ita)) {
+        for (i = 0; i < length; i++) {
+            asum += (*(npy_int64*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
+        }
+        PyArray_ITER_NEXT(ita);
+    }
+    return PyInt_FromLong(asum);
+}
+
+
+static PyObject *
+nansum_all_int32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+{
+    Py_ssize_t i;
+    npy_int32 asum = 0;
+    while (PyArray_ITER_NOTDONE(ita)) {
+        for (i = 0; i < length; i++) {
+            asum += (*(npy_int32*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
+        }
+        PyArray_ITER_NEXT(ita);
+    }
+    return PyInt_FromLong(asum);
 }
 
 
@@ -177,14 +295,125 @@ nansum_one_float64(PyObject *ita,
 }
 
 
+static PyObject *
+nansum_one_float32(PyObject *ita,
+                   Py_ssize_t stride,
+                   Py_ssize_t length,
+                   int ndim,
+                   npy_intp* y_dims)
+{
+    Py_ssize_t i;
+    npy_float32 asum = 0, ai;
+    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_FLOAT32, 0);
+    PyObject *ity = PyArray_IterNew(y);
+    if (length == 0) {
+        while (PyArray_ITER_NOTDONE(ity)) {
+            (*(npy_float32*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
+            PyArray_ITER_NEXT(ity);
+        }
+    }
+    else {
+        while (PyArray_ITER_NOTDONE(ita)) {
+            asum = 0;
+            for (i = 0; i < length; i++) {
+                ai = (*(npy_float32*)(((char*)PyArray_ITER_DATA(ita)) +
+                                                                  i*stride));
+                if (ai == ai) {
+                    asum += ai;
+                }
+            }
+            (*(npy_float32*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
+            PyArray_ITER_NEXT(ita);
+            PyArray_ITER_NEXT(ity);
+        }
+    }
+    return y;
+}
+
+
+static PyObject *
+nansum_one_int64(PyObject *ita,
+                   Py_ssize_t stride,
+                   Py_ssize_t length,
+                   int ndim,
+                   npy_intp* y_dims)
+{
+    Py_ssize_t i;
+    npy_int64 asum = 0;
+    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_INT64, 0);
+    PyObject *ity = PyArray_IterNew(y);
+    if (length == 0) {
+        while (PyArray_ITER_NOTDONE(ity)) {
+            (*(npy_int64*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
+            PyArray_ITER_NEXT(ity);
+        }
+    }
+    else {
+        while (PyArray_ITER_NOTDONE(ita)) {
+            asum = 0;
+            for (i = 0; i < length; i++) {
+                asum += (*(npy_int64*)(((char*)PyArray_ITER_DATA(ita)) +
+                                                                  i*stride));
+            }
+            (*(npy_int64*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
+            PyArray_ITER_NEXT(ita);
+            PyArray_ITER_NEXT(ity);
+        }
+    }
+    return y;
+}
+
+
+static PyObject *
+nansum_one_int32(PyObject *ita,
+                   Py_ssize_t stride,
+                   Py_ssize_t length,
+                   int ndim,
+                   npy_intp* y_dims)
+{
+    Py_ssize_t i;
+    npy_int32 asum = 0;
+    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_INT32, 0);
+    PyObject *ity = PyArray_IterNew(y);
+    if (length == 0) {
+        while (PyArray_ITER_NOTDONE(ity)) {
+            (*(npy_int32*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
+            PyArray_ITER_NEXT(ity);
+        }
+    }
+    else {
+        while (PyArray_ITER_NOTDONE(ita)) {
+            asum = 0;
+            for (i = 0; i < length; i++) {
+                asum += (*(npy_int32*)(((char*)PyArray_ITER_DATA(ita)) +
+                                                                  i*stride));
+            }
+            (*(npy_int32*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
+            PyArray_ITER_NEXT(ita);
+            PyArray_ITER_NEXT(ity);
+        }
+    }
+    return y;
+}
+
+
 /* reducer --------------------------------------------------------------- */
 
 static PyObject *
 reducer(PyObject *args,
         PyObject *kwds,
         fall_t fall_float64,
+        fall_t fall_float32,
+        fall_t fall_int64,
+        fall_t fall_int32,
         fall_ss_t fall_ss_float64,
+        fall_ss_t fall_ss_float32,
+        fall_ss_t fall_ss_int64,
+        fall_ss_t fall_ss_int32,
         fone_t fone_float64,
+        fone_t fone_float32,
+        fone_t fone_int64,
+        fone_t fone_int32,
         int ravel,
         int copy)
 {
@@ -265,13 +494,14 @@ reducer(PyObject *args,
     }
 
     Py_ssize_t i;
-    PyObject *ita;
     Py_ssize_t stride;
     Py_ssize_t length;
+
+    PyObject *ita;
     char *p;
 
     int dtype = PyArray_TYPE(a);
-    npy_intp *shape = PyArray_DIMS(a);
+    npy_intp *shape = PyArray_SHAPE(a);
     npy_intp *strides = PyArray_STRIDES(a);
 
     if (reduce_all == 1) {
@@ -291,6 +521,15 @@ reducer(PyObject *args,
             p = (char *)PyArray_DATA(a);
             if (dtype == NPY_FLOAT64) {
                 return fall_ss_float64(p, stride, length);
+            }
+            else if (dtype == NPY_FLOAT32) {
+                return fall_ss_float32(p, stride, length);
+            }
+            else if (dtype == NPY_INT64) {
+                return fall_ss_int64(p, stride, length);
+            }
+            else if (dtype == NPY_INT32) {
+                return fall_ss_int32(p, stride, length);
             }
             else {
                 PyErr_SetString(PyExc_TypeError, "dtype not yet supported");
@@ -312,6 +551,15 @@ reducer(PyObject *args,
             }
             if (dtype == NPY_FLOAT64) {
                 return fall_float64(ita, stride, length);
+            }
+            else if (dtype == NPY_FLOAT32) {
+                return fall_float32(ita, stride, length);
+            }
+            else if (dtype == NPY_INT64) {
+                return fall_int64(ita, stride, length);
+            }
+            else if (dtype == NPY_INT32) {
+                return fall_int32(ita, stride, length);
             }
             else {
                 PyErr_SetString(PyExc_TypeError, "dtype not yet supported");
