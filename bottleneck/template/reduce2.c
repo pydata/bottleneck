@@ -39,7 +39,7 @@ static PyObject *
 nansum_one_float64(PyObject *ita,
                    Py_ssize_t stride,
                    Py_ssize_t length,
-                   int a_ndim,
+                   int ndim,
                    npy_intp* y_dims);
 
 static PyObject *
@@ -50,6 +50,12 @@ reducer(PyObject *args,
         fone_t fone_float64,
         int ravel,
         int copy);
+
+static inline int
+parse_args(PyObject *args,
+           PyObject *kwds,
+           PyObject **arr_obj,
+           PyObject **axis_obj);
 
 
 /* nansum ---------------------------------------------------------------- */
@@ -127,12 +133,12 @@ static PyObject *
 nansum_one_float64(PyObject *ita,
                    Py_ssize_t stride,
                    Py_ssize_t length,
-                   int a_ndim,
+                   int ndim,
                    npy_intp* y_dims)
 {
     Py_ssize_t i;
     npy_float64 asum = 0, ai;
-    PyObject *y = PyArray_EMPTY(a_ndim - 1, y_dims, NPY_FLOAT64, 0);
+    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_FLOAT64, 0);
     PyObject *ity = PyArray_IterNew(y);
     if (length == 0) {
         while (PyArray_ITER_NOTDONE(ity)) {
@@ -170,65 +176,9 @@ reducer(PyObject *args,
         int ravel,
         int copy)
 {
-    /* parse inputs: args and kwds */
-    const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
-    PyObject *arr_obj;
+    PyObject *arr_obj = NULL;
     PyObject *axis_obj = Py_None;
-    if (kwds) {
-        const Py_ssize_t nkwds = PyDict_Size(kwds);
-        if (nkwds == 1) {
-            if (nargs == 0) {
-                arr_obj = PyDict_GetItem(kwds, pystr_arr);
-                if (!arr_obj) {
-                    PyErr_SetString(PyExc_TypeError, "can't find `arr` input");
-                    return NULL;
-                }
-            }
-            else {
-                axis_obj = PyDict_GetItem(kwds, pystr_axis);
-                if (!axis_obj) {
-                    PyErr_SetString(PyExc_TypeError, "can't find `axis` input");
-                    return NULL;
-                }
-                if (nargs == 1) {
-                    arr_obj = PyTuple_GET_ITEM(args, 0);
-                }
-                else {
-                    PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
-                    return NULL;
-                }
-            }
-        }
-        else if (nkwds == 2) {
-            if (nargs != 0) {
-                PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
-                return NULL;
-            }
-            arr_obj = PyDict_GetItem(kwds, pystr_arr);
-            if (!arr_obj) {
-                PyErr_SetString(PyExc_TypeError, "can't find `arr` input");
-                return NULL;
-            }
-            axis_obj = PyDict_GetItem(kwds, pystr_axis);
-            if (!axis_obj) {
-                PyErr_SetString(PyExc_TypeError, "can't find `axis` input");
-                return NULL;
-            }
-        }
-        else {
-            PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
-            return NULL;
-        }
-    }
-    else if (nargs == 1) {
-        arr_obj = PyTuple_GET_ITEM(args, 0);
-    }
-    else if (nargs == 2) {
-        arr_obj = PyTuple_GET_ITEM(args, 0);
-        axis_obj = PyTuple_GET_ITEM(args, 1);
-    }
-    else {
-        PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
+    if (!parse_args(args, kwds, &arr_obj, &axis_obj)) {
         return NULL;
     }
 
@@ -258,10 +208,10 @@ reducer(PyObject *args,
     }
     */
 
-    int a_ndim = PyArray_NDIM(a);
+    int ndim = PyArray_NDIM(a);
 
     /* defend against 0d beings */
-    if (a_ndim == 0) {
+    if (ndim == 0) {
         /*
         if (axis == Py_None || (int)axis == 0 || (int)axis == -1) {
             PyErr_SetString(PyExc_ValueError, "TODO: 0d input");
@@ -287,18 +237,18 @@ reducer(PyObject *args,
             return NULL;
         }
         if (axis < 0) {
-            axis += a_ndim;
+            axis += ndim;
             if (axis < 0) {
                 PyErr_Format(PyExc_ValueError,
                              "axis(=%d) out of bounds", axis);
                 return NULL;
             }
         }
-        else if (axis >= a_ndim) {
+        else if (axis >= ndim) {
             PyErr_Format(PyExc_ValueError, "axis(=%d) out of bounds", axis);
             return NULL;
         }
-        if (a_ndim == 1 && axis == 0) {
+        if (ndim == 1 && axis == 0) {
             reduce_all = 1;
         }
         axis_reduce = axis;
@@ -315,10 +265,10 @@ reducer(PyObject *args,
     if (reduce_all == 1) {
         /* reduce over all axes */
 
-        if (a_ndim==1 || PyArray_CHKFLAGS(a, NPY_C_CONTIGUOUS) ||
+        if (ndim==1 || PyArray_CHKFLAGS(a, NPY_C_CONTIGUOUS) ||
             PyArray_CHKFLAGS(a, NPY_F_CONTIGUOUS)) {
             stride = strides[0];
-            for (i=1; i < a_ndim; i++) {
+            for (i=1; i < ndim; i++) {
                 if (strides[i] < stride) {
                     stride = strides[i];
                 }
@@ -372,15 +322,15 @@ reducer(PyObject *args,
     PyErr_SetString(PyExc_TypeError, "can only reduce along all axes");
     return NULL;
 
-    /* TODO reduce over a single axis; a_ndim > 1
+    /* TODO reduce over a single axis; ndim > 1
     j = 0;
-    for (i=0, j=0; i < a_ndim; i++, j++) {
+    for (i=0, j=0; i < ndim; i++, j++) {
         if (i != axis_reduce) {
             y_dims[j] = shape[i];
         }
     }
     if (dtype == NPY_FLOAT64) {
-        y = fone_float64(ita, stride, length, a_ndim, y_dims);
+        y = fone_float64(ita, stride, length, ndim, y_dims);
     }
     else {
         PyErr_SetString(PyExc_TypeError, "dtype not yet supported");
@@ -388,5 +338,76 @@ reducer(PyObject *args,
     }
     return y;
     */
+
+}
+
+
+static inline int
+parse_args(PyObject *args,
+           PyObject *kwds,
+           PyObject **arr_obj,
+           PyObject **axis_obj)
+{
+    /* parse inputs: args and kwds */
+    const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+    if (kwds) {
+        const Py_ssize_t nkwds = PyDict_Size(kwds);
+        if (nkwds == 1) {
+            if (nargs == 0) {
+                *arr_obj = PyDict_GetItem(kwds, pystr_arr);
+                if (!*arr_obj) {
+                    PyErr_SetString(PyExc_TypeError, "can't find `arr` input");
+                    return 0;
+                }
+            }
+            else {
+                *axis_obj = PyDict_GetItem(kwds, pystr_axis);
+                if (!*axis_obj) {
+                    PyErr_SetString(PyExc_TypeError, "can't find `axis` input");
+                    return 0;
+                }
+                if (nargs == 1) {
+                    *arr_obj = PyTuple_GET_ITEM(args, 0);
+                }
+                else {
+                    PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
+                    return 0;
+                }
+            }
+        }
+        else if (nkwds == 2) {
+            if (nargs != 0) {
+                PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
+                return 0;
+            }
+            *arr_obj = PyDict_GetItem(kwds, pystr_arr);
+            if (!*arr_obj) {
+                PyErr_SetString(PyExc_TypeError, "can't find `arr` input");
+                return 0;
+            }
+            *axis_obj = PyDict_GetItem(kwds, pystr_axis);
+            if (!*axis_obj) {
+                PyErr_SetString(PyExc_TypeError, "can't find `axis` input");
+                return 0;
+            }
+        }
+        else {
+            PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
+            return 0;
+        }
+    }
+    else if (nargs == 1) {
+        *arr_obj = PyTuple_GET_ITEM(args, 0);
+    }
+    else if (nargs == 2) {
+        *arr_obj = PyTuple_GET_ITEM(args, 0);
+        *axis_obj = PyTuple_GET_ITEM(args, 1);
+    }
+    else {
+        PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
+        return 0;
+    }
+
+    return 1;
 
 }
