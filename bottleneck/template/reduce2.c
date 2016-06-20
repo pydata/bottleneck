@@ -33,6 +33,7 @@ typedef PyObject *(*fall_ss_t)(char *, npy_intp, npy_intp);
 typedef PyObject *(*fall_t)(PyObject *, Py_ssize_t, Py_ssize_t);
 typedef PyObject *(*fone_t)(PyObject *, Py_ssize_t, Py_ssize_t, int,
                             npy_intp*);
+typedef PyObject *(*f0d_t)(PyArrayObject *);
 
 
 /* prototypes ------------------------------------------------------------ */
@@ -72,6 +73,9 @@ nansum_one_int32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
                  int ndim, npy_intp* y_dims);
 
 static PyObject *
+nansum_0d(PyArrayObject *a);
+
+static PyObject *
 reducer(PyObject *args,
         PyObject *kwds,
         fall_t fall_float64,
@@ -86,6 +90,7 @@ reducer(PyObject *args,
         fone_t fone_float32,
         fone_t fone_int64,
         fone_t fone_int32,
+        f0d_t f_0d,
         int ravel,
         int copy);
 
@@ -135,6 +140,7 @@ nansum(PyObject *self, PyObject *args, PyObject *kwds)
                    nansum_one_float32,
                    nansum_one_int64,
                    nansum_one_int32,
+                   nansum_0d,
                    0, 0);
 }
 
@@ -409,6 +415,17 @@ nansum_one_int32(PyObject *ita,
 }
 
 
+static PyObject *
+nansum_0d(PyArrayObject *a)
+{
+    PyObject *out = PyArray_ToScalar(PyArray_DATA(a), a);
+    if (out == out)
+        return out;
+    else
+        return PyFloat_FromDouble(0.0);
+}
+
+
 /* reducer --------------------------------------------------------------- */
 
 static PyObject *
@@ -426,6 +443,7 @@ reducer(PyObject *args,
         fone_t fone_float32,
         fone_t fone_int64,
         fone_t fone_int32,
+        f0d_t f_0d,
         int ravel,
         int copy)
 {
@@ -465,14 +483,14 @@ reducer(PyObject *args,
 
     /* defend against 0d beings */
     if (ndim == 0) {
-        /*
-        if (axis == Py_None || (int)axis == 0 || (int)axis == -1) {
-            PyErr_SetString(PyExc_ValueError, "TODO: 0d input");
+        if (axis_obj == Py_None ||
+            axis_obj == PyInt_FromLong(0) ||
+            axis_obj == PyInt_FromLong(-1))
+            return f_0d(a);
+        else {
+            PyErr_Format(PyExc_ValueError, "axis out of bounds for 0d input");
             return NULL;
-        } else {
-        */
-        PyErr_SetString(PyExc_ValueError, "TODO: 0d input");
-        return NULL;
+        }
     }
 
     /* does user want to reduce over all axes? */
