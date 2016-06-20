@@ -207,6 +207,7 @@ nansum_all_float64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         }
         PyArray_ITER_NEXT(ita);
     }
+    Py_DECREF(ita);
     return PyFloat_FromDouble(asum);
 }
 
@@ -225,6 +226,7 @@ nansum_all_float32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         }
         PyArray_ITER_NEXT(ita);
     }
+    Py_DECREF(ita);
     return PyFloat_FromDouble(asum);
 }
 
@@ -240,6 +242,7 @@ nansum_all_int64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         }
         PyArray_ITER_NEXT(ita);
     }
+    Py_DECREF(ita);
     return PyInt_FromLong(asum);
 }
 
@@ -255,6 +258,7 @@ nansum_all_int32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         }
         PyArray_ITER_NEXT(ita);
     }
+    Py_DECREF(ita);
     return PyInt_FromLong(asum);
 }
 
@@ -291,6 +295,8 @@ nansum_one_float64(PyObject *ita,
             PyArray_ITER_NEXT(ity);
         }
     }
+    Py_DECREF(ita);
+    Py_DECREF(ity);
     return y;
 }
 
@@ -327,6 +333,8 @@ nansum_one_float32(PyObject *ita,
             PyArray_ITER_NEXT(ity);
         }
     }
+    Py_DECREF(ita);
+    Py_DECREF(ity);
     return y;
 }
 
@@ -360,6 +368,8 @@ nansum_one_int64(PyObject *ita,
             PyArray_ITER_NEXT(ity);
         }
     }
+    Py_DECREF(ita);
+    Py_DECREF(ity);
     return y;
 }
 
@@ -393,6 +403,8 @@ nansum_one_int32(PyObject *ita,
             PyArray_ITER_NEXT(ity);
         }
     }
+    Py_DECREF(ita);
+    Py_DECREF(ity);
     return y;
 }
 
@@ -571,35 +583,37 @@ reducer(PyObject *args,
     /* if we have reached this point then we are reducing an array with
        ndim > 1 over a single axis */
 
-    /* output array
-    PyArrayObject *y;
-    npy_intp *y_dims[NPY_MAXDIMS];
+    /* output array */
+    npy_intp y_dims[NPY_MAXDIMS];
 
-    input iterator
-    ita = PyArray_IterAllButAxis(a, &axis);
+    /* input iterator */
+    ita = PyArray_IterAllButAxis((PyObject *)a, &axis);
     stride = strides[axis];
     length = shape[axis];
-    */
 
-    PyErr_SetString(PyExc_TypeError, "can only reduce along all axes");
-    return NULL;
-
-    /* TODO reduce over a single axis; ndim > 1
-    j = 0;
-    for (i=0, j=0; i < ndim; i++, j++) {
+    /* reduce over a single axis; ndim > 1 */
+    Py_ssize_t j = 0;
+    for (i=0; i < ndim; i++) {
         if (i != axis) {
-            y_dims[j] = shape[i];
+            y_dims[j++] = shape[i];
         }
     }
     if (dtype == NPY_FLOAT64) {
-        y = fone_float64(ita, stride, length, ndim, y_dims);
+        return fone_float64(ita, stride, length, ndim, y_dims);
+    }
+    else if (dtype == NPY_FLOAT32) {
+        return fone_float32(ita, stride, length, ndim, y_dims);
+    }
+    else if (dtype == NPY_INT64) {
+        return fone_int64(ita, stride, length, ndim, y_dims);
+    }
+    else if (dtype == NPY_INT32) {
+        return fone_int32(ita, stride, length, ndim, y_dims);
     }
     else {
         PyErr_SetString(PyExc_TypeError, "dtype not yet supported");
         return NULL;
     }
-    return y;
-    */
 
 }
 
