@@ -4,16 +4,6 @@
 #include <math.h>
 #include <assert.h>
 
-#if defined(_MSC_VER) && (_MSC_VER < 1900)
-#define inline __inline
-static __inline float __NAN() {
-  float value;
-  memset(&value, 0xFF, sizeof(value));
-  return value;
-}
-#define NAN __NAN()
-#endif
-
 #if NOCYTHON==1
 
     typedef size_t idx_t;
@@ -28,6 +18,16 @@ static __inline float __NAN() {
     typedef npy_intp idx_t;
     #define NUM_CHILDREN 8
 
+#endif
+
+#if defined(_MSC_VER) && (_MSC_VER < 1900)
+    #define inline __inline
+    static __inline ai_t __NAN() {
+      ai_t value;
+      memset(&value, 0xFF, sizeof(value));
+      return value;
+    }
+    #define NAN __NAN()
 #endif
 
 // Find indices of parent and first child
