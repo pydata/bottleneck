@@ -265,6 +265,12 @@ mm_update_init_nan(mm_handle *mm, ai_t ai)
 inline ai_t
 mm_update_nan(mm_handle *mm, ai_t ai)
 {
+    idx_t n_s, n_l, n_n;
+
+    mm_node **l_heap;
+    mm_node **s_heap;
+    mm_node **n_array;
+    mm_node *node2;
 
     // node is oldest node with ai of newest node
     mm_node *node = mm->oldest;
@@ -276,15 +282,13 @@ mm_update_nan(mm_handle *mm, ai_t ai)
     mm->newest->next = node;
     mm->newest = node;
 
-    mm_node **l_heap = mm->l_heap;
-    mm_node **s_heap = mm->s_heap;
-    mm_node **n_array = mm->n_array;
+    l_heap = mm->l_heap;
+    s_heap = mm->s_heap;
+    n_array = mm->n_array;
 
-    idx_t n_s = mm->n_s;
-    idx_t n_l = mm->n_l;
-    idx_t n_n = mm->n_n;
-
-    mm_node *node2;
+    n_s = mm->n_s;
+    n_l = mm->n_l;
+    n_n = mm->n_n;
 
     if (ai != ai) {
 

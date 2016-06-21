@@ -20,6 +20,16 @@
 
 #endif
 
+#if defined(_MSC_VER) && (_MSC_VER < 1900)
+    #define inline __inline
+    static __inline ai_t __NAN() {
+      ai_t value;
+      memset(&value, 0xFF, sizeof(value));
+      return value;
+    }
+    #define NAN __NAN()
+#endif
+
 // Find indices of parent and first child
 #define P_IDX(i) ((i) - 1) / NUM_CHILDREN
 #define FC_IDX(i) NUM_CHILDREN * (i) + 1
