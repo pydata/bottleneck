@@ -6,8 +6,20 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
-Bottleneck 1.1.0
+Bottleneck 1.2.0
 ================
+
+*Release date: in development, not yet released*
+
+
+
+Older versions
+==============
+
+Release notes from past releases.
+
+Bottleneck 1.1.0
+----------------
 
 *Release date: 2016-06-22*
 
@@ -59,12 +71,6 @@ Alphabeticaly by last name
 - Jaime Frio improved the numerical stability of move_std
 - Christoph Gohlke revived Windows compatibility
 - Jennifer Olsen added NaN support to move_median
-
-
-Older versions
-==============
-
-Release notes from past releases.
 
 Bottleneck 1.0.0
 ----------------
