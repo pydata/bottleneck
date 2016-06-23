@@ -1,4 +1,4 @@
-.. image:: https://travis-ci.org/kwgoodman/bottleneck.svg?branch=master
+.. image:: https://travis-ci.org/kwgoodman/bottleneck.svg?branch=c_rewrite
     :target: https://travis-ci.org/kwgoodman/bottleneck
 ==========
 Bottleneck

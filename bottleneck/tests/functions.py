@@ -29,6 +29,7 @@ def all_functions():
 def func_dict():
     d = {}
     d['reduce'] = [bn.nansum,
+                   bn.nansum2,
                    bn.nanmean,
                    bn.nanstd,
                    bn.nanvar,

@@ -115,9 +115,9 @@ module_methods[] = {
 
 
 PyMODINIT_FUNC
-initnansum(void)
+initreduce2(void)
 {
-    PyObject *m = Py_InitModule3("nansum", module_methods, module_docstring);
+    PyObject *m = Py_InitModule3("reduce2", module_methods, module_docstring);
     if (m == NULL) return;
     import_array();
     if (!intern_strings()) {

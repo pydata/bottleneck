@@ -13,6 +13,10 @@ try:
 except:
     pass
 try:
+    from .reduce2 import nansum as nansum2
+except:
+    pass
+try:
     from .nonreduce import replace
 except:
     pass

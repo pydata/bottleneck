@@ -29,7 +29,7 @@ def prepare_modules():
 
     # info needed to compile bottleneck
     kwargs = {}
-    for module in modules:
+    for module in modules + ["reduce2"]:
         # `-O3` causes slow down of nanmin and nanmax; force `-O2`
         kwargs[module] = {'include_dirs': [np.get_include()],
                           'extra_compile_args': ['-O2']}
@@ -40,10 +40,15 @@ def prepare_modules():
         # create the C files
         from bottleneck.template.template import make_pyx
         make_pyx()
-        return cythonize([Extension("bottleneck.%s" % module,
-                                    sources=["bottleneck/%s.pyx" % module],
-                                    **kwargs[module])
-                          for module in modules])
+        ext_list = [Extension("bottleneck.%s" % module,
+                              sources=["bottleneck/%s.pyx" % module],
+                              **kwargs[module])
+                    for module in modules]
+        ext_list = cythonize(ext_list)
+        ext_list += [Extension("bottleneck.reduce2",
+                               sources=["bottleneck/template/reduce2.c"],
+                               **kwargs["reduce2"])]
+        return ext_list
     else:
         # assume the presence of shipped C files
         return [Extension("bottleneck.%s" % module,
