@@ -423,10 +423,12 @@ static PyObject *
 nansum_0d(PyArrayObject *a)
 {
     PyObject *out = PyArray_ToScalar(PyArray_DATA(a), a);
-    if (out == out)
+    if (PyObject_IsTrue(PyObject_RichCompare(out, out, Py_EQ))) {
         return out;
-    else
+    }
+    else {
         return PyFloat_FromDouble(0.0);
+    }
 }
 
 
@@ -471,10 +473,7 @@ reducer(char *name,
 
     /* check for byte swapped input array */
     if PyArray_ISBYTESWAPPED(a) {
-        /* TODO: call bn.slow */
-        PyErr_SetString(PyExc_TypeError,
-                        "Cannot yet handle byte-swapped arrays");
-        return NULL;
+        return slow(name, args, kwds);
     }
 
     /* input array
