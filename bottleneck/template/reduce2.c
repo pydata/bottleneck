@@ -76,7 +76,8 @@ static PyObject *
 nansum_0d(PyArrayObject *a);
 
 static PyObject *
-reducer(PyObject *args,
+reducer(char *name,
+        PyObject *args,
         PyObject *kwds,
         fall_t fall_float64,
         fall_t fall_float32,
@@ -100,6 +101,8 @@ parse_args(PyObject *args,
            PyObject **arr_obj,
            PyObject **axis_obj);
 
+static PyObject *
+slow(char *name, PyObject *args, PyObject *kwds);
 
 /* nansum ---------------------------------------------------------------- */
 
@@ -126,7 +129,8 @@ initnansum(void)
 static PyObject *
 nansum(PyObject *self, PyObject *args, PyObject *kwds)
 {
-    return reducer(args,
+    return reducer("nansum",
+                   args,
                    kwds,
                    nansum_all_float64,
                    nansum_all_float32,
@@ -429,7 +433,8 @@ nansum_0d(PyArrayObject *a)
 /* reducer --------------------------------------------------------------- */
 
 static PyObject *
-reducer(PyObject *args,
+reducer(char *name,
+        PyObject *args,
         PyObject *kwds,
         fall_t fall_float64,
         fall_t fall_float32,
@@ -562,8 +567,7 @@ reducer(PyObject *args,
                 return fall_ss_int32(p, stride, length);
             }
             else {
-                PyErr_SetString(PyExc_TypeError, "dtype not yet supported");
-                return NULL;
+                return slow(name, args, kwds);
             }
         }
         else {
@@ -592,8 +596,7 @@ reducer(PyObject *args,
                 return fall_int32(ita, stride, length);
             }
             else {
-                PyErr_SetString(PyExc_TypeError, "dtype not yet supported");
-                return NULL;
+                return slow(name, args, kwds);
             }
         }
     }
@@ -629,8 +632,7 @@ reducer(PyObject *args,
         return fone_int32(ita, stride, length, ndim, y_dims);
     }
     else {
-        PyErr_SetString(PyExc_TypeError, "dtype not yet supported");
-        return NULL;
+        return slow(name, args, kwds);
     }
 
 }
@@ -704,4 +706,40 @@ parse_args(PyObject *args,
 
     return 1;
 
+}
+
+
+static PyObject *
+slow(char *name, PyObject *args, PyObject *kwds)
+{
+    PyObject *module = NULL;
+    PyObject *func = NULL;
+    PyObject *out = NULL;
+
+    module = PyImport_ImportModule("bottleneck.slow");
+
+    if (module != NULL) {
+        func = PyObject_GetAttrString(module, name);
+        if (func && PyCallable_Check(func)) {
+            out = PyObject_Call(func, args, kwds);
+            if (out == NULL) {
+                Py_DECREF(func);
+                Py_DECREF(module);
+                return NULL;
+            }
+        }
+        else {
+            if (PyErr_Occurred())
+                PyErr_Print();
+        }
+        Py_XDECREF(func);
+        Py_DECREF(module);
+    }
+    else {
+        PyErr_Print();
+        fprintf(stderr, "Failed to load \"%s\"\n", name);
+        return NULL;
+    }
+
+    return out;
 }
