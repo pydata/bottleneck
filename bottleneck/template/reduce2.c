@@ -8,6 +8,7 @@
 #define PyString_FromString PyBytes_FromString
 #define PyInt_FromLong PyLong_FromLong
 #define PyInt_AsLong PyLong_AsLong
+#define PyString_InternFromString PyUnicode_InternFromString
 #endif
 
 
@@ -28,9 +29,9 @@ PyObject *pystr_ddof = NULL;
 
 static int
 intern_strings(void) {
-    pystr_arr = PyString_FromString("arr");
-    pystr_axis = PyString_FromString("axis");
-    pystr_ddof = PyString_FromString("ddof");
+    pystr_arr = PyString_InternFromString("arr");
+    pystr_axis = PyString_InternFromString("axis");
+    pystr_ddof = PyString_InternFromString("ddof");
     return pystr_arr && pystr_axis && pystr_ddof;
 }
 
