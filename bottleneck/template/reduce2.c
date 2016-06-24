@@ -2,6 +2,7 @@
 #define NPY_NO_DEPRECATED_API NPY_1_11_API_VERSION
 #include <numpy/arrayobject.h>
 
+#define VAKW METH_VARARGS | METH_KEYWORDS
 #define error_converting(x) (((x) == -1) && PyErr_Occurred())
 
 #if PY_MAJOR_VERSION >= 3
@@ -11,30 +12,6 @@
 #define PyString_InternFromString PyUnicode_InternFromString
 #endif
 
-
-/* docstrings ------------------------------------------------------------- */
-
-static char module_docstring[] =
-    "Bottleneck functions that reduce the input array along a specified axis.";
-
-static char nansum_docstring[] =
-    "Sum of array elements along given axis treating NaNs as zero.";
-
-
-/* python strings -------------------------------------------------------- */
-
-PyObject *pystr_arr = NULL;
-PyObject *pystr_axis = NULL;
-PyObject *pystr_ddof = NULL;
-
-static int
-intern_strings(void) {
-    pystr_arr = PyString_InternFromString("arr");
-    pystr_axis = PyString_InternFromString("axis");
-    pystr_ddof = PyString_InternFromString("ddof");
-    return pystr_arr && pystr_axis && pystr_ddof;
-}
-
 /* function pointers ----------------------------------------------------- */
 
 typedef PyObject *(*fall_ss_t)(char *, npy_intp, npy_intp);
@@ -43,45 +20,7 @@ typedef PyObject *(*fone_t)(PyObject *, Py_ssize_t, Py_ssize_t, int,
                             npy_intp*);
 typedef PyObject *(*f0d_t)(PyArrayObject *);
 
-
 /* prototypes ------------------------------------------------------------ */
-
-static PyObject *
-nansum(PyObject *self, PyObject *args, PyObject *kwds);
-
-static PyObject *
-nansum_all_ss_float64(char *p, npy_intp stride, npy_intp length);
-static PyObject *
-nansum_all_ss_float32(char *p, npy_intp stride, npy_intp length);
-static PyObject *
-nansum_all_ss_int64(char *p, npy_intp stride, npy_intp length);
-static PyObject *
-nansum_all_ss_int32(char *p, npy_intp stride, npy_intp length);
-
-static PyObject *
-nansum_all_float64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length);
-static PyObject *
-nansum_all_float32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length);
-static PyObject *
-nansum_all_int64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length);
-static PyObject *
-nansum_all_int32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length);
-
-static PyObject *
-nansum_one_float64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
-                   int ndim, npy_intp* y_dims);
-static PyObject *
-nansum_one_float32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
-                   int ndim, npy_intp* y_dims);
-static PyObject *
-nansum_one_int64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
-                 int ndim, npy_intp* y_dims);
-static PyObject *
-nansum_one_int32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
-                 int ndim, npy_intp* y_dims);
-
-static PyObject *
-nansum_0d(PyArrayObject *a);
 
 static PyObject *
 reducer(char *name,
@@ -103,81 +42,7 @@ reducer(char *name,
         int ravel,
         int copy);
 
-static inline int
-parse_args(PyObject *args,
-           PyObject *kwds,
-           PyObject **arr_obj,
-           PyObject **axis_obj);
-
-static PyObject *
-slow(char *name, PyObject *args, PyObject *kwds);
-
 /* nansum ---------------------------------------------------------------- */
-
-static PyMethodDef
-module_methods[] = {
-    {"nansum", (PyCFunction)nansum, METH_VARARGS | METH_KEYWORDS,
-      nansum_docstring},
-    {NULL, NULL, 0, NULL}
-};
-
-
-#if PY_MAJOR_VERSION >= 3
-static struct PyModuleDef moduledef = {
-   PyModuleDef_HEAD_INIT,
-   "reduce2",
-   module_docstring,
-   -1,
-   module_methods
-};
-#endif
-
-
-#if PY_MAJOR_VERSION >= 3
-#define RETVAL m
-PyMODINIT_FUNC PyInit_reduce2(void)
-#else
-#define RETVAL
-PyMODINIT_FUNC
-initreduce2(void)
-#endif
-{
-#if PY_MAJOR_VERSION >=3
-    PyObject *m = PyModule_Create(&moduledef);
-#else
-    PyObject *m = Py_InitModule3("reduce2", module_methods, module_docstring);
-#endif
-    if (m == NULL) return RETVAL;
-    import_array();
-    if (!intern_strings()) {
-        return RETVAL;
-    }
-    return RETVAL;
-}
-
-
-static PyObject *
-nansum(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return reducer("nansum",
-                   args,
-                   kwds,
-                   nansum_all_float64,
-                   nansum_all_float32,
-                   nansum_all_int64,
-                   nansum_all_int32,
-                   nansum_all_ss_float64,
-                   nansum_all_ss_float32,
-                   nansum_all_ss_int64,
-                   nansum_all_ss_int32,
-                   nansum_one_float64,
-                   nansum_one_float32,
-                   nansum_one_int64,
-                   nansum_one_int32,
-                   nansum_0d,
-                   0, 0);
-}
-
 
 static PyObject *
 nansum_all_ss_float64(char *p, npy_intp stride, npy_intp length)
@@ -462,7 +327,149 @@ nansum_0d(PyArrayObject *a)
 }
 
 
+static PyObject *
+nansum(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return reducer("nansum",
+                   args,
+                   kwds,
+                   nansum_all_float64,
+                   nansum_all_float32,
+                   nansum_all_int64,
+                   nansum_all_int32,
+                   nansum_all_ss_float64,
+                   nansum_all_ss_float32,
+                   nansum_all_ss_int64,
+                   nansum_all_ss_int32,
+                   nansum_one_float64,
+                   nansum_one_float32,
+                   nansum_one_int64,
+                   nansum_one_int32,
+                   nansum_0d,
+                   0, 0);
+}
+
+/* python strings -------------------------------------------------------- */
+
+PyObject *pystr_arr = NULL;
+PyObject *pystr_axis = NULL;
+PyObject *pystr_ddof = NULL;
+
+static int
+intern_strings(void) {
+    pystr_arr = PyString_InternFromString("arr");
+    pystr_axis = PyString_InternFromString("axis");
+    pystr_ddof = PyString_InternFromString("ddof");
+    return pystr_arr && pystr_axis && pystr_ddof;
+}
+
 /* reducer --------------------------------------------------------------- */
+
+static inline int
+parse_args(PyObject *args,
+           PyObject *kwds,
+           PyObject **arr_obj,
+           PyObject **axis_obj)
+{
+    const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+    if (kwds) {
+        const Py_ssize_t nkwds = PyDict_Size(kwds);
+        if (nkwds == 1) {
+            if (nargs == 0) {
+                *arr_obj = PyDict_GetItem(kwds, pystr_arr);
+                if (!*arr_obj) {
+                    PyErr_SetString(PyExc_TypeError, "can't find `arr` input");
+                    return 0;
+                }
+            }
+            else {
+                *axis_obj = PyDict_GetItem(kwds, pystr_axis);
+                if (!*axis_obj) {
+                    PyErr_SetString(PyExc_TypeError, "can't find `axis` input");
+                    return 0;
+                }
+                if (nargs == 1) {
+                    *arr_obj = PyTuple_GET_ITEM(args, 0);
+                }
+                else {
+                    PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
+                    return 0;
+                }
+            }
+        }
+        else if (nkwds == 2) {
+            if (nargs != 0) {
+                PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
+                return 0;
+            }
+            *arr_obj = PyDict_GetItem(kwds, pystr_arr);
+            if (!*arr_obj) {
+                PyErr_SetString(PyExc_TypeError, "can't find `arr` input");
+                return 0;
+            }
+            *axis_obj = PyDict_GetItem(kwds, pystr_axis);
+            if (!*axis_obj) {
+                PyErr_SetString(PyExc_TypeError, "can't find `axis` input");
+                return 0;
+            }
+        }
+        else {
+            PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
+            return 0;
+        }
+    }
+    else if (nargs == 1) {
+        *arr_obj = PyTuple_GET_ITEM(args, 0);
+    }
+    else if (nargs == 2) {
+        *arr_obj = PyTuple_GET_ITEM(args, 0);
+        *axis_obj = PyTuple_GET_ITEM(args, 1);
+    }
+    else {
+        PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
+        return 0;
+    }
+
+    return 1;
+
+}
+
+
+static PyObject *
+slow(char *name, PyObject *args, PyObject *kwds)
+{
+    PyObject *module = NULL;
+    PyObject *func = NULL;
+    PyObject *out = NULL;
+
+    module = PyImport_ImportModule("bottleneck.slow");
+
+    if (module != NULL) {
+        func = PyObject_GetAttrString(module, name);
+        if (func && PyCallable_Check(func)) {
+            out = PyObject_Call(func, args, kwds);
+            if (out == NULL) {
+                Py_DECREF(func);
+                Py_DECREF(module);
+                return NULL;
+            }
+        }
+        else {
+            if (PyErr_Occurred())
+                PyErr_Print();
+        }
+        Py_XDECREF(func);
+        Py_DECREF(module);
+    }
+    else {
+        PyErr_Print();
+        fprintf(stderr, "Failed to load \"%s\"\n", name);
+        return NULL;
+    }
+
+    return out;
+}
+
 
 static PyObject *
 reducer(char *name,
@@ -666,109 +673,52 @@ reducer(char *name,
 
 }
 
+/* docstrings ------------------------------------------------------------- */
 
-static inline int
-parse_args(PyObject *args,
-           PyObject *kwds,
-           PyObject **arr_obj,
-           PyObject **axis_obj)
+static char module_docstring[] =
+    "Bottleneck functions that reduce the input array along a specified axis.";
+
+static char nansum_docstring[] =
+    "Sum of array elements along given axis treating NaNs as zero.";
+
+/* python wrapper -------------------------------------------------------- */
+
+static PyMethodDef
+module_methods[] = {
+    {"nansum", (PyCFunction)nansum, VAKW, nansum_docstring},
+    {NULL, NULL, 0, NULL}
+};
+
+
+#if PY_MAJOR_VERSION >= 3
+static struct PyModuleDef moduledef = {
+   PyModuleDef_HEAD_INIT,
+   "reduce2",
+   module_docstring,
+   -1,
+   module_methods
+};
+#endif
+
+
+#if PY_MAJOR_VERSION >= 3
+#define RETVAL m
+PyMODINIT_FUNC PyInit_reduce2(void)
+#else
+#define RETVAL
+PyMODINIT_FUNC
+initreduce2(void)
+#endif
 {
-    /* parse inputs: args and kwds */
-    const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
-    if (kwds) {
-        const Py_ssize_t nkwds = PyDict_Size(kwds);
-        if (nkwds == 1) {
-            if (nargs == 0) {
-                *arr_obj = PyDict_GetItem(kwds, pystr_arr);
-                if (!*arr_obj) {
-                    PyErr_SetString(PyExc_TypeError, "can't find `arr` input");
-                    return 0;
-                }
-            }
-            else {
-                *axis_obj = PyDict_GetItem(kwds, pystr_axis);
-                if (!*axis_obj) {
-                    PyErr_SetString(PyExc_TypeError, "can't find `axis` input");
-                    return 0;
-                }
-                if (nargs == 1) {
-                    *arr_obj = PyTuple_GET_ITEM(args, 0);
-                }
-                else {
-                    PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
-                    return 0;
-                }
-            }
-        }
-        else if (nkwds == 2) {
-            if (nargs != 0) {
-                PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
-                return 0;
-            }
-            *arr_obj = PyDict_GetItem(kwds, pystr_arr);
-            if (!*arr_obj) {
-                PyErr_SetString(PyExc_TypeError, "can't find `arr` input");
-                return 0;
-            }
-            *axis_obj = PyDict_GetItem(kwds, pystr_axis);
-            if (!*axis_obj) {
-                PyErr_SetString(PyExc_TypeError, "can't find `axis` input");
-                return 0;
-            }
-        }
-        else {
-            PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
-            return 0;
-        }
+#if PY_MAJOR_VERSION >=3
+    PyObject *m = PyModule_Create(&moduledef);
+#else
+    PyObject *m = Py_InitModule3("reduce2", module_methods, module_docstring);
+#endif
+    if (m == NULL) return RETVAL;
+    import_array();
+    if (!intern_strings()) {
+        return RETVAL;
     }
-    else if (nargs == 1) {
-        *arr_obj = PyTuple_GET_ITEM(args, 0);
-    }
-    else if (nargs == 2) {
-        *arr_obj = PyTuple_GET_ITEM(args, 0);
-        *axis_obj = PyTuple_GET_ITEM(args, 1);
-    }
-    else {
-        PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
-        return 0;
-    }
-
-    return 1;
-
-}
-
-
-static PyObject *
-slow(char *name, PyObject *args, PyObject *kwds)
-{
-    PyObject *module = NULL;
-    PyObject *func = NULL;
-    PyObject *out = NULL;
-
-    module = PyImport_ImportModule("bottleneck.slow");
-
-    if (module != NULL) {
-        func = PyObject_GetAttrString(module, name);
-        if (func && PyCallable_Check(func)) {
-            out = PyObject_Call(func, args, kwds);
-            if (out == NULL) {
-                Py_DECREF(func);
-                Py_DECREF(module);
-                return NULL;
-            }
-        }
-        else {
-            if (PyErr_Occurred())
-                PyErr_Print();
-        }
-        Py_XDECREF(func);
-        Py_DECREF(module);
-    }
-    else {
-        PyErr_Print();
-        fprintf(stderr, "Failed to load \"%s\"\n", name);
-        return NULL;
-    }
-
-    return out;
+    return RETVAL;
 }
