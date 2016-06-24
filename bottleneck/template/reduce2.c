@@ -4,6 +4,13 @@
 
 #define error_converting(x) (((x) == -1) && PyErr_Occurred())
 
+#if PY_MAJOR_VERSION >= 3
+#define PyString_FromString PyBytes_FromString
+#define PyInt_FromLong PyLong_FromLong
+#define PyInt_AsLong PyLong_AsLong
+#endif
+
+
 /* docstrings ------------------------------------------------------------- */
 
 static char module_docstring[] =
@@ -114,15 +121,37 @@ module_methods[] = {
 };
 
 
+#if PY_MAJOR_VERSION >= 3
+static struct PyModuleDef moduledef = {
+   PyModuleDef_HEAD_INIT,
+   "reduce2",
+   module_docstring,
+   -1,
+   module_methods
+};
+#endif
+
+
+#if PY_MAJOR_VERSION >= 3
+#define RETVAL m
+PyMODINIT_FUNC PyInit_reduce2(void)
+#else
+#define RETVAL
 PyMODINIT_FUNC
 initreduce2(void)
+#endif
 {
+#if PY_MAJOR_VERSION >=3
+    PyObject *m = PyModule_Create(&moduledef);
+#else
     PyObject *m = Py_InitModule3("reduce2", module_methods, module_docstring);
-    if (m == NULL) return;
+#endif
+    if (m == NULL) return RETVAL;
     import_array();
     if (!intern_strings()) {
-        return;
+        return RETVAL;
     }
+    return RETVAL;
 }
 
 

@@ -45,16 +45,16 @@ def prepare_modules():
                               **kwargs[module])
                     for module in modules]
         ext_list = cythonize(ext_list)
-        ext_list += [Extension("bottleneck.reduce2",
-                               sources=["bottleneck/template/reduce2.c"],
-                               **kwargs["reduce2"])]
-        return ext_list
     else:
         # assume the presence of shipped C files
-        return [Extension("bottleneck.%s" % module,
-                sources=["bottleneck/%s.c" % module],
-                **kwargs[module])
-                for module in modules]
+        ext_list = [Extension("bottleneck.%s" % module,
+                              sources=["bottleneck/%s.c" % module],
+                              **kwargs[module])
+                    for module in modules]
+    ext_list += [Extension("bottleneck.reduce2",
+                           sources=["bottleneck/template/reduce2.c"],
+                           **kwargs["reduce2"])]
+    return ext_list
 
 
 def get_long_description():
