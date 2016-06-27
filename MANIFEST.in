@@ -1,5 +1,6 @@
 include LICENSE README.rst RELEASE.rst bottleneck/LICENSE
 include Makefile tox.ini ez_setup.py
+recursive-include bottleneck/src *.c *.h
 recursive-include bottleneck/template *.pyx *.c *.h
 recursive-include bottleneck/ *.c *.h
 recursive-include bottleneck/csrc *.c *.h
