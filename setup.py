@@ -52,7 +52,8 @@ def prepare_modules():
                               **kwargs[module])
                     for module in modules]
     ext_list += [Extension("bottleneck.reduce2",
-                           sources=["bottleneck/template/reduce2.c"],
+                           sources=["bottleneck/template/reduce2.c",
+                                    "bottleneck/template/slow.c"],
                            **kwargs["reduce2"])]
     return ext_list
 

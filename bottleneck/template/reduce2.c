@@ -1,6 +1,7 @@
 #include <Python.h>
 #define NPY_NO_DEPRECATED_API NPY_1_11_API_VERSION
 #include <numpy/arrayobject.h>
+#include "slow.h"
 
 #define VAKW METH_VARARGS | METH_KEYWORDS
 #define error_converting(x) (((x) == -1) && PyErr_Occurred())
@@ -432,42 +433,6 @@ parse_args(PyObject *args,
 
     return 1;
 
-}
-
-
-static PyObject *
-slow(char *name, PyObject *args, PyObject *kwds)
-{
-    PyObject *module = NULL;
-    PyObject *func = NULL;
-    PyObject *out = NULL;
-
-    module = PyImport_ImportModule("bottleneck.slow");
-
-    if (module != NULL) {
-        func = PyObject_GetAttrString(module, name);
-        if (func && PyCallable_Check(func)) {
-            out = PyObject_Call(func, args, kwds);
-            if (out == NULL) {
-                Py_DECREF(func);
-                Py_DECREF(module);
-                return NULL;
-            }
-        }
-        else {
-            if (PyErr_Occurred())
-                PyErr_Print();
-        }
-        Py_XDECREF(func);
-        Py_DECREF(module);
-    }
-    else {
-        PyErr_Print();
-        fprintf(stderr, "Failed to load \"%s\"\n", name);
-        return NULL;
-    }
-
-    return out;
 }
 
 
