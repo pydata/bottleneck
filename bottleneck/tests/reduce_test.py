@@ -193,6 +193,60 @@ def unit_maker_strides(func, decimal=5):
 
 
 # ---------------------------------------------------------------------------
+# Test argument parsing
+
+def test_arg_parsing():
+    "test argument parsing"
+    for func in reduce_functions():
+        yield unit_maker_argparse, func
+
+
+def unit_maker_argparse(func, decimal=5):
+    "test argument parsing."
+
+    name = func.__name__
+    func0 = eval('bn.slow.%s' % name)
+
+    arr = np.array([1., 2, 3])
+
+    fmt = '\n%s' % func
+    fmt += '%s\n'
+    fmt += '\nInput array:\n%s\n' % arr
+
+    actual = func(arr)
+    desired = func0(arr)
+    err_msg = fmt % "(arr)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(arr, 0)
+    desired = func0(arr, 0)
+    err_msg = fmt % "(arr, 0)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(arr, None)
+    desired = func0(arr, None)
+    err_msg = fmt % "(arr, None)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(arr, axis=0)
+    desired = func0(arr, axis=0)
+    err_msg = fmt % "(arr, axis=0)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(arr, axis=None)
+    desired = func0(arr, axis=None)
+    err_msg = fmt % "(arr, axis=None)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    # add tests like the following when bottleneck switches from
+    # arr to a in function signatures. Numpy uses a.
+    #  actual = func(arr=arr)
+    #  desired = func0(a=arr)
+    #  err_msg = fmt % "(arr)"
+    #  assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+
+# ---------------------------------------------------------------------------
 # Check that exceptions are raised
 
 def test_nanmax_size_zero(dtypes=DTYPES):
