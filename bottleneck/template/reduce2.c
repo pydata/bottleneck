@@ -3,6 +3,18 @@
 #include <numpy/arrayobject.h>
 #include "slow.h"
 
+/* THREADS=1 releases the GIL but increases function call
+ * overhead. THREADS=0 does not release the GIL but keeps
+ * function call overhead low. */
+#define THREADS 1
+#if THREADS
+    #define BN_BEGIN_ALLOW_THREADS Py_BEGIN_ALLOW_THREADS
+    #define BN_END_ALLOW_THREADS Py_END_ALLOW_THREADS
+#else
+    #define BN_BEGIN_ALLOW_THREADS
+    #define BN_END_ALLOW_THREADS
+#endif
+
 #define VAKW METH_VARARGS | METH_KEYWORDS
 #define error_converting(x) (((x) == -1) && PyErr_Occurred())
 
@@ -51,12 +63,14 @@ nansum_all_ss_float64(char *p, npy_intp stride, npy_intp length)
     Py_ssize_t i;
     npy_float64 ai;
     npy_float64 asum = 0;
+    BN_BEGIN_ALLOW_THREADS
     for (i = 0; i < length; i++) {
         ai = (*(npy_float64*)(p + i * stride));
         if (ai == ai) {
             asum += ai;
         }
     }
+    BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(asum);
 }
 
@@ -67,12 +81,14 @@ nansum_all_ss_float32(char *p, npy_intp stride, npy_intp length)
     Py_ssize_t i;
     npy_float32 ai;
     npy_float32 asum = 0;
+    BN_BEGIN_ALLOW_THREADS
     for (i = 0; i < length; i++) {
         ai = (*(npy_float32*)(p + i * stride));
         if (ai == ai) {
             asum += ai;
         }
     }
+    BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(asum);
 }
 
@@ -82,9 +98,11 @@ nansum_all_ss_int64(char *p, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
     npy_int64 asum = 0;
+    BN_BEGIN_ALLOW_THREADS
     for (i = 0; i < length; i++) {
         asum += (*(npy_int64*)(p + i * stride));
     }
+    BN_END_ALLOW_THREADS
     return PyInt_FromLong(asum);
 }
 
@@ -93,9 +111,11 @@ nansum_all_ss_int32(char *p, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
     npy_int32 asum = 0;
+    BN_BEGIN_ALLOW_THREADS
     for (i = 0; i < length; i++) {
         asum += (*(npy_int32*)(p + i * stride));
     }
+    BN_END_ALLOW_THREADS
     return PyInt_FromLong(asum);
 }
 
@@ -104,6 +124,7 @@ nansum_all_float64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 {
     Py_ssize_t i;
     npy_float64 asum = 0, ai;
+    BN_BEGIN_ALLOW_THREADS
     while (PyArray_ITER_NOTDONE(ita)) {
         for (i = 0; i < length; i++) {
             ai = (*(npy_float64*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
@@ -114,6 +135,7 @@ nansum_all_float64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         PyArray_ITER_NEXT(ita);
     }
     Py_DECREF(ita);
+    BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(asum);
 }
 
@@ -123,6 +145,7 @@ nansum_all_float32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 {
     Py_ssize_t i;
     npy_float32 asum = 0, ai;
+    BN_BEGIN_ALLOW_THREADS
     while (PyArray_ITER_NOTDONE(ita)) {
         for (i = 0; i < length; i++) {
             ai = (*(npy_float32*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
@@ -133,6 +156,7 @@ nansum_all_float32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         PyArray_ITER_NEXT(ita);
     }
     Py_DECREF(ita);
+    BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(asum);
 }
 
@@ -142,6 +166,7 @@ nansum_all_int64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 {
     Py_ssize_t i;
     npy_int64 asum = 0;
+    BN_BEGIN_ALLOW_THREADS
     while (PyArray_ITER_NOTDONE(ita)) {
         for (i = 0; i < length; i++) {
             asum += (*(npy_int64*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
@@ -149,6 +174,7 @@ nansum_all_int64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         PyArray_ITER_NEXT(ita);
     }
     Py_DECREF(ita);
+    BN_END_ALLOW_THREADS
     return PyInt_FromLong(asum);
 }
 
@@ -158,6 +184,7 @@ nansum_all_int32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 {
     Py_ssize_t i;
     npy_int32 asum = 0;
+    BN_BEGIN_ALLOW_THREADS
     while (PyArray_ITER_NOTDONE(ita)) {
         for (i = 0; i < length; i++) {
             asum += (*(npy_int32*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
@@ -165,6 +192,7 @@ nansum_all_int32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         PyArray_ITER_NEXT(ita);
     }
     Py_DECREF(ita);
+    BN_END_ALLOW_THREADS
     return PyInt_FromLong(asum);
 }
 
@@ -180,6 +208,7 @@ nansum_one_float64(PyObject *ita,
     npy_float64 asum = 0, ai;
     PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_FLOAT64, 0);
     PyObject *ity = PyArray_IterNew(y);
+    BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
         while (PyArray_ITER_NOTDONE(ity)) {
             (*(npy_float64*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
@@ -203,6 +232,7 @@ nansum_one_float64(PyObject *ita,
     }
     Py_DECREF(ita);
     Py_DECREF(ity);
+    BN_END_ALLOW_THREADS
     return y;
 }
 
@@ -218,6 +248,7 @@ nansum_one_float32(PyObject *ita,
     npy_float32 asum = 0, ai;
     PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_FLOAT32, 0);
     PyObject *ity = PyArray_IterNew(y);
+    BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
         while (PyArray_ITER_NOTDONE(ity)) {
             (*(npy_float32*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
@@ -241,6 +272,7 @@ nansum_one_float32(PyObject *ita,
     }
     Py_DECREF(ita);
     Py_DECREF(ity);
+    BN_END_ALLOW_THREADS
     return y;
 }
 

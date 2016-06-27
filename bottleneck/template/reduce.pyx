@@ -165,19 +165,19 @@ cdef object nansum_all_ss_DTYPE0(char *p,
     cdef Py_ssize_t i
     cdef DTYPE0_t ai
     cdef DTYPE0_t asum = 0
-    # TODO add this back in: with nogil:
-    for i in range(length):
-        ai = (<DTYPE0_t*>(p + i * stride))[0]
-        if DTYPE0 == 'float64':
-            if ai == ai:
+    with nogil:
+        for i in range(length):
+            ai = (<DTYPE0_t*>(p + i * stride))[0]
+            if DTYPE0 == 'float64':
+                if ai == ai:
+                    asum += ai
+            if DTYPE0 == 'float32':
+                if ai == ai:
+                    asum += ai
+            if DTYPE0 == 'int64':
                 asum += ai
-        if DTYPE0 == 'float32':
-            if ai == ai:
+            if DTYPE0 == 'int32':
                 asum += ai
-        if DTYPE0 == 'int64':
-            asum += ai
-        if DTYPE0 == 'int32':
-            asum += ai
     return asum
 
 
