@@ -29,7 +29,7 @@ def prepare_modules():
 
     # info needed to compile bottleneck
     kwargs = {}
-    for module in modules + ["reduce2"]:
+    for module in modules:
         # `-O3` causes slow down of nanmin and nanmax; force `-O2`
         kwargs[module] = {'include_dirs': [np.get_include()],
                           'extra_compile_args': ['-O2']}
@@ -51,10 +51,16 @@ def prepare_modules():
                               sources=["bottleneck/%s.c" % module],
                               **kwargs[module])
                     for module in modules]
+
+    # c rewrite
+    from bottleneck.src.template import make_c_files
+    make_c_files()
     ext_list += [Extension("bottleneck.reduce2",
                            sources=["bottleneck/src/reduce2.c",
                                     "bottleneck/src/slow.c"],
-                           **kwargs["reduce2"])]
+                           include_dirs=[np.get_include()],
+                           extra_compile_args=['-O2'])]
+
     return ext_list
 
 

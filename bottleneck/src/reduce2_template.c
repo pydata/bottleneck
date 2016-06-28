@@ -32,15 +32,16 @@ reducer(char *name,
 
 /* nansum ---------------------------------------------------------------- */
 
+/* dtype = [['float64'], ['float32']] */
 static PyObject *
-nansum_all_ss_float64(char *p, npy_intp stride, npy_intp length)
+nansum_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
-    npy_float64 ai;
-    npy_float64 asum = 0;
+    npy_DTYPE0 ai;
+    npy_DTYPE0 asum = 0;
     BN_BEGIN_ALLOW_THREADS
     for (i = 0; i < length; i++) {
-        ai = (*(npy_float64*)(p + i * stride));
+        ai = (*(npy_DTYPE0*)(p + i * stride));
         if (ai == ai) {
             asum += ai;
         }
@@ -48,61 +49,35 @@ nansum_all_ss_float64(char *p, npy_intp stride, npy_intp length)
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(asum);
 }
+/* dtype end */
 
 
+/* dtype = [['int64'], ['int32']] */
 static PyObject *
-nansum_all_ss_float32(char *p, npy_intp stride, npy_intp length)
+nansum_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
-    npy_float32 ai;
-    npy_float32 asum = 0;
+    npy_DTYPE0 asum = 0;
     BN_BEGIN_ALLOW_THREADS
     for (i = 0; i < length; i++) {
-        ai = (*(npy_float32*)(p + i * stride));
-        if (ai == ai) {
-            asum += ai;
-        }
-    }
-    BN_END_ALLOW_THREADS
-    return PyFloat_FromDouble(asum);
-}
-
-
-static PyObject *
-nansum_all_ss_int64(char *p, npy_intp stride, npy_intp length)
-{
-    Py_ssize_t i;
-    npy_int64 asum = 0;
-    BN_BEGIN_ALLOW_THREADS
-    for (i = 0; i < length; i++) {
-        asum += (*(npy_int64*)(p + i * stride));
+        asum += (*(npy_DTYPE0*)(p + i * stride));
     }
     BN_END_ALLOW_THREADS
     return PyInt_FromLong(asum);
 }
+/* dtype end */
 
+
+/* dtype = [['float64'], ['float32']] */
 static PyObject *
-nansum_all_ss_int32(char *p, npy_intp stride, npy_intp length)
+nansum_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 {
     Py_ssize_t i;
-    npy_int32 asum = 0;
-    BN_BEGIN_ALLOW_THREADS
-    for (i = 0; i < length; i++) {
-        asum += (*(npy_int32*)(p + i * stride));
-    }
-    BN_END_ALLOW_THREADS
-    return PyInt_FromLong(asum);
-}
-
-static PyObject *
-nansum_all_float64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
-{
-    Py_ssize_t i;
-    npy_float64 asum = 0, ai;
+    npy_DTYPE0 asum = 0, ai;
     BN_BEGIN_ALLOW_THREADS
     while (PyArray_ITER_NOTDONE(ita)) {
         for (i = 0; i < length; i++) {
-            ai = (*(npy_float64*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
+            ai = (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
             if (ai == ai) {
                 asum += ai;
             }
@@ -113,38 +88,19 @@ nansum_all_float64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(asum);
 }
+/* dtype end */
 
 
+/* dtype = [['int64'], ['int32']] */
 static PyObject *
-nansum_all_float32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+nansum_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 {
     Py_ssize_t i;
-    npy_float32 asum = 0, ai;
+    npy_DTYPE0 asum = 0;
     BN_BEGIN_ALLOW_THREADS
     while (PyArray_ITER_NOTDONE(ita)) {
         for (i = 0; i < length; i++) {
-            ai = (*(npy_float32*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
-            if (ai == ai) {
-                asum += ai;
-            }
-        }
-        PyArray_ITER_NEXT(ita);
-    }
-    Py_DECREF(ita);
-    BN_END_ALLOW_THREADS
-    return PyFloat_FromDouble(asum);
-}
-
-
-static PyObject *
-nansum_all_int64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
-{
-    Py_ssize_t i;
-    npy_int64 asum = 0;
-    BN_BEGIN_ALLOW_THREADS
-    while (PyArray_ITER_NOTDONE(ita)) {
-        for (i = 0; i < length; i++) {
-            asum += (*(npy_int64*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
+            asum += (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
         }
         PyArray_ITER_NEXT(ita);
     }
@@ -152,41 +108,25 @@ nansum_all_int64(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     BN_END_ALLOW_THREADS
     return PyInt_FromLong(asum);
 }
+/* dtype end */
 
 
+/* dtype = [['float64'], ['float32']] */
 static PyObject *
-nansum_all_int32(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
-{
-    Py_ssize_t i;
-    npy_int32 asum = 0;
-    BN_BEGIN_ALLOW_THREADS
-    while (PyArray_ITER_NOTDONE(ita)) {
-        for (i = 0; i < length; i++) {
-            asum += (*(npy_int32*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
-        }
-        PyArray_ITER_NEXT(ita);
-    }
-    Py_DECREF(ita);
-    BN_END_ALLOW_THREADS
-    return PyInt_FromLong(asum);
-}
-
-
-static PyObject *
-nansum_one_float64(PyObject *ita,
+nansum_one_DTYPE0(PyObject *ita,
                    Py_ssize_t stride,
                    Py_ssize_t length,
                    int ndim,
                    npy_intp* y_dims)
 {
     Py_ssize_t i;
-    npy_float64 asum = 0, ai;
-    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_FLOAT64, 0);
+    npy_DTYPE0 asum = 0, ai;
+    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
     PyObject *ity = PyArray_IterNew(y);
     BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
         while (PyArray_ITER_NOTDONE(ity)) {
-            (*(npy_float64*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
+            (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
             PyArray_ITER_NEXT(ity);
         }
     }
@@ -194,13 +134,13 @@ nansum_one_float64(PyObject *ita,
         while (PyArray_ITER_NOTDONE(ita)) {
             asum = 0;
             for (i = 0; i < length; i++) {
-                ai = (*(npy_float64*)(((char*)PyArray_ITER_DATA(ita)) +
+                ai = (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) +
                                                                   i*stride));
                 if (ai == ai) {
                     asum += ai;
                 }
             }
-            (*(npy_float64*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
+            (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
             PyArray_ITER_NEXT(ita);
             PyArray_ITER_NEXT(ity);
         }
@@ -210,23 +150,24 @@ nansum_one_float64(PyObject *ita,
     BN_END_ALLOW_THREADS
     return y;
 }
+/* dtype end */
 
 
+/* dtype = [['int64'], ['int32']] */
 static PyObject *
-nansum_one_float32(PyObject *ita,
+nansum_one_DTYPE0(PyObject *ita,
                    Py_ssize_t stride,
                    Py_ssize_t length,
                    int ndim,
                    npy_intp* y_dims)
 {
     Py_ssize_t i;
-    npy_float32 asum = 0, ai;
-    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_FLOAT32, 0);
+    npy_DTYPE0 asum = 0;
+    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
     PyObject *ity = PyArray_IterNew(y);
-    BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
         while (PyArray_ITER_NOTDONE(ity)) {
-            (*(npy_float32*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
+            (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
             PyArray_ITER_NEXT(ity);
         }
     }
@@ -234,49 +175,10 @@ nansum_one_float32(PyObject *ita,
         while (PyArray_ITER_NOTDONE(ita)) {
             asum = 0;
             for (i = 0; i < length; i++) {
-                ai = (*(npy_float32*)(((char*)PyArray_ITER_DATA(ita)) +
-                                                                  i*stride));
-                if (ai == ai) {
-                    asum += ai;
-                }
-            }
-            (*(npy_float32*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
-            PyArray_ITER_NEXT(ita);
-            PyArray_ITER_NEXT(ity);
-        }
-    }
-    Py_DECREF(ita);
-    Py_DECREF(ity);
-    BN_END_ALLOW_THREADS
-    return y;
-}
-
-
-static PyObject *
-nansum_one_int64(PyObject *ita,
-                   Py_ssize_t stride,
-                   Py_ssize_t length,
-                   int ndim,
-                   npy_intp* y_dims)
-{
-    Py_ssize_t i;
-    npy_int64 asum = 0;
-    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_INT64, 0);
-    PyObject *ity = PyArray_IterNew(y);
-    if (length == 0) {
-        while (PyArray_ITER_NOTDONE(ity)) {
-            (*(npy_int64*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
-            PyArray_ITER_NEXT(ity);
-        }
-    }
-    else {
-        while (PyArray_ITER_NOTDONE(ita)) {
-            asum = 0;
-            for (i = 0; i < length; i++) {
-                asum += (*(npy_int64*)(((char*)PyArray_ITER_DATA(ita)) +
+                asum += (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) +
                                                                   i*stride));
             }
-            (*(npy_int64*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
+            (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
             PyArray_ITER_NEXT(ita);
             PyArray_ITER_NEXT(ity);
         }
@@ -285,41 +187,7 @@ nansum_one_int64(PyObject *ita,
     Py_DECREF(ity);
     return y;
 }
-
-
-static PyObject *
-nansum_one_int32(PyObject *ita,
-                   Py_ssize_t stride,
-                   Py_ssize_t length,
-                   int ndim,
-                   npy_intp* y_dims)
-{
-    Py_ssize_t i;
-    npy_int32 asum = 0;
-    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_INT32, 0);
-    PyObject *ity = PyArray_IterNew(y);
-    if (length == 0) {
-        while (PyArray_ITER_NOTDONE(ity)) {
-            (*(npy_int32*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
-            PyArray_ITER_NEXT(ity);
-        }
-    }
-    else {
-        while (PyArray_ITER_NOTDONE(ita)) {
-            asum = 0;
-            for (i = 0; i < length; i++) {
-                asum += (*(npy_int32*)(((char*)PyArray_ITER_DATA(ita)) +
-                                                                  i*stride));
-            }
-            (*(npy_int32*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
-            PyArray_ITER_NEXT(ita);
-            PyArray_ITER_NEXT(ity);
-        }
-    }
-    Py_DECREF(ita);
-    Py_DECREF(ity);
-    return y;
-}
+/* dtype end */
 
 
 static PyObject *

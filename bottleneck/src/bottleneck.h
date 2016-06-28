@@ -18,9 +18,15 @@
 #define VAKW METH_VARARGS | METH_KEYWORDS
 #define error_converting(x) (((x) == -1) && PyErr_Occurred())
 
+/* for ease of dtype templating */
+#define NPY_float64 NPY_FLOAT64
+#define NPY_float32 NPY_FLOAT32
+#define NPY_int64 NPY_INT64
+#define NPY_int32 NPY_INT32
+
 #if PY_MAJOR_VERSION >= 3
-#define PyString_FromString PyBytes_FromString
-#define PyInt_FromLong PyLong_FromLong
-#define PyInt_AsLong PyLong_AsLong
-#define PyString_InternFromString PyUnicode_InternFromString
+    #define PyString_FromString PyBytes_FromString
+    #define PyInt_FromLong PyLong_FromLong
+    #define PyInt_AsLong PyLong_AsLong
+    #define PyString_InternFromString PyUnicode_InternFromString
 #endif
