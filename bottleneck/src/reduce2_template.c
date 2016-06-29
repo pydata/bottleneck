@@ -6,7 +6,6 @@ typedef PyObject *(*fall_ss_t)(char *, npy_intp, npy_intp);
 typedef PyObject *(*fall_t)(PyObject *, Py_ssize_t, Py_ssize_t);
 typedef PyObject *(*fone_t)(PyObject *, Py_ssize_t, Py_ssize_t, int,
                             npy_intp*);
-typedef PyObject *(*f0d_t)(PyArrayObject *);
 
 /* prototypes ------------------------------------------------------------ */
 
@@ -26,7 +25,6 @@ reducer(char *name,
         fone_t fone_float32,
         fone_t fone_int64,
         fone_t fone_int32,
-        f0d_t f_0d,
         int ravel,
         int copy);
 
@@ -191,19 +189,6 @@ nansum_one_DTYPE0(PyObject *ita,
 
 
 static PyObject *
-nansum_0d(PyArrayObject *a)
-{
-    PyObject *out = PyArray_ToScalar(PyArray_DATA(a), a);
-    if (PyObject_IsTrue(PyObject_RichCompare(out, out, Py_EQ))) {
-        return out;
-    }
-    else {
-        return PyFloat_FromDouble(0.0);
-    }
-}
-
-
-static PyObject *
 nansum(PyObject *self, PyObject *args, PyObject *kwds)
 {
     return reducer("nansum",
@@ -221,7 +206,222 @@ nansum(PyObject *self, PyObject *args, PyObject *kwds)
                    nansum_one_float32,
                    nansum_one_int64,
                    nansum_one_int32,
-                   nansum_0d,
+                   0, 0);
+}
+
+/* nanmean ---------------------------------------------------------------- */
+
+/* dtype = [['float64'], ['float32']] */
+static PyObject *
+nanmean_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
+{
+    Py_ssize_t i;
+    Py_ssize_t count = 0;
+    npy_DTYPE0 ai;
+    npy_DTYPE0 asum = 0;
+    BN_BEGIN_ALLOW_THREADS
+    for (i = 0; i < length; i++) {
+        ai = (*(npy_DTYPE0*)(p + i * stride));
+        if (ai == ai) {
+            asum += ai;
+            count += 1;
+        }
+    }
+    BN_END_ALLOW_THREADS
+    if (count > 0) { 
+        return PyFloat_FromDouble(asum / count);
+    } else {
+        return PyFloat_FromDouble(NAN);
+    }
+}
+/* dtype end */
+
+
+/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
+static PyObject *
+nanmean_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
+{
+    Py_ssize_t i;
+    npy_DTYPE1 asum = 0;
+    BN_BEGIN_ALLOW_THREADS
+    for (i = 0; i < length; i++) {
+        asum += (*(npy_DTYPE0*)(p + i * stride));
+    }
+    BN_END_ALLOW_THREADS
+    if (length > 0) { 
+        return PyFloat_FromDouble(asum / length);
+    } else {
+        return PyFloat_FromDouble(NAN);
+    }
+}
+/* dtype end */
+
+
+/* dtype = [['float64'], ['float32']] */
+static PyObject *
+nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+{
+    Py_ssize_t i;
+    Py_ssize_t count = 0;
+    npy_DTYPE0 asum = 0, ai;
+    BN_BEGIN_ALLOW_THREADS
+    while (PyArray_ITER_NOTDONE(ita)) {
+        for (i = 0; i < length; i++) {
+            ai = (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
+            if (ai == ai) {
+                asum += ai;
+                count += 1;
+            }
+        }
+        PyArray_ITER_NEXT(ita);
+    }
+    Py_DECREF(ita);
+    BN_END_ALLOW_THREADS
+    if (count > 0) { 
+        return PyFloat_FromDouble(asum / count);
+    } else {
+        return PyFloat_FromDouble(NAN);
+    }
+}
+/* dtype end */
+
+
+/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
+static PyObject *
+nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+{
+    Py_ssize_t i;
+    Py_ssize_t size = 0;
+    npy_DTYPE1 asum = 0;
+    BN_BEGIN_ALLOW_THREADS
+    while (PyArray_ITER_NOTDONE(ita)) {
+        for (i = 0; i < length; i++) {
+            asum += (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) + i*stride));
+        }
+        size += length;
+        PyArray_ITER_NEXT(ita);
+    }
+    Py_DECREF(ita);
+    BN_END_ALLOW_THREADS
+    if (size > 0) { 
+        return PyFloat_FromDouble(asum / size);
+    } else {
+        return PyFloat_FromDouble(NAN);
+    }
+}
+/* dtype end */
+
+
+/* dtype = [['float64'], ['float32']] */
+static PyObject *
+nanmean_one_DTYPE0(PyObject *ita,
+                   Py_ssize_t stride,
+                   Py_ssize_t length,
+                   int ndim,
+                   npy_intp* y_dims)
+{
+    Py_ssize_t i;
+    Py_ssize_t count;
+    npy_DTYPE0 asum, ai;
+    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
+    PyObject *ity = PyArray_IterNew(y);
+    BN_BEGIN_ALLOW_THREADS
+    if (length == 0) {
+        while (PyArray_ITER_NOTDONE(ity)) {
+            (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ity)))) = NAN;
+            PyArray_ITER_NEXT(ity);
+        }
+    }
+    else {
+        while (PyArray_ITER_NOTDONE(ita)) {
+            asum = 0;
+            count = 0;
+            for (i = 0; i < length; i++) {
+                ai = (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) +
+                                                                  i*stride));
+                if (ai == ai) {
+                    asum += ai;
+                    count += 1;
+                }
+            }
+            if (count > 0) { 
+                asum /= count;
+            } else {
+                asum = NAN;
+            }
+            (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
+            PyArray_ITER_NEXT(ita);
+            PyArray_ITER_NEXT(ity);
+        }
+    }
+    Py_DECREF(ita);
+    Py_DECREF(ity);
+    BN_END_ALLOW_THREADS
+    return y;
+}
+/* dtype end */
+
+
+/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
+static PyObject *
+nanmean_one_DTYPE0(PyObject *ita,
+                   Py_ssize_t stride,
+                   Py_ssize_t length,
+                   int ndim,
+                   npy_intp* y_dims)
+{
+    Py_ssize_t i;
+    npy_DTYPE1 asum = 0;
+    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE1, 0);
+    PyObject *ity = PyArray_IterNew(y);
+    if (length == 0) {
+        while (PyArray_ITER_NOTDONE(ity)) {
+            (*(npy_DTYPE1*)(((char*)PyArray_ITER_DATA(ity)))) = NAN;
+            PyArray_ITER_NEXT(ity);
+        }
+    }
+    else {
+        while (PyArray_ITER_NOTDONE(ita)) {
+            asum = 0;
+            for (i = 0; i < length; i++) {
+                asum += (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) +
+                                                                  i*stride));
+            }
+            if (length > 0) { 
+                asum /= length;
+            } else {
+                asum = NAN;
+            }
+            (*(npy_DTYPE1*)(((char*)PyArray_ITER_DATA(ity)))) = asum;
+            PyArray_ITER_NEXT(ita);
+            PyArray_ITER_NEXT(ity);
+        }
+    }
+    Py_DECREF(ita);
+    Py_DECREF(ity);
+    return y;
+}
+/* dtype end */
+
+
+static PyObject *
+nanmean(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return reducer("nanmean",
+                   args,
+                   kwds,
+                   nanmean_all_float64,
+                   nanmean_all_float32,
+                   nanmean_all_int64,
+                   nanmean_all_int32,
+                   nanmean_all_ss_float64,
+                   nanmean_all_ss_float32,
+                   nanmean_all_ss_int64,
+                   nanmean_all_ss_int32,
+                   nanmean_one_float64,
+                   nanmean_one_float32,
+                   nanmean_one_int64,
+                   nanmean_one_int32,
                    0, 0);
 }
 
@@ -327,7 +527,6 @@ reducer(char *name,
         fone_t fone_float32,
         fone_t fone_int64,
         fone_t fone_int32,
-        f0d_t f_0d,
         int ravel,
         int copy)
 {
@@ -367,7 +566,7 @@ reducer(char *name,
         if (axis_obj == Py_None ||
             axis_obj == PyInt_FromLong(0) ||
             axis_obj == PyInt_FromLong(-1))
-            return f_0d(a);
+            return slow(name, args, kwds);
         else {
             PyErr_Format(PyExc_ValueError, "axis out of bounds for 0d input");
             return NULL;
@@ -520,12 +719,15 @@ static char module_docstring[] =
 
 static char nansum_docstring[] =
     "Sum of array elements along given axis treating NaNs as zero.";
+static char nanmean_docstring[] =
+    "Mean of array elements along given axis ignoring NaNs.";
 
 /* python wrapper -------------------------------------------------------- */
 
 static PyMethodDef
 module_methods[] = {
     {"nansum", (PyCFunction)nansum, VAKW, nansum_docstring},
+    {"nanmean", (PyCFunction)nanmean, VAKW, nanmean_docstring},
     {NULL, NULL, 0, NULL}
 };
 

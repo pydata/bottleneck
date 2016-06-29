@@ -4,7 +4,7 @@
 Bottleneck
 ==========
 
-Bottleneck is a collection of fast NumPy array functions written in Cython.
+Bottleneck is a collection of fast NumPy array functions written in C.
 
 Let's give it a try. Create a NumPy array::
 
@@ -67,9 +67,9 @@ Bottleneck comes with a benchmark suite::
 
 Only arrays with data type (dtype) int32, int64, float32, and float64 are
 accelerated. All other dtypes result in calls to slower, unaccelerated
-functions. In the rare case of a byte-swapped input array (e.g. a big-endian
-array on a little-endian operating system) the function will not be
-accelerated regardless of dtype.
+functions. In the rare case of a 0 dimensional input array or a byte-swapped
+input array (e.g. a big-endian array on a little-endian operating system) the
+function will not be accelerated regardless of dtype.
 
 Where
 =====
@@ -96,16 +96,7 @@ Requirements:
 Bottleneck               Python 2.7, 3.4, 3.5; NumPy 1.11.0
 Compile                  gcc or clang or MinGW
 Unit tests               nose
-Cython                   Optional for released version of Bottleneck
 ======================== ====================================================
-
-If Cython is installed on your computer then you can install either a released
-version of Bottleneck (PyPI) or a development version (GitHub).
-
-If Cython is not installed on your computer then you can only install a
-released version of Bottleneck (PyPI). Cython is not required because the
-Cython files have already been converted to C source files in Bottleneck
-releases.
 
 To install Bottleneck on GNU/Linux, Mac OS X, et al.::
 
