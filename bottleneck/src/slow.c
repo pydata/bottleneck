@@ -1,22 +1,24 @@
 #include <Python.h>
 
+PyObject *slow_module = NULL;
+
 
 PyObject *
 slow(char *name, PyObject *args, PyObject *kwds)
 {
-    PyObject *module = NULL;
     PyObject *func = NULL;
     PyObject *out = NULL;
 
-    module = PyImport_ImportModule("bottleneck.slow");
+    if (slow_module == NULL) {
+        slow_module = PyImport_ImportModule("bottleneck.slow");
+    }
 
-    if (module != NULL) {
-        func = PyObject_GetAttrString(module, name);
+    if (slow_module != NULL) {
+        func = PyObject_GetAttrString(slow_module, name);
         if (func && PyCallable_Check(func)) {
             out = PyObject_Call(func, args, kwds);
             if (out == NULL) {
                 Py_DECREF(func);
-                Py_DECREF(module);
                 return NULL;
             }
         }
@@ -25,7 +27,6 @@ slow(char *name, PyObject *args, PyObject *kwds)
                 PyErr_Print();
         }
         Py_XDECREF(func);
-        Py_DECREF(module);
     }
     else {
         PyErr_Print();
