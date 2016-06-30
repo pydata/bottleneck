@@ -35,6 +35,7 @@ except:
 
 from bottleneck.version import __version__
 from bottleneck.benchmark.bench import bench
+from bottleneck.benchmark.bench2 import bench2
 
 try:
     from numpy.testing import Tester
