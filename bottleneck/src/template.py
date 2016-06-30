@@ -29,20 +29,22 @@ def make_c_files():
 # dtype ---------------------------------------------------------------------
 
 def expand_functions(lines):
+    index = 0
     while True:
-        idx0, idx1 = next_dtype_block(lines)
+        idx0, idx1 = next_dtype_block(lines, index)
         if idx0 is None:
             break
         func_list = lines[idx0:idx1]
         func_list = expand_function(func_list)
         # the +1 below is to skip the /* dtype end */ line
         lines = lines[:idx0] + func_list + lines[idx1+1:]
+        index = idx0
     return lines
 
 
-def next_dtype_block(lines):
+def next_dtype_block(lines, index):
     idx = None
-    for i in range(len(lines)):
+    for i in range(index, len(lines)):
         line = lines[i]
         if re.match(DTYPE_BEGIN, line):
             idx = i
@@ -95,19 +97,21 @@ def expand_dtypes(func_str, dtypes):
 # multiline strings ---------------------------------------------------------
 
 def multiline_strings(lines):
+    index = 0
     while True:
-        idx0, idx1 = next_string_block(lines)
+        idx0, idx1 = next_string_block(lines, index)
         if idx0 is None:
             break
         str_list = lines[idx0+1:idx1]
         str_list = quote_string(str_list)
         lines = lines[:idx0] + str_list + lines[idx1+1:]
+        index = idx0
     return lines
 
 
-def next_string_block(lines):
+def next_string_block(lines, index):
     idx = None
-    for i in range(len(lines)):
+    for i in range(index, len(lines)):
         line = lines[i]
         if re.match(STRING_BEGIN, line):
             idx = i

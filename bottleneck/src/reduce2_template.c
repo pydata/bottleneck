@@ -47,26 +47,8 @@ nansum_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(asum);
 }
-/* dtype end */
 
 
-/* dtype = [['int64'], ['int32']] */
-static PyObject *
-nansum_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
-{
-    Py_ssize_t i;
-    npy_DTYPE0 asum = 0;
-    BN_BEGIN_ALLOW_THREADS
-    for (i = 0; i < length; i++) {
-        asum += *(npy_DTYPE0*)(p + i * stride);
-    }
-    BN_END_ALLOW_THREADS
-    return PyInt_FromLong(asum);
-}
-/* dtype end */
-
-
-/* dtype = [['float64'], ['float32']] */
 static PyObject *
 nansum_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 {
@@ -86,30 +68,8 @@ nansum_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(asum);
 }
-/* dtype end */
 
 
-/* dtype = [['int64'], ['int32']] */
-static PyObject *
-nansum_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
-{
-    Py_ssize_t i;
-    npy_DTYPE0 asum = 0;
-    BN_BEGIN_ALLOW_THREADS
-    while (PyArray_ITER_NOTDONE(ita)) {
-        for (i = 0; i < length; i++) {
-            asum += *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) + i*stride);
-        }
-        PyArray_ITER_NEXT(ita);
-    }
-    Py_DECREF(ita);
-    BN_END_ALLOW_THREADS
-    return PyInt_FromLong(asum);
-}
-/* dtype end */
-
-
-/* dtype = [['float64'], ['float32']] */
 static PyObject *
 nansum_one_DTYPE0(PyObject *ita,
                    Py_ssize_t stride,
@@ -152,6 +112,38 @@ nansum_one_DTYPE0(PyObject *ita,
 
 
 /* dtype = [['int64'], ['int32']] */
+static PyObject *
+nansum_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
+{
+    Py_ssize_t i;
+    npy_DTYPE0 asum = 0;
+    BN_BEGIN_ALLOW_THREADS
+    for (i = 0; i < length; i++) {
+        asum += *(npy_DTYPE0*)(p + i * stride);
+    }
+    BN_END_ALLOW_THREADS
+    return PyInt_FromLong(asum);
+}
+
+
+static PyObject *
+nansum_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+{
+    Py_ssize_t i;
+    npy_DTYPE0 asum = 0;
+    BN_BEGIN_ALLOW_THREADS
+    while (PyArray_ITER_NOTDONE(ita)) {
+        for (i = 0; i < length; i++) {
+            asum += *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) + i*stride);
+        }
+        PyArray_ITER_NEXT(ita);
+    }
+    Py_DECREF(ita);
+    BN_END_ALLOW_THREADS
+    return PyInt_FromLong(asum);
+}
+
+
 static PyObject *
 nansum_one_DTYPE0(PyObject *ita,
                    Py_ssize_t stride,
