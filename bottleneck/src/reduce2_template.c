@@ -226,30 +226,8 @@ nanmean_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
         return PyFloat_FromDouble(NAN);
     }
 }
-/* dtype end */
 
 
-/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-static PyObject *
-nanmean_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
-{
-    Py_ssize_t i;
-    npy_DTYPE1 asum = 0;
-    BN_BEGIN_ALLOW_THREADS
-    for (i = 0; i < length; i++) {
-        asum += *(npy_DTYPE0*)(p + i * stride);
-    }
-    BN_END_ALLOW_THREADS
-    if (length > 0) {
-        return PyFloat_FromDouble(asum / length);
-    } else {
-        return PyFloat_FromDouble(NAN);
-    }
-}
-/* dtype end */
-
-
-/* dtype = [['float64'], ['float32']] */
 static PyObject *
 nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 {
@@ -275,36 +253,8 @@ nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         return PyFloat_FromDouble(NAN);
     }
 }
-/* dtype end */
 
 
-/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-static PyObject *
-nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
-{
-    Py_ssize_t i;
-    Py_ssize_t size = 0;
-    npy_DTYPE1 asum = 0;
-    BN_BEGIN_ALLOW_THREADS
-    while (PyArray_ITER_NOTDONE(ita)) {
-        for (i = 0; i < length; i++) {
-            asum += *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) + i*stride);
-        }
-        size += length;
-        PyArray_ITER_NEXT(ita);
-    }
-    Py_DECREF(ita);
-    BN_END_ALLOW_THREADS
-    if (size > 0) {
-        return PyFloat_FromDouble(asum / size);
-    } else {
-        return PyFloat_FromDouble(NAN);
-    }
-}
-/* dtype end */
-
-
-/* dtype = [['float64'], ['float32']] */
 static PyObject *
 nanmean_one_DTYPE0(PyObject *ita,
                    Py_ssize_t stride,
@@ -355,6 +305,48 @@ nanmean_one_DTYPE0(PyObject *ita,
 
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
+static PyObject *
+nanmean_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
+{
+    Py_ssize_t i;
+    npy_DTYPE1 asum = 0;
+    BN_BEGIN_ALLOW_THREADS
+    for (i = 0; i < length; i++) {
+        asum += *(npy_DTYPE0*)(p + i * stride);
+    }
+    BN_END_ALLOW_THREADS
+    if (length > 0) {
+        return PyFloat_FromDouble(asum / length);
+    } else {
+        return PyFloat_FromDouble(NAN);
+    }
+}
+
+
+static PyObject *
+nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+{
+    Py_ssize_t i;
+    Py_ssize_t size = 0;
+    npy_DTYPE1 asum = 0;
+    BN_BEGIN_ALLOW_THREADS
+    while (PyArray_ITER_NOTDONE(ita)) {
+        for (i = 0; i < length; i++) {
+            asum += *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) + i*stride);
+        }
+        size += length;
+        PyArray_ITER_NEXT(ita);
+    }
+    Py_DECREF(ita);
+    BN_END_ALLOW_THREADS
+    if (size > 0) {
+        return PyFloat_FromDouble(asum / size);
+    } else {
+        return PyFloat_FromDouble(NAN);
+    }
+}
+
+
 static PyObject *
 nanmean_one_DTYPE0(PyObject *ita,
                    Py_ssize_t stride,
