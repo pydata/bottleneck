@@ -228,7 +228,7 @@ nanmean_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
         }
     }
     BN_END_ALLOW_THREADS
-    if (count > 0) { 
+    if (count > 0) {
         return PyFloat_FromDouble(asum / count);
     } else {
         return PyFloat_FromDouble(NAN);
@@ -248,7 +248,7 @@ nanmean_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
         asum += *(npy_DTYPE0*)(p + i * stride);
     }
     BN_END_ALLOW_THREADS
-    if (length > 0) { 
+    if (length > 0) {
         return PyFloat_FromDouble(asum / length);
     } else {
         return PyFloat_FromDouble(NAN);
@@ -277,7 +277,7 @@ nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     }
     Py_DECREF(ita);
     BN_END_ALLOW_THREADS
-    if (count > 0) { 
+    if (count > 0) {
         return PyFloat_FromDouble(asum / count);
     } else {
         return PyFloat_FromDouble(NAN);
@@ -303,7 +303,7 @@ nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     }
     Py_DECREF(ita);
     BN_END_ALLOW_THREADS
-    if (size > 0) { 
+    if (size > 0) {
         return PyFloat_FromDouble(asum / size);
     } else {
         return PyFloat_FromDouble(NAN);
@@ -344,7 +344,7 @@ nanmean_one_DTYPE0(PyObject *ita,
                     count += 1;
                 }
             }
-            if (count > 0) { 
+            if (count > 0) {
                 asum /= count;
             } else {
                 asum = NAN;
@@ -387,7 +387,7 @@ nanmean_one_DTYPE0(PyObject *ita,
                 asum += *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) +
                                                                   i*stride);
             }
-            if (length > 0) { 
+            if (length > 0) {
                 asum /= length;
             } else {
                 asum = NAN;
@@ -714,49 +714,161 @@ reducer(char *name,
 
 /* docstrings ------------------------------------------------------------- */
 
-static char module_docstring[] =
-    "Bottleneck functions that reduce the input array along a specified axis.";
+static char reduce_doc[] =
+"Bottleneck functions that reduce the input array along a specified axis.";
 
-static char nansum_docstring[] =
-    "Sum of array elements along given axis treating NaNs as zero.";
-static char nanmean_docstring[] =
-    "Mean of array elements along given axis ignoring NaNs.";
+static char nansum_doc[] =
+/* MULTILINE STRING BEGIN
+Sum of array elements along given axis treating NaNs as zero.
+
+The data type (dtype) of the output is the same as the input. On 64-bit
+operating systems, 32-bit input is NOT upcast to 64-bit accumulator and
+return values.
+
+Parameters
+----------
+arr : array_like
+    Array containing numbers whose sum is desired. If `arr` is not an
+    array, a conversion is attempted.
+axis : {int, None}, optional
+    Axis along which the sum is computed. The default (axis=None) is to
+    compute the sum of the flattened array.
+
+Returns
+-------
+y : ndarray
+    An array with the same shape as `arr`, with the specified axis removed.
+    If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+
+Notes
+-----
+No error is raised on overflow.
+
+If positive or negative infinity are present the result is positive or
+negative infinity. But if both positive and negative infinity are present,
+the result is Not A Number (NaN).
+
+Examples
+--------
+>>> bn.nansum(1)
+1
+>>> bn.nansum([1])
+1
+>>> bn.nansum([1, np.nan])
+1.0
+>>> a = np.array([[1, 1], [1, np.nan]])
+>>> bn.nansum(a)
+3.0
+>>> bn.nansum(a, axis=0)
+array([ 2.,  1.])
+
+When positive infinity and negative infinity are present:
+
+>>> bn.nansum([1, np.nan, np.inf])
+inf
+>>> bn.nansum([1, np.nan, np.NINF])
+-inf
+>>> bn.nansum([1, np.nan, np.inf, np.NINF])
+nan
+
+MULTILINE STRING END */
+
+static char nanmean_doc[] =
+/* MULTILINE STRING BEGIN
+Mean of array elements along given axis ignoring NaNs.
+
+`float64` intermediate and return values are used for integer inputs.
+
+Parameters
+----------
+arr : array_like
+    Array containing numbers whose mean is desired. If `arr` is not an
+    array, a conversion is attempted.
+axis : {int, None}, optional
+    Axis along which the means are computed. The default (axis=None) is to
+    compute the mean of the flattened array.
+
+Returns
+-------
+y : ndarray
+    An array with the same shape as `arr`, with the specified axis removed.
+    If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+    `float64` intermediate and return values are used for integer inputs.
+
+See also
+--------
+bottleneck.nanmedian: Median along specified axis, ignoring NaNs.
+
+Notes
+-----
+No error is raised on overflow. (The sum is computed and then the result
+is divided by the number of non-NaN elements.)
+
+If positive or negative infinity are present the result is positive or
+negative infinity. But if both positive and negative infinity are present,
+the result is Not A Number (NaN).
+
+Examples
+--------
+>>> bn.nanmean(1)
+1.0
+>>> bn.nanmean([1])
+1.0
+>>> bn.nanmean([1, np.nan])
+1.0
+>>> a = np.array([[1, 4], [1, np.nan]])
+>>> bn.nanmean(a)
+2.0
+>>> bn.nanmean(a, axis=0)
+array([ 1.,  4.])
+
+When positive infinity and negative infinity are present:
+
+>>> bn.nanmean([1, np.nan, np.inf])
+inf
+>>> bn.nanmean([1, np.nan, np.NINF])
+-inf
+>>> bn.nanmean([1, np.nan, np.inf, np.NINF])
+nan
+
+MULTILINE STRING END */
 
 /* python wrapper -------------------------------------------------------- */
 
 static PyMethodDef
-module_methods[] = {
-    {"nansum", (PyCFunction)nansum, VAKW, nansum_docstring},
-    {"nanmean", (PyCFunction)nanmean, VAKW, nanmean_docstring},
+reduce_methods[] = {
+    {"nansum", (PyCFunction)nansum, VAKW, nansum_doc},
+    {"nanmean", (PyCFunction)nanmean, VAKW, nanmean_doc},
     {NULL, NULL, 0, NULL}
 };
 
 
 #if PY_MAJOR_VERSION >= 3
-static struct PyModuleDef moduledef = {
+static struct PyModuleDef
+reduce_def = {
    PyModuleDef_HEAD_INIT,
    "reduce2",
-   module_docstring,
+   reduce_doc,
    -1,
-   module_methods
+   reduce_methods
 };
 #endif
 
 
+PyMODINIT_FUNC
 #if PY_MAJOR_VERSION >= 3
 #define RETVAL m
-PyMODINIT_FUNC PyInit_reduce2(void)
+PyInit_reduce2(void)
 #else
 #define RETVAL
-PyMODINIT_FUNC
 initreduce2(void)
 #endif
 {
-#if PY_MAJOR_VERSION >=3
-    PyObject *m = PyModule_Create(&moduledef);
-#else
-    PyObject *m = Py_InitModule3("reduce2", module_methods, module_docstring);
-#endif
+    #if PY_MAJOR_VERSION >=3
+        PyObject *m = PyModule_Create(&reduce_def);
+    #else
+        PyObject *m = Py_InitModule3("reduce2", reduce_methods, reduce_doc);
+    #endif
     if (m == NULL) return RETVAL;
     import_array();
     if (!intern_strings()) {

@@ -6,6 +6,9 @@ DTYPE_BEGIN = r'^/\*\s*dtype\s*=\s*'
 DTYPE_END = r'^/\*\s*dtype end'
 COMMENT_END = r'.*\*\/.*'
 
+STRING_BEGIN = r'.*MULTILINE STRING BEGIN.*'
+STRING_END = r'.*MULTILINE STRING END.*'
+
 
 def make_c_files():
     modules = ['reduce2']
@@ -14,23 +17,27 @@ def make_c_files():
         filepath = os.path.join(dirpath, module + '_template.c')
         with open(filepath, 'r') as f:
             src = f.read()
-        src = expand_functions(src)
+        src_list = src.splitlines()
+        src_list = expand_functions(src_list)
+        src_list = multiline_strings(src_list)
+        src = '\n'.join(src_list)
         filepath = os.path.join(dirpath, module + '.c')
         with open(filepath, 'w') as f:
             f.write(src)
 
 
-def expand_functions(src_str):
-    src_list = src_str.splitlines()
+# dtype ---------------------------------------------------------------------
+
+def expand_functions(lines):
     while True:
-        idx0, idx1 = next_dtype_block(src_list)
+        idx0, idx1 = next_dtype_block(lines)
         if idx0 is None:
             break
-        func_list = src_list[idx0:idx1]
+        func_list = lines[idx0:idx1]
         func_list = expand_function(func_list)
         # the +1 below is to skip the /* dtype end */ line
-        src_list = src_list[:idx0] + func_list + src_list[idx1+1:]
-    return '\n'.join(src_list)
+        lines = lines[:idx0] + func_list + lines[idx1+1:]
+    return lines
 
 
 def next_dtype_block(lines):
@@ -83,3 +90,36 @@ def expand_dtypes(func_str, dtypes):
                 f = f + '\n'
         func_list.append('\n\n' + f)
     return func_list
+
+
+# multiline strings ---------------------------------------------------------
+
+def multiline_strings(lines):
+    while True:
+        idx0, idx1 = next_string_block(lines)
+        if idx0 is None:
+            break
+        str_list = lines[idx0+1:idx1]
+        str_list = quote_string(str_list)
+        lines = lines[:idx0] + str_list + lines[idx1+1:]
+    return lines
+
+
+def next_string_block(lines):
+    idx = None
+    for i in range(len(lines)):
+        line = lines[i]
+        if re.match(STRING_BEGIN, line):
+            idx = i
+        elif re.match(STRING_END, line):
+            if idx is None:
+                raise ValueError("found end of string before beginning")
+            return idx, i
+    return None, None
+
+
+def quote_string(lines):
+    for i in range(len(lines)):
+        lines[i] = "\"" + lines[i] + r"\n" + "\""
+    lines[-1] = lines[-1] + ";"
+    return lines
