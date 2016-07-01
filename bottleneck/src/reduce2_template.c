@@ -703,6 +703,8 @@ static char reduce_doc[] =
 
 static char nansum_doc[] =
 /* MULTILINE STRING BEGIN
+nansum(arr, axis=None)
+
 Sum of array elements along given axis treating NaNs as zero.
 
 The data type (dtype) of the output is the same as the input. On 64-bit
@@ -759,6 +761,8 @@ MULTILINE STRING END */
 
 static char nanmean_doc[] =
 /* MULTILINE STRING BEGIN
+nanmean(arr, axis=None)
+
 Mean of array elements along given axis ignoring NaNs.
 
 `float64` intermediate and return values are used for integer inputs.
