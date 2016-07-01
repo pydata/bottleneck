@@ -15,8 +15,8 @@
     #define BN_END_ALLOW_THREADS
 #endif
 
-#define VAKW METH_VARARGS | METH_KEYWORDS
-#define error_converting(x) (((x) == -1) && PyErr_Occurred())
+/* keep it short */
+#define VARKEY METH_VARARGS | METH_KEYWORDS
 
 /* for ease of dtype templating */
 #define NPY_float64 NPY_FLOAT64
@@ -32,3 +32,6 @@
     #define PyInt_AsLong PyLong_AsLong
     #define PyString_InternFromString PyUnicode_InternFromString
 #endif
+
+#define error_converting(x) (((x) == -1) && PyErr_Occurred())
+#define PID(i) (char *)PyArray_ITER_DATA(i)

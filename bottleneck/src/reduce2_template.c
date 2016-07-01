@@ -53,11 +53,12 @@ static PyObject *
 nansum_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 {
     Py_ssize_t i;
-    npy_DTYPE0 asum = 0, ai;
+    npy_DTYPE0 ai;
+    npy_DTYPE0 asum = 0;
     BN_BEGIN_ALLOW_THREADS
     while (PyArray_ITER_NOTDONE(ita)) {
         for (i = 0; i < length; i++) {
-            ai = *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) + i*stride);
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
             if (ai == ai) {
                 asum += ai;
             }
@@ -78,13 +79,14 @@ nansum_one_DTYPE0(PyObject *ita,
                    npy_intp* y_dims)
 {
     Py_ssize_t i;
-    npy_DTYPE0 asum = 0, ai;
+    npy_DTYPE0 ai;
+    npy_DTYPE0 asum = 0;
     PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
     PyObject *ity = PyArray_IterNew(y);
     BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
         while (PyArray_ITER_NOTDONE(ity)) {
-            *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ity))) = asum;
+            *(npy_DTYPE0*)PID(ity) = asum;
             PyArray_ITER_NEXT(ity);
         }
     }
@@ -92,13 +94,12 @@ nansum_one_DTYPE0(PyObject *ita,
         while (PyArray_ITER_NOTDONE(ita)) {
             asum = 0;
             for (i = 0; i < length; i++) {
-                ai = (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) +
-                                                                  i*stride));
+                ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
                 if (ai == ai) {
                     asum += ai;
                 }
             }
-            *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ity))) = asum;
+            *(npy_DTYPE0*)PID(ity) = asum;
             PyArray_ITER_NEXT(ita);
             PyArray_ITER_NEXT(ity);
         }
@@ -134,7 +135,7 @@ nansum_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     BN_BEGIN_ALLOW_THREADS
     while (PyArray_ITER_NOTDONE(ita)) {
         for (i = 0; i < length; i++) {
-            asum += *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) + i*stride);
+            asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
         }
         PyArray_ITER_NEXT(ita);
     }
@@ -158,7 +159,7 @@ nansum_one_DTYPE0(PyObject *ita,
     BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
         while (PyArray_ITER_NOTDONE(ity)) {
-            *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ity))) = asum;
+            *(npy_DTYPE0*)PID(ity) = asum;
             PyArray_ITER_NEXT(ity);
         }
     }
@@ -166,10 +167,9 @@ nansum_one_DTYPE0(PyObject *ita,
         while (PyArray_ITER_NOTDONE(ita)) {
             asum = 0;
             for (i = 0; i < length; i++) {
-                asum += (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) +
-                                                                  i*stride));
+                asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
             }
-            *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ity))) = asum;
+            *(npy_DTYPE0*)PID(ity) = asum;
             PyArray_ITER_NEXT(ita);
             PyArray_ITER_NEXT(ity);
         }
@@ -235,11 +235,12 @@ nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 {
     Py_ssize_t i;
     Py_ssize_t count = 0;
-    npy_DTYPE0 asum = 0, ai;
+    npy_DTYPE0 ai;
+    npy_DTYPE0 asum = 0;
     BN_BEGIN_ALLOW_THREADS
     while (PyArray_ITER_NOTDONE(ita)) {
         for (i = 0; i < length; i++) {
-            ai = *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) + i*stride);
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
@@ -266,13 +267,14 @@ nanmean_one_DTYPE0(PyObject *ita,
 {
     Py_ssize_t i;
     Py_ssize_t count;
-    npy_DTYPE0 asum, ai;
+    npy_DTYPE0 ai;
+    npy_DTYPE0 asum;
     PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
     PyObject *ity = PyArray_IterNew(y);
     BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
         while (PyArray_ITER_NOTDONE(ity)) {
-            *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ity))) = NAN;
+            *(npy_DTYPE0*)PID(ity) = NAN;
             PyArray_ITER_NEXT(ity);
         }
     }
@@ -281,8 +283,7 @@ nanmean_one_DTYPE0(PyObject *ita,
             asum = 0;
             count = 0;
             for (i = 0; i < length; i++) {
-                ai = *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) +
-                                                                  i*stride);
+                ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
                 if (ai == ai) {
                     asum += ai;
                     count += 1;
@@ -293,7 +294,7 @@ nanmean_one_DTYPE0(PyObject *ita,
             } else {
                 asum = NAN;
             }
-            *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ity))) = asum;
+            *(npy_DTYPE0*)PID(ity) = asum;
             PyArray_ITER_NEXT(ita);
             PyArray_ITER_NEXT(ity);
         }
@@ -334,7 +335,7 @@ nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     BN_BEGIN_ALLOW_THREADS
     while (PyArray_ITER_NOTDONE(ita)) {
         for (i = 0; i < length; i++) {
-            asum += *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) + i*stride);
+            asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
         }
         size += length;
         PyArray_ITER_NEXT(ita);
@@ -363,7 +364,7 @@ nanmean_one_DTYPE0(PyObject *ita,
     BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
         while (PyArray_ITER_NOTDONE(ity)) {
-            *(npy_DTYPE1*)(((char*)PyArray_ITER_DATA(ity))) = NAN;
+            *(npy_DTYPE1*)PID(ity) = NAN;
             PyArray_ITER_NEXT(ity);
         }
     }
@@ -371,15 +372,14 @@ nanmean_one_DTYPE0(PyObject *ita,
         while (PyArray_ITER_NOTDONE(ita)) {
             asum = 0;
             for (i = 0; i < length; i++) {
-                asum += *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) +
-                                                                  i*stride);
+                asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
             }
             if (length > 0) {
                 asum /= length;
             } else {
                 asum = NAN;
             }
-            *(npy_DTYPE1*)(((char*)PyArray_ITER_DATA(ity))) = asum;
+            *(npy_DTYPE1*)PID(ity) = asum;
             PyArray_ITER_NEXT(ita);
             PyArray_ITER_NEXT(ity);
         }
@@ -461,7 +461,7 @@ nanmin_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     BN_BEGIN_ALLOW_THREADS
     while (PyArray_ITER_NOTDONE(ita)) {
         for (i = 0; i < length; i++) {
-            ai = *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) + i*stride);
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
             if (ai <= amin) {
                 amin = ai;
                 allnan = 0;
@@ -502,8 +502,7 @@ nanmin_one_DTYPE0(PyObject *ita,
         amin = INFINITY;
         allnan = 1;
         for (i = 0; i < length; i++) {
-            ai = (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) +
-                                                              i*stride));
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
             if (ai <= amin) {
                 amin = ai;
                 allnan = 0;
@@ -512,7 +511,7 @@ nanmin_one_DTYPE0(PyObject *ita,
         if (allnan) {
             amin = NAN;
         }
-        *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ity))) = amin;
+        *(npy_DTYPE0*)PID(ity) = amin;
         PyArray_ITER_NEXT(ita);
         PyArray_ITER_NEXT(ity);
     }
@@ -564,7 +563,7 @@ nanmin_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     BN_BEGIN_ALLOW_THREADS
     while (PyArray_ITER_NOTDONE(ita)) {
         for (i = 0; i < length; i++) {
-            ai = *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) + i*stride);
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
             if (ai <= amin) {
                 amin = ai;
             }
@@ -599,13 +598,12 @@ nanmin_one_DTYPE0(PyObject *ita,
     while (PyArray_ITER_NOTDONE(ita)) {
         amin = NPY_MAX_DTYPE0;
         for (i = 0; i < length; i++) {
-            ai = (*(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ita)) +
-                                                              i*stride));
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
             if (ai <= amin) {
                 amin = ai;
             }
         }
-        *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ity))) = amin;
+        *(npy_DTYPE0*)PID(ity) = amin;
         PyArray_ITER_NEXT(ita);
         PyArray_ITER_NEXT(ity);
     }
@@ -1098,9 +1096,9 @@ MULTILINE STRING END */
 
 static PyMethodDef
 reduce_methods[] = {
-    {"nansum", (PyCFunction)nansum, VAKW, nansum_doc},
-    {"nanmean", (PyCFunction)nanmean, VAKW, nanmean_doc},
-    {"nanmin", (PyCFunction)nanmin, VAKW, nanmin_doc},
+    {"nansum", (PyCFunction)nansum, VARKEY, nansum_doc},
+    {"nanmean", (PyCFunction)nanmean, VARKEY, nanmean_doc},
+    {"nanmin", (PyCFunction)nanmin, VARKEY, nanmin_doc},
     {NULL, NULL, 0, NULL}
 };
 
