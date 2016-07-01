@@ -636,6 +636,229 @@ nanmin(PyObject *self, PyObject *args, PyObject *kwds)
                    0, 0);
 }
 
+/* nanmax ---------------------------------------------------------------- */
+
+/* dtype = [['float64'], ['float32']] */
+static PyObject *
+nanmax_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
+{
+    Py_ssize_t i;
+    npy_DTYPE0 ai;
+    npy_DTYPE0 amax = -INFINITY;
+    int allnan = 1;
+    if (length == 0) {
+        PyErr_SetString(PyExc_ValueError,
+                        "numpy.nanmax raises on a.size==0 and axis=None; "
+                        "So Bottleneck too.");
+        return NULL;
+    }
+    BN_BEGIN_ALLOW_THREADS
+    for (i = 0; i < length; i++) {
+        ai = *(npy_DTYPE0*)(p + i * stride);
+        if (ai >= amax) {
+            amax = ai;
+            allnan = 0;
+        }
+    }
+    if (allnan) {
+        amax = NAN;
+    }
+    BN_END_ALLOW_THREADS
+    return PyFloat_FromDouble(amax);
+}
+
+
+static PyObject *
+nanmax_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+{
+    Py_ssize_t i;
+    npy_DTYPE0 ai;
+    npy_DTYPE0 amax = -INFINITY;
+    int allnan = 1;
+    if (length == 0) {
+        PyErr_SetString(PyExc_ValueError,
+                        "numpy.nanmax raises on a.size==0 and axis=None; "
+                        "So Bottleneck too.");
+        return NULL;
+    }
+    BN_BEGIN_ALLOW_THREADS
+    while (PyArray_ITER_NOTDONE(ita)) {
+        for (i = 0; i < length; i++) {
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            if (ai >= amax) {
+                amax = ai;
+                allnan = 0;
+            }
+        }
+        PyArray_ITER_NEXT(ita);
+    }
+    Py_DECREF(ita);
+    if (allnan) {
+        amax = NAN;
+    }
+    BN_END_ALLOW_THREADS
+    return PyFloat_FromDouble(amax);
+}
+
+
+static PyObject *
+nanmax_one_DTYPE0(PyObject *ita,
+                   Py_ssize_t stride,
+                   Py_ssize_t length,
+                   int ndim,
+                   npy_intp* y_dims)
+{
+    Py_ssize_t i;
+    npy_DTYPE0 ai;
+    npy_DTYPE0 amax = 0;
+    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
+    PyObject *ity = PyArray_IterNew(y);
+    int allnan;
+    if (length == 0) {
+        PyErr_SetString(PyExc_ValueError,
+                        "numpy.nanmax raises on a.size==0 and axis=None; "
+                        "So Bottleneck too.");
+        return NULL;
+    }
+    BN_BEGIN_ALLOW_THREADS
+    while (PyArray_ITER_NOTDONE(ita)) {
+        amax = -INFINITY;
+        allnan = 1;
+        for (i = 0; i < length; i++) {
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            if (ai >= amax) {
+                amax = ai;
+                allnan = 0;
+            }
+        }
+        if (allnan) {
+            amax = NAN;
+        }
+        *(npy_DTYPE0*)PID(ity) = amax;
+        PyArray_ITER_NEXT(ita);
+        PyArray_ITER_NEXT(ity);
+    }
+    Py_DECREF(ita);
+    Py_DECREF(ity);
+    BN_END_ALLOW_THREADS
+    return y;
+}
+/* dtype end */
+
+
+/* dtype = [['int64'], ['int32']] */
+static PyObject *
+nanmax_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
+{
+    Py_ssize_t i;
+    npy_DTYPE0 ai;
+    npy_DTYPE0 amax = NPY_MIN_DTYPE0;
+    if (length == 0) {
+        PyErr_SetString(PyExc_ValueError,
+                        "numpy.nanmax raises on a.size==0 and axis=None; "
+                        "So Bottleneck too.");
+        return NULL;
+    }
+    BN_BEGIN_ALLOW_THREADS
+    for (i = 0; i < length; i++) {
+        ai = *(npy_DTYPE0*)(p + i * stride);
+        if (ai >= amax) {
+            amax = ai;
+        }
+    }
+    BN_END_ALLOW_THREADS
+    return PyInt_FromLong(amax);
+}
+
+
+static PyObject *
+nanmax_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+{
+    Py_ssize_t i;
+    npy_DTYPE0 ai;
+    npy_DTYPE0 amax = NPY_MIN_DTYPE0;
+    if (length == 0) {
+        PyErr_SetString(PyExc_ValueError,
+                        "numpy.nanmax raises on a.size==0 and axis=None; "
+                        "So Bottleneck too.");
+        return NULL;
+    }
+    BN_BEGIN_ALLOW_THREADS
+    while (PyArray_ITER_NOTDONE(ita)) {
+        for (i = 0; i < length; i++) {
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            if (ai >= amax) {
+                amax = ai;
+            }
+        }
+        PyArray_ITER_NEXT(ita);
+    }
+    Py_DECREF(ita);
+    BN_END_ALLOW_THREADS
+    return PyInt_FromLong(amax);
+}
+
+
+static PyObject *
+nanmax_one_DTYPE0(PyObject *ita,
+                   Py_ssize_t stride,
+                   Py_ssize_t length,
+                   int ndim,
+                   npy_intp* y_dims)
+{
+    Py_ssize_t i;
+    npy_DTYPE0 ai;
+    npy_DTYPE0 amax;
+    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
+    PyObject *ity = PyArray_IterNew(y);
+    if (length == 0) {
+        PyErr_SetString(PyExc_ValueError,
+                        "numpy.nanmax raises on a.size==0 and axis=None; "
+                        "So Bottleneck too.");
+        return NULL;
+    }
+    BN_BEGIN_ALLOW_THREADS
+    while (PyArray_ITER_NOTDONE(ita)) {
+        amax = NPY_MIN_DTYPE0;
+        for (i = 0; i < length; i++) {
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            if (ai >= amax) {
+                amax = ai;
+            }
+        }
+        *(npy_DTYPE0*)PID(ity) = amax;
+        PyArray_ITER_NEXT(ita);
+        PyArray_ITER_NEXT(ity);
+    }
+    Py_DECREF(ita);
+    Py_DECREF(ity);
+    BN_END_ALLOW_THREADS
+    return y;
+}
+/* dtype end */
+
+
+static PyObject *
+nanmax(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return reducer("nanmax",
+                   args,
+                   kwds,
+                   nanmax_all_float64,
+                   nanmax_all_float32,
+                   nanmax_all_int64,
+                   nanmax_all_int32,
+                   nanmax_all_ss_float64,
+                   nanmax_all_ss_float32,
+                   nanmax_all_ss_int64,
+                   nanmax_all_ss_int32,
+                   nanmax_one_float64,
+                   nanmax_one_float32,
+                   nanmax_one_int64,
+                   nanmax_one_int32,
+                   0, 0);
+}
+
 /* python strings -------------------------------------------------------- */
 
 PyObject *pystr_arr = NULL;
@@ -1092,6 +1315,50 @@ array([ 1.,  4.])
 
 MULTILINE STRING END */
 
+static char nanmax_doc[] =
+/* MULTILINE STRING BEGIN
+nanmax(arr, axis=None)
+
+Maximum values along specified axis, ignoring NaNs.
+
+When all-NaN slices are encountered, NaN is returned for that slice.
+
+Parameters
+----------
+arr : array_like
+    Input array. If `arr` is not an array, a conversion is attempted.
+axis : {int, None}, optional
+    Axis along which the maximum is computed. The default (axis=None) is
+    to compute the maximum of the flattened array.
+
+Returns
+-------
+y : ndarray
+    An array with the same shape as `arr`, with the specified axis removed.
+    If `arr` is a 0-d array, or if axis is None, a scalar is returned. The
+    same dtype as `arr` is returned.
+
+See also
+--------
+bottleneck.nanmin: Minimum along specified axis, ignoring NaNs.
+bottleneck.nanargmax: Indices of maximum values along axis, ignoring NaNs.
+
+Examples
+--------
+>>> bn.nanmax(1)
+1
+>>> bn.nanmax([1])
+1
+>>> bn.nanmax([1, np.nan])
+1.0
+>>> a = np.array([[1, 4], [1, np.nan]])
+>>> bn.nanmax(a)
+4.0
+>>> bn.nanmax(a, axis=0)
+array([ 1.,  4.])
+
+MULTILINE STRING END */
+
 /* python wrapper -------------------------------------------------------- */
 
 static PyMethodDef
@@ -1099,6 +1366,7 @@ reduce_methods[] = {
     {"nansum", (PyCFunction)nansum, VARKEY, nansum_doc},
     {"nanmean", (PyCFunction)nanmean, VARKEY, nanmean_doc},
     {"nanmin", (PyCFunction)nanmin, VARKEY, nanmin_doc},
+    {"nanmax", (PyCFunction)nanmax, VARKEY, nanmax_doc},
     {NULL, NULL, 0, NULL}
 };
 

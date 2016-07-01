@@ -25,6 +25,8 @@
 #define NPY_int32 NPY_INT32
 #define NPY_MAX_int64 NPY_MAX_INT64
 #define NPY_MAX_int32 NPY_MAX_INT32
+#define NPY_MIN_int64 NPY_MIN_INT64
+#define NPY_MIN_int32 NPY_MIN_INT32
 
 #if PY_MAJOR_VERSION >= 3
     #define PyString_FromString PyBytes_FromString
