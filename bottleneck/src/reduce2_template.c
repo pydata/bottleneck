@@ -155,6 +155,7 @@ nansum_one_DTYPE0(PyObject *ita,
     npy_DTYPE0 asum = 0;
     PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
     PyObject *ity = PyArray_IterNew(y);
+    BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
         while (PyArray_ITER_NOTDONE(ity)) {
             *(npy_DTYPE0*)(((char*)PyArray_ITER_DATA(ity))) = asum;
@@ -175,6 +176,7 @@ nansum_one_DTYPE0(PyObject *ita,
     }
     Py_DECREF(ita);
     Py_DECREF(ity);
+    BN_END_ALLOW_THREADS
     return y;
 }
 /* dtype end */
@@ -358,6 +360,7 @@ nanmean_one_DTYPE0(PyObject *ita,
     npy_DTYPE1 asum = 0;
     PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE1, 0);
     PyObject *ity = PyArray_IterNew(y);
+    BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
         while (PyArray_ITER_NOTDONE(ity)) {
             *(npy_DTYPE1*)(((char*)PyArray_ITER_DATA(ity))) = NAN;
@@ -383,6 +386,7 @@ nanmean_one_DTYPE0(PyObject *ita,
     }
     Py_DECREF(ita);
     Py_DECREF(ity);
+    BN_END_ALLOW_THREADS
     return y;
 }
 /* dtype end */
@@ -591,6 +595,7 @@ nanmin_one_DTYPE0(PyObject *ita,
                         "So Bottleneck too.");
         return NULL;
     }
+    BN_BEGIN_ALLOW_THREADS
     while (PyArray_ITER_NOTDONE(ita)) {
         amin = NPY_MAX_DTYPE0;
         for (i = 0; i < length; i++) {
@@ -606,6 +611,7 @@ nanmin_one_DTYPE0(PyObject *ita,
     }
     Py_DECREF(ita);
     Py_DECREF(ity);
+    BN_END_ALLOW_THREADS
     return y;
 }
 /* dtype end */
