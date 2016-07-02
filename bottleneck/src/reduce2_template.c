@@ -82,13 +82,11 @@ nansum_one_DTYPE0(PyObject *ita,
     npy_DTYPE0 ai;
     npy_DTYPE0 asum = 0;
     PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
-    PyObject *ity = PyArray_IterNew(y);
+    npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
     BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
-        while (PyArray_ITER_NOTDONE(ity)) {
-            *(npy_DTYPE0*)PID(ity) = asum;
-            PyArray_ITER_NEXT(ity);
-        }
+        Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
+        for (i=0; i < size; i++) *p++ = 0;
     }
     else {
         while (PyArray_ITER_NOTDONE(ita)) {
@@ -99,13 +97,11 @@ nansum_one_DTYPE0(PyObject *ita,
                     asum += ai;
                 }
             }
-            *(npy_DTYPE0*)PID(ity) = asum;
+            *p++ = asum;
             PyArray_ITER_NEXT(ita);
-            PyArray_ITER_NEXT(ity);
         }
     }
     Py_DECREF(ita);
-    Py_DECREF(ity);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -155,13 +151,11 @@ nansum_one_DTYPE0(PyObject *ita,
     Py_ssize_t i;
     npy_DTYPE0 asum = 0;
     PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
-    PyObject *ity = PyArray_IterNew(y);
+    npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
     BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
-        while (PyArray_ITER_NOTDONE(ity)) {
-            *(npy_DTYPE0*)PID(ity) = asum;
-            PyArray_ITER_NEXT(ity);
-        }
+        Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
+        for (i=0; i < size; i++) *p++ = 0;
     }
     else {
         while (PyArray_ITER_NOTDONE(ita)) {
@@ -169,13 +163,11 @@ nansum_one_DTYPE0(PyObject *ita,
             for (i = 0; i < length; i++) {
                 asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
             }
-            *(npy_DTYPE0*)PID(ity) = asum;
+            *p++ = asum;
             PyArray_ITER_NEXT(ita);
-            PyArray_ITER_NEXT(ity);
         }
     }
     Py_DECREF(ita);
-    Py_DECREF(ity);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -270,13 +262,11 @@ nanmean_one_DTYPE0(PyObject *ita,
     npy_DTYPE0 ai;
     npy_DTYPE0 asum;
     PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
-    PyObject *ity = PyArray_IterNew(y);
+    npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
     BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
-        while (PyArray_ITER_NOTDONE(ity)) {
-            *(npy_DTYPE0*)PID(ity) = NAN;
-            PyArray_ITER_NEXT(ity);
-        }
+        Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
+        for (i=0; i < size; i++) *p++ = NAN;
     }
     else {
         while (PyArray_ITER_NOTDONE(ita)) {
@@ -294,13 +284,11 @@ nanmean_one_DTYPE0(PyObject *ita,
             } else {
                 asum = NAN;
             }
-            *(npy_DTYPE0*)PID(ity) = asum;
+            *p++ = asum;
             PyArray_ITER_NEXT(ita);
-            PyArray_ITER_NEXT(ity);
         }
     }
     Py_DECREF(ita);
-    Py_DECREF(ity);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -360,13 +348,11 @@ nanmean_one_DTYPE0(PyObject *ita,
     Py_ssize_t i;
     npy_DTYPE1 asum = 0;
     PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE1, 0);
-    PyObject *ity = PyArray_IterNew(y);
+    npy_DTYPE1 *p = (npy_DTYPE1 *)PyArray_DATA((PyArrayObject *)y);
     BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
-        while (PyArray_ITER_NOTDONE(ity)) {
-            *(npy_DTYPE1*)PID(ity) = NAN;
-            PyArray_ITER_NEXT(ity);
-        }
+        Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
+        for (i=0; i < size; i++) *p++ = NAN;
     }
     else {
         while (PyArray_ITER_NOTDONE(ita)) {
@@ -379,13 +365,11 @@ nanmean_one_DTYPE0(PyObject *ita,
             } else {
                 asum = NAN;
             }
-            *(npy_DTYPE1*)PID(ity) = asum;
+            *p++ = asum;
             PyArray_ITER_NEXT(ita);
-            PyArray_ITER_NEXT(ity);
         }
     }
     Py_DECREF(ita);
-    Py_DECREF(ity);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -480,16 +464,16 @@ nanmin_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 
 static PyObject *
 nanmin_one_DTYPE0(PyObject *ita,
-                   Py_ssize_t stride,
-                   Py_ssize_t length,
-                   int ndim,
-                   npy_intp* y_dims)
+                  Py_ssize_t stride,
+                  Py_ssize_t length,
+                  int ndim,
+                  npy_intp* y_dims)
 {
     Py_ssize_t i;
     npy_DTYPE0 ai;
     npy_DTYPE0 amin = 0;
     PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
-    PyObject *ity = PyArray_IterNew(y);
+    npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
     int allnan;
     if (length == 0) {
         PyErr_SetString(PyExc_ValueError,
@@ -511,12 +495,10 @@ nanmin_one_DTYPE0(PyObject *ita,
         if (allnan) {
             amin = NAN;
         }
-        *(npy_DTYPE0*)PID(ity) = amin;
+        *p++ = amin;
         PyArray_ITER_NEXT(ita);
-        PyArray_ITER_NEXT(ity);
     }
     Py_DECREF(ita);
-    Py_DECREF(ity);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -578,16 +560,16 @@ nanmin_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 
 static PyObject *
 nanmin_one_DTYPE0(PyObject *ita,
-                   Py_ssize_t stride,
-                   Py_ssize_t length,
-                   int ndim,
-                   npy_intp* y_dims)
+                  Py_ssize_t stride,
+                  Py_ssize_t length,
+                  int ndim,
+                  npy_intp* y_dims)
 {
     Py_ssize_t i;
     npy_DTYPE0 ai;
     npy_DTYPE0 amin;
     PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
-    PyObject *ity = PyArray_IterNew(y);
+    npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
     if (length == 0) {
         PyErr_SetString(PyExc_ValueError,
                         "numpy.nanmin raises on a.size==0 and axis=None; "
@@ -603,12 +585,10 @@ nanmin_one_DTYPE0(PyObject *ita,
                 amin = ai;
             }
         }
-        *(npy_DTYPE0*)PID(ity) = amin;
+        *p++ = amin;
         PyArray_ITER_NEXT(ita);
-        PyArray_ITER_NEXT(ity);
     }
     Py_DECREF(ita);
-    Py_DECREF(ity);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -703,16 +683,16 @@ nanmax_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 
 static PyObject *
 nanmax_one_DTYPE0(PyObject *ita,
-                   Py_ssize_t stride,
-                   Py_ssize_t length,
-                   int ndim,
-                   npy_intp* y_dims)
+                  Py_ssize_t stride,
+                  Py_ssize_t length,
+                  int ndim,
+                  npy_intp* y_dims)
 {
     Py_ssize_t i;
     npy_DTYPE0 ai;
     npy_DTYPE0 amax = 0;
     PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
-    PyObject *ity = PyArray_IterNew(y);
+    npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
     int allnan;
     if (length == 0) {
         PyErr_SetString(PyExc_ValueError,
@@ -734,12 +714,10 @@ nanmax_one_DTYPE0(PyObject *ita,
         if (allnan) {
             amax = NAN;
         }
-        *(npy_DTYPE0*)PID(ity) = amax;
+        *p++ = amax;
         PyArray_ITER_NEXT(ita);
-        PyArray_ITER_NEXT(ity);
     }
     Py_DECREF(ita);
-    Py_DECREF(ity);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -801,16 +779,16 @@ nanmax_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 
 static PyObject *
 nanmax_one_DTYPE0(PyObject *ita,
-                   Py_ssize_t stride,
-                   Py_ssize_t length,
-                   int ndim,
-                   npy_intp* y_dims)
+                  Py_ssize_t stride,
+                  Py_ssize_t length,
+                  int ndim,
+                  npy_intp* y_dims)
 {
     Py_ssize_t i;
     npy_DTYPE0 ai;
     npy_DTYPE0 amax;
     PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
-    PyObject *ity = PyArray_IterNew(y);
+    npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
     if (length == 0) {
         PyErr_SetString(PyExc_ValueError,
                         "numpy.nanmax raises on a.size==0 and axis=None; "
@@ -826,12 +804,10 @@ nanmax_one_DTYPE0(PyObject *ita,
                 amax = ai;
             }
         }
-        *(npy_DTYPE0*)PID(ity) = amax;
+        *p++ = amax;
         PyArray_ITER_NEXT(ita);
-        PyArray_ITER_NEXT(ity);
     }
     Py_DECREF(ita);
-    Py_DECREF(ity);
     BN_END_ALLOW_THREADS
     return y;
 }
