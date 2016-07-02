@@ -2,7 +2,7 @@
 
 /* function pointers ----------------------------------------------------- */
 
-typedef PyObject *(*fall_ss_t)(char *, npy_intp, npy_intp);
+typedef PyObject *(*fss_t)(char *, npy_intp, npy_intp);
 typedef PyObject *(*fall_t)(PyObject *, Py_ssize_t, Py_ssize_t);
 typedef PyObject *(*fone_t)(PyObject *, Py_ssize_t, Py_ssize_t, int,
                             npy_intp*);
@@ -17,10 +17,10 @@ reducer(char *name,
         fall_t fall_float32,
         fall_t fall_int64,
         fall_t fall_int32,
-        fall_ss_t fall_ss_float64,
-        fall_ss_t fall_ss_float32,
-        fall_ss_t fall_ss_int64,
-        fall_ss_t fall_ss_int32,
+        fss_t fss_float64,
+        fss_t fss_float32,
+        fss_t fss_int64,
+        fss_t fss_int32,
         fone_t fone_float64,
         fone_t fone_float32,
         fone_t fone_int64,
@@ -32,7 +32,7 @@ reducer(char *name,
 
 /* dtype = [['float64'], ['float32']] */
 static PyObject *
-nansum_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
+nansum_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
     npy_DTYPE0 ai;
@@ -114,7 +114,7 @@ nansum_one_DTYPE0(PyObject *ita,
 
 /* dtype = [['int64'], ['int32']] */
 static PyObject *
-nansum_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
+nansum_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
     npy_DTYPE0 asum = 0;
@@ -192,10 +192,10 @@ nansum(PyObject *self, PyObject *args, PyObject *kwds)
                    nansum_all_float32,
                    nansum_all_int64,
                    nansum_all_int32,
-                   nansum_all_ss_float64,
-                   nansum_all_ss_float32,
-                   nansum_all_ss_int64,
-                   nansum_all_ss_int32,
+                   nansum_ss_float64,
+                   nansum_ss_float32,
+                   nansum_ss_int64,
+                   nansum_ss_int32,
                    nansum_one_float64,
                    nansum_one_float32,
                    nansum_one_int64,
@@ -207,7 +207,7 @@ nansum(PyObject *self, PyObject *args, PyObject *kwds)
 
 /* dtype = [['float64'], ['float32']] */
 static PyObject *
-nanmean_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
+nanmean_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
     Py_ssize_t count = 0;
@@ -309,7 +309,7 @@ nanmean_one_DTYPE0(PyObject *ita,
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 static PyObject *
-nanmean_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
+nanmean_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
     npy_DTYPE1 asum = 0;
@@ -402,10 +402,10 @@ nanmean(PyObject *self, PyObject *args, PyObject *kwds)
                    nanmean_all_float32,
                    nanmean_all_int64,
                    nanmean_all_int32,
-                   nanmean_all_ss_float64,
-                   nanmean_all_ss_float32,
-                   nanmean_all_ss_int64,
-                   nanmean_all_ss_int32,
+                   nanmean_ss_float64,
+                   nanmean_ss_float32,
+                   nanmean_ss_int64,
+                   nanmean_ss_int32,
                    nanmean_one_float64,
                    nanmean_one_float32,
                    nanmean_one_int64,
@@ -417,7 +417,7 @@ nanmean(PyObject *self, PyObject *args, PyObject *kwds)
 
 /* dtype = [['float64'], ['float32']] */
 static PyObject *
-nanmin_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
+nanmin_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
     npy_DTYPE0 ai;
@@ -525,7 +525,7 @@ nanmin_one_DTYPE0(PyObject *ita,
 
 /* dtype = [['int64'], ['int32']] */
 static PyObject *
-nanmin_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
+nanmin_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
     npy_DTYPE0 ai;
@@ -625,10 +625,10 @@ nanmin(PyObject *self, PyObject *args, PyObject *kwds)
                    nanmin_all_float32,
                    nanmin_all_int64,
                    nanmin_all_int32,
-                   nanmin_all_ss_float64,
-                   nanmin_all_ss_float32,
-                   nanmin_all_ss_int64,
-                   nanmin_all_ss_int32,
+                   nanmin_ss_float64,
+                   nanmin_ss_float32,
+                   nanmin_ss_int64,
+                   nanmin_ss_int32,
                    nanmin_one_float64,
                    nanmin_one_float32,
                    nanmin_one_int64,
@@ -640,7 +640,7 @@ nanmin(PyObject *self, PyObject *args, PyObject *kwds)
 
 /* dtype = [['float64'], ['float32']] */
 static PyObject *
-nanmax_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
+nanmax_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
     npy_DTYPE0 ai;
@@ -748,7 +748,7 @@ nanmax_one_DTYPE0(PyObject *ita,
 
 /* dtype = [['int64'], ['int32']] */
 static PyObject *
-nanmax_all_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
+nanmax_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
     npy_DTYPE0 ai;
@@ -848,10 +848,10 @@ nanmax(PyObject *self, PyObject *args, PyObject *kwds)
                    nanmax_all_float32,
                    nanmax_all_int64,
                    nanmax_all_int32,
-                   nanmax_all_ss_float64,
-                   nanmax_all_ss_float32,
-                   nanmax_all_ss_int64,
-                   nanmax_all_ss_int32,
+                   nanmax_ss_float64,
+                   nanmax_ss_float32,
+                   nanmax_ss_int64,
+                   nanmax_ss_int32,
                    nanmax_one_float64,
                    nanmax_one_float32,
                    nanmax_one_int64,
@@ -953,10 +953,10 @@ reducer(char *name,
         fall_t fall_float32,
         fall_t fall_int64,
         fall_t fall_int32,
-        fall_ss_t fall_ss_float64,
-        fall_ss_t fall_ss_float32,
-        fall_ss_t fall_ss_int64,
-        fall_ss_t fall_ss_int32,
+        fss_t fss_float64,
+        fss_t fss_float32,
+        fss_t fss_int64,
+        fss_t fss_int32,
         fone_t fone_float64,
         fone_t fone_float32,
         fone_t fone_int64,
@@ -1064,16 +1064,16 @@ reducer(char *name,
             }
             p = (char *)PyArray_DATA(a);
             if (dtype == NPY_FLOAT64) {
-                return fall_ss_float64(p, stride, length);
+                return fss_float64(p, stride, length);
             }
             else if (dtype == NPY_FLOAT32) {
-                return fall_ss_float32(p, stride, length);
+                return fss_float32(p, stride, length);
             }
             else if (dtype == NPY_INT64) {
-                return fall_ss_int64(p, stride, length);
+                return fss_int64(p, stride, length);
             }
             else if (dtype == NPY_INT32) {
-                return fall_ss_int32(p, stride, length);
+                return fss_int32(p, stride, length);
             }
             else {
                 return slow(name, args, kwds);
