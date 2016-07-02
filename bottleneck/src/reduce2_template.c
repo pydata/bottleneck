@@ -1089,32 +1089,28 @@ reducer(char *name,
     /* if we have reached this point then we are reducing an array with
        ndim > 1 over a single axis */
 
-    /* output array */
-    npy_intp y_dims[NPY_MAXDIMS];
-
-    /* input iterator */
     ita = PyArray_IterAllButAxis((PyObject *)a, &axis);
     stride = strides[axis];
     length = shape[axis];
 
-    /* reduce over a single axis; ndim > 1 */
+    /* shape of output */
     Py_ssize_t j = 0;
+    npy_intp yshape[ndim - 1];
     for (i=0; i < ndim; i++) {
-        if (i != axis) {
-            y_dims[j++] = shape[i];
-        }
+        if (i != axis) yshape[j++] = shape[i];
     }
+
     if (dtype == NPY_FLOAT64) {
-        return fone_float64(ita, stride, length, ndim, y_dims);
+        return fone_float64(ita, stride, length, ndim, yshape);
     }
     else if (dtype == NPY_FLOAT32) {
-        return fone_float32(ita, stride, length, ndim, y_dims);
+        return fone_float32(ita, stride, length, ndim, yshape);
     }
     else if (dtype == NPY_INT64) {
-        return fone_int64(ita, stride, length, ndim, y_dims);
+        return fone_int64(ita, stride, length, ndim, yshape);
     }
     else if (dtype == NPY_INT32) {
-        return fone_int32(ita, stride, length, ndim, y_dims);
+        return fone_int32(ita, stride, length, ndim, yshape);
     }
     else {
         return slow(name, args, kwds);
