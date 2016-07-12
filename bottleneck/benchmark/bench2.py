@@ -30,13 +30,15 @@ def timer(statements, setup):
     if len(statements) != 2:
         raise ValueError("Two statements needed.")
     with np.errstate(invalid='ignore'):
-        t0 = autotimeit(statements[0], setup)
-        t1 = autotimeit(statements[1], setup)
+        t0 = autotimeit(statements[0], setup, repeat=6)
+        t1 = autotimeit(statements[1], setup, repeat=6)
     speed = t1 / t0
     return speed
 
 
 def benchsuite(function):
+
+    f = function
 
     suite = []
 
@@ -44,61 +46,26 @@ def benchsuite(function):
         import numpy as np
         from bottleneck import %s
         from bottleneck import %s2 as %s_c
-        a = np.ones(1)
-        b = np.ones(1, dtype=np.float16)
-        c = np.ones((2, 2))
-        d = np.array(1)
-    """ % (function, function, function)
+        a=%s
+    """
 
-    setup2 = """
-        import numpy as np
-        from bottleneck import %s
-        from bottleneck import %s2 as %s_c
-        e = np.random.rand(1000000)
-    """ % (function, function, function)
+    sig_array = [
+                 ("%s%s(a, 1)", "np.ones((1, 1))"),
+                 ("%s%s(a, 1)", "np.random.rand(1000000, 2)"),
+                 ("%s%s(a)", "np.ones(1)"),
+                 ("%s%s(a, None)", "np.ones(1)"),
+                 ("%s%s(a, axis=None)", "np.ones(1)"),
+                 ("%s%s(a)", "np.ones(1, dtype=np.float16)"),
+                 ("%s%s(a)", "np.random.rand(1000000)"),
+                 ("%s%s(a)", "np.array(1)"),
+                ]
 
-    run = {}
-    run['name'] = ["%s(a)" % function, "np.ones(1)"]
-    run['statements'] = ["%s_c(a)" % function, "%s(a)" % function]
-    run['setup'] = setup
-    suite.append(run)
-
-    run = {}
-    run['name'] = ["%s(a, None)" % function, "np.ones(1)"]
-    run['statements'] = ["%s_c(a, None)" % function, "%s(a, None)" % function]
-    run['setup'] = setup
-    suite.append(run)
-
-    run = {}
-    run['name'] = ["%s(a, 1)" % function, "np.ones((2, 2))"]
-    run['statements'] = ["%s_c(c, 1)" % function, "%s(c, 1)" % function]
-    run['setup'] = setup
-    suite.append(run)
-
-    run = {}
-    run['name'] = ["%s(a, axis=None)" % function, "np.ones(1)"]
-    run['statements'] = ["%s_c(a, axis=None)" % function, "%s(a, axis=None)" %
-                         function]
-    run['setup'] = setup
-    suite.append(run)
-
-    run = {}
-    run['name'] = ["%s(a)" % function, "np.random.rand(1000000)"]
-    run['statements'] = ["%s_c(e)" % function, "%s(e)" % function]
-    run['setup'] = setup2
-    suite.append(run)
-
-    run = {}
-    run['name'] = ["%s(a)" % function, "np.ones(1, dtype=np.float16)"]
-    run['statements'] = ["%s_c(b)" % function, "%s(b)" % function]
-    run['setup'] = setup
-    suite.append(run)
-
-    run = {}
-    run['name'] = ["%s(a)" % function, "np.array(1)"]
-    run['statements'] = ["%s_c(d)" % function, "%s(d)" % function]
-    run['setup'] = setup
-    suite.append(run)
+    for signature, array in sig_array:
+        run = {}
+        run['name'] = [signature % (f, ''), array]
+        run['statements'] = [signature % (f, "_c"), signature % (f, "")]
+        run['setup'] = setup % (f, f, f, array)
+        suite.append(run)
 
     # Strip leading spaces from setup code
     for i, run in enumerate(suite):

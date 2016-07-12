@@ -73,10 +73,10 @@ nansum_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 
 static PyObject *
 nansum_one_DTYPE0(PyObject *ita,
-                   Py_ssize_t stride,
-                   Py_ssize_t length,
-                   int ndim,
-                   npy_intp* y_dims)
+                  Py_ssize_t stride,
+                  Py_ssize_t length,
+                  int ndim,
+                  npy_intp* y_dims)
 {
     Py_ssize_t i;
     npy_DTYPE0 ai;
@@ -143,10 +143,10 @@ nansum_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 
 static PyObject *
 nansum_one_DTYPE0(PyObject *ita,
-                   Py_ssize_t stride,
-                   Py_ssize_t length,
-                   int ndim,
-                   npy_intp* y_dims)
+                  Py_ssize_t stride,
+                  Py_ssize_t length,
+                  int ndim,
+                  npy_intp* y_dims)
 {
     Py_ssize_t i;
     npy_DTYPE0 asum = 0;
@@ -1018,18 +1018,17 @@ reducer(char *name,
     Py_ssize_t length;
 
     PyObject *ita;
-    char *p;
 
     int dtype = PyArray_TYPE(a);
     npy_intp *shape = PyArray_SHAPE(a);
     npy_intp *strides = PyArray_STRIDES(a);
 
     if (reduce_all == 1) {
-        /* reduce over all axes */
-
-        if (ndim==1 || PyArray_CHKFLAGS(a, NPY_ARRAY_C_CONTIGUOUS) ||
+        if (ndim==1 ||
+            PyArray_CHKFLAGS(a, NPY_ARRAY_C_CONTIGUOUS) ||
             PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS)) {
             /* low function call overhead reduction */
+            char *p = PyArray_BYTES(a);
             length = shape[0];
             stride = strides[0];
             for (i=1; i < ndim; i++) {
@@ -1038,7 +1037,6 @@ reducer(char *name,
                     stride = strides[i];
                 }
             }
-            p = (char *)PyArray_DATA(a);
             if (dtype == NPY_FLOAT64) {
                 return fss_float64(p, stride, length);
             }
