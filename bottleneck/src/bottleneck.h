@@ -1,6 +1,8 @@
 #include <Python.h>
 #define NPY_NO_DEPRECATED_API NPY_1_11_API_VERSION
 #include <numpy/arrayobject.h>
+#include <numpy/npy_math.h>  /* NPY_NAN, NPY_INFINITY */
+#include <numpy/npy_common.h>  /* NPY_INLINE */
 #include "slow.h"
 
 /* THREADS=1 releases the GIL but increases function call
@@ -14,9 +16,6 @@
     #define BN_BEGIN_ALLOW_THREADS
     #define BN_END_ALLOW_THREADS
 #endif
-
-/* keep it short */
-#define VARKEY METH_VARARGS | METH_KEYWORDS
 
 /* for ease of dtype templating */
 #define NPY_float64 NPY_FLOAT64
@@ -35,5 +34,6 @@
     #define PyString_InternFromString PyUnicode_InternFromString
 #endif
 
+#define VARKEY METH_VARARGS | METH_KEYWORDS
 #define error_converting(x) (((x) == -1) && PyErr_Occurred())
 #define PID(i) (char *)PyArray_ITER_DATA(i)

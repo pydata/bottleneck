@@ -217,7 +217,7 @@ nanmean_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
     if (count > 0) {
         return PyFloat_FromDouble(asum / count);
     } else {
-        return PyFloat_FromDouble(NAN);
+        return PyFloat_FromDouble(NPY_NAN);
     }
 }
 
@@ -245,7 +245,7 @@ nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     if (count > 0) {
         return PyFloat_FromDouble(asum / count);
     } else {
-        return PyFloat_FromDouble(NAN);
+        return PyFloat_FromDouble(NPY_NAN);
     }
 }
 
@@ -266,7 +266,7 @@ nanmean_one_DTYPE0(PyObject *ita,
     BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
         Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
-        for (i=0; i < size; i++) *p++ = NAN;
+        for (i=0; i < size; i++) *p++ = NPY_NAN;
     }
     else {
         while (PyArray_ITER_NOTDONE(ita)) {
@@ -282,7 +282,7 @@ nanmean_one_DTYPE0(PyObject *ita,
             if (count > 0) {
                 asum /= count;
             } else {
-                asum = NAN;
+                asum = NPY_NAN;
             }
             *p++ = asum;
             PyArray_ITER_NEXT(ita);
@@ -309,7 +309,7 @@ nanmean_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
     if (length > 0) {
         return PyFloat_FromDouble(asum / length);
     } else {
-        return PyFloat_FromDouble(NAN);
+        return PyFloat_FromDouble(NPY_NAN);
     }
 }
 
@@ -333,7 +333,7 @@ nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     if (size > 0) {
         return PyFloat_FromDouble(asum / size);
     } else {
-        return PyFloat_FromDouble(NAN);
+        return PyFloat_FromDouble(NPY_NAN);
     }
 }
 
@@ -352,7 +352,7 @@ nanmean_one_DTYPE0(PyObject *ita,
     BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
         Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
-        for (i=0; i < size; i++) *p++ = NAN;
+        for (i=0; i < size; i++) *p++ = NPY_NAN;
     }
     else {
         while (PyArray_ITER_NOTDONE(ita)) {
@@ -363,7 +363,7 @@ nanmean_one_DTYPE0(PyObject *ita,
             if (length > 0) {
                 asum /= length;
             } else {
-                asum = NAN;
+                asum = NPY_NAN;
             }
             *p++ = asum;
             PyArray_ITER_NEXT(ita);
@@ -405,7 +405,7 @@ nanmin_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
     npy_DTYPE0 ai;
-    npy_DTYPE0 amin = INFINITY;
+    npy_DTYPE0 amin = NPY_INFINITY;
     int allnan = 1;
     if (length == 0) {
         PyErr_SetString(PyExc_ValueError,
@@ -422,7 +422,7 @@ nanmin_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
         }
     }
     if (allnan) {
-        amin = NAN;
+        amin = NPY_NAN;
     }
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(amin);
@@ -434,7 +434,7 @@ nanmin_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 {
     Py_ssize_t i;
     npy_DTYPE0 ai;
-    npy_DTYPE0 amin = INFINITY;
+    npy_DTYPE0 amin = NPY_INFINITY;
     int allnan = 1;
     if (length == 0) {
         PyErr_SetString(PyExc_ValueError,
@@ -455,7 +455,7 @@ nanmin_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     }
     Py_DECREF(ita);
     if (allnan) {
-        amin = NAN;
+        amin = NPY_NAN;
     }
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(amin);
@@ -483,7 +483,7 @@ nanmin_one_DTYPE0(PyObject *ita,
     }
     BN_BEGIN_ALLOW_THREADS
     while (PyArray_ITER_NOTDONE(ita)) {
-        amin = INFINITY;
+        amin = NPY_INFINITY;
         allnan = 1;
         for (i = 0; i < length; i++) {
             ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
@@ -493,7 +493,7 @@ nanmin_one_DTYPE0(PyObject *ita,
             }
         }
         if (allnan) {
-            amin = NAN;
+            amin = NPY_NAN;
         }
         *p++ = amin;
         PyArray_ITER_NEXT(ita);
@@ -624,7 +624,7 @@ nanmax_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
     npy_DTYPE0 ai;
-    npy_DTYPE0 amax = -INFINITY;
+    npy_DTYPE0 amax = -NPY_INFINITY;
     int allnan = 1;
     if (length == 0) {
         PyErr_SetString(PyExc_ValueError,
@@ -641,7 +641,7 @@ nanmax_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
         }
     }
     if (allnan) {
-        amax = NAN;
+        amax = NPY_NAN;
     }
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(amax);
@@ -653,7 +653,7 @@ nanmax_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 {
     Py_ssize_t i;
     npy_DTYPE0 ai;
-    npy_DTYPE0 amax = -INFINITY;
+    npy_DTYPE0 amax = -NPY_INFINITY;
     int allnan = 1;
     if (length == 0) {
         PyErr_SetString(PyExc_ValueError,
@@ -674,7 +674,7 @@ nanmax_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     }
     Py_DECREF(ita);
     if (allnan) {
-        amax = NAN;
+        amax = NPY_NAN;
     }
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(amax);
@@ -702,7 +702,7 @@ nanmax_one_DTYPE0(PyObject *ita,
     }
     BN_BEGIN_ALLOW_THREADS
     while (PyArray_ITER_NOTDONE(ita)) {
-        amax = -INFINITY;
+        amax = -NPY_INFINITY;
         allnan = 1;
         for (i = 0; i < length; i++) {
             ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
@@ -712,7 +712,7 @@ nanmax_one_DTYPE0(PyObject *ita,
             }
         }
         if (allnan) {
-            amax = NAN;
+            amax = NPY_NAN;
         }
         *p++ = amax;
         PyArray_ITER_NEXT(ita);
@@ -851,7 +851,7 @@ intern_strings(void) {
 
 /* reducer --------------------------------------------------------------- */
 
-static inline int
+static NPY_INLINE int
 parse_args(PyObject *args,
            PyObject *kwds,
            PyObject **arr_obj,
