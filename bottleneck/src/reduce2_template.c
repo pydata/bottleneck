@@ -408,9 +408,8 @@ nanmin_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
     npy_DTYPE0 amin = NPY_INFINITY;
     int allnan = 1;
     if (length == 0) {
-        PyErr_SetString(PyExc_ValueError,
-                        "numpy.nanmin raises on a.size==0 and axis=None; "
-                        "So Bottleneck too.");
+        VALUE_ERR("numpy.nanmin raises on a.size==0 and axis=None; "
+                  "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
@@ -437,9 +436,8 @@ nanmin_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     npy_DTYPE0 amin = NPY_INFINITY;
     int allnan = 1;
     if (length == 0) {
-        PyErr_SetString(PyExc_ValueError,
-                        "numpy.nanmin raises on a.size==0 and axis=None; "
-                        "So Bottleneck too.");
+        VALUE_ERR("numpy.nanmin raises on a.size==0 and axis=None; "
+                  "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
@@ -476,9 +474,8 @@ nanmin_one_DTYPE0(PyObject *ita,
     npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
     int allnan;
     if (length == 0) {
-        PyErr_SetString(PyExc_ValueError,
-                        "numpy.nanmin raises on a.size==0 and axis=None; "
-                        "So Bottleneck too.");
+        VALUE_ERR("numpy.nanmin raises on a.shape[axis]==0; "
+                  "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
@@ -513,9 +510,8 @@ nanmin_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
     npy_DTYPE0 ai;
     npy_DTYPE0 amin = NPY_MAX_DTYPE0;
     if (length == 0) {
-        PyErr_SetString(PyExc_ValueError,
-                        "numpy.nanmin raises on a.size==0 and axis=None; "
-                        "So Bottleneck too.");
+        VALUE_ERR("numpy.nanmin raises on a.size==0 and axis=None; "
+                  "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
@@ -537,9 +533,8 @@ nanmin_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     npy_DTYPE0 ai;
     npy_DTYPE0 amin = NPY_MAX_DTYPE0;
     if (length == 0) {
-        PyErr_SetString(PyExc_ValueError,
-                        "numpy.nanmin raises on a.size==0 and axis=None; "
-                        "So Bottleneck too.");
+        VALUE_ERR("numpy.nanmin raises on a.size==0 and axis=None; "
+                  "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
@@ -571,9 +566,8 @@ nanmin_one_DTYPE0(PyObject *ita,
     PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
     npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
     if (length == 0) {
-        PyErr_SetString(PyExc_ValueError,
-                        "numpy.nanmin raises on a.size==0 and axis=None; "
-                        "So Bottleneck too.");
+        VALUE_ERR("numpy.nanmin raises on a.shape[axis]==0; "
+                  "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
@@ -627,9 +621,8 @@ nanmax_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
     npy_DTYPE0 amax = -NPY_INFINITY;
     int allnan = 1;
     if (length == 0) {
-        PyErr_SetString(PyExc_ValueError,
-                        "numpy.nanmax raises on a.size==0 and axis=None; "
-                        "So Bottleneck too.");
+        VALUE_ERR("numpy.nanmax raises on a.size==0 and axis=None; "
+                  "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
@@ -656,9 +649,8 @@ nanmax_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     npy_DTYPE0 amax = -NPY_INFINITY;
     int allnan = 1;
     if (length == 0) {
-        PyErr_SetString(PyExc_ValueError,
-                        "numpy.nanmax raises on a.size==0 and axis=None; "
-                        "So Bottleneck too.");
+        VALUE_ERR("numpy.nanmax raises on a.size==0 and axis=None; "
+                  "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
@@ -695,9 +687,8 @@ nanmax_one_DTYPE0(PyObject *ita,
     npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
     int allnan;
     if (length == 0) {
-        PyErr_SetString(PyExc_ValueError,
-                        "numpy.nanmax raises on a.size==0 and axis=None; "
-                        "So Bottleneck too.");
+        VALUE_ERR("numpy.nanmax raises on a.shape[axis]==0; "
+                  "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
@@ -732,9 +723,8 @@ nanmax_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
     npy_DTYPE0 ai;
     npy_DTYPE0 amax = NPY_MIN_DTYPE0;
     if (length == 0) {
-        PyErr_SetString(PyExc_ValueError,
-                        "numpy.nanmax raises on a.size==0 and axis=None; "
-                        "So Bottleneck too.");
+        VALUE_ERR("numpy.nanmax raises on a.size==0 and axis=None; "
+                  "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
@@ -756,9 +746,8 @@ nanmax_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
     npy_DTYPE0 ai;
     npy_DTYPE0 amax = NPY_MIN_DTYPE0;
     if (length == 0) {
-        PyErr_SetString(PyExc_ValueError,
-                        "numpy.nanmax raises on a.size==0 and axis=None; "
-                        "So Bottleneck too.");
+        VALUE_ERR("numpy.nanmax raises on a.size==0 and axis=None; "
+                  "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
@@ -790,9 +779,8 @@ nanmax_one_DTYPE0(PyObject *ita,
     PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
     npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
     if (length == 0) {
-        PyErr_SetString(PyExc_ValueError,
-                        "numpy.nanmax raises on a.size==0 and axis=None; "
-                        "So Bottleneck too.");
+        VALUE_ERR("numpy.nanmax raises on a.shape[axis]==0; "
+                  "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
@@ -864,43 +852,43 @@ parse_args(PyObject *args,
             if (nargs == 0) {
                 *arr_obj = PyDict_GetItem(kwds, pystr_arr);
                 if (!*arr_obj) {
-                    PyErr_SetString(PyExc_TypeError, "can't find `arr` input");
+                    TYPE_ERR("can't find `arr` input");
                     return 0;
                 }
             }
             else {
                 *axis_obj = PyDict_GetItem(kwds, pystr_axis);
                 if (!*axis_obj) {
-                    PyErr_SetString(PyExc_TypeError, "can't find `axis` input");
+                    TYPE_ERR("can't find `axis` input");
                     return 0;
                 }
                 if (nargs == 1) {
                     *arr_obj = PyTuple_GET_ITEM(args, 0);
                 }
                 else {
-                    PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
+                    TYPE_ERR("wrong number of inputs");
                     return 0;
                 }
             }
         }
         else if (nkwds == 2) {
             if (nargs != 0) {
-                PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
+                TYPE_ERR("wrong number of inputs");
                 return 0;
             }
             *arr_obj = PyDict_GetItem(kwds, pystr_arr);
             if (!*arr_obj) {
-                PyErr_SetString(PyExc_TypeError, "can't find `arr` input");
+                TYPE_ERR("can't find `arr` input");
                 return 0;
             }
             *axis_obj = PyDict_GetItem(kwds, pystr_axis);
             if (!*axis_obj) {
-                PyErr_SetString(PyExc_TypeError, "can't find `axis` input");
+                TYPE_ERR("can't find `axis` input");
                 return 0;
             }
         }
         else {
-            PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
+            TYPE_ERR("wrong number of inputs");
             return 0;
         }
     }
@@ -912,7 +900,7 @@ parse_args(PyObject *args,
         *axis_obj = PyTuple_GET_ITEM(args, 1);
     }
     else {
-        PyErr_SetString(PyExc_TypeError, "wrong number of inputs");
+        TYPE_ERR("wrong number of inputs");
         return 0;
     }
 
@@ -995,7 +983,7 @@ reducer(char *name,
             axis_obj == PyInt_FromLong(-1))
             return slow(name, args, kwds);
         else {
-            PyErr_Format(PyExc_ValueError, "axis out of bounds for 0d input");
+            VALUE_ERR("axis out of bounds for 0d input");
             return NULL;
         }
     }
@@ -1008,7 +996,7 @@ reducer(char *name,
     else {
         axis = PyArray_PyIntAsInt(axis_obj);
         if (error_converting(axis)) {
-            PyErr_SetString(PyExc_TypeError, "`axis` must be an integer");
+            TYPE_ERR("`axis` must be an integer");
             return NULL;
         }
         if (axis < 0) {

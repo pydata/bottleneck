@@ -37,3 +37,6 @@
 #define VARKEY METH_VARARGS | METH_KEYWORDS
 #define error_converting(x) (((x) == -1) && PyErr_Occurred())
 #define PID(i) (char *)PyArray_ITER_DATA(i)
+
+#define VALUE_ERR(i) PyErr_SetString(PyExc_ValueError, i)
+#define TYPE_ERR(i) PyErr_SetString(PyExc_TypeError, i)
