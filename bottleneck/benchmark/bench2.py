@@ -38,10 +38,6 @@ def timer(statements, setup):
 
 def benchsuite(function):
 
-    f = function
-
-    suite = []
-
     setup = """
         import numpy as np
         from bottleneck import %s
@@ -60,6 +56,8 @@ def benchsuite(function):
                  ("%s%s(a)", "np.array(1)"),
                 ]
 
+    f = function
+    suite = []
     for signature, array in sig_array:
         run = {}
         run['name'] = [signature % (f, ''), array]

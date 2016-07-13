@@ -940,14 +940,31 @@ reducer(char *name,
         int ravel,
         int copy)
 {
+
+    int ndim;
+    int reduce_all = 0;
+    int axis;
+    int dtype;
+
+    Py_ssize_t i;
+    Py_ssize_t j = 0;
+    Py_ssize_t stride;
+    Py_ssize_t length;
+
+    npy_intp *shape;
+    npy_intp *strides;
+
+    PyObject *ita;
+    PyArrayObject *a;
+
     PyObject *arr_obj;
     PyObject *axis_obj = Py_None;
+
     if (!parse_args(args, kwds, &arr_obj, &axis_obj)) {
         return NULL;
     }
 
     /* convert to array if necessary */
-    PyArrayObject *a;
     if PyArray_Check(arr_obj) {
         a = (PyArrayObject *)arr_obj;
     } else {
@@ -969,7 +986,7 @@ reducer(char *name,
     }
     */
 
-    int ndim = PyArray_NDIM(a);
+    ndim = PyArray_NDIM(a);
 
     /* defend against 0d beings */
     if (ndim == 0) {
@@ -984,8 +1001,6 @@ reducer(char *name,
     }
 
     /* does user want to reduce over all axes? */
-    int reduce_all = 0;
-    int axis;
     if (axis_obj == Py_None) {
         reduce_all = 1;
         axis = -1;
@@ -1013,17 +1028,12 @@ reducer(char *name,
         }
     }
 
-    Py_ssize_t i;
-    Py_ssize_t stride;
-    Py_ssize_t length;
-
-    PyObject *ita;
-
-    int dtype = PyArray_TYPE(a);
-    npy_intp *shape = PyArray_SHAPE(a);
-    npy_intp *strides = PyArray_STRIDES(a);
+    dtype = PyArray_TYPE(a);
+    shape = PyArray_SHAPE(a);
+    strides = PyArray_STRIDES(a);
 
     if (reduce_all == 1) {
+        /* we are reducing the array along all axes */
         if (ndim==1 ||
             PyArray_CHKFLAGS(a, NPY_ARRAY_C_CONTIGUOUS) ||
             PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS)) {
@@ -1083,35 +1093,36 @@ reducer(char *name,
             }
         }
     }
-
-    /* if we have reached this point then we are reducing an array with
-       ndim > 1 over a single axis */
-
-    ita = PyArray_IterAllButAxis((PyObject *)a, &axis);
-    stride = strides[axis];
-    length = shape[axis];
-
-    /* shape of output */
-    Py_ssize_t j = 0;
-    npy_intp yshape[ndim - 1];
-    for (i=0; i < ndim; i++) {
-        if (i != axis) yshape[j++] = shape[i];
-    }
-
-    if (dtype == NPY_FLOAT64) {
-        return fone_float64(ita, stride, length, ndim, yshape);
-    }
-    else if (dtype == NPY_FLOAT32) {
-        return fone_float32(ita, stride, length, ndim, yshape);
-    }
-    else if (dtype == NPY_INT64) {
-        return fone_int64(ita, stride, length, ndim, yshape);
-    }
-    else if (dtype == NPY_INT32) {
-        return fone_int32(ita, stride, length, ndim, yshape);
-    }
     else {
-        return slow(name, args, kwds);
+
+        /* we are reducing an array with ndim > 1 over a single axis */
+
+        npy_intp yshape[ndim - 1];
+
+        /* shape of output */
+        for (i=0; i < ndim; i++) {
+            if (i != axis) yshape[j++] = shape[i];
+        }
+
+        ita = PyArray_IterAllButAxis((PyObject *)a, &axis);
+        stride = strides[axis];
+        length = shape[axis];
+
+        if (dtype == NPY_FLOAT64) {
+            return fone_float64(ita, stride, length, ndim, yshape);
+        }
+        else if (dtype == NPY_FLOAT32) {
+            return fone_float32(ita, stride, length, ndim, yshape);
+        }
+        else if (dtype == NPY_INT64) {
+            return fone_int64(ita, stride, length, ndim, yshape);
+        }
+        else if (dtype == NPY_INT32) {
+            return fone_int32(ita, stride, length, ndim, yshape);
+        }
+        else {
+            return slow(name, args, kwds);
+        }
     }
 
 }
