@@ -1,8 +1,6 @@
 #include <Python.h>
 #define NPY_NO_DEPRECATED_API NPY_1_11_API_VERSION
 #include <numpy/arrayobject.h>
-#include <numpy/npy_math.h>  /* NPY_NAN, NPY_INFINITY */
-#include <numpy/npy_common.h>  /* NPY_INLINE */
 #include "slow.h"
 
 /* THREADS=1 releases the GIL but increases function call
@@ -40,3 +38,37 @@
 
 #define VALUE_ERR(i) PyErr_SetString(PyExc_ValueError, i)
 #define TYPE_ERR(i) PyErr_SetString(PyExc_TypeError, i)
+
+/* inline copied from NumPy. */
+#if defined(_MSC_VER)
+        #define BN_INLINE __inline
+#elif defined(__GNUC__)
+	#if defined(__STRICT_ANSI__)
+		#define BN_INLINE __inline__
+	#else
+		#define BN_INLINE inline
+	#endif
+#else
+        #define BN_INLINE
+#endif
+
+/*
+ * NAN and INFINITY like macros (same behavior as glibc for NAN, same as C99
+ * for INFINITY). Copied from NumPy.
+ */
+BN_INLINE static float __bn_inff(void)
+{
+    const union { npy_uint32 __i; float __f;} __bint = {0x7f800000UL};
+    return __bint.__f;
+}
+
+BN_INLINE static float __bn_nanf(void)
+{
+    const union { npy_uint32 __i; float __f;} __bint = {0x7fc00000UL};
+    return __bint.__f;
+}
+
+#define BN_INFINITYF __bn_inff()
+#define BN_NANF __bn_nanf()
+#define BN_INFINITY ((npy_double)BN_INFINITYF)
+#define BN_NAN ((npy_double)BN_NANF)
