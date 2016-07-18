@@ -38,6 +38,22 @@ def timer(statements, setup):
 
 def benchsuite(function):
 
+    if function.startswith("move_"):
+        suite = suite_move(function)
+    else:
+        suite = suite_reduce(function)
+
+    # Strip leading spaces from setup code
+    for i, run in enumerate(suite):
+        t = run['setup']
+        t = '\n'.join([z.strip() for z in t.split('\n')])
+        suite[i]['setup'] = t
+
+    return suite
+
+
+def suite_reduce(function):
+
     setup = """
         import numpy as np
         from bottleneck import %s
@@ -65,10 +81,33 @@ def benchsuite(function):
         run['setup'] = setup % (f, f, f, array)
         suite.append(run)
 
-    # Strip leading spaces from setup code
-    for i, run in enumerate(suite):
-        t = run['setup']
-        t = '\n'.join([z.strip() for z in t.split('\n')])
-        suite[i]['setup'] = t
+    return suite
+
+
+def suite_move(function):
+
+    setup = """
+        import numpy as np
+        from bottleneck import %s
+        from bottleneck import %s2 as %s_c
+        a=%s
+    """
+
+    sig_array = [
+                 ("%s%s(a, 2)", "np.ones(2)"),
+                 ("%s%s(a, 2, 2)", "np.ones(2)"),
+                 ("%s%s(a, window=2)", "np.ones(2)"),
+                 ("%s%s(a, window=2)", "np.ones(1000)"),
+                 ("%s%s(a, window=2)", "np.ones((1000, 2))"),
+                ]
+
+    f = function
+    suite = []
+    for signature, array in sig_array:
+        run = {}
+        run['name'] = [signature % (f, ''), array]
+        run['statements'] = [signature % (f, "_c"), signature % (f, "")]
+        run['setup'] = setup % (f, f, f, array)
+        suite.append(run)
 
     return suite
