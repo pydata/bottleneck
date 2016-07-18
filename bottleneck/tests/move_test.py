@@ -76,6 +76,120 @@ def unit_maker(func):
 
 
 # ---------------------------------------------------------------------------
+# Test with arrays that are not C ordered
+
+def test_strides():
+    "test move functions with non-C ordered arrays"
+    for func in move_functions():
+        yield unit_maker_strides, func
+
+
+def arrays_strides(dtypes=DTYPES):
+    "Iterator that yields non-C orders arrays."
+
+    # 1d
+    for dtype in dtypes:
+        a = np.arange(12).astype(dtype)
+        for start in range(3):
+            for step in range(1, 3):
+                yield a[start::step]  # don't use astype here; copy created
+
+    # 2d
+    for dtype in dtypes:
+        a = np.arange(12).reshape(4, 3).astype(dtype)
+        yield a[::2]
+        yield a[:, ::2]
+        yield a[::2][:, ::2]
+
+    # 3d
+    for dtype in dtypes:
+        a = np.arange(60).reshape(3, 4, 5).astype(dtype)
+        for start in range(2):
+            for step in range(1, 2):
+                yield a[start::step]
+                yield a[:, start::step]
+                yield a[:, :, start::step]
+
+
+def unit_maker_strides(func, decimal=5):
+    "Test that bn.xxx gives the same output as bn.slow.xxx."
+    fmt = '\nfunc %s | input %s (%s) | shape %s | axis %s\n'
+    fmt += '\nInput array:\n%s\n'
+    fmt += '\nStrides: %s\n'
+    fmt += '\nFlags: \n%s\n'
+    name = func.__name__
+    func0 = eval('bn.slow.%s' % name)
+    for i, arr in enumerate(arrays_strides()):
+        axes = list(range(-1, arr.ndim))
+        for axis in axes:
+            # do not use arr.copy() here because it will C order the array
+            actual = func(arr, window=2, min_count=1, axis=axis)
+            desired = func0(arr, window=2, min_count=1, axis=axis)
+            tup = (name, 'a'+str(i), str(arr.dtype), str(arr.shape),
+                   str(axis), arr, arr.strides, arr.flags)
+            err_msg = fmt % tup
+            assert_array_almost_equal(actual, desired, decimal, err_msg)
+            err_msg += '\n dtype mismatch %s %s'
+
+
+# ---------------------------------------------------------------------------
+# Test argument parsing
+
+def test_arg_parsing():
+    "test argument parsing"
+    for func in move_functions():
+        yield unit_maker_argparse, func
+
+
+def unit_maker_argparse(func, decimal=5):
+    "test argument parsing."
+
+    name = func.__name__
+    func0 = eval('bn.slow.%s' % name)
+
+    arr = np.array([1., 2, 3])
+
+    fmt = '\n%s' % func
+    fmt += '%s\n'
+    fmt += '\nInput array:\n%s\n' % arr
+
+    actual = func(arr, 2)
+    desired = func0(arr, 2)
+    err_msg = fmt % "(arr, 2)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(arr, 2, 1)
+    desired = func0(arr, 2, 1)
+    err_msg = fmt % "(arr, 2, 1)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(arr, window=2)
+    desired = func0(arr, window=2)
+    err_msg = fmt % "(arr, window=2)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(arr, window=2, min_count=1)
+    desired = func0(arr, window=2, min_count=1)
+    err_msg = fmt % "(arr, window=2, min_count=1)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(arr, window=2, min_count=1, axis=0)
+    desired = func0(arr, window=2, min_count=1, axis=0)
+    err_msg = fmt % "(arr, window=2, min_count=1, axis=0)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(arr, min_count=1, window=2, axis=0)
+    desired = func0(arr, min_count=1, window=2, axis=0)
+    err_msg = fmt % "(arr, min_count=1, window=2, axis=0)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(arr, axis=-1, min_count=None, window=2)
+    desired = func0(arr, axis=-1, min_count=None, window=2)
+    err_msg = fmt % "(arr, axis=-1, min_count=None, window=2)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+
+# ---------------------------------------------------------------------------
 # Only some moving window functions can handle input arrays that contains inf.
 #
 # Those that can't handle inf: move_sum, move_mean, move_std, move_var
