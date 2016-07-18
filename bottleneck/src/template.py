@@ -11,7 +11,7 @@ STRING_END = r'.*MULTILINE STRING END.*'
 
 
 def make_c_files():
-    modules = ['reduce2']
+    modules = ['reduce2', 'move2']
     dirpath = os.path.dirname(__file__)
     for module in modules:
         filepath = os.path.join(dirpath, module + '_template.c')

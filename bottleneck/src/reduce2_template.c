@@ -996,7 +996,7 @@ reducer(char *name,
     else {
         axis = PyArray_PyIntAsInt(axis_obj);
         if (error_converting(axis)) {
-            TYPE_ERR("`axis` must be an integer");
+            TYPE_ERR("`axis` must be an integer or None");
             return NULL;
         }
         if (axis < 0) {

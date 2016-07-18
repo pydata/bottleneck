@@ -20,6 +20,10 @@ try:
 except:
     pass
 try:
+    from .move2 import move_sum as move_sum2
+except:
+    pass
+try:
     from .nonreduce import replace
 except:
     pass

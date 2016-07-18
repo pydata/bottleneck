@@ -60,6 +60,11 @@ def prepare_modules():
                                     "bottleneck/src/slow.c"],
                            include_dirs=[np.get_include()],
                            extra_compile_args=['-O2'])]
+    ext_list += [Extension("bottleneck.move2",
+                           sources=["bottleneck/src/move2.c",
+                                    "bottleneck/src/slow.c"],
+                           include_dirs=[np.get_include()],
+                           extra_compile_args=['-O2'])]
 
     return ext_list
 
