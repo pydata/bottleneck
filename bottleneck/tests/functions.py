@@ -49,6 +49,7 @@ def func_dict():
     d['move'] = [bn.move_sum,
                  bn.move_sum2,
                  bn.move_mean,
+                 bn.move_mean2,
                  bn.move_std,
                  bn.move_var,
                  bn.move_min,

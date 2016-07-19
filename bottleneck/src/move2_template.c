@@ -126,12 +126,12 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
         }
         for (i = min_count - 1; i < window; i++) {
             asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
-            *(npy_DTYPE1*)(p + i*ystride) = (npy_DTYPE0)asum;
+            *(npy_DTYPE1*)(p + i*ystride) = (npy_DTYPE1)asum;
         }
         for (i = window; i < length; i++) {
             asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
             asum -= *(npy_DTYPE0*)(PID(ita) + (i-window)*stride);
-            *(npy_DTYPE1*)(p + i*ystride) = (npy_DTYPE0)asum;
+            *(npy_DTYPE1*)(p + i*ystride) = (npy_DTYPE1)asum;
         }
         PyArray_ITER_NEXT(ita);
         p = p0;
@@ -156,6 +156,133 @@ move_sum(PyObject *self, PyObject *args, PyObject *kwds)
                  move_sum_float32,
                  move_sum_int64,
                  move_sum_int32);
+}
+
+/* move_mean -------------------------------------------------------------- */
+
+/* dtype = [['float64'], ['float32']] */
+static PyObject *
+move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
+                PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
+                int ndim, npy_intp* shape)
+{
+    Py_ssize_t i, count;
+    npy_DTYPE0 asum, ai, aold, yi;
+    PyObject *y = PyArray_EMPTY(ndim, shape, NPY_DTYPE0, 0);
+    char *p0 = PyArray_BYTES((PyArrayObject *)y);
+    char *p = p0;
+    npy_intp *ystrides = PyArray_STRIDES((PyArrayObject *)y);
+    npy_intp ystride = ystrides[axis];
+    BN_BEGIN_ALLOW_THREADS
+    while (PyArray_ITER_NOTDONE(ita)) {
+        asum = 0;
+        count = 0;
+        for (i=0; i < min_count - 1; i++) {
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            if (ai == ai) {
+                asum += ai;
+                count += 1;
+            }
+            *(npy_DTYPE0*)(p + i*ystride) = NAN;
+        }
+        for (i = min_count - 1; i < window; i++) {
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            if (ai == ai) {
+                asum += ai;
+                count += 1;
+            }
+            if (count >= min_count) {
+                yi = asum / count;
+            }
+            else {
+                yi = NAN;
+            }
+            *(npy_DTYPE0*)(p + i*ystride) = yi;
+        }
+        for (i = window; i < length; i++) {
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            if (ai == ai) {
+                asum += ai;
+                count += 1;
+            }
+            aold = *(npy_DTYPE0*)(PID(ita) + (i-window)*stride);
+            if (aold == aold) {
+                asum -= aold;
+                count -= 1;
+            }
+            if (count >= min_count) {
+                yi = asum / count;
+            }
+            else {
+                yi = NAN;
+            }
+            *(npy_DTYPE0*)(p + i*ystride) = yi;
+        }
+        PyArray_ITER_NEXT(ita);
+        p = p0;
+        for (i=0; i < ndim; i++) {
+            p += ((PyArrayIterObject *)(ita))->coordinates[i] * ystrides[i];
+        }
+    }
+    BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
+    return y;
+}
+/* dtype end */
+
+
+/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
+static PyObject *
+move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
+                PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
+                int ndim, npy_intp* shape)
+{
+    Py_ssize_t i;
+    npy_DTYPE1 asum;
+    PyObject *y = PyArray_EMPTY(ndim, shape, NPY_DTYPE1, 0);
+    char *p0 = PyArray_BYTES((PyArrayObject *)y);
+    char *p = p0;
+    npy_intp *ystrides = PyArray_STRIDES((PyArrayObject *)y);
+    npy_intp ystride = ystrides[axis];
+    BN_BEGIN_ALLOW_THREADS
+    while PyArray_ITER_NOTDONE(ita) {
+        asum = 0;
+        for (i=0; i < min_count - 1; i++) {
+            asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
+            *(npy_DTYPE1*)(p + i*ystride) = NAN;
+        }
+        for (i = min_count - 1; i < window; i++) {
+            asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
+            *(npy_DTYPE1*)(p + i*ystride) = (npy_DTYPE1)asum / (i + 1);
+        }
+        for (i = window; i < length; i++) {
+            asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
+            asum -= *(npy_DTYPE0*)(PID(ita) + (i-window)*stride);
+            *(npy_DTYPE1*)(p + i*ystride) = (npy_DTYPE1)asum / window;
+        }
+        PyArray_ITER_NEXT(ita);
+        p = p0;
+        for (i=0; i < ndim; i++) {
+            p += ((PyArrayIterObject *)(ita))->coordinates[i] * ystrides[i];
+        }
+    }
+    BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
+    return y;
+}
+/* dtype end */
+
+
+static PyObject *
+move_mean(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return mover("move_mean",
+                 args,
+                 kwds,
+                 move_mean_float64,
+                 move_mean_float32,
+                 move_mean_int64,
+                 move_mean_int32);
 }
 
 /* python strings -------------------------------------------------------- */
@@ -414,7 +541,7 @@ mover(char *name,
 /* docstrings ------------------------------------------------------------- */
 
 static char move_doc[] =
-"Bottleneck functions that reduce the input array along a specified axis.";
+"Bottleneck moving window functions.";
 
 static char move_sum_doc[] =
 /* MULTILINE STRING BEGIN
@@ -457,11 +584,53 @@ array([ 1.,  3.,  5.,  3.,  5.])
 
 MULTILINE STRING END */
 
+static char move_mean_doc[] =
+/* MULTILINE STRING BEGIN
+move_mean(arr, window, min_count=None, axis=-1)
+
+Moving window mean along the specified axis, optionally ignoring NaNs.
+
+This function cannot handle input arrays that contain Inf. When the
+window contains Inf, the output will correctly be Inf. However, when Inf
+moves out of the window, the remaining output values in the slice will
+incorrectly be NaN.
+
+Parameters
+----------
+arr : ndarray
+    Input array. If `arr` is not an array, a conversion is attempted.
+window : int
+    The number of elements in the moving window.
+min_count: {int, None}, optional
+    If the number of non-NaN values in a window is less than `min_count`,
+    then a value of NaN is assigned to the window. By default `min_count`
+    is None, which is equivalent to setting `min_count` equal to `window`.
+axis : int, optional
+    The axis over which the window is moved. By default the last axis
+    (axis=-1) is used. An axis of None is not allowed.
+
+Returns
+-------
+y : ndarray
+    The moving mean of the input array along the specified axis. The output
+    has the same shape as the input.
+
+Examples
+--------
+>>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
+>>> bn.move_mean(arr, window=2)
+array([ nan,  1.5,  2.5,  nan,  nan])
+>>> bn.move_mean(arr, window=2, min_count=1)
+array([ 1. ,  1.5,  2.5,  3. ,  5. ])
+
+MULTILINE STRING END */
+
 /* python wrapper -------------------------------------------------------- */
 
 static PyMethodDef
 move_methods[] = {
     {"move_sum", (PyCFunction)move_sum, VARKEY, move_sum_doc},
+    {"move_mean", (PyCFunction)move_mean, VARKEY, move_mean_doc},
     {NULL, NULL, 0, NULL}
 };
 
