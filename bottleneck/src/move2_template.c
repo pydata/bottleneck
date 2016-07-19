@@ -37,11 +37,11 @@ mover(char *name,
 static PyObject *
 move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
-                int a_ndim, npy_intp* shape)
+                int ndim, npy_intp* shape)
 {
     Py_ssize_t i, count;
     npy_DTYPE0 asum, ai, aold, yi;
-    PyObject *y = PyArray_EMPTY(a_ndim, shape, NPY_DTYPE0, 0);
+    PyObject *y = PyArray_EMPTY(ndim, shape, NPY_DTYPE0, 0);
     char *p0 = PyArray_BYTES((PyArrayObject *)y);
     char *p = p0;
     npy_intp *ystrides = PyArray_STRIDES((PyArrayObject *)y);
@@ -93,7 +93,7 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
         }
         PyArray_ITER_NEXT(ita);
         p = p0;
-        for (i=0; i < a_ndim; i++) {
+        for (i=0; i < ndim; i++) {
             p += ((PyArrayIterObject *)(ita))->coordinates[i] * ystrides[i];
         }
     }
@@ -108,11 +108,11 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
 static PyObject *
 move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
-                int a_ndim, npy_intp* shape)
+                int ndim, npy_intp* shape)
 {
     Py_ssize_t i;
     npy_DTYPE1 asum;
-    PyObject *y = PyArray_EMPTY(a_ndim, shape, NPY_DTYPE1, 0);
+    PyObject *y = PyArray_EMPTY(ndim, shape, NPY_DTYPE1, 0);
     char *p0 = PyArray_BYTES((PyArrayObject *)y);
     char *p = p0;
     npy_intp *ystrides = PyArray_STRIDES((PyArrayObject *)y);
@@ -135,7 +135,7 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
         }
         PyArray_ITER_NEXT(ita);
         p = p0;
-        for (i=0; i < a_ndim; i++) {
+        for (i=0; i < ndim; i++) {
             p += ((PyArrayIterObject *)(ita))->coordinates[i] * ystrides[i];
         }
     }
@@ -277,7 +277,7 @@ mover(char *name,
     int window;
     int axis;
     int dtype;
-    int a_ndim;
+    int ndim;
 
     Py_ssize_t stride;
     Py_ssize_t length;
@@ -291,7 +291,7 @@ mover(char *name,
     PyObject *arr_obj = NULL;
     PyObject *window_obj = NULL;
     PyObject *min_count_obj = Py_None;
-    PyObject *axis_obj = PyInt_FromLong(-1);
+    PyObject *axis_obj = NULL;
 
     if (!parse_args(args, kwds,
                     &arr_obj, &window_obj, &min_count_obj, &axis_obj)) {
@@ -301,7 +301,8 @@ mover(char *name,
     /* convert to array if necessary */
     if PyArray_Check(arr_obj) {
         a = (PyArrayObject *)arr_obj;
-    } else {
+    }
+    else {
         a = (PyArrayObject *)PyArray_FROM_O(arr_obj);
         if (a == NULL) {
             return NULL;
@@ -344,30 +345,35 @@ mover(char *name,
 
     /* input array */
     dtype = PyArray_TYPE(a);
-    a_ndim = PyArray_NDIM(a);
+    ndim = PyArray_NDIM(a);
 
     /* defend against 0d beings */
-    if (a_ndim == 0) {
+    if (ndim == 0) {
         VALUE_ERR("moving window functions require ndim > 0");
         return NULL;
     }
 
     /* defend against the axis of negativity */
-    axis = PyArray_PyIntAsInt(axis_obj);
-    if (error_converting(axis)) {
-        TYPE_ERR("`axis` must be an integer");
-        return NULL;
+    if (axis_obj == NULL) {
+        axis = ndim - 1;
     }
-    if (axis < 0) {
-        axis += a_ndim;
+    else {
+        axis = PyArray_PyIntAsInt(axis_obj);
+        if (error_converting(axis)) {
+            TYPE_ERR("`axis` must be an integer");
+            return NULL;
+        }
         if (axis < 0) {
+            axis += ndim;
+            if (axis < 0) {
+                PyErr_Format(PyExc_ValueError, "axis(=%d) out of bounds", axis);
+                return NULL;
+            }
+        }
+        else if (axis >= ndim) {
             PyErr_Format(PyExc_ValueError, "axis(=%d) out of bounds", axis);
             return NULL;
         }
-    }
-    else if (axis >= a_ndim) {
-        PyErr_Format(PyExc_ValueError, "axis(=%d) out of bounds", axis);
-        return NULL;
     }
 
     ita = PyArray_IterAllButAxis((PyObject *)a, &axis);
@@ -384,19 +390,19 @@ mover(char *name,
 
     if (dtype == NPY_float64) {
         y = move_float64((PyObject *)a, window, mc, axis, ita, stride, length,
-                         a_ndim, shape);
+                         ndim, shape);
     }
     else if (dtype == NPY_float32) {
         y = move_float32((PyObject *)a, window, mc, axis, ita, stride, length,
-                         a_ndim, shape);
+                         ndim, shape);
     }
     else if (dtype == NPY_int64) {
         y = move_int64((PyObject *)a, window, mc, axis, ita, stride, length,
-                       a_ndim, shape);
+                       ndim, shape);
     }
     else if (dtype == NPY_int32) {
         y = move_int32((PyObject *)a, window, mc, axis, ita, stride, length,
-                       a_ndim, shape);
+                       ndim, shape);
     }
     else {
         y = slow(name, args, kwds);
