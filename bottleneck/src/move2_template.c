@@ -1,5 +1,20 @@
 #include "bottleneck.h"
 
+/*
+ * All of the moving window functions contain the expression
+ *
+ *       ((PyArrayIterObject *)(ita))->coordinates[i]
+ *
+ * where ita is a numpy iterator. Using a numpy iterator in this way is
+ * not part of the numpy C API. As such it could break in a new release
+ * of numpy even if the release makes no changes to the C API.
+ *
+ * The reason we use it is to avoid the overhead of creating a second
+ * iterator to iterate over the output array. It also speeds things up
+ * when the input array is long and narrow and the moving window is
+ * along the narrow dimension of the array.
+ */
+
 /* function pointers ----------------------------------------------------- */
 
 typedef PyObject *(*move_t)(PyObject *, int, int, int, PyObject *, Py_ssize_t,
@@ -27,8 +42,10 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
     Py_ssize_t i, count;
     npy_DTYPE0 asum, ai, aold, yi;
     PyObject *y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE0, 0);
-    PyObject *ity = PyArray_IterAllButAxis(y, &axis);
-    Py_ssize_t ystride = PyArray_STRIDE((PyArrayObject *)y, axis);
+    char *p0 = PyArray_BYTES((PyArrayObject *)y);
+    char *p = p0;
+    npy_intp *ystrides = PyArray_STRIDES((PyArrayObject *)y);
+    npy_intp ystride = ystrides[axis];
     BN_BEGIN_ALLOW_THREADS
     while (PyArray_ITER_NOTDONE(ita)) {
         asum = 0;
@@ -39,7 +56,7 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 asum += ai;
                 count += 1;
             }
-            *(npy_DTYPE0*)(PID(ity) + i*ystride) = NAN;
+            *(npy_DTYPE0*)(p + i*ystride) = NAN;
         }
         for (i = min_count - 1; i < window; i++) {
             ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
@@ -53,7 +70,7 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
             else {
                 yi = NAN;
             }
-            *(npy_DTYPE0*)(PID(ity) + i*ystride) = yi;
+            *(npy_DTYPE0*)(p + i*ystride) = yi;
         }
         for (i = window; i < length; i++) {
             ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
@@ -72,14 +89,16 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
             else {
                 yi = NAN;
             }
-            *(npy_DTYPE0*)(PID(ity) + i*ystride) = yi;
+            *(npy_DTYPE0*)(p + i*ystride) = yi;
         }
         PyArray_ITER_NEXT(ita);
-        PyArray_ITER_NEXT(ity);
+        p = p0;
+        for (i=0; i < a_ndim; i++) {
+            p += ((PyArrayIterObject *)(ita))->coordinates[i] * ystrides[i];
+        }
     }
-    Py_DECREF(ita);
-    Py_DECREF(ity);
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     return y;
 }
 /* dtype end */
@@ -94,30 +113,34 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
     Py_ssize_t i;
     npy_DTYPE1 asum;
     PyObject *y = PyArray_EMPTY(a_ndim, y_dims, NPY_DTYPE1, 0);
-    PyObject *ity = PyArray_IterAllButAxis(y, &axis);
-    Py_ssize_t ystride = PyArray_STRIDE((PyArrayObject *)y, axis);
+    char *p0 = PyArray_BYTES((PyArrayObject *)y);
+    char *p = p0;
+    npy_intp *ystrides = PyArray_STRIDES((PyArrayObject *)y);
+    npy_intp ystride = ystrides[axis];
     BN_BEGIN_ALLOW_THREADS
     while PyArray_ITER_NOTDONE(ita) {
         asum = 0;
         for (i=0; i < min_count - 1; i++) {
             asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
-            *(npy_DTYPE1*)(PID(ity) + i*ystride) = NAN;
+            *(npy_DTYPE1*)(p + i*ystride) = NAN;
         }
         for (i = min_count - 1; i < window; i++) {
             asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
-            *(npy_DTYPE1*)(PID(ity) + i*ystride) = (npy_DTYPE0)asum;
+            *(npy_DTYPE1*)(p + i*ystride) = (npy_DTYPE0)asum;
         }
         for (i = window; i < length; i++) {
             asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
             asum -= *(npy_DTYPE0*)(PID(ita) + (i-window)*stride);
-            *(npy_DTYPE1*)(PID(ity) + i*ystride) = (npy_DTYPE0)asum;
+            *(npy_DTYPE1*)(p + i*ystride) = (npy_DTYPE0)asum;
         }
         PyArray_ITER_NEXT(ita);
-        PyArray_ITER_NEXT(ity);
+        p = p0;
+        for (i=0; i < a_ndim; i++) {
+            p += ((PyArrayIterObject *)(ita))->coordinates[i] * ystrides[i];
+        }
     }
-    Py_DECREF(ita);
-    Py_DECREF(ity);
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     return y;
 }
 /* dtype end */
