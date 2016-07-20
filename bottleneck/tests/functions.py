@@ -51,6 +51,7 @@ def func_dict():
                  bn.move_mean,
                  bn.move_mean2,
                  bn.move_std,
+                 bn.move_std2,
                  bn.move_var,
                  bn.move_min,
                  bn.move_max,

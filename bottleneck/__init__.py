@@ -22,6 +22,7 @@ except:
 try:
     from .move2 import move_sum as move_sum2
     from .move2 import move_mean as move_mean2
+    from .move2 import move_std as move_std2
 except:
     pass
 try:
