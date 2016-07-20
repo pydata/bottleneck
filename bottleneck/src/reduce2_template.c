@@ -65,8 +65,8 @@ nansum_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         }
         PyArray_ITER_NEXT(ita);
     }
-    Py_DECREF(ita);
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     return PyFloat_FromDouble(asum);
 }
 
@@ -101,8 +101,8 @@ nansum_one_DTYPE0(PyObject *ita,
             PyArray_ITER_NEXT(ita);
         }
     }
-    Py_DECREF(ita);
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     return y;
 }
 /* dtype end */
@@ -167,8 +167,8 @@ nansum_one_DTYPE0(PyObject *ita,
             PyArray_ITER_NEXT(ita);
         }
     }
-    Py_DECREF(ita);
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     return y;
 }
 /* dtype end */
@@ -240,8 +240,8 @@ nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         }
         PyArray_ITER_NEXT(ita);
     }
-    Py_DECREF(ita);
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     if (count > 0) {
         return PyFloat_FromDouble(asum / count);
     } else {
@@ -288,8 +288,8 @@ nanmean_one_DTYPE0(PyObject *ita,
             PyArray_ITER_NEXT(ita);
         }
     }
-    Py_DECREF(ita);
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     return y;
 }
 /* dtype end */
@@ -328,8 +328,8 @@ nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         size += length;
         PyArray_ITER_NEXT(ita);
     }
-    Py_DECREF(ita);
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     if (size > 0) {
         return PyFloat_FromDouble(asum / size);
     } else {
@@ -369,8 +369,8 @@ nanmean_one_DTYPE0(PyObject *ita,
             PyArray_ITER_NEXT(ita);
         }
     }
-    Py_DECREF(ita);
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     return y;
 }
 /* dtype end */
@@ -451,11 +451,11 @@ nanmin_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         }
         PyArray_ITER_NEXT(ita);
     }
-    Py_DECREF(ita);
     if (allnan) {
         amin = BN_NAN;
     }
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     return PyFloat_FromDouble(amin);
 }
 
@@ -495,8 +495,8 @@ nanmin_one_DTYPE0(PyObject *ita,
         *p++ = amin;
         PyArray_ITER_NEXT(ita);
     }
-    Py_DECREF(ita);
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     return y;
 }
 /* dtype end */
@@ -547,8 +547,8 @@ nanmin_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         }
         PyArray_ITER_NEXT(ita);
     }
-    Py_DECREF(ita);
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     return PyInt_FromLong(amin);
 }
 
@@ -582,8 +582,8 @@ nanmin_one_DTYPE0(PyObject *ita,
         *p++ = amin;
         PyArray_ITER_NEXT(ita);
     }
-    Py_DECREF(ita);
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     return y;
 }
 /* dtype end */
@@ -664,11 +664,11 @@ nanmax_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         }
         PyArray_ITER_NEXT(ita);
     }
-    Py_DECREF(ita);
     if (allnan) {
         amax = BN_NAN;
     }
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     return PyFloat_FromDouble(amax);
 }
 
@@ -708,8 +708,8 @@ nanmax_one_DTYPE0(PyObject *ita,
         *p++ = amax;
         PyArray_ITER_NEXT(ita);
     }
-    Py_DECREF(ita);
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     return y;
 }
 /* dtype end */
@@ -760,8 +760,8 @@ nanmax_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         }
         PyArray_ITER_NEXT(ita);
     }
-    Py_DECREF(ita);
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     return PyInt_FromLong(amax);
 }
 
@@ -795,8 +795,8 @@ nanmax_one_DTYPE0(PyObject *ita,
         *p++ = amax;
         PyArray_ITER_NEXT(ita);
     }
-    Py_DECREF(ita);
     BN_END_ALLOW_THREADS
+    Py_DECREF(ita);
     return y;
 }
 /* dtype end */
@@ -842,28 +842,28 @@ intern_strings(void) {
 static BN_INLINE int
 parse_args(PyObject *args,
            PyObject *kwds,
-           PyObject **arr_obj,
-           PyObject **axis_obj)
+           PyObject **arr,
+           PyObject **axis)
 {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     if (kwds) {
         const Py_ssize_t nkwds = PyDict_Size(kwds);
         if (nkwds == 1) {
             if (nargs == 0) {
-                *arr_obj = PyDict_GetItem(kwds, pystr_arr);
-                if (!*arr_obj) {
+                *arr = PyDict_GetItem(kwds, pystr_arr);
+                if (!*arr) {
                     TYPE_ERR("can't find `arr` input");
                     return 0;
                 }
             }
             else {
-                *axis_obj = PyDict_GetItem(kwds, pystr_axis);
-                if (!*axis_obj) {
+                *axis = PyDict_GetItem(kwds, pystr_axis);
+                if (!*axis) {
                     TYPE_ERR("can't find `axis` input");
                     return 0;
                 }
                 if (nargs == 1) {
-                    *arr_obj = PyTuple_GET_ITEM(args, 0);
+                    *arr = PyTuple_GET_ITEM(args, 0);
                 }
                 else {
                     TYPE_ERR("wrong number of inputs");
@@ -876,13 +876,13 @@ parse_args(PyObject *args,
                 TYPE_ERR("wrong number of inputs");
                 return 0;
             }
-            *arr_obj = PyDict_GetItem(kwds, pystr_arr);
-            if (!*arr_obj) {
+            *arr = PyDict_GetItem(kwds, pystr_arr);
+            if (!*arr) {
                 TYPE_ERR("can't find `arr` input");
                 return 0;
             }
-            *axis_obj = PyDict_GetItem(kwds, pystr_axis);
-            if (!*axis_obj) {
+            *axis = PyDict_GetItem(kwds, pystr_axis);
+            if (!*axis) {
                 TYPE_ERR("can't find `axis` input");
                 return 0;
             }
@@ -893,11 +893,11 @@ parse_args(PyObject *args,
         }
     }
     else if (nargs == 1) {
-        *arr_obj = PyTuple_GET_ITEM(args, 0);
+        *arr = PyTuple_GET_ITEM(args, 0);
     }
     else if (nargs == 2) {
-        *arr_obj = PyTuple_GET_ITEM(args, 0);
-        *axis_obj = PyTuple_GET_ITEM(args, 1);
+        *arr = PyTuple_GET_ITEM(args, 0);
+        *axis = PyTuple_GET_ITEM(args, 1);
     }
     else {
         TYPE_ERR("wrong number of inputs");
