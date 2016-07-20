@@ -2,7 +2,8 @@
 
 from nose.tools import assert_true
 import numpy as np
-from numpy.testing import assert_equal, assert_array_almost_equal
+from numpy.testing import (assert_equal, assert_array_almost_equal,
+                           assert_raises)
 import bottleneck as bn
 from .functions import move_functions
 
@@ -187,6 +188,24 @@ def unit_maker_argparse(func, decimal=5):
     desired = func0(arr, axis=-1, min_count=None, window=2)
     err_msg = fmt % "(arr, axis=-1, min_count=None, window=2)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+
+def test_arg_parse_raises():
+    "test argument parsing raises in move"
+    for func in move_functions():
+        yield unit_maker_argparse_raises, func
+
+
+def unit_maker_argparse_raises(func):
+    "test argument parsing raises in move"
+    arr = np.array([1., 2, 3])
+    assert_raises(TypeError, func)
+    assert_raises(TypeError, func, axis=arr)
+    assert_raises(TypeError, func, arr, 2, axis=0, extra=0)
+    assert_raises(TypeError, func, arr, 2, axis=0, arr=arr)
+    assert_raises(TypeError, func, arr, 2, 2, 0, 0, 0)
+    assert_raises(TypeError, func, arr, 2, axis='0')
+    assert_raises(TypeError, func, arr, 1, min_count='1')
 
 
 # ---------------------------------------------------------------------------

@@ -246,6 +246,25 @@ def unit_maker_argparse(func, decimal=5):
     #  assert_array_almost_equal(actual, desired, decimal, err_msg)
 
 
+def test_arg_parse_raises():
+    "test argument parsing raises in reduce"
+    for func in reduce_functions():
+        yield unit_maker_argparse_raises, func
+
+
+def unit_maker_argparse_raises(func):
+    "test argument parsing raises in reduce"
+    arr = np.array([1., 2, 3])
+    assert_raises(TypeError, func)
+    assert_raises(TypeError, func, axis=arr)
+    assert_raises(TypeError, func, arr, axis=0, extra=0)
+    assert_raises(TypeError, func, arr, axis=0, arr=arr)
+    assert_raises(TypeError, func, arr, 0, 0, 0, 0, 0)
+    assert_raises(TypeError, func, arr, axis='0')
+    # assert_raises(TypeError, func, arr, arr) TODO: add after dropping cython
+    # assert_raises(TypeError, func, None) results vary
+
+
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
 
