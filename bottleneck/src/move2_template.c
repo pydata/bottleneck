@@ -131,12 +131,12 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
         }
         for (i = min_count - 1; i < window; i++) {
             asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
-            *(npy_DTYPE1*)(p + i*ystride) = (npy_DTYPE1)asum;
+            *(npy_DTYPE1*)(p + i*ystride) = asum;
         }
         for (i = window; i < length; i++) {
             asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
             asum -= *(npy_DTYPE0*)(PID(ita) + (i-window)*stride);
-            *(npy_DTYPE1*)(p + i*ystride) = (npy_DTYPE1)asum;
+            *(npy_DTYPE1*)(p + i*ystride) = asum;
         }
         NEXT
     }
