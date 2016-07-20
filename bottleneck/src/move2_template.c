@@ -425,6 +425,159 @@ move_std(PyObject *self, PyObject *args, PyObject *kwds)
                       move_std_int32);
 }
 
+/* move_var -------------------------------------------------------------- */
+
+/* dtype = [['float64'], ['float32']] */
+static PyObject *
+move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
+                PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
+                int ndim, npy_intp* shape, int ddof)
+{
+    INIT(NPY_DTYPE0)
+    Py_ssize_t count;
+    npy_DTYPE0 delta, amean, assqdm, ai, aold, yi;
+    while PyArray_ITER_NOTDONE(ita) {
+        amean = 0;
+        assqdm = 0;
+        count = 0;
+        for (i=0; i < min_count - 1; i++) {
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            if (ai == ai) {
+                count += 1;
+                delta = ai - amean;
+                amean += delta / count;
+                assqdm += delta * (ai - amean);
+            }
+            *(npy_DTYPE0*)(p + i*ystride) = NAN;
+        }
+        for (i=min_count - 1; i <  window; i++) {
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            if (ai == ai) {
+                count += 1;
+                delta = ai - amean;
+                amean += delta / count;
+                assqdm += delta * (ai - amean);
+            }
+            if (count >= min_count) {
+                if (assqdm < 0) {
+                    assqdm = 0;
+                }
+                yi = assqdm / (count - ddof);
+            }
+            else {
+                yi = NAN;
+            }
+            *(npy_DTYPE0*)(p + i*ystride) = yi;
+        }
+        for (i=window; i < length; i++) {
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            aold = *(npy_DTYPE0*)(PID(ita) + (i-window)*stride);
+            if (ai == ai) {
+                if (aold == aold) {
+                    delta = ai - aold;
+                    aold -= amean;
+                    amean += delta / count;
+                    ai -= amean;
+                    assqdm += (ai + aold) * delta;
+                }
+                else {
+                    count += 1;
+                    delta = ai - amean;
+                    amean += delta / count;
+                    assqdm += delta * (ai - amean);
+                }
+            }
+            else {
+                if (aold == aold) {
+                    count -= 1;
+                    if (count > 0) {
+                        delta = aold - amean;
+                        amean -= delta / count;
+                        assqdm -= delta * (aold - amean);
+                    }
+                    else {
+                        amean = 0;
+                        assqdm = 0;
+                    }
+                }
+            }
+            if (count >= min_count) {
+                if (assqdm < 0) {
+                    assqdm = 0;
+                }
+                yi = assqdm / (count - ddof);
+            }
+            else {
+                yi = NAN;
+            }
+            *(npy_DTYPE0*)(p + i*ystride) = yi;
+        }
+        NEXT
+    }
+    RETURN
+}
+/* dtype end */
+
+/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
+static PyObject *
+move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
+                PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
+                int ndim, npy_intp* shape, int ddof)
+{
+    INIT(NPY_DTYPE1)
+    int winddof;
+    npy_DTYPE1 delta, amean, assqdm, yi, ai, aold;
+    winddof = window - ddof;
+    while PyArray_ITER_NOTDONE(ita) {
+        amean = 0;
+        assqdm = 0;
+        for (i=0; i < min_count - 1; i++) {
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            delta = ai - amean;
+            amean += delta / (i + 1);
+            assqdm += delta * (ai - amean);
+            *(npy_DTYPE1*)(p + i*ystride) = NAN;
+        }
+        for (i=min_count - 1; i <  window; i++) {
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            delta = ai - amean;
+            amean += delta / (i + 1);
+            assqdm += delta * (ai - amean);
+            yi = assqdm / (i + 1 - ddof);
+            *(npy_DTYPE1*)(p + i*ystride) = yi;
+        }
+        for (i=window; i < length; i++) {
+            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            aold = *(npy_DTYPE0*)(PID(ita) + (i-window)*stride);
+            delta = ai - aold;
+            aold -= amean;
+            amean += delta / window;
+            ai -= amean;
+            assqdm += (ai + aold) * delta;
+            if (assqdm < 0) {
+                assqdm = 0;
+            }
+            yi = assqdm / winddof;
+            *(npy_DTYPE1*)(p + i*ystride) = yi;
+        }
+        NEXT
+    }
+    RETURN
+}
+/* dtype end */
+
+static PyObject *
+move_var(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return mover_ddof("move_var",
+                      args,
+                      kwds,
+                      move_var_float64,
+                      move_var_float32,
+                      move_var_int64,
+                      move_var_int32);
+}
+
 /* python strings -------------------------------------------------------- */
 
 PyObject *pystr_arr = NULL;
@@ -1073,6 +1226,55 @@ array([ 0. ,  0.5,  0.5,  0. ,  0. ])
 
 MULTILINE STRING END */
 
+static char move_var_doc[] =
+/* MULTILINE STRING BEGIN
+move_var(arr, window, min_count=None, axis=-1, ddof=0)
+
+Moving window variance along the specified axis, optionally ignoring NaNs.
+
+This function cannot handle input arrays that contain Inf. When Inf
+enters the moving window, the outout becomes NaN and will continue to
+be NaN for the remainer of the slice.
+
+Unlike bn.nanvar, which uses a two-pass algorithm, move_nanvar uses a
+one-pass algorithm called Welford's method. The algorithm is slow but
+numerically stable for cases where the mean is large compared to the
+standard deviation.
+
+Parameters
+----------
+arr : ndarray
+    Input array. If `arr` is not an array, a conversion is attempted.
+window : int
+    The number of elements in the moving window.
+min_count: {int, None}, optional
+    If the number of non-NaN values in a window is less than `min_count`,
+    then a value of NaN is assigned to the window. By default `min_count`
+    is None, which is equivalent to setting `min_count` equal to `window`.
+axis : int, optional
+    The axis over which the window is moved. By default the last axis
+    (axis=-1) is used. An axis of None is not allowed.
+ddof : int, optional
+    Means Delta Degrees of Freedom. The divisor used in calculations
+    is ``N - ddof``, where ``N`` represents the number of elements.
+    By default `ddof` is zero.
+
+Returns
+-------
+y : ndarray
+    The moving variance of the input array along the specified axis. The
+    output has the same shape as the input.
+
+Examples
+--------
+>>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
+>>> bn.move_var(arr, window=2)
+array([ nan,  0.25,  0.25,  nan,  nan])
+>>> bn.move_var(arr, window=2, min_count=1)
+array([ 0. ,  0.25,  0.25,  0. ,  0. ])
+
+MULTILINE STRING END */
+
 /* python wrapper -------------------------------------------------------- */
 
 static PyMethodDef
@@ -1080,6 +1282,7 @@ move_methods[] = {
     {"move_sum", (PyCFunction)move_sum, VARKEY, move_sum_doc},
     {"move_mean", (PyCFunction)move_mean, VARKEY, move_mean_doc},
     {"move_std", (PyCFunction)move_std, VARKEY, move_std_doc},
+    {"move_var", (PyCFunction)move_var, VARKEY, move_var_doc},
     {NULL, NULL, 0, NULL}
 };
 
