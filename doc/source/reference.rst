@@ -20,7 +20,7 @@ non-reduce with axis               :meth:`rankdata <bottleneck.rankdata>`, :meth
                                    :meth:`push <bottleneck.push>`
 
 moving window                      :meth:`move_sum <bottleneck.move_sum>`, :meth:`move_mean <bottleneck.move_mean>`,
-                                   :meth:`move_std <bottleneck.move_std>`, :meth:`move_min <bottleneck.move_var>`,
+                                   :meth:`move_std <bottleneck.move_std>`, :meth:`move_var <bottleneck.move_var>`,
                                    :meth:`move_min <bottleneck.move_min>`, :meth:`move_max <bottleneck.move_max>`,
                                    :meth:`move_argmin <bottleneck.move_argmin>`, :meth:`move_argmax <bottleneck.move_argmax>`,
                                    :meth:`move_median <bottleneck.move_median>`, :meth:`move_rank <bottleneck.move_rank>`
