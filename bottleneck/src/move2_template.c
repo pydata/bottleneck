@@ -1,47 +1,52 @@
 #include "bottleneck.h"
 
-/*
- * Every moving window function contains the expression
- *
- *       ((PyArrayIterObject *)(ita))->coordinates[i]
- *
- * where ita is a numpy iterator. Using a numpy iterator in this way is
- * not part of the numpy C API. As such it could break in a new release
- * of numpy even if the release makes no changes to the C API.
- *
- * The reason we use it is to avoid the overhead of creating a second
- * iterator to iterate over the output array. It also speeds things up
- * when the input array is long and narrow and the moving window is
- * along the narrow dimension of the array.
- */
-
 /* all moving window functions use the following three macros */
 #define INIT(dt) \
     Py_ssize_t i; \
     PyObject *y = PyArray_EMPTY(ndim, shape, dt, 0); \
-    char *p0 = PyArray_BYTES((PyArrayObject *)y); \
-    char *p = p0; \
+    char *py0 = PyArray_BYTES((PyArrayObject *)y); \
+    char *py = py0; \
+    char *pa0 = PyArray_BYTES((PyArrayObject *)a); \
+    char *pa = pa0; \
     npy_intp *ystrides = PyArray_STRIDES((PyArrayObject *)y); \
+    npy_intp *astrides = PyArray_STRIDES((PyArrayObject *)a); \
     npy_intp ystride = ystrides[axis]; \
+    npy_intp shape_m1; \
+    npy_intp index = 0; \
+    npy_intp size = PyArray_SIZE((PyArrayObject *)a); \
+    npy_intp indices[ndim]; \
+    memset(indices, 0, ndim * sizeof(npy_intp)); \
+    if (size != 0) size /= length; \
     BN_BEGIN_ALLOW_THREADS
 
 #define NEXT \
-    PyArray_ITER_NEXT(ita); \
-    p = p0; \
+    for (i=ndim - 1; i >= 0; i--) { \
+        shape_m1 = i == axis ? 0 : shape[i]- 1;\
+        if (indices[i] < shape_m1) { \
+            indices[i]++; \
+            break; \
+        } \
+        else { \
+            indices[i] = 0; \
+        } \
+    } \
+    py = py0; \
+    pa = pa0; \
     for (i=0; i < ndim; i++) { \
-        p += ((PyArrayIterObject *)(ita))->coordinates[i] * ystrides[i]; \
-    }
+        pa += indices[i] * astrides[i]; \
+        py += indices[i] * ystrides[i]; \
+    } \
+    index++;
 
 #define RETURN \
     BN_END_ALLOW_THREADS \
-    Py_DECREF(ita); \
     return y;
 
 /* function pointers ----------------------------------------------------- */
 
-typedef PyObject *(*move_t)(PyObject *, int, int, int, PyObject *, Py_ssize_t,
+typedef PyObject *(*move_t)(PyObject *, int, int, int, Py_ssize_t,
                             Py_ssize_t, int, npy_intp*);
-typedef PyObject *(*move_ddof_t)(PyObject *, int, int, int, PyObject *,
+typedef PyObject *(*move_ddof_t)(PyObject *, int, int, int,
                                  Py_ssize_t, Py_ssize_t, int, npy_intp*, int);
 
 /* prototypes ------------------------------------------------------------ */
@@ -69,26 +74,26 @@ mover_ddof(char *name,
 /* dtype = [['float64'], ['float32']] */
 static PyObject *
 move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
-                PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
+                Py_ssize_t stride, Py_ssize_t length,
                 int ndim, npy_intp* shape)
 {
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
     npy_DTYPE0 asum, ai, aold, yi;
-    while (PyArray_ITER_NOTDONE(ita)) {
+    while (index < size) {
         asum = 0;
         count = 0;
         i = 0;
         while (i < min_count - 1) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
-            *(npy_DTYPE0*)(p + i++ * ystride) = NAN;
+            *(npy_DTYPE0*)(py + i++ * ystride) = NAN;
         }
         while (i < window) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
@@ -99,15 +104,15 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
             else {
                 yi = NAN;
             }
-            *(npy_DTYPE0*)(p + i++ * ystride) = yi;
+            *(npy_DTYPE0*)(py + i++ * ystride) = yi;
         }
         while (i < length) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
-            aold = *(npy_DTYPE0*)(PID(ita) + (i-window)*stride);
+            aold = *(npy_DTYPE0*)(pa + (i-window)*stride);
             if (aold == aold) {
                 asum -= aold;
                 count -= 1;
@@ -118,7 +123,7 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
             else {
                 yi = NAN;
             }
-            *(npy_DTYPE0*)(p + i++ * ystride) = yi;
+            *(npy_DTYPE0*)(py + i++ * ystride) = yi;
         }
         NEXT
     }
@@ -130,26 +135,26 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 static PyObject *
 move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
-                PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
+                Py_ssize_t stride, Py_ssize_t length,
                 int ndim, npy_intp* shape)
 {
     INIT(NPY_DTYPE1)
     npy_DTYPE1 asum;
-    while PyArray_ITER_NOTDONE(ita) {
+    while (index < size) {
         asum = 0;
         i = 0;
         while (i < min_count - 1) {
-            asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
-            *(npy_DTYPE1*)(p + i++ * ystride) = NAN;
+            asum += *(npy_DTYPE0*)(pa + i*stride);
+            *(npy_DTYPE1*)(py + i++ * ystride) = NAN;
         }
         while (i < window) {
-            asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
-            *(npy_DTYPE1*)(p + i++ * ystride) = asum;
+            asum += *(npy_DTYPE0*)(pa + i*stride);
+            *(npy_DTYPE1*)(py + i++ * ystride) = asum;
         }
         while (i < length) {
-            asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
-            asum -= *(npy_DTYPE0*)(PID(ita) + (i-window)*stride);
-            *(npy_DTYPE1*)(p + i++ * ystride) = asum;
+            asum += *(npy_DTYPE0*)(pa + i*stride);
+            asum -= *(npy_DTYPE0*)(pa + (i-window)*stride);
+            *(npy_DTYPE1*)(py + i++ * ystride) = asum;
         }
         NEXT
     }
@@ -175,26 +180,26 @@ move_sum(PyObject *self, PyObject *args, PyObject *kwds)
 /* dtype = [['float64'], ['float32']] */
 static PyObject *
 move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
-                PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
+                Py_ssize_t stride, Py_ssize_t length,
                 int ndim, npy_intp* shape)
 {
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
     npy_DTYPE0 asum, ai, aold, yi;
-    while (PyArray_ITER_NOTDONE(ita)) {
+    while (index < size) {
         asum = 0;
         count = 0;
         i = 0;
         while (i < min_count - 1) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
-            *(npy_DTYPE0*)(p + i++ * ystride) = NAN;
+            *(npy_DTYPE0*)(py + i++ * ystride) = NAN;
         }
         while (i < window) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
@@ -205,15 +210,15 @@ move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
             else {
                 yi = NAN;
             }
-            *(npy_DTYPE0*)(p + i++ * ystride) = yi;
+            *(npy_DTYPE0*)(py + i++ * ystride) = yi;
         }
         while (i < length) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
-            aold = *(npy_DTYPE0*)(PID(ita) + (i-window)*stride);
+            aold = *(npy_DTYPE0*)(pa + (i-window)*stride);
             if (aold == aold) {
                 asum -= aold;
                 count -= 1;
@@ -224,7 +229,7 @@ move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
             else {
                 yi = NAN;
             }
-            *(npy_DTYPE0*)(p + i++ * ystride) = yi;
+            *(npy_DTYPE0*)(py + i++ * ystride) = yi;
         }
         NEXT
     }
@@ -236,27 +241,27 @@ move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 static PyObject *
 move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
-                PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
+                Py_ssize_t stride, Py_ssize_t length,
                 int ndim, npy_intp* shape)
 {
     INIT(NPY_DTYPE1)
     npy_DTYPE1 asum;
-    while PyArray_ITER_NOTDONE(ita) {
+    while (index < size) {
         asum = 0;
         i = 0;
         while (i < min_count - 1) {
-            asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
-            *(npy_DTYPE1*)(p + i++ * ystride) = NAN;
+            asum += *(npy_DTYPE0*)(pa + i*stride);
+            *(npy_DTYPE1*)(py + i++ * ystride) = NAN;
         }
         while (i < window) {
-            asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
-            *(npy_DTYPE1*)(p + i * ystride) = (npy_DTYPE1)asum / (i + 1);
+            asum += *(npy_DTYPE0*)(pa + i*stride);
+            *(npy_DTYPE1*)(py + i * ystride) = (npy_DTYPE1)asum / (i + 1);
             i++;
         }
         while (i < length) {
-            asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
-            asum -= *(npy_DTYPE0*)(PID(ita) + (i-window)*stride);
-            *(npy_DTYPE1*)(p + i++ * ystride) = (npy_DTYPE1)asum / window;
+            asum += *(npy_DTYPE0*)(pa + i*stride);
+            asum -= *(npy_DTYPE0*)(pa + (i-window)*stride);
+            *(npy_DTYPE1*)(py + i++ * ystride) = (npy_DTYPE1)asum / window;
         }
         NEXT
     }
@@ -282,29 +287,29 @@ move_mean(PyObject *self, PyObject *args, PyObject *kwds)
 /* dtype = [['float64'], ['float32']] */
 static PyObject *
 move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
-                PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
+                Py_ssize_t stride, Py_ssize_t length,
                 int ndim, npy_intp* shape, int ddof)
 {
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
     npy_DTYPE0 delta, amean, assqdm, ai, aold, yi;
-    while PyArray_ITER_NOTDONE(ita) {
+    while (index < size) {
         amean = 0;
         assqdm = 0;
         count = 0;
         i = 0;
         while (i < min_count - 1) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai == ai) {
                 count += 1;
                 delta = ai - amean;
                 amean += delta / count;
                 assqdm += delta * (ai - amean);
             }
-            *(npy_DTYPE0*)(p + i++ * ystride) = NAN;
+            *(npy_DTYPE0*)(py + i++ * ystride) = NAN;
         }
         while (i <  window) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai == ai) {
                 count += 1;
                 delta = ai - amean;
@@ -320,11 +325,11 @@ move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
             else {
                 yi = NAN;
             }
-            *(npy_DTYPE0*)(p + i++ * ystride) = yi;
+            *(npy_DTYPE0*)(py + i++ * ystride) = yi;
         }
         while (i < length) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
-            aold = *(npy_DTYPE0*)(PID(ita) + (i-window)*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
+            aold = *(npy_DTYPE0*)(pa + (i-window)*stride);
             if (ai == ai) {
                 if (aold == aold) {
                     delta = ai - aold;
@@ -363,7 +368,7 @@ move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
             else {
                 yi = NAN;
             }
-            *(npy_DTYPE0*)(p + i++ * ystride) = yi;
+            *(npy_DTYPE0*)(py + i++ * ystride) = yi;
         }
         NEXT
     }
@@ -374,35 +379,35 @@ move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 static PyObject *
 move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
-                PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
+                Py_ssize_t stride, Py_ssize_t length,
                 int ndim, npy_intp* shape, int ddof)
 {
     INIT(NPY_DTYPE1)
     int winddof;
     npy_DTYPE1 delta, amean, assqdm, yi, ai, aold;
     winddof = window - ddof;
-    while PyArray_ITER_NOTDONE(ita) {
+    while (index < size) {
         amean = 0;
         assqdm = 0;
         i = 0;
         while (i < min_count - 1) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             delta = ai - amean;
             amean += delta / (i + 1);
             assqdm += delta * (ai - amean);
-            *(npy_DTYPE1*)(p + i++ * ystride) = NAN;
+            *(npy_DTYPE1*)(py + i++ * ystride) = NAN;
         }
         while (i <  window) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             delta = ai - amean;
             amean += delta / (i + 1);
             assqdm += delta * (ai - amean);
             yi = sqrt(assqdm / (i + 1 - ddof));
-            *(npy_DTYPE1*)(p + i++ * ystride) = yi;
+            *(npy_DTYPE1*)(py + i++ * ystride) = yi;
         }
         while (i < length) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
-            aold = *(npy_DTYPE0*)(PID(ita) + (i-window)*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
+            aold = *(npy_DTYPE0*)(pa + (i-window)*stride);
             delta = ai - aold;
             aold -= amean;
             amean += delta / window;
@@ -412,7 +417,7 @@ move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 assqdm = 0;
             }
             yi = sqrt(assqdm / winddof);
-            *(npy_DTYPE1*)(p + i++ * ystride) = yi;
+            *(npy_DTYPE1*)(py + i++ * ystride) = yi;
         }
         NEXT
     }
@@ -437,29 +442,29 @@ move_std(PyObject *self, PyObject *args, PyObject *kwds)
 /* dtype = [['float64'], ['float32']] */
 static PyObject *
 move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
-                PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
+                Py_ssize_t stride, Py_ssize_t length,
                 int ndim, npy_intp* shape, int ddof)
 {
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
     npy_DTYPE0 delta, amean, assqdm, ai, aold, yi;
-    while PyArray_ITER_NOTDONE(ita) {
+    while (index < size) {
         amean = 0;
         assqdm = 0;
         count = 0;
         i = 0;
         while (i < min_count - 1) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai == ai) {
                 count += 1;
                 delta = ai - amean;
                 amean += delta / count;
                 assqdm += delta * (ai - amean);
             }
-            *(npy_DTYPE0*)(p + i++ * ystride) = NAN;
+            *(npy_DTYPE0*)(py + i++ * ystride) = NAN;
         }
         while (i <  window) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai == ai) {
                 count += 1;
                 delta = ai - amean;
@@ -475,11 +480,11 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
             else {
                 yi = NAN;
             }
-            *(npy_DTYPE0*)(p + i++ * ystride) = yi;
+            *(npy_DTYPE0*)(py + i++ * ystride) = yi;
         }
         while (i < length) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
-            aold = *(npy_DTYPE0*)(PID(ita) + (i-window)*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
+            aold = *(npy_DTYPE0*)(pa + (i-window)*stride);
             if (ai == ai) {
                 if (aold == aold) {
                     delta = ai - aold;
@@ -518,7 +523,7 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
             else {
                 yi = NAN;
             }
-            *(npy_DTYPE0*)(p + i++ * ystride) = yi;
+            *(npy_DTYPE0*)(py + i++ * ystride) = yi;
         }
         NEXT
     }
@@ -529,35 +534,35 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 static PyObject *
 move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
-                PyObject *ita, Py_ssize_t stride, Py_ssize_t length,
+                Py_ssize_t stride, Py_ssize_t length,
                 int ndim, npy_intp* shape, int ddof)
 {
     INIT(NPY_DTYPE1)
     int winddof;
     npy_DTYPE1 delta, amean, assqdm, yi, ai, aold;
     winddof = window - ddof;
-    while PyArray_ITER_NOTDONE(ita) {
+    while (index < size) {
         amean = 0;
         assqdm = 0;
         i = 0;
         while (i < min_count - 1) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             delta = ai - amean;
             amean += delta / (i + 1);
             assqdm += delta * (ai - amean);
-            *(npy_DTYPE1*)(p + i++ * ystride) = NAN;
+            *(npy_DTYPE1*)(py + i++ * ystride) = NAN;
         }
         while (i <  window) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             delta = ai - amean;
             amean += delta / (i + 1);
             assqdm += delta * (ai - amean);
             yi = assqdm / (i + 1 - ddof);
-            *(npy_DTYPE1*)(p + i++ * ystride) = yi;
+            *(npy_DTYPE1*)(py + i++ * ystride) = yi;
         }
         while (i < length) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
-            aold = *(npy_DTYPE0*)(PID(ita) + (i-window)*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
+            aold = *(npy_DTYPE0*)(pa + (i-window)*stride);
             delta = ai - aold;
             aold -= amean;
             amean += delta / window;
@@ -567,7 +572,7 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 assqdm = 0;
             }
             yi = assqdm / winddof;
-            *(npy_DTYPE1*)(p + i++ * ystride) = yi;
+            *(npy_DTYPE1*)(py + i++ * ystride) = yi;
         }
         NEXT
     }
@@ -711,7 +716,6 @@ mover(char *name,
     Py_ssize_t stride;
     Py_ssize_t length;
 
-    PyObject *ita;
     PyArrayObject *a;
 
     PyObject *y;
@@ -805,7 +809,6 @@ mover(char *name,
         }
     }
 
-    ita = PyArray_IterAllButAxis((PyObject *)a, &axis);
     stride = PyArray_STRIDE(a, axis);
     shape = PyArray_SHAPE(a);
     length = shape[axis];
@@ -818,19 +821,19 @@ mover(char *name,
     }
 
     if (dtype == NPY_float64) {
-        y = move_float64((PyObject *)a, window, mc, axis, ita, stride, length,
+        y = move_float64((PyObject *)a, window, mc, axis, stride, length,
                          ndim, shape);
     }
     else if (dtype == NPY_float32) {
-        y = move_float32((PyObject *)a, window, mc, axis, ita, stride, length,
+        y = move_float32((PyObject *)a, window, mc, axis, stride, length,
                          ndim, shape);
     }
     else if (dtype == NPY_int64) {
-        y = move_int64((PyObject *)a, window, mc, axis, ita, stride, length,
+        y = move_int64((PyObject *)a, window, mc, axis, stride, length,
                        ndim, shape);
     }
     else if (dtype == NPY_int32) {
-        y = move_int32((PyObject *)a, window, mc, axis, ita, stride, length,
+        y = move_int32((PyObject *)a, window, mc, axis, stride, length,
                        ndim, shape);
     }
     else {
@@ -956,7 +959,6 @@ mover_ddof(char *name,
     Py_ssize_t stride;
     Py_ssize_t length;
 
-    PyObject *ita;
     PyArrayObject *a;
 
     PyObject *y;
@@ -1063,7 +1065,6 @@ mover_ddof(char *name,
         }
     }
 
-    ita = PyArray_IterAllButAxis((PyObject *)a, &axis);
     stride = PyArray_STRIDE(a, axis);
     shape = PyArray_SHAPE(a);
     length = shape[axis];
@@ -1076,19 +1077,19 @@ mover_ddof(char *name,
     }
 
     if (dtype == NPY_float64) {
-        y = move_float64((PyObject *)a, window, mc, axis, ita, stride, length,
+        y = move_float64((PyObject *)a, window, mc, axis, stride, length,
                          ndim, shape, ddof);
     }
     else if (dtype == NPY_float32) {
-        y = move_float32((PyObject *)a, window, mc, axis, ita, stride, length,
+        y = move_float32((PyObject *)a, window, mc, axis, stride, length,
                          ndim, shape, ddof);
     }
     else if (dtype == NPY_int64) {
-        y = move_int64((PyObject *)a, window, mc, axis, ita, stride, length,
+        y = move_int64((PyObject *)a, window, mc, axis, stride, length,
                        ndim, shape, ddof);
     }
     else if (dtype == NPY_int32) {
-        y = move_int32((PyObject *)a, window, mc, axis, ita, stride, length,
+        y = move_int32((PyObject *)a, window, mc, axis, stride, length,
                        ndim, shape, ddof);
     }
     else {

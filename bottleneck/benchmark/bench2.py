@@ -95,12 +95,12 @@ def suite_move(function):
 
     sig_array = [
                  ("%s%s(a, 2)", "np.ones(2)"),
-                 ("%s%s(a, 2, 2)", "np.ones(2)"),
-                 ("%s%s(a, window=2)", "np.ones(2)"),
-                 ("%s%s(a, window=2)", "np.ones(1000)"),
-                 ("%s%s(a, window=2)", "np.ones((1000, 2))"),
-                 ("%s%s(a, window=2)", "np.ones((1000*1000))"),
-                 ("%s%s(a, window=2)", "np.ones((1000, 1000, 2))"),
+                 ("%s%s(a, 2)", "np.ones(100)"),
+                 ("%s%s(a, 2)", "np.ones(1000)"),
+                 ("%s%s(a, 2)", "np.ones(1000*1000)"),
+                 ("%s%s(a, 2)", "np.ones((1000, 1000))"),
+                 ("%s%s(a, 2)", "np.ones((1000, 2))"),
+                 ("%s%s(a, 2)", "np.ones((1000, 1000, 2))"),
                 ]
 
     f = function
