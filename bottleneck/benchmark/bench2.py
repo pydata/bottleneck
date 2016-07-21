@@ -99,6 +99,8 @@ def suite_move(function):
                  ("%s%s(a, window=2)", "np.ones(2)"),
                  ("%s%s(a, window=2)", "np.ones(1000)"),
                  ("%s%s(a, window=2)", "np.ones((1000, 2))"),
+                 ("%s%s(a, window=2)", "np.ones((1000*1000))"),
+                 ("%s%s(a, window=2)", "np.ones((1000, 1000, 2))"),
                 ]
 
     f = function
