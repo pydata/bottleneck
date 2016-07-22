@@ -1,21 +1,43 @@
 #include "bottleneck.h"
 
+/*
+ * The moving window functions can handle input arrays of arbitrary dimension
+ * (ndim > 0). To accomplish that Bottleneck borrows ideas from NumPy.
+ *
+ * Loosely speaking, Bottleneck's INIT macro is PyArray_IterAllButAxis and
+ * NEXT is PyArray_ITER_NEXT. If you strip out everything that is not needed
+ * for moving window functions from those NumPy functions and apply a few
+ * optimizations such as iterating over the input and output arrays in the
+ * same loop (as opposed to using two iterators), then you pretty much end
+ * up with INIT and NEXT.
+ *
+ * Being much less general than NumPy's iterators, Bottleneck's moving window
+ * iterators have less overhead and are faster.
+ *
+ * If you are not familiar with the internal workings of
+ * PyArray_IterAllButAxis and PyArray_ITER_NEXT then Bottleneck's iterators
+ * may at first be difficult to understand. NumPy gives a nice description
+ * of how N-dimensional iterators work:
+ *
+ * http://docs.scipy.org/doc/numpy/reference/internals.code-explanations.html
+ */
+
 /* all moving window functions use the following three macros */
 #define INIT(dt) \
-    Py_ssize_t i; \
     PyObject *y = PyArray_EMPTY(ndim, shape, dt, 0); \
+    BN_BEGIN_ALLOW_THREADS \
+    Py_ssize_t i; \
     char *py = PyArray_BYTES((PyArrayObject *)y); \
     char *pa = PyArray_BYTES((PyArrayObject *)a); \
-    npy_intp *ystrides = PyArray_STRIDES((PyArrayObject *)y); \
-    npy_intp *astrides = PyArray_STRIDES((PyArrayObject *)a); \
-    npy_intp ystride = ystrides[axis]; \
+    const npy_intp *ystrides = PyArray_STRIDES((PyArrayObject *)y); \
+    const npy_intp *astrides = PyArray_STRIDES((PyArrayObject *)a); \
+    const npy_intp ystride = ystrides[axis]; \
     npy_intp shape_m1; \
     npy_intp index = 0; \
     npy_intp size = PyArray_SIZE((PyArrayObject *)a); \
     npy_intp indices[ndim]; \
     memset(indices, 0, ndim * sizeof(npy_intp)); \
-    if (length != 0) size /= length; \
-    BN_BEGIN_ALLOW_THREADS
+    if (length != 0) size /= length;
 
 #define NEXT \
     for (i=ndim - 1; i >= 0; i--) { \
