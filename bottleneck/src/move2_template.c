@@ -17,7 +17,7 @@
  * If you are not familiar with the internal workings of
  * PyArray_IterAllButAxis and PyArray_ITER_NEXT then Bottleneck's iterators
  * may at first be difficult to understand. NumPy gives a nice description
- * of how N-dimensional iterators work:
+ * of how their N-dimensional iterators work:
  *
  * http://docs.scipy.org/doc/numpy/reference/internals.code-explanations.html
  */

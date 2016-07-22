@@ -1,10 +1,47 @@
 #include "bottleneck.h"
 
+/*
+ * The iterator below is similar to the iterator in move.c. See that
+ * file for a brief description.
+ */
+#define INIT(dt0, dt1) \
+    PyObject *y = PyArray_EMPTY(ndim - 1, yshape, dt0, 0); \
+    dt1 *py = (dt1 *)PyArray_DATA((PyArrayObject *)y); \
+    Py_ssize_t i; \
+    char *pa = PyArray_BYTES(a); \
+    const npy_intp *astrides = PyArray_STRIDES(a); \
+    const npy_intp *ashape = PyArray_SHAPE(a); \
+    npy_intp shape_m1; \
+    npy_intp index = 0; \
+    npy_intp size = PyArray_SIZE(a); \
+    npy_intp indices[ndim]; \
+    memset(indices, 0, ndim * sizeof(npy_intp)); \
+    if (length != 0) size /= length;
+
+#define NEXT \
+    for (i=ndim - 1; i >= 0; i--) { \
+        shape_m1 = i == axis ? 0 : ashape[i]- 1;\
+        if (indices[i] < shape_m1) { \
+            pa += astrides[i]; \
+            indices[i]++; \
+            break; \
+        } \
+        else { \
+            pa -= indices[i] * astrides[i]; \
+            indices[i] = 0; \
+        } \
+    } \
+    index++;
+
+#define RETURN \
+    BN_END_ALLOW_THREADS \
+    return y;
+
 /* function pointers ----------------------------------------------------- */
 
 typedef PyObject *(*fss_t)(char *, npy_intp, npy_intp);
 typedef PyObject *(*fall_t)(PyObject *, Py_ssize_t, Py_ssize_t);
-typedef PyObject *(*fone_t)(PyObject *, Py_ssize_t, Py_ssize_t, int,
+typedef PyObject *(*fone_t)(PyArrayObject *, int, Py_ssize_t, Py_ssize_t, int,
                             npy_intp*);
 
 /* prototypes ------------------------------------------------------------ */
@@ -72,38 +109,34 @@ nansum_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 
 
 static PyObject *
-nansum_one_DTYPE0(PyObject *ita,
+nansum_one_DTYPE0(PyArrayObject *a,
+                  int axis,
                   Py_ssize_t stride,
                   Py_ssize_t length,
                   int ndim,
-                  npy_intp* y_dims)
+                  npy_intp* yshape)
 {
-    Py_ssize_t i;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 asum = 0;
-    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
-    npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
+    INIT(NPY_DTYPE0, npy_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
+    npy_DTYPE0 ai, asum = 0;
     if (length == 0) {
         Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
-        for (i=0; i < size; i++) *p++ = 0;
+        for (i=0; i < size; i++) *py++ = 0;
     }
     else {
-        while (PyArray_ITER_NOTDONE(ita)) {
+        while (index < size) {
             asum = 0;
             for (i = 0; i < length; i++) {
-                ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+                ai = *(npy_DTYPE0*)(pa + i*stride);
                 if (ai == ai) {
                     asum += ai;
                 }
             }
-            *p++ = asum;
-            PyArray_ITER_NEXT(ita);
+            *py++ = asum;
+            NEXT
         }
     }
-    BN_END_ALLOW_THREADS
-    Py_DECREF(ita);
-    return y;
+    RETURN
 }
 /* dtype end */
 
@@ -142,34 +175,31 @@ nansum_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 
 
 static PyObject *
-nansum_one_DTYPE0(PyObject *ita,
+nansum_one_DTYPE0(PyArrayObject *a,
+                  int axis,
                   Py_ssize_t stride,
                   Py_ssize_t length,
                   int ndim,
-                  npy_intp* y_dims)
+                  npy_intp* yshape)
 {
-    Py_ssize_t i;
-    npy_DTYPE0 asum = 0;
-    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
-    npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
+    INIT(NPY_DTYPE0, npy_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
+    npy_DTYPE0 asum = 0;
     if (length == 0) {
         Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
-        for (i=0; i < size; i++) *p++ = 0;
+        for (i=0; i < size; i++) *py++ = 0;
     }
     else {
-        while (PyArray_ITER_NOTDONE(ita)) {
+        while (index < size) {
             asum = 0;
             for (i = 0; i < length; i++) {
-                asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
+                asum += *(npy_DTYPE0*)(pa + i*stride);
             }
-            *p++ = asum;
-            PyArray_ITER_NEXT(ita);
+            *py++ = asum;
+            NEXT
         }
     }
-    BN_END_ALLOW_THREADS
-    Py_DECREF(ita);
-    return y;
+    RETURN
 }
 /* dtype end */
 
@@ -251,29 +281,27 @@ nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 
 
 static PyObject *
-nanmean_one_DTYPE0(PyObject *ita,
+nanmean_one_DTYPE0(PyArrayObject *a,
+                   int axis,
                    Py_ssize_t stride,
                    Py_ssize_t length,
                    int ndim,
-                   npy_intp* y_dims)
+                   npy_intp* yshape)
 {
-    Py_ssize_t i;
-    Py_ssize_t count;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 asum;
-    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
-    npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
+    INIT(NPY_DTYPE0, npy_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
+    Py_ssize_t count;
+    npy_DTYPE0 ai, asum;
     if (length == 0) {
         Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
-        for (i=0; i < size; i++) *p++ = BN_NAN;
+        for (i=0; i < size; i++) *py++ = BN_NAN;
     }
     else {
-        while (PyArray_ITER_NOTDONE(ita)) {
+        while (index < size) {
             asum = 0;
             count = 0;
             for (i = 0; i < length; i++) {
-                ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+                ai = *(npy_DTYPE0*)(pa + i*stride);
                 if (ai == ai) {
                     asum += ai;
                     count += 1;
@@ -284,13 +312,11 @@ nanmean_one_DTYPE0(PyObject *ita,
             } else {
                 asum = BN_NAN;
             }
-            *p++ = asum;
-            PyArray_ITER_NEXT(ita);
+            *py++ = asum;
+            NEXT
         }
     }
-    BN_END_ALLOW_THREADS
-    Py_DECREF(ita);
-    return y;
+    RETURN
 }
 /* dtype end */
 
@@ -339,39 +365,36 @@ nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 
 
 static PyObject *
-nanmean_one_DTYPE0(PyObject *ita,
+nanmean_one_DTYPE0(PyArrayObject *a,
+                   int axis,
                    Py_ssize_t stride,
                    Py_ssize_t length,
                    int ndim,
-                   npy_intp* y_dims)
+                   npy_intp* yshape)
 {
-    Py_ssize_t i;
-    npy_DTYPE1 asum = 0;
-    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE1, 0);
-    npy_DTYPE1 *p = (npy_DTYPE1 *)PyArray_DATA((PyArrayObject *)y);
+    INIT(NPY_DTYPE1, npy_DTYPE1)
     BN_BEGIN_ALLOW_THREADS
+    npy_DTYPE1 asum = 0;
     if (length == 0) {
         Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
-        for (i=0; i < size; i++) *p++ = BN_NAN;
+        for (i=0; i < size; i++) *py++ = BN_NAN;
     }
     else {
-        while (PyArray_ITER_NOTDONE(ita)) {
+        while (index < size) {
             asum = 0;
             for (i = 0; i < length; i++) {
-                asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
+                asum += *(npy_DTYPE0*)(pa + i*stride);
             }
             if (length > 0) {
                 asum /= length;
             } else {
                 asum = BN_NAN;
             }
-            *p++ = asum;
-            PyArray_ITER_NEXT(ita);
+            *py++ = asum;
+            NEXT
         }
     }
-    BN_END_ALLOW_THREADS
-    Py_DECREF(ita);
-    return y;
+    RETURN
 }
 /* dtype end */
 
@@ -461,17 +484,15 @@ nanmin_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 
 
 static PyObject *
-nanmin_one_DTYPE0(PyObject *ita,
+nanmin_one_DTYPE0(PyArrayObject *a,
+                  int axis,
                   Py_ssize_t stride,
                   Py_ssize_t length,
                   int ndim,
-                  npy_intp* y_dims)
+                  npy_intp* yshape)
 {
-    Py_ssize_t i;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 amin = 0;
-    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
-    npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
+    INIT(NPY_DTYPE0, npy_DTYPE0)
+    npy_DTYPE0 ai, amin = 0;
     int allnan;
     if (length == 0) {
         VALUE_ERR("numpy.nanmin raises on a.shape[axis]==0; "
@@ -479,11 +500,11 @@ nanmin_one_DTYPE0(PyObject *ita,
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    while (PyArray_ITER_NOTDONE(ita)) {
+    while (index < size) {
         amin = BN_INFINITY;
         allnan = 1;
         for (i = 0; i < length; i++) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai <= amin) {
                 amin = ai;
                 allnan = 0;
@@ -492,12 +513,10 @@ nanmin_one_DTYPE0(PyObject *ita,
         if (allnan) {
             amin = BN_NAN;
         }
-        *p++ = amin;
-        PyArray_ITER_NEXT(ita);
+        *py++ = amin;
+        NEXT
     }
-    BN_END_ALLOW_THREADS
-    Py_DECREF(ita);
-    return y;
+    RETURN
 }
 /* dtype end */
 
@@ -554,37 +573,33 @@ nanmin_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 
 
 static PyObject *
-nanmin_one_DTYPE0(PyObject *ita,
+nanmin_one_DTYPE0(PyArrayObject *a,
+                  int axis,
                   Py_ssize_t stride,
                   Py_ssize_t length,
                   int ndim,
-                  npy_intp* y_dims)
+                  npy_intp* yshape)
 {
-    Py_ssize_t i;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 amin;
-    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
-    npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
+    INIT(NPY_DTYPE0, npy_DTYPE0)
+    npy_DTYPE0 ai, amin;
     if (length == 0) {
         VALUE_ERR("numpy.nanmin raises on a.shape[axis]==0; "
                   "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    while (PyArray_ITER_NOTDONE(ita)) {
+    while (index < size) {
         amin = NPY_MAX_DTYPE0;
         for (i = 0; i < length; i++) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai <= amin) {
                 amin = ai;
             }
         }
-        *p++ = amin;
-        PyArray_ITER_NEXT(ita);
+        *py++ = amin;
+        NEXT
     }
-    BN_END_ALLOW_THREADS
-    Py_DECREF(ita);
-    return y;
+    RETURN
 }
 /* dtype end */
 
@@ -674,17 +689,15 @@ nanmax_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 
 
 static PyObject *
-nanmax_one_DTYPE0(PyObject *ita,
+nanmax_one_DTYPE0(PyArrayObject *a,
+                  int axis,
                   Py_ssize_t stride,
                   Py_ssize_t length,
                   int ndim,
-                  npy_intp* y_dims)
+                  npy_intp* yshape)
 {
-    Py_ssize_t i;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 amax = 0;
-    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
-    npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
+    INIT(NPY_DTYPE0, npy_DTYPE0)
+    npy_DTYPE0 ai, amax = 0;
     int allnan;
     if (length == 0) {
         VALUE_ERR("numpy.nanmax raises on a.shape[axis]==0; "
@@ -692,11 +705,11 @@ nanmax_one_DTYPE0(PyObject *ita,
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    while (PyArray_ITER_NOTDONE(ita)) {
+    while (index < size) {
         amax = -BN_INFINITY;
         allnan = 1;
         for (i = 0; i < length; i++) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai >= amax) {
                 amax = ai;
                 allnan = 0;
@@ -705,12 +718,10 @@ nanmax_one_DTYPE0(PyObject *ita,
         if (allnan) {
             amax = BN_NAN;
         }
-        *p++ = amax;
-        PyArray_ITER_NEXT(ita);
+        *py++ = amax;
+        NEXT
     }
-    BN_END_ALLOW_THREADS
-    Py_DECREF(ita);
-    return y;
+    RETURN
 }
 /* dtype end */
 
@@ -767,37 +778,33 @@ nanmax_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
 
 
 static PyObject *
-nanmax_one_DTYPE0(PyObject *ita,
+nanmax_one_DTYPE0(PyArrayObject *a,
+                  int axis,
                   Py_ssize_t stride,
                   Py_ssize_t length,
                   int ndim,
-                  npy_intp* y_dims)
+                  npy_intp* yshape)
 {
-    Py_ssize_t i;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 amax;
-    PyObject *y = PyArray_EMPTY(ndim - 1, y_dims, NPY_DTYPE0, 0);
-    npy_DTYPE0 *p = (npy_DTYPE0 *)PyArray_DATA((PyArrayObject *)y);
+    INIT(NPY_DTYPE0, npy_DTYPE0)
+    npy_DTYPE0 ai, amax;
     if (length == 0) {
         VALUE_ERR("numpy.nanmax raises on a.shape[axis]==0; "
                   "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    while (PyArray_ITER_NOTDONE(ita)) {
+    while (index < size) {
         amax = NPY_MIN_DTYPE0;
         for (i = 0; i < length; i++) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai >= amax) {
                 amax = ai;
             }
         }
-        *p++ = amax;
-        PyArray_ITER_NEXT(ita);
+        *py++ = amax;
+        NEXT
     }
-    BN_END_ALLOW_THREADS
-    Py_DECREF(ita);
-    return y;
+    RETURN
 }
 /* dtype end */
 
@@ -942,7 +949,6 @@ reducer(char *name,
     npy_intp *shape;
     npy_intp *strides;
 
-    PyObject *ita;
     PyArrayObject *a;
 
     PyObject *arr_obj;
@@ -1052,6 +1058,7 @@ reducer(char *name,
             }
         }
         else {
+            PyObject *ita;
             if (ravel == 0) {
                 ita = PyArray_IterAllButAxis((PyObject *)a, &axis);
                 stride = strides[axis];
@@ -1092,21 +1099,20 @@ reducer(char *name,
             if (i != axis) yshape[j++] = shape[i];
         }
 
-        ita = PyArray_IterAllButAxis((PyObject *)a, &axis);
         stride = strides[axis];
         length = shape[axis];
 
         if (dtype == NPY_FLOAT64) {
-            return fone_float64(ita, stride, length, ndim, yshape);
+            return fone_float64(a, axis, stride, length, ndim, yshape);
         }
         else if (dtype == NPY_FLOAT32) {
-            return fone_float32(ita, stride, length, ndim, yshape);
+            return fone_float32(a, axis, stride, length, ndim, yshape);
         }
         else if (dtype == NPY_INT64) {
-            return fone_int64(ita, stride, length, ndim, yshape);
+            return fone_int64(a, axis, stride, length, ndim, yshape);
         }
         else if (dtype == NPY_INT32) {
-            return fone_int32(ita, stride, length, ndim, yshape);
+            return fone_int32(a, axis, stride, length, ndim, yshape);
         }
         else {
             return slow(name, args, kwds);
