@@ -4,10 +4,8 @@
 #define INIT(dt) \
     Py_ssize_t i; \
     PyObject *y = PyArray_EMPTY(ndim, shape, dt, 0); \
-    char *py0 = PyArray_BYTES((PyArrayObject *)y); \
-    char *py = py0; \
-    char *pa0 = PyArray_BYTES((PyArrayObject *)a); \
-    char *pa = pa0; \
+    char *py = PyArray_BYTES((PyArrayObject *)y); \
+    char *pa = PyArray_BYTES((PyArrayObject *)a); \
     npy_intp *ystrides = PyArray_STRIDES((PyArrayObject *)y); \
     npy_intp *astrides = PyArray_STRIDES((PyArrayObject *)a); \
     npy_intp ystride = ystrides[axis]; \
@@ -16,25 +14,23 @@
     npy_intp size = PyArray_SIZE((PyArrayObject *)a); \
     npy_intp indices[ndim]; \
     memset(indices, 0, ndim * sizeof(npy_intp)); \
-    if (size != 0) size /= length; \
+    if (length != 0) size /= length; \
     BN_BEGIN_ALLOW_THREADS
 
 #define NEXT \
     for (i=ndim - 1; i >= 0; i--) { \
         shape_m1 = i == axis ? 0 : shape[i]- 1;\
         if (indices[i] < shape_m1) { \
+            pa += astrides[i]; \
+            py += ystrides[i]; \
             indices[i]++; \
             break; \
         } \
         else { \
+            pa -= indices[i] * astrides[i]; \
+            py -= indices[i] * ystrides[i]; \
             indices[i] = 0; \
         } \
-    } \
-    py = py0; \
-    pa = pa0; \
-    for (i=0; i < ndim; i++) { \
-        pa += indices[i] * astrides[i]; \
-        py += indices[i] * ystrides[i]; \
     } \
     index++;
 
