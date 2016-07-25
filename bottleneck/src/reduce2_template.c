@@ -33,10 +33,6 @@
     } \
     index++;
 
-#define RETURN \
-    BN_END_ALLOW_THREADS \
-    return y;
-
 /* function pointers ----------------------------------------------------- */
 
 typedef PyObject *(*fss_t)(char *, npy_intp, npy_intp);
@@ -136,7 +132,8 @@ nansum_one_DTYPE0(PyArrayObject *a,
             NEXT
         }
     }
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
@@ -199,7 +196,8 @@ nansum_one_DTYPE0(PyArrayObject *a,
             NEXT
         }
     }
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
@@ -316,7 +314,8 @@ nanmean_one_DTYPE0(PyArrayObject *a,
             NEXT
         }
     }
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
@@ -394,7 +393,8 @@ nanmean_one_DTYPE0(PyArrayObject *a,
             NEXT
         }
     }
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
@@ -516,7 +516,8 @@ nanmin_one_DTYPE0(PyArrayObject *a,
         *py++ = amin;
         NEXT
     }
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
@@ -599,7 +600,8 @@ nanmin_one_DTYPE0(PyArrayObject *a,
         *py++ = amin;
         NEXT
     }
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
@@ -721,7 +723,8 @@ nanmax_one_DTYPE0(PyArrayObject *a,
         *py++ = amax;
         NEXT
     }
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
@@ -804,7 +807,8 @@ nanmax_one_DTYPE0(PyArrayObject *a,
         *py++ = amax;
         NEXT
     }
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
