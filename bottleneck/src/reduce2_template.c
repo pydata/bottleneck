@@ -13,7 +13,6 @@
     char *pa = PyArray_BYTES(a); \
     const npy_intp *astrides = PyArray_STRIDES(a); \
     const npy_intp *ashape = PyArray_SHAPE(a); \
-    npy_intp shape_m1; \
     npy_intp index = 0; \
     npy_intp size = PyArray_SIZE(a); \
     npy_intp indices[ndim]; \
@@ -22,16 +21,13 @@
 
 #define NEXT \
     for (i=ndim - 1; i >= 0; i--) { \
-        shape_m1 = i == axis ? 0 : ashape[i]- 1;\
-        if (indices[i] < shape_m1) { \
+        if ((indices[i] < ashape[i] - 1) && (i != axis)) { \
             pa += astrides[i]; \
             indices[i]++; \
             break; \
         } \
-        else { \
-            pa -= indices[i] * astrides[i]; \
-            indices[i] = 0; \
-        } \
+        pa -= indices[i] * astrides[i]; \
+        indices[i] = 0; \
     } \
     index++;
 

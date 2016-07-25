@@ -32,7 +32,6 @@
     const npy_intp *ystrides = PyArray_STRIDES((PyArrayObject *)y); \
     const npy_intp *astrides = PyArray_STRIDES((PyArrayObject *)a); \
     const npy_intp ystride = ystrides[axis]; \
-    npy_intp shape_m1; \
     npy_intp index = 0; \
     npy_intp size = PyArray_SIZE((PyArrayObject *)a); \
     npy_intp indices[ndim]; \
@@ -41,18 +40,15 @@
 
 #define NEXT \
     for (i=ndim - 1; i >= 0; i--) { \
-        shape_m1 = i == axis ? 0 : shape[i]- 1;\
-        if (indices[i] < shape_m1) { \
+        if ((indices[i] < shape[i] - 1) && (i != axis)) { \
             pa += astrides[i]; \
             py += ystrides[i]; \
             indices[i]++; \
             break; \
         } \
-        else { \
-            pa -= indices[i] * astrides[i]; \
-            py -= indices[i] * ystrides[i]; \
-            indices[i] = 0; \
-        } \
+        pa -= indices[i] * astrides[i]; \
+        py -= indices[i] * ystrides[i]; \
+        indices[i] = 0; \
     } \
     index++;
 
