@@ -4,9 +4,11 @@
  * The iterator below is similar to the iterator in move.c. See that
  * file for a brief description.
  */
-#define INIT(dt0, dt1) \
+#define Y_INIT(dt0, dt1) \
     PyObject *y = PyArray_EMPTY(ndim - 1, yshape, dt0, 0); \
     dt1 *py = (dt1 *)PyArray_DATA((PyArrayObject *)y); \
+
+#define INIT \
     Py_ssize_t i; \
     char *pa = PyArray_BYTES(a); \
     const npy_intp *astrides = PyArray_STRIDES(a); \
@@ -36,7 +38,7 @@
 /* function pointers ----------------------------------------------------- */
 
 typedef PyObject *(*fss_t)(char *, npy_intp, npy_intp);
-typedef PyObject *(*fall_t)(PyObject *, Py_ssize_t, Py_ssize_t);
+typedef PyObject *(*fall_t)(PyArrayObject *, int, Py_ssize_t, Py_ssize_t, int);
 typedef PyObject *(*fone_t)(PyArrayObject *, int, Py_ssize_t, Py_ssize_t, int,
                             npy_intp*);
 
@@ -83,23 +85,22 @@ nansum_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 
 
 static PyObject *
-nansum_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+nansum_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                  Py_ssize_t length, int ndim)
 {
-    Py_ssize_t i;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 asum = 0;
+    INIT
+    npy_DTYPE0 ai, asum = 0;
     BN_BEGIN_ALLOW_THREADS
-    while (PyArray_ITER_NOTDONE(ita)) {
+    while (index < size) {
         for (i = 0; i < length; i++) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai == ai) {
                 asum += ai;
             }
         }
-        PyArray_ITER_NEXT(ita);
+        NEXT
     }
     BN_END_ALLOW_THREADS
-    Py_DECREF(ita);
     return PyFloat_FromDouble(asum);
 }
 
@@ -112,7 +113,8 @@ nansum_one_DTYPE0(PyArrayObject *a,
                   int ndim,
                   npy_intp* yshape)
 {
-    INIT(NPY_DTYPE0, npy_DTYPE0)
+    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    INIT
     BN_BEGIN_ALLOW_THREADS
     npy_DTYPE0 ai, asum = 0;
     if (length == 0) {
@@ -154,18 +156,18 @@ nansum_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 
 
 static PyObject *
-nansum_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+nansum_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                  Py_ssize_t length, int ndim)
 {
-    Py_ssize_t i;
+    INIT
     npy_DTYPE0 asum = 0;
     BN_BEGIN_ALLOW_THREADS
-    while (PyArray_ITER_NOTDONE(ita)) {
+    while (index < size) {
         for (i = 0; i < length; i++) {
-            asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
+            asum += *(npy_DTYPE0*)(pa + i*stride);
         }
-        PyArray_ITER_NEXT(ita);
+        NEXT
     }
-    Py_DECREF(ita);
     BN_END_ALLOW_THREADS
     return PyInt_FromLong(asum);
 }
@@ -179,7 +181,8 @@ nansum_one_DTYPE0(PyArrayObject *a,
                   int ndim,
                   npy_intp* yshape)
 {
-    INIT(NPY_DTYPE0, npy_DTYPE0)
+    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    INIT
     BN_BEGIN_ALLOW_THREADS
     npy_DTYPE0 asum = 0;
     if (length == 0) {
@@ -251,25 +254,24 @@ nanmean_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 
 
 static PyObject *
-nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+nanmean_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                   Py_ssize_t length, int ndim)
 {
-    Py_ssize_t i;
+    INIT
     Py_ssize_t count = 0;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 asum = 0;
+    npy_DTYPE0 ai, asum = 0;
     BN_BEGIN_ALLOW_THREADS
-    while (PyArray_ITER_NOTDONE(ita)) {
+    while (index < size) {
         for (i = 0; i < length; i++) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
         }
-        PyArray_ITER_NEXT(ita);
+        NEXT
     }
     BN_END_ALLOW_THREADS
-    Py_DECREF(ita);
     if (count > 0) {
         return PyFloat_FromDouble(asum / count);
     } else {
@@ -286,7 +288,8 @@ nanmean_one_DTYPE0(PyArrayObject *a,
                    int ndim,
                    npy_intp* yshape)
 {
-    INIT(NPY_DTYPE0, npy_DTYPE0)
+    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    INIT
     BN_BEGIN_ALLOW_THREADS
     Py_ssize_t count;
     npy_DTYPE0 ai, asum;
@@ -340,23 +343,23 @@ nanmean_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 
 
 static PyObject *
-nanmean_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+nanmean_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                   Py_ssize_t length, int ndim)
 {
-    Py_ssize_t i;
-    Py_ssize_t size = 0;
+    INIT
+    Py_ssize_t total_length = 0;
     npy_DTYPE1 asum = 0;
     BN_BEGIN_ALLOW_THREADS
-    while (PyArray_ITER_NOTDONE(ita)) {
+    while (index < size) {
         for (i = 0; i < length; i++) {
-            asum += *(npy_DTYPE0*)(PID(ita) + i*stride);
+            asum += *(npy_DTYPE0*)(pa + i*stride);
         }
-        size += length;
-        PyArray_ITER_NEXT(ita);
+        total_length += length;
+        NEXT
     }
     BN_END_ALLOW_THREADS
-    Py_DECREF(ita);
-    if (size > 0) {
-        return PyFloat_FromDouble(asum / size);
+    if (total_length > 0) {
+        return PyFloat_FromDouble(asum / total_length);
     } else {
         return PyFloat_FromDouble(BN_NAN);
     }
@@ -371,7 +374,8 @@ nanmean_one_DTYPE0(PyArrayObject *a,
                    int ndim,
                    npy_intp* yshape)
 {
-    INIT(NPY_DTYPE1, npy_DTYPE1)
+    Y_INIT(NPY_DTYPE1, npy_DTYPE1)
+    INIT
     BN_BEGIN_ALLOW_THREADS
     npy_DTYPE1 asum = 0;
     if (length == 0) {
@@ -452,11 +456,11 @@ nanmin_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 
 
 static PyObject *
-nanmin_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+nanmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                  Py_ssize_t length, int ndim)
 {
-    Py_ssize_t i;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 amin = BN_INFINITY;
+    INIT
+    npy_DTYPE0 ai, amin = BN_INFINITY;
     int allnan = 1;
     if (length == 0) {
         VALUE_ERR("numpy.nanmin raises on a.size==0 and axis=None; "
@@ -464,21 +468,20 @@ nanmin_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    while (PyArray_ITER_NOTDONE(ita)) {
+    while (index < size) {
         for (i = 0; i < length; i++) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai <= amin) {
                 amin = ai;
                 allnan = 0;
             }
         }
-        PyArray_ITER_NEXT(ita);
+        NEXT
     }
     if (allnan) {
         amin = BN_NAN;
     }
     BN_END_ALLOW_THREADS
-    Py_DECREF(ita);
     return PyFloat_FromDouble(amin);
 }
 
@@ -491,7 +494,8 @@ nanmin_one_DTYPE0(PyArrayObject *a,
                   int ndim,
                   npy_intp* yshape)
 {
-    INIT(NPY_DTYPE0, npy_DTYPE0)
+    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    INIT
     npy_DTYPE0 ai, amin = 0;
     int allnan;
     if (length == 0) {
@@ -547,28 +551,27 @@ nanmin_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 
 
 static PyObject *
-nanmin_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+nanmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                  Py_ssize_t length, int ndim)
 {
-    Py_ssize_t i;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 amin = NPY_MAX_DTYPE0;
+    INIT
+    npy_DTYPE0 ai, amin = NPY_MAX_DTYPE0;
     if (length == 0) {
         VALUE_ERR("numpy.nanmin raises on a.size==0 and axis=None; "
                   "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    while (PyArray_ITER_NOTDONE(ita)) {
+    while (index < size) {
         for (i = 0; i < length; i++) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai <= amin) {
                 amin = ai;
             }
         }
-        PyArray_ITER_NEXT(ita);
+        NEXT
     }
     BN_END_ALLOW_THREADS
-    Py_DECREF(ita);
     return PyInt_FromLong(amin);
 }
 
@@ -581,7 +584,8 @@ nanmin_one_DTYPE0(PyArrayObject *a,
                   int ndim,
                   npy_intp* yshape)
 {
-    INIT(NPY_DTYPE0, npy_DTYPE0)
+    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    INIT
     npy_DTYPE0 ai, amin;
     if (length == 0) {
         VALUE_ERR("numpy.nanmin raises on a.shape[axis]==0; "
@@ -659,9 +663,10 @@ nanmax_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 
 
 static PyObject *
-nanmax_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+nanmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                  Py_ssize_t length, int ndim)
 {
-    Py_ssize_t i;
+    INIT
     npy_DTYPE0 ai;
     npy_DTYPE0 amax = -BN_INFINITY;
     int allnan = 1;
@@ -671,21 +676,20 @@ nanmax_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    while (PyArray_ITER_NOTDONE(ita)) {
+    while (index < size) {
         for (i = 0; i < length; i++) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai >= amax) {
                 amax = ai;
                 allnan = 0;
             }
         }
-        PyArray_ITER_NEXT(ita);
+        NEXT
     }
     if (allnan) {
         amax = BN_NAN;
     }
     BN_END_ALLOW_THREADS
-    Py_DECREF(ita);
     return PyFloat_FromDouble(amax);
 }
 
@@ -698,7 +702,8 @@ nanmax_one_DTYPE0(PyArrayObject *a,
                   int ndim,
                   npy_intp* yshape)
 {
-    INIT(NPY_DTYPE0, npy_DTYPE0)
+    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    INIT
     npy_DTYPE0 ai, amax = 0;
     int allnan;
     if (length == 0) {
@@ -754,28 +759,27 @@ nanmax_ss_DTYPE0(char *p, npy_intp stride, npy_intp length)
 
 
 static PyObject *
-nanmax_all_DTYPE0(PyObject *ita, Py_ssize_t stride, Py_ssize_t length)
+nanmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                  Py_ssize_t length, int ndim)
 {
-    Py_ssize_t i;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 amax = NPY_MIN_DTYPE0;
+    INIT
+    npy_DTYPE0 ai, amax = NPY_MIN_DTYPE0;
     if (length == 0) {
         VALUE_ERR("numpy.nanmax raises on a.size==0 and axis=None; "
                   "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    while (PyArray_ITER_NOTDONE(ita)) {
+    while (index < size) {
         for (i = 0; i < length; i++) {
-            ai = *(npy_DTYPE0*)(PID(ita) + i*stride);
+            ai = *(npy_DTYPE0*)(pa + i*stride);
             if (ai >= amax) {
                 amax = ai;
             }
         }
-        PyArray_ITER_NEXT(ita);
+        NEXT
     }
     BN_END_ALLOW_THREADS
-    Py_DECREF(ita);
     return PyInt_FromLong(amax);
 }
 
@@ -788,7 +792,8 @@ nanmax_one_DTYPE0(PyArrayObject *a,
                   int ndim,
                   npy_intp* yshape)
 {
-    INIT(NPY_DTYPE0, npy_DTYPE0)
+    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    INIT
     npy_DTYPE0 ai, amax;
     if (length == 0) {
         VALUE_ERR("numpy.nanmax raises on a.shape[axis]==0; "
@@ -1062,30 +1067,35 @@ reducer(char *name,
             }
         }
         else {
-            PyObject *ita;
+
             if (ravel == 0) {
-                ita = PyArray_IterAllButAxis((PyObject *)a, &axis);
+                axis = 0;
+                stride = strides[0];
+                for (i=1; i < ndim; i++) {
+                    if (strides[i] < stride) {
+                        axis = i;
+                    }
+                }
                 stride = strides[axis];
                 length = shape[axis];
             }
             else {
                 /* TODO a = PyArray_Ravel(a, NPY_ANYORDER);*/
-                axis = 0;
-                ita = PyArray_IterAllButAxis((PyObject *)a, &axis);
+                axis = 0; /* TODO find min stride axis */
                 stride = PyArray_STRIDE(a, 0);
                 length = PyArray_SIZE(a);
             }
             if (dtype == NPY_FLOAT64) {
-                return fall_float64(ita, stride, length);
+                return fall_float64(a, axis, stride, length, ndim);
             }
             else if (dtype == NPY_FLOAT32) {
-                return fall_float32(ita, stride, length);
+                return fall_float32(a, axis, stride, length, ndim);
             }
             else if (dtype == NPY_INT64) {
-                return fall_int64(ita, stride, length);
+                return fall_int64(a, axis, stride, length, ndim);
             }
             else if (dtype == NPY_INT32) {
-                return fall_int32(ita, stride, length);
+                return fall_int32(a, axis, stride, length, ndim);
             }
             else {
                 return slow(name, args, kwds);
