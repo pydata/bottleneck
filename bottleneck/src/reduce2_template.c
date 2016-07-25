@@ -70,8 +70,7 @@ static PyObject *
 nansum_ss_DTYPE0(char *pa, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 asum = 0;
+    npy_DTYPE0 ai, asum = 0;
     BN_BEGIN_ALLOW_THREADS
     FOR {
         ai = AI(npy_DTYPE0);
@@ -234,8 +233,7 @@ nanmean_ss_DTYPE0(char *pa, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
     Py_ssize_t count = 0;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 asum = 0;
+    npy_DTYPE0 ai, asum = 0;
     BN_BEGIN_ALLOW_THREADS
     FOR {
         ai = AI(npy_DTYPE0);
@@ -431,8 +429,7 @@ static PyObject *
 nanmin_ss_DTYPE0(char *pa, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 amin = BN_INFINITY;
+    npy_DTYPE0 ai, amin = BN_INFINITY;
     int allnan = 1;
     if (length == 0) {
         VALUE_ERR("numpy.nanmin raises on a.size==0 and axis=None; "
@@ -531,8 +528,7 @@ static PyObject *
 nanmin_ss_DTYPE0(char *pa, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 amin = NPY_MAX_DTYPE0;
+    npy_DTYPE0 ai, amin = NPY_MAX_DTYPE0;
     if (length == 0) {
         VALUE_ERR("numpy.nanmin raises on a.size==0 and axis=None; "
                   "So Bottleneck too.");
@@ -638,8 +634,7 @@ static PyObject *
 nanmax_ss_DTYPE0(char *pa, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 amax = -BN_INFINITY;
+    npy_DTYPE0 ai, amax = -BN_INFINITY;
     int allnan = 1;
     if (length == 0) {
         VALUE_ERR("numpy.nanmax raises on a.size==0 and axis=None; "
@@ -667,8 +662,7 @@ nanmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
                   Py_ssize_t length, int ndim)
 {
     INIT
-    npy_DTYPE0 ai;
-    npy_DTYPE0 amax = -BN_INFINITY;
+    npy_DTYPE0 ai, amax = -BN_INFINITY;
     int allnan = 1;
     if (length == 0) {
         VALUE_ERR("numpy.nanmax raises on a.size==0 and axis=None; "
@@ -739,8 +733,7 @@ static PyObject *
 nanmax_ss_DTYPE0(char *pa, npy_intp stride, npy_intp length)
 {
     Py_ssize_t i;
-    npy_DTYPE0 ai;
-    npy_DTYPE0 amax = NPY_MIN_DTYPE0;
+    npy_DTYPE0 ai, amax = NPY_MIN_DTYPE0;
     if (length == 0) {
         VALUE_ERR("numpy.nanmax raises on a.size==0 and axis=None; "
                   "So Bottleneck too.");
