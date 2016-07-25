@@ -56,6 +56,10 @@
     BN_END_ALLOW_THREADS \
     return y;
 
+#define NOT_DONE index < size
+#define AI(dt) *(dt*)(pa + i * stride)
+#define YI(dt) *(dt*)(py + i++ * ystride)
+
 /* function pointers ----------------------------------------------------- */
 
 typedef PyObject *(*move_t)(PyObject *, int, int, int, Py_ssize_t,
@@ -94,20 +98,20 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
     npy_DTYPE0 asum, ai, aold, yi;
-    while (index < size) {
+    while (NOT_DONE) {
         asum = 0;
         count = 0;
         i = 0;
         while (i < min_count - 1) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
-            *(npy_DTYPE0*)(py + i++ * ystride) = NAN;
+            YI(npy_DTYPE0) = BN_NAN;
         }
         while (i < window) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
@@ -116,12 +120,12 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 yi = asum;
             }
             else {
-                yi = NAN;
+                yi = BN_NAN;
             }
-            *(npy_DTYPE0*)(py + i++ * ystride) = yi;
+            YI(npy_DTYPE0) = yi;
         }
         while (i < length) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
@@ -135,9 +139,9 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 yi = asum;
             }
             else {
-                yi = NAN;
+                yi = BN_NAN;
             }
-            *(npy_DTYPE0*)(py + i++ * ystride) = yi;
+            YI(npy_DTYPE0) = yi;
         }
         NEXT
     }
@@ -154,21 +158,21 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
 {
     INIT(NPY_DTYPE1)
     npy_DTYPE1 asum;
-    while (index < size) {
+    while (NOT_DONE) {
         asum = 0;
         i = 0;
         while (i < min_count - 1) {
-            asum += *(npy_DTYPE0*)(pa + i*stride);
-            *(npy_DTYPE1*)(py + i++ * ystride) = NAN;
+            asum += AI(npy_DTYPE0);
+            YI(npy_DTYPE1) = BN_NAN;
         }
         while (i < window) {
-            asum += *(npy_DTYPE0*)(pa + i*stride);
-            *(npy_DTYPE1*)(py + i++ * ystride) = asum;
+            asum += AI(npy_DTYPE0);
+            YI(npy_DTYPE1) = asum;
         }
         while (i < length) {
-            asum += *(npy_DTYPE0*)(pa + i*stride);
+            asum += AI(npy_DTYPE0);
             asum -= *(npy_DTYPE0*)(pa + (i-window)*stride);
-            *(npy_DTYPE1*)(py + i++ * ystride) = asum;
+            YI(npy_DTYPE1) = asum;
         }
         NEXT
     }
@@ -200,20 +204,20 @@ move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
     npy_DTYPE0 asum, ai, aold, yi;
-    while (index < size) {
+    while (NOT_DONE) {
         asum = 0;
         count = 0;
         i = 0;
         while (i < min_count - 1) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
-            *(npy_DTYPE0*)(py + i++ * ystride) = NAN;
+            YI(npy_DTYPE0) = BN_NAN;
         }
         while (i < window) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
@@ -222,12 +226,12 @@ move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 yi = asum / count;
             }
             else {
-                yi = NAN;
+                yi = BN_NAN;
             }
-            *(npy_DTYPE0*)(py + i++ * ystride) = yi;
+            YI(npy_DTYPE0) = yi;
         }
         while (i < length) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
@@ -241,9 +245,9 @@ move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 yi = asum / count;
             }
             else {
-                yi = NAN;
+                yi = BN_NAN;
             }
-            *(npy_DTYPE0*)(py + i++ * ystride) = yi;
+            YI(npy_DTYPE0) = yi;
         }
         NEXT
     }
@@ -260,22 +264,22 @@ move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
 {
     INIT(NPY_DTYPE1)
     npy_DTYPE1 asum;
-    while (index < size) {
+    while (NOT_DONE) {
         asum = 0;
         i = 0;
         while (i < min_count - 1) {
-            asum += *(npy_DTYPE0*)(pa + i*stride);
-            *(npy_DTYPE1*)(py + i++ * ystride) = NAN;
+            asum += AI(npy_DTYPE0);
+            YI(npy_DTYPE1) = BN_NAN;
         }
         while (i < window) {
-            asum += *(npy_DTYPE0*)(pa + i*stride);
+            asum += AI(npy_DTYPE0);
             *(npy_DTYPE1*)(py + i * ystride) = (npy_DTYPE1)asum / (i + 1);
             i++;
         }
         while (i < length) {
-            asum += *(npy_DTYPE0*)(pa + i*stride);
+            asum += AI(npy_DTYPE0);
             asum -= *(npy_DTYPE0*)(pa + (i-window)*stride);
-            *(npy_DTYPE1*)(py + i++ * ystride) = (npy_DTYPE1)asum / window;
+            YI(npy_DTYPE1) = (npy_DTYPE1)asum / window;
         }
         NEXT
     }
@@ -307,23 +311,23 @@ move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
     npy_DTYPE0 delta, amean, assqdm, ai, aold, yi;
-    while (index < size) {
+    while (NOT_DONE) {
         amean = 0;
         assqdm = 0;
         count = 0;
         i = 0;
         while (i < min_count - 1) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             if (ai == ai) {
                 count += 1;
                 delta = ai - amean;
                 amean += delta / count;
                 assqdm += delta * (ai - amean);
             }
-            *(npy_DTYPE0*)(py + i++ * ystride) = NAN;
+            YI(npy_DTYPE0) = BN_NAN;
         }
         while (i <  window) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             if (ai == ai) {
                 count += 1;
                 delta = ai - amean;
@@ -337,12 +341,12 @@ move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 yi = sqrt(assqdm / (count - ddof));
             }
             else {
-                yi = NAN;
+                yi = BN_NAN;
             }
-            *(npy_DTYPE0*)(py + i++ * ystride) = yi;
+            YI(npy_DTYPE0) = yi;
         }
         while (i < length) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             aold = *(npy_DTYPE0*)(pa + (i-window)*stride);
             if (ai == ai) {
                 if (aold == aold) {
@@ -380,9 +384,9 @@ move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 yi = sqrt(assqdm / (count - ddof));
             }
             else {
-                yi = NAN;
+                yi = BN_NAN;
             }
-            *(npy_DTYPE0*)(py + i++ * ystride) = yi;
+            YI(npy_DTYPE0) = yi;
         }
         NEXT
     }
@@ -397,30 +401,29 @@ move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 int ndim, npy_intp* shape, int ddof)
 {
     INIT(NPY_DTYPE1)
-    int winddof;
+    int winddof = window - ddof;
     npy_DTYPE1 delta, amean, assqdm, yi, ai, aold;
-    winddof = window - ddof;
-    while (index < size) {
+    while (NOT_DONE) {
         amean = 0;
         assqdm = 0;
         i = 0;
         while (i < min_count - 1) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             delta = ai - amean;
             amean += delta / (i + 1);
             assqdm += delta * (ai - amean);
-            *(npy_DTYPE1*)(py + i++ * ystride) = NAN;
+            YI(npy_DTYPE1) = BN_NAN;
         }
         while (i <  window) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             delta = ai - amean;
             amean += delta / (i + 1);
             assqdm += delta * (ai - amean);
             yi = sqrt(assqdm / (i + 1 - ddof));
-            *(npy_DTYPE1*)(py + i++ * ystride) = yi;
+            YI(npy_DTYPE1) = yi;
         }
         while (i < length) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             aold = *(npy_DTYPE0*)(pa + (i-window)*stride);
             delta = ai - aold;
             aold -= amean;
@@ -431,7 +434,7 @@ move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 assqdm = 0;
             }
             yi = sqrt(assqdm / winddof);
-            *(npy_DTYPE1*)(py + i++ * ystride) = yi;
+            YI(npy_DTYPE1) = yi;
         }
         NEXT
     }
@@ -462,23 +465,23 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
     npy_DTYPE0 delta, amean, assqdm, ai, aold, yi;
-    while (index < size) {
+    while (NOT_DONE) {
         amean = 0;
         assqdm = 0;
         count = 0;
         i = 0;
         while (i < min_count - 1) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             if (ai == ai) {
                 count += 1;
                 delta = ai - amean;
                 amean += delta / count;
                 assqdm += delta * (ai - amean);
             }
-            *(npy_DTYPE0*)(py + i++ * ystride) = NAN;
+            YI(npy_DTYPE0) = BN_NAN;
         }
         while (i <  window) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             if (ai == ai) {
                 count += 1;
                 delta = ai - amean;
@@ -492,12 +495,12 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 yi = assqdm / (count - ddof);
             }
             else {
-                yi = NAN;
+                yi = BN_NAN;
             }
-            *(npy_DTYPE0*)(py + i++ * ystride) = yi;
+            YI(npy_DTYPE0) = yi;
         }
         while (i < length) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             aold = *(npy_DTYPE0*)(pa + (i-window)*stride);
             if (ai == ai) {
                 if (aold == aold) {
@@ -535,9 +538,9 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 yi = assqdm / (count - ddof);
             }
             else {
-                yi = NAN;
+                yi = BN_NAN;
             }
-            *(npy_DTYPE0*)(py + i++ * ystride) = yi;
+            YI(npy_DTYPE0) = yi;
         }
         NEXT
     }
@@ -552,30 +555,29 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 int ndim, npy_intp* shape, int ddof)
 {
     INIT(NPY_DTYPE1)
-    int winddof;
+    int winddof = window - ddof;
     npy_DTYPE1 delta, amean, assqdm, yi, ai, aold;
-    winddof = window - ddof;
-    while (index < size) {
+    while (NOT_DONE) {
         amean = 0;
         assqdm = 0;
         i = 0;
         while (i < min_count - 1) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             delta = ai - amean;
             amean += delta / (i + 1);
             assqdm += delta * (ai - amean);
-            *(npy_DTYPE1*)(py + i++ * ystride) = NAN;
+            YI(npy_DTYPE1) = BN_NAN;
         }
         while (i <  window) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             delta = ai - amean;
             amean += delta / (i + 1);
             assqdm += delta * (ai - amean);
             yi = assqdm / (i + 1 - ddof);
-            *(npy_DTYPE1*)(py + i++ * ystride) = yi;
+            YI(npy_DTYPE1) = yi;
         }
         while (i < length) {
-            ai = *(npy_DTYPE0*)(pa + i*stride);
+            ai = AI(npy_DTYPE0);
             aold = *(npy_DTYPE0*)(pa + (i-window)*stride);
             delta = ai - aold;
             aold -= amean;
@@ -586,7 +588,7 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 assqdm = 0;
             }
             yi = assqdm / winddof;
-            *(npy_DTYPE1*)(py + i++ * ystride) = yi;
+            YI(npy_DTYPE1) = yi;
         }
         NEXT
     }
