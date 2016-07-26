@@ -777,7 +777,6 @@ reducer(char *name,
     /* does user want to reduce over all axes? */
     if (axis_obj == Py_None) {
         reduce_all = 1;
-        axis = -1;
     }
     else {
         axis = PyArray_PyIntAsInt(axis_obj);
@@ -814,9 +813,9 @@ reducer(char *name,
             for (i=1; i < ndim; i++) {
                 if (strides[i] < stride) {
                     axis = i;
+                    stride = strides[i];
                 }
             }
-            stride = strides[axis];
             length = shape[axis];
         }
         else {
