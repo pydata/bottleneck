@@ -21,7 +21,8 @@
 
 #define NEXT \
     for (i=ndim - 1; i >= 0; i--) { \
-        if ((indices[i] < ashape[i] - 1) && (i != axis)) { \
+        if (i == axis) continue; \
+        if (indices[i] < ashape[i] - 1) { \
             pa += astrides[i]; \
             indices[i]++; \
             break; \

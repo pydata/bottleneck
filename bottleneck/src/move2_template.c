@@ -40,7 +40,8 @@
 
 #define NEXT \
     for (i=ndim - 1; i >= 0; i--) { \
-        if ((indices[i] < shape[i] - 1) && (i != axis)) { \
+        if (i == axis) continue; \
+        if (indices[i] < shape[i] - 1) { \
             pa += astrides[i]; \
             py += ystrides[i]; \
             indices[i]++; \
