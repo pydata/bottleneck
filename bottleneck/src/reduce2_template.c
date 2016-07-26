@@ -32,7 +32,7 @@
     } \
     index++;
 
-#define NOT_DONE index < size
+#define WHILE while (index < size)
 #define AI(dt) *(dt*)(pa + i * stride)
 #define FOR for (i = 0; i < length; i++)
 
@@ -69,7 +69,7 @@ nansum_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     INIT
     npy_DTYPE0 ai, asum = 0;
     BN_BEGIN_ALLOW_THREADS
-    while (NOT_DONE) {
+    WHILE {
         FOR {
             ai = AI(npy_DTYPE0);
             if (ai == ai) asum += ai;
@@ -98,7 +98,7 @@ nansum_one_DTYPE0(PyArrayObject *a,
         FOR *py++ = 0;
     }
     else {
-        while (NOT_DONE) {
+        WHILE {
             asum = 0;
             FOR {
                 ai = AI(npy_DTYPE0);
@@ -122,7 +122,7 @@ nansum_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     INIT
     npy_DTYPE0 asum = 0;
     BN_BEGIN_ALLOW_THREADS
-    while (NOT_DONE) {
+    WHILE {
         FOR asum += AI(npy_DTYPE0);
         NEXT
     }
@@ -148,7 +148,7 @@ nansum_one_DTYPE0(PyArrayObject *a,
         FOR *py++ = 0;
     }
     else {
-        while (NOT_DONE) {
+        WHILE {
             asum = 0;
             FOR asum += AI(npy_DTYPE0);
             *py++ = asum;
@@ -189,7 +189,7 @@ nanmean_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     Py_ssize_t count = 0;
     npy_DTYPE0 ai, asum = 0;
     BN_BEGIN_ALLOW_THREADS
-    while (NOT_DONE) {
+    WHILE {
         FOR {
             ai = AI(npy_DTYPE0);
             if (ai == ai) {
@@ -226,7 +226,7 @@ nanmean_one_DTYPE0(PyArrayObject *a,
         FOR *py++ = BN_NAN;
     }
     else {
-        while (NOT_DONE) {
+        WHILE {
             asum = 0;
             count = 0;
             FOR {
@@ -260,7 +260,7 @@ nanmean_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     Py_ssize_t total_length = 0;
     npy_DTYPE1 asum = 0;
     BN_BEGIN_ALLOW_THREADS
-    while (NOT_DONE) {
+    WHILE {
         FOR asum += AI(npy_DTYPE0);
         total_length += length;
         NEXT
@@ -291,7 +291,7 @@ nanmean_one_DTYPE0(PyArrayObject *a,
         FOR *py++ = BN_NAN;
     }
     else {
-        while (NOT_DONE) {
+        WHILE {
             asum = 0;
             FOR asum += AI(npy_DTYPE0);
             if (length > 0) {
@@ -342,7 +342,7 @@ nanmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    while (NOT_DONE) {
+    WHILE {
         FOR {
             ai = AI(npy_DTYPE0);
             if (ai <= amin) {
@@ -376,7 +376,7 @@ nanmin_one_DTYPE0(PyArrayObject *a,
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    while (NOT_DONE) {
+    WHILE {
         amin = BN_INFINITY;
         allnan = 1;
         FOR {
@@ -409,7 +409,7 @@ nanmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    while (NOT_DONE) {
+    WHILE {
         FOR {
             ai = AI(npy_DTYPE0);
             if (ai <= amin) amin = ai;
@@ -438,7 +438,7 @@ nanmin_one_DTYPE0(PyArrayObject *a,
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    while (NOT_DONE) {
+    WHILE {
         amin = NPY_MAX_DTYPE0;
         FOR {
             ai = AI(npy_DTYPE0);
@@ -486,7 +486,7 @@ nanmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    while (NOT_DONE) {
+    WHILE {
         FOR {
             ai = AI(npy_DTYPE0);
             if (ai >= amax) {
@@ -520,7 +520,7 @@ nanmax_one_DTYPE0(PyArrayObject *a,
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    while (NOT_DONE) {
+    WHILE {
         amax = -BN_INFINITY;
         allnan = 1;
         FOR {
@@ -553,7 +553,7 @@ nanmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    while (NOT_DONE) {
+    WHILE {
         FOR {
             ai = AI(npy_DTYPE0);
             if (ai >= amax) amax = ai;
@@ -582,7 +582,7 @@ nanmax_one_DTYPE0(PyArrayObject *a,
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    while (NOT_DONE) {
+    WHILE {
         amax = NPY_MIN_DTYPE0;
         FOR {
             ai = AI(npy_DTYPE0);
