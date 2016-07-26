@@ -72,9 +72,7 @@ nansum_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     while (NOT_DONE) {
         FOR {
             ai = AI(npy_DTYPE0);
-            if (ai == ai) {
-                asum += ai;
-            }
+            if (ai == ai) asum += ai;
         }
         NEXT
     }
@@ -104,9 +102,7 @@ nansum_one_DTYPE0(PyArrayObject *a,
             asum = 0;
             FOR {
                 ai = AI(npy_DTYPE0);
-                if (ai == ai) {
-                    asum += ai;
-                }
+                if (ai == ai) asum += ai;
             }
             *py++ = asum;
             NEXT
@@ -127,9 +123,7 @@ nansum_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     npy_DTYPE0 asum = 0;
     BN_BEGIN_ALLOW_THREADS
     while (NOT_DONE) {
-        FOR {
-            asum += AI(npy_DTYPE0);
-        }
+        FOR asum += AI(npy_DTYPE0);
         NEXT
     }
     BN_END_ALLOW_THREADS
@@ -156,9 +150,7 @@ nansum_one_DTYPE0(PyArrayObject *a,
     else {
         while (NOT_DONE) {
             asum = 0;
-            FOR {
-                asum += AI(npy_DTYPE0);
-            }
+            FOR asum += AI(npy_DTYPE0);
             *py++ = asum;
             NEXT
         }
@@ -269,9 +261,7 @@ nanmean_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     npy_DTYPE1 asum = 0;
     BN_BEGIN_ALLOW_THREADS
     while (NOT_DONE) {
-        FOR {
-            asum += AI(npy_DTYPE0);
-        }
+        FOR asum += AI(npy_DTYPE0);
         total_length += length;
         NEXT
     }
@@ -303,9 +293,7 @@ nanmean_one_DTYPE0(PyArrayObject *a,
     else {
         while (NOT_DONE) {
             asum = 0;
-            FOR {
-                asum += AI(npy_DTYPE0);
-            }
+            FOR asum += AI(npy_DTYPE0);
             if (length > 0) {
                 asum /= length;
             } else {
@@ -364,9 +352,7 @@ nanmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
         }
         NEXT
     }
-    if (allnan) {
-        amin = BN_NAN;
-    }
+    if (allnan) amin = BN_NAN;
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(amin);
 }
@@ -400,9 +386,7 @@ nanmin_one_DTYPE0(PyArrayObject *a,
                 allnan = 0;
             }
         }
-        if (allnan) {
-            amin = BN_NAN;
-        }
+        if (allnan) amin = BN_NAN;
         *py++ = amin;
         NEXT
     }
@@ -428,9 +412,7 @@ nanmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     while (NOT_DONE) {
         FOR {
             ai = AI(npy_DTYPE0);
-            if (ai <= amin) {
-                amin = ai;
-            }
+            if (ai <= amin) amin = ai;
         }
         NEXT
     }
@@ -460,9 +442,7 @@ nanmin_one_DTYPE0(PyArrayObject *a,
         amin = NPY_MAX_DTYPE0;
         FOR {
             ai = AI(npy_DTYPE0);
-            if (ai <= amin) {
-                amin = ai;
-            }
+            if (ai <= amin) amin = ai;
         }
         *py++ = amin;
         NEXT
@@ -516,9 +496,7 @@ nanmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
         }
         NEXT
     }
-    if (allnan) {
-        amax = BN_NAN;
-    }
+    if (allnan) amax = BN_NAN;
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(amax);
 }
@@ -552,9 +530,7 @@ nanmax_one_DTYPE0(PyArrayObject *a,
                 allnan = 0;
             }
         }
-        if (allnan) {
-            amax = BN_NAN;
-        }
+        if (allnan) amax = BN_NAN;
         *py++ = amax;
         NEXT
     }
@@ -580,9 +556,7 @@ nanmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     while (NOT_DONE) {
         FOR {
             ai = AI(npy_DTYPE0);
-            if (ai >= amax) {
-                amax = ai;
-            }
+            if (ai >= amax) amax = ai;
         }
         NEXT
     }
@@ -612,9 +586,7 @@ nanmax_one_DTYPE0(PyArrayObject *a,
         amax = NPY_MIN_DTYPE0;
         FOR {
             ai = AI(npy_DTYPE0);
-            if (ai >= amax) {
-                amax = ai;
-            }
+            if (ai >= amax) amax = ai;
         }
         *py++ = amax;
         NEXT
