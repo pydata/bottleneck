@@ -295,7 +295,7 @@ move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
 {
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
-    npy_DTYPE0 delta, amean, assqdm, ai, aold, yi;
+    npy_DTYPE0 delta, amean, assqdm, ai, aold, yi, count_inv, ddof_inv;
     WHILE {
         amean = assqdm = count = i = 0;
         WHILE0 {
@@ -327,6 +327,8 @@ move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
             }
             YI(npy_DTYPE0) = yi;
         }
+        count_inv = 1.0 / count;
+        ddof_inv = 1.0 / (count - ddof);
         WHILE2 {
             ai = AI(npy_DTYPE0);
             aold = AOLD(npy_DTYPE0);
@@ -334,23 +336,27 @@ move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 if (aold == aold) {
                     delta = ai - aold;
                     aold -= amean;
-                    amean += delta / count;
+                    amean += delta * count_inv;
                     ai -= amean;
                     assqdm += (ai + aold) * delta;
                 }
                 else {
-                    count += 1;
+                    count++;
+                    count_inv = 1.0 / count;
+                    ddof_inv = 1.0 / (count - ddof);
                     delta = ai - amean;
-                    amean += delta / count;
+                    amean += delta * count_inv;
                     assqdm += delta * (ai - amean);
                 }
             }
             else {
                 if (aold == aold) {
-                    count -= 1;
+                    count--;
+                    count_inv = 1.0 / count;
+                    ddof_inv = 1.0 / (count - ddof);
                     if (count > 0) {
                         delta = aold - amean;
-                        amean -= delta / count;
+                        amean -= delta * count_inv;
                         assqdm -= delta * (aold - amean);
                     }
                     else {
@@ -363,7 +369,7 @@ move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 if (assqdm < 0) {
                     assqdm = 0;
                 }
-                yi = sqrt(assqdm / (count - ddof));
+                yi = sqrt(assqdm * ddof_inv);
             }
             else {
                 yi = BN_NAN;
@@ -444,7 +450,7 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
 {
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
-    npy_DTYPE0 delta, amean, assqdm, ai, aold, yi;
+    npy_DTYPE0 delta, amean, assqdm, ai, aold, yi, count_inv, ddof_inv;
     WHILE {
         amean = assqdm = count = i = 0;
         WHILE0 {
@@ -457,7 +463,7 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
             }
             YI(npy_DTYPE0) = BN_NAN;
         }
-        while (i <  window) {
+        WHILE1 {
             ai = AI(npy_DTYPE0);
             if (ai == ai) {
                 count += 1;
@@ -476,6 +482,8 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
             }
             YI(npy_DTYPE0) = yi;
         }
+        count_inv = 1.0 / count;
+        ddof_inv = 1.0 / (count - ddof);
         WHILE2 {
             ai = AI(npy_DTYPE0);
             aold = *(npy_DTYPE0*)(pa + (i-window)*stride);
@@ -488,18 +496,22 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
                     assqdm += (ai + aold) * delta;
                 }
                 else {
-                    count += 1;
+                    count++;
+                    count_inv = 1.0 / count;
+                    ddof_inv = 1.0 / (count - ddof);
                     delta = ai - amean;
-                    amean += delta / count;
+                    amean += delta * count_inv;
                     assqdm += delta * (ai - amean);
                 }
             }
             else {
                 if (aold == aold) {
-                    count -= 1;
+                    count--;
+                    count_inv = 1.0 / count;
+                    ddof_inv = 1.0 / (count - ddof);
                     if (count > 0) {
                         delta = aold - amean;
-                        amean -= delta / count;
+                        amean -= delta * count_inv;
                         assqdm -= delta * (aold - amean);
                     }
                     else {
@@ -512,7 +524,7 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 if (assqdm < 0) {
                     assqdm = 0;
                 }
-                yi = assqdm / (count - ddof);
+                yi = assqdm * ddof_inv;
             }
             else {
                 yi = BN_NAN;
