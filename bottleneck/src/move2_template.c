@@ -124,14 +124,21 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
         }
         WHILE2 {
             ai = AI(npy_DTYPE0);
-            if (ai == ai) {
-                asum += ai;
-                count += 1;
-            }
             aold = AOLD(npy_DTYPE0);
-            if (aold == aold) {
-                asum -= aold;
-                count -= 1;
+            if (ai == ai) {
+                if (aold == aold) {
+                    asum += ai - aold;
+                }
+                else {
+                    asum += ai;
+                    count++;
+                }
+            }
+            else {
+                if (aold == aold) {
+                    asum -= aold;
+                    count--;
+                }
             }
             YI(npy_DTYPE0) = count >= min_count ? asum : BN_NAN;
         }
@@ -161,8 +168,7 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
             YI(npy_DTYPE1) = asum;
         }
         WHILE2 {
-            asum += AI(npy_DTYPE0);
-            asum -= AOLD(npy_DTYPE0);
+            asum += AI(npy_DTYPE0) - AOLD(npy_DTYPE0);
             YI(npy_DTYPE1) = asum;
         }
         NEXT
@@ -262,8 +268,7 @@ move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
             i++;
         }
         WHILE2 {
-            asum += AI(npy_DTYPE0);
-            asum -= AOLD(npy_DTYPE0);
+            asum += AI(npy_DTYPE0) - AOLD(npy_DTYPE0);
             YI(npy_DTYPE1) = (npy_DTYPE1)asum * window_inv;
         }
         NEXT
@@ -566,7 +571,7 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
         }
         WHILE2 {
             ai = AI(npy_DTYPE0);
-            aold = *(npy_DTYPE0*)(pa + (i-window)*stride);
+            aold = AOLD(npy_DTYPE0);
             delta = ai - aold;
             aold -= amean;
             amean += delta * window_inv;
