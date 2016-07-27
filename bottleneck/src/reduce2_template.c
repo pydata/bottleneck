@@ -92,7 +92,7 @@ nansum_one_DTYPE0(PyArrayObject *a,
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
     BN_BEGIN_ALLOW_THREADS
-    npy_DTYPE0 ai, asum = 0;
+    npy_DTYPE0 ai, asum;
     if (length == 0) {
         Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
         FOR *py++ = 0;
@@ -142,7 +142,7 @@ nansum_one_DTYPE0(PyArrayObject *a,
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
     BN_BEGIN_ALLOW_THREADS
-    npy_DTYPE0 asum = 0;
+    npy_DTYPE0 asum;
     if (length == 0) {
         Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
         FOR *py++ = 0;
@@ -227,8 +227,7 @@ nanmean_one_DTYPE0(PyArrayObject *a,
     }
     else {
         WHILE {
-            asum = 0;
-            count = 0;
+            asum = count = 0;
             FOR {
                 ai = AI(npy_DTYPE0);
                 if (ai == ai) {
@@ -285,7 +284,7 @@ nanmean_one_DTYPE0(PyArrayObject *a,
     Y_INIT(NPY_DTYPE1, npy_DTYPE1)
     INIT
     BN_BEGIN_ALLOW_THREADS
-    npy_DTYPE1 asum = 0;
+    npy_DTYPE1 asum;
     if (length == 0) {
         Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
         FOR *py++ = BN_NAN;
@@ -368,7 +367,7 @@ nanmin_one_DTYPE0(PyArrayObject *a,
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
-    npy_DTYPE0 ai, amin = 0;
+    npy_DTYPE0 ai, amin;
     int allnan;
     if (length == 0) {
         VALUE_ERR("numpy.nanmin raises on a.shape[axis]==0; "
