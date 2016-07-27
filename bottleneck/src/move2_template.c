@@ -194,7 +194,7 @@ move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
 {
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
-    npy_DTYPE0 asum, ai, aold;
+    npy_DTYPE0 asum, ai, aold, count_inv;
     WHILE {
         asum = count = i = 0;
         WHILE0 {
@@ -213,18 +213,27 @@ move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
             }
             YI(npy_DTYPE0) = count >= min_count ? asum / count : BN_NAN;
         }
+        count_inv = 1.0 / count;
         WHILE2 {
             ai = AI(npy_DTYPE0);
-            if (ai == ai) {
-                asum += ai;
-                count += 1;
-            }
             aold = AOLD(npy_DTYPE0);
-            if (aold == aold) {
-                asum -= aold;
-                count -= 1;
+            if (ai == ai) {
+                if (aold == aold) {
+                    asum += ai - aold;
+                } else {
+                    asum += ai;
+                    count++;
+                    count_inv = 1.0 / count;
+                }
             }
-            YI(npy_DTYPE0) = count >= min_count ? asum / count : BN_NAN;
+            else {
+                if (aold == aold) {
+                    asum -= aold;
+                    count--;
+                    count_inv = 1.0 / count;
+                }
+            }
+            YI(npy_DTYPE0) = count >= min_count ? asum * count_inv : BN_NAN;
         }
         NEXT
     }
