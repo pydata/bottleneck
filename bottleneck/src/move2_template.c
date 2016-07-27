@@ -1,6 +1,7 @@
 #include "bottleneck.h"
 
-/*
+/* iterator --------------------------------------------------------------
+ *
  * The moving window functions can handle input arrays of arbitrary dimension
  * (ndim > 0). To accomplish that Bottleneck borrows ideas from NumPy.
  *
@@ -22,7 +23,6 @@
  * http://docs.scipy.org/doc/numpy/reference/internals.code-explanations.html
  */
 
-/* all moving window functions use the following three macros */
 #define INIT(dt) \
     PyObject *y = PyArray_EMPTY(ndim, shape, dt, 0); \
     BN_BEGIN_ALLOW_THREADS \
@@ -39,7 +39,7 @@
     if (length != 0) size /= length;
 
 #define NEXT \
-    for (i=ndim - 1; i >= 0; i--) { \
+    for (i = ndim - 1; i >= 0; i--) { \
         if (i == axis) continue; \
         if (indices[i] < shape[i] - 1) { \
             pa += astrides[i]; \
@@ -57,14 +57,14 @@
     BN_END_ALLOW_THREADS \
     return y;
 
-#define WHILE while (index < size)
-#define WHILE0 while (i < min_count - 1)
-#define WHILE1 while (i < window)
-#define WHILE2 while (i < length)
+#define  WHILE   while (index < size)
+#define  WHILE0  while (i < min_count - 1)
+#define  WHILE1  while (i < window)
+#define  WHILE2  while (i < length)
 
-#define AI(dt) *(dt*)(pa + i * stride)
-#define AOLD(dt) *(dt*)(pa + (i-window)*stride)
-#define YI(dt) *(dt*)(py + i++ * ystride)
+#define  AI(dt)    *(dt *)(pa + i * stride)
+#define  AOLD(dt)  *(dt *)(pa + (i - window) * stride)
+#define  YI(dt)    *(dt *)(py + i++ * ystride)
 
 /* function pointers ----------------------------------------------------- */
 

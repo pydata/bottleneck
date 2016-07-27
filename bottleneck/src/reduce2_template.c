@@ -1,12 +1,11 @@
 #include "bottleneck.h"
 
-/*
- * The iterator below is similar to the iterator in move.c. See that
- * file for a brief description.
+
+/* iterator --------------------------------------------------------------
+ *
+ * The iterator below (INIT and NEXT) is similar to the iterator in move.c.
+ * See that file for a brief description.
  */
-#define Y_INIT(dt0, dt1) \
-    PyObject *y = PyArray_EMPTY(ndim - 1, yshape, dt0, 0); \
-    dt1 *py = (dt1 *)PyArray_DATA((PyArrayObject *)y); \
 
 #define INIT \
     Py_ssize_t i; \
@@ -20,7 +19,7 @@
     if (length != 0) size /= length;
 
 #define NEXT \
-    for (i=ndim - 1; i >= 0; i--) { \
+    for (i = ndim - 1; i >= 0; i--) { \
         if (i == axis) continue; \
         if (indices[i] < ashape[i] - 1) { \
             pa += astrides[i]; \
@@ -32,9 +31,14 @@
     } \
     index++;
 
-#define WHILE while (index < size)
-#define AI(dt) *(dt*)(pa + i * stride)
-#define FOR for (i = 0; i < length; i++)
+#define Y_INIT(dt0, dt1) \
+    PyObject *y = PyArray_EMPTY(ndim - 1, yshape, dt0, 0); \
+    dt1 *py = (dt1 *)PyArray_DATA((PyArrayObject *)y);
+
+#define  WHILE    while (index < size)
+#define  FOR      for (i = 0; i < length; i++)
+#define  AI(dt)   *(dt*)(pa + i * stride)
+#define  YI       *py++
 
 /* function pointers ----------------------------------------------------- */
 
@@ -95,7 +99,7 @@ nansum_one_DTYPE0(PyArrayObject *a,
     npy_DTYPE0 ai, asum;
     if (length == 0) {
         Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
-        FOR *py++ = 0;
+        FOR YI = 0;
     }
     else {
         WHILE {
@@ -104,7 +108,7 @@ nansum_one_DTYPE0(PyArrayObject *a,
                 ai = AI(npy_DTYPE0);
                 if (ai == ai) asum += ai;
             }
-            *py++ = asum;
+            YI = asum;
             NEXT
         }
     }
@@ -145,13 +149,13 @@ nansum_one_DTYPE0(PyArrayObject *a,
     npy_DTYPE0 asum;
     if (length == 0) {
         Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
-        FOR *py++ = 0;
+        FOR YI = 0;
     }
     else {
         WHILE {
             asum = 0;
             FOR asum += AI(npy_DTYPE0);
-            *py++ = asum;
+            YI = asum;
             NEXT
         }
     }
@@ -223,7 +227,7 @@ nanmean_one_DTYPE0(PyArrayObject *a,
     npy_DTYPE0 ai, asum;
     if (length == 0) {
         Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
-        FOR *py++ = BN_NAN;
+        FOR YI = BN_NAN;
     }
     else {
         WHILE {
@@ -240,7 +244,7 @@ nanmean_one_DTYPE0(PyArrayObject *a,
             } else {
                 asum = BN_NAN;
             }
-            *py++ = asum;
+            YI = asum;
             NEXT
         }
     }
@@ -287,7 +291,7 @@ nanmean_one_DTYPE0(PyArrayObject *a,
     npy_DTYPE1 asum;
     if (length == 0) {
         Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
-        FOR *py++ = BN_NAN;
+        FOR YI = BN_NAN;
     }
     else {
         WHILE {
@@ -298,7 +302,7 @@ nanmean_one_DTYPE0(PyArrayObject *a,
             } else {
                 asum = BN_NAN;
             }
-            *py++ = asum;
+            YI = asum;
             NEXT
         }
     }
@@ -386,7 +390,7 @@ nanmin_one_DTYPE0(PyArrayObject *a,
             }
         }
         if (allnan) amin = BN_NAN;
-        *py++ = amin;
+        YI = amin;
         NEXT
     }
     BN_END_ALLOW_THREADS
@@ -443,7 +447,7 @@ nanmin_one_DTYPE0(PyArrayObject *a,
             ai = AI(npy_DTYPE0);
             if (ai <= amin) amin = ai;
         }
-        *py++ = amin;
+        YI = amin;
         NEXT
     }
     BN_END_ALLOW_THREADS
@@ -530,7 +534,7 @@ nanmax_one_DTYPE0(PyArrayObject *a,
             }
         }
         if (allnan) amax = BN_NAN;
-        *py++ = amax;
+        YI = amax;
         NEXT
     }
     BN_END_ALLOW_THREADS
@@ -587,7 +591,7 @@ nanmax_one_DTYPE0(PyArrayObject *a,
             ai = AI(npy_DTYPE0);
             if (ai >= amax) amax = ai;
         }
-        *py++ = amax;
+        YI = amax;
         NEXT
     }
     BN_END_ALLOW_THREADS
