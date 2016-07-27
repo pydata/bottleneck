@@ -240,7 +240,7 @@ move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 int ndim, npy_intp* shape)
 {
     INIT(NPY_DTYPE1)
-    npy_DTYPE1 asum;
+    npy_DTYPE1 asum, window_inv = 1.0 / window;
     WHILE {
         asum = i = 0;
         WHILE0 {
@@ -255,7 +255,7 @@ move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
         WHILE2 {
             asum += AI(npy_DTYPE0);
             asum -= AOLD(npy_DTYPE0);
-            YI(npy_DTYPE1) = (npy_DTYPE1)asum / window;
+            YI(npy_DTYPE1) = (npy_DTYPE1)asum * window_inv;
         }
         NEXT
     }
@@ -376,6 +376,7 @@ move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
     INIT(NPY_DTYPE1)
     int winddof = window - ddof;
     npy_DTYPE1 delta, amean, assqdm, yi, ai, aold;
+    npy_DTYPE1 window_inv = 1.0 / window, winddof_inv = 1.0 / winddof;
     WHILE {
         amean = assqdm = i = 0;
         WHILE0 {
@@ -398,13 +399,13 @@ move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
             aold = AOLD(npy_DTYPE0);
             delta = ai - aold;
             aold -= amean;
-            amean += delta / window;
+            amean += delta * window_inv;
             ai -= amean;
             assqdm += (ai + aold) * delta;
             if (assqdm < 0) {
                 assqdm = 0;
             }
-            YI(npy_DTYPE1) = sqrt(assqdm / winddof);
+            YI(npy_DTYPE1) = sqrt(assqdm * winddof_inv);
         }
         NEXT
     }
@@ -524,6 +525,7 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
     INIT(NPY_DTYPE1)
     int winddof = window - ddof;
     npy_DTYPE1 delta, amean, assqdm, yi, ai, aold;
+    npy_DTYPE1 window_inv = 1.0 / window, winddof_inv = 1.0 / winddof;
     WHILE {
         amean = assqdm = i = 0;
         WHILE0 {
@@ -546,13 +548,13 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
             aold = *(npy_DTYPE0*)(pa + (i-window)*stride);
             delta = ai - aold;
             aold -= amean;
-            amean += delta / window;
+            amean += delta * window_inv;
             ai -= amean;
             assqdm += (ai + aold) * delta;
             if (assqdm < 0) {
                 assqdm = 0;
             }
-            YI(npy_DTYPE1) = assqdm / winddof;
+            YI(npy_DTYPE1) = assqdm * winddof_inv;
         }
         NEXT
     }
