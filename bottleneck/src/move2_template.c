@@ -68,10 +68,8 @@
 
 /* function pointers ----------------------------------------------------- */
 
-typedef PyObject *(*move_t)(PyObject *, int, int, int, Py_ssize_t,
-                            Py_ssize_t, int, npy_intp*);
-typedef PyObject *(*move_ddof_t)(PyObject *, int, int, int,
-                                 Py_ssize_t, Py_ssize_t, int, npy_intp*, int);
+typedef PyObject *(*move_t)(PyObject *, int, int, int, Py_ssize_t, Py_ssize_t,
+                            int, npy_intp*, int);
 
 /* prototypes ------------------------------------------------------------ */
 
@@ -82,16 +80,8 @@ mover(char *name,
       move_t,
       move_t,
       move_t,
-      move_t);
-
-static PyObject *
-mover_ddof(char *name,
-           PyObject *args,
-           PyObject *kwds,
-           move_ddof_t,
-           move_ddof_t,
-           move_ddof_t,
-           move_ddof_t);
+      move_t,
+      int has_ddof);
 
 /* move_sum -------------------------------------------------------------- */
 
@@ -99,7 +89,7 @@ mover_ddof(char *name,
 static PyObject *
 move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 Py_ssize_t stride, Py_ssize_t length,
-                int ndim, npy_intp* shape)
+                int ndim, npy_intp* shape, int ignore)
 {
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
@@ -153,7 +143,7 @@ move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
 static PyObject *
 move_sum_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 Py_ssize_t stride, Py_ssize_t length,
-                int ndim, npy_intp* shape)
+                int ndim, npy_intp* shape, int ignore)
 {
     INIT(NPY_DTYPE1)
     npy_DTYPE1 asum;
@@ -187,7 +177,8 @@ move_sum(PyObject *self, PyObject *args, PyObject *kwds)
                  move_sum_float64,
                  move_sum_float32,
                  move_sum_int64,
-                 move_sum_int32);
+                 move_sum_int32,
+                 0);
 }
 
 /* move_mean -------------------------------------------------------------- */
@@ -196,7 +187,7 @@ move_sum(PyObject *self, PyObject *args, PyObject *kwds)
 static PyObject *
 move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 Py_ssize_t stride, Py_ssize_t length,
-                int ndim, npy_intp* shape)
+                int ndim, npy_intp* shape, int ignore)
 {
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
@@ -252,7 +243,7 @@ move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
 static PyObject *
 move_mean_DTYPE0(PyObject *a, int window, int min_count, int axis,
                 Py_ssize_t stride, Py_ssize_t length,
-                int ndim, npy_intp* shape)
+                int ndim, npy_intp* shape, int ignore)
 {
     INIT(NPY_DTYPE1)
     npy_DTYPE1 asum, window_inv = 1.0 / window;
@@ -287,7 +278,8 @@ move_mean(PyObject *self, PyObject *args, PyObject *kwds)
                  move_mean_float64,
                  move_mean_float32,
                  move_mean_int64,
-                 move_mean_int32);
+                 move_mean_int32,
+                 0);
 }
 
 /* move_std -------------------------------------------------------------- */
@@ -436,13 +428,14 @@ move_std_DTYPE0(PyObject *a, int window, int min_count, int axis,
 static PyObject *
 move_std(PyObject *self, PyObject *args, PyObject *kwds)
 {
-    return mover_ddof("move_std",
-                      args,
-                      kwds,
-                      move_std_float64,
-                      move_std_float32,
-                      move_std_int64,
-                      move_std_int32);
+    return mover("move_std",
+                 args,
+                 kwds,
+                 move_std_float64,
+                 move_std_float32,
+                 move_std_int64,
+                 move_std_int32,
+                 1);
 }
 
 /* move_var -------------------------------------------------------------- */
@@ -591,13 +584,14 @@ move_var_DTYPE0(PyObject *a, int window, int min_count, int axis,
 static PyObject *
 move_var(PyObject *self, PyObject *args, PyObject *kwds)
 {
-    return mover_ddof("move_var",
-                      args,
-                      kwds,
-                      move_var_float64,
-                      move_var_float32,
-                      move_var_int64,
-                      move_var_int32);
+    return mover("move_var",
+                 args,
+                 kwds,
+                 move_var_float64,
+                 move_var_float32,
+                 move_var_int64,
+                 move_var_int32,
+                 1);
 }
 
 /* python strings -------------------------------------------------------- */
@@ -624,10 +618,12 @@ intern_strings(void) {
 static BN_INLINE int
 parse_args(PyObject *args,
            PyObject *kwds,
+           int has_ddof,
            PyObject **arr,
            PyObject **window,
            PyObject **min_count,
-           PyObject **axis)
+           PyObject **axis,
+           PyObject **ddof)
 {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     if (kwds) {
@@ -635,6 +631,13 @@ parse_args(PyObject *args,
         const Py_ssize_t nkwds = PyDict_Size(kwds);
         PyObject *tmp;
         switch (nargs) {
+            case 4:
+                if (has_ddof) {
+                    *ddof = PyTuple_GET_ITEM(args, 3);
+                } else {
+                    TYPE_ERR("wrong number of arguments");
+                    return 0;
+                }
             case 3: *min_count = PyTuple_GET_ITEM(args, 2);
             case 2: *window = PyTuple_GET_ITEM(args, 1);
             case 1: *arr = PyTuple_GET_ITEM(args, 0);
@@ -670,6 +673,15 @@ parse_args(PyObject *args,
                     *axis = tmp;
                     nkwds_found++;
                 }
+            case 4:
+                if (has_ddof) {
+                    tmp = PyDict_GetItem(kwds, pystr_ddof);
+                    if (tmp != NULL) {
+                        *ddof = tmp;
+                        nkwds_found++;
+                    }
+                    break;
+                }
                 break;
             default:
                 TYPE_ERR("wrong number of arguments");
@@ -679,13 +691,20 @@ parse_args(PyObject *args,
             TYPE_ERR("wrong number of keyword arguments");
             return 0;
         }
-        if (nargs + nkwds_found > 4) {
+        if (nargs + nkwds_found > 4 + has_ddof) {
             TYPE_ERR("too many arguments");
             return 0;
         }
     }
     else {
         switch (nargs) {
+            case 5:
+                if (has_ddof) {
+                    *ddof = PyTuple_GET_ITEM(args, 4);
+                } else {
+                    TYPE_ERR("wrong number of arguments");
+                    return 0;
+                }
             case 4:
                 *axis = PyTuple_GET_ITEM(args, 3);
             case 3:
@@ -712,249 +731,8 @@ mover(char *name,
       move_t move_float64,
       move_t move_float32,
       move_t move_int64,
-      move_t move_int32)
-{
-
-    int mc;
-    int window;
-    int axis;
-    int dtype;
-    int ndim;
-
-    Py_ssize_t stride;
-    Py_ssize_t length;
-
-    PyArrayObject *a;
-
-    PyObject *y;
-    npy_intp *shape;
-
-    PyObject *arr_obj = NULL;
-    PyObject *window_obj = NULL;
-    PyObject *min_count_obj = Py_None;
-    PyObject *axis_obj = NULL;
-
-    if (!parse_args(args, kwds,
-                    &arr_obj, &window_obj, &min_count_obj, &axis_obj)) {
-        return NULL;
-    }
-
-    /* convert to array if necessary */
-    if PyArray_Check(arr_obj) {
-        a = (PyArrayObject *)arr_obj;
-    }
-    else {
-        a = (PyArrayObject *)PyArray_FROM_O(arr_obj);
-        if (a == NULL) {
-            return NULL;
-        }
-    }
-
-    /* check for byte swapped input array */
-    if PyArray_ISBYTESWAPPED(a) {
-        return slow(name, args, kwds);
-    }
-
-    /* window */
-    window = PyArray_PyIntAsInt(window_obj);
-    if (error_converting(window)) {
-        TYPE_ERR("`window` must be an integer");
-        return NULL;
-    }
-
-    /* min_count */
-    if (min_count_obj == Py_None) {
-        mc = window;
-    }
-    else {
-        mc = PyArray_PyIntAsInt(min_count_obj);
-        if (error_converting(mc)) {
-            TYPE_ERR("`min_count` must be an integer or None");
-            return NULL;
-        }
-        if (mc > window) {
-            PyErr_Format(PyExc_ValueError,
-                         "min_count (%d) cannot be greater than window (%d)",
-                         mc, window);
-            return NULL;
-        }
-        else if (mc <= 0) {
-            VALUE_ERR("`min_count` must be greater than zero.");
-            return NULL;
-        }
-    }
-
-    /* input array */
-    dtype = PyArray_TYPE(a);
-    ndim = PyArray_NDIM(a);
-
-    /* defend against 0d beings */
-    if (ndim == 0) {
-        VALUE_ERR("moving window functions require ndim > 0");
-        return NULL;
-    }
-
-    /* defend against the axis of negativity */
-    if (axis_obj == NULL) {
-        axis = ndim - 1;
-    }
-    else {
-        axis = PyArray_PyIntAsInt(axis_obj);
-        if (error_converting(axis)) {
-            TYPE_ERR("`axis` must be an integer");
-            return NULL;
-        }
-        if (axis < 0) {
-            axis += ndim;
-            if (axis < 0) {
-                PyErr_Format(PyExc_ValueError, "axis(=%d) out of bounds", axis);
-                return NULL;
-            }
-        }
-        else if (axis >= ndim) {
-            PyErr_Format(PyExc_ValueError, "axis(=%d) out of bounds", axis);
-            return NULL;
-        }
-    }
-
-    stride = PyArray_STRIDE(a, axis);
-    shape = PyArray_SHAPE(a);
-    length = shape[axis];
-
-    if ((window < 1) || (window > length)) {
-        PyErr_Format(PyExc_ValueError,
-                     "Moving window (=%d) must between 1 and %zu, inclusive",
-                     window, length);
-        return NULL;
-    }
-
-    if (dtype == NPY_float64) {
-        y = move_float64((PyObject *)a, window, mc, axis, stride, length,
-                         ndim, shape);
-    }
-    else if (dtype == NPY_float32) {
-        y = move_float32((PyObject *)a, window, mc, axis, stride, length,
-                         ndim, shape);
-    }
-    else if (dtype == NPY_int64) {
-        y = move_int64((PyObject *)a, window, mc, axis, stride, length,
-                       ndim, shape);
-    }
-    else if (dtype == NPY_int32) {
-        y = move_int32((PyObject *)a, window, mc, axis, stride, length,
-                       ndim, shape);
-    }
-    else {
-        y = slow(name, args, kwds);
-    }
-
-    return y;
-}
-
-/* mover_ddof ------------------------------------------------------------ */
-
-static BN_INLINE int
-parse_args_ddof(PyObject *args,
-                PyObject *kwds,
-                PyObject **arr,
-                PyObject **window,
-                PyObject **min_count,
-                PyObject **axis,
-                PyObject **ddof)
-{
-    const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
-    if (kwds) {
-        int nkwds_found = 0;
-        const Py_ssize_t nkwds = PyDict_Size(kwds);
-        PyObject *tmp;
-        switch (nargs) {
-            case 4: *ddof = PyTuple_GET_ITEM(args, 3);
-            case 3: *min_count = PyTuple_GET_ITEM(args, 2);
-            case 2: *window = PyTuple_GET_ITEM(args, 1);
-            case 1: *arr = PyTuple_GET_ITEM(args, 0);
-            case 0: break;
-            default:
-                TYPE_ERR("wrong number of arguments");
-                return 0;
-        }
-        switch (nargs) {
-            case 0:
-                *arr = PyDict_GetItem(kwds, pystr_arr);
-                if (*arr == NULL) {
-                    TYPE_ERR("Cannot find `arr` keyword input");
-                    return 0;
-                }
-                nkwds_found += 1;
-            case 1:
-                *window = PyDict_GetItem(kwds, pystr_window);
-                if (*window == NULL) {
-                    TYPE_ERR("Cannot find `window` keyword input");
-                    return 0;
-                }
-                nkwds_found++;
-            case 2:
-                tmp = PyDict_GetItem(kwds, pystr_min_count);
-                if (tmp != NULL) {
-                    *min_count = tmp;
-                    nkwds_found++;
-                }
-            case 3:
-                tmp = PyDict_GetItem(kwds, pystr_axis);
-                if (tmp != NULL) {
-                    *axis = tmp;
-                    nkwds_found++;
-                }
-            case 4:
-                tmp = PyDict_GetItem(kwds, pystr_ddof);
-                if (tmp != NULL) {
-                    *ddof = tmp;
-                    nkwds_found++;
-                }
-                break;
-            default:
-                TYPE_ERR("wrong number of arguments");
-                return 0;
-        }
-        if (nkwds_found != nkwds) {
-            TYPE_ERR("wrong number of keyword arguments");
-            return 0;
-        }
-        if (nargs + nkwds_found > 5) {
-            TYPE_ERR("too many arguments");
-            return 0;
-        }
-    }
-    else {
-        switch (nargs) {
-            case 5:
-                *ddof = PyTuple_GET_ITEM(args, 4);
-            case 4:
-                *axis = PyTuple_GET_ITEM(args, 3);
-            case 3:
-                *min_count = PyTuple_GET_ITEM(args, 2);
-            case 2:
-                *window = PyTuple_GET_ITEM(args, 1);
-                *arr = PyTuple_GET_ITEM(args, 0);
-                break;
-            default:
-                TYPE_ERR("wrong number of arguments");
-                return 0;
-        }
-    }
-
-    return 1;
-
-}
-
-
-static PyObject *
-mover_ddof(char *name,
-           PyObject *args,
-           PyObject *kwds,
-           move_ddof_t move_float64,
-           move_ddof_t move_float32,
-           move_ddof_t move_int64,
-           move_ddof_t move_int32)
+      move_t move_int32,
+      int has_ddof)
 {
 
     int mc;
@@ -978,8 +756,8 @@ mover_ddof(char *name,
     PyObject *axis_obj = NULL;
     PyObject *ddof_obj = NULL;
 
-    if (!parse_args_ddof(args, kwds, &arr_obj, &window_obj, &min_count_obj,
-                         &axis_obj, &ddof_obj)) {
+    if (!parse_args(args, kwds, has_ddof, &arr_obj, &window_obj,
+                    &min_count_obj, &axis_obj, &ddof_obj)) {
         return NULL;
     }
 
