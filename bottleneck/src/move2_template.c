@@ -633,7 +633,7 @@ parse_args(PyObject *args,
         switch (nargs) {
             case 4:
                 if (has_ddof) {
-                    *ddof = PyTuple_GET_ITEM(args, 3);
+                    *axis = PyTuple_GET_ITEM(args, 3);
                 } else {
                     TYPE_ERR("wrong number of arguments");
                     return 0;

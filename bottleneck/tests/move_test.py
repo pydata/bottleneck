@@ -189,6 +189,13 @@ def unit_maker_argparse(func, decimal=5):
     err_msg = fmt % "(arr, axis=-1, min_count=None, window=2)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
+    if name in ('move_std', 'move_var'):
+        # regression test
+        actual = func(arr, 2, 1, -1, ddof=1)
+        desired = func0(arr, 2, 1, -1, ddof=1)
+        err_msg = fmt % "(arr, 2, 1, -1, ddof=1)"
+        assert_array_almost_equal(actual, desired, decimal, err_msg)
+
 
 def test_arg_parse_raises():
     "test argument parsing raises in move"
