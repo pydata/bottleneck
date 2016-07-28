@@ -42,9 +42,10 @@
 
 /* function pointers ----------------------------------------------------- */
 
-typedef PyObject *(*fall_t)(PyArrayObject *, int, Py_ssize_t, Py_ssize_t, int);
+typedef PyObject *(*fall_t)(PyArrayObject *, int, Py_ssize_t, Py_ssize_t, int,
+                            int);
 typedef PyObject *(*fone_t)(PyArrayObject *, int, Py_ssize_t, Py_ssize_t, int,
-                            npy_intp*);
+                            npy_intp*, int);
 
 /* prototypes ------------------------------------------------------------ */
 
@@ -61,14 +62,15 @@ reducer(char *name,
         fone_t fone_int64,
         fone_t fone_int32,
         int ravel,
-        int copy);
+        int copy,
+        int has_ddof);
 
 /* nansum ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
 static PyObject *
 nansum_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim)
+                  Py_ssize_t length, int ndim, int ignore)
 {
     INIT
     npy_DTYPE0 ai, asum = 0;
@@ -91,7 +93,8 @@ nansum_one_DTYPE0(PyArrayObject *a,
                   Py_ssize_t stride,
                   Py_ssize_t length,
                   int ndim,
-                  npy_intp* yshape)
+                  npy_intp* yshape,
+                  int ignore)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -121,7 +124,7 @@ nansum_one_DTYPE0(PyArrayObject *a,
 /* dtype = [['int64'], ['int32']] */
 static PyObject *
 nansum_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim)
+                  Py_ssize_t length, int ndim, int ignore)
 {
     INIT
     npy_DTYPE0 asum = 0;
@@ -141,7 +144,8 @@ nansum_one_DTYPE0(PyArrayObject *a,
                   Py_ssize_t stride,
                   Py_ssize_t length,
                   int ndim,
-                  npy_intp* yshape)
+                  npy_intp* yshape,
+                  int ignore)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -179,7 +183,7 @@ nansum(PyObject *self, PyObject *args, PyObject *kwds)
                    nansum_one_float32,
                    nansum_one_int64,
                    nansum_one_int32,
-                   0, 0);
+                   0, 0, 0);
 }
 
 /* nanmean ---------------------------------------------------------------- */
@@ -187,7 +191,7 @@ nansum(PyObject *self, PyObject *args, PyObject *kwds)
 /* dtype = [['float64'], ['float32']] */
 static PyObject *
 nanmean_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                   Py_ssize_t length, int ndim)
+                   Py_ssize_t length, int ndim, int ignore)
 {
     INIT
     Py_ssize_t count = 0;
@@ -218,7 +222,8 @@ nanmean_one_DTYPE0(PyArrayObject *a,
                    Py_ssize_t stride,
                    Py_ssize_t length,
                    int ndim,
-                   npy_intp* yshape)
+                   npy_intp* yshape,
+                   int ignore)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -257,7 +262,7 @@ nanmean_one_DTYPE0(PyArrayObject *a,
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 static PyObject *
 nanmean_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                   Py_ssize_t length, int ndim)
+                   Py_ssize_t length, int ndim, int ignore)
 {
     INIT
     Py_ssize_t total_length = 0;
@@ -283,7 +288,8 @@ nanmean_one_DTYPE0(PyArrayObject *a,
                    Py_ssize_t stride,
                    Py_ssize_t length,
                    int ndim,
-                   npy_intp* yshape)
+                   npy_intp* yshape,
+                   int ignore)
 {
     Y_INIT(NPY_DTYPE1, npy_DTYPE1)
     INIT
@@ -326,7 +332,7 @@ nanmean(PyObject *self, PyObject *args, PyObject *kwds)
                    nanmean_one_float32,
                    nanmean_one_int64,
                    nanmean_one_int32,
-                   0, 0);
+                   0, 0, 0);
 }
 
 /* nanmin ---------------------------------------------------------------- */
@@ -334,7 +340,7 @@ nanmean(PyObject *self, PyObject *args, PyObject *kwds)
 /* dtype = [['float64'], ['float32']] */
 static PyObject *
 nanmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim)
+                  Py_ssize_t length, int ndim, int ignore)
 {
     INIT
     npy_DTYPE0 ai, amin = BN_INFINITY;
@@ -367,7 +373,8 @@ nanmin_one_DTYPE0(PyArrayObject *a,
                   Py_ssize_t stride,
                   Py_ssize_t length,
                   int ndim,
-                  npy_intp* yshape)
+                  npy_intp* yshape,
+                  int ignore)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -402,7 +409,7 @@ nanmin_one_DTYPE0(PyArrayObject *a,
 /* dtype = [['int64'], ['int32']] */
 static PyObject *
 nanmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim)
+                  Py_ssize_t length, int ndim, int ignore)
 {
     INIT
     npy_DTYPE0 ai, amin = NPY_MAX_DTYPE0;
@@ -430,7 +437,8 @@ nanmin_one_DTYPE0(PyArrayObject *a,
                   Py_ssize_t stride,
                   Py_ssize_t length,
                   int ndim,
-                  npy_intp* yshape)
+                  npy_intp* yshape,
+                  int ignore)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -470,7 +478,7 @@ nanmin(PyObject *self, PyObject *args, PyObject *kwds)
                    nanmin_one_float32,
                    nanmin_one_int64,
                    nanmin_one_int32,
-                   0, 0);
+                   0, 0, 0);
 }
 
 /* nanmax ---------------------------------------------------------------- */
@@ -478,7 +486,7 @@ nanmin(PyObject *self, PyObject *args, PyObject *kwds)
 /* dtype = [['float64'], ['float32']] */
 static PyObject *
 nanmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim)
+                  Py_ssize_t length, int ndim, int ignore)
 {
     INIT
     npy_DTYPE0 ai, amax = -BN_INFINITY;
@@ -511,7 +519,8 @@ nanmax_one_DTYPE0(PyArrayObject *a,
                   Py_ssize_t stride,
                   Py_ssize_t length,
                   int ndim,
-                  npy_intp* yshape)
+                  npy_intp* yshape,
+                  int ignore)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -546,7 +555,7 @@ nanmax_one_DTYPE0(PyArrayObject *a,
 /* dtype = [['int64'], ['int32']] */
 static PyObject *
 nanmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim)
+                  Py_ssize_t length, int ndim, int ignore)
 {
     INIT
     npy_DTYPE0 ai, amax = NPY_MIN_DTYPE0;
@@ -574,7 +583,8 @@ nanmax_one_DTYPE0(PyArrayObject *a,
                   Py_ssize_t stride,
                   Py_ssize_t length,
                   int ndim,
-                  npy_intp* yshape)
+                  npy_intp* yshape,
+                  int ignore)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -614,7 +624,7 @@ nanmax(PyObject *self, PyObject *args, PyObject *kwds)
                    nanmax_one_float32,
                    nanmax_one_int64,
                    nanmax_one_int32,
-                   0, 0);
+                   0, 0, 0);
 }
 
 /* python strings -------------------------------------------------------- */
@@ -636,66 +646,85 @@ intern_strings(void) {
 static BN_INLINE int
 parse_args(PyObject *args,
            PyObject *kwds,
+           int has_ddof,
            PyObject **arr,
-           PyObject **axis)
+           PyObject **axis,
+           PyObject **ddof)
 {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     if (kwds) {
+        int nkwds_found = 0;
         const Py_ssize_t nkwds = PyDict_Size(kwds);
-        if (nkwds == 1) {
-            if (nargs == 0) {
+        PyObject *tmp;
+        switch (nargs) {
+            case 2:
+                if (has_ddof) {
+                    *axis = PyTuple_GET_ITEM(args, 1);
+                } else {
+                    TYPE_ERR("wrong number of arguments");
+                    return 0;
+                }
+            case 1: *arr = PyTuple_GET_ITEM(args, 0);
+            case 0: break;
+            default:
+                TYPE_ERR("wrong number of arguments");
+                return 0;
+        }
+        switch (nargs) {
+            case 0:
                 *arr = PyDict_GetItem(kwds, pystr_arr);
-                if (!*arr) {
-                    TYPE_ERR("can't find `arr` input");
+                if (*arr == NULL) {
+                    TYPE_ERR("Cannot find `arr` keyword input");
                     return 0;
                 }
-            }
-            else {
-                *axis = PyDict_GetItem(kwds, pystr_axis);
-                if (!*axis) {
-                    TYPE_ERR("can't find `axis` input");
-                    return 0;
+                nkwds_found += 1;
+            case 1:
+                tmp = PyDict_GetItem(kwds, pystr_axis);
+                if (tmp != NULL) {
+                    *axis = tmp;
+                    nkwds_found++;
                 }
-                if (nargs == 1) {
-                    *arr = PyTuple_GET_ITEM(args, 0);
+            case 2:
+                if (has_ddof) {
+                    tmp = PyDict_GetItem(kwds, pystr_ddof);
+                    if (tmp != NULL) {
+                        *ddof = tmp;
+                        nkwds_found++;
+                    }
+                    break;
                 }
-                else {
-                    TYPE_ERR("wrong number of inputs");
-                    return 0;
-                }
-            }
+                break;
+            default:
+                TYPE_ERR("wrong number of arguments");
+                return 0;
         }
-        else if (nkwds == 2) {
-            if (nargs != 0) {
-                TYPE_ERR("wrong number of inputs");
-                return 0;
-            }
-            *arr = PyDict_GetItem(kwds, pystr_arr);
-            if (!*arr) {
-                TYPE_ERR("can't find `arr` input");
-                return 0;
-            }
-            *axis = PyDict_GetItem(kwds, pystr_axis);
-            if (!*axis) {
-                TYPE_ERR("can't find `axis` input");
-                return 0;
-            }
+        if (nkwds_found != nkwds) {
+            TYPE_ERR("wrong number of keyword arguments");
+            return 0;
         }
-        else {
-            TYPE_ERR("wrong number of inputs");
+        if (nargs + nkwds_found > 2 + has_ddof) {
+            TYPE_ERR("too many arguments");
             return 0;
         }
     }
-    else if (nargs == 1) {
-        *arr = PyTuple_GET_ITEM(args, 0);
-    }
-    else if (nargs == 2) {
-        *arr = PyTuple_GET_ITEM(args, 0);
-        *axis = PyTuple_GET_ITEM(args, 1);
-    }
     else {
-        TYPE_ERR("wrong number of inputs");
-        return 0;
+        switch (nargs) {
+            case 3:
+                if (has_ddof) {
+                    *ddof = PyTuple_GET_ITEM(args, 2);
+                } else {
+                    TYPE_ERR("wrong number of arguments");
+                    return 0;
+                }
+            case 2:
+                *axis = PyTuple_GET_ITEM(args, 1);
+            case 1:
+                *arr = PyTuple_GET_ITEM(args, 0);
+                break;
+            default:
+                TYPE_ERR("wrong number of arguments");
+                return 0;
+        }
     }
 
     return 1;
@@ -716,13 +745,15 @@ reducer(char *name,
         fone_t fone_int64,
         fone_t fone_int32,
         int ravel,
-        int copy)
+        int copy,
+        int has_ddof)
 {
 
     int ndim;
     int reduce_all = 0;
     int axis;
     int dtype;
+    int ddof;
 
     Py_ssize_t i;
     Py_ssize_t j = 0;
@@ -736,8 +767,9 @@ reducer(char *name,
 
     PyObject *arr_obj;
     PyObject *axis_obj = Py_None;
+    PyObject *ddof_obj = NULL;
 
-    if (!parse_args(args, kwds, &arr_obj, &axis_obj)) {
+    if (!parse_args(args, kwds, has_ddof, &arr_obj, &axis_obj, &ddof_obj)) {
         return NULL;
     }
 
@@ -804,6 +836,18 @@ reducer(char *name,
         }
     }
 
+    /* ddof */
+    if (ddof_obj == NULL) {
+        ddof = 0;
+    }
+    else {
+        ddof = PyArray_PyIntAsInt(ddof_obj);
+        if (error_converting(ddof)) {
+            TYPE_ERR("`ddof` must be an integer");
+            return NULL;
+        }
+    }
+
     dtype = PyArray_TYPE(a);
     shape = PyArray_SHAPE(a);
     strides = PyArray_STRIDES(a);
@@ -828,16 +872,16 @@ reducer(char *name,
             length = PyArray_SIZE(a);
         }
         if (dtype == NPY_FLOAT64) {
-            return fall_float64(a, axis, stride, length, ndim);
+            return fall_float64(a, axis, stride, length, ndim, ddof);
         }
         else if (dtype == NPY_FLOAT32) {
-            return fall_float32(a, axis, stride, length, ndim);
+            return fall_float32(a, axis, stride, length, ndim, ddof);
         }
         else if (dtype == NPY_INT64) {
-            return fall_int64(a, axis, stride, length, ndim);
+            return fall_int64(a, axis, stride, length, ndim, ddof);
         }
         else if (dtype == NPY_INT32) {
-            return fall_int32(a, axis, stride, length, ndim);
+            return fall_int32(a, axis, stride, length, ndim, ddof);
         }
         else {
             return slow(name, args, kwds);
@@ -858,16 +902,16 @@ reducer(char *name,
         length = shape[axis];
 
         if (dtype == NPY_FLOAT64) {
-            return fone_float64(a, axis, stride, length, ndim, yshape);
+            return fone_float64(a, axis, stride, length, ndim, yshape, ddof);
         }
         else if (dtype == NPY_FLOAT32) {
-            return fone_float32(a, axis, stride, length, ndim, yshape);
+            return fone_float32(a, axis, stride, length, ndim, yshape, ddof);
         }
         else if (dtype == NPY_INT64) {
-            return fone_int64(a, axis, stride, length, ndim, yshape);
+            return fone_int64(a, axis, stride, length, ndim, yshape, ddof);
         }
         else if (dtype == NPY_INT32) {
-            return fone_int32(a, axis, stride, length, ndim, yshape);
+            return fone_int32(a, axis, stride, length, ndim, yshape, ddof);
         }
         else {
             return slow(name, args, kwds);
