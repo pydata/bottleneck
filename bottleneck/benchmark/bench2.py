@@ -62,14 +62,12 @@ def suite_reduce(function):
     """
 
     sig_array = [
-                 ("%s%s(a, axis=1)", "np.ones((1,1))"),
-                 ("%s%s(arr=a, axis=1)", "np.ones((1,1))"),
-                 ("%s%s(a)", "np.ones((1,1))"),
                  ("%s%s(a, 1)", "np.ones((1, 1))"),
                  ("%s%s(a, 1)", "np.ones((10, 10))"),
                  ("%s%s(a, 1)", "np.ones((100, 100))"),
                  ("%s%s(a, 1)", "np.ones((4, 1))[::2]"),
                  ("%s%s(a, 1)", "np.random.rand(1000000, 2)"),
+                 ("%s%s(a)", "np.ones(1)"),
                  ("%s%s(a)", "np.ones(100)"),
                  ("%s%s(a)", "np.random.rand(1000000)"),
                  ("%s%s(a)", "np.random.rand(1000, 1000)"),
