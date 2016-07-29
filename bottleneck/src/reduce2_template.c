@@ -8,42 +8,45 @@
  */
 
 #define INIT \
-    Py_ssize_t i; \
-    char *pa = PyArray_BYTES(a); \
-    const npy_intp *astrides = PyArray_STRIDES(a); \
-    const npy_intp *ashape = PyArray_SHAPE(a); \
-    npy_intp index = 0; \
-    npy_intp size = PyArray_SIZE(a); \
-    npy_intp indices[ndim]; \
-    memset(indices, 0, ndim * sizeof(npy_intp)); \
-    if (length != 0) size /= length;
+    Py_ssize_t _i; \
+    char *_pa = PyArray_BYTES(a); \
+    const npy_intp *_astrides = PyArray_STRIDES(a); \
+    const npy_intp *_ashape = PyArray_SHAPE(a); \
+    npy_intp _index = 0; \
+    npy_intp _size = PyArray_SIZE(a); \
+    npy_intp _indices[ndim]; \
+    memset(_indices, 0, ndim * sizeof(npy_intp)); \
+    if (length != 0) _size /= length;
 
 #define NEXT \
-    for (i = ndim - 1; i >= 0; i--) { \
-        if (i == axis) continue; \
-        if (indices[i] < ashape[i] - 1) { \
-            pa += astrides[i]; \
-            indices[i]++; \
+    for (_i = ndim - 1; _i >= 0; _i--) { \
+        if (_i == axis) continue; \
+        if (_indices[_i] < _ashape[_i] - 1) { \
+            _pa += _astrides[_i]; \
+            _indices[_i]++; \
             break; \
         } \
-        pa -= indices[i] * astrides[i]; \
-        indices[i] = 0; \
+        _pa -= _indices[_i] * _astrides[_i]; \
+        _indices[_i] = 0; \
     } \
-    index++;
+    _index++;
 
 /* if you  exited the iterator before it was done you will need
  * to call the memset line above inorder to reset */
 #define RESET \
-    index = 0; \
+    _index = 0; \
+
+#define  WHILE    while (_index < _size)
+#define  FOR      for (_i = 0; _i < length; _i++)
+#define  AI(dt)   *(dt*)(_pa + _i * stride)
+
+/* output array ---------------------------------------------------------- */
 
 #define Y_INIT(dt0, dt1) \
     PyObject *y = PyArray_EMPTY(ndim - 1, yshape, dt0, 0); \
     dt1 *py = (dt1 *)PyArray_DATA((PyArrayObject *)y);
 
-#define  WHILE    while (index < size)
-#define  FOR      for (i = 0; i < length; i++)
-#define  AI(dt)   *(dt*)(pa + i * stride)
-#define  YI       *py++
+#define YI *py++
 
 /* function pointers ----------------------------------------------------- */
 
@@ -446,15 +449,15 @@ nanstd_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     INIT
     npy_DTYPE1 out;
     BN_BEGIN_ALLOW_THREADS
-    Py_ssize_t size_ = 0;
+    Py_ssize_t size = 0;
     npy_DTYPE1 ai, amean, asum = 0;
     WHILE {
         FOR asum += AI(npy_DTYPE0);
-        size_ += length;
+        size += length;
         NEXT
     }
-    if (size_ > ddof) {
-        amean = asum / size_;
+    if (size > ddof) {
+        amean = asum / size;
         asum = 0;
         RESET
         WHILE {
@@ -464,7 +467,7 @@ nanstd_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
             }
             NEXT
         }
-        out = sqrt(asum / (size_ - ddof));
+        out = sqrt(asum / (size - ddof));
     }
     else {
         out = BN_NAN;
