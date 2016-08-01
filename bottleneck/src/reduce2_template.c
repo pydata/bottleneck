@@ -1027,6 +1027,117 @@ nanmax(PyObject *self, PyObject *args, PyObject *kwds)
                    0, 0, 0);
 }
 
+/* anynan ---------------------------------------------------------------- */
+
+/* dtype = [['float64'], ['float32']] */
+static PyObject *
+anynan_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                  Py_ssize_t length, int ndim, int ignore)
+{
+    INIT
+    int f = 0;
+    npy_DTYPE0 ai;
+    BN_BEGIN_ALLOW_THREADS
+    WHILE {
+        FOR {
+            ai = AI(npy_DTYPE0);
+            if (ai != ai) {
+                f = 1;
+                break;
+            }
+        }
+        NEXT
+    }
+    BN_END_ALLOW_THREADS
+    if (f) Py_RETURN_TRUE;
+    Py_RETURN_FALSE;
+}
+
+
+static PyObject *
+anynan_one_DTYPE0(PyArrayObject *a,
+                  int axis,
+                  Py_ssize_t stride,
+                  Py_ssize_t length,
+                  int ndim,
+                  npy_intp* yshape,
+                  int ignore)
+{
+    Y_INIT(NPY_BOOL, npy_uint8)
+    INIT
+    BN_BEGIN_ALLOW_THREADS
+    int f;
+    npy_DTYPE0 ai;
+    if (length == 0) {
+        Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
+        FOR YI = 0;
+    }
+    else {
+        WHILE {
+            f = 0;
+            FOR {
+                ai = AI(npy_DTYPE0);
+                if (ai != ai) {
+                    f = 1;
+                    break;
+                }
+            }
+            YI = f;
+            NEXT
+        }
+    }
+    BN_END_ALLOW_THREADS
+    return y;
+}
+/* dtype end */
+
+
+/* dtype = [['int64'], ['int32']] */
+static PyObject *
+anynan_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                  Py_ssize_t length, int ndim, int ignore)
+{
+    Py_RETURN_FALSE;
+}
+
+
+static PyObject *
+anynan_one_DTYPE0(PyArrayObject *a,
+                  int axis,
+                  Py_ssize_t stride,
+                  Py_ssize_t length,
+                  int ndim,
+                  npy_intp* yshape,
+                  int ignore)
+{
+    Y_INIT(NPY_BOOL, npy_uint8)
+    Py_ssize_t _i;
+    BN_BEGIN_ALLOW_THREADS
+    Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
+    FOR YI = 0;
+    BN_END_ALLOW_THREADS
+    return y;
+}
+/* dtype end */
+
+
+static PyObject *
+anynan(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return reducer("anynan",
+                   args,
+                   kwds,
+                   anynan_all_float64,
+                   anynan_all_float32,
+                   anynan_all_int64,
+                   anynan_all_int32,
+                   anynan_one_float64,
+                   anynan_one_float32,
+                   anynan_one_int64,
+                   anynan_one_int32,
+                   0, 0, 0);
+}
+
 /* python strings -------------------------------------------------------- */
 
 PyObject *pystr_arr = NULL;
@@ -1681,6 +1792,47 @@ array([ 1.,  4.])
 
 MULTILINE STRING END */
 
+static char anynan_doc[] =
+/* MULTILINE STRING BEGIN
+anynan(arr, axis=None)
+
+Test whether any array element along a given axis is NaN.
+
+Returns the same output as np.isnan(arr).any(axis)
+
+Parameters
+----------
+arr : array_like
+    Input array. If `arr` is not an array, a conversion is attempted.
+axis : {int, None}, optional
+    Axis along which NaNs are searched. The default (`axis` = ``None``)
+    is to search for NaNs over a flattened input array.
+
+Returns
+-------
+y : bool or ndarray
+    A boolean or new `ndarray` is returned.
+
+See also
+--------
+bottleneck.allnan: Test if all array elements along given axis are NaN
+
+Examples
+--------
+>>> bn.anynan(1)
+False
+>>> bn.anynan(np.nan)
+True
+>>> bn.anynan([1, np.nan])
+True
+>>> a = np.array([[1, 4], [1, np.nan]])
+>>> bn.anynan(a)
+True
+>>> bn.anynan(a, axis=0)
+array([False,  True], dtype=bool)
+
+MULTILINE STRING END */
+
 /* python wrapper -------------------------------------------------------- */
 
 static PyMethodDef
@@ -1691,6 +1843,7 @@ reduce_methods[] = {
     {"nanvar", (PyCFunction)nanvar, VARKEY, nanvar_doc},
     {"nanmin", (PyCFunction)nanmin, VARKEY, nanmin_doc},
     {"nanmax", (PyCFunction)nanmax, VARKEY, nanmax_doc},
+    {"anynan", (PyCFunction)anynan, VARKEY, anynan_doc},
     {NULL, NULL, 0, NULL}
 };
 
