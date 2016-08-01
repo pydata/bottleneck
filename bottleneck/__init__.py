@@ -16,6 +16,7 @@ try:
     from .reduce2 import nansum as nansum2
     from .reduce2 import nanmean as nanmean2
     from .reduce2 import nanstd as nanstd2
+    from .reduce2 import nanvar as nanvar2
     from .reduce2 import nanmin as nanmin2
     from .reduce2 import nanmax as nanmax2
 except:

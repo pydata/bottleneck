@@ -539,6 +539,202 @@ nanstd(PyObject *self, PyObject *args, PyObject *kwds)
                    0, 0, 1);
 }
 
+/* nanvar ---------------------------------------------------------------- */
+
+/* dtype = [['float64'], ['float32']] */
+static PyObject *
+nanvar_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                  Py_ssize_t length, int ndim, int ddof)
+{
+    INIT
+    Py_ssize_t count = 0;
+    npy_DTYPE0 ai, amean, out, asum = 0;
+    BN_BEGIN_ALLOW_THREADS
+    WHILE {
+        FOR {
+            ai = AI(npy_DTYPE0);
+            if (ai == ai) {
+                asum += ai;
+                count++;
+            }
+        }
+        NEXT
+    }
+    if (count > ddof) {
+        amean = asum / count;
+        asum = 0;
+        RESET
+        WHILE {
+            FOR {
+                ai = AI(npy_DTYPE0);
+                if (ai == ai) {
+                    ai -= amean;
+                    asum += ai * ai;
+                }
+            }
+            NEXT
+        }
+        out = asum / (count - ddof);
+    }
+    else {
+        out = BN_NAN;
+    }
+    BN_END_ALLOW_THREADS
+    return PyFloat_FromDouble(out);
+}
+
+
+static PyObject *
+nanvar_one_DTYPE0(PyArrayObject *a,
+                  int axis,
+                  Py_ssize_t stride,
+                  Py_ssize_t length,
+                  int ndim,
+                  npy_intp* yshape,
+                  int ddof)
+{
+    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    INIT
+    BN_BEGIN_ALLOW_THREADS
+    Py_ssize_t count;
+    npy_DTYPE0 ai, asum, amean;
+    if (length == 0) {
+        Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
+        FOR YI = BN_NAN;
+    }
+    else {
+        WHILE {
+            asum = count = 0;
+            FOR {
+                ai = AI(npy_DTYPE0);
+                if (ai == ai) {
+                    asum += ai;
+                    count++;
+                }
+            }
+            if (count > ddof) {
+                amean = asum / count;
+                asum = 0;
+                FOR {
+                    ai = AI(npy_DTYPE0);
+                    if (ai == ai) {
+                        ai -= amean;
+                        asum += ai * ai;
+                    }
+                }
+                asum = asum / (count - ddof);
+            }
+            else {
+                asum = BN_NAN;
+            }
+            YI = asum;
+            NEXT
+        }
+    }
+    BN_END_ALLOW_THREADS
+    return y;
+}
+/* dtype end */
+
+
+/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
+static PyObject *
+nanvar_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                  Py_ssize_t length, int ndim, int ddof)
+{
+    INIT
+    npy_DTYPE1 out;
+    BN_BEGIN_ALLOW_THREADS
+    Py_ssize_t size = 0;
+    npy_DTYPE1 ai, amean, asum = 0;
+    WHILE {
+        FOR asum += AI(npy_DTYPE0);
+        size += length;
+        NEXT
+    }
+    if (size > ddof) {
+        amean = asum / size;
+        asum = 0;
+        RESET
+        WHILE {
+            FOR {
+                ai = AI(npy_DTYPE0) - amean;
+                asum += ai * ai;
+            }
+            NEXT
+        }
+        out = asum / (size - ddof);
+    }
+    else {
+        out = BN_NAN;
+    }
+    BN_END_ALLOW_THREADS
+    return PyFloat_FromDouble(out);
+}
+
+
+static PyObject *
+nanvar_one_DTYPE0(PyArrayObject *a,
+                  int axis,
+                  Py_ssize_t stride,
+                  Py_ssize_t length,
+                  int ndim,
+                  npy_intp* yshape,
+                  int ddof)
+{
+    Y_INIT(NPY_DTYPE1, npy_DTYPE1)
+    INIT
+    BN_BEGIN_ALLOW_THREADS
+    npy_DTYPE1 ai, asum, amean;
+    npy_DTYPE1 length_inv = 1.0 / length;
+    npy_DTYPE1 length_ddof_inv = 1.0 / (length - ddof);
+    if (length == 0) {
+        Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
+        FOR YI = BN_NAN;
+    }
+    else {
+        WHILE {
+            asum = 0;
+            FOR asum += AI(npy_DTYPE0);
+            if (length > ddof) {
+                amean = asum * length_inv;
+                asum = 0;
+                FOR {
+                    ai = AI(npy_DTYPE0) - amean;
+                    asum += ai * ai;
+                }
+                asum = asum * length_ddof_inv;
+            }
+            else {
+                asum = BN_NAN;
+            }
+            YI = asum;
+            NEXT
+        }
+    }
+    BN_END_ALLOW_THREADS
+    return y;
+}
+/* dtype end */
+
+
+static PyObject *
+nanvar(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return reducer("nanvar",
+                   args,
+                   kwds,
+                   nanvar_all_float64,
+                   nanvar_all_float32,
+                   nanvar_all_int64,
+                   nanvar_all_int32,
+                   nanvar_one_float64,
+                   nanvar_one_float32,
+                   nanvar_one_int64,
+                   nanvar_one_int32,
+                   0, 0, 1);
+}
+
 /* nanmin ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
@@ -1323,6 +1519,80 @@ nan
 
 MULTILINE STRING END */
 
+static char nanvar_doc[] =
+/* MULTILINE STRING BEGIN
+nanvar(arr, axis=None, ddof=0)
+
+Variance along the specified axis, ignoring NaNs.
+
+`float64` intermediate and return values are used for integer inputs.
+
+Instead of a faster one-pass algorithm, a more stable two-pass algorithm
+is used.
+
+An example of a one-pass algorithm:
+
+    >>> (arr*arr).mean() - arr.mean()**2
+
+An example of a two-pass algorithm:
+
+    >>> ((arr - arr.mean())**2).mean()
+
+Note in the two-pass algorithm the mean must be found (first pass) before
+the squared deviation (second pass) can be found.
+
+Parameters
+----------
+arr : array_like
+    Input array. If `arr` is not an array, a conversion is attempted.
+axis : {int, None}, optional
+    Axis along which the variance is computed. The default (axis=None) is
+    to compute the variance of the flattened array.
+ddof : int, optional
+    Means Delta Degrees of Freedom. The divisor used in calculations
+    is ``N - ddof``, where ``N`` represents the number of non_NaN elements.
+    By default `ddof` is zero.
+
+Returns
+-------
+y : ndarray
+    An array with the same shape as `arr`, with the specified axis
+    removed. If `arr` is a 0-d array, or if axis is None, a scalar is
+    returned. `float64` intermediate and return values are used for
+    integer inputs. If ddof is >= the number of non-NaN elements in a
+    slice or the slice contains only NaNs, then the result for that slice
+    is NaN.
+
+See also
+--------
+bottleneck.nanstd: Standard deviation along specified axis ignoring NaNs.
+
+Notes
+-----
+If positive or negative infinity are present the result is Not A Number
+(NaN).
+
+Examples
+--------
+>>> bn.nanvar(1)
+0.0
+>>> bn.nanvar([1])
+0.0
+>>> bn.nanvar([1, np.nan])
+0.0
+>>> a = np.array([[1, 4], [1, np.nan]])
+>>> bn.nanvar(a)
+2.0
+>>> bn.nanvar(a, axis=0)
+array([ 0.,  0.])
+
+When positive infinity or negative infinity are present NaN is returned:
+
+>>> bn.nanvar([1, np.nan, np.inf])
+nan
+
+MULTILINE STRING END */
+
 static char nanmin_doc[] =
 /* MULTILINE STRING BEGIN
 nanmin(arr, axis=None)
@@ -1418,6 +1688,7 @@ reduce_methods[] = {
     {"nansum", (PyCFunction)nansum, VARKEY, nansum_doc},
     {"nanmean", (PyCFunction)nanmean, VARKEY, nanmean_doc},
     {"nanstd", (PyCFunction)nanstd, VARKEY, nanstd_doc},
+    {"nanvar", (PyCFunction)nanvar, VARKEY, nanvar_doc},
     {"nanmin", (PyCFunction)nanmin, VARKEY, nanmin_doc},
     {"nanmax", (PyCFunction)nanmax, VARKEY, nanmax_doc},
     {NULL, NULL, 0, NULL}
