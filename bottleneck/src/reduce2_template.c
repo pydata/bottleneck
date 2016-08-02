@@ -1027,6 +1027,133 @@ nanmax(PyObject *self, PyObject *args, PyObject *kwds)
                    0, 0, 0);
 }
 
+/* ss ---------------------------------------------------------------- */
+
+/* dtype = [['float64'], ['float32']] */
+static PyObject *
+ss_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+              Py_ssize_t length, int ndim, int ignore)
+{
+    INIT
+    npy_DTYPE0 ai, asum = 0;
+    BN_BEGIN_ALLOW_THREADS
+    WHILE {
+        FOR {
+            ai = AI(npy_DTYPE0);
+            asum += ai * ai;
+        }
+        NEXT
+    }
+    BN_END_ALLOW_THREADS
+    return PyFloat_FromDouble(asum);
+}
+
+
+static PyObject *
+ss_one_DTYPE0(PyArrayObject *a,
+              int axis,
+              Py_ssize_t stride,
+              Py_ssize_t length,
+              int ndim,
+              npy_intp* yshape,
+              int ignore)
+{
+    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    INIT
+    BN_BEGIN_ALLOW_THREADS
+    npy_DTYPE0 ai, asum;
+    if (length == 0) {
+        Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
+        FOR YI = 0;
+    }
+    else {
+        WHILE {
+            asum = 0;
+            FOR {
+                ai = AI(npy_DTYPE0);
+                 asum += ai * ai;
+            }
+            YI = asum;
+            NEXT
+        }
+    }
+    BN_END_ALLOW_THREADS
+    return y;
+}
+/* dtype end */
+
+
+/* dtype = [['int64'], ['int32']] */
+static PyObject *
+ss_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+              Py_ssize_t length, int ndim, int ignore)
+{
+    INIT
+    npy_DTYPE0 ai, asum = 0;
+    BN_BEGIN_ALLOW_THREADS
+    WHILE {
+        FOR {
+            ai = AI(npy_DTYPE0);
+            asum += ai * ai;
+        }
+        NEXT
+    }
+    BN_END_ALLOW_THREADS
+    return PyInt_FromLong(asum);
+}
+
+
+static PyObject *
+ss_one_DTYPE0(PyArrayObject *a,
+              int axis,
+              Py_ssize_t stride,
+              Py_ssize_t length,
+              int ndim,
+              npy_intp* yshape,
+              int ignore)
+{
+    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    INIT
+    BN_BEGIN_ALLOW_THREADS
+    npy_DTYPE0 ai, asum;
+    if (length == 0) {
+        Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
+        FOR YI = 0;
+    }
+    else {
+        WHILE {
+            asum = 0;
+            FOR {
+                ai = AI(npy_DTYPE0);
+                asum += ai * ai;
+            }
+            YI = asum;
+            NEXT
+        }
+    }
+    BN_END_ALLOW_THREADS
+    return y;
+}
+/* dtype end */
+
+
+static PyObject *
+ss(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return reducer("ss",
+                   args,
+                   kwds,
+                   ss_all_float64,
+                   ss_all_float32,
+                   ss_all_int64,
+                   ss_all_int32,
+                   ss_one_float64,
+                   ss_one_float32,
+                   ss_one_int64,
+                   ss_one_int32,
+                   0, 0, 0);
+}
+
 /* anynan ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
@@ -1911,6 +2038,40 @@ array([ 1.,  4.])
 
 MULTILINE STRING END */
 
+static char ss_doc[] =
+/* MULTILINE STRING BEGIN
+ss(arr, axis=None)
+
+Sum of the square of each element along the specified axis.
+
+Parameters
+----------
+arr : array_like
+    Array whose sum of squares is desired. If `arr` is not an array, a
+    conversion is attempted.
+axis : {int, None}, optional
+    Axis along which the sum of squares is computed. The default
+    (axis=None) is to sum the squares of the flattened array.
+
+Returns
+-------
+y : ndarray
+    The sum of a**2 along the given axis.
+
+Examples
+--------
+>>> a = np.array([1., 2., 5.])
+>>> bn.ss(a)
+30.0
+
+And calculating along an axis:
+
+>>> b = np.array([[1., 2., 5.], [2., 5., 6.]])
+>>> bn.ss(b, axis=1)
+array([ 30., 65.])
+
+MULTILINE STRING END */
+
 static char anynan_doc[] =
 /* MULTILINE STRING BEGIN
 anynan(arr, axis=None)
@@ -2011,14 +2172,15 @@ MULTILINE STRING END */
 
 static PyMethodDef
 reduce_methods[] = {
-    {"nansum", (PyCFunction)nansum, VARKEY, nansum_doc},
+    {"nansum",  (PyCFunction)nansum,  VARKEY, nansum_doc},
     {"nanmean", (PyCFunction)nanmean, VARKEY, nanmean_doc},
-    {"nanstd", (PyCFunction)nanstd, VARKEY, nanstd_doc},
-    {"nanvar", (PyCFunction)nanvar, VARKEY, nanvar_doc},
-    {"nanmin", (PyCFunction)nanmin, VARKEY, nanmin_doc},
-    {"nanmax", (PyCFunction)nanmax, VARKEY, nanmax_doc},
-    {"anynan", (PyCFunction)anynan, VARKEY, anynan_doc},
-    {"allnan", (PyCFunction)allnan, VARKEY, allnan_doc},
+    {"nanstd",  (PyCFunction)nanstd,  VARKEY, nanstd_doc},
+    {"nanvar",  (PyCFunction)nanvar,  VARKEY, nanvar_doc},
+    {"nanmin",  (PyCFunction)nanmin,  VARKEY, nanmin_doc},
+    {"nanmax",  (PyCFunction)nanmax,  VARKEY, nanmax_doc},
+    {"ss",      (PyCFunction)ss,      VARKEY, ss_doc},
+    {"anynan",  (PyCFunction)anynan,  VARKEY, anynan_doc},
+    {"allnan",  (PyCFunction)allnan,  VARKEY, allnan_doc},
     {NULL, NULL, 0, NULL}
 };
 
