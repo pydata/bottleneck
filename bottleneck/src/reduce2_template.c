@@ -1138,6 +1138,125 @@ anynan(PyObject *self, PyObject *args, PyObject *kwds)
                    0, 0, 0);
 }
 
+/* allnan ---------------------------------------------------------------- */
+
+/* dtype = [['float64'], ['float32']] */
+static PyObject *
+allnan_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                  Py_ssize_t length, int ndim, int ignore)
+{
+    INIT
+    int f = 0;
+    npy_DTYPE0 ai;
+    BN_BEGIN_ALLOW_THREADS
+    WHILE {
+        FOR {
+            ai = AI(npy_DTYPE0);
+            if (ai == ai) {
+                f = 1;
+                break;
+            }
+        }
+        NEXT
+    }
+    BN_END_ALLOW_THREADS
+    if (f) Py_RETURN_FALSE;
+    Py_RETURN_TRUE;
+}
+
+
+static PyObject *
+allnan_one_DTYPE0(PyArrayObject *a,
+                  int axis,
+                  Py_ssize_t stride,
+                  Py_ssize_t length,
+                  int ndim,
+                  npy_intp* yshape,
+                  int ignore)
+{
+    Y_INIT(NPY_BOOL, npy_uint8)
+    INIT
+    BN_BEGIN_ALLOW_THREADS
+    int f;
+    npy_DTYPE0 ai;
+    if (length == 0) {
+        Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
+        FOR YI = 1;
+    }
+    else {
+        WHILE {
+            f = 1;
+            FOR {
+                ai = AI(npy_DTYPE0);
+                if (ai == ai) {
+                    f = 0;
+                    break;
+                }
+            }
+            YI = f;
+            NEXT
+        }
+    }
+    BN_END_ALLOW_THREADS
+    return y;
+}
+/* dtype end */
+
+
+/* dtype = [['int64'], ['int32']] */
+static PyObject *
+allnan_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                  Py_ssize_t length, int ndim, int ignore)
+{
+    Py_ssize_t size = PyArray_SIZE(a);
+    if (size == 0) Py_RETURN_TRUE;
+    Py_RETURN_FALSE;
+}
+
+
+static PyObject *
+allnan_one_DTYPE0(PyArrayObject *a,
+                  int axis,
+                  Py_ssize_t stride,
+                  Py_ssize_t length,
+                  int ndim,
+                  npy_intp* yshape,
+                  int ignore)
+{
+    Y_INIT(NPY_BOOL, npy_uint8)
+    Py_ssize_t _i;
+    BN_BEGIN_ALLOW_THREADS
+    Py_ssize_t size = PyArray_SIZE(a);
+    length = PyArray_SIZE((PyArrayObject *)y);
+    if (size == 0) {
+        FOR YI = 1;
+    }
+    else {
+        FOR YI = 0;
+    }
+    BN_END_ALLOW_THREADS
+    return y;
+}
+/* dtype end */
+
+
+static PyObject *
+allnan(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return reducer("allnan",
+                   args,
+                   kwds,
+                   allnan_all_float64,
+                   allnan_all_float32,
+                   allnan_all_int64,
+                   allnan_all_int32,
+                   allnan_one_float64,
+                   allnan_one_float32,
+                   allnan_one_int64,
+                   allnan_one_int32,
+                   0, 0, 0);
+}
+
 /* python strings -------------------------------------------------------- */
 
 PyObject *pystr_arr = NULL;
@@ -1833,6 +1952,61 @@ array([False,  True], dtype=bool)
 
 MULTILINE STRING END */
 
+static char allnan_doc[] =
+/* MULTILINE STRING BEGIN
+allnan(arr, axis=None)
+
+Test whether all array elements along a given axis are NaN.
+
+Returns the same output as np.isnan(arr).all(axis)
+
+Note that allnan([]) is True to match np.isnan([]).all() and all([])
+
+Parameters
+----------
+arr : array_like
+    Input array. If `arr` is not an array, a conversion is attempted.
+axis : {int, None}, optional
+    Axis along which NaNs are searched. The default (`axis` = ``None``)
+    is to search for NaNs over a flattened input array.
+
+Returns
+-------
+y : bool or ndarray
+    A boolean or new `ndarray` is returned.
+
+See also
+--------
+bottleneck.anynan: Test if any array element along given axis is NaN
+
+Examples
+--------
+>>> bn.allnan(1)
+False
+>>> bn.allnan(np.nan)
+True
+>>> bn.allnan([1, np.nan])
+False
+>>> a = np.array([[1, np.nan], [1, np.nan]])
+>>> bn.allnan(a)
+False
+>>> bn.allnan(a, axis=0)
+array([False,  True], dtype=bool)
+
+An empty array returns True:
+
+>>> bn.allnan([])
+True
+
+which is similar to:
+
+>>> all([])
+True
+>>> np.isnan([]).all()
+True
+
+MULTILINE STRING END */
+
 /* python wrapper -------------------------------------------------------- */
 
 static PyMethodDef
@@ -1844,6 +2018,7 @@ reduce_methods[] = {
     {"nanmin", (PyCFunction)nanmin, VARKEY, nanmin_doc},
     {"nanmax", (PyCFunction)nanmax, VARKEY, nanmax_doc},
     {"anynan", (PyCFunction)anynan, VARKEY, anynan_doc},
+    {"allnan", (PyCFunction)allnan, VARKEY, allnan_doc},
     {NULL, NULL, 0, NULL}
 };
 
