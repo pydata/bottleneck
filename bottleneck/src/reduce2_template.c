@@ -1,10 +1,11 @@
 #include "bottleneck.h"
 
 
-/* iterator --------------------------------------------------------------
- *
- * The iterator below (INIT and NEXT) is similar to the iterator in move.c.
- * See that file for a brief description.
+/* iterators ------------------------------------------------------------- */
+
+ /*
+ * INIT and NEXT are based on numpy's PyArray_IterAllButAxis and
+ * PyArray_ITER_NEXT.
  */
 
 #define INIT \
@@ -31,14 +32,38 @@
     } \
     _index++;
 
-/* if you  exited the iterator before it was done you will need
- * to call the memset line above inorder to reset */
+#define INIT_REVERSE \
+    npy_intp _offset; \
+    INIT \
+    _offset = (_size - 1) * length; \
+    for (_i = 0; _i < ndim; _i++) { \
+        if (_i == axis) continue; \
+        _pa += (_ashape[_i] - 1) * _astrides[_i]; \
+    }
+
+#define NEXT_REVERSE \
+    for (_i = ndim - 1; _i >= 0; _i--) { \
+        if (_i == axis) continue; \
+        if (_indices[_i] < _ashape[_i] - 1) { \
+            _pa -= _astrides[_i]; \
+            _indices[_i]++; \
+            break; \
+        } \
+        _pa += _indices[_i] * _astrides[_i]; \
+        _indices[_i] = 0; \
+    } \
+    _index++; \
+    _offset -= length;
+
+/* if you exited before iterator was done, you'll also need to call the memset
+ * line above to reset */
 #define RESET \
     _index = 0; \
 
-#define  WHILE    while (_index < _size)
-#define  FOR      for (_i = 0; _i < length; _i++)
-#define  AI(dt)   *(dt*)(_pa + _i * stride)
+#define  WHILE          while (_index < _size)
+#define  FOR            for (_i = 0; _i < length; _i++)
+#define  FOR_REVERSE    for (_i = length - 1; _i > -1; _i--)
+#define  AI(dt)         *(dt*)(_pa + _i * stride)
 
 /* output array ---------------------------------------------------------- */
 
@@ -69,7 +94,6 @@ reducer(char *name,
         fone_t fone_float32,
         fone_t fone_int64,
         fone_t fone_int32,
-        int ravel,
         int copy,
         int has_ddof);
 
@@ -191,7 +215,7 @@ nansum(PyObject *self, PyObject *args, PyObject *kwds)
                    nansum_one_float32,
                    nansum_one_int64,
                    nansum_one_int32,
-                   0, 0, 0);
+                   0, 0);
 }
 
 /* nanmean ---------------------------------------------------------------- */
@@ -340,7 +364,7 @@ nanmean(PyObject *self, PyObject *args, PyObject *kwds)
                    nanmean_one_float32,
                    nanmean_one_int64,
                    nanmean_one_int32,
-                   0, 0, 0);
+                   0, 0);
 }
 
 /* nanstd ---------------------------------------------------------------- */
@@ -536,7 +560,7 @@ nanstd(PyObject *self, PyObject *args, PyObject *kwds)
                    nanstd_one_float32,
                    nanstd_one_int64,
                    nanstd_one_int32,
-                   0, 0, 1);
+                   0, 1);
 }
 
 /* nanvar ---------------------------------------------------------------- */
@@ -732,7 +756,7 @@ nanvar(PyObject *self, PyObject *args, PyObject *kwds)
                    nanvar_one_float32,
                    nanvar_one_int64,
                    nanvar_one_int32,
-                   0, 0, 1);
+                   0, 1);
 }
 
 /* nanmin ---------------------------------------------------------------- */
@@ -878,7 +902,179 @@ nanmin(PyObject *self, PyObject *args, PyObject *kwds)
                    nanmin_one_float32,
                    nanmin_one_int64,
                    nanmin_one_int32,
-                   0, 0, 0);
+                   0, 0);
+}
+
+/* nanargmin ---------------------------------------------------------------- */
+
+/* dtype = [['float64'], ['float32']] */
+static PyObject *
+nanargmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                     Py_ssize_t length, int ndim, int ignore)
+{
+    INIT_REVERSE
+    npy_DTYPE0 ai, amin = BN_INFINITY;
+    int allnan = 1;
+    Py_ssize_t idx = 0;
+    npy_intp size = PyArray_SIZE(a);
+    if (size == 0) {
+        VALUE_ERR("numpy.nanargmin raises on a.size==0 and axis=None; "
+                  "So Bottleneck too.");
+        return NULL;
+    }
+    BN_BEGIN_ALLOW_THREADS
+    WHILE {
+        FOR_REVERSE {
+            ai = AI(npy_DTYPE0);
+            size -= length;
+            if (ai <= amin) {
+                amin = ai;
+                allnan = 0;
+                idx = _offset + _i;
+            }
+        }
+        NEXT_REVERSE
+    }
+    BN_END_ALLOW_THREADS
+    if (allnan) {
+        VALUE_ERR("All-NaN slice encountered");
+        return NULL;
+    } else {
+        return PyInt_FromLong(idx);
+    }
+}
+
+
+static PyObject *
+nanargmin_one_DTYPE0(PyArrayObject *a,
+                     int axis,
+                     Py_ssize_t stride,
+                     Py_ssize_t length,
+                     int ndim,
+                     npy_intp* yshape,
+                     int ignore)
+{
+    Y_INIT(NPY_INTP, npy_intp)
+    INIT
+    int allnan, err_code = 0;
+    Py_ssize_t idx = 0;
+    npy_DTYPE0 ai, amin;
+    if (length == 0) {
+        VALUE_ERR("numpy.nanargmin raises on a.shape[axis]==0; "
+                  "So Bottleneck too.");
+        return NULL;
+    }
+    BN_BEGIN_ALLOW_THREADS
+    WHILE {
+        amin = BN_INFINITY;
+        allnan = 1;
+        FOR_REVERSE {
+            ai = AI(npy_DTYPE0);
+            if (ai <= amin) {
+                amin = ai;
+                allnan = 0;
+                idx = _i;
+            }
+        }
+        if (allnan) {
+            err_code = 1;
+            _i++;
+        } else {
+            YI = idx;
+        }
+        NEXT
+    }
+    BN_END_ALLOW_THREADS
+    if (err_code) {
+        VALUE_ERR("All-NaN slice encountered");
+        return NULL;
+    }
+    return y;
+}
+/* dtype end */
+
+
+/* dtype = [['int64', 'intp'], ['int32', 'intp']] */
+static PyObject *
+nanargmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                     Py_ssize_t length, int ndim, int ignore)
+{
+    INIT_REVERSE
+    npy_DTYPE1 idx = 0;
+    npy_DTYPE0 ai, amin = NPY_MAX_DTYPE0;
+    if (PyArray_SIZE(a) == 0) {
+        VALUE_ERR("numpy.nanargmin raises on a.size==0 and axis=None; "
+                  "So Bottleneck too.");
+        return NULL;
+    }
+    BN_BEGIN_ALLOW_THREADS
+    WHILE {
+        FOR_REVERSE {
+            ai = AI(npy_DTYPE0);
+            if (ai <= amin) {
+                amin = ai;
+                idx = _offset + _i;
+            }
+        }
+        NEXT_REVERSE
+    }
+    BN_END_ALLOW_THREADS
+    return PyInt_FromLong(idx);
+}
+
+
+static PyObject *
+nanargmin_one_DTYPE0(PyArrayObject *a,
+                     int axis,
+                     Py_ssize_t stride,
+                     Py_ssize_t length,
+                     int ndim,
+                     npy_intp* yshape,
+                     int ignore)
+{
+    Y_INIT(NPY_DTYPE1, npy_DTYPE1)
+    INIT
+    npy_DTYPE1 idx = 0;
+    npy_DTYPE0 ai, amin;
+    if (length == 0) {
+        VALUE_ERR("numpy.nanargmin raises on a.shape[axis]==0; "
+                  "So Bottleneck too.");
+        return NULL;
+    }
+    BN_BEGIN_ALLOW_THREADS
+    WHILE {
+        amin = NPY_MAX_DTYPE0;
+        FOR_REVERSE {
+            ai = AI(npy_DTYPE0);
+            if (ai <= amin) {
+                amin = ai;
+                idx = _i;
+            }
+        }
+        YI = idx;
+        NEXT
+    }
+    BN_END_ALLOW_THREADS
+    return y;
+}
+/* dtype end */
+
+
+static PyObject *
+nanargmin(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return reducer("nanargmin",
+                   args,
+                   kwds,
+                   nanargmin_all_float64,
+                   nanargmin_all_float32,
+                   nanargmin_all_int64,
+                   nanargmin_all_int32,
+                   nanargmin_one_float64,
+                   nanargmin_one_float32,
+                   nanargmin_one_int64,
+                   nanargmin_one_int32,
+                   0, 0);
 }
 
 /* nanmax ---------------------------------------------------------------- */
@@ -1024,7 +1220,7 @@ nanmax(PyObject *self, PyObject *args, PyObject *kwds)
                    nanmax_one_float32,
                    nanmax_one_int64,
                    nanmax_one_int32,
-                   0, 0, 0);
+                   0, 0);
 }
 
 /* ss ---------------------------------------------------------------- */
@@ -1151,7 +1347,7 @@ ss(PyObject *self, PyObject *args, PyObject *kwds)
                    ss_one_float32,
                    ss_one_int64,
                    ss_one_int32,
-                   0, 0, 0);
+                   0, 0);
 }
 
 /* anynan ---------------------------------------------------------------- */
@@ -1262,7 +1458,7 @@ anynan(PyObject *self, PyObject *args, PyObject *kwds)
                    anynan_one_float32,
                    anynan_one_int64,
                    anynan_one_int32,
-                   0, 0, 0);
+                   0, 0);
 }
 
 /* allnan ---------------------------------------------------------------- */
@@ -1381,7 +1577,7 @@ allnan(PyObject *self, PyObject *args, PyObject *kwds)
                    allnan_one_float32,
                    allnan_one_int64,
                    allnan_one_int32,
-                   0, 0, 0);
+                   0, 0);
 }
 
 /* python strings -------------------------------------------------------- */
@@ -1501,7 +1697,6 @@ reducer(char *name,
         fone_t fone_float32,
         fone_t fone_int64,
         fone_t fone_int32,
-        int ravel,
         int copy,
         int has_ddof)
 {
@@ -1588,7 +1783,7 @@ reducer(char *name,
             PyErr_Format(PyExc_ValueError, "axis(=%d) out of bounds", axis);
             return NULL;
         }
-        if (ndim == 1 && axis == 0) {
+        if (ndim == 1) {
             reduce_all = 1;
         }
     }
@@ -1610,24 +1805,19 @@ reducer(char *name,
     strides = PyArray_STRIDES(a);
 
     if (reduce_all == 1) {
+
         /* we are reducing the array along all axes */
-        if (ravel == 0) {
-            axis = 0;
-            stride = strides[0];
-            for (i=1; i < ndim; i++) {
-                if (strides[i] < stride) {
-                    axis = i;
-                    stride = strides[i];
-                }
+
+        axis = 0;
+        stride = strides[0];
+        for (i = 1; i < ndim; i++) {
+            if (strides[i] < stride) {
+                axis = i;
+                stride = strides[i];
             }
-            length = shape[axis];
         }
-        else {
-            /* TODO a = PyArray_Ravel(a, NPY_ANYORDER);*/
-            axis = 0; /* TODO find min stride axis */
-            stride = PyArray_STRIDE(a, 0);
-            length = PyArray_SIZE(a);
-        }
+        length = shape[axis];
+
         if (dtype == NPY_FLOAT64) {
             return fall_float64(a, axis, stride, length, ndim, ddof);
         }
@@ -1649,12 +1839,9 @@ reducer(char *name,
         /* we are reducing an array with ndim > 1 over a single axis */
 
         npy_intp yshape[ndim - 1];
-
-        /* shape of output */
         for (i=0; i < ndim; i++) {
             if (i != axis) yshape[j++] = shape[i];
         }
-
         stride = strides[axis];
         length = shape[axis];
 
@@ -1994,6 +2181,47 @@ array([ 1.,  4.])
 
 MULTILINE STRING END */
 
+static char nanargmin_doc[] =
+/* MULTILINE STRING BEGIN
+nanargmin(arr, axis=None)
+
+Indices of the minimum values along an axis, ignoring NaNs.
+
+For all-NaN slices ``ValueError`` is raised. Unlike NumPy, the results
+can be trusted if a slice contains only NaNs and Infs.
+
+Parameters
+----------
+a : array_like
+    Input array. If `arr` is not an array, a conversion is attempted.
+axis : {int, None}, optional
+    Axis along which to operate. By default (axis=None) flattened input
+    is used.
+
+See also
+--------
+bottleneck.nanargmax: Indices of the maximum values along an axis.
+bottleneck.nanmin: Minimum values along specified axis, ignoring NaNs.
+
+Returns
+-------
+index_array : ndarray
+    An array of indices or a single index value.
+
+Examples
+--------
+>>> a = np.array([[np.nan, 4], [2, 3]])
+>>> bn.nanargmin(a)
+2
+>>> a.flat[2]
+2.0
+>>> bn.nanargmin(a, axis=0)
+array([1, 1])
+>>> bn.nanargmin(a, axis=1)
+array([1, 0])
+
+MULTILINE STRING END */
+
 static char nanmax_doc[] =
 /* MULTILINE STRING BEGIN
 nanmax(arr, axis=None)
@@ -2172,15 +2400,16 @@ MULTILINE STRING END */
 
 static PyMethodDef
 reduce_methods[] = {
-    {"nansum",  (PyCFunction)nansum,  VARKEY, nansum_doc},
-    {"nanmean", (PyCFunction)nanmean, VARKEY, nanmean_doc},
-    {"nanstd",  (PyCFunction)nanstd,  VARKEY, nanstd_doc},
-    {"nanvar",  (PyCFunction)nanvar,  VARKEY, nanvar_doc},
-    {"nanmin",  (PyCFunction)nanmin,  VARKEY, nanmin_doc},
-    {"nanmax",  (PyCFunction)nanmax,  VARKEY, nanmax_doc},
-    {"ss",      (PyCFunction)ss,      VARKEY, ss_doc},
-    {"anynan",  (PyCFunction)anynan,  VARKEY, anynan_doc},
-    {"allnan",  (PyCFunction)allnan,  VARKEY, allnan_doc},
+    {"nansum",    (PyCFunction)nansum,    VARKEY, nansum_doc},
+    {"nanmean",   (PyCFunction)nanmean,   VARKEY, nanmean_doc},
+    {"nanstd",    (PyCFunction)nanstd,    VARKEY, nanstd_doc},
+    {"nanvar",    (PyCFunction)nanvar,    VARKEY, nanvar_doc},
+    {"nanmin",    (PyCFunction)nanmin,    VARKEY, nanmin_doc},
+    {"nanmax",    (PyCFunction)nanmax,    VARKEY, nanmax_doc},
+    {"nanargmin", (PyCFunction)nanargmin, VARKEY, nanargmin_doc},
+    {"ss",        (PyCFunction)ss,        VARKEY, ss_doc},
+    {"anynan",    (PyCFunction)anynan,    VARKEY, anynan_doc},
+    {"allnan",    (PyCFunction)allnan,    VARKEY, allnan_doc},
     {NULL, NULL, 0, NULL}
 };
 

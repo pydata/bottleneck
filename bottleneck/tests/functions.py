@@ -45,6 +45,7 @@ def func_dict():
                    bn.ss,
                    bn.ss2,
                    bn.nanargmin,
+                   bn.nanargmin2,
                    bn.nanargmax,
                    bn.anynan,
                    bn.anynan2,

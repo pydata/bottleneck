@@ -20,7 +20,7 @@ def test_reduce():
         yield unit_maker, func
 
 
-def arrays(dtypes=DTYPES):
+def arrays(dtypes, name):
     "Iterator that yields arrays to use for unit testing."
 
     # nan and inf
@@ -63,30 +63,34 @@ def arrays(dtypes=DTYPES):
     ss[2] = {'size': 12, 'shapes': [(2, 6), (3, 4)]}
     ss[3] = {'size': 16, 'shapes': [(2, 2, 4)]}
     ss[4] = {'size': 24, 'shapes': [(1, 2, 3, 4)]}
-    rs = np.random.RandomState([1, 2, 4])
-    for ndim in ss:
-        size = ss[ndim]['size']
-        shapes = ss[ndim]['shapes']
-        for dtype in dtypes:
-            a = np.arange(size, dtype=dtype)
-            if issubclass(a.dtype.type, np.inexact):
-                idx = rs.rand(*a.shape) < 0.2
-                a[idx] = inf
-                idx = rs.rand(*a.shape) < 0.2
-                a[idx] = nan
-                idx = rs.rand(*a.shape) < 0.2
-                a[idx] *= -1
-            rs.shuffle(a)
-            for shape in shapes:
-                yield a.reshape(shape)
+    for seed in (1, 2):
+        rs = np.random.RandomState(seed)
+        for ndim in ss:
+            size = ss[ndim]['size']
+            shapes = ss[ndim]['shapes']
+            for dtype in dtypes:
+                a = np.arange(size, dtype=dtype)
+                if issubclass(a.dtype.type, np.inexact):
+                    if name not in ('nanargmin', 'nanargmax'):
+                        # numpy can't handle eg np.nanargmin([np.nan, np.inf])
+                        idx = rs.rand(*a.shape) < 0.2
+                        a[idx] = inf
+                    idx = rs.rand(*a.shape) < 0.2
+                    a[idx] = nan
+                    idx = rs.rand(*a.shape) < 0.2
+                    a[idx] *= -1
+                rs.shuffle(a)
+                for shape in shapes:
+                    yield a.reshape(shape)
 
 
 def unit_maker(func, decimal=5):
     "Test that bn.xxx gives the same output as bn.slow.xxx."
     fmt = '\nfunc %s | input %s (%s) | shape %s | axis %s\n'
     fmt += '\nInput array:\n%s\n'
-    func0 = eval('bn.slow.%s' % func.__name__)
-    for i, arr in enumerate(arrays()):
+    name = func.__name__
+    func0 = eval('bn.slow.%s' % name)
+    for i, arr in enumerate(arrays(DTYPES, name)):
         if arr.ndim == 0:
             axes = [None]  # numpy can't handle e.g. np.nanmean(9, axis=-1)
         else:
@@ -110,7 +114,6 @@ def unit_maker(func, decimal=5):
             if actualraised and desiredraised:
                 pass
             else:
-                name = func.__name__
                 tup = (name, 'a'+str(i), str(arr.dtype), str(arr.shape),
                        str(axis), arr)
                 err_msg = fmt % tup
