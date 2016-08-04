@@ -4,11 +4,11 @@
 /* iterators ------------------------------------------------------------- */
 
  /*
- * INIT and NEXT are based on numpy's PyArray_IterAllButAxis and
+ * INIT and NEXT are loosely based on numpy's PyArray_IterAllButAxis and
  * PyArray_ITER_NEXT.
  */
 
-#define INIT \
+#define INIT_CORE \
     Py_ssize_t _i; \
     char *_pa = PyArray_BYTES(a); \
     const npy_intp *_astrides = PyArray_STRIDES(a); \
@@ -16,8 +16,24 @@
     npy_intp _index = 0; \
     npy_intp _size = PyArray_SIZE(a); \
     npy_intp _indices[ndim]; \
+
+#define INIT \
+    INIT_CORE \
     memset(_indices, 0, ndim * sizeof(npy_intp)); \
-    if (length != 0) _size /= length;
+    if (length != 0) _size /= length; \
+
+#define INIT_ALL \
+    INIT_CORE \
+    if (PyArray_CHKFLAGS(a, NPY_ARRAY_C_CONTIGUOUS) || \
+        PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS)) { \
+        length = _size; \
+        _size = 1; \
+        ndim = 0; \
+    } \
+    else { \
+        memset(_indices, 0, ndim * sizeof(npy_intp)); \
+        if (length != 0) _size /= length; \
+    } \
 
 #define NEXT \
     for (_i = ndim - 1; _i >= 0; _i--) { \
@@ -104,7 +120,7 @@ static PyObject *
 nansum_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
                   Py_ssize_t length, int ndim, int ignore)
 {
-    INIT
+    INIT_ALL
     npy_DTYPE0 ai, asum = 0;
     BN_BEGIN_ALLOW_THREADS
     WHILE {
@@ -158,7 +174,7 @@ static PyObject *
 nansum_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
                   Py_ssize_t length, int ndim, int ignore)
 {
-    INIT
+    INIT_ALL
     npy_DTYPE0 asum = 0;
     BN_BEGIN_ALLOW_THREADS
     WHILE {
@@ -225,7 +241,7 @@ static PyObject *
 nanmean_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
                    Py_ssize_t length, int ndim, int ignore)
 {
-    INIT
+    INIT_ALL
     Py_ssize_t count = 0;
     npy_DTYPE0 ai, asum = 0;
     BN_BEGIN_ALLOW_THREADS
@@ -296,7 +312,7 @@ static PyObject *
 nanmean_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
                    Py_ssize_t length, int ndim, int ignore)
 {
-    INIT
+    INIT_ALL
     Py_ssize_t total_length = 0;
     npy_DTYPE1 asum = 0;
     BN_BEGIN_ALLOW_THREADS
@@ -374,7 +390,7 @@ static PyObject *
 nanstd_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
                   Py_ssize_t length, int ndim, int ddof)
 {
-    INIT
+    INIT_ALL
     Py_ssize_t count = 0;
     npy_DTYPE0 ai, amean, out, asum = 0;
     BN_BEGIN_ALLOW_THREADS
@@ -470,7 +486,7 @@ static PyObject *
 nanstd_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
                   Py_ssize_t length, int ndim, int ddof)
 {
-    INIT
+    INIT_ALL
     npy_DTYPE1 out;
     BN_BEGIN_ALLOW_THREADS
     Py_ssize_t size = 0;
@@ -570,7 +586,7 @@ static PyObject *
 nanvar_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
                   Py_ssize_t length, int ndim, int ddof)
 {
-    INIT
+    INIT_ALL
     Py_ssize_t count = 0;
     npy_DTYPE0 ai, amean, out, asum = 0;
     BN_BEGIN_ALLOW_THREADS
@@ -666,7 +682,7 @@ static PyObject *
 nanvar_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
                   Py_ssize_t length, int ndim, int ddof)
 {
-    INIT
+    INIT_ALL
     npy_DTYPE1 out;
     BN_BEGIN_ALLOW_THREADS
     Py_ssize_t size = 0;
@@ -766,7 +782,7 @@ static PyObject *
 nanmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
                   Py_ssize_t length, int ndim, int ignore)
 {
-    INIT
+    INIT_ALL
     npy_DTYPE0 ai, amin = BN_INFINITY;
     int allnan = 1;
     if (PyArray_SIZE(a) == 0) {
@@ -835,7 +851,7 @@ static PyObject *
 nanmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
                   Py_ssize_t length, int ndim, int ignore)
 {
-    INIT
+    INIT_ALL
     npy_DTYPE0 ai, amin = NPY_MAX_DTYPE0;
     if (PyArray_SIZE(a) == 0) {
         VALUE_ERR("numpy.nanmin raises on a.size==0 and axis=None; "
@@ -1084,7 +1100,7 @@ static PyObject *
 nanmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
                   Py_ssize_t length, int ndim, int ignore)
 {
-    INIT
+    INIT_ALL
     npy_DTYPE0 ai, amax = -BN_INFINITY;
     int allnan = 1;
     if (PyArray_SIZE(a)== 0) {
@@ -1153,7 +1169,7 @@ static PyObject *
 nanmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
                   Py_ssize_t length, int ndim, int ignore)
 {
-    INIT
+    INIT_ALL
     npy_DTYPE0 ai, amax = NPY_MIN_DTYPE0;
     if (PyArray_SIZE(a)== 0) {
         VALUE_ERR("numpy.nanmax raises on a.size==0 and axis=None; "
@@ -1230,7 +1246,7 @@ static PyObject *
 ss_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
               Py_ssize_t length, int ndim, int ignore)
 {
-    INIT
+    INIT_ALL
     npy_DTYPE0 ai, asum = 0;
     BN_BEGIN_ALLOW_THREADS
     WHILE {
@@ -1284,7 +1300,7 @@ static PyObject *
 ss_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
               Py_ssize_t length, int ndim, int ignore)
 {
-    INIT
+    INIT_ALL
     npy_DTYPE0 ai, asum = 0;
     BN_BEGIN_ALLOW_THREADS
     WHILE {

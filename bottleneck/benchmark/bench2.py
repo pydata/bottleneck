@@ -58,25 +58,48 @@ def suite_reduce(function):
         import numpy as np
         from bottleneck import %s
         from bottleneck import %s2 as %s_c
+        from numpy import array
+        from numpy.random import rand, randint
         a=%s
     """
 
-    sig_array = [
-                 ("%s%s(a, 1)", "np.ones((1, 1))"),
-                 ("%s%s(a, 1)", "np.ones((10, 10))"),
-                 ("%s%s(a, 1)", "np.ones((100, 100))"),
-                 ("%s%s(a, 1)", "np.ones((4, 1))[::2]"),
-                 ("%s%s(a, 1)", "np.random.rand(1000000, 2)"),
-                 ("%s%s(a)", "np.random.rand(1000000, 2)"),
-                 ("%s%s(a)", "np.random.rand(2, 1000000)"),
-                 ("%s%s(a)", "np.ones(1)"),
-                 ("%s%s(a)", "np.ones(100)"),
-                 ("%s%s(a)", "np.random.rand(1000000)"),
-                 ("%s%s(a)", "np.random.rand(2, 2)"),
-                 ("%s%s(a)", "np.random.rand(1000, 1000)"),
-                 ("%s%s(a)", "np.ones(1, dtype=np.float16)"),
-                 ("%s%s(a)", "np.array(1)"),
-                ]
+    arrays_0d = ["array(1)"]
+
+    arrays_1d = [
+                 "rand(1)",
+                 "rand(10)",
+                 "rand(100)",
+                 "rand(1000)",
+                 "rand(1000000)",
+                 "rand(1).astype(np.float16)",
+                 ]
+
+    arrays_2d = [
+                 "rand(1, 1)",
+                 "rand(10, 10)",
+                 "rand(100, 100)",
+                 "rand(1000, 1000)",
+                 "rand(1000000, 2)",
+                 "rand(2, 1000000)",
+                 "rand(4, 1)[::2]",
+                 "rand(200, 100)[::2]",
+                 "rand(2000000, 2)[::2]",
+                 "rand(2, 2000000)[:, ::2]",
+                 ]
+
+    arrays_3d = ["rand(100, 100, 100)"]
+
+    sig_array = []
+    for arr in arrays_1d:
+        sig_array.append(("%s%s(a)", arr))
+    for arr in arrays_2d:
+        sig_array.append(("%s%s(a)", arr))
+    for arr in arrays_2d:
+        sig_array.append(("%s%s(a, 1)", arr))
+    for arr in arrays_3d:
+        sig_array.append(("%s%s(a, 1)", arr))
+    for arr in arrays_0d:
+        sig_array.append(("%s%s(a)", arr))
 
     f = function
     suite = []
