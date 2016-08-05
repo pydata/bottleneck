@@ -47,6 +47,7 @@ def func_dict():
                    bn.nanargmin,
                    bn.nanargmin2,
                    bn.nanargmax,
+                   bn.nanargmax2,
                    bn.anynan,
                    bn.anynan2,
                    bn.allnan,
