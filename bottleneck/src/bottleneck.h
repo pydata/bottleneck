@@ -39,7 +39,7 @@
 #define VALUE_ERR(i) PyErr_SetString(PyExc_ValueError, i)
 #define TYPE_ERR(i) PyErr_SetString(PyExc_TypeError, i)
 
-/* inline copied from NumPy. */
+/* `inline` copied from NumPy. */
 #if defined(_MSC_VER)
         #define BN_INLINE __inline
 #elif defined(__GNUC__)
@@ -72,3 +72,8 @@ BN_INLINE static float __bn_nanf(void)
 #define BN_NANF __bn_nanf()
 #define BN_INFINITY ((npy_double)BN_INFINITYF)
 #define BN_NAN ((npy_double)BN_NANF)
+
+/* does not check for 0d which by definition is contiguous */
+#define IS_CONTIGUOUS(a) \
+    (PyArray_CHKFLAGS(a, NPY_ARRAY_C_CONTIGUOUS) || \
+     PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS))
