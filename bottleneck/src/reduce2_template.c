@@ -1,5 +1,23 @@
 #include "bottleneck.h"
 
+/*
+ Select smallest k elements code used for inner loop of median method:
+ http://projects.scipy.org/numpy/attachment/ticket/1213/quickselect.pyx
+ (C) 2009 Sturla Molden
+ SciPy license
+
+ From the original C function (code in public domain) in:
+   Fast median search: an ANSI C implementation
+   Nicolas Devillard - ndevilla AT free DOT fr
+   July 1998
+ which, in turn, took the algorithm from
+   Wirth, Niklaus
+   Algorithms + data structures = programs, p. 366
+   Englewood Cliffs: Prentice-Hall, 1976
+
+ Adapted and expanded for Bottleneck:
+ (C) 2010, 2015, 2016 Keith Goodman
+*/
 
 /* iterators ------------------------------------------------------------- */
 
@@ -59,6 +77,7 @@
 #define  FOR            for (_i = 0; _i < length; _i++)
 #define  FOR_REVERSE    for (_i = length - 1; _i > -1; _i--)
 #define  AI(dt)         *(dt*)(_pa + _i * stride)
+#define  AX(dt, x)      *(dt*)(_pa + x * stride)
 
 /* output array ---------------------------------------------------------- */
 
@@ -1500,6 +1519,366 @@ ss(PyObject *self, PyObject *args, PyObject *kwds)
                    0, 0, 0);
 }
 
+/* median ---------------------------------------------------------------- */
+
+/* dtype = [['float64', 'float64'], ['float32', 'float32']] */
+static PyObject *
+median_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                  Py_ssize_t length, int ndim, int ignore)
+{
+    char *_pa = PyArray_BYTES(a);
+    int found_nan = 0;
+    npy_intp i = 0, j = 0, l, r, k;
+    npy_DTYPE0 x, amax, ai, bi, aj;
+    npy_DTYPE1 out;
+    if (length == 0) {
+        return PyFloat_FromDouble(BN_NAN);
+    }
+    k = length >> 1;
+    l = 0;
+    r = length - 1;
+    BN_BEGIN_ALLOW_THREADS
+    while (l < r) {
+        x = AX(npy_DTYPE0, k);
+        if (x != x) {
+            found_nan = 1;
+            break;
+        }
+        else if (found_nan == 1) {
+            break;
+        }
+        i = l;
+        j = r;
+        while (1) {
+            while (1) {
+                ai = AX(npy_DTYPE0, i);
+                if (ai < x) {
+                    i++;
+                }
+                else if (ai != ai) {
+                    found_nan = 1;
+                    break;
+                }
+                else {
+                    break;
+                }
+            }
+            if (found_nan == 1) break;
+            while (1) {
+                aj = AX(npy_DTYPE0, j);
+                if (x < aj) {
+                    j--;
+                }
+                else if (aj != aj) {
+                    found_nan = 1;
+                    break;
+                }
+                else {
+                    break;
+                }
+            }
+            if (found_nan == 1) break;
+            if (i <= j) {
+                AX(npy_DTYPE0, i) = aj;
+                AX(npy_DTYPE0, j) = ai;
+                i++;
+                j--;
+            }
+            if (i > j) break;
+        }
+        if (j < k) l = i;
+        if (k < i) r = j;
+    }
+    if (found_nan == 1) {
+        out = BN_NAN;
+    }
+    else {
+        bi = AX(npy_DTYPE0, k);
+        if (length % 2 == 0) {
+            amax = -BN_INFINITY;
+            for (i = 0; i < k; i++) {
+                ai = AX(npy_DTYPE0, i);
+                if (ai >= amax) amax = ai;
+            }
+            out = 0.5 * (bi + amax);
+        }
+        else {
+            out = bi;
+        }
+    }
+
+    BN_END_ALLOW_THREADS
+    return PyFloat_FromDouble(out);
+
+}
+
+
+static PyObject *
+median_one_DTYPE0(PyArrayObject *a,
+                     int axis,
+                     Py_ssize_t stride,
+                     Py_ssize_t length,
+                     int ndim,
+                     npy_intp* yshape,
+                     int ignore)
+{
+    Y_INIT(NPY_DTYPE1, npy_DTYPE1)
+    INIT
+    int found_nan = 0;
+    npy_intp i = 0, j = 0, l, r, k;
+    npy_DTYPE0 x, amax, ai, aj, bi;
+    if (length == 0) {
+        Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
+        FOR YI = BN_NAN;
+        return y;
+    }
+    BN_BEGIN_ALLOW_THREADS
+    WHILE {
+        found_nan = 0;
+        k = length >> 1;
+        l = 0;
+        r = length - 1;
+        while (l < r) {
+            x = AX(npy_DTYPE0, k);
+            if (x != x) {
+                found_nan = 1;
+                break;
+            }
+            if (found_nan) break;
+            i = l;
+            j = r;
+            while (1) {
+                while (1) {
+                    ai = AX(npy_DTYPE0, i);
+                    if (ai < x) {
+                        i++;
+                    }
+                    else if (ai != ai) {
+                        found_nan = 1;
+                        break;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                if (found_nan) break;
+                while (1) {
+                    aj = AX(npy_DTYPE0, j);
+                    if (x < aj) {
+                        j--;
+                    }
+                    else if (aj != aj) {
+                        found_nan = 1;
+                        break;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                if (found_nan) break;
+                if (i <= j) {
+                    AX(npy_DTYPE0, i) = aj;
+                    AX(npy_DTYPE0, j) = ai;
+                    i++;
+                    j--;
+                }
+                if (i > j) break;
+            }
+            if (j < k) l = i;
+            if (k < i) r = j;
+        }
+        if (found_nan) {
+            YI = BN_NAN;
+        }
+        else {
+            bi = AX(npy_DTYPE0, k);
+            if (length % 2 == 0) {
+                amax = -BN_INFINITY;
+                for (i = 0; i < k; i++) {
+                    ai = AX(npy_DTYPE0, i);
+                    if (ai >= amax) amax = ai;
+                }
+                YI = 0.5 * (bi + amax);
+            }
+            else {
+                YI = bi;
+            }
+        }
+        NEXT
+    }
+
+    BN_END_ALLOW_THREADS
+    return y;
+
+}
+/* dtype end */
+
+
+/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
+static PyObject *
+median_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                  Py_ssize_t length, int ndim, int ignore)
+{
+    char *_pa = PyArray_BYTES(a);
+    npy_intp i = 0, j = 0, l, r, k;
+    npy_DTYPE0 x, amax, ai, bi, aj;
+    double out;
+    if (length == 0) {
+        return PyFloat_FromDouble(BN_NAN);
+    }
+    k = length >> 1;
+    l = 0;
+    r = length - 1;
+    BN_BEGIN_ALLOW_THREADS
+    while (l < r) {
+        x = AX(npy_DTYPE0, k);
+        i = l;
+        j = r;
+        while (1) {
+            while (1) {
+                ai = AX(npy_DTYPE0, i);
+                if (ai < x) {
+                    i++;
+                }
+                else {
+                    break;
+                }
+            }
+            while (1) {
+                aj = AX(npy_DTYPE0, j);
+                if (x < aj) {
+                    j--;
+                }
+                else {
+                    break;
+                }
+            }
+            if (i <= j) {
+                AX(npy_DTYPE0, i) = aj;
+                AX(npy_DTYPE0, j) = ai;
+                i++;
+                j--;
+            }
+            if (i > j) break;
+        }
+        if (j < k) l = i;
+        if (k < i) r = j;
+    }
+    bi = AX(npy_DTYPE0, k);
+    if (length % 2 == 0) {
+        amax = -BN_INFINITY;
+        for (i = 0; i < k; i++) {
+            ai = AX(npy_DTYPE0, i);
+            if (ai >= amax) amax = ai;
+        }
+        out = 0.5 * (bi + amax);
+    }
+    else {
+        out = bi;
+    }
+
+    BN_END_ALLOW_THREADS
+    return PyFloat_FromDouble(out);
+
+}
+
+
+static PyObject *
+median_one_DTYPE0(PyArrayObject *a,
+                     int axis,
+                     Py_ssize_t stride,
+                     Py_ssize_t length,
+                     int ndim,
+                     npy_intp* yshape,
+                     int ignore)
+{
+    Y_INIT(NPY_DTYPE1, npy_DTYPE1)
+    INIT
+    npy_intp i = 0, j = 0, l, r, k;
+    npy_DTYPE0 x, amax, ai, aj, bi;
+    if (length == 0) {
+        Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
+        FOR YI = BN_NAN;
+        return y;
+    }
+    BN_BEGIN_ALLOW_THREADS
+    WHILE {
+        k = length >> 1;
+        l = 0;
+        r = length - 1;
+        while (l < r) {
+            x = AX(npy_DTYPE0, k);
+            i = l;
+            j = r;
+            while (1) {
+                while (1) {
+                    ai = AX(npy_DTYPE0, i);
+                    if (ai < x) {
+                        i++;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                while (1) {
+                    aj = AX(npy_DTYPE0, j);
+                    if (x < aj) {
+                        j--;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                if (i <= j) {
+                    AX(npy_DTYPE0, i) = aj;
+                    AX(npy_DTYPE0, j) = ai;
+                    i++;
+                    j--;
+                }
+                if (i > j) break;
+            }
+            if (j < k) l = i;
+            if (k < i) r = j;
+        }
+        bi = AX(npy_DTYPE0, k);
+        if (length % 2 == 0) {
+            amax = -BN_INFINITY;
+            for (i = 0; i < k; i++) {
+                ai = AX(npy_DTYPE0, i);
+                if (ai >= amax) amax = ai;
+            }
+            YI = 0.5 * (bi + amax);
+        }
+        else {
+            YI = bi;
+        }
+        NEXT
+    }
+
+    BN_END_ALLOW_THREADS
+    return y;
+
+}
+/* dtype end */
+
+
+static PyObject *
+median(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return reducer("median",
+                   args,
+                   kwds,
+                   median_all_float64,
+                   median_all_float32,
+                   median_all_int64,
+                   median_all_int32,
+                   median_one_float64,
+                   median_one_float32,
+                   median_one_int64,
+                   median_one_int32,
+                   1, 1, 0);
+}
+
 /* anynan ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
@@ -1867,6 +2246,7 @@ reducer(char *name,
     npy_intp *strides;
 
     PyArrayObject *a;
+    PyObject *y;
 
     PyObject *arr_obj = NULL;
     PyObject *axis_obj = Py_None;
@@ -1891,12 +2271,9 @@ reducer(char *name,
         return slow(name, args, kwds);
     }
 
-    /* input array
-     TODO
-    if (copy == 1) {
-        a = PyArray_Copy(a);
+    if (copy) {
+        a = (PyArrayObject *)PyArray_NewCopy(a, NPY_ANYORDER);
     }
-    */
 
     ndim = PyArray_NDIM(a);
 
@@ -1977,7 +2354,7 @@ reducer(char *name,
                 axis = 0;
                 ndim = 1;
                 stride = PyArray_STRIDE(a, 0);
-                length = PyArray_SIZE(a); 
+                length = PyArray_SIZE(a);
             }
         }
         else {
@@ -1993,19 +2370,19 @@ reducer(char *name,
         }
 
         if (dtype == NPY_FLOAT64) {
-            return fall_float64(a, axis, stride, length, ndim, ddof);
+            y = fall_float64(a, axis, stride, length, ndim, ddof);
         }
         else if (dtype == NPY_FLOAT32) {
-            return fall_float32(a, axis, stride, length, ndim, ddof);
+            y = fall_float32(a, axis, stride, length, ndim, ddof);
         }
         else if (dtype == NPY_INT64) {
-            return fall_int64(a, axis, stride, length, ndim, ddof);
+            y = fall_int64(a, axis, stride, length, ndim, ddof);
         }
         else if (dtype == NPY_INT32) {
-            return fall_int32(a, axis, stride, length, ndim, ddof);
+            y = fall_int32(a, axis, stride, length, ndim, ddof);
         }
         else {
-            return slow(name, args, kwds);
+            y = slow(name, args, kwds);
         }
     }
     else {
@@ -2020,21 +2397,24 @@ reducer(char *name,
         length = shape[axis];
 
         if (dtype == NPY_FLOAT64) {
-            return fone_float64(a, axis, stride, length, ndim, yshape, ddof);
+            y = fone_float64(a, axis, stride, length, ndim, yshape, ddof);
         }
         else if (dtype == NPY_FLOAT32) {
-            return fone_float32(a, axis, stride, length, ndim, yshape, ddof);
+            y = fone_float32(a, axis, stride, length, ndim, yshape, ddof);
         }
         else if (dtype == NPY_INT64) {
-            return fone_int64(a, axis, stride, length, ndim, yshape, ddof);
+            y = fone_int64(a, axis, stride, length, ndim, yshape, ddof);
         }
         else if (dtype == NPY_INT32) {
-            return fone_int32(a, axis, stride, length, ndim, yshape, ddof);
+            y = fone_int32(a, axis, stride, length, ndim, yshape, ddof);
         }
         else {
-            return slow(name, args, kwds);
+            y = slow(name, args, kwds);
         }
     }
+
+    if (copy) Py_DECREF(a);
+    return y;
 
 }
 
@@ -2515,6 +2895,44 @@ array([ 30., 65.])
 
 MULTILINE STRING END */
 
+static char median_doc[] =
+/* MULTILINE STRING BEGIN
+median(arr, axis=None)
+
+Median of array elements along given axis.
+
+Parameters
+----------
+arr : array_like
+    Input array. If `arr` is not an array, a conversion is attempted.
+axis : {int, None}, optional
+    Axis along which the median is computed. The default (axis=None) is to
+    compute the median of the flattened array.
+
+Returns
+-------
+y : ndarray
+    An array with the same shape as `arr`, except that the specified axis
+    has been removed. If `arr` is a 0d array, or if axis is None, a scalar
+    is returned. `float64` return values are used for integer inputs. NaN
+    is returned for a slice that contains one or more NaNs.
+
+See also
+--------
+bottleneck.nanmedian: Median along specified axis ignoring NaNs.
+
+Examples
+--------
+>>> a = np.array([[10, 7, 4], [3, 2, 1]])
+>>> bn.median(a)
+    3.5
+>>> bn.median(a, axis=0)
+    array([ 6.5,  4.5,  2.5])
+>>> bn.median(a, axis=1)
+    array([ 7.,  2.])
+
+MULTILINE STRING END */
+
 static char anynan_doc[] =
 /* MULTILINE STRING BEGIN
 anynan(arr, axis=None)
@@ -2624,6 +3042,7 @@ reduce_methods[] = {
     {"nanargmin", (PyCFunction)nanargmin, VARKEY, nanargmin_doc},
     {"nanargmax", (PyCFunction)nanargmax, VARKEY, nanargmax_doc},
     {"ss",        (PyCFunction)ss,        VARKEY, ss_doc},
+    {"median",    (PyCFunction)median,    VARKEY, median_doc},
     {"anynan",    (PyCFunction)anynan,    VARKEY, anynan_doc},
     {"allnan",    (PyCFunction)allnan,    VARKEY, allnan_doc},
     {NULL, NULL, 0, NULL}

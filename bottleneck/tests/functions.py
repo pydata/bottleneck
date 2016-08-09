@@ -41,6 +41,7 @@ def func_dict():
                    bn.nanmax,
                    bn.nanmax2,
                    bn.median,
+                   bn.median2,
                    bn.nanmedian,
                    bn.ss,
                    bn.ss2,

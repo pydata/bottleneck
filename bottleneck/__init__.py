@@ -22,6 +22,7 @@ try:
     from .reduce2 import nanargmin as nanargmin2
     from .reduce2 import nanargmax as nanargmax2
     from .reduce2 import ss as ss2
+    from .reduce2 import median as median2
     from .reduce2 import anynan as anynan2
     from .reduce2 import allnan as allnan2
 except:
