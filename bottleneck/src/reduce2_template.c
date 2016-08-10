@@ -1517,7 +1517,6 @@ ss(PyObject *self, PyObject *args, PyObject *kwds)
  (C) 2016 Keith Goodman
 */
 
-/* output of WIRTH macro is `med` which is the median */
 #define WIRTH(dtype) \
     do { \
         npy_intp j, l, r, k; \
@@ -1557,14 +1556,14 @@ ss(PyObject *self, PyObject *args, PyObject *kwds)
         } \
     } while (0);
 
-/* dtype = [['float64', 'float64'], ['float32', 'float32']] */
+/* dtype = [['float64'], ['float32']] */
 static PyObject *
 median_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
                   Py_ssize_t length, int ndim, int ignore)
 {
     char *_pa = PyArray_BYTES(a);
     npy_intp i;
-    npy_DTYPE1 med;
+    npy_DTYPE0 med;
     BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
         med = BN_NAN;
@@ -1594,11 +1593,10 @@ median_one_DTYPE0(PyArrayObject *a,
                   npy_intp* yshape,
                   int ignore)
 {
-    Y_INIT(NPY_DTYPE1, npy_DTYPE1)
+    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
     npy_intp i;
-    npy_DTYPE0 ai;
-    npy_DTYPE1 med;
+    npy_DTYPE0 ai, med;
     BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
         Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
@@ -1646,12 +1644,12 @@ median_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
 
 static PyObject *
 median_one_DTYPE0(PyArrayObject *a,
-                     int axis,
-                     Py_ssize_t stride,
-                     Py_ssize_t length,
-                     int ndim,
-                     npy_intp* yshape,
-                     int ignore)
+                  int axis,
+                  Py_ssize_t stride,
+                  Py_ssize_t length,
+                  int ndim,
+                  npy_intp* yshape,
+                  int ignore)
 {
     Y_INIT(NPY_DTYPE1, npy_DTYPE1)
     INIT
@@ -1687,6 +1685,150 @@ median(PyObject *self, PyObject *args, PyObject *kwds)
                    median_all_int32,
                    median_one_float64,
                    median_one_float32,
+                   median_one_int64,
+                   median_one_int32,
+                   1, 1, 0);
+}
+
+/* nanmedian ------------------------------------------------------------- */
+
+/*
+ NAN_WIRTH macro based on non-NaN handling code:
+   Fast median search: an ANSI C implementation
+   Nicolas Devillard - ndevilla AT free DOT fr
+   July 1998
+ which, in turn, took the algorithm from
+   Wirth, Niklaus
+   Algorithms + data structures = programs, p. 366
+   Englewood Cliffs: Prentice-Hall, 1976
+
+ Adapted and expanded for Bottleneck:
+ (C) 2016 Keith Goodman
+*/
+
+#define NAN_WIRTH(dtype) \
+    do { \
+        int allnan; \
+        npy_intp j, l, r, k, n; \
+        dtype x, ai, bi, atmp, amax; \
+        j = length - 1; \
+        for (i = 0; i < length; i++) { \
+            bi = AX(dtype, i); \
+            if (bi != bi) { \
+                while (AX(dtype, j) != AX(dtype, j)) { \
+                    if (j <= 0) break; \
+                    j--; \
+                } \
+                if (i >= j) break; \
+                AX(dtype, i) = AX(dtype, j); \
+                AX(dtype, j) = bi; \
+            } \
+        } \
+        n = i; \
+        k = n >> 1; \
+        l = 0; \
+        r = n - 1; \
+        while (l < r) { \
+            x = AX(dtype, k); \
+            i = l; \
+            j = r; \
+            do { \
+                while (AX(dtype, i) < x) i++; \
+                while (x < AX(dtype, j)) j--; \
+                if (i <= j) { \
+                    atmp = AX(dtype, i); \
+                    AX(dtype, i) = AX(dtype, j); \
+                    AX(dtype, j) = atmp; \
+                    i++; \
+                    j--; \
+                } \
+            } while (i <= j); \
+            if (j < k) l = i; \
+            if (k < i) r = j; \
+        } \
+        bi = AX(dtype, k); \
+        if (n % 2 == 0) { \
+            amax = -BN_INFINITY; \
+            allnan = 1; \
+            for (i = 0; i < k; i++) { \
+                ai = AX(dtype, i); \
+                if (ai >= amax) { \
+                    amax = ai; \
+                    allnan = 0; \
+                } \
+            } \
+            if (allnan == 0) { \
+                med = 0.5 * (bi + amax); \
+            } else { \
+                med = bi; \
+            } \
+        } \
+        else { \
+            med = bi; \
+        } \
+    } while (0);
+
+/* dtype = [['float64'], ['float32']] */
+static PyObject *
+nanmedian_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
+                     Py_ssize_t length, int ndim, int ignore)
+{
+    char *_pa = PyArray_BYTES(a);
+    npy_intp i;
+    npy_DTYPE0 med;
+    BN_BEGIN_ALLOW_THREADS
+    if (length == 0) {
+        med = BN_NAN;
+    }
+    else {
+        NAN_WIRTH(npy_DTYPE0)
+    }
+    BN_END_ALLOW_THREADS
+    return PyFloat_FromDouble(med);
+}
+
+static PyObject *
+nanmedian_one_DTYPE0(PyArrayObject *a,
+                     int axis,
+                     Py_ssize_t stride,
+                     Py_ssize_t length,
+                     int ndim,
+                     npy_intp* yshape,
+                     int ignore)
+{
+    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    INIT
+    npy_intp i;
+    npy_DTYPE0 med;
+    BN_BEGIN_ALLOW_THREADS
+    if (length == 0) {
+        Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
+        FOR YI = BN_NAN;
+    }
+    else {
+        WHILE {
+            NAN_WIRTH(npy_DTYPE0)
+            YI = med;
+            NEXT
+        }
+    }
+    BN_END_ALLOW_THREADS
+    return y;
+}
+/* dtype end */
+
+static PyObject *
+nanmedian(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return reducer("nanmedian",
+                   args,
+                   kwds,
+                   nanmedian_all_float64,
+                   nanmedian_all_float32,
+                   median_all_int64,
+                   median_all_int32,
+                   nanmedian_one_float64,
+                   nanmedian_one_float32,
                    median_one_int64,
                    median_one_int32,
                    1, 1, 0);
@@ -2746,6 +2888,46 @@ Examples
 
 MULTILINE STRING END */
 
+static char nanmedian_doc[] =
+/* MULTILINE STRING BEGIN
+nanmedian(arr, axis=None)
+
+Median of array elements along given axis ignoring NaNs.
+
+Parameters
+----------
+arr : array_like
+    Input array. If `arr` is not an array, a conversion is attempted.
+axis : {int, None}, optional
+    Axis along which the median is computed. The default (axis=None) is to
+    compute the median of the flattened array.
+
+Returns
+-------
+y : ndarray
+    An array with the same shape as `arr`, except that the specified axis
+    has been removed. If `arr` is a 0d array, or if axis is None, a scalar
+    is returned. `float64` return values are used for integer inputs.
+
+See also
+--------
+bottleneck.median: Median along specified axis.
+
+Examples
+--------
+>>> a = np.array([[np.nan, 7, 4], [3, 2, 1]])
+>>> a
+array([[ nan,   7.,   4.],
+       [  3.,   2.,   1.]])
+>>> bn.nanmedian(a)
+3.0
+>> bn.nanmedian(a, axis=0)
+array([ 3. ,  4.5,  2.5])
+>> bn.nanmedian(a, axis=1)
+array([ 5.5,  2. ])
+
+MULTILINE STRING END */
+
 static char anynan_doc[] =
 /* MULTILINE STRING BEGIN
 anynan(arr, axis=None)
@@ -2856,6 +3038,7 @@ reduce_methods[] = {
     {"nanargmax", (PyCFunction)nanargmax, VARKEY, nanargmax_doc},
     {"ss",        (PyCFunction)ss,        VARKEY, ss_doc},
     {"median",    (PyCFunction)median,    VARKEY, median_doc},
+    {"nanmedian", (PyCFunction)nanmedian, VARKEY, nanmedian_doc},
     {"anynan",    (PyCFunction)anynan,    VARKEY, anynan_doc},
     {"allnan",    (PyCFunction)allnan,    VARKEY, allnan_doc},
     {NULL, NULL, 0, NULL}
