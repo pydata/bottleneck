@@ -64,6 +64,7 @@ def func_dict():
                  bn.move_var,
                  bn.move_var2,
                  bn.move_min,
+                 bn.move_min2,
                  bn.move_max,
                  bn.move_argmin,
                  bn.move_argmax,

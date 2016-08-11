@@ -33,6 +33,7 @@ try:
     from .move2 import move_mean as move_mean2
     from .move2 import move_std as move_std2
     from .move2 import move_var as move_var2
+    from .move2 import move_min as move_min2
 except:
     pass
 try:

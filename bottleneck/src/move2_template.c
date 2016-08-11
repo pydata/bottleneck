@@ -45,10 +45,19 @@
 #define  WHILE0  while (_i < min_count - 1)
 #define  WHILE1  while (_i < window)
 #define  WHILE2  while (_i < length)
+#define  FOR     for (_i = 0; _i < length; _i++)
 
 #define  AI(dt)    *(dt *)(_pa + _i * stride)
 #define  AOLD(dt)  *(dt *)(_pa + (_i - window) * stride)
 #define  YI(dt)    *(dt *)(_py + _i++ * _ystride)
+
+/* used by move_min and move_max ----------------------------------------- */
+
+struct _pairs {
+    double value;
+    int death;
+};
+typedef struct _pairs pairs;
 
 /* function pointers ----------------------------------------------------- */
 
@@ -578,6 +587,152 @@ move_var(PyObject *self, PyObject *args, PyObject *kwds)
                  1);
 }
 
+/* move_min -------------------------------------------------------------- */
+
+/* dtype = [['float64'], ['float32']] */
+static PyObject *
+move_min_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
+                Py_ssize_t stride, Py_ssize_t length,
+                int ndim, npy_intp* shape, int ignore)
+{
+    INIT(NPY_DTYPE0)
+    npy_DTYPE0 ai, aold, yi;
+    Py_ssize_t count;
+    pairs *ring;
+    pairs *minpair;
+    pairs *end;
+    pairs *last;
+    ring = (pairs *)malloc(window * sizeof(pairs));
+    WHILE {
+
+        _i = 0;
+
+        end = ring + window;
+        last = ring;
+
+        minpair = ring;
+        ai = AI(npy_DTYPE0);
+        if (ai == ai) {
+            minpair->value = ai;
+        }
+        else {
+            minpair->value = BN_INFINITY;
+        }
+        minpair->death = window;
+
+        count = 0;
+        FOR {
+            ai = AI(npy_DTYPE0);
+            if (ai == ai) {
+                count++;
+            }
+            else {
+                ai = BN_INFINITY;
+            }
+            if (_i >= window) {
+                aold = AOLD(npy_DTYPE0);
+                if (aold == aold) count--;
+            }
+            if (minpair->death == _i) {
+                minpair++;
+                if (minpair >= end) minpair = ring;
+            }
+            if (ai <= minpair->value) {
+                minpair->value = ai;
+                minpair->death = _i + window;
+                last = minpair;
+            }
+            else {
+                while (last->value >= ai) {
+                    if (last == ring) last = end;
+                    last--;
+                }
+                last++;
+                if (last == end) last = ring;
+                last->value = ai;
+                last->death = _i + window;
+            }
+            yi = count >= min_count ? minpair->value : BN_NAN;
+            *(npy_DTYPE0 *)(_py + _i * _ystride) = yi;
+        }
+        NEXT
+    }
+    free(ring);
+    RETURN
+}
+/* dtype end */
+
+
+/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
+static PyObject *
+move_min_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
+                Py_ssize_t stride, Py_ssize_t length,
+                int ndim, npy_intp* shape, int ignore)
+{
+    INIT(NPY_DTYPE1)
+    npy_DTYPE0 ai;
+    npy_DTYPE1 yi;
+    pairs *ring;
+    pairs *minpair;
+    pairs *end;
+    pairs *last;
+    ring = (pairs *)malloc(window * sizeof(pairs));
+    WHILE {
+
+        _i = 0;
+
+        end = ring + window;
+        last = ring;
+
+        minpair = ring;
+        ai = AI(npy_DTYPE0);
+        minpair->value = ai;
+        minpair->death = window;
+
+        FOR {
+            ai = AI(npy_DTYPE0);
+            if (minpair->death == _i) {
+                minpair++;
+                if (minpair >= end) minpair = ring;
+            }
+            if (ai <= minpair->value) {
+                minpair->value = ai;
+                minpair->death = _i + window;
+                last = minpair;
+            }
+            else {
+                while (last->value >= ai) {
+                    if (last == ring) last = end;
+                    last--;
+                }
+                last++;
+                if (last == end) last = ring;
+                last->value = ai;
+                last->death = _i + window;
+            }
+            yi = _i + 1 >= min_count ? minpair->value : BN_NAN;
+            *(npy_DTYPE1 *)(_py + _i * _ystride) = yi;
+        }
+        NEXT
+    }
+    free(ring);
+    RETURN
+}
+/* dtype end */
+
+static PyObject *
+move_min(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return mover("move_min",
+                 args,
+                 kwds,
+                 move_min_float64,
+                 move_min_float32,
+                 move_min_int64,
+                 move_min_int32,
+                 1);
+}
+
 /* python strings -------------------------------------------------------- */
 
 PyObject *pystr_arr = NULL;
@@ -1054,6 +1209,45 @@ array([ 0. ,  0.25,  0.25,  0. ,  0. ])
 
 MULTILINE STRING END */
 
+static char move_min_doc[] =
+/* MULTILINE STRING BEGIN
+move_min(arr, window, min_count=None, axis=-1)
+
+Moving window minimum along the specified axis, optionally ignoring NaNs.
+
+float64 output is returned for all input data types.
+
+Parameters
+----------
+arr : ndarray
+    Input array. If `arr` is not an array, a conversion is attempted.
+window : int
+    The number of elements in the moving window.
+min_count: {int, None}, optional
+    If the number of non-NaN values in a window is less than `min_count`,
+    then a value of NaN is assigned to the window. By default `min_count`
+    is None, which is equivalent to setting `min_count` equal to `window`.
+axis : int, optional
+    The axis over which the window is moved. By default the last axis
+    (axis=-1) is used. An axis of None is not allowed.
+
+Returns
+-------
+y : ndarray
+    The moving minimum of the input array along the specified axis. The
+    output has the same shape as the input. The dtype of the output is
+    always float64.
+
+Examples
+--------
+>>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
+>>> bn.move_min(arr, window=2)
+array([ nan,   1.,   2.,  nan,  nan])
+>>> bn.move_min(arr, window=2, min_count=1)
+array([ 1.,  1.,  2.,  3.,  5.])
+
+MULTILINE STRING END */
+
 /* python wrapper -------------------------------------------------------- */
 
 static PyMethodDef
@@ -1062,6 +1256,7 @@ move_methods[] = {
     {"move_mean", (PyCFunction)move_mean, VARKEY, move_mean_doc},
     {"move_std",  (PyCFunction)move_std,  VARKEY, move_std_doc},
     {"move_var",  (PyCFunction)move_var,  VARKEY, move_var_doc},
+    {"move_min",  (PyCFunction)move_min,  VARKEY, move_min_doc},
     {NULL, NULL, 0, NULL}
 };
 
