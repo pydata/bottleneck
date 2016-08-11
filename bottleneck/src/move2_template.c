@@ -589,6 +589,38 @@ move_var(PyObject *self, PyObject *args, PyObject *kwds)
 
 /* move_min -------------------------------------------------------------- */
 
+/*
+   The minimum on a sliding window algorithm by Richard Harter
+   http://www.richardhartersworld.com/cri/2001/slidingmin.html
+   Copyright Richard Harter 2009
+   Released under a Simplified BSD license
+
+   Adapted and expanded for Bottleneck:
+   Copyright 2010, 2014, 2015, 2016 Keith Goodman
+   Released under the Bottleneck license
+*/
+
+#define NAN_HARTER(dtype, yi, code) \
+    ai = AI(dtype); \
+    if (ai == ai) count++; else ai = BN_INFINITY; \
+    code; \
+    if (ai <= minpair->value) { \
+        minpair->value = ai; \
+        minpair->death = _i + window; \
+        last = minpair; \
+    } \
+    else { \
+        while (last->value >= ai) { \
+            if (last == ring) last = end; \
+            last--; \
+        } \
+        last++; \
+        if (last == end) last = ring; \
+        last->value = ai; \
+        last->death = _i + window; \
+    } \
+    YI(dtype) = yi;
+
 /* dtype = [['float64'], ['float32']] */
 static PyObject *
 move_min_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
@@ -596,7 +628,7 @@ move_min_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
                 int ndim, npy_intp* shape, int ignore)
 {
     INIT(NPY_DTYPE0)
-    npy_DTYPE0 ai, aold, yi;
+    npy_DTYPE0 ai, aold;
     Py_ssize_t count;
     pairs *ring;
     pairs *minpair;
@@ -604,56 +636,32 @@ move_min_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     pairs *last;
     ring = (pairs *)malloc(window * sizeof(pairs));
     WHILE {
-
-        _i = 0;
-
+        count = _i = 0;
         end = ring + window;
         last = ring;
-
         minpair = ring;
         ai = AI(npy_DTYPE0);
-        if (ai == ai) {
-            minpair->value = ai;
-        }
-        else {
-            minpair->value = BN_INFINITY;
-        }
+        minpair->value = ai == ai ? ai : BN_INFINITY;
         minpair->death = window;
-
-        count = 0;
-        FOR {
-            ai = AI(npy_DTYPE0);
-            if (ai == ai) {
-                count++;
-            }
-            else {
-                ai = BN_INFINITY;
-            }
-            if (_i >= window) {
-                aold = AOLD(npy_DTYPE0);
-                if (aold == aold) count--;
-            }
-            if (minpair->death == _i) {
-                minpair++;
-                if (minpair >= end) minpair = ring;
-            }
-            if (ai <= minpair->value) {
-                minpair->value = ai;
-                minpair->death = _i + window;
-                last = minpair;
-            }
-            else {
-                while (last->value >= ai) {
-                    if (last == ring) last = end;
-                    last--;
-                }
-                last++;
-                if (last == end) last = ring;
-                last->value = ai;
-                last->death = _i + window;
-            }
-            yi = count >= min_count ? minpair->value : BN_NAN;
-            *(npy_DTYPE0 *)(_py + _i * _ystride) = yi;
+        WHILE0 {
+            NAN_HARTER(npy_DTYPE0,
+                       BN_NAN,
+                       NULL)
+        }
+        WHILE1 {
+            NAN_HARTER(npy_DTYPE0,
+                       count >= min_count ? minpair->value : BN_NAN,
+                       NULL)
+        }
+        WHILE2 {
+            NAN_HARTER(npy_DTYPE0,
+                       count >= min_count ? minpair->value : BN_NAN,
+                       aold = AOLD(npy_DTYPE0);
+                       if (aold == aold) count--;
+                       if (minpair->death == _i) {
+                           minpair++;
+                           if (minpair >= end) minpair = ring;
+                        })
         }
         NEXT
     }
@@ -662,6 +670,25 @@ move_min_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 }
 /* dtype end */
 
+#define HARTER(a_dtype, y_dtype, yi, code) \
+    ai = AI(a_dtype); \
+    code; \
+    if (ai <= minpair->value) { \
+        minpair->value = ai; \
+        minpair->death = _i + window; \
+        last = minpair; \
+    } \
+    else { \
+        while (last->value >= ai) { \
+            if (last == ring) last = end; \
+            last--; \
+        } \
+        last++; \
+        if (last == end) last = ring; \
+        last->value = ai; \
+        last->death = _i + window; \
+    } \
+    YI(y_dtype) = yi;
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 static PyObject *
@@ -671,47 +698,39 @@ move_min_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 {
     INIT(NPY_DTYPE1)
     npy_DTYPE0 ai;
-    npy_DTYPE1 yi;
     pairs *ring;
     pairs *minpair;
     pairs *end;
     pairs *last;
     ring = (pairs *)malloc(window * sizeof(pairs));
     WHILE {
-
         _i = 0;
-
         end = ring + window;
         last = ring;
-
         minpair = ring;
         ai = AI(npy_DTYPE0);
         minpair->value = ai;
         minpair->death = window;
-
-        FOR {
-            ai = AI(npy_DTYPE0);
-            if (minpair->death == _i) {
-                minpair++;
-                if (minpair >= end) minpair = ring;
-            }
-            if (ai <= minpair->value) {
-                minpair->value = ai;
-                minpair->death = _i + window;
-                last = minpair;
-            }
-            else {
-                while (last->value >= ai) {
-                    if (last == ring) last = end;
-                    last--;
-                }
-                last++;
-                if (last == end) last = ring;
-                last->value = ai;
-                last->death = _i + window;
-            }
-            yi = _i + 1 >= min_count ? minpair->value : BN_NAN;
-            *(npy_DTYPE1 *)(_py + _i * _ystride) = yi;
+        WHILE0 {
+            HARTER(npy_DTYPE0,
+                   npy_DTYPE1,
+                   BN_NAN,
+                   NULL)
+        }
+        WHILE1 {
+            HARTER(npy_DTYPE0,
+                   npy_DTYPE1,
+                   minpair->value,
+                   NULL)
+        }
+        WHILE2 {
+            HARTER(npy_DTYPE0,
+                   npy_DTYPE1,
+                   minpair->value,
+                   if (minpair->death == _i) {
+                       minpair++;
+                       if (minpair >= end) minpair = ring;
+                   })
         }
         NEXT
     }

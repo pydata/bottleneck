@@ -59,7 +59,7 @@ def suite_reduce(function):
         from bottleneck import %s
         from bottleneck import %s2 as %s_c
         from numpy import array
-        from numpy.random import rand, randint
+        from numpy.random import rand
         a=%s
     """
 
@@ -119,17 +119,18 @@ def suite_move(function):
         import numpy as np
         from bottleneck import %s
         from bottleneck import %s2 as %s_c
+        from numpy.random import rand
         a=%s
     """
 
     sig_array = [
-                 ("%s%s(a, 2)", "np.ones(2)"),
-                 ("%s%s(a, 2)", "np.ones(100)"),
-                 ("%s%s(a, 2)", "np.ones(1000)"),
-                 ("%s%s(a, 2)", "np.ones(1000*1000)"),
-                 ("%s%s(a, 2)", "np.ones((1000, 1000))"),
-                 ("%s%s(a, 2)", "np.ones((1000, 2))"),
-                 ("%s%s(a, 2)", "np.ones((1000, 1000, 2))"),
+                 ("%s%s(a, 2)", "rand(2)"),
+                 ("%s%s(a, 2)", "rand(100)"),
+                 ("%s%s(a, 2)", "rand(1000)"),
+                 ("%s%s(a, 2)", "rand(1000*1000)"),
+                 ("%s%s(a, 2)", "rand(1000, 1000)"),
+                 ("%s%s(a, 2)", "rand(1000, 2)"),
+                 ("%s%s(a, 2)", "rand(1000, 1000, 2)"),
                 ]
 
     f = function
