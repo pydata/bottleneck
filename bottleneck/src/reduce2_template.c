@@ -4,7 +4,7 @@
 /* iterators ------------------------------------------------------------- */
 
  /*
- * INIT and NEXT are loosely based on numpy's PyArray_IterAllButAxis and
+ * INIT and NEXT are loosely based on NumPy's PyArray_IterAllButAxis and
  * PyArray_ITER_NEXT.
  */
 
