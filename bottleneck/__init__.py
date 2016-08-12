@@ -35,6 +35,7 @@ try:
     from .move2 import move_var as move_var2
     from .move2 import move_min as move_min2
     from .move2 import move_max as move_max2
+    from .move2 import move_argmin as move_argmin2
 except:
     pass
 try:

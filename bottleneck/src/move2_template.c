@@ -1,5 +1,17 @@
 #include "bottleneck.h"
 
+/*
+   move_min, move_max, move_argmin, and move_argmax are based on
+   the minimum on a sliding window algorithm by Richard Harter
+   http://www.richardhartersworld.com/cri/2001/slidingmin.html
+   Copyright Richard Harter 2009
+   Released under a Simplified BSD license
+
+   Adapted and expanded for Bottleneck:
+   Copyright 2010, 2014, 2015, 2016 Keith Goodman
+   Released under the Bottleneck license
+*/
+
 /* iterator -------------------------------------------------------------- */
 
  /*
@@ -63,7 +75,6 @@ typedef struct _pairs pairs;
 typedef PyObject *(*move_t)(PyArrayObject *, int, int, int, Py_ssize_t,
                             Py_ssize_t, int, npy_intp*, int);
 
-/* prototype */
 static PyObject *
 mover(char *name,
       PyObject *args,
@@ -587,17 +598,6 @@ move_var(PyObject *self, PyObject *args, PyObject *kwds)
 
 /* move_min -------------------------------------------------------------- */
 
-/*
-   The minimum on a sliding window algorithm by Richard Harter
-   http://www.richardhartersworld.com/cri/2001/slidingmin.html
-   Copyright Richard Harter 2009
-   Released under a Simplified BSD license
-
-   Adapted and expanded for Bottleneck:
-   Copyright 2010, 2014, 2015, 2016 Keith Goodman
-   Released under the Bottleneck license
-*/
-
 #define MOVE_NANMIN(dtype, yi, code) \
     ai = AI(dtype); \
     if (ai == ai) count++; else ai = BN_INFINITY; \
@@ -617,7 +617,8 @@ move_var(PyObject *self, PyObject *args, PyObject *kwds)
         last->value = ai; \
         last->death = _i + window; \
     } \
-    YI(dtype) = yi;
+    yi_tmp = yi; /* yi might contain _i and YI contains _i++ */ \
+    YI(dtype) = yi_tmp;
 
 /* dtype = [['float64'], ['float32']] */
 static PyObject *
@@ -626,7 +627,7 @@ move_min_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
                 int ndim, npy_intp* shape, int ignore)
 {
     INIT(NPY_DTYPE0)
-    npy_DTYPE0 ai, aold;
+    npy_DTYPE0 ai, aold, yi_tmp;
     Py_ssize_t count;
     pairs *ring;
     pairs *minpair;
@@ -686,7 +687,8 @@ move_min_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
         last->value = ai; \
         last->death = _i + window; \
     } \
-    YI(y_dtype) = yi;
+    yi_tmp = yi; \
+    YI(y_dtype) = yi_tmp;
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 static PyObject *
@@ -696,6 +698,7 @@ move_min_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 {
     INIT(NPY_DTYPE1)
     npy_DTYPE0 ai;
+    npy_DTYPE1 yi_tmp;
     pairs *ring;
     pairs *minpair;
     pairs *end;
@@ -751,17 +754,6 @@ move_min(PyObject *self, PyObject *args, PyObject *kwds)
 }
 
 /* move_max -------------------------------------------------------------- */
-
-/*
-   The minimum on a sliding window algorithm by Richard Harter
-   http://www.richardhartersworld.com/cri/2001/slidingmin.html
-   Copyright Richard Harter 2009
-   Released under a Simplified BSD license
-
-   Adapted and expanded for Bottleneck:
-   Copyright 2010, 2014, 2015, 2016 Keith Goodman
-   Released under the Bottleneck license
-*/
 
 #define MOVE_NANMAX(dtype, yi, code) \
     ai = AI(dtype); \
@@ -912,6 +904,120 @@ move_max(PyObject *self, PyObject *args, PyObject *kwds)
                  move_max_float32,
                  move_max_int64,
                  move_max_int32,
+                 0);
+}
+
+/* move_argmin ----------------------------------------------------------- */
+
+/* dtype = [['float64'], ['float32']] */
+static PyObject *
+move_argmin_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
+                   Py_ssize_t stride, Py_ssize_t length,
+                   int ndim, npy_intp* shape, int ignore)
+{
+    INIT(NPY_DTYPE0)
+    npy_DTYPE0 ai, aold, yi_tmp;
+    Py_ssize_t count;
+    pairs *ring;
+    pairs *minpair;
+    pairs *end;
+    pairs *last;
+    ring = (pairs *)malloc(window * sizeof(pairs));
+    WHILE {
+        count = _i = 0;
+        end = ring + window;
+        last = ring;
+        minpair = ring;
+        ai = AI(npy_DTYPE0);
+        minpair->value = ai == ai ? ai : BN_INFINITY;
+        minpair->death = window;
+        WHILE0 {
+            MOVE_NANMIN(npy_DTYPE0,
+                        BN_NAN,
+                        NULL)
+        }
+        WHILE1 {
+            MOVE_NANMIN(npy_DTYPE0,
+                        count >= min_count ? _i-minpair->death+window : BN_NAN,
+                        NULL)
+        }
+        WHILE2 {
+            MOVE_NANMIN(npy_DTYPE0,
+                        count >= min_count ? _i-minpair->death+window : BN_NAN,
+                        aold = AOLD(npy_DTYPE0);
+                        if (aold == aold) count--;
+                        if (minpair->death == _i) {
+                            minpair++;
+                            if (minpair >= end) minpair = ring;
+                        })
+        }
+        NEXT
+    }
+    free(ring);
+    RETURN
+}
+/* dtype end */
+
+/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
+static PyObject *
+move_argmin_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
+                   Py_ssize_t stride, Py_ssize_t length,
+                   int ndim, npy_intp* shape, int ignore)
+{
+    INIT(NPY_DTYPE1)
+    npy_DTYPE0 ai;
+    npy_DTYPE1 yi_tmp;
+    pairs *ring;
+    pairs *minpair;
+    pairs *end;
+    pairs *last;
+    ring = (pairs *)malloc(window * sizeof(pairs));
+    WHILE {
+        _i = 0;
+        end = ring + window;
+        last = ring;
+        minpair = ring;
+        ai = AI(npy_DTYPE0);
+        minpair->value = ai;
+        minpair->death = window;
+        WHILE0 {
+            MOVE_MIN(npy_DTYPE0,
+                     npy_DTYPE1,
+                     BN_NAN,
+                     NULL)
+        }
+        WHILE1 {
+            MOVE_MIN(npy_DTYPE0,
+                     npy_DTYPE1,
+                     _i - minpair->death + window,
+                     NULL)
+        }
+        WHILE2 {
+            MOVE_MIN(npy_DTYPE0,
+                     npy_DTYPE1,
+                     _i - minpair->death + window,
+                     if (minpair->death == _i) {
+                         minpair++;
+                         if (minpair >= end) minpair = ring;
+                     })
+        }
+        NEXT
+    }
+    free(ring);
+    RETURN
+}
+/* dtype end */
+
+static PyObject *
+move_argmin(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return mover("move_argmin",
+                 args,
+                 kwds,
+                 move_argmin_float64,
+                 move_argmin_float32,
+                 move_argmin_int64,
+                 move_argmin_int32,
                  0);
 }
 
@@ -1469,16 +1575,70 @@ array([ 1.,  2.,  3.,  3.,  5.])
 
 MULTILINE STRING END */
 
+static char move_argmin_doc[] =
+/* MULTILINE STRING BEGIN
+move_argmin(arr, window, min_count=None, axis=-1)
+
+Moving window index of minimum along the specified axis, optionally
+ignoring NaNs.
+
+Index 0 is at the rightmost edge of the window. For example, if the array
+is monotonically decreasing (increasing) along the specified axis then
+the output array will contain zeros (window-1).
+
+If there is a tie in input values within a window, then the rightmost
+index is returned.
+
+float64 output is returned for all input data types.
+
+Parameters
+----------
+arr : ndarray
+    Input array. If `arr` is not an array, a conversion is attempted.
+window : int
+    The number of elements in the moving window.
+min_count: {int, None}, optional
+    If the number of non-NaN values in a window is less than `min_count`,
+    then a value of NaN is assigned to the window. By default `min_count`
+    is None, which is equivalent to setting `min_count` equal to `window`.
+axis : int, optional
+    The axis over which the window is moved. By default the last axis
+    (axis=-1) is used. An axis of None is not allowed.
+
+Returns
+-------
+y : ndarray
+    The moving index of minimum values of the input array along the
+    specified axis. The output has the same shape as the input. The dtype
+    of the output is always float64.
+
+Examples
+--------
+>>> arr = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+>>> bn.move_argmin(arr, window=2)
+array([ nan,   1.,   1.,   1.,   1.])
+
+>>> arr = np.array([5.0, 4.0, 3.0, 2.0, 1.0])
+>>> bn.move_argmin(arr, window=2)
+array([ nan,   0.,   0.,   0.,   0.])
+
+>>> arr = np.array([2.0, 3.0, 4.0, 1.0, 7.0, 5.0, 6.0])
+>>> bn.move_argmin(arr, window=3)
+array([ nan,  nan,   2.,   0.,   1.,   2.,   1.])
+
+MULTILINE STRING END */
+
 /* python wrapper -------------------------------------------------------- */
 
 static PyMethodDef
 move_methods[] = {
-    {"move_sum",  (PyCFunction)move_sum,  VARKEY, move_sum_doc},
-    {"move_mean", (PyCFunction)move_mean, VARKEY, move_mean_doc},
-    {"move_std",  (PyCFunction)move_std,  VARKEY, move_std_doc},
-    {"move_var",  (PyCFunction)move_var,  VARKEY, move_var_doc},
-    {"move_min",  (PyCFunction)move_min,  VARKEY, move_min_doc},
-    {"move_max",  (PyCFunction)move_max,  VARKEY, move_max_doc},
+    {"move_sum",    (PyCFunction)move_sum,    VARKEY, move_sum_doc},
+    {"move_mean",   (PyCFunction)move_mean,   VARKEY, move_mean_doc},
+    {"move_std",    (PyCFunction)move_std,    VARKEY, move_std_doc},
+    {"move_var",    (PyCFunction)move_var,    VARKEY, move_var_doc},
+    {"move_min",    (PyCFunction)move_min,    VARKEY, move_min_doc},
+    {"move_max",    (PyCFunction)move_max,    VARKEY, move_max_doc},
+    {"move_argmin", (PyCFunction)move_argmin, VARKEY, move_argmin_doc},
     {NULL, NULL, 0, NULL}
 };
 
