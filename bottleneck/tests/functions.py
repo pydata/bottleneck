@@ -70,6 +70,7 @@ def func_dict():
                  bn.move_argmin,
                  bn.move_argmin2,
                  bn.move_argmax,
+                 bn.move_argmax2,
                  bn.move_median,
                  bn.move_rank,
                  ]

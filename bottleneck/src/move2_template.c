@@ -774,7 +774,8 @@ move_min(PyObject *self, PyObject *args, PyObject *kwds)
         last->value = ai; \
         last->death = _i + window; \
     } \
-    YI(dtype) = yi;
+    yi_tmp = yi; \
+    YI(dtype) = yi_tmp;
 
 /* dtype = [['float64'], ['float32']] */
 static PyObject *
@@ -783,7 +784,7 @@ move_max_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
                 int ndim, npy_intp* shape, int ignore)
 {
     INIT(NPY_DTYPE0)
-    npy_DTYPE0 ai, aold;
+    npy_DTYPE0 ai, aold, yi_tmp;
     Py_ssize_t count;
     pairs *ring;
     pairs *maxpair;
@@ -843,7 +844,8 @@ move_max_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
         last->value = ai; \
         last->death = _i + window; \
     } \
-    YI(y_dtype) = yi;
+    yi_tmp = yi; \
+    YI(y_dtype) = yi_tmp;
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 static PyObject *
@@ -853,6 +855,7 @@ move_max_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 {
     INIT(NPY_DTYPE1)
     npy_DTYPE0 ai;
+    npy_DTYPE1 yi_tmp;
     pairs *ring;
     pairs *maxpair;
     pairs *end;
@@ -1018,6 +1021,120 @@ move_argmin(PyObject *self, PyObject *args, PyObject *kwds)
                  move_argmin_float32,
                  move_argmin_int64,
                  move_argmin_int32,
+                 0);
+}
+
+/* move_argmax ----------------------------------------------------------- */
+
+/* dtype = [['float64'], ['float32']] */
+static PyObject *
+move_argmax_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
+                   Py_ssize_t stride, Py_ssize_t length,
+                   int ndim, npy_intp* shape, int ignore)
+{
+    INIT(NPY_DTYPE0)
+    npy_DTYPE0 ai, aold, yi_tmp;
+    Py_ssize_t count;
+    pairs *ring;
+    pairs *maxpair;
+    pairs *end;
+    pairs *last;
+    ring = (pairs *)malloc(window * sizeof(pairs));
+    WHILE {
+        count = _i = 0;
+        end = ring + window;
+        last = ring;
+        maxpair = ring;
+        ai = AI(npy_DTYPE0);
+        maxpair->value = ai == ai ? ai : -BN_INFINITY;
+        maxpair->death = window;
+        WHILE0 {
+            MOVE_NANMAX(npy_DTYPE0,
+                        BN_NAN,
+                        NULL)
+        }
+        WHILE1 {
+            MOVE_NANMAX(npy_DTYPE0,
+                        count >= min_count ? _i-maxpair->death+window : BN_NAN,
+                        NULL)
+        }
+        WHILE2 {
+            MOVE_NANMAX(npy_DTYPE0,
+                        count >= min_count ? _i-maxpair->death+window : BN_NAN,
+                        aold = AOLD(npy_DTYPE0);
+                        if (aold == aold) count--;
+                        if (maxpair->death == _i) {
+                            maxpair++;
+                            if (maxpair >= end) maxpair = ring;
+                        })
+        }
+        NEXT
+    }
+    free(ring);
+    RETURN
+}
+/* dtype end */
+
+/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
+static PyObject *
+move_argmax_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
+                   Py_ssize_t stride, Py_ssize_t length,
+                   int ndim, npy_intp* shape, int ignore)
+{
+    INIT(NPY_DTYPE1)
+    npy_DTYPE0 ai;
+    npy_DTYPE1 yi_tmp;
+    pairs *ring;
+    pairs *maxpair;
+    pairs *end;
+    pairs *last;
+    ring = (pairs *)malloc(window * sizeof(pairs));
+    WHILE {
+        _i = 0;
+        end = ring + window;
+        last = ring;
+        maxpair = ring;
+        ai = AI(npy_DTYPE0);
+        maxpair->value = ai;
+        maxpair->death = window;
+        WHILE0 {
+            MOVE_MAX(npy_DTYPE0,
+                     npy_DTYPE1,
+                     BN_NAN,
+                     NULL)
+        }
+        WHILE1 {
+            MOVE_MAX(npy_DTYPE0,
+                     npy_DTYPE1,
+                     _i - maxpair->death + window,
+                     NULL)
+        }
+        WHILE2 {
+            MOVE_MAX(npy_DTYPE0,
+                     npy_DTYPE1,
+                     _i - maxpair->death + window,
+                     if (maxpair->death == _i) {
+                         maxpair++;
+                         if (maxpair >= end) maxpair = ring;
+                     })
+        }
+        NEXT
+    }
+    free(ring);
+    RETURN
+}
+/* dtype end */
+
+static PyObject *
+move_argmax(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return mover("move_argmax",
+                 args,
+                 kwds,
+                 move_argmax_float64,
+                 move_argmax_float32,
+                 move_argmax_int64,
+                 move_argmax_int32,
                  0);
 }
 
@@ -1628,6 +1745,59 @@ array([ nan,  nan,   2.,   0.,   1.,   2.,   1.])
 
 MULTILINE STRING END */
 
+static char move_argmax_doc[] =
+/* MULTILINE STRING BEGIN
+move_argmax(arr, window, min_count=None, axis=-1)
+
+Moving window index of maximum along the specified axis, optionally
+ignoring NaNs.
+
+Index 0 is at the rightmost edge of the window. For example, if the array
+is monotonically increasing (decreasing) along the specified axis then
+the output array will contain zeros (window-1).
+
+If there is a tie in input values within a window, then the rightmost
+index is returned.
+
+float64 output is returned for all input data types.
+
+Parameters
+----------
+arr : ndarray
+    Input array. If `arr` is not an array, a conversion is attempted.
+window : int
+    The number of elements in the moving window.
+min_count: {int, None}, optional
+    If the number of non-NaN values in a window is less than `min_count`,
+    then a value of NaN is assigned to the window. By default `min_count`
+    is None, which is equivalent to setting `min_count` equal to `window`.
+axis : int, optional
+    The axis over which the window is moved. By default the last axis
+    (axis=-1) is used. An axis of None is not allowed.
+
+Returns
+-------
+y : ndarray
+    The moving index of maximum values of the input array along the
+    specified axis. The output has the same shape as the input. The dtype
+    of the output is always float64.
+
+Examples
+--------
+>>> arr = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+>>> bn.move_argmax(arr, window=2)
+array([ nan,   0.,   0.,   0.,   0.])
+
+>>> arr = np.array([5.0, 4.0, 3.0, 2.0, 1.0])
+>>> bn.move_argmax(arr, window=2)
+array([ nan,   1.,   1.,   1.,   1.])
+
+>>> arr = np.array([2.0, 3.0, 4.0, 1.0, 7.0, 5.0, 6.0])
+>>> bn.move_argmax(arr, window=3)
+array([ nan,  nan,   0.,   1.,   0.,   1.,   2.])
+
+MULTILINE STRING END */
+
 /* python wrapper -------------------------------------------------------- */
 
 static PyMethodDef
@@ -1639,6 +1809,7 @@ move_methods[] = {
     {"move_min",    (PyCFunction)move_min,    VARKEY, move_min_doc},
     {"move_max",    (PyCFunction)move_max,    VARKEY, move_max_doc},
     {"move_argmin", (PyCFunction)move_argmin, VARKEY, move_argmin_doc},
+    {"move_argmax", (PyCFunction)move_argmax, VARKEY, move_argmax_doc},
     {NULL, NULL, 0, NULL}
 };
 
