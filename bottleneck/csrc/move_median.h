@@ -63,15 +63,15 @@ struct _mm_handle {
 typedef struct _mm_handle mm_handle;
 
 // non-nan functions
-inline mm_handle *mm_new(const idx_t window, idx_t min_count);
-inline ai_t mm_update_init(mm_handle *mm, ai_t ai);
-inline ai_t mm_update(mm_handle *mm, ai_t ai);
+mm_handle *mm_new(const idx_t window, idx_t min_count);
+ai_t mm_update_init(mm_handle *mm, ai_t ai);
+ai_t mm_update(mm_handle *mm, ai_t ai);
 
 // nan functions
-inline mm_handle *mm_new_nan(const idx_t window, idx_t min_count);
-inline ai_t mm_update_init_nan(mm_handle *mm, ai_t ai);
-inline ai_t mm_update_nan(mm_handle *mm, ai_t ai);
+mm_handle *mm_new_nan(const idx_t window, idx_t min_count);
+ai_t mm_update_init_nan(mm_handle *mm, ai_t ai);
+ai_t mm_update_nan(mm_handle *mm, ai_t ai);
 
 // functions common to non-nan and nan cases
-inline void mm_reset(mm_handle *mm);
-inline void mm_free(mm_handle *mm);
+void mm_reset(mm_handle *mm);
+void mm_free(mm_handle *mm);
