@@ -1,3 +1,12 @@
+/*
+   Copyright (c) 2011 J. David Lee. All rights reserved.
+   Released under a Simplified BSD license
+
+   Adapted, expanded, and added NaN handling for Bottleneck:
+   Copyright 2016 Keith Goodman
+   Released under the Bottleneck license
+*/
+
 #include "move_median.h"
 
 // Minimum of two numbers.

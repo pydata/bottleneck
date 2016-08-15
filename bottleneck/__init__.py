@@ -37,6 +37,7 @@ try:
     from .move2 import move_max as move_max2
     from .move2 import move_argmin as move_argmin2
     from .move2 import move_argmax as move_argmax2
+    from .move2 import move_median as move_median2
 except:
     pass
 try:

@@ -4,20 +4,14 @@
 #include <math.h>
 #include <assert.h>
 
+typedef size_t idx_t;
+typedef double ai_t;
+
 #if NOCYTHON==1
-
-    typedef size_t idx_t;
-    typedef double ai_t;
-
-    // maximum of 8 due to the manual loop-unrolling used in the code
     #define NUM_CHILDREN 2
-
 #else
-
-    typedef npy_float64 ai_t;
-    typedef npy_intp idx_t;
+    // maximum of 8 due to the manual loop-unrolling used in the code
     #define NUM_CHILDREN 8
-
 #endif
 
 #if defined(_MSC_VER) && (_MSC_VER < 1900)

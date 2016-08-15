@@ -36,8 +36,9 @@
 #define VARKEY METH_VARARGS | METH_KEYWORDS
 #define error_converting(x) (((x) == -1) && PyErr_Occurred())
 
-#define VALUE_ERR(i) PyErr_SetString(PyExc_ValueError, i)
-#define TYPE_ERR(i) PyErr_SetString(PyExc_TypeError, i)
+#define VALUE_ERR(text) PyErr_SetString(PyExc_ValueError, text)
+#define TYPE_ERR(text) PyErr_SetString(PyExc_TypeError, text)
+#define MEMORY_ERR(text) PyErr_SetString(PyExc_MemoryError, text)
 
 /* `inline` copied from NumPy. */
 #if defined(_MSC_VER)

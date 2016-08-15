@@ -1,4 +1,5 @@
 #include "bottleneck.h"
+#include "../csrc/move_median.h"
 
 /*
    move_min, move_max, move_argmin, and move_argmax are based on
@@ -7,7 +8,7 @@
    Copyright Richard Harter 2009
    Released under a Simplified BSD license
 
-   Adapted and expanded for Bottleneck:
+   Adapted, expanded, and added NaN handling for Bottleneck:
    Copyright 2010, 2014, 2015, 2016 Keith Goodman
    Released under the Bottleneck license
 */
@@ -1138,6 +1139,91 @@ move_argmax(PyObject *self, PyObject *args, PyObject *kwds)
                  0);
 }
 
+/* move_median ----------------------------------------------------------- */
+
+/* dtype = [['float64'], ['float32']] */
+static PyObject *
+move_median_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
+                   Py_ssize_t stride, Py_ssize_t length,
+                   int ndim, npy_intp* shape, int ignore)
+{
+    if (window == 1) return PyArray_Copy(a);
+    INIT(NPY_DTYPE0)
+    mm_handle *mm;
+    npy_DTYPE0 ai;
+    mm = mm_new_nan(window, min_count);
+    if (mm == NULL) {
+        MEMORY_ERR("Could not allocate memory for move_median");
+    }
+    WHILE {
+        WHILE0 {
+            ai = AI(npy_DTYPE0);
+            YI(npy_DTYPE0) = mm_update_init_nan(mm, ai);
+        }
+        WHILE1 {
+            ai = AI(npy_DTYPE0);
+            YI(npy_DTYPE0) = mm_update_init_nan(mm, ai);
+        }
+        WHILE2 {
+            ai = AI(npy_DTYPE0);
+            YI(npy_DTYPE0) = mm_update_nan(mm, ai);
+        }
+        mm_reset(mm);
+        NEXT
+    }
+    mm_free(mm);
+    RETURN
+}
+/* dtype end */
+
+/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
+static PyObject *
+move_median_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
+                   Py_ssize_t stride, Py_ssize_t length,
+                   int ndim, npy_intp* shape, int ignore)
+{
+    if (window == 1) return PyArray_Copy(a);
+    INIT(NPY_DTYPE1)
+    mm_handle *mm;
+    npy_DTYPE0 ai;
+    mm = mm_new_nan(window, min_count);
+    if (mm == NULL) {
+        MEMORY_ERR("Could not allocate memory for move_median");
+    }
+    WHILE {
+        WHILE0 {
+            ai = AI(npy_DTYPE0);
+            YI(npy_DTYPE0) = mm_update_init(mm, ai);
+        }
+        WHILE1 {
+            ai = AI(npy_DTYPE0);
+            YI(npy_DTYPE0) = mm_update_init(mm, ai);
+        }
+        WHILE2 {
+            ai = AI(npy_DTYPE0);
+            YI(npy_DTYPE0) = mm_update(mm, ai);
+        }
+        mm_reset(mm);
+        NEXT
+    }
+    mm_free(mm);
+    RETURN
+}
+/* dtype end */
+
+static PyObject *
+move_median(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return mover("move_median",
+                 args,
+                 kwds,
+                 move_median_float64,
+                 move_median_float32,
+                 move_median_int64,
+                 move_median_int32,
+                 0);
+}
+
 /* python strings -------------------------------------------------------- */
 
 PyObject *pystr_arr = NULL;
@@ -1798,6 +1884,44 @@ array([ nan,  nan,   0.,   1.,   0.,   1.,   2.])
 
 MULTILINE STRING END */
 
+static char move_median_doc[] =
+/* MULTILINE STRING BEGIN
+move_median(arr, window, min_count=None, axis=-1)
+
+Moving window median along the specified axis, optionally ignoring NaNs.
+
+float64 output is returned for all input data types.
+
+Parameters
+----------
+arr : ndarray
+    Input array. If `arr` is not an array, a conversion is attempted.
+window : int
+    The number of elements in the moving window.
+min_count: {int, None}, optional
+    If the number of non-NaN values in a window is less than `min_count`,
+    then a value of NaN is assigned to the window. By default `min_count`
+    is None, which is equivalent to setting `min_count` equal to `window`.
+axis : int, optional
+    The axis over which the window is moved. By default the last axis
+    (axis=-1) is used. An axis of None is not allowed.
+
+Returns
+-------
+y : ndarray
+    The moving median of the input array along the specified axis. The
+    output has the same shape as the input.
+
+Examples
+--------
+>>> arr = np.array([1.0, 2.0, 3.0, 4.0])
+>>> bn.move_median(arr, window=2)
+array([ nan,  1.5,  2.5,  3.5])
+>>> bn.move_median(arr, window=2, min_count=1)
+array([ 1. ,  1.5,  2.5,  3.5])
+
+MULTILINE STRING END */
+
 /* python wrapper -------------------------------------------------------- */
 
 static PyMethodDef
@@ -1810,6 +1934,7 @@ move_methods[] = {
     {"move_max",    (PyCFunction)move_max,    VARKEY, move_max_doc},
     {"move_argmin", (PyCFunction)move_argmin, VARKEY, move_argmin_doc},
     {"move_argmax", (PyCFunction)move_argmax, VARKEY, move_argmax_doc},
+    {"move_median", (PyCFunction)move_median, VARKEY, move_median_doc},
     {NULL, NULL, 0, NULL}
 };
 
