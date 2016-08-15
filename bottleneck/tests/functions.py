@@ -74,6 +74,7 @@ def func_dict():
                  bn.move_median,
                  bn.move_median2,
                  bn.move_rank,
+                 bn.move_rank2,
                  ]
     d['nonreduce'] = [bn.replace]
     d['nonreduce_axis'] = [bn.partsort,

@@ -59,9 +59,10 @@
 #define  WHILE1  while (_i < window)
 #define  WHILE2  while (_i < length)
 
-#define  AI(dt)    *(dt *)(_pa + _i * stride)
 #define  A0(dt)    *(dt *)(_pa)
+#define  AI(dt)    *(dt *)(_pa + _i * stride)
 #define  AOLD(dt)  *(dt *)(_pa + (_i - window) * stride)
+#define  AX(dt, x) *(dt*)(_pa + x * stride)
 #define  YI(dt)    *(dt *)(_py + _i++ * _ystride)
 
 /* typedefs and prototypes ----------------------------------------------- */
@@ -1223,6 +1224,177 @@ move_median(PyObject *self, PyObject *args, PyObject *kwds)
                  0);
 }
 
+/* move_rank-------------------------------------------------------------- */
+
+/* dtype = [['float64', 'float64'], ['float32', 'float32']] */
+static PyObject *
+move_rank_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
+                 Py_ssize_t stride, Py_ssize_t length,
+                 int ndim, npy_intp* shape, int ignore)
+{
+    INIT(NPY_DTYPE1)
+    Py_ssize_t j;
+    npy_DTYPE0 ai, aj;
+    npy_DTYPE1 g, e, n, r;
+    WHILE {
+        WHILE0 {
+            YI(npy_DTYPE1) = BN_NAN;
+        }
+        WHILE1 {
+            ai = AI(npy_DTYPE0);
+            if (ai == ai) {
+                g = 0;
+                e = 1;
+                n = 1;
+                r = 0;
+                for (j = 0; j < _i; j++) {
+                    aj = AX(npy_DTYPE0, j);
+                    if (aj == aj) {
+                        n++;
+                        if (ai > aj) g++;
+                        else if (ai == aj) e++;
+                    }
+                }
+                if (n < min_count) {
+                    r = BN_NAN;
+                }
+                else if (n == 1) {
+                    r = 0.0;
+                }
+                else {
+                    r = (g + g + e - 1.0) / 2.0;
+                    r = r / (n - 1.0);
+                    r = 2.0 * (r - 0.5);
+                }
+            }
+            else {
+                r = BN_NAN;
+            }
+            YI(npy_DTYPE1) = r;
+        }
+        WHILE2 {
+            ai = AI(npy_DTYPE0);
+            if (ai == ai) {
+                g = 0;
+                e = 1;
+                n = 1;
+                r = 0;
+                for (j = _i - window + 1; j < _i; j++) {
+                    aj = AX(npy_DTYPE0, j);
+                    if (aj == aj) {
+                        n++;
+                        if (ai > aj) g++;
+                        else if (ai == aj) e++;
+                    }
+                }
+                if (n < min_count) {
+                    r = BN_NAN;
+                }
+                else if (n == 1) {
+                    r = 0.0;
+                }
+                else {
+                    r = (g + g + e - 1.0) / 2.0;
+                    r = r / (n - 1.0);
+                    r = 2.0 * (r - 0.5);
+                }
+            }
+            else {
+                r = BN_NAN;
+            }
+            YI(npy_DTYPE1) = r;
+        }
+        NEXT
+    }
+    RETURN
+}
+/* dtype end */
+
+/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
+static PyObject *
+move_rank_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
+                 Py_ssize_t stride, Py_ssize_t length,
+                 int ndim, npy_intp* shape, int ignore)
+{
+    INIT(NPY_DTYPE1)
+    Py_ssize_t j;
+    npy_DTYPE0 ai, aj;
+    npy_DTYPE1 g, e, n, r;
+    WHILE {
+        WHILE0 {
+            YI(npy_DTYPE1) = BN_NAN;
+        }
+        WHILE1 {
+            ai = AI(npy_DTYPE0);
+            g = 0;
+            e = 1;
+            n = 1;
+            r = 0;
+            for (j = 0; j < _i; j++) {
+                aj = AX(npy_DTYPE0, j);
+                n++;
+                if (ai > aj) g++;
+                else if (ai == aj) e++;
+            }
+            if (n < min_count) {
+                r = BN_NAN;
+            }
+            else if (n == 1) {
+                r = 0.0;
+            }
+            else {
+                r = (g + g + e - 1.0) / 2.0;
+                r = r / (n - 1.0);
+                r = 2.0 * (r - 0.5);
+            }
+            YI(npy_DTYPE1) = r;
+        }
+        WHILE2 {
+            ai = AI(npy_DTYPE0);
+            g = 0;
+            e = 1;
+            n = 1;
+            r = 0;
+            for (j = _i - window + 1; j < _i; j++) {
+                aj = AX(npy_DTYPE0, j);
+                if (aj == aj) {
+                    n++;
+                    if (ai > aj) g++;
+                    else if (ai == aj) e++;
+                }
+            }
+            if (n < min_count) {
+                r = BN_NAN;
+            }
+            else if (n == 1) {
+                r = 0.0;
+            }
+            else {
+                r = (g + g + e - 1.0) / 2.0;
+                r = r / (n - 1.0);
+                r = 2.0 * (r - 0.5);
+            }
+            YI(npy_DTYPE1) = r;
+        }
+        NEXT
+    }
+    RETURN
+}
+/* dtype end */
+
+static PyObject *
+move_rank(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return mover("move_rank",
+                 args,
+                 kwds,
+                 move_rank_float64,
+                 move_rank_float32,
+                 move_rank_int64,
+                 move_rank_int32,
+                 0);
+}
+
 /* python strings -------------------------------------------------------- */
 
 PyObject *pystr_arr = NULL;
@@ -1921,6 +2093,65 @@ array([ 1. ,  1.5,  2.5,  3.5])
 
 MULTILINE STRING END */
 
+static char move_rank_doc[] =
+/* MULTILINE STRING BEGIN
+move_rank(arr, window, min_count=None, axis=-1)
+
+Moving window ranking along the specified axis, optionally ignoring NaNs.
+
+The output is normalized to be between -1 and 1. For example, with a
+window width of 3 (and with no ties), the possible output values are
+-1, 0, 1.
+
+Ties are broken by averaging the rankings. See the examples below.
+
+The runtime depends almost linearly on `window`. The more NaNs there are
+in the input array, the shorter the runtime.
+
+Parameters
+----------
+arr : ndarray
+    Input array. If `arr` is not an array, a conversion is attempted.
+window : int
+    The number of elements in the moving window.
+min_count: {int, None}, optional
+    If the number of non-NaN values in a window is less than `min_count`,
+    then a value of NaN is assigned to the window. By default `min_count`
+    is None, which is equivalent to setting `min_count` equal to `window`.
+axis : int, optional
+    The axis over which the window is moved. By default the last axis
+    (axis=-1) is used. An axis of None is not allowed.
+
+Returns
+-------
+y : ndarray
+    The moving ranking along the specified axis. The output has the same
+    shape as the input. For integer input arrays, the dtype of the output
+    is float64.
+
+Examples
+--------
+With window=3 and no ties, there are 3 possible output values, i.e.
+[-1., 0., 1.]:
+
+>>> arr = np.array([1, 2, 3, 9, 8, 7, 5, 6, 4])
+>>> bn.move_rank(arr, window=3)
+    array([ nan,  nan,   1.,   1.,   0.,  -1.,  -1.,   0.,  -1.])
+
+Ties are broken by averaging the rankings of the tied elements:
+
+>>> arr = np.array([1, 2, 3, 3, 3, 4])
+>>> bn.move_rank(arr, window=3)
+    array([ nan,  nan,  1. ,  0.5,  0. ,  1. ])
+
+In an increasing sequence, the moving window ranking is always equal to 1:
+
+>>> arr = np.array([1, 2, 3, 4, 5])
+>>> bn.move_rank(arr, window=2)
+    array([ nan,   1.,   1.,   1.,   1.])
+
+MULTILINE STRING END */
+
 /* python wrapper -------------------------------------------------------- */
 
 static PyMethodDef
@@ -1934,6 +2165,7 @@ move_methods[] = {
     {"move_argmin", (PyCFunction)move_argmin, VARKEY, move_argmin_doc},
     {"move_argmax", (PyCFunction)move_argmax, VARKEY, move_argmax_doc},
     {"move_median", (PyCFunction)move_median, VARKEY, move_median_doc},
+    {"move_rank",   (PyCFunction)move_rank,   VARKEY, move_rank_doc},
     {NULL, NULL, 0, NULL}
 };
 
