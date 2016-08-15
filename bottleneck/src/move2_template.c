@@ -55,11 +55,12 @@
     return _y;
 
 #define  WHILE   while (_index < _size)
-#define  WHILE0  while (_i < min_count - 1)
+#define  WHILE0  _i = 0; while (_i < min_count - 1)
 #define  WHILE1  while (_i < window)
 #define  WHILE2  while (_i < length)
 
 #define  AI(dt)    *(dt *)(_pa + _i * stride)
+#define  A0(dt)    *(dt *)(_pa)
 #define  AOLD(dt)  *(dt *)(_pa + (_i - window) * stride)
 #define  YI(dt)    *(dt *)(_py + _i++ * _ystride)
 
@@ -98,7 +99,7 @@ move_sum_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     Py_ssize_t count;
     npy_DTYPE0 asum, ai, aold;
     WHILE {
-        asum = count = _i = 0;
+        asum = count = 0;
         WHILE0 {
             ai = AI(npy_DTYPE0);
             if (ai == ai) {
@@ -151,7 +152,7 @@ move_sum_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     INIT(NPY_DTYPE1)
     npy_DTYPE1 asum;
     WHILE {
-        asum = _i = 0;
+        asum = 0;
         WHILE0 {
             asum += AI(npy_DTYPE0);
             YI(npy_DTYPE1) = BN_NAN;
@@ -196,7 +197,7 @@ move_mean_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     Py_ssize_t count;
     npy_DTYPE0 asum, ai, aold, count_inv;
     WHILE {
-        asum = count = _i = 0;
+        asum = count = 0;
         WHILE0 {
             ai = AI(npy_DTYPE0);
             if (ai == ai) {
@@ -251,7 +252,7 @@ move_mean_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     INIT(NPY_DTYPE1)
     npy_DTYPE1 asum, window_inv = 1.0 / window;
     WHILE {
-        asum = _i = 0;
+        asum = 0;
         WHILE0 {
             asum += AI(npy_DTYPE0);
             YI(npy_DTYPE1) = BN_NAN;
@@ -297,7 +298,7 @@ move_std_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     Py_ssize_t count;
     npy_DTYPE0 delta, amean, assqdm, ai, aold, yi, count_inv, ddof_inv;
     WHILE {
-        amean = assqdm = count = _i = 0;
+        amean = assqdm = count = 0;
         WHILE0 {
             ai = AI(npy_DTYPE0);
             if (ai == ai) {
@@ -393,7 +394,7 @@ move_std_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     npy_DTYPE1 delta, amean, assqdm, yi, ai, aold;
     npy_DTYPE1 window_inv = 1.0 / window, winddof_inv = 1.0 / winddof;
     WHILE {
-        amean = assqdm = _i = 0;
+        amean = assqdm = 0;
         WHILE0 {
             ai = AI(npy_DTYPE0);
             delta = ai - amean;
@@ -453,7 +454,7 @@ move_var_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     Py_ssize_t count;
     npy_DTYPE0 delta, amean, assqdm, ai, aold, yi, count_inv, ddof_inv;
     WHILE {
-        amean = assqdm = count = _i = 0;
+        amean = assqdm = count = 0;
         WHILE0 {
             ai = AI(npy_DTYPE0);
             if (ai == ai) {
@@ -549,7 +550,7 @@ move_var_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     npy_DTYPE1 delta, amean, assqdm, yi, ai, aold;
     npy_DTYPE1 window_inv = 1.0 / window, winddof_inv = 1.0 / winddof;
     WHILE {
-        amean = assqdm = _i = 0;
+        amean = assqdm = 0;
         WHILE0 {
             ai = AI(npy_DTYPE0);
             delta = ai - amean;
@@ -636,11 +637,11 @@ move_min_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     pairs *last;
     ring = (pairs *)malloc(window * sizeof(pairs));
     WHILE {
-        count = _i = 0;
+        count = 0;
         end = ring + window;
         last = ring;
         minpair = ring;
-        ai = AI(npy_DTYPE0);
+        ai = A0(npy_DTYPE0);
         minpair->value = ai == ai ? ai : BN_INFINITY;
         minpair->death = window;
         WHILE0 {
@@ -706,11 +707,10 @@ move_min_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     pairs *last;
     ring = (pairs *)malloc(window * sizeof(pairs));
     WHILE {
-        _i = 0;
         end = ring + window;
         last = ring;
         minpair = ring;
-        ai = AI(npy_DTYPE0);
+        ai = A0(npy_DTYPE0);
         minpair->value = ai;
         minpair->death = window;
         WHILE0 {
@@ -793,11 +793,11 @@ move_max_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     pairs *last;
     ring = (pairs *)malloc(window * sizeof(pairs));
     WHILE {
-        count = _i = 0;
+        count = 0;
         end = ring + window;
         last = ring;
         maxpair = ring;
-        ai = AI(npy_DTYPE0);
+        ai = A0(npy_DTYPE0);
         maxpair->value = ai == ai ? ai : -BN_INFINITY;
         maxpair->death = window;
         WHILE0 {
@@ -863,11 +863,10 @@ move_max_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     pairs *last;
     ring = (pairs *)malloc(window * sizeof(pairs));
     WHILE {
-        _i = 0;
         end = ring + window;
         last = ring;
         maxpair = ring;
-        ai = AI(npy_DTYPE0);
+        ai = A0(npy_DTYPE0);
         maxpair->value = ai;
         maxpair->death = window;
         WHILE0 {
@@ -928,11 +927,11 @@ move_argmin_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     pairs *last;
     ring = (pairs *)malloc(window * sizeof(pairs));
     WHILE {
-        count = _i = 0;
+        count = 0;
         end = ring + window;
         last = ring;
         minpair = ring;
-        ai = AI(npy_DTYPE0);
+        ai = A0(npy_DTYPE0);
         minpair->value = ai == ai ? ai : BN_INFINITY;
         minpair->death = window;
         WHILE0 {
@@ -977,11 +976,10 @@ move_argmin_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     pairs *last;
     ring = (pairs *)malloc(window * sizeof(pairs));
     WHILE {
-        _i = 0;
         end = ring + window;
         last = ring;
         minpair = ring;
-        ai = AI(npy_DTYPE0);
+        ai = A0(npy_DTYPE0);
         minpair->value = ai;
         minpair->death = window;
         WHILE0 {
@@ -1042,11 +1040,11 @@ move_argmax_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     pairs *last;
     ring = (pairs *)malloc(window * sizeof(pairs));
     WHILE {
-        count = _i = 0;
+        count = 0;
         end = ring + window;
         last = ring;
         maxpair = ring;
-        ai = AI(npy_DTYPE0);
+        ai = A0(npy_DTYPE0);
         maxpair->value = ai == ai ? ai : -BN_INFINITY;
         maxpair->death = window;
         WHILE0 {
@@ -1091,11 +1089,10 @@ move_argmax_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     pairs *last;
     ring = (pairs *)malloc(window * sizeof(pairs));
     WHILE {
-        _i = 0;
         end = ring + window;
         last = ring;
         maxpair = ring;
-        ai = AI(npy_DTYPE0);
+        ai = A0(npy_DTYPE0);
         maxpair->value = ai;
         maxpair->death = window;
         WHILE0 {
@@ -1155,7 +1152,6 @@ move_median_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
         MEMORY_ERR("Could not allocate memory for move_median");
     }
     WHILE {
-        _i = 0;
         WHILE0 {
             ai = AI(npy_DTYPE0);
             YI(npy_DTYPE0) = mm_update_init_nan(mm, ai);
@@ -1194,7 +1190,6 @@ move_median_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
         MEMORY_ERR("Could not allocate memory for move_median");
     }
     WHILE {
-        _i = 0;
         WHILE0 {
             ai = AI(npy_DTYPE0);
             YI(npy_DTYPE1) = mm_update_init(mm, ai);
