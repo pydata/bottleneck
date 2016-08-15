@@ -1149,13 +1149,13 @@ move_median_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 {
     if (window == 1) return PyArray_Copy(a);
     INIT(NPY_DTYPE0)
-    mm_handle *mm;
     npy_DTYPE0 ai;
-    mm = mm_new_nan(window, min_count);
+    mm_handle *mm = mm_new_nan(window, min_count);
     if (mm == NULL) {
         MEMORY_ERR("Could not allocate memory for move_median");
     }
     WHILE {
+        _i = 0;
         WHILE0 {
             ai = AI(npy_DTYPE0);
             YI(npy_DTYPE0) = mm_update_init_nan(mm, ai);
@@ -1182,26 +1182,30 @@ move_median_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
                    Py_ssize_t stride, Py_ssize_t length,
                    int ndim, npy_intp* shape, int ignore)
 {
-    if (window == 1) return PyArray_Copy(a);
+    if (window == 1) {
+        return PyArray_CastToType(a,
+                                  PyArray_DescrFromType(NPY_DTYPE1),
+                                  PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS));
+    }
     INIT(NPY_DTYPE1)
-    mm_handle *mm;
     npy_DTYPE0 ai;
-    mm = mm_new_nan(window, min_count);
+    mm_handle *mm = mm_new(window, min_count);
     if (mm == NULL) {
         MEMORY_ERR("Could not allocate memory for move_median");
     }
     WHILE {
+        _i = 0;
         WHILE0 {
             ai = AI(npy_DTYPE0);
-            YI(npy_DTYPE0) = mm_update_init(mm, ai);
+            YI(npy_DTYPE1) = mm_update_init(mm, ai);
         }
         WHILE1 {
             ai = AI(npy_DTYPE0);
-            YI(npy_DTYPE0) = mm_update_init(mm, ai);
+            YI(npy_DTYPE1) = mm_update_init(mm, ai);
         }
         WHILE2 {
             ai = AI(npy_DTYPE0);
-            YI(npy_DTYPE0) = mm_update(mm, ai);
+            YI(npy_DTYPE1) = mm_update(mm, ai);
         }
         mm_reset(mm);
         NEXT

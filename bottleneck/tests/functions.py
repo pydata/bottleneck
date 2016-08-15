@@ -72,6 +72,7 @@ def func_dict():
                  bn.move_argmax,
                  bn.move_argmax2,
                  bn.move_median,
+                 bn.move_median2,
                  bn.move_rank,
                  ]
     d['nonreduce'] = [bn.replace]
