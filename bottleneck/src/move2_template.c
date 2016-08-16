@@ -1251,7 +1251,7 @@ move_rank_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
                     aj = AX(npy_DTYPE0, j);
                     if (aj == aj) {
                         n++;
-                        if (ai > aj) g++;
+                        if (ai > aj) g += 2;
                         else if (ai == aj) e++;
                     }
                 }
@@ -1262,7 +1262,7 @@ move_rank_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
                     r = 0.0;
                 }
                 else {
-                    r = (g + g + e - 1.0) / 2.0;
+                    r = 0.5 * (g + e - 1.0);
                     r = r / (n - 1.0);
                     r = 2.0 * (r - 0.5);
                 }
@@ -1283,7 +1283,7 @@ move_rank_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
                     aj = AX(npy_DTYPE0, j);
                     if (aj == aj) {
                         n++;
-                        if (ai > aj) g++;
+                        if (ai > aj) g += 2;
                         else if (ai == aj) e++;
                     }
                 }
@@ -1294,7 +1294,7 @@ move_rank_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
                     r = 0.0;
                 }
                 else {
-                    r = (g + g + e - 1.0) / 2.0;
+                    r = 0.5 * (g + e - 1.0);
                     r = r / (n - 1.0);
                     r = 2.0 * (r - 0.5);
                 }
@@ -1319,7 +1319,7 @@ move_rank_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     INIT(NPY_DTYPE1)
     Py_ssize_t j;
     npy_DTYPE0 ai, aj;
-    npy_DTYPE1 g, e, n, r;
+    npy_DTYPE1 g, e, r, window_inv = 0.5 * 1.0 / (window - 1);
     WHILE {
         WHILE0 {
             YI(npy_DTYPE1) = BN_NAN;
@@ -1328,23 +1328,21 @@ move_rank_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
             ai = AI(npy_DTYPE0);
             g = 0;
             e = 1;
-            n = 1;
             r = 0;
             for (j = 0; j < _i; j++) {
                 aj = AX(npy_DTYPE0, j);
-                n++;
-                if (ai > aj) g++;
+                if (ai > aj) g += 2;
                 else if (ai == aj) e++;
             }
-            if (n < min_count) {
+            if (_i < min_count - 1) {
                 r = BN_NAN;
             }
-            else if (n == 1) {
+            else if (_i == 0) {
                 r = 0.0;
             }
             else {
-                r = (g + g + e - 1.0) / 2.0;
-                r = r / (n - 1.0);
+                r = 0.5 * (g + e - 1.0);
+                r = r / _i;
                 r = 2.0 * (r - 0.5);
             }
             YI(npy_DTYPE1) = r;
@@ -1353,25 +1351,19 @@ move_rank_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
             ai = AI(npy_DTYPE0);
             g = 0;
             e = 1;
-            n = 1;
             r = 0;
             for (j = _i - window + 1; j < _i; j++) {
                 aj = AX(npy_DTYPE0, j);
                 if (aj == aj) {
-                    n++;
-                    if (ai > aj) g++;
+                    if (ai > aj) g += 2;
                     else if (ai == aj) e++;
                 }
             }
-            if (n < min_count) {
-                r = BN_NAN;
-            }
-            else if (n == 1) {
+            if (window == 1) {
                 r = 0.0;
             }
             else {
-                r = (g + g + e - 1.0) / 2.0;
-                r = r / (n - 1.0);
+                r = window_inv * (g + e - 1.0);
                 r = 2.0 * (r - 0.5);
             }
             YI(npy_DTYPE1) = r;
