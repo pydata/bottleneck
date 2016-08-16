@@ -2,25 +2,28 @@ import os
 import re
 import ast
 
-DTYPE_BEGIN = r'^/\*\s*dtype\s*=\s*'
-DTYPE_END = r'^/\*\s*dtype end'
-COMMENT_END = r'.*\*\/.*'
-
-STRING_BEGIN = r'.*MULTILINE STRING BEGIN.*'
-STRING_END = r'.*MULTILINE STRING END.*'
-
 
 def make_c_files():
+
     modules = ['reduce2', 'move2']
+
     dirpath = os.path.dirname(__file__)
     for module in modules:
+
+        # load file as a list of strings (one string per line)
         filepath = os.path.join(dirpath, module + '_template.c')
         with open(filepath, 'r') as f:
             src = f.read()
         src_list = src.splitlines()
-        src_list = expand_functions(src_list)
-        src_list = multiline_strings(src_list)
+
+        # template
+        src_list = dtype_templating(src_list)
+        src_list = string_templating(src_list)
+
+        # convert list back to file
         src = '\n'.join(src_list)
+
+        # write output to disk
         filepath = os.path.join(dirpath, module + '.c')
         with open(filepath, 'w') as f:
             f.write(src)
@@ -28,7 +31,12 @@ def make_c_files():
 
 # dtype ---------------------------------------------------------------------
 
-def expand_functions(lines):
+DTYPE_BEGIN = r'^/\*\s*dtype\s*=\s*'
+DTYPE_END = r'^/\*\s*dtype end'
+COMMENT_END = r'.*\*\/.*'
+
+
+def dtype_templating(lines):
     index = 0
     while True:
         idx0, idx1 = next_dtype_block(lines, index)
@@ -96,7 +104,11 @@ def expand_dtypes(func_str, dtypes):
 
 # multiline strings ---------------------------------------------------------
 
-def multiline_strings(lines):
+STRING_BEGIN = r'.*MULTILINE STRING BEGIN.*'
+STRING_END = r'.*MULTILINE STRING END.*'
+
+
+def string_templating(lines):
     index = 0
     while True:
         idx0, idx1 = next_string_block(lines, index)
