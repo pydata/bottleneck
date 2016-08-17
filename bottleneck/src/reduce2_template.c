@@ -69,14 +69,56 @@
 
 #define YI *py++
 
-/* function pointers ----------------------------------------------------- */
+/* function signatures --------------------------------------------------- */
+
+/* low-level functions such as nansum_all_float64 */
+#define REDUCE_ALL(name, dtype) \
+    static PyObject * \
+    name##_all_##dtype(PyArrayObject *a, \
+                       int axis, \
+                       Py_ssize_t stride, \
+                       Py_ssize_t length, \
+                       int ndim, \
+                       int ddof)
+
+/* low-level functions such as nansum_one_float64 */
+#define REDUCE_ONE(name, dtype) \
+    static PyObject * \
+    name##_one_##dtype(PyArrayObject *a, \
+                       int axis, \
+                       Py_ssize_t stride, \
+                       Py_ssize_t length, \
+                       int ndim, \
+                       npy_intp* yshape, \
+                       int ddof)
+
+/* top-level functions such as nansum */
+#define REDUCE_MAIN(name, copy, ravel, has_ddof) \
+    static PyObject * \
+    name(PyObject *self, PyObject *args, PyObject *kwds) \
+    { \
+        return reducer(#name, \
+                       args, \
+                       kwds, \
+                       name##_all_float64, \
+                       name##_all_float32, \
+                       name##_all_int64, \
+                       name##_all_int32, \
+                       name##_one_float64, \
+                       name##_one_float32, \
+                       name##_one_int64, \
+                       name##_one_int32, \
+                       copy, \
+                       ravel, \
+                       has_ddof); \
+    }
+
+/* typedefs and prototypes ----------------------------------------------- */
 
 typedef PyObject *(*fall_t)(PyArrayObject *, int, Py_ssize_t, Py_ssize_t, int,
                             int);
 typedef PyObject *(*fone_t)(PyArrayObject *, int, Py_ssize_t, Py_ssize_t, int,
                             npy_intp*, int);
-
-/* prototypes ------------------------------------------------------------ */
 
 static PyObject *
 reducer(char *name,
@@ -97,9 +139,7 @@ reducer(char *name,
 /* nansum ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-nansum_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(nansum, DTYPE0)
 {
     INIT_ALL
     npy_DTYPE0 ai, asum = 0;
@@ -115,15 +155,7 @@ nansum_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyFloat_FromDouble(asum);
 }
 
-
-static PyObject *
-nansum_one_DTYPE0(PyArrayObject *a,
-                  int axis,
-                  Py_ssize_t stride,
-                  Py_ssize_t length,
-                  int ndim,
-                  npy_intp* yshape,
-                  int ignore)
+REDUCE_ONE(nansum, DTYPE0)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -149,11 +181,8 @@ nansum_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
-
 /* dtype = [['int64'], ['int32']] */
-static PyObject *
-nansum_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(nansum, DTYPE0)
 {
     INIT_ALL
     npy_DTYPE0 asum = 0;
@@ -166,15 +195,7 @@ nansum_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyInt_FromLong(asum);
 }
 
-
-static PyObject *
-nansum_one_DTYPE0(PyArrayObject *a,
-                  int axis,
-                  Py_ssize_t stride,
-                  Py_ssize_t length,
-                  int ndim,
-                  npy_intp* yshape,
-                  int ignore)
+REDUCE_ONE(nansum, DTYPE0)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -197,30 +218,13 @@ nansum_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
+REDUCE_MAIN(nansum, 0, 0, 0)
 
-static PyObject *
-nansum(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return reducer("nansum",
-                   args,
-                   kwds,
-                   nansum_all_float64,
-                   nansum_all_float32,
-                   nansum_all_int64,
-                   nansum_all_int32,
-                   nansum_one_float64,
-                   nansum_one_float32,
-                   nansum_one_int64,
-                   nansum_one_int32,
-                   0, 0, 0);
-}
 
 /* nanmean ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-nanmean_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                   Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(nanmean, DTYPE0)
 {
     INIT_ALL
     Py_ssize_t count = 0;
@@ -244,15 +248,7 @@ nanmean_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     }
 }
 
-
-static PyObject *
-nanmean_one_DTYPE0(PyArrayObject *a,
-                   int axis,
-                   Py_ssize_t stride,
-                   Py_ssize_t length,
-                   int ndim,
-                   npy_intp* yshape,
-                   int ignore)
+REDUCE_ONE(nanmean, DTYPE0)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -287,11 +283,8 @@ nanmean_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
-
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-static PyObject *
-nanmean_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                   Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(nanmean, DTYPE0)
 {
     INIT_ALL
     Py_ssize_t total_length = 0;
@@ -310,15 +303,7 @@ nanmean_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     }
 }
 
-
-static PyObject *
-nanmean_one_DTYPE0(PyArrayObject *a,
-                   int axis,
-                   Py_ssize_t stride,
-                   Py_ssize_t length,
-                   int ndim,
-                   npy_intp* yshape,
-                   int ignore)
+REDUCE_ONE(nanmean, DTYPE0)
 {
     Y_INIT(NPY_DTYPE1, npy_DTYPE1)
     INIT
@@ -346,30 +331,13 @@ nanmean_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
+REDUCE_MAIN(nanmean, 0, 0, 0)
 
-static PyObject *
-nanmean(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return reducer("nanmean",
-                   args,
-                   kwds,
-                   nanmean_all_float64,
-                   nanmean_all_float32,
-                   nanmean_all_int64,
-                   nanmean_all_int32,
-                   nanmean_one_float64,
-                   nanmean_one_float32,
-                   nanmean_one_int64,
-                   nanmean_one_int32,
-                   0, 0, 0);
-}
 
 /* nanstd ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-nanstd_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim, int ddof)
+REDUCE_ALL(nanstd, DTYPE0)
 {
     INIT_ALL
     Py_ssize_t count = 0;
@@ -408,15 +376,7 @@ nanstd_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyFloat_FromDouble(out);
 }
 
-
-static PyObject *
-nanstd_one_DTYPE0(PyArrayObject *a,
-                  int axis,
-                  Py_ssize_t stride,
-                  Py_ssize_t length,
-                  int ndim,
-                  npy_intp* yshape,
-                  int ddof)
+REDUCE_ONE(nanstd, DTYPE0)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -461,11 +421,8 @@ nanstd_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
-
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-static PyObject *
-nanstd_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim, int ddof)
+REDUCE_ALL(nanstd, DTYPE0)
 {
     INIT_ALL
     npy_DTYPE1 out;
@@ -497,15 +454,7 @@ nanstd_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyFloat_FromDouble(out);
 }
 
-
-static PyObject *
-nanstd_one_DTYPE0(PyArrayObject *a,
-                  int axis,
-                  Py_ssize_t stride,
-                  Py_ssize_t length,
-                  int ndim,
-                  npy_intp* yshape,
-                  int ddof)
+REDUCE_ONE(nanstd, DTYPE0)
 {
     Y_INIT(NPY_DTYPE1, npy_DTYPE1)
     INIT
@@ -542,30 +491,13 @@ nanstd_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
+REDUCE_MAIN(nanstd, 0, 0, 1)
 
-static PyObject *
-nanstd(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return reducer("nanstd",
-                   args,
-                   kwds,
-                   nanstd_all_float64,
-                   nanstd_all_float32,
-                   nanstd_all_int64,
-                   nanstd_all_int32,
-                   nanstd_one_float64,
-                   nanstd_one_float32,
-                   nanstd_one_int64,
-                   nanstd_one_int32,
-                   0, 0, 1);
-}
 
 /* nanvar ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-nanvar_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim, int ddof)
+REDUCE_ALL(nanvar, DTYPE0)
 {
     INIT_ALL
     Py_ssize_t count = 0;
@@ -604,15 +536,7 @@ nanvar_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyFloat_FromDouble(out);
 }
 
-
-static PyObject *
-nanvar_one_DTYPE0(PyArrayObject *a,
-                  int axis,
-                  Py_ssize_t stride,
-                  Py_ssize_t length,
-                  int ndim,
-                  npy_intp* yshape,
-                  int ddof)
+REDUCE_ONE(nanvar, DTYPE0)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -657,11 +581,8 @@ nanvar_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
-
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-static PyObject *
-nanvar_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim, int ddof)
+REDUCE_ALL(nanvar, DTYPE0)
 {
     INIT_ALL
     npy_DTYPE1 out;
@@ -693,15 +614,7 @@ nanvar_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyFloat_FromDouble(out);
 }
 
-
-static PyObject *
-nanvar_one_DTYPE0(PyArrayObject *a,
-                  int axis,
-                  Py_ssize_t stride,
-                  Py_ssize_t length,
-                  int ndim,
-                  npy_intp* yshape,
-                  int ddof)
+REDUCE_ONE(nanvar, DTYPE0)
 {
     Y_INIT(NPY_DTYPE1, npy_DTYPE1)
     INIT
@@ -738,30 +651,13 @@ nanvar_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
+REDUCE_MAIN(nanvar, 0, 0, 1)
 
-static PyObject *
-nanvar(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return reducer("nanvar",
-                   args,
-                   kwds,
-                   nanvar_all_float64,
-                   nanvar_all_float32,
-                   nanvar_all_int64,
-                   nanvar_all_int32,
-                   nanvar_one_float64,
-                   nanvar_one_float32,
-                   nanvar_one_int64,
-                   nanvar_one_int32,
-                   0, 0, 1);
-}
 
 /* nanmin ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-nanmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(nanmin, DTYPE0)
 {
     INIT_ALL
     npy_DTYPE0 ai, amin = BN_INFINITY;
@@ -787,15 +683,7 @@ nanmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyFloat_FromDouble(amin);
 }
 
-
-static PyObject *
-nanmin_one_DTYPE0(PyArrayObject *a,
-                  int axis,
-                  Py_ssize_t stride,
-                  Py_ssize_t length,
-                  int ndim,
-                  npy_intp* yshape,
-                  int ignore)
+REDUCE_ONE(nanmin, DTYPE0)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -826,11 +714,8 @@ nanmin_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
-
 /* dtype = [['int64'], ['int32']] */
-static PyObject *
-nanmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(nanmin, DTYPE0)
 {
     INIT_ALL
     npy_DTYPE0 ai, amin = NPY_MAX_DTYPE0;
@@ -851,15 +736,7 @@ nanmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyInt_FromLong(amin);
 }
 
-
-static PyObject *
-nanmin_one_DTYPE0(PyArrayObject *a,
-                  int axis,
-                  Py_ssize_t stride,
-                  Py_ssize_t length,
-                  int ndim,
-                  npy_intp* yshape,
-                  int ignore)
+REDUCE_ONE(nanmin, DTYPE0)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -884,30 +761,13 @@ nanmin_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
+REDUCE_MAIN(nanmin, 0, 0, 0)
 
-static PyObject *
-nanmin(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return reducer("nanmin",
-                   args,
-                   kwds,
-                   nanmin_all_float64,
-                   nanmin_all_float32,
-                   nanmin_all_int64,
-                   nanmin_all_int32,
-                   nanmin_one_float64,
-                   nanmin_one_float32,
-                   nanmin_one_int64,
-                   nanmin_one_int32,
-                   0, 0, 0);
-}
 
 /* nanmax ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-nanmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(nanmax, DTYPE0)
 {
     INIT_ALL
     npy_DTYPE0 ai, amax = -BN_INFINITY;
@@ -933,15 +793,7 @@ nanmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyFloat_FromDouble(amax);
 }
 
-
-static PyObject *
-nanmax_one_DTYPE0(PyArrayObject *a,
-                  int axis,
-                  Py_ssize_t stride,
-                  Py_ssize_t length,
-                  int ndim,
-                  npy_intp* yshape,
-                  int ignore)
+REDUCE_ONE(nanmax, DTYPE0)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -972,11 +824,8 @@ nanmax_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
-
 /* dtype = [['int64'], ['int32']] */
-static PyObject *
-nanmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(nanmax, DTYPE0)
 {
     INIT_ALL
     npy_DTYPE0 ai, amax = NPY_MIN_DTYPE0;
@@ -997,15 +846,7 @@ nanmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyInt_FromLong(amax);
 }
 
-
-static PyObject *
-nanmax_one_DTYPE0(PyArrayObject *a,
-                  int axis,
-                  Py_ssize_t stride,
-                  Py_ssize_t length,
-                  int ndim,
-                  npy_intp* yshape,
-                  int ignore)
+REDUCE_ONE(nanmax, DTYPE0)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -1030,30 +871,13 @@ nanmax_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
+REDUCE_MAIN(nanmax, 0, 0, 0)
 
-static PyObject *
-nanmax(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return reducer("nanmax",
-                   args,
-                   kwds,
-                   nanmax_all_float64,
-                   nanmax_all_float32,
-                   nanmax_all_int64,
-                   nanmax_all_int32,
-                   nanmax_one_float64,
-                   nanmax_one_float32,
-                   nanmax_one_int64,
-                   nanmax_one_int32,
-                   0, 0, 0);
-}
 
 /* nanargmin ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-nanargmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                     Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(nanargmin, DTYPE0)
 {
     INIT_FOR
     npy_DTYPE0 ai, amin = BN_INFINITY;
@@ -1082,15 +906,7 @@ nanargmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     }
 }
 
-
-static PyObject *
-nanargmin_one_DTYPE0(PyArrayObject *a,
-                     int axis,
-                     Py_ssize_t stride,
-                     Py_ssize_t length,
-                     int ndim,
-                     npy_intp* yshape,
-                     int ignore)
+REDUCE_ONE(nanargmin, DTYPE0)
 {
     Y_INIT(NPY_INTP, npy_intp)
     INIT
@@ -1130,11 +946,8 @@ nanargmin_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
-
 /* dtype = [['int64', 'intp'], ['int32', 'intp']] */
-static PyObject *
-nanargmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                     Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(nanargmin, DTYPE0)
 {
     INIT_FOR
     npy_DTYPE1 idx = 0;
@@ -1156,15 +969,7 @@ nanargmin_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyInt_FromLong(idx);
 }
 
-
-static PyObject *
-nanargmin_one_DTYPE0(PyArrayObject *a,
-                     int axis,
-                     Py_ssize_t stride,
-                     Py_ssize_t length,
-                     int ndim,
-                     npy_intp* yshape,
-                     int ignore)
+REDUCE_ONE(nanargmin, DTYPE0)
 {
     Y_INIT(NPY_DTYPE1, npy_DTYPE1)
     INIT
@@ -1193,30 +998,13 @@ nanargmin_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
+REDUCE_MAIN(nanargmin, 0, 1, 0)
 
-static PyObject *
-nanargmin(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return reducer("nanargmin",
-                   args,
-                   kwds,
-                   nanargmin_all_float64,
-                   nanargmin_all_float32,
-                   nanargmin_all_int64,
-                   nanargmin_all_int32,
-                   nanargmin_one_float64,
-                   nanargmin_one_float32,
-                   nanargmin_one_int64,
-                   nanargmin_one_int32,
-                   0, 1, 0);
-}
 
 /* nanargmax ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-nanargmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                     Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(nanargmax, DTYPE0)
 {
     INIT_FOR
     npy_DTYPE0 ai, amax = -BN_INFINITY;
@@ -1245,15 +1033,7 @@ nanargmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     }
 }
 
-
-static PyObject *
-nanargmax_one_DTYPE0(PyArrayObject *a,
-                     int axis,
-                     Py_ssize_t stride,
-                     Py_ssize_t length,
-                     int ndim,
-                     npy_intp* yshape,
-                     int ignore)
+REDUCE_ONE(nanargmax, DTYPE0)
 {
     Y_INIT(NPY_INTP, npy_intp)
     INIT
@@ -1293,11 +1073,8 @@ nanargmax_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
-
 /* dtype = [['int64', 'intp'], ['int32', 'intp']] */
-static PyObject *
-nanargmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                     Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(nanargmax, DTYPE0)
 {
     INIT_FOR
     npy_DTYPE1 idx = 0;
@@ -1319,15 +1096,7 @@ nanargmax_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyInt_FromLong(idx);
 }
 
-
-static PyObject *
-nanargmax_one_DTYPE0(PyArrayObject *a,
-                     int axis,
-                     Py_ssize_t stride,
-                     Py_ssize_t length,
-                     int ndim,
-                     npy_intp* yshape,
-                     int ignore)
+REDUCE_ONE(nanargmax, DTYPE0)
 {
     Y_INIT(NPY_DTYPE1, npy_DTYPE1)
     INIT
@@ -1356,30 +1125,13 @@ nanargmax_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
+REDUCE_MAIN(nanargmax, 0, 1, 0)
 
-static PyObject *
-nanargmax(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return reducer("nanargmax",
-                   args,
-                   kwds,
-                   nanargmax_all_float64,
-                   nanargmax_all_float32,
-                   nanargmax_all_int64,
-                   nanargmax_all_int32,
-                   nanargmax_one_float64,
-                   nanargmax_one_float32,
-                   nanargmax_one_int64,
-                   nanargmax_one_int32,
-                   0, 1, 0);
-}
 
 /* ss ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-ss_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-              Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(ss, DTYPE0)
 {
     INIT_ALL
     npy_DTYPE0 ai, asum = 0;
@@ -1395,15 +1147,7 @@ ss_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyFloat_FromDouble(asum);
 }
 
-
-static PyObject *
-ss_one_DTYPE0(PyArrayObject *a,
-              int axis,
-              Py_ssize_t stride,
-              Py_ssize_t length,
-              int ndim,
-              npy_intp* yshape,
-              int ignore)
+REDUCE_ONE(ss, DTYPE0)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -1429,11 +1173,8 @@ ss_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
-
 /* dtype = [['int64'], ['int32']] */
-static PyObject *
-ss_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-              Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(ss, DTYPE0)
 {
     INIT_ALL
     npy_DTYPE0 ai, asum = 0;
@@ -1449,15 +1190,7 @@ ss_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyInt_FromLong(asum);
 }
 
-
-static PyObject *
-ss_one_DTYPE0(PyArrayObject *a,
-              int axis,
-              Py_ssize_t stride,
-              Py_ssize_t length,
-              int ndim,
-              npy_intp* yshape,
-              int ignore)
+REDUCE_ONE(ss, DTYPE0)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -1483,23 +1216,8 @@ ss_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
+REDUCE_MAIN(ss, 0, 0, 0)
 
-static PyObject *
-ss(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return reducer("ss",
-                   args,
-                   kwds,
-                   ss_all_float64,
-                   ss_all_float32,
-                   ss_all_int64,
-                   ss_all_int32,
-                   ss_one_float64,
-                   ss_one_float32,
-                   ss_one_int64,
-                   ss_one_int32,
-                   0, 0, 0);
-}
 
 /* median ---------------------------------------------------------------- */
 
@@ -1557,9 +1275,7 @@ ss(PyObject *self, PyObject *args, PyObject *kwds)
     } while (0);
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-median_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(median, DTYPE0)
 {
     char *_pa = PyArray_BYTES(a);
     npy_intp i;
@@ -1584,14 +1300,7 @@ median_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyFloat_FromDouble(med);
 }
 
-static PyObject *
-median_one_DTYPE0(PyArrayObject *a,
-                  int axis,
-                  Py_ssize_t stride,
-                  Py_ssize_t length,
-                  int ndim,
-                  npy_intp* yshape,
-                  int ignore)
+REDUCE_ONE(median, DTYPE0)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -1622,11 +1331,8 @@ median_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
-
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-static PyObject *
-median_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(median, DTYPE0)
 {
     char *_pa = PyArray_BYTES(a);
     npy_intp i;
@@ -1642,14 +1348,7 @@ median_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyFloat_FromDouble(med);
 }
 
-static PyObject *
-median_one_DTYPE0(PyArrayObject *a,
-                  int axis,
-                  Py_ssize_t stride,
-                  Py_ssize_t length,
-                  int ndim,
-                  npy_intp* yshape,
-                  int ignore)
+REDUCE_ONE(median, DTYPE0)
 {
     Y_INIT(NPY_DTYPE1, npy_DTYPE1)
     INIT
@@ -1672,23 +1371,8 @@ median_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
+REDUCE_MAIN(median, 1, 1, 0)
 
-static PyObject *
-median(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return reducer("median",
-                   args,
-                   kwds,
-                   median_all_float64,
-                   median_all_float32,
-                   median_all_int64,
-                   median_all_int32,
-                   median_one_float64,
-                   median_one_float32,
-                   median_one_int64,
-                   median_one_int32,
-                   1, 1, 0);
-}
 
 /* nanmedian ------------------------------------------------------------- */
 
@@ -1769,9 +1453,7 @@ median(PyObject *self, PyObject *args, PyObject *kwds)
     } while (0);
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-nanmedian_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                     Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(nanmedian, DTYPE0)
 {
     char *_pa = PyArray_BYTES(a);
     npy_intp i;
@@ -1787,14 +1469,7 @@ nanmedian_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     return PyFloat_FromDouble(med);
 }
 
-static PyObject *
-nanmedian_one_DTYPE0(PyArrayObject *a,
-                     int axis,
-                     Py_ssize_t stride,
-                     Py_ssize_t length,
-                     int ndim,
-                     npy_intp* yshape,
-                     int ignore)
+REDUCE_ONE(nanmedian, DTYPE0)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -1837,9 +1512,7 @@ nanmedian(PyObject *self, PyObject *args, PyObject *kwds)
 /* anynan ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-anynan_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(anynan, DTYPE0)
 {
     INIT
     int f = 0;
@@ -1860,15 +1533,7 @@ anynan_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     Py_RETURN_FALSE;
 }
 
-
-static PyObject *
-anynan_one_DTYPE0(PyArrayObject *a,
-                  int axis,
-                  Py_ssize_t stride,
-                  Py_ssize_t length,
-                  int ndim,
-                  npy_intp* yshape,
-                  int ignore)
+REDUCE_ONE(anynan, DTYPE0)
 {
     Y_INIT(NPY_BOOL, npy_uint8)
     INIT
@@ -1898,24 +1563,13 @@ anynan_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
-
 /* dtype = [['int64'], ['int32']] */
-static PyObject *
-anynan_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(anynan, DTYPE0)
 {
     Py_RETURN_FALSE;
 }
 
-
-static PyObject *
-anynan_one_DTYPE0(PyArrayObject *a,
-                  int axis,
-                  Py_ssize_t stride,
-                  Py_ssize_t length,
-                  int ndim,
-                  npy_intp* yshape,
-                  int ignore)
+REDUCE_ONE(anynan, DTYPE0)
 {
     Y_INIT(NPY_BOOL, npy_uint8)
     Py_ssize_t _i;
@@ -1927,30 +1581,13 @@ anynan_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
+REDUCE_MAIN(anynan, 0, 0, 0)
 
-static PyObject *
-anynan(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return reducer("anynan",
-                   args,
-                   kwds,
-                   anynan_all_float64,
-                   anynan_all_float32,
-                   anynan_all_int64,
-                   anynan_all_int32,
-                   anynan_one_float64,
-                   anynan_one_float32,
-                   anynan_one_int64,
-                   anynan_one_int32,
-                   0, 0, 0);
-}
 
 /* allnan ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-allnan_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(allnan, DTYPE0)
 {
     INIT
     int f = 0;
@@ -1971,15 +1608,7 @@ allnan_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
     Py_RETURN_TRUE;
 }
 
-
-static PyObject *
-allnan_one_DTYPE0(PyArrayObject *a,
-                  int axis,
-                  Py_ssize_t stride,
-                  Py_ssize_t length,
-                  int ndim,
-                  npy_intp* yshape,
-                  int ignore)
+REDUCE_ONE(allnan, DTYPE0)
 {
     Y_INIT(NPY_BOOL, npy_uint8)
     INIT
@@ -2009,26 +1638,15 @@ allnan_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
-
 /* dtype = [['int64'], ['int32']] */
-static PyObject *
-allnan_all_DTYPE0(PyArrayObject *a, int axis, Py_ssize_t stride,
-                  Py_ssize_t length, int ndim, int ignore)
+REDUCE_ALL(allnan, DTYPE0)
 {
     Py_ssize_t size = PyArray_SIZE(a);
     if (size == 0) Py_RETURN_TRUE;
     Py_RETURN_FALSE;
 }
 
-
-static PyObject *
-allnan_one_DTYPE0(PyArrayObject *a,
-                  int axis,
-                  Py_ssize_t stride,
-                  Py_ssize_t length,
-                  int ndim,
-                  npy_intp* yshape,
-                  int ignore)
+REDUCE_ONE(allnan, DTYPE0)
 {
     Y_INIT(NPY_BOOL, npy_uint8)
     Py_ssize_t _i;
@@ -2046,23 +1664,8 @@ allnan_one_DTYPE0(PyArrayObject *a,
 }
 /* dtype end */
 
+REDUCE_MAIN(allnan, 0, 0, 0)
 
-static PyObject *
-allnan(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return reducer("allnan",
-                   args,
-                   kwds,
-                   allnan_all_float64,
-                   allnan_all_float32,
-                   allnan_all_int64,
-                   allnan_all_int32,
-                   allnan_one_float64,
-                   allnan_one_float32,
-                   allnan_one_int64,
-                   allnan_one_int32,
-                   0, 0, 0);
-}
 
 /* python strings -------------------------------------------------------- */
 
