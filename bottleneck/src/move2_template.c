@@ -65,6 +65,36 @@
 #define  AX(dt, x) *(dt*)(_pa + x * stride)
 #define  YI(dt)    *(dt *)(_py + _i++ * _ystride)
 
+/* function signatures --------------------------------------------------- */
+
+/* low-level functions such as move_sum_float64 */
+#define MOVE(name, dtype) \
+    static PyObject * \
+    name##_##dtype(PyArrayObject *a, \
+                   int           window, \
+                   int           min_count, \
+                   int           axis, \
+                   Py_ssize_t    stride, \
+                   Py_ssize_t    length, \
+                   int           ndim, \
+                   npy_intp*     shape, \
+                   int           ddof)
+
+/* top-level functions such as move_sum */
+#define MOVE_MAIN(name, ddof) \
+    static PyObject * \
+    name(PyObject *self, PyObject *args, PyObject *kwds) \
+    { \
+        return mover(#name, \
+                     args, \
+                     kwds, \
+                     name##_float64, \
+                     name##_float32, \
+                     name##_int64, \
+                     name##_int32, \
+                     ddof); \
+    }
+
 /* typedefs and prototypes ----------------------------------------------- */
 
 /* used by move_min and move_max */
@@ -91,10 +121,7 @@ mover(char *name,
 /* move_sum -------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-move_sum_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                Py_ssize_t stride, Py_ssize_t length,
-                int ndim, npy_intp* shape, int ignore)
+MOVE(move_sum, DTYPE0)
 {
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
@@ -145,10 +172,7 @@ move_sum_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-static PyObject *
-move_sum_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                Py_ssize_t stride, Py_ssize_t length,
-                int ndim, npy_intp* shape, int ignore)
+MOVE(move_sum, DTYPE0)
 {
     INIT(NPY_DTYPE1)
     npy_DTYPE1 asum;
@@ -173,26 +197,13 @@ move_sum_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 /* dtype end */
 
 
-static PyObject *
-move_sum(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return mover("move_sum",
-                 args,
-                 kwds,
-                 move_sum_float64,
-                 move_sum_float32,
-                 move_sum_int64,
-                 move_sum_int32,
-                 0);
-}
+MOVE_MAIN(move_sum, 0)
+
 
 /* move_mean -------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-move_mean_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                Py_ssize_t stride, Py_ssize_t length,
-                int ndim, npy_intp* shape, int ignore)
+MOVE(move_mean, DTYPE0)
 {
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
@@ -245,10 +256,7 @@ move_mean_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-static PyObject *
-move_mean_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                Py_ssize_t stride, Py_ssize_t length,
-                int ndim, npy_intp* shape, int ignore)
+MOVE(move_mean, DTYPE0)
 {
     INIT(NPY_DTYPE1)
     npy_DTYPE1 asum, window_inv = 1.0 / window;
@@ -274,26 +282,13 @@ move_mean_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 /* dtype end */
 
 
-static PyObject *
-move_mean(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return mover("move_mean",
-                 args,
-                 kwds,
-                 move_mean_float64,
-                 move_mean_float32,
-                 move_mean_int64,
-                 move_mean_int32,
-                 0);
-}
+MOVE_MAIN(move_mean, 0)
+
 
 /* move_std -------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-move_std_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                Py_ssize_t stride, Py_ssize_t length,
-                int ndim, npy_intp* shape, int ddof)
+MOVE(move_std, DTYPE0)
 {
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
@@ -385,10 +380,7 @@ move_std_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-static PyObject *
-move_std_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                Py_ssize_t stride, Py_ssize_t length,
-                int ndim, npy_intp* shape, int ddof)
+MOVE(move_std, DTYPE0)
 {
     INIT(NPY_DTYPE1)
     int winddof = window - ddof;
@@ -430,26 +422,14 @@ move_std_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 }
 /* dtype end */
 
-static PyObject *
-move_std(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return mover("move_std",
-                 args,
-                 kwds,
-                 move_std_float64,
-                 move_std_float32,
-                 move_std_int64,
-                 move_std_int32,
-                 1);
-}
+
+MOVE_MAIN(move_std, 1)
+
 
 /* move_var -------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-move_var_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                Py_ssize_t stride, Py_ssize_t length,
-                int ndim, npy_intp* shape, int ddof)
+MOVE(move_var, DTYPE0)
 {
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
@@ -541,10 +521,7 @@ move_var_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-static PyObject *
-move_var_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                Py_ssize_t stride, Py_ssize_t length,
-                int ndim, npy_intp* shape, int ddof)
+MOVE(move_var, DTYPE0)
 {
     INIT(NPY_DTYPE1)
     int winddof = window - ddof;
@@ -586,18 +563,9 @@ move_var_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 }
 /* dtype end */
 
-static PyObject *
-move_var(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return mover("move_var",
-                 args,
-                 kwds,
-                 move_var_float64,
-                 move_var_float32,
-                 move_var_int64,
-                 move_var_int32,
-                 1);
-}
+
+MOVE_MAIN(move_var, 1)
+
 
 /* move_min -------------------------------------------------------------- */
 
@@ -624,10 +592,7 @@ move_var(PyObject *self, PyObject *args, PyObject *kwds)
     YI(dtype) = yi_tmp;
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-move_min_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                Py_ssize_t stride, Py_ssize_t length,
-                int ndim, npy_intp* shape, int ignore)
+MOVE(move_min, DTYPE0)
 {
     INIT(NPY_DTYPE0)
     npy_DTYPE0 ai, aold, yi_tmp;
@@ -694,10 +659,7 @@ move_min_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     YI(y_dtype) = yi_tmp;
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-static PyObject *
-move_min_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                Py_ssize_t stride, Py_ssize_t length,
-                int ndim, npy_intp* shape, int ignore)
+MOVE(move_min, DTYPE0)
 {
     INIT(NPY_DTYPE1)
     npy_DTYPE0 ai;
@@ -742,18 +704,9 @@ move_min_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 }
 /* dtype end */
 
-static PyObject *
-move_min(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return mover("move_min",
-                 args,
-                 kwds,
-                 move_min_float64,
-                 move_min_float32,
-                 move_min_int64,
-                 move_min_int32,
-                 0);
-}
+
+MOVE_MAIN(move_min, 0)
+
 
 /* move_max -------------------------------------------------------------- */
 
@@ -780,10 +733,7 @@ move_min(PyObject *self, PyObject *args, PyObject *kwds)
     YI(dtype) = yi_tmp;
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-move_max_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                Py_ssize_t stride, Py_ssize_t length,
-                int ndim, npy_intp* shape, int ignore)
+MOVE(move_max, DTYPE0)
 {
     INIT(NPY_DTYPE0)
     npy_DTYPE0 ai, aold, yi_tmp;
@@ -850,10 +800,7 @@ move_max_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
     YI(y_dtype) = yi_tmp;
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-static PyObject *
-move_max_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                Py_ssize_t stride, Py_ssize_t length,
-                int ndim, npy_intp* shape, int ignore)
+MOVE(move_max, DTYPE0)
 {
     INIT(NPY_DTYPE1)
     npy_DTYPE0 ai;
@@ -898,26 +845,14 @@ move_max_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 }
 /* dtype end */
 
-static PyObject *
-move_max(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return mover("move_max",
-                 args,
-                 kwds,
-                 move_max_float64,
-                 move_max_float32,
-                 move_max_int64,
-                 move_max_int32,
-                 0);
-}
+
+MOVE_MAIN(move_max, 0)
+
 
 /* move_argmin ----------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-move_argmin_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                   Py_ssize_t stride, Py_ssize_t length,
-                   int ndim, npy_intp* shape, int ignore)
+MOVE(move_argmin, DTYPE0)
 {
     INIT(NPY_DTYPE0)
     npy_DTYPE0 ai, aold, yi_tmp;
@@ -963,10 +898,7 @@ move_argmin_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-static PyObject *
-move_argmin_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                   Py_ssize_t stride, Py_ssize_t length,
-                   int ndim, npy_intp* shape, int ignore)
+MOVE(move_argmin, DTYPE0)
 {
     INIT(NPY_DTYPE1)
     npy_DTYPE0 ai;
@@ -1011,26 +943,14 @@ move_argmin_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 }
 /* dtype end */
 
-static PyObject *
-move_argmin(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return mover("move_argmin",
-                 args,
-                 kwds,
-                 move_argmin_float64,
-                 move_argmin_float32,
-                 move_argmin_int64,
-                 move_argmin_int32,
-                 0);
-}
+
+MOVE_MAIN(move_argmin, 0)
+
 
 /* move_argmax ----------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-move_argmax_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                   Py_ssize_t stride, Py_ssize_t length,
-                   int ndim, npy_intp* shape, int ignore)
+MOVE(move_argmax, DTYPE0)
 {
     INIT(NPY_DTYPE0)
     npy_DTYPE0 ai, aold, yi_tmp;
@@ -1076,10 +996,7 @@ move_argmax_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-static PyObject *
-move_argmax_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                   Py_ssize_t stride, Py_ssize_t length,
-                   int ndim, npy_intp* shape, int ignore)
+MOVE(move_argmax, DTYPE0)
 {
     INIT(NPY_DTYPE1)
     npy_DTYPE0 ai;
@@ -1124,26 +1041,14 @@ move_argmax_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 }
 /* dtype end */
 
-static PyObject *
-move_argmax(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return mover("move_argmax",
-                 args,
-                 kwds,
-                 move_argmax_float64,
-                 move_argmax_float32,
-                 move_argmax_int64,
-                 move_argmax_int32,
-                 0);
-}
+
+MOVE_MAIN(move_argmax, 0)
+
 
 /* move_median ----------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
-move_median_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                   Py_ssize_t stride, Py_ssize_t length,
-                   int ndim, npy_intp* shape, int ignore)
+MOVE(move_median, DTYPE0)
 {
     if (window == 1) return PyArray_Copy(a);
     INIT(NPY_DTYPE0)
@@ -1174,10 +1079,7 @@ move_median_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-static PyObject *
-move_median_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                   Py_ssize_t stride, Py_ssize_t length,
-                   int ndim, npy_intp* shape, int ignore)
+MOVE(move_median, DTYPE0)
 {
     if (window == 1) {
         return PyArray_CastToType(a,
@@ -1211,26 +1113,14 @@ move_median_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 }
 /* dtype end */
 
-static PyObject *
-move_median(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return mover("move_median",
-                 args,
-                 kwds,
-                 move_median_float64,
-                 move_median_float32,
-                 move_median_int64,
-                 move_median_int32,
-                 0);
-}
+
+MOVE_MAIN(move_median, 0)
+
 
 /* move_rank-------------------------------------------------------------- */
 
 /* dtype = [['float64', 'float64'], ['float32', 'float32']] */
-static PyObject *
-move_rank_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                 Py_ssize_t stride, Py_ssize_t length,
-                 int ndim, npy_intp* shape, int ignore)
+MOVE(move_rank, DTYPE0)
 {
     INIT(NPY_DTYPE1)
     Py_ssize_t j;
@@ -1311,10 +1201,7 @@ move_rank_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-static PyObject *
-move_rank_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
-                 Py_ssize_t stride, Py_ssize_t length,
-                 int ndim, npy_intp* shape, int ignore)
+MOVE(move_rank, DTYPE0)
 {
     INIT(NPY_DTYPE1)
     Py_ssize_t j;
@@ -1374,18 +1261,9 @@ move_rank_DTYPE0(PyArrayObject *a, int window, int min_count, int axis,
 }
 /* dtype end */
 
-static PyObject *
-move_rank(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return mover("move_rank",
-                 args,
-                 kwds,
-                 move_rank_float64,
-                 move_rank_float32,
-                 move_rank_int64,
-                 move_rank_int32,
-                 0);
-}
+
+MOVE_MAIN(move_rank, 0)
+
 
 /* python strings -------------------------------------------------------- */
 
