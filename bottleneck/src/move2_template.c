@@ -285,10 +285,12 @@ MOVE(move_mean, DTYPE0)
 MOVE_MAIN(move_mean, 0)
 
 
-/* move_std -------------------------------------------------------------- */
+/* move_std, move_var ---------------------------------------------------- */
 
+/* repeat = {'NAME': ['move_std', 'move_var'],
+             'FUNC': ['sqrt',     '']} */
 /* dtype = [['float64'], ['float32']] */
-MOVE(move_std, DTYPE0)
+MOVE(NAME, DTYPE0)
 {
     INIT(NPY_DTYPE0)
     Py_ssize_t count;
@@ -317,7 +319,7 @@ MOVE(move_std, DTYPE0)
                 if (assqdm < 0) {
                     assqdm = 0;
                 }
-                yi = sqrt(assqdm / (count - ddof));
+                yi = FUNC(assqdm / (count - ddof));
             }
             else {
                 yi = BN_NAN;
@@ -366,7 +368,7 @@ MOVE(move_std, DTYPE0)
                 if (assqdm < 0) {
                     assqdm = 0;
                 }
-                yi = sqrt(assqdm * ddof_inv);
+                yi = FUNC(assqdm * ddof_inv);
             }
             else {
                 yi = BN_NAN;
@@ -380,7 +382,7 @@ MOVE(move_std, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-MOVE(move_std, DTYPE0)
+MOVE(NAME, DTYPE0)
 {
     INIT(NPY_DTYPE1)
     int winddof = window - ddof;
@@ -400,7 +402,7 @@ MOVE(move_std, DTYPE0)
             delta = ai - amean;
             amean += delta / (_i + 1);
             assqdm += delta * (ai - amean);
-            yi = sqrt(assqdm / (_i + 1 - ddof));
+            yi = FUNC(assqdm / (_i + 1 - ddof));
             YI(npy_DTYPE1) = yi;
         }
         WHILE2 {
@@ -414,7 +416,7 @@ MOVE(move_std, DTYPE0)
             if (assqdm < 0) {
                 assqdm = 0;
             }
-            YI(npy_DTYPE1) = sqrt(assqdm * winddof_inv);
+            YI(npy_DTYPE1) = FUNC(assqdm * winddof_inv);
         }
         NEXT
     }
@@ -422,164 +424,42 @@ MOVE(move_std, DTYPE0)
 }
 /* dtype end */
 
-
-MOVE_MAIN(move_std, 1)
-
-
-/* move_var -------------------------------------------------------------- */
-
-/* dtype = [['float64'], ['float32']] */
-MOVE(move_var, DTYPE0)
-{
-    INIT(NPY_DTYPE0)
-    Py_ssize_t count;
-    npy_DTYPE0 delta, amean, assqdm, ai, aold, yi, count_inv, ddof_inv;
-    WHILE {
-        amean = assqdm = count = 0;
-        WHILE0 {
-            ai = AI(npy_DTYPE0);
-            if (ai == ai) {
-                count += 1;
-                delta = ai - amean;
-                amean += delta / count;
-                assqdm += delta * (ai - amean);
-            }
-            YI(npy_DTYPE0) = BN_NAN;
-        }
-        WHILE1 {
-            ai = AI(npy_DTYPE0);
-            if (ai == ai) {
-                count += 1;
-                delta = ai - amean;
-                amean += delta / count;
-                assqdm += delta * (ai - amean);
-            }
-            if (count >= min_count) {
-                if (assqdm < 0) {
-                    assqdm = 0;
-                }
-                yi = assqdm / (count - ddof);
-            }
-            else {
-                yi = BN_NAN;
-            }
-            YI(npy_DTYPE0) = yi;
-        }
-        count_inv = 1.0 / count;
-        ddof_inv = 1.0 / (count - ddof);
-        WHILE2 {
-            ai = AI(npy_DTYPE0);
-            aold = *(npy_DTYPE0*)(_pa + (_i-window)*stride);
-            if (ai == ai) {
-                if (aold == aold) {
-                    delta = ai - aold;
-                    aold -= amean;
-                    amean += delta / count;
-                    ai -= amean;
-                    assqdm += (ai + aold) * delta;
-                }
-                else {
-                    count++;
-                    count_inv = 1.0 / count;
-                    ddof_inv = 1.0 / (count - ddof);
-                    delta = ai - amean;
-                    amean += delta * count_inv;
-                    assqdm += delta * (ai - amean);
-                }
-            }
-            else {
-                if (aold == aold) {
-                    count--;
-                    count_inv = 1.0 / count;
-                    ddof_inv = 1.0 / (count - ddof);
-                    if (count > 0) {
-                        delta = aold - amean;
-                        amean -= delta * count_inv;
-                        assqdm -= delta * (aold - amean);
-                    }
-                    else {
-                        amean = 0;
-                        assqdm = 0;
-                    }
-                }
-            }
-            if (count >= min_count) {
-                if (assqdm < 0) {
-                    assqdm = 0;
-                }
-                yi = assqdm * ddof_inv;
-            }
-            else {
-                yi = BN_NAN;
-            }
-            YI(npy_DTYPE0) = yi;
-        }
-        NEXT
-    }
-    RETURN
-}
-/* dtype end */
-
-/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-MOVE(move_var, DTYPE0)
-{
-    INIT(NPY_DTYPE1)
-    int winddof = window - ddof;
-    npy_DTYPE1 delta, amean, assqdm, yi, ai, aold;
-    npy_DTYPE1 window_inv = 1.0 / window, winddof_inv = 1.0 / winddof;
-    WHILE {
-        amean = assqdm = 0;
-        WHILE0 {
-            ai = AI(npy_DTYPE0);
-            delta = ai - amean;
-            amean += delta / (_i + 1);
-            assqdm += delta * (ai - amean);
-            YI(npy_DTYPE1) = BN_NAN;
-        }
-        WHILE1 {
-            ai = AI(npy_DTYPE0);
-            delta = ai - amean;
-            amean += delta / (_i + 1);
-            assqdm += delta * (ai - amean);
-            yi = assqdm / (_i + 1 - ddof);
-            YI(npy_DTYPE1) = yi;
-        }
-        WHILE2 {
-            ai = AI(npy_DTYPE0);
-            aold = AOLD(npy_DTYPE0);
-            delta = ai - aold;
-            aold -= amean;
-            amean += delta * window_inv;
-            ai -= amean;
-            assqdm += (ai + aold) * delta;
-            if (assqdm < 0) {
-                assqdm = 0;
-            }
-            YI(npy_DTYPE1) = assqdm * winddof_inv;
-        }
-        NEXT
-    }
-    RETURN
-}
-/* dtype end */
+MOVE_MAIN(NAME, 1)
+/* repeat end */
 
 
-MOVE_MAIN(move_var, 1)
+/* move_min, move_max ---------------------------------------------------- */
 
+/* repeat = {
+   'NAME': ['move_min',    'move_max',
+            'move_argmin', 'move_argmax'],
+   'MACRO_FLOAT': ['MOVE_NANMIN', 'MOVE_NANMAX',
+                   'MOVE_NANMIN', 'MOVE_NANMAX'],
+   'MACRO_INT': ['MOVE_MIN', 'MOVE_MAX',
+                 'MOVE_MIN', 'MOVE_MAX'],
+   'COMPARE': ['<=', '>=',
+               '<=', '>='],
+   'FLIP': ['>=', '<=',
+            '>=', '<='],
+   'BIG_FLOAT': ['BN_INFINITY', '-BN_INFINITY',
+                 'BN_INFINITY', '-BN_INFINITY'],
+   'BIG_INT': ['NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0',
+               'NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0'],
+   'VALUE': ['extreme_pair->value',           'extreme_pair->value',
+             '_i-extreme_pair->death+window', '_i-extreme_pair->death+window']
+   } */
 
-/* move_min -------------------------------------------------------------- */
-
-#define MOVE_NANMIN(dtype, yi, code) \
+#define MACRO_FLOAT(dtype, yi, code) \
     ai = AI(dtype); \
-    if (ai == ai) count++; else ai = BN_INFINITY; \
+    if (ai == ai) count++; else ai = BIG_FLOAT; \
     code; \
-    if (ai <= minpair->value) { \
-        minpair->value = ai; \
-        minpair->death = _i + window; \
-        last = minpair; \
+    if (ai COMPARE extreme_pair->value) { \
+        extreme_pair->value = ai; \
+        extreme_pair->death = _i + window; \
+        last = extreme_pair; \
     } \
     else { \
-        while (last->value >= ai) { \
+        while (last->value FLIP ai) { \
             if (last == ring) last = end; \
             last--; \
         } \
@@ -592,13 +472,13 @@ MOVE_MAIN(move_var, 1)
     YI(dtype) = yi_tmp;
 
 /* dtype = [['float64'], ['float32']] */
-MOVE(move_min, DTYPE0)
+MOVE(NAME, DTYPE0)
 {
     INIT(NPY_DTYPE0)
     npy_DTYPE0 ai, aold, yi_tmp;
     Py_ssize_t count;
     pairs *ring;
-    pairs *minpair;
+    pairs *extreme_pair;
     pairs *end;
     pairs *last;
     ring = (pairs *)malloc(window * sizeof(pairs));
@@ -606,28 +486,28 @@ MOVE(move_min, DTYPE0)
         count = 0;
         end = ring + window;
         last = ring;
-        minpair = ring;
+        extreme_pair = ring;
         ai = A0(npy_DTYPE0);
-        minpair->value = ai == ai ? ai : BN_INFINITY;
-        minpair->death = window;
+        extreme_pair->value = ai == ai ? ai : BIG_FLOAT;
+        extreme_pair->death = window;
         WHILE0 {
-            MOVE_NANMIN(npy_DTYPE0,
+            MACRO_FLOAT(npy_DTYPE0,
                         BN_NAN,
                         NULL)
         }
         WHILE1 {
-            MOVE_NANMIN(npy_DTYPE0,
-                        count >= min_count ? minpair->value : BN_NAN,
+            MACRO_FLOAT(npy_DTYPE0,
+                        count >= min_count ? VALUE : BN_NAN,
                         NULL)
         }
         WHILE2 {
-            MOVE_NANMIN(npy_DTYPE0,
-                        count >= min_count ? minpair->value : BN_NAN,
+            MACRO_FLOAT(npy_DTYPE0,
+                        count >= min_count ? VALUE : BN_NAN,
                         aold = AOLD(npy_DTYPE0);
                         if (aold == aold) count--;
-                        if (minpair->death == _i) {
-                            minpair++;
-                            if (minpair >= end) minpair = ring;
+                        if (extreme_pair->death == _i) {
+                            extreme_pair++;
+                            if (extreme_pair >= end) extreme_pair = ring;
                         })
         }
         NEXT
@@ -637,16 +517,16 @@ MOVE(move_min, DTYPE0)
 }
 /* dtype end */
 
-#define MOVE_MIN(a_dtype, y_dtype, yi, code) \
+#define MACRO_INT(a_dtype, y_dtype, yi, code) \
     ai = AI(a_dtype); \
     code; \
-    if (ai <= minpair->value) { \
-        minpair->value = ai; \
-        minpair->death = _i + window; \
-        last = minpair; \
+    if (ai COMPARE extreme_pair->value) { \
+        extreme_pair->value = ai; \
+        extreme_pair->death = _i + window; \
+        last = extreme_pair; \
     } \
     else { \
-        while (last->value >= ai) { \
+        while (last->value FLIP ai) { \
             if (last == ring) last = end; \
             last--; \
         } \
@@ -659,43 +539,43 @@ MOVE(move_min, DTYPE0)
     YI(y_dtype) = yi_tmp;
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-MOVE(move_min, DTYPE0)
+MOVE(NAME, DTYPE0)
 {
     INIT(NPY_DTYPE1)
     npy_DTYPE0 ai;
     npy_DTYPE1 yi_tmp;
     pairs *ring;
-    pairs *minpair;
+    pairs *extreme_pair;
     pairs *end;
     pairs *last;
     ring = (pairs *)malloc(window * sizeof(pairs));
     WHILE {
         end = ring + window;
         last = ring;
-        minpair = ring;
+        extreme_pair = ring;
         ai = A0(npy_DTYPE0);
-        minpair->value = ai;
-        minpair->death = window;
+        extreme_pair->value = ai;
+        extreme_pair->death = window;
         WHILE0 {
-            MOVE_MIN(npy_DTYPE0,
-                     npy_DTYPE1,
-                     BN_NAN,
-                     NULL)
+            MACRO_INT(npy_DTYPE0,
+                      npy_DTYPE1,
+                      BN_NAN,
+                      NULL)
         }
         WHILE1 {
-            MOVE_MIN(npy_DTYPE0,
-                     npy_DTYPE1,
-                     minpair->value,
-                     NULL)
+            MACRO_INT(npy_DTYPE0,
+                      npy_DTYPE1,
+                      VALUE,
+                      NULL)
         }
         WHILE2 {
-            MOVE_MIN(npy_DTYPE0,
-                     npy_DTYPE1,
-                     minpair->value,
-                     if (minpair->death == _i) {
-                         minpair++;
-                         if (minpair >= end) minpair = ring;
-                     })
+            MACRO_INT(npy_DTYPE0,
+                      npy_DTYPE1,
+                      VALUE,
+                      if (extreme_pair->death == _i) {
+                          extreme_pair++;
+                          if (extreme_pair >= end) extreme_pair = ring;
+                      })
         }
         NEXT
     }
@@ -704,346 +584,8 @@ MOVE(move_min, DTYPE0)
 }
 /* dtype end */
 
-
-MOVE_MAIN(move_min, 0)
-
-
-/* move_max -------------------------------------------------------------- */
-
-#define MOVE_NANMAX(dtype, yi, code) \
-    ai = AI(dtype); \
-    if (ai == ai) count++; else ai = -BN_INFINITY; \
-    code; \
-    if (ai >= maxpair->value) { \
-        maxpair->value = ai; \
-        maxpair->death = _i + window; \
-        last = maxpair; \
-    } \
-    else { \
-        while (last->value <= ai) { \
-            if (last == ring) last = end; \
-            last--; \
-        } \
-        last++; \
-        if (last == end) last = ring; \
-        last->value = ai; \
-        last->death = _i + window; \
-    } \
-    yi_tmp = yi; \
-    YI(dtype) = yi_tmp;
-
-/* dtype = [['float64'], ['float32']] */
-MOVE(move_max, DTYPE0)
-{
-    INIT(NPY_DTYPE0)
-    npy_DTYPE0 ai, aold, yi_tmp;
-    Py_ssize_t count;
-    pairs *ring;
-    pairs *maxpair;
-    pairs *end;
-    pairs *last;
-    ring = (pairs *)malloc(window * sizeof(pairs));
-    WHILE {
-        count = 0;
-        end = ring + window;
-        last = ring;
-        maxpair = ring;
-        ai = A0(npy_DTYPE0);
-        maxpair->value = ai == ai ? ai : -BN_INFINITY;
-        maxpair->death = window;
-        WHILE0 {
-            MOVE_NANMAX(npy_DTYPE0,
-                        BN_NAN,
-                        NULL)
-        }
-        WHILE1 {
-            MOVE_NANMAX(npy_DTYPE0,
-                        count >= min_count ? maxpair->value : BN_NAN,
-                        NULL)
-        }
-        WHILE2 {
-            MOVE_NANMAX(npy_DTYPE0,
-                        count >= min_count ? maxpair->value : BN_NAN,
-                        aold = AOLD(npy_DTYPE0);
-                        if (aold == aold) count--;
-                        if (maxpair->death == _i) {
-                            maxpair++;
-                            if (maxpair >= end) maxpair = ring;
-                        })
-        }
-        NEXT
-    }
-    free(ring);
-    RETURN
-}
-/* dtype end */
-
-#define MOVE_MAX(a_dtype, y_dtype, yi, code) \
-    ai = AI(a_dtype); \
-    code; \
-    if (ai >= maxpair->value) { \
-        maxpair->value = ai; \
-        maxpair->death = _i + window; \
-        last = maxpair; \
-    } \
-    else { \
-        while (last->value <= ai) { \
-            if (last == ring) last = end; \
-            last--; \
-        } \
-        last++; \
-        if (last == end) last = ring; \
-        last->value = ai; \
-        last->death = _i + window; \
-    } \
-    yi_tmp = yi; \
-    YI(y_dtype) = yi_tmp;
-
-/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-MOVE(move_max, DTYPE0)
-{
-    INIT(NPY_DTYPE1)
-    npy_DTYPE0 ai;
-    npy_DTYPE1 yi_tmp;
-    pairs *ring;
-    pairs *maxpair;
-    pairs *end;
-    pairs *last;
-    ring = (pairs *)malloc(window * sizeof(pairs));
-    WHILE {
-        end = ring + window;
-        last = ring;
-        maxpair = ring;
-        ai = A0(npy_DTYPE0);
-        maxpair->value = ai;
-        maxpair->death = window;
-        WHILE0 {
-            MOVE_MAX(npy_DTYPE0,
-                     npy_DTYPE1,
-                     BN_NAN,
-                     NULL)
-        }
-        WHILE1 {
-            MOVE_MAX(npy_DTYPE0,
-                     npy_DTYPE1,
-                     maxpair->value,
-                     NULL)
-        }
-        WHILE2 {
-            MOVE_MAX(npy_DTYPE0,
-                     npy_DTYPE1,
-                     maxpair->value,
-                     if (maxpair->death == _i) {
-                         maxpair++;
-                         if (maxpair >= end) maxpair = ring;
-                     })
-        }
-        NEXT
-    }
-    free(ring);
-    RETURN
-}
-/* dtype end */
-
-
-MOVE_MAIN(move_max, 0)
-
-
-/* move_argmin ----------------------------------------------------------- */
-
-/* dtype = [['float64'], ['float32']] */
-MOVE(move_argmin, DTYPE0)
-{
-    INIT(NPY_DTYPE0)
-    npy_DTYPE0 ai, aold, yi_tmp;
-    Py_ssize_t count;
-    pairs *ring;
-    pairs *minpair;
-    pairs *end;
-    pairs *last;
-    ring = (pairs *)malloc(window * sizeof(pairs));
-    WHILE {
-        count = 0;
-        end = ring + window;
-        last = ring;
-        minpair = ring;
-        ai = A0(npy_DTYPE0);
-        minpair->value = ai == ai ? ai : BN_INFINITY;
-        minpair->death = window;
-        WHILE0 {
-            MOVE_NANMIN(npy_DTYPE0,
-                        BN_NAN,
-                        NULL)
-        }
-        WHILE1 {
-            MOVE_NANMIN(npy_DTYPE0,
-                        count >= min_count ? _i-minpair->death+window : BN_NAN,
-                        NULL)
-        }
-        WHILE2 {
-            MOVE_NANMIN(npy_DTYPE0,
-                        count >= min_count ? _i-minpair->death+window : BN_NAN,
-                        aold = AOLD(npy_DTYPE0);
-                        if (aold == aold) count--;
-                        if (minpair->death == _i) {
-                            minpair++;
-                            if (minpair >= end) minpair = ring;
-                        })
-        }
-        NEXT
-    }
-    free(ring);
-    RETURN
-}
-/* dtype end */
-
-/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-MOVE(move_argmin, DTYPE0)
-{
-    INIT(NPY_DTYPE1)
-    npy_DTYPE0 ai;
-    npy_DTYPE1 yi_tmp;
-    pairs *ring;
-    pairs *minpair;
-    pairs *end;
-    pairs *last;
-    ring = (pairs *)malloc(window * sizeof(pairs));
-    WHILE {
-        end = ring + window;
-        last = ring;
-        minpair = ring;
-        ai = A0(npy_DTYPE0);
-        minpair->value = ai;
-        minpair->death = window;
-        WHILE0 {
-            MOVE_MIN(npy_DTYPE0,
-                     npy_DTYPE1,
-                     BN_NAN,
-                     NULL)
-        }
-        WHILE1 {
-            MOVE_MIN(npy_DTYPE0,
-                     npy_DTYPE1,
-                     _i - minpair->death + window,
-                     NULL)
-        }
-        WHILE2 {
-            MOVE_MIN(npy_DTYPE0,
-                     npy_DTYPE1,
-                     _i - minpair->death + window,
-                     if (minpair->death == _i) {
-                         minpair++;
-                         if (minpair >= end) minpair = ring;
-                     })
-        }
-        NEXT
-    }
-    free(ring);
-    RETURN
-}
-/* dtype end */
-
-
-MOVE_MAIN(move_argmin, 0)
-
-
-/* move_argmax ----------------------------------------------------------- */
-
-/* dtype = [['float64'], ['float32']] */
-MOVE(move_argmax, DTYPE0)
-{
-    INIT(NPY_DTYPE0)
-    npy_DTYPE0 ai, aold, yi_tmp;
-    Py_ssize_t count;
-    pairs *ring;
-    pairs *maxpair;
-    pairs *end;
-    pairs *last;
-    ring = (pairs *)malloc(window * sizeof(pairs));
-    WHILE {
-        count = 0;
-        end = ring + window;
-        last = ring;
-        maxpair = ring;
-        ai = A0(npy_DTYPE0);
-        maxpair->value = ai == ai ? ai : -BN_INFINITY;
-        maxpair->death = window;
-        WHILE0 {
-            MOVE_NANMAX(npy_DTYPE0,
-                        BN_NAN,
-                        NULL)
-        }
-        WHILE1 {
-            MOVE_NANMAX(npy_DTYPE0,
-                        count >= min_count ? _i-maxpair->death+window : BN_NAN,
-                        NULL)
-        }
-        WHILE2 {
-            MOVE_NANMAX(npy_DTYPE0,
-                        count >= min_count ? _i-maxpair->death+window : BN_NAN,
-                        aold = AOLD(npy_DTYPE0);
-                        if (aold == aold) count--;
-                        if (maxpair->death == _i) {
-                            maxpair++;
-                            if (maxpair >= end) maxpair = ring;
-                        })
-        }
-        NEXT
-    }
-    free(ring);
-    RETURN
-}
-/* dtype end */
-
-/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-MOVE(move_argmax, DTYPE0)
-{
-    INIT(NPY_DTYPE1)
-    npy_DTYPE0 ai;
-    npy_DTYPE1 yi_tmp;
-    pairs *ring;
-    pairs *maxpair;
-    pairs *end;
-    pairs *last;
-    ring = (pairs *)malloc(window * sizeof(pairs));
-    WHILE {
-        end = ring + window;
-        last = ring;
-        maxpair = ring;
-        ai = A0(npy_DTYPE0);
-        maxpair->value = ai;
-        maxpair->death = window;
-        WHILE0 {
-            MOVE_MAX(npy_DTYPE0,
-                     npy_DTYPE1,
-                     BN_NAN,
-                     NULL)
-        }
-        WHILE1 {
-            MOVE_MAX(npy_DTYPE0,
-                     npy_DTYPE1,
-                     _i - maxpair->death + window,
-                     NULL)
-        }
-        WHILE2 {
-            MOVE_MAX(npy_DTYPE0,
-                     npy_DTYPE1,
-                     _i - maxpair->death + window,
-                     if (maxpair->death == _i) {
-                         maxpair++;
-                         if (maxpair >= end) maxpair = ring;
-                     })
-        }
-        NEXT
-    }
-    free(ring);
-    RETURN
-}
-/* dtype end */
-
-
-MOVE_MAIN(move_argmax, 0)
-
+MOVE_MAIN(NAME, 0)
+/* repeat end */
 
 /* move_median ----------------------------------------------------------- */
 

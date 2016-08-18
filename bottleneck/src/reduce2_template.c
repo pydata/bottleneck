@@ -334,10 +334,12 @@ REDUCE_ONE(nanmean, DTYPE0)
 REDUCE_MAIN(nanmean, 0, 0, 0)
 
 
-/* nanstd ---------------------------------------------------------------- */
+/* nanstd, nanvar- ------------------------------------------------------- */
 
+/* repeat = {'NAME': ['nanstd', 'nanvar'],
+             'FUNC': ['sqrt',   '']} */
 /* dtype = [['float64'], ['float32']] */
-REDUCE_ALL(nanstd, DTYPE0)
+REDUCE_ALL(NAME, DTYPE0)
 {
     INIT_ALL
     Py_ssize_t count = 0;
@@ -367,7 +369,7 @@ REDUCE_ALL(nanstd, DTYPE0)
             }
             NEXT
         }
-        out = sqrt(asum / (count - ddof));
+        out = FUNC(asum / (count - ddof));
     }
     else {
         out = BN_NAN;
@@ -376,7 +378,7 @@ REDUCE_ALL(nanstd, DTYPE0)
     return PyFloat_FromDouble(out);
 }
 
-REDUCE_ONE(nanstd, DTYPE0)
+REDUCE_ONE(NAME, DTYPE0)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
@@ -407,7 +409,7 @@ REDUCE_ONE(nanstd, DTYPE0)
                         asum += ai * ai;
                     }
                 }
-                asum = sqrt(asum / (count - ddof));
+                asum = FUNC(asum / (count - ddof));
             }
             else {
                 asum = BN_NAN;
@@ -422,7 +424,7 @@ REDUCE_ONE(nanstd, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-REDUCE_ALL(nanstd, DTYPE0)
+REDUCE_ALL(NAME, DTYPE0)
 {
     INIT_ALL
     npy_DTYPE1 out;
@@ -445,7 +447,7 @@ REDUCE_ALL(nanstd, DTYPE0)
             }
             NEXT
         }
-        out = sqrt(asum / (size - ddof));
+        out = FUNC(asum / (size - ddof));
     }
     else {
         out = BN_NAN;
@@ -454,7 +456,7 @@ REDUCE_ALL(nanstd, DTYPE0)
     return PyFloat_FromDouble(out);
 }
 
-REDUCE_ONE(nanstd, DTYPE0)
+REDUCE_ONE(NAME, DTYPE0)
 {
     Y_INIT(NPY_DTYPE1, npy_DTYPE1)
     INIT
@@ -477,7 +479,7 @@ REDUCE_ONE(nanstd, DTYPE0)
                     ai = AI(npy_DTYPE0) - amean;
                     asum += ai * ai;
                 }
-                asum = sqrt(asum * length_ddof_inv);
+                asum = FUNC(asum * length_ddof_inv);
             }
             else {
                 asum = BN_NAN;
@@ -491,179 +493,24 @@ REDUCE_ONE(nanstd, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(nanstd, 0, 0, 1)
+REDUCE_MAIN(NAME, 0, 0, 1)
+/* repeat end */
 
 
-/* nanvar ---------------------------------------------------------------- */
+/* nanmin, nanmax -------------------------------------------------------- */
 
+/* repeat = {'NAME':      ['nanmin',         'nanmax'],
+             'COMPARE':   ['<=',             '>='],
+             'BIG_FLOAT': ['BN_INFINITY',    '-BN_INFINITY'],
+             'BIG_INT':   ['NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0']} */
 /* dtype = [['float64'], ['float32']] */
-REDUCE_ALL(nanvar, DTYPE0)
+REDUCE_ALL(NAME, DTYPE0)
 {
     INIT_ALL
-    Py_ssize_t count = 0;
-    npy_DTYPE0 ai, amean, out, asum = 0;
-    BN_BEGIN_ALLOW_THREADS
-    WHILE {
-        FOR {
-            ai = AI(npy_DTYPE0);
-            if (ai == ai) {
-                asum += ai;
-                count++;
-            }
-        }
-        NEXT
-    }
-    if (count > ddof) {
-        amean = asum / count;
-        asum = 0;
-        RESET
-        WHILE {
-            FOR {
-                ai = AI(npy_DTYPE0);
-                if (ai == ai) {
-                    ai -= amean;
-                    asum += ai * ai;
-                }
-            }
-            NEXT
-        }
-        out = asum / (count - ddof);
-    }
-    else {
-        out = BN_NAN;
-    }
-    BN_END_ALLOW_THREADS
-    return PyFloat_FromDouble(out);
-}
-
-REDUCE_ONE(nanvar, DTYPE0)
-{
-    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
-    INIT
-    BN_BEGIN_ALLOW_THREADS
-    Py_ssize_t count;
-    npy_DTYPE0 ai, asum, amean;
-    if (length == 0) {
-        Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
-        FOR YI = BN_NAN;
-    }
-    else {
-        WHILE {
-            asum = count = 0;
-            FOR {
-                ai = AI(npy_DTYPE0);
-                if (ai == ai) {
-                    asum += ai;
-                    count++;
-                }
-            }
-            if (count > ddof) {
-                amean = asum / count;
-                asum = 0;
-                FOR {
-                    ai = AI(npy_DTYPE0);
-                    if (ai == ai) {
-                        ai -= amean;
-                        asum += ai * ai;
-                    }
-                }
-                asum = asum / (count - ddof);
-            }
-            else {
-                asum = BN_NAN;
-            }
-            YI = asum;
-            NEXT
-        }
-    }
-    BN_END_ALLOW_THREADS
-    return y;
-}
-/* dtype end */
-
-/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-REDUCE_ALL(nanvar, DTYPE0)
-{
-    INIT_ALL
-    npy_DTYPE1 out;
-    BN_BEGIN_ALLOW_THREADS
-    Py_ssize_t size = 0;
-    npy_DTYPE1 ai, amean, asum = 0;
-    WHILE {
-        FOR asum += AI(npy_DTYPE0);
-        size += length;
-        NEXT
-    }
-    if (size > ddof) {
-        amean = asum / size;
-        asum = 0;
-        RESET
-        WHILE {
-            FOR {
-                ai = AI(npy_DTYPE0) - amean;
-                asum += ai * ai;
-            }
-            NEXT
-        }
-        out = asum / (size - ddof);
-    }
-    else {
-        out = BN_NAN;
-    }
-    BN_END_ALLOW_THREADS
-    return PyFloat_FromDouble(out);
-}
-
-REDUCE_ONE(nanvar, DTYPE0)
-{
-    Y_INIT(NPY_DTYPE1, npy_DTYPE1)
-    INIT
-    BN_BEGIN_ALLOW_THREADS
-    npy_DTYPE1 ai, asum, amean;
-    npy_DTYPE1 length_inv = 1.0 / length;
-    npy_DTYPE1 length_ddof_inv = 1.0 / (length - ddof);
-    if (length == 0) {
-        Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
-        FOR YI = BN_NAN;
-    }
-    else {
-        WHILE {
-            asum = 0;
-            FOR asum += AI(npy_DTYPE0);
-            if (length > ddof) {
-                amean = asum * length_inv;
-                asum = 0;
-                FOR {
-                    ai = AI(npy_DTYPE0) - amean;
-                    asum += ai * ai;
-                }
-                asum = asum * length_ddof_inv;
-            }
-            else {
-                asum = BN_NAN;
-            }
-            YI = asum;
-            NEXT
-        }
-    }
-    BN_END_ALLOW_THREADS
-    return y;
-}
-/* dtype end */
-
-REDUCE_MAIN(nanvar, 0, 0, 1)
-
-
-/* nanmin ---------------------------------------------------------------- */
-
-/* dtype = [['float64'], ['float32']] */
-REDUCE_ALL(nanmin, DTYPE0)
-{
-    INIT_ALL
-    npy_DTYPE0 ai, amin = BN_INFINITY;
+    npy_DTYPE0 ai, extreme = BIG_FLOAT;
     int allnan = 1;
     if (PyArray_SIZE(a) == 0) {
-        VALUE_ERR("numpy.nanmin raises on a.size==0 and axis=None; "
+        VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
                   "So Bottleneck too.");
         return NULL;
     }
@@ -671,42 +518,42 @@ REDUCE_ALL(nanmin, DTYPE0)
     WHILE {
         FOR {
             ai = AI(npy_DTYPE0);
-            if (ai <= amin) {
-                amin = ai;
+            if (ai COMPARE extreme) {
+                extreme = ai;
                 allnan = 0;
             }
         }
         NEXT
     }
-    if (allnan) amin = BN_NAN;
+    if (allnan) extreme = BN_NAN;
     BN_END_ALLOW_THREADS
-    return PyFloat_FromDouble(amin);
+    return PyFloat_FromDouble(extreme);
 }
 
-REDUCE_ONE(nanmin, DTYPE0)
+REDUCE_ONE(NAME, DTYPE0)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
-    npy_DTYPE0 ai, amin;
+    npy_DTYPE0 ai, extreme;
     int allnan;
     if (length == 0) {
-        VALUE_ERR("numpy.nanmin raises on a.shape[axis]==0; "
+        VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
                   "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        amin = BN_INFINITY;
+        extreme = BIG_FLOAT;
         allnan = 1;
         FOR {
             ai = AI(npy_DTYPE0);
-            if (ai <= amin) {
-                amin = ai;
+            if (ai COMPARE extreme) {
+                extreme = ai;
                 allnan = 0;
             }
         }
-        if (allnan) amin = BN_NAN;
-        YI = amin;
+        if (allnan) extreme = BN_NAN;
+        YI = extreme;
         NEXT
     }
     BN_END_ALLOW_THREADS
@@ -715,12 +562,12 @@ REDUCE_ONE(nanmin, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64'], ['int32']] */
-REDUCE_ALL(nanmin, DTYPE0)
+REDUCE_ALL(NAME, DTYPE0)
 {
     INIT_ALL
-    npy_DTYPE0 ai, amin = NPY_MAX_DTYPE0;
+    npy_DTYPE0 ai, extreme = BIG_INT;
     if (PyArray_SIZE(a) == 0) {
-        VALUE_ERR("numpy.nanmin raises on a.size==0 and axis=None; "
+        VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
                   "So Bottleneck too.");
         return NULL;
     }
@@ -728,32 +575,32 @@ REDUCE_ALL(nanmin, DTYPE0)
     WHILE {
         FOR {
             ai = AI(npy_DTYPE0);
-            if (ai <= amin) amin = ai;
+            if (ai COMPARE extreme) extreme = ai;
         }
         NEXT
     }
     BN_END_ALLOW_THREADS
-    return PyInt_FromLong(amin);
+    return PyInt_FromLong(extreme);
 }
 
-REDUCE_ONE(nanmin, DTYPE0)
+REDUCE_ONE(NAME, DTYPE0)
 {
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     INIT
-    npy_DTYPE0 ai, amin;
+    npy_DTYPE0 ai, extreme;
     if (length == 0) {
-        VALUE_ERR("numpy.nanmin raises on a.shape[axis]==0; "
+        VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
                   "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        amin = NPY_MAX_DTYPE0;
+        extreme = BIG_INT;
         FOR {
             ai = AI(npy_DTYPE0);
-            if (ai <= amin) amin = ai;
+            if (ai COMPARE extreme) extreme = ai;
         }
-        YI = amin;
+        YI = extreme;
         NEXT
     }
     BN_END_ALLOW_THREADS
@@ -761,138 +608,33 @@ REDUCE_ONE(nanmin, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(nanmin, 0, 0, 0)
+REDUCE_MAIN(NAME, 0, 0, 0)
+/* repeat end */
 
 
-/* nanmax ---------------------------------------------------------------- */
+/* nanargmin, nanargmax -------------------------------------------------- */
 
+/* repeat = {'NAME':      ['nanargmin',      'nanargmax'],
+             'COMPARE':   ['<=',             '>='],
+             'BIG_FLOAT': ['BN_INFINITY',    '-BN_INFINITY'],
+             'BIG_INT':   ['NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0']} */
 /* dtype = [['float64'], ['float32']] */
-REDUCE_ALL(nanmax, DTYPE0)
-{
-    INIT_ALL
-    npy_DTYPE0 ai, amax = -BN_INFINITY;
-    int allnan = 1;
-    if (PyArray_SIZE(a)== 0) {
-        VALUE_ERR("numpy.nanmax raises on a.size==0 and axis=None; "
-                  "So Bottleneck too.");
-        return NULL;
-    }
-    BN_BEGIN_ALLOW_THREADS
-    WHILE {
-        FOR {
-            ai = AI(npy_DTYPE0);
-            if (ai >= amax) {
-                amax = ai;
-                allnan = 0;
-            }
-        }
-        NEXT
-    }
-    if (allnan) amax = BN_NAN;
-    BN_END_ALLOW_THREADS
-    return PyFloat_FromDouble(amax);
-}
-
-REDUCE_ONE(nanmax, DTYPE0)
-{
-    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
-    INIT
-    npy_DTYPE0 ai, amax = 0;
-    int allnan;
-    if (length == 0) {
-        VALUE_ERR("numpy.nanmax raises on a.shape[axis]==0; "
-                  "So Bottleneck too.");
-        return NULL;
-    }
-    BN_BEGIN_ALLOW_THREADS
-    WHILE {
-        amax = -BN_INFINITY;
-        allnan = 1;
-        FOR {
-            ai = AI(npy_DTYPE0);
-            if (ai >= amax) {
-                amax = ai;
-                allnan = 0;
-            }
-        }
-        if (allnan) amax = BN_NAN;
-        YI = amax;
-        NEXT
-    }
-    BN_END_ALLOW_THREADS
-    return y;
-}
-/* dtype end */
-
-/* dtype = [['int64'], ['int32']] */
-REDUCE_ALL(nanmax, DTYPE0)
-{
-    INIT_ALL
-    npy_DTYPE0 ai, amax = NPY_MIN_DTYPE0;
-    if (PyArray_SIZE(a)== 0) {
-        VALUE_ERR("numpy.nanmax raises on a.size==0 and axis=None; "
-                  "So Bottleneck too.");
-        return NULL;
-    }
-    BN_BEGIN_ALLOW_THREADS
-    WHILE {
-        FOR {
-            ai = AI(npy_DTYPE0);
-            if (ai >= amax) amax = ai;
-        }
-        NEXT
-    }
-    BN_END_ALLOW_THREADS
-    return PyInt_FromLong(amax);
-}
-
-REDUCE_ONE(nanmax, DTYPE0)
-{
-    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
-    INIT
-    npy_DTYPE0 ai, amax;
-    if (length == 0) {
-        VALUE_ERR("numpy.nanmax raises on a.shape[axis]==0; "
-                  "So Bottleneck too.");
-        return NULL;
-    }
-    BN_BEGIN_ALLOW_THREADS
-    WHILE {
-        amax = NPY_MIN_DTYPE0;
-        FOR {
-            ai = AI(npy_DTYPE0);
-            if (ai >= amax) amax = ai;
-        }
-        YI = amax;
-        NEXT
-    }
-    BN_END_ALLOW_THREADS
-    return y;
-}
-/* dtype end */
-
-REDUCE_MAIN(nanmax, 0, 0, 0)
-
-
-/* nanargmin ---------------------------------------------------------------- */
-
-/* dtype = [['float64'], ['float32']] */
-REDUCE_ALL(nanargmin, DTYPE0)
+REDUCE_ALL(NAME, DTYPE0)
 {
     INIT_FOR
-    npy_DTYPE0 ai, amin = BN_INFINITY;
+    npy_DTYPE0 ai, extreme = BIG_FLOAT;
     int allnan = 1;
     Py_ssize_t idx = 0;
     if (PyArray_SIZE(a) == 0) {
-        VALUE_ERR("numpy.nanargmin raises on a.size==0 and axis=None; "
+        VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
                   "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
     FOR_REVERSE {
         ai = AI(npy_DTYPE0);
-        if (ai <= amin) {
-            amin = ai;
+        if (ai COMPARE extreme) {
+            extreme = ai;
             allnan = 0;
             idx = _i;
         }
@@ -906,26 +648,26 @@ REDUCE_ALL(nanargmin, DTYPE0)
     }
 }
 
-REDUCE_ONE(nanargmin, DTYPE0)
+REDUCE_ONE(NAME, DTYPE0)
 {
     Y_INIT(NPY_INTP, npy_intp)
     INIT
     int allnan, err_code = 0;
     Py_ssize_t idx = 0;
-    npy_DTYPE0 ai, amin;
+    npy_DTYPE0 ai, extreme;
     if (length == 0) {
-        VALUE_ERR("numpy.nanargmin raises on a.shape[axis]==0; "
+        VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
                   "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        amin = BN_INFINITY;
+        extreme = BIG_FLOAT;
         allnan = 1;
         FOR_REVERSE {
             ai = AI(npy_DTYPE0);
-            if (ai <= amin) {
-                amin = ai;
+            if (ai COMPARE extreme) {
+                extreme = ai;
                 allnan = 0;
                 idx = _i;
             }
@@ -947,21 +689,21 @@ REDUCE_ONE(nanargmin, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64', 'intp'], ['int32', 'intp']] */
-REDUCE_ALL(nanargmin, DTYPE0)
+REDUCE_ALL(NAME, DTYPE0)
 {
     INIT_FOR
     npy_DTYPE1 idx = 0;
-    npy_DTYPE0 ai, amin = NPY_MAX_DTYPE0;
+    npy_DTYPE0 ai, extreme = BIG_INT;
     if (PyArray_SIZE(a) == 0) {
-        VALUE_ERR("numpy.nanargmin raises on a.size==0 and axis=None; "
+        VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
                   "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
     FOR_REVERSE {
         ai = AI(npy_DTYPE0);
-        if (ai <= amin) {
-            amin = ai;
+        if (ai COMPARE extreme) {
+            extreme = ai;
             idx = _i;
         }
     }
@@ -969,24 +711,24 @@ REDUCE_ALL(nanargmin, DTYPE0)
     return PyInt_FromLong(idx);
 }
 
-REDUCE_ONE(nanargmin, DTYPE0)
+REDUCE_ONE(NAME, DTYPE0)
 {
     Y_INIT(NPY_DTYPE1, npy_DTYPE1)
     INIT
     npy_DTYPE1 idx = 0;
-    npy_DTYPE0 ai, amin;
+    npy_DTYPE0 ai, extreme;
     if (length == 0) {
-        VALUE_ERR("numpy.nanargmin raises on a.shape[axis]==0; "
+        VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
                   "So Bottleneck too.");
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        amin = NPY_MAX_DTYPE0;
+        extreme = BIG_INT;
         FOR_REVERSE {
             ai = AI(npy_DTYPE0);
-            if (ai <= amin) {
-                amin = ai;
+            if (ai COMPARE extreme) {
+                extreme = ai;
                 idx = _i;
             }
         }
@@ -998,134 +740,8 @@ REDUCE_ONE(nanargmin, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(nanargmin, 0, 1, 0)
-
-
-/* nanargmax ---------------------------------------------------------------- */
-
-/* dtype = [['float64'], ['float32']] */
-REDUCE_ALL(nanargmax, DTYPE0)
-{
-    INIT_FOR
-    npy_DTYPE0 ai, amax = -BN_INFINITY;
-    int allnan = 1;
-    Py_ssize_t idx = 0;
-    if (PyArray_SIZE(a) == 0) {
-        VALUE_ERR("numpy.nanargmax raises on a.size==0 and axis=None; "
-                  "So Bottleneck too.");
-        return NULL;
-    }
-    BN_BEGIN_ALLOW_THREADS
-    FOR_REVERSE {
-        ai = AI(npy_DTYPE0);
-        if (ai >= amax) {
-            amax = ai;
-            allnan = 0;
-            idx = _i;
-        }
-    }
-    BN_END_ALLOW_THREADS
-    if (allnan) {
-        VALUE_ERR("All-NaN slice encountered");
-        return NULL;
-    } else {
-        return PyInt_FromLong(idx);
-    }
-}
-
-REDUCE_ONE(nanargmax, DTYPE0)
-{
-    Y_INIT(NPY_INTP, npy_intp)
-    INIT
-    int allnan, err_code = 0;
-    Py_ssize_t idx = 0;
-    npy_DTYPE0 ai, amax;
-    if (length == 0) {
-        VALUE_ERR("numpy.nanargmax raises on a.shape[axis]==0; "
-                  "So Bottleneck too.");
-        return NULL;
-    }
-    BN_BEGIN_ALLOW_THREADS
-    WHILE {
-        amax = -BN_INFINITY;
-        allnan = 1;
-        FOR_REVERSE {
-            ai = AI(npy_DTYPE0);
-            if (ai >= amax) {
-                amax = ai;
-                allnan = 0;
-                idx = _i;
-            }
-        }
-        if (allnan == 0) {
-            YI = idx;
-        } else {
-            err_code = 1;
-        }
-        NEXT
-    }
-    BN_END_ALLOW_THREADS
-    if (err_code) {
-        VALUE_ERR("All-NaN slice encountered");
-        return NULL;
-    }
-    return y;
-}
-/* dtype end */
-
-/* dtype = [['int64', 'intp'], ['int32', 'intp']] */
-REDUCE_ALL(nanargmax, DTYPE0)
-{
-    INIT_FOR
-    npy_DTYPE1 idx = 0;
-    npy_DTYPE0 ai, amax = NPY_MIN_DTYPE0;
-    if (PyArray_SIZE(a) == 0) {
-        VALUE_ERR("numpy.nanargmax raises on a.size==0 and axis=None; "
-                  "So Bottleneck too.");
-        return NULL;
-    }
-    BN_BEGIN_ALLOW_THREADS
-    FOR_REVERSE {
-        ai = AI(npy_DTYPE0);
-        if (ai >= amax) {
-            amax = ai;
-            idx = _i;
-        }
-    }
-    BN_END_ALLOW_THREADS
-    return PyInt_FromLong(idx);
-}
-
-REDUCE_ONE(nanargmax, DTYPE0)
-{
-    Y_INIT(NPY_DTYPE1, npy_DTYPE1)
-    INIT
-    npy_DTYPE1 idx = 0;
-    npy_DTYPE0 ai, amax;
-    if (length == 0) {
-        VALUE_ERR("numpy.nanargmax raises on a.shape[axis]==0; "
-                  "So Bottleneck too.");
-        return NULL;
-    }
-    BN_BEGIN_ALLOW_THREADS
-    WHILE {
-        amax = NPY_MIN_DTYPE0;
-        FOR_REVERSE {
-            ai = AI(npy_DTYPE0);
-            if (ai >= amax) {
-                amax = ai;
-                idx = _i;
-            }
-        }
-        YI = idx;
-        NEXT
-    }
-    BN_END_ALLOW_THREADS
-    return y;
-}
-/* dtype end */
-
-REDUCE_MAIN(nanargmax, 0, 1, 0)
+REDUCE_MAIN(NAME, 0, 1, 0)
+/* repeat end */
 
 
 /* ss ---------------------------------------------------------------- */
