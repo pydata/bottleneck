@@ -428,26 +428,13 @@ MOVE_MAIN(NAME, 1)
 /* repeat end */
 
 
-/* move_min, move_max ---------------------------------------------------- */
+/* move_min, move_max, move_argmin, move_argmax -------------------------- */
 
-/* repeat = {
-   'NAME': ['move_min',    'move_max',
-            'move_argmin', 'move_argmax'],
-   'MACRO_FLOAT': ['MOVE_NANMIN', 'MOVE_NANMAX',
-                   'MOVE_NANMIN', 'MOVE_NANMAX'],
-   'MACRO_INT': ['MOVE_MIN', 'MOVE_MAX',
-                 'MOVE_MIN', 'MOVE_MAX'],
-   'COMPARE': ['<=', '>=',
-               '<=', '>='],
-   'FLIP': ['>=', '<=',
-            '>=', '<='],
-   'BIG_FLOAT': ['BN_INFINITY', '-BN_INFINITY',
-                 'BN_INFINITY', '-BN_INFINITY'],
-   'BIG_INT': ['NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0',
-               'NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0'],
-   'VALUE': ['extreme_pair->value',           'extreme_pair->value',
-             '_i-extreme_pair->death+window', '_i-extreme_pair->death+window']
-   } */
+/* repeat = {'MACRO_FLOAT': ['MOVE_NANMIN', 'MOVE_NANMAX'],
+             'MACRO_INT':   ['MOVE_MIN',    'MOVE_MAX'],
+             'COMPARE':     ['<=',          '>='],
+             'FLIP':        ['>=',          '<='],
+             'BIG_FLOAT':   ['BN_INFINITY', '-BN_INFINITY']} */
 
 #define MACRO_FLOAT(dtype, yi, code) \
     ai = AI(dtype); \
@@ -471,6 +458,44 @@ MOVE_MAIN(NAME, 1)
     yi_tmp = yi; /* yi might contain _i and YI contains _i++ */ \
     YI(dtype) = yi_tmp;
 
+#define MACRO_INT(a_dtype, y_dtype, yi, code) \
+    ai = AI(a_dtype); \
+    code; \
+    if (ai COMPARE extreme_pair->value) { \
+        extreme_pair->value = ai; \
+        extreme_pair->death = _i + window; \
+        last = extreme_pair; \
+    } \
+    else { \
+        while (last->value FLIP ai) { \
+            if (last == ring) last = end; \
+            last--; \
+        } \
+        last++; \
+        if (last == end) last = ring; \
+        last->value = ai; \
+        last->death = _i + window; \
+    } \
+    yi_tmp = yi; \
+    YI(y_dtype) = yi_tmp;
+/* repeat end */
+
+/* repeat = {
+   'NAME': ['move_min',    'move_max',
+            'move_argmin', 'move_argmax'],
+   'MACRO_FLOAT': ['MOVE_NANMIN', 'MOVE_NANMAX',
+                   'MOVE_NANMIN', 'MOVE_NANMAX'],
+   'MACRO_INT': ['MOVE_MIN', 'MOVE_MAX',
+                 'MOVE_MIN', 'MOVE_MAX'],
+   'COMPARE': ['<=', '>=',
+               '<=', '>='],
+   'BIG_FLOAT': ['BN_INFINITY', '-BN_INFINITY',
+                 'BN_INFINITY', '-BN_INFINITY'],
+   'BIG_INT': ['NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0',
+               'NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0'],
+   'VALUE': ['extreme_pair->value',           'extreme_pair->value',
+             '_i-extreme_pair->death+window', '_i-extreme_pair->death+window']
+   } */
 /* dtype = [['float64'], ['float32']] */
 MOVE(NAME, DTYPE0)
 {
@@ -516,27 +541,6 @@ MOVE(NAME, DTYPE0)
     RETURN
 }
 /* dtype end */
-
-#define MACRO_INT(a_dtype, y_dtype, yi, code) \
-    ai = AI(a_dtype); \
-    code; \
-    if (ai COMPARE extreme_pair->value) { \
-        extreme_pair->value = ai; \
-        extreme_pair->death = _i + window; \
-        last = extreme_pair; \
-    } \
-    else { \
-        while (last->value FLIP ai) { \
-            if (last == ring) last = end; \
-            last--; \
-        } \
-        last++; \
-        if (last == end) last = ring; \
-        last->value = ai; \
-        last->death = _i + window; \
-    } \
-    yi_tmp = yi; \
-    YI(y_dtype) = yi_tmp;
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(NAME, DTYPE0)
