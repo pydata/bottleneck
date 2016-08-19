@@ -212,6 +212,8 @@ def unit_maker_argparse_raises(func):
     assert_raises(TypeError, func, arr, 2, 2, 0, 0, 0)
     assert_raises(TypeError, func, arr, 2, axis='0')
     assert_raises(TypeError, func, arr, 1, min_count='1')
+    if func.__name__ not in ('move_std', 'move_var'):
+        assert_raises(TypeError, func, arr, 2, ddof=0)
 
 
 # ---------------------------------------------------------------------------
