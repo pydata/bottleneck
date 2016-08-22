@@ -51,6 +51,10 @@ try:
 except:
     pass
 try:
+    from .nonreduce_axis2 import partsort as partsort2
+except:
+    pass
+try:
     from .move import (move_sum, move_mean, move_std, move_var, move_min,
                        move_max, move_argmin, move_argmax, move_median,
                        move_rank)

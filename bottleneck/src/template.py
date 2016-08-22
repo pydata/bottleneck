@@ -4,7 +4,7 @@ import ast
 
 
 def make_c_files():
-    modules = ['reduce2', 'move2']
+    modules = ['reduce2', 'move2', 'nonreduce_axis2']
     dirpath = os.path.dirname(__file__)
     for module in modules:
         filepath = os.path.join(dirpath, module + '_template.c')

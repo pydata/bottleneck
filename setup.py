@@ -66,6 +66,11 @@ def prepare_modules():
                                     "bottleneck/csrc/move_median.c"],
                            include_dirs=[np.get_include()],
                            extra_compile_args=['-O2'])]
+    ext_list += [Extension("bottleneck.nonreduce_axis2",
+                           sources=["bottleneck/src/nonreduce_axis2.c",
+                                    "bottleneck/src/slow.c"],
+                           include_dirs=[np.get_include()],
+                           extra_compile_args=['-O2'])]
 
     return ext_list
 
