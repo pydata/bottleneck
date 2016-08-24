@@ -54,7 +54,7 @@
 /* low-level functions such as move_sum_float64 */
 #define NRA(name, dtype) \
     static PyObject * \
-    name##_##dtype(PyArrayObject *a, int n, int axis)
+    name##_##dtype(PyArrayObject *a, int axis, int ndim, int n)
 
 /* top-level functions such as move_sum */
 #define NRA_MAIN(name, has_n) \
@@ -144,8 +144,7 @@ nonreducer_axis(char *name,
         } \
 
 /* dtype = [['float64'], ['float32'], ['int64'], ['int32']] */
-static PyObject *
-partsort_DTYPE0(PyArrayObject *a, int axis, int ndim, int n)
+NRA(partsort, DTYPE0)
 {
     a = (PyArrayObject *)PyArray_NewCopy(a, NPY_ANYORDER);
     Py_ssize_t length = PyArray_DIM(a, axis);
@@ -169,18 +168,8 @@ partsort_DTYPE0(PyArrayObject *a, int axis, int ndim, int n)
 }
 /* dtype end */
 
-static PyObject *
-partsort(PyObject *self, PyObject *args, PyObject *kwds)
-{
-    return nonreducer_axis("partsort",
-                           args,
-                           kwds,
-                           partsort_float64,
-                           partsort_float32,
-                           partsort_int64,
-                           partsort_int32,
-                           1);
-}
+NRA_MAIN(partsort, 1)
+
 
 /* python strings -------------------------------------------------------- */
 

@@ -838,7 +838,7 @@ REDUCE_MAIN(ss, 0, 0, 0)
 /* median ---------------------------------------------------------------- */
 
 /*
- WIRTH macro based on:
+ MEDIAN macro based on:
    Fast median search: an ANSI C implementation
    Nicolas Devillard - ndevilla AT free DOT fr
    July 1998
@@ -851,7 +851,7 @@ REDUCE_MAIN(ss, 0, 0, 0)
  (C) 2016 Keith Goodman
 */
 
-#define WIRTH(dtype) \
+#define MEDIAN(dtype) \
     do { \
         npy_intp j, l, r, k; \
         dtype x, ai, bi, atmp, amax; \
@@ -909,7 +909,7 @@ REDUCE_ALL(median, DTYPE0)
                 goto done;
             }
         }
-        WIRTH(npy_DTYPE0)
+        MEDIAN(npy_DTYPE0)
     }
     done:
     BN_END_ALLOW_THREADS
@@ -936,7 +936,7 @@ REDUCE_ONE(median, DTYPE0)
                     goto insert;
                 }
             }
-            WIRTH(npy_DTYPE0)
+            MEDIAN(npy_DTYPE0)
             insert:
             YI = med;
             NEXT
@@ -958,7 +958,7 @@ REDUCE_ALL(median, DTYPE0)
         med = BN_NAN;
     }
     else {
-        WIRTH(npy_DTYPE0)
+        MEDIAN(npy_DTYPE0)
     }
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(med);
@@ -977,7 +977,7 @@ REDUCE_ONE(median, DTYPE0)
     }
     else {
         WHILE {
-            WIRTH(npy_DTYPE0)
+            MEDIAN(npy_DTYPE0)
             YI = med;
             NEXT
         }
@@ -993,7 +993,7 @@ REDUCE_MAIN(median, 1, 1, 0)
 /* nanmedian ------------------------------------------------------------- */
 
 /*
- NAN_WIRTH macro based on non-NaN handling code:
+ NANMEDIAN macro based on non-NaN handling code:
    Fast median search: an ANSI C implementation
    Nicolas Devillard - ndevilla AT free DOT fr
    July 1998
@@ -1006,7 +1006,7 @@ REDUCE_MAIN(median, 1, 1, 0)
  (C) 2016 Keith Goodman
 */
 
-#define NAN_WIRTH(dtype) \
+#define NANMEDIAN(dtype) \
     do { \
         int allnan; \
         npy_intp j, l, r, k, n; \
@@ -1079,7 +1079,7 @@ REDUCE_ALL(nanmedian, DTYPE0)
         med = BN_NAN;
     }
     else {
-        NAN_WIRTH(npy_DTYPE0)
+        NANMEDIAN(npy_DTYPE0)
     }
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(med);
@@ -1098,7 +1098,7 @@ REDUCE_ONE(nanmedian, DTYPE0)
     }
     else {
         WHILE {
-            NAN_WIRTH(npy_DTYPE0)
+            NANMEDIAN(npy_DTYPE0)
             YI = med;
             NEXT
         }
