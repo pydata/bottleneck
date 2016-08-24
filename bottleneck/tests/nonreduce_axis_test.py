@@ -45,7 +45,7 @@ def unit_maker(func):
             a = rs.randint(0, 10, shape)
             for dtype in DTYPES:
                 a = a.astype(dtype)
-                for axis in range(-1, ndim) + [None]:
+                for axis in list(range(-1, ndim)) + [None]:
                     if axis is None:
                         nmax = a.size
                     else:
