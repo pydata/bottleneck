@@ -330,6 +330,11 @@ nonreducer_axis(char *name,
             return NULL;
         }
     }
+    else if (axis_obj == Py_None) {
+        a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
+        axis = 0;
+        ndim = 1;
+    }
     else {
         axis = PyArray_PyIntAsInt(axis_obj);
         if (error_converting(axis)) {

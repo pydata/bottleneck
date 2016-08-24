@@ -1,7 +1,3 @@
-"Test partsort and argpartsort."
-
-import warnings
-
 import numpy as np
 from numpy.testing import assert_equal, assert_array_equal
 
@@ -15,72 +11,116 @@ nan = np.nan
 # ---------------------------------------------------------------------------
 # partsort, argpartsort
 
-def arrays(dtypes=DTYPES):
-    "Iterator that yield arrays to use for unit testing."
-    ss = {}
-    ss[0] = {'size':  0, 'shapes': [(0,), (0, 0), (2, 0), (2, 0, 1)]}
-    ss[1] = {'size':  4, 'shapes': [(4,)]}
-    ss[2] = {'size':  6, 'shapes': [(1, 6), (2, 3)]}
-    ss[3] = {'size':  6, 'shapes': [(1, 2, 3)]}
-    ss[4] = {'size': 24, 'shapes': [(1, 2, 3, 4)]}
-    for ndim in ss:
-        size = ss[ndim]['size']
-        shapes = ss[ndim]['shapes']
-        for dtype in dtypes:
-            a = np.arange(size, dtype=dtype)
-            for shape in shapes:
-                a = a.reshape(shape)
-                yield a
-                yield -a
-            for i in range(0, a.size, 2):
-                a.flat[i] *= -1
-                yield a
-    yield np.array([1, 2, 3], dtype='>f4')
-    yield np.array([1, 2, 3], dtype='<f4')
-    yield np.array([1, 2, 3], dtype=np.float16)  # make sure slow is called
-
-
-def unit_maker(func, func0):
-    "Test bn.(arg)partsort gives same output as bn.slow.(arg)partsort."
-    msg = '\nfunc %s | input %s (%s) | shape %s | n %d | axis %s\n'
-    msg += '\nInput array:\n%s\n'
-    for i, arr in enumerate(arrays()):
-        for axis in list(range(-arr.ndim, arr.ndim)) + [None]:
-            if axis is None:
-                n = arr.size
-            else:
-                n = arr.shape[axis]
-            n = max(n // 2, 1)
-            with np.errstate(invalid='ignore'):
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore")
-                    actual = func(arr.copy(), n, axis=axis)
-                actual[:n] = np.sort(actual[:n], axis=axis)
-                actual[n:] = np.sort(actual[n:], axis=axis)
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore")
-                    desired = func0(arr.copy(), n, axis=axis)
-                    desired[:n] = np.sort(desired[:n], axis=axis)
-                    desired[n:] = np.sort(desired[n:], axis=axis)
-            tup = (func.__name__, 'a'+str(i), str(arr.dtype),
-                   str(arr.shape), n, str(axis), arr)
-            err_msg = msg % tup
-            assert_array_equal(actual, desired, err_msg)
-            err_msg += '\n dtype mismatch %s %s'
-            if hasattr(actual, 'dtype') and hasattr(desired, 'dtype'):
-                da = actual.dtype
-                dd = desired.dtype
-                assert_equal(da, dd, err_msg % (da, dd))
-
-
 def test_partsort():
-    "Test partsort."
-    yield unit_maker, bn.partsort, bn.slow.partsort
+    "test partsort"
+    for func in (bn.partsort, bn.partsort2):
+        yield unit_maker, func
 
 
 def test_argpartsort():
-    "Test argpartsort."
-    yield unit_maker, bn.argpartsort, bn.slow.argpartsort
+    "test argpartsort"
+    for func in (bn.argpartsort,):
+        yield unit_maker, func
+
+
+def unit_maker(func):
+    "test partsort or argpartsort"
+
+    length = 9
+    nrepeat = 10
+
+    msg = '\nfunc %s | input %s (%s) | shape %s | n %d | axis %s\n'
+    msg += '\nInput array:\n%s\n'
+
+    name = func.__name__
+    func0 = eval('bn.slow.%s' % name)
+
+    rs = np.random.RandomState([1, 2, 3])
+    for ndim in (1, 2):
+        if ndim == 1:
+            shape = (length,)
+        elif ndim == 2:
+            shape = (2, length)
+        for i in range(nrepeat):
+            a = rs.randint(0, 10, shape)
+            for dtype in DTYPES:
+                a = a.astype(dtype)
+                for axis in range(-1, ndim) + [None]:
+                    if axis is None:
+                        nmax = a.size
+                    else:
+                        nmax = a.shape[axis]
+                    n = rs.randint(1, nmax)
+                    s0 = func0(a, n, axis)
+                    s1 = func(a, n, axis)
+                    if name == 'argpartsort':
+                        s0 = complete_the_argpartsort(s0, a, n, axis)
+                        s1 = complete_the_argpartsort(s1, a, n, axis)
+                    else:
+                        s0 = complete_the_partsort(s0, n, axis)
+                        s1 = complete_the_partsort(s1, n, axis)
+                    tup = (name, 'a'+str(i), str(a.dtype), str(a.shape), n,
+                           str(axis), a)
+                    err_msg = msg % tup
+                    assert_array_equal(s1, s0, err_msg)
+
+
+def complete_the_partsort(a, n, axis):
+    ndim = a.ndim
+    if axis is None:
+        if ndim != 1:
+            raise ValueError("`a` must be 1d when axis is None")
+        axis = 0
+    elif axis < 0:
+        axis += ndim
+        if axis < 0:
+            raise ValueError("`axis` out of range")
+    if ndim == 1:
+        a[:n-1] = np.sort(a[:n-1])
+        a[n:] = np.sort(a[n:])
+    elif ndim == 2:
+        if axis == 0:
+            for i in range(a.shape[1]):
+                a[:n-1, i] = np.sort(a[:n-1, i])
+                a[n:, i] = np.sort(a[n:, i])
+        elif axis == 1:
+            for i in range(a.shape[0]):
+                a[i, :n-1] = np.sort(a[i, :n-1])
+                a[i, n:] = np.sort(a[i, n:])
+        else:
+            raise ValueError("`axis` out of range")
+    else:
+        raise ValueError("`a.ndim` must be 1 or 2")
+    return a
+
+
+def complete_the_argpartsort(index, a, n, axis):
+    ndim = a.ndim
+    if axis is None:
+        if index.ndim != 1:
+            raise ValueError("`index` must be 1d when axis is None")
+        axis = 0
+        ndim = 1
+        a = a.copy().reshape(-1)
+    elif axis < 0:
+        axis += ndim
+        if axis < 0:
+            raise ValueError("`axis` out of range")
+    if ndim == 1:
+        a = a[index]
+    elif ndim == 2:
+        if axis == 0:
+            for i in range(a.shape[1]):
+                a[:, i] = a[index[:, i], i]
+        elif axis == 1:
+            for i in range(a.shape[0]):
+                a[i] = a[i, index[i]]
+        else:
+            raise ValueError("`axis` out of range")
+    else:
+        raise ValueError("`a.ndim` must be 1 or 2")
+    a = complete_the_partsort(a, n, axis)
+    return a
 
 
 def test_transpose():
