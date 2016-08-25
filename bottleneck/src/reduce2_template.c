@@ -838,7 +838,7 @@ REDUCE_MAIN(ss, 0, 0, 0)
 /* median ---------------------------------------------------------------- */
 
 /*
- MEDIAN macro based on:
+ WIRTH macro based on:
    Fast median search: an ANSI C implementation
    Nicolas Devillard - ndevilla AT free DOT fr
    July 1998
@@ -847,46 +847,79 @@ REDUCE_MAIN(ss, 0, 0, 0)
    Algorithms + data structures = programs, p. 366
    Englewood Cliffs: Prentice-Hall, 1976
 
- Adapted and expanded for Bottleneck:
+ Adapted for Bottleneck:
  (C) 2016 Keith Goodman
 */
+
+#define WIRTH(dtype) \
+    x = AX(dtype, k); \
+    i = l; \
+    j = r; \
+    do { \
+        while (AX(dtype, i) < x) i++; \
+        while (x < AX(dtype, j)) j--; \
+        if (i <= j) { \
+            dtype atmp = AX(dtype, i); \
+            AX(dtype, i) = AX(dtype, j); \
+            AX(dtype, j) = atmp; \
+            i++; \
+            j--; \
+        } \
+    } while (i <= j); \
+    if (j < k) l = i; \
+    if (k < i) r = j;
+
+#define MEDIAN_AND_NANMEDIAN(dtype) \
+    while (l < r) { \
+        dtype al = AX(dtype, l); \
+        dtype ak = AX(dtype, k); \
+        dtype ar = AX(dtype, r); \
+        if (al > ak) { \
+            if (ak < ar) { \
+                if (al < ar) { \
+                    AX(dtype, k) = al; \
+                    AX(dtype, l) = ak; \
+                } \
+                else { \
+                    AX(dtype, k) = ar; \
+                    AX(dtype, r) = ak; \
+                } \
+            } \
+        } \
+        else { \
+            if (ak > ar) { \
+                if (al > ar) { \
+                    AX(dtype, k) = al; \
+                    AX(dtype, l) = ak; \
+                } \
+                else { \
+                    AX(dtype, k) = ar; \
+                    AX(dtype, r) = ak; \
+                } \
+            } \
+        } \
+        WIRTH(dtype) \
+    }
 
 #define MEDIAN(dtype) \
     do { \
         npy_intp j, l, r, k; \
-        dtype x, ai, bi, atmp, amax; \
+        dtype x; \
         k = length >> 1; \
         l = 0; \
         r = length - 1; \
-        while (l < r) { \
-            x = AX(dtype, k); \
-            i = l; \
-            j = r; \
-            do { \
-                while (AX(dtype, i) < x) i++; \
-                while (x < AX(dtype, j)) j--; \
-                if (i <= j) { \
-                    atmp = AX(dtype, i); \
-                    AX(dtype, i) = AX(dtype, j); \
-                    AX(dtype, j) = atmp; \
-                    i++; \
-                    j--; \
-                } \
-            } while (i <= j); \
-            if (j < k) l = i; \
-            if (k < i) r = j; \
-        } \
-        bi = AX(dtype, k); \
+        MEDIAN_AND_NANMEDIAN(dtype) \
         if (length % 2 == 0) { \
+            dtype ai, amax; \
             amax = -BN_INFINITY; \
             for (i = 0; i < k; i++) { \
                 ai = AX(dtype, i); \
                 if (ai >= amax) amax = ai; \
             } \
-            med = 0.5 * (bi + amax); \
+            med = 0.5 * (AX(dtype, k) + amax); \
         } \
         else { \
-            med = bi; \
+            med =  AX(dtype, k); \
         } \
     } while (0);
 
@@ -992,64 +1025,31 @@ REDUCE_MAIN(median, 1, 1, 0)
 
 /* nanmedian ------------------------------------------------------------- */
 
-/*
- NANMEDIAN macro based on non-NaN handling code:
-   Fast median search: an ANSI C implementation
-   Nicolas Devillard - ndevilla AT free DOT fr
-   July 1998
- which, in turn, took the algorithm from
-   Wirth, Niklaus
-   Algorithms + data structures = programs, p. 366
-   Englewood Cliffs: Prentice-Hall, 1976
-
- Adapted and expanded for Bottleneck:
- (C) 2016 Keith Goodman
-*/
-
 #define NANMEDIAN(dtype) \
     do { \
-        int allnan; \
         npy_intp j, l, r, k, n; \
-        dtype x, ai, bi, atmp, amax; \
+        dtype ai, x; \
         j = length - 1; \
         for (i = 0; i < length; i++) { \
-            bi = AX(dtype, i); \
-            if (bi != bi) { \
+            ai = AX(dtype, i); \
+            if (ai != ai) { \
                 while (AX(dtype, j) != AX(dtype, j)) { \
                     if (j <= 0) break; \
                     j--; \
                 } \
                 if (i >= j) break; \
                 AX(dtype, i) = AX(dtype, j); \
-                AX(dtype, j) = bi; \
+                AX(dtype, j) = ai; \
             } \
         } \
         n = i; \
         k = n >> 1; \
         l = 0; \
         r = n - 1; \
-        while (l < r) { \
-            x = AX(dtype, k); \
-            i = l; \
-            j = r; \
-            do { \
-                while (AX(dtype, i) < x) i++; \
-                while (x < AX(dtype, j)) j--; \
-                if (i <= j) { \
-                    atmp = AX(dtype, i); \
-                    AX(dtype, i) = AX(dtype, j); \
-                    AX(dtype, j) = atmp; \
-                    i++; \
-                    j--; \
-                } \
-            } while (i <= j); \
-            if (j < k) l = i; \
-            if (k < i) r = j; \
-        } \
-        bi = AX(dtype, k); \
+        MEDIAN_AND_NANMEDIAN(dtype) \
         if (n % 2 == 0) { \
-            amax = -BN_INFINITY; \
-            allnan = 1; \
+            dtype amax = -BN_INFINITY; \
+            int allnan = 1; \
             for (i = 0; i < k; i++) { \
                 ai = AX(dtype, i); \
                 if (ai >= amax) { \
@@ -1058,13 +1058,13 @@ REDUCE_MAIN(median, 1, 1, 0)
                 } \
             } \
             if (allnan == 0) { \
-                med = 0.5 * (bi + amax); \
+                med = 0.5 * (AX(dtype, k) + amax); \
             } else { \
-                med = bi; \
+                med = AX(dtype, k); \
             } \
         } \
         else { \
-            med = bi; \
+            med = AX(dtype, k); \
         } \
     } while (0);
 
