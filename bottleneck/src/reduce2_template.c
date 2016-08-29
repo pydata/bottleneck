@@ -869,7 +869,7 @@ REDUCE_MAIN(ss, 0, 0)
 
 /* median, nanmedian MACROS ---------------------------------------------- */
 
-#define MEDIAN_AND_NANMEDIAN(dtype) \
+#define PARTITION(dtype) \
     while (l < r) { \
         dtype al = B[l]; \
         dtype ak = B[k]; \
@@ -901,6 +901,20 @@ REDUCE_MAIN(ss, 0, 0)
         WIRTH(dtype) \
     }
 
+#define ODD_EVEN(dtype, N) \
+    if (N % 2 == 0) { \
+        dtype amax; \
+        amax = -BN_INFINITY; \
+        for (i = 0; i < k; i++) { \
+            ai = B[i]; \
+            if (ai >= amax) amax = ai; \
+        } \
+        med = 0.5 * (B[k] + amax); \
+    } \
+    else { \
+        med =  B[k]; \
+    } \
+
 #define MEDIAN(dtype) \
     do { \
         npy_intp j, l, r, k; \
@@ -918,44 +932,22 @@ REDUCE_MAIN(ss, 0, 0)
         k = length >> 1; \
         l = 0; \
         r = length - 1; \
-        MEDIAN_AND_NANMEDIAN(dtype) \
-        if (length % 2 == 0) { \
-            dtype amax; \
-            amax = -BN_INFINITY; \
-            for (i = 0; i < k; i++) { \
-                ai = B[i]; \
-                if (ai >= amax) amax = ai; \
-            } \
-            med = 0.5 * (B[k] + amax); \
-        } \
-        else { \
-            med =  B[k]; \
-        } \
+        PARTITION(dtype) \
+        ODD_EVEN(dtype, length) \
     } while (0);
 
 #define MEDIAN_INT(dtype) \
     do { \
         npy_intp j, l, r, k; \
-        dtype x; \
+        dtype ai, x; \
         for (i = 0; i < length; i++) { \
             B[i] = AX(dtype, i); \
         } \
         k = length >> 1; \
         l = 0; \
         r = length - 1; \
-        MEDIAN_AND_NANMEDIAN(dtype) \
-        if (length % 2 == 0) { \
-            dtype ai, amax; \
-            amax = -BN_INFINITY; \
-            for (i = 0; i < k; i++) { \
-                ai = B[i]; \
-                if (ai >= amax) amax = ai; \
-            } \
-            med = 0.5 * (B[k] + amax); \
-        } \
-        else { \
-            med =  B[k]; \
-        } \
+        PARTITION(dtype) \
+        ODD_EVEN(dtype, length) \
     } while (0);
 
 #define NANMEDIAN(dtype) \
@@ -977,20 +969,8 @@ REDUCE_MAIN(ss, 0, 0)
         k = n >> 1; \
         l = 0; \
         r = n - 1; \
-        MEDIAN_AND_NANMEDIAN(dtype) \
-        if (n % 2 == 0) { \
-            dtype amax = -BN_INFINITY; \
-            for (i = 0; i < k; i++) { \
-                ai = B[i]; \
-                if (ai >= amax) { \
-                    amax = ai; \
-                } \
-            } \
-            med = 0.5 * (B[k] + amax); \
-        } \
-        else { \
-            med = B[k]; \
-        } \
+        PARTITION(dtype) \
+        ODD_EVEN(dtype, n) \
     } while (0);
 
 /* median ---------------------------------------------------------------- */
