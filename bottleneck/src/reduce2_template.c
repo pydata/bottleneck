@@ -871,6 +871,7 @@ REDUCE_MAIN(ss, 0, 0)
 
 #define PARTITION(dtype) \
     while (l < r) { \
+        dtype x; \
         dtype al = B[l]; \
         dtype ak = B[k]; \
         dtype ar = B[r]; \
@@ -907,7 +908,7 @@ REDUCE_MAIN(ss, 0, 0)
         amax = -BN_INFINITY; \
         for (i = 0; i < k; i++) { \
             ai = B[i]; \
-            if (ai >= amax) amax = ai; \
+            if (ai > amax) amax = ai; \
         } \
         med = 0.5 * (B[k] + amax); \
     } \
@@ -918,7 +919,7 @@ REDUCE_MAIN(ss, 0, 0)
 #define MEDIAN(dtype) \
     do { \
         npy_intp j, l, r, k; \
-        dtype ai, x; \
+        dtype ai; \
         for (i = 0; i < length; i++) { \
             ai = AX(dtype, i); \
             if (ai == ai) { \
@@ -939,7 +940,7 @@ REDUCE_MAIN(ss, 0, 0)
 #define MEDIAN_INT(dtype) \
     do { \
         npy_intp j, l, r, k; \
-        dtype ai, x; \
+        dtype ai; \
         for (i = 0; i < length; i++) { \
             B[i] = AX(dtype, i); \
         } \
@@ -953,7 +954,7 @@ REDUCE_MAIN(ss, 0, 0)
 #define NANMEDIAN(dtype) \
     do { \
         npy_intp j, l, r, k, n; \
-        dtype ai, x; \
+        dtype ai; \
         l = 0; \
         r = length - 1; \
         for (i = 0; i < length; i++) { \
