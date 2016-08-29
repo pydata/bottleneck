@@ -93,7 +93,7 @@
                        int ddof)
 
 /* top-level functions such as nansum */
-#define REDUCE_MAIN(name, copy, ravel, has_ddof) \
+#define REDUCE_MAIN(name, ravel, has_ddof) \
     static PyObject * \
     name(PyObject *self, PyObject *args, PyObject *kwds) \
     { \
@@ -108,7 +108,6 @@
                        name##_one_float32, \
                        name##_one_int64, \
                        name##_one_int32, \
-                       copy, \
                        ravel, \
                        has_ddof); \
     }
@@ -132,7 +131,6 @@ reducer(char *name,
         fone_t fone_float32,
         fone_t fone_int64,
         fone_t fone_int32,
-        int copy,
         int ravel,
         int has_ddof);
 
@@ -218,7 +216,7 @@ REDUCE_ONE(nansum, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(nansum, 0, 0, 0)
+REDUCE_MAIN(nansum, 0, 0)
 
 
 /* nanmean ---------------------------------------------------------------- */
@@ -331,7 +329,7 @@ REDUCE_ONE(nanmean, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(nanmean, 0, 0, 0)
+REDUCE_MAIN(nanmean, 0, 0)
 
 
 /* nanstd, nanvar- ------------------------------------------------------- */
@@ -493,7 +491,7 @@ REDUCE_ONE(NAME, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(NAME, 0, 0, 1)
+REDUCE_MAIN(NAME, 0, 1)
 /* repeat end */
 
 
@@ -608,7 +606,7 @@ REDUCE_ONE(NAME, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(NAME, 0, 0, 0)
+REDUCE_MAIN(NAME, 0, 0)
 /* repeat end */
 
 
@@ -740,7 +738,7 @@ REDUCE_ONE(NAME, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(NAME, 0, 1, 0)
+REDUCE_MAIN(NAME, 1, 0)
 /* repeat end */
 
 
@@ -832,10 +830,10 @@ REDUCE_ONE(ss, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(ss, 0, 0, 0)
+REDUCE_MAIN(ss, 0, 0)
 
 
-/* median ---------------------------------------------------------------- */
+/* WIRTH ----------------------------------------------------------------- */
 
 /*
  WIRTH macro based on:
@@ -852,16 +850,16 @@ REDUCE_MAIN(ss, 0, 0, 0)
 */
 
 #define WIRTH(dtype) \
-    x = AX(dtype, k); \
+    x = B[k]; \
     i = l; \
     j = r; \
     do { \
-        while (AX(dtype, i) < x) i++; \
-        while (x < AX(dtype, j)) j--; \
+        while (B[i] < x) i++; \
+        while (x < B[j]) j--; \
         if (i <= j) { \
-            dtype atmp = AX(dtype, i); \
-            AX(dtype, i) = AX(dtype, j); \
-            AX(dtype, j) = atmp; \
+            dtype atmp = B[i]; \
+            B[i] = B[j]; \
+            B[j] = atmp; \
             i++; \
             j--; \
         } \
@@ -869,32 +867,34 @@ REDUCE_MAIN(ss, 0, 0, 0)
     if (j < k) l = i; \
     if (k < i) r = j;
 
+/* median, nanmedian MACROS ---------------------------------------------- */
+
 #define MEDIAN_AND_NANMEDIAN(dtype) \
     while (l < r) { \
-        dtype al = AX(dtype, l); \
-        dtype ak = AX(dtype, k); \
-        dtype ar = AX(dtype, r); \
+        dtype al = B[l]; \
+        dtype ak = B[k]; \
+        dtype ar = B[r]; \
         if (al > ak) { \
             if (ak < ar) { \
                 if (al < ar) { \
-                    AX(dtype, k) = al; \
-                    AX(dtype, l) = ak; \
+                    B[k] = al; \
+                    B[l] = ak; \
                 } \
                 else { \
-                    AX(dtype, k) = ar; \
-                    AX(dtype, r) = ak; \
+                    B[k] = ar; \
+                    B[r] = ak; \
                 } \
             } \
         } \
         else { \
             if (ak > ar) { \
                 if (al > ar) { \
-                    AX(dtype, k) = al; \
-                    AX(dtype, l) = ak; \
+                    B[k] = al; \
+                    B[l] = ak; \
                 } \
                 else { \
-                    AX(dtype, k) = ar; \
-                    AX(dtype, r) = ak; \
+                    B[k] = ar; \
+                    B[r] = ak; \
                 } \
             } \
         } \
@@ -904,7 +904,42 @@ REDUCE_MAIN(ss, 0, 0, 0)
 #define MEDIAN(dtype) \
     do { \
         npy_intp j, l, r, k; \
+        dtype ai, x; \
+        for (i = 0; i < length; i++) { \
+            ai = AX(dtype, i); \
+            if (ai == ai) { \
+                B[i] = ai; \
+            } \
+            else { \
+                med = BN_NAN; \
+                goto done; \
+            } \
+        } \
+        k = length >> 1; \
+        l = 0; \
+        r = length - 1; \
+        MEDIAN_AND_NANMEDIAN(dtype) \
+        if (length % 2 == 0) { \
+            dtype amax; \
+            amax = -BN_INFINITY; \
+            for (i = 0; i < k; i++) { \
+                ai = B[i]; \
+                if (ai >= amax) amax = ai; \
+            } \
+            med = 0.5 * (B[k] + amax); \
+        } \
+        else { \
+            med =  B[k]; \
+        } \
+    } while (0);
+
+#define MEDIAN_INT(dtype) \
+    do { \
+        npy_intp j, l, r, k; \
         dtype x; \
+        for (i = 0; i < length; i++) { \
+            B[i] = AX(dtype, i); \
+        } \
         k = length >> 1; \
         l = 0; \
         r = length - 1; \
@@ -913,36 +948,67 @@ REDUCE_MAIN(ss, 0, 0, 0)
             dtype ai, amax; \
             amax = -BN_INFINITY; \
             for (i = 0; i < k; i++) { \
-                ai = AX(dtype, i); \
+                ai = B[i]; \
                 if (ai >= amax) amax = ai; \
             } \
-            med = 0.5 * (AX(dtype, k) + amax); \
+            med = 0.5 * (B[k] + amax); \
         } \
         else { \
-            med =  AX(dtype, k); \
+            med =  B[k]; \
         } \
     } while (0);
 
-/* dtype = [['float64'], ['float32']] */
+#define NANMEDIAN(dtype) \
+    do { \
+        npy_intp j, l, r, k, n; \
+        dtype ai, x; \
+        l = 0; \
+        r = length - 1; \
+        for (i = 0; i < length; i++) { \
+            ai = AX(dtype, i); \
+            if (ai == ai) { \
+                B[l++] = ai; \
+            } \
+            else { \
+                B[r--] = ai; \
+            } \
+        } \
+        n = l; \
+        k = n >> 1; \
+        l = 0; \
+        r = n - 1; \
+        MEDIAN_AND_NANMEDIAN(dtype) \
+        if (n % 2 == 0) { \
+            dtype amax = -BN_INFINITY; \
+            for (i = 0; i < k; i++) { \
+                ai = B[i]; \
+                if (ai >= amax) { \
+                    amax = ai; \
+                } \
+            } \
+            med = 0.5 * (B[k] + amax); \
+        } \
+        else { \
+            med = B[k]; \
+        } \
+    } while (0);
+
+/* median ---------------------------------------------------------------- */
+
+/* dtype = [['float64', 'float64'], ['float32', 'float32']] */
 REDUCE_ALL(median, DTYPE0)
 {
     char *_pa = PyArray_BYTES(a);
     npy_intp i;
-    npy_DTYPE0 med;
+    npy_DTYPE1 med;
     BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
         med = BN_NAN;
     }
     else {
-        for (i = 0; i < length; i++) {
-            npy_DTYPE0 ai;
-            ai = AX(npy_DTYPE0, i);
-            if (ai != ai) {
-                med = BN_NAN;
-                goto done;
-            }
-        }
+        npy_DTYPE0 *B = malloc(length * sizeof(npy_DTYPE0)); \
         MEDIAN(npy_DTYPE0)
+        free(B);
     }
     done:
     BN_END_ALLOW_THREADS
@@ -951,29 +1017,24 @@ REDUCE_ALL(median, DTYPE0)
 
 REDUCE_ONE(median, DTYPE0)
 {
-    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    Y_INIT(NPY_DTYPE1, npy_DTYPE1)
     INIT
     npy_intp i;
-    npy_DTYPE0 ai, med;
+    npy_DTYPE1 med;
     BN_BEGIN_ALLOW_THREADS
     if (length == 0) {
         Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
         FOR YI = BN_NAN;
     }
     else {
+        npy_DTYPE0 *B = malloc(length * sizeof(npy_DTYPE0)); \
         WHILE {
-            for (i = 0; i < length; i++) {
-                ai = AX(npy_DTYPE0, i);
-                if (ai != ai) {
-                    med = BN_NAN;
-                    goto insert;
-                }
-            }
             MEDIAN(npy_DTYPE0)
-            insert:
+            done:
             YI = med;
             NEXT
         }
+        free(B);
     }
     BN_END_ALLOW_THREADS
     return y;
@@ -991,7 +1052,9 @@ REDUCE_ALL(median, DTYPE0)
         med = BN_NAN;
     }
     else {
-        MEDIAN(npy_DTYPE0)
+        npy_DTYPE0 *B = malloc(length * sizeof(npy_DTYPE0)); \
+        MEDIAN_INT(npy_DTYPE0)
+        free(B);
     }
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(med);
@@ -1009,64 +1072,23 @@ REDUCE_ONE(median, DTYPE0)
         FOR YI = BN_NAN;
     }
     else {
+        npy_DTYPE0 *B = malloc(length * sizeof(npy_DTYPE0)); \
         WHILE {
-            MEDIAN(npy_DTYPE0)
+            MEDIAN_INT(npy_DTYPE0)
             YI = med;
             NEXT
         }
+        free(B);
     }
     BN_END_ALLOW_THREADS
     return y;
 }
 /* dtype end */
 
-REDUCE_MAIN(median, 1, 1, 0)
+REDUCE_MAIN(median, 1, 0)
 
 
 /* nanmedian ------------------------------------------------------------- */
-
-#define NANMEDIAN(dtype) \
-    do { \
-        npy_intp j, l, r, k, n; \
-        dtype ai, x; \
-        j = length - 1; \
-        for (i = 0; i < length; i++) { \
-            ai = AX(dtype, i); \
-            if (ai != ai) { \
-                while (AX(dtype, j) != AX(dtype, j)) { \
-                    if (j <= 0) break; \
-                    j--; \
-                } \
-                if (i >= j) break; \
-                AX(dtype, i) = AX(dtype, j); \
-                AX(dtype, j) = ai; \
-            } \
-        } \
-        n = i; \
-        k = n >> 1; \
-        l = 0; \
-        r = n - 1; \
-        MEDIAN_AND_NANMEDIAN(dtype) \
-        if (n % 2 == 0) { \
-            dtype amax = -BN_INFINITY; \
-            int allnan = 1; \
-            for (i = 0; i < k; i++) { \
-                ai = AX(dtype, i); \
-                if (ai >= amax) { \
-                    amax = ai; \
-                    allnan = 0; \
-                } \
-            } \
-            if (allnan == 0) { \
-                med = 0.5 * (AX(dtype, k) + amax); \
-            } else { \
-                med = AX(dtype, k); \
-            } \
-        } \
-        else { \
-            med = AX(dtype, k); \
-        } \
-    } while (0);
 
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(nanmedian, DTYPE0)
@@ -1079,7 +1101,9 @@ REDUCE_ALL(nanmedian, DTYPE0)
         med = BN_NAN;
     }
     else {
+        npy_DTYPE0 *B = malloc(length * sizeof(npy_DTYPE0)); \
         NANMEDIAN(npy_DTYPE0)
+        free(B);
     }
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(med);
@@ -1097,11 +1121,13 @@ REDUCE_ONE(nanmedian, DTYPE0)
         FOR YI = BN_NAN;
     }
     else {
+        npy_DTYPE0 *B = malloc(length * sizeof(npy_DTYPE0)); \
         WHILE {
             NANMEDIAN(npy_DTYPE0)
             YI = med;
             NEXT
         }
+        free(B);
     }
     BN_END_ALLOW_THREADS
     return y;
@@ -1122,7 +1148,7 @@ nanmedian(PyObject *self, PyObject *args, PyObject *kwds)
                    nanmedian_one_float32,
                    median_one_int64,
                    median_one_int32,
-                   1, 1, 0);
+                   1, 0);
 }
 
 /* anynan ---------------------------------------------------------------- */
@@ -1197,7 +1223,7 @@ REDUCE_ONE(anynan, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(anynan, 0, 0, 0)
+REDUCE_MAIN(anynan, 0, 0)
 
 
 /* allnan ---------------------------------------------------------------- */
@@ -1280,7 +1306,7 @@ REDUCE_ONE(allnan, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(allnan, 0, 0, 0)
+REDUCE_MAIN(allnan, 0, 0)
 
 
 /* python strings -------------------------------------------------------- */
@@ -1387,7 +1413,6 @@ parse_args(PyObject *args,
 
 }
 
-
 static PyObject *
 reducer(char *name,
         PyObject *args,
@@ -1400,7 +1425,6 @@ reducer(char *name,
         fone_t fone_float32,
         fone_t fone_int64,
         fone_t fone_int32,
-        int copy,
         int ravel,
         int has_ddof)
 {
@@ -1420,7 +1444,6 @@ reducer(char *name,
     npy_intp *strides;
 
     PyArrayObject *a;
-    PyObject *y;
 
     PyObject *arr_obj = NULL;
     PyObject *axis_obj = Py_None;
@@ -1443,10 +1466,6 @@ reducer(char *name,
     /* check for byte swapped input array */
     if PyArray_ISBYTESWAPPED(a) {
         return slow(name, args, kwds);
-    }
-
-    if (copy) {
-        a = (PyArrayObject *)PyArray_NewCopy(a, NPY_ANYORDER);
     }
 
     ndim = PyArray_NDIM(a);
@@ -1544,19 +1563,19 @@ reducer(char *name,
         }
 
         if (dtype == NPY_FLOAT64) {
-            y = fall_float64(a, axis, stride, length, ndim, ddof);
+            return fall_float64(a, axis, stride, length, ndim, ddof);
         }
         else if (dtype == NPY_FLOAT32) {
-            y = fall_float32(a, axis, stride, length, ndim, ddof);
+            return fall_float32(a, axis, stride, length, ndim, ddof);
         }
         else if (dtype == NPY_INT64) {
-            y = fall_int64(a, axis, stride, length, ndim, ddof);
+            return fall_int64(a, axis, stride, length, ndim, ddof);
         }
         else if (dtype == NPY_INT32) {
-            y = fall_int32(a, axis, stride, length, ndim, ddof);
+            return fall_int32(a, axis, stride, length, ndim, ddof);
         }
         else {
-            y = slow(name, args, kwds);
+            return slow(name, args, kwds);
         }
     }
     else {
@@ -1571,25 +1590,21 @@ reducer(char *name,
         length = shape[axis];
 
         if (dtype == NPY_FLOAT64) {
-            y = fone_float64(a, axis, stride, length, ndim, yshape, ddof);
+            return fone_float64(a, axis, stride, length, ndim, yshape, ddof);
         }
         else if (dtype == NPY_FLOAT32) {
-            y = fone_float32(a, axis, stride, length, ndim, yshape, ddof);
+            return fone_float32(a, axis, stride, length, ndim, yshape, ddof);
         }
         else if (dtype == NPY_INT64) {
-            y = fone_int64(a, axis, stride, length, ndim, yshape, ddof);
+            return fone_int64(a, axis, stride, length, ndim, yshape, ddof);
         }
         else if (dtype == NPY_INT32) {
-            y = fone_int32(a, axis, stride, length, ndim, yshape, ddof);
+            return fone_int32(a, axis, stride, length, ndim, yshape, ddof);
         }
         else {
-            y = slow(name, args, kwds);
+            return slow(name, args, kwds);
         }
     }
-
-    if (copy) Py_DECREF(a);
-    return y;
-
 }
 
 /* docstrings ------------------------------------------------------------- */
