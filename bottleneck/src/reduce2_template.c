@@ -974,6 +974,9 @@ REDUCE_MAIN(ss, 0, 0)
         ODD_EVEN(dtype, n) \
     } while (0);
 
+#define BUFFER_NEW(dtype) dtype *B = malloc(length * sizeof(dtype));
+#define BUFFER_DELETE free(B);
+
 /* median ---------------------------------------------------------------- */
 
 /* dtype = [['float64', 'float64'], ['float32', 'float32']] */
@@ -983,15 +986,15 @@ REDUCE_ALL(median, DTYPE0)
     npy_intp i;
     npy_DTYPE1 med;
     BN_BEGIN_ALLOW_THREADS
+    BUFFER_NEW(npy_DTYPE0)
     if (length == 0) {
         med = BN_NAN;
     }
     else {
-        npy_DTYPE0 *B = malloc(length * sizeof(npy_DTYPE0)); \
         MEDIAN(npy_DTYPE0)
-        free(B);
     }
     done:
+    BUFFER_DELETE
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(med);
 }
@@ -1008,14 +1011,14 @@ REDUCE_ONE(median, DTYPE0)
         FOR YI = BN_NAN;
     }
     else {
-        npy_DTYPE0 *B = malloc(length * sizeof(npy_DTYPE0)); \
+        BUFFER_NEW(npy_DTYPE0)
         WHILE {
             MEDIAN(npy_DTYPE0)
             done:
             YI = med;
             NEXT
         }
-        free(B);
+        BUFFER_DELETE
     }
     BN_END_ALLOW_THREADS
     return y;
@@ -1033,9 +1036,9 @@ REDUCE_ALL(median, DTYPE0)
         med = BN_NAN;
     }
     else {
-        npy_DTYPE0 *B = malloc(length * sizeof(npy_DTYPE0)); \
+        BUFFER_NEW(npy_DTYPE0)
         MEDIAN_INT(npy_DTYPE0)
-        free(B);
+        BUFFER_DELETE
     }
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(med);
@@ -1053,13 +1056,13 @@ REDUCE_ONE(median, DTYPE0)
         FOR YI = BN_NAN;
     }
     else {
-        npy_DTYPE0 *B = malloc(length * sizeof(npy_DTYPE0)); \
+        BUFFER_NEW(npy_DTYPE0)
         WHILE {
             MEDIAN_INT(npy_DTYPE0)
             YI = med;
             NEXT
         }
-        free(B);
+        BUFFER_DELETE
     }
     BN_END_ALLOW_THREADS
     return y;
@@ -1082,9 +1085,9 @@ REDUCE_ALL(nanmedian, DTYPE0)
         med = BN_NAN;
     }
     else {
-        npy_DTYPE0 *B = malloc(length * sizeof(npy_DTYPE0)); \
+        BUFFER_NEW(npy_DTYPE0)
         NANMEDIAN(npy_DTYPE0)
-        free(B);
+        BUFFER_DELETE
     }
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(med);
@@ -1102,13 +1105,13 @@ REDUCE_ONE(nanmedian, DTYPE0)
         FOR YI = BN_NAN;
     }
     else {
-        npy_DTYPE0 *B = malloc(length * sizeof(npy_DTYPE0)); \
+        BUFFER_NEW(npy_DTYPE0)
         WHILE {
             NANMEDIAN(npy_DTYPE0)
             YI = med;
             NEXT
         }
-        free(B);
+        BUFFER_DELETE
     }
     BN_END_ALLOW_THREADS
     return y;
