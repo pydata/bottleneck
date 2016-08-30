@@ -902,10 +902,9 @@ REDUCE_MAIN(ss, 0, 0)
         WIRTH(dtype) \
     }
 
-#define ODD_EVEN(dtype, N) \
+#define EVEN_ODD(dtype, N) \
     if (N % 2 == 0) { \
-        dtype amax; \
-        amax = -BN_INFINITY; \
+        dtype amax = -BN_INFINITY; \
         for (i = 0; i < k; i++) { \
             ai = B[i]; \
             if (ai > amax) amax = ai; \
@@ -917,70 +916,67 @@ REDUCE_MAIN(ss, 0, 0)
     } \
 
 #define MEDIAN(dtype) \
-    do { \
-        npy_intp j, l, r, k; \
-        dtype ai; \
-        for (i = 0; i < length; i++) { \
-            ai = AX(dtype, i); \
-            if (ai == ai) { \
-                B[i] = ai; \
-            } \
-            else { \
-                med = BN_NAN; \
-                goto done; \
-            } \
+    npy_intp j, l, r, k; \
+    dtype ai; \
+    l = 0; \
+    for (i = 0; i < length; i++) { \
+        ai = AX(dtype, i); \
+        if (ai == ai) { \
+            B[l++] = ai; \
         } \
-        k = length >> 1; \
-        l = 0; \
-        r = length - 1; \
-        PARTITION(dtype) \
-        ODD_EVEN(dtype, length) \
-    } while (0);
+    } \
+    if (l != length) { \
+        med = BN_NAN; \
+        goto done; \
+    } \
+    k = length >> 1; \
+    l = 0; \
+    r = length - 1; \
+    PARTITION(dtype) \
+    EVEN_ODD(dtype, length)
 
 #define MEDIAN_INT(dtype) \
-    do { \
-        npy_intp j, l, r, k; \
-        dtype ai; \
-        for (i = 0; i < length; i++) { \
-            B[i] = AX(dtype, i); \
-        } \
-        k = length >> 1; \
-        l = 0; \
-        r = length - 1; \
-        PARTITION(dtype) \
-        ODD_EVEN(dtype, length) \
-    } while (0);
+    npy_intp j, l, r, k; \
+    dtype ai; \
+    for (i = 0; i < length; i++) { \
+        B[i] = AX(dtype, i); \
+    } \
+    k = length >> 1; \
+    l = 0; \
+    r = length - 1; \
+    PARTITION(dtype) \
+    EVEN_ODD(dtype, length)
 
 #define NANMEDIAN(dtype) \
-    do { \
-        npy_intp j, l, r, k, n; \
-        dtype ai; \
-        l = 0; \
-        for (i = 0; i < length; i++) { \
-            ai = AX(dtype, i); \
-            if (ai == ai) { \
-                B[l++] = ai; \
-            } \
+    npy_intp j, l, r, k, n; \
+    dtype ai; \
+    l = 0; \
+    for (i = 0; i < length; i++) { \
+        ai = AX(dtype, i); \
+        if (ai == ai) { \
+            B[l++] = ai; \
         } \
-        n = l; \
-        k = n >> 1; \
-        l = 0; \
-        r = n - 1; \
-        if (n == 0) { \
-            med = BN_NAN; \
-            goto done; \
-        } \
-        PARTITION(dtype) \
-        ODD_EVEN(dtype, n) \
-    } while (0);
+    } \
+    n = l; \
+    k = n >> 1; \
+    l = 0; \
+    r = n - 1; \
+    if (n == 0) { \
+        med = BN_NAN; \
+        goto done; \
+    } \
+    PARTITION(dtype) \
+    EVEN_ODD(dtype, n)
 
 #define BUFFER_NEW(dtype) dtype *B = malloc(length * sizeof(dtype));
 #define BUFFER_DELETE free(B);
 
-/* median ---------------------------------------------------------------- */
+/* median, nanmedian ----------------------------------------------------- */
 
+/* repeat = {'NAME': ['median', 'nanmedian'],
+             'FUNC': ['MEDIAN', 'NANMEDIAN']} */
 /* dtype = [['float64', 'float64'], ['float32', 'float32']] */
-REDUCE_ALL(median, DTYPE0)
+REDUCE_ALL(NAME, DTYPE0)
 {
     char *_pa = PyArray_BYTES(a);
     npy_intp i;
@@ -991,7 +987,7 @@ REDUCE_ALL(median, DTYPE0)
         med = BN_NAN;
     }
     else {
-        MEDIAN(npy_DTYPE0)
+        FUNC(npy_DTYPE0)
     }
     done:
     BUFFER_DELETE
@@ -999,7 +995,7 @@ REDUCE_ALL(median, DTYPE0)
     return PyFloat_FromDouble(med);
 }
 
-REDUCE_ONE(median, DTYPE0)
+REDUCE_ONE(NAME, DTYPE0)
 {
     Y_INIT(NPY_DTYPE1, npy_DTYPE1)
     INIT
@@ -1013,7 +1009,7 @@ REDUCE_ONE(median, DTYPE0)
     else {
         BUFFER_NEW(npy_DTYPE0)
         WHILE {
-            MEDIAN(npy_DTYPE0)
+            FUNC(npy_DTYPE0)
             done:
             YI = med;
             NEXT
@@ -1024,6 +1020,7 @@ REDUCE_ONE(median, DTYPE0)
     return y;
 }
 /* dtype end */
+/* repeat end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 REDUCE_ALL(median, DTYPE0)
@@ -1070,55 +1067,6 @@ REDUCE_ONE(median, DTYPE0)
 /* dtype end */
 
 REDUCE_MAIN(median, 1, 0)
-
-
-/* nanmedian ------------------------------------------------------------- */
-
-/* dtype = [['float64'], ['float32']] */
-REDUCE_ALL(nanmedian, DTYPE0)
-{
-    char *_pa = PyArray_BYTES(a);
-    npy_intp i;
-    npy_DTYPE0 med;
-    BN_BEGIN_ALLOW_THREADS
-    BUFFER_NEW(npy_DTYPE0)
-    if (length == 0) {
-        med = BN_NAN;
-    }
-    else {
-        NANMEDIAN(npy_DTYPE0)
-    }
-    done:
-    BUFFER_DELETE
-    BN_END_ALLOW_THREADS
-    return PyFloat_FromDouble(med);
-}
-
-REDUCE_ONE(nanmedian, DTYPE0)
-{
-    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
-    INIT
-    npy_intp i;
-    npy_DTYPE0 med;
-    BN_BEGIN_ALLOW_THREADS
-    if (length == 0) {
-        Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
-        FOR YI = BN_NAN;
-    }
-    else {
-        BUFFER_NEW(npy_DTYPE0)
-        WHILE {
-            NANMEDIAN(npy_DTYPE0)
-            done:
-            YI = med;
-            NEXT
-        }
-        BUFFER_DELETE
-    }
-    BN_END_ALLOW_THREADS
-    return y;
-}
-/* dtype end */
 
 static PyObject *
 nanmedian(PyObject *self, PyObject *args, PyObject *kwds)
