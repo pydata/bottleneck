@@ -956,20 +956,20 @@ REDUCE_MAIN(ss, 0, 0)
         npy_intp j, l, r, k, n; \
         dtype ai; \
         l = 0; \
-        r = length - 1; \
         for (i = 0; i < length; i++) { \
             ai = AX(dtype, i); \
             if (ai == ai) { \
                 B[l++] = ai; \
-            } \
-            else { \
-                B[r--] = ai; \
             } \
         } \
         n = l; \
         k = n >> 1; \
         l = 0; \
         r = n - 1; \
+        if (n == 0) { \
+            med = BN_NAN; \
+            goto done; \
+        } \
         PARTITION(dtype) \
         ODD_EVEN(dtype, n) \
     } while (0);
@@ -1081,14 +1081,15 @@ REDUCE_ALL(nanmedian, DTYPE0)
     npy_intp i;
     npy_DTYPE0 med;
     BN_BEGIN_ALLOW_THREADS
+    BUFFER_NEW(npy_DTYPE0)
     if (length == 0) {
         med = BN_NAN;
     }
     else {
-        BUFFER_NEW(npy_DTYPE0)
         NANMEDIAN(npy_DTYPE0)
-        BUFFER_DELETE
     }
+    done:
+    BUFFER_DELETE
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(med);
 }
@@ -1108,6 +1109,7 @@ REDUCE_ONE(nanmedian, DTYPE0)
         BUFFER_NEW(npy_DTYPE0)
         WHILE {
             NANMEDIAN(npy_DTYPE0)
+            done:
             YI = med;
             NEXT
         }
