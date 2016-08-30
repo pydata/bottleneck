@@ -78,3 +78,72 @@ BN_INLINE static float __bn_nanf(void)
 #define IS_CONTIGUOUS(a) \
     (PyArray_CHKFLAGS(a, NPY_ARRAY_C_CONTIGUOUS) || \
      PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS))
+
+/* WIRTH ----------------------------------------------------------------- */
+
+/*
+ WIRTH macro based on:
+   Fast median search: an ANSI C implementation
+   Nicolas Devillard - ndevilla AT free DOT fr
+   July 1998
+ which, in turn, took the algorithm from
+   Wirth, Niklaus
+   Algorithms + data structures = programs, p. 366
+   Englewood Cliffs: Prentice-Hall, 1976
+
+ Adapted for Bottleneck:
+ (C) 2016 Keith Goodman
+*/
+
+#define WIRTH(dtype) \
+    x = B(dtype, k); \
+    i = l; \
+    j = r; \
+    do { \
+        while (B(dtype, i) < x) i++; \
+        while (x < B(dtype, j)) j--; \
+        if (i <= j) { \
+            dtype atmp = B(dtype, i); \
+            B(dtype, i) = B(dtype, j); \
+            B(dtype, j) = atmp; \
+            i++; \
+            j--; \
+        } \
+    } while (i <= j); \
+    if (j < k) l = i; \
+    if (k < i) r = j;
+
+/* partition ------------------------------------------------------------- */
+
+#define PARTITION(dtype) \
+    while (l < r) { \
+        dtype x; \
+        dtype al = B(dtype, l); \
+        dtype ak = B(dtype, k); \
+        dtype ar = B(dtype, r); \
+        if (al > ak) { \
+            if (ak < ar) { \
+                if (al < ar) { \
+                    B(dtype, k) = al; \
+                    B(dtype, l) = ak; \
+                } \
+                else { \
+                    B(dtype, k) = ar; \
+                    B(dtype, r) = ak; \
+                } \
+            } \
+        } \
+        else { \
+            if (ak > ar) { \
+                if (al > ar) { \
+                    B(dtype, k) = al; \
+                    B(dtype, l) = ak; \
+                } \
+                else { \
+                    B(dtype, k) = ar; \
+                    B(dtype, r) = ak; \
+                } \
+            } \
+        } \
+        WIRTH(dtype) \
+    }

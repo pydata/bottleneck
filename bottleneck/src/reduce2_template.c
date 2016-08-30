@@ -833,86 +833,21 @@ REDUCE_ONE(ss, DTYPE0)
 REDUCE_MAIN(ss, 0, 0)
 
 
-/* WIRTH ----------------------------------------------------------------- */
-
-/*
- WIRTH macro based on:
-   Fast median search: an ANSI C implementation
-   Nicolas Devillard - ndevilla AT free DOT fr
-   July 1998
- which, in turn, took the algorithm from
-   Wirth, Niklaus
-   Algorithms + data structures = programs, p. 366
-   Englewood Cliffs: Prentice-Hall, 1976
-
- Adapted for Bottleneck:
- (C) 2016 Keith Goodman
-*/
-
-#define WIRTH(dtype) \
-    x = B[k]; \
-    i = l; \
-    j = r; \
-    do { \
-        while (B[i] < x) i++; \
-        while (x < B[j]) j--; \
-        if (i <= j) { \
-            dtype atmp = B[i]; \
-            B[i] = B[j]; \
-            B[j] = atmp; \
-            i++; \
-            j--; \
-        } \
-    } while (i <= j); \
-    if (j < k) l = i; \
-    if (k < i) r = j;
-
 /* median, nanmedian MACROS ---------------------------------------------- */
 
-#define PARTITION(dtype) \
-    while (l < r) { \
-        dtype x; \
-        dtype al = B[l]; \
-        dtype ak = B[k]; \
-        dtype ar = B[r]; \
-        if (al > ak) { \
-            if (ak < ar) { \
-                if (al < ar) { \
-                    B[k] = al; \
-                    B[l] = ak; \
-                } \
-                else { \
-                    B[k] = ar; \
-                    B[r] = ak; \
-                } \
-            } \
-        } \
-        else { \
-            if (ak > ar) { \
-                if (al > ar) { \
-                    B[k] = al; \
-                    B[l] = ak; \
-                } \
-                else { \
-                    B[k] = ar; \
-                    B[r] = ak; \
-                } \
-            } \
-        } \
-        WIRTH(dtype) \
-    }
+#define B(dtype, i) buffer[i] /* dtype is used by partsort, but not here */
 
 #define EVEN_ODD(dtype, N) \
     if (N % 2 == 0) { \
         dtype amax = -BN_INFINITY; \
         for (i = 0; i < k; i++) { \
-            ai = B[i]; \
+            ai = B(dtype, i); \
             if (ai > amax) amax = ai; \
         } \
-        med = 0.5 * (B[k] + amax); \
+        med = 0.5 * (B(dtype, k) + amax); \
     } \
     else { \
-        med =  B[k]; \
+        med =  B(dtype, k); \
     } \
 
 #define MEDIAN(dtype) \
@@ -922,7 +857,7 @@ REDUCE_MAIN(ss, 0, 0)
     for (i = 0; i < length; i++) { \
         ai = AX(dtype, i); \
         if (ai == ai) { \
-            B[l++] = ai; \
+            B(dtype, l++) = ai; \
         } \
     } \
     if (l != length) { \
@@ -939,7 +874,7 @@ REDUCE_MAIN(ss, 0, 0)
     npy_intp j, l, r, k; \
     dtype ai; \
     for (i = 0; i < length; i++) { \
-        B[i] = AX(dtype, i); \
+        B(dtype, i) = AX(dtype, i); \
     } \
     k = length >> 1; \
     l = 0; \
@@ -954,7 +889,7 @@ REDUCE_MAIN(ss, 0, 0)
     for (i = 0; i < length; i++) { \
         ai = AX(dtype, i); \
         if (ai == ai) { \
-            B[l++] = ai; \
+            B(dtype, l++) = ai; \
         } \
     } \
     n = l; \
@@ -968,8 +903,8 @@ REDUCE_MAIN(ss, 0, 0)
     PARTITION(dtype) \
     EVEN_ODD(dtype, n)
 
-#define BUFFER_NEW(dtype) dtype *B = malloc(length * sizeof(dtype));
-#define BUFFER_DELETE free(B);
+#define BUFFER_NEW(dtype) dtype *buffer = malloc(length * sizeof(dtype));
+#define BUFFER_DELETE free(buffer);
 
 /* median, nanmedian ----------------------------------------------------- */
 

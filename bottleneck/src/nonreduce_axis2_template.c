@@ -118,30 +118,7 @@ nonreducer_axis(char *name,
     } \
     _index++;
 
-#define WIRTH(dtype) \
-        npy_intp j, l, r, k; \
-        dtype x, atmp; \
-        k = n - 1; \
-        l = 0; \
-        r = length - 1; \
-        while (l < r) { \
-            x = AX(dtype, k); \
-            i = l; \
-            j = r; \
-            do { \
-                while (AX(dtype, i) < x) i++; \
-                while (x < AX(dtype, j)) j--; \
-                if (i <= j) { \
-                    atmp = AX(dtype, i); \
-                    AX(dtype, i) = AX(dtype, j); \
-                    AX(dtype, j) = atmp; \
-                    i++; \
-                    j--; \
-                } \
-            } while (i <= j); \
-            if (j < k) l = i; \
-            if (k < i) r = j; \
-        } \
+#define B(dtype, i) AX(dtype, i) /* used by PARTITION */
 
 /* dtype = [['float64'], ['float32'], ['int64'], ['int32']] */
 NRA(partsort, DTYPE0)
@@ -159,8 +136,12 @@ NRA(partsort, DTYPE0)
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
+    npy_intp j, l, r, k;
+    k = n - 1;
     WHILE {
-        WIRTH(npy_DTYPE0)
+        l = 0;
+        r = length - 1;
+        PARTITION(npy_DTYPE0)
         NEXT2
     }
     BN_END_ALLOW_THREADS
