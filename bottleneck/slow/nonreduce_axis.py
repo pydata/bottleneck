@@ -6,15 +6,15 @@ rankdata_func = None
 
 
 def rankdata(arr, axis=None):
-    "Slow rankdata function used for unaccelerated ndim/dtype combinations."
+    "Slow rankdata function used for unaccelerated dtypes."
     global rankdata_func
     if rankdata_func is None:
         try:
-            # Use scipy's rankdata; newer scipy has cython version
+            # Use scipy's rankdata
             from scipy.stats import rankdata as imported_rankdata
             rankdata_func = imported_rankdata
         except ImportError:
-            # Use a local copy of scipy's python (not cython) rankdata
+            # Use a local copy of scipy's rankdata
             rankdata_func = scipy_rankdata
     arr = np.asarray(arr)
     if axis is None:
@@ -32,7 +32,16 @@ def rankdata(arr, axis=None):
 
 
 def nanrankdata(arr, axis=None):
-    "Slow nanrankdata function used for unaccelerated ndim/dtype combinations."
+    "Slow nanrankdata function used for unaccelerated dtypes."
+    global rankdata_func
+    if rankdata_func is None:
+        try:
+            # Use scipy's rankdata
+            from scipy.stats import rankdata as imported_rankdata
+            rankdata_func = imported_rankdata
+        except ImportError:
+            # Use a local copy of scipy's rankdata
+            rankdata_func = scipy_rankdata
     arr = np.asarray(arr)
     if axis is None:
         arr = arr.ravel()
@@ -47,18 +56,18 @@ def nanrankdata(arr, axis=None):
         ijslice = list(ij[:axis]) + [slice(None)] + list(ij[axis:])
         x1d = arr[ijslice].astype(float)
         mask1d = ~np.isnan(x1d)
-        x1d[mask1d] = scipy_rankdata(x1d[mask1d])
+        x1d[mask1d] = rankdata_func(x1d[mask1d])
         y[ijslice] = x1d
     return y
 
 
 def partsort(arr, n, axis=-1):
-    "Slow partial sort used for unaccelerated ndim/dtype combinations."
+    "Slow partial sort used for unaccelerated dtypes."
     return np.partition(arr, n - 1, axis)
 
 
 def argpartsort(arr, n, axis=-1):
-    "Slow partial argsort used for unaccelerated ndim/dtype combinations."
+    "Slow partial argsort used for unaccelerated dtypes."
     if type(arr) is np.ndarray:
         a = arr
     else:
@@ -68,7 +77,7 @@ def argpartsort(arr, n, axis=-1):
 
 
 def push(arr, n=np.inf, axis=-1):
-    "Slow push used for unaccelerated ndim/dtype combinations."
+    "Slow push used for unaccelerated dtypes."
     if axis is None:
         raise ValueError("`axis` cannot be None")
     y = np.array(arr)
@@ -104,71 +113,93 @@ def push(arr, n=np.inf, axis=-1):
 #
 # SciPy
 #
-# Local copy of scipy.stats functions to avoid (by popular demand) a SciPy
-# dependency. The SciPy license is included in the Bottleneck license file,
-# which is distributed with Bottleneck.
+# Local copy of SciPy's rankdata to avoid a SciPy dependency. The SciPy
+# license is included in the Bottleneck license file, which is distributed
+# with Bottleneck.
 #
-# Code taken from scipy trunk on Dec 16, 2010.
+# Code taken from scipy master branch on Aug 31, 2016.
 
 
-def fastsort(a):
+def scipy_rankdata(a, method='average'):
     """
-    Sort an array and provide the argsort.
-
+    rankdata(a, method='average')
+    Assign ranks to data, dealing with ties appropriately.
+    Ranks begin at 1.  The `method` argument controls how ranks are assigned
+    to equal values.  See [1]_ for further discussion of ranking methods.
     Parameters
     ----------
     a : array_like
-        Input array.
-
+        The array of values to be ranked.  The array is first flattened.
+    method : str, optional
+        The method used to assign ranks to tied elements.
+        The options are 'average', 'min', 'max', 'dense' and 'ordinal'.
+        'average':
+            The average of the ranks that would have been assigned to
+            all the tied values is assigned to each value.
+        'min':
+            The minimum of the ranks that would have been assigned to all
+            the tied values is assigned to each value.  (This is also
+            referred to as "competition" ranking.)
+        'max':
+            The maximum of the ranks that would have been assigned to all
+            the tied values is assigned to each value.
+        'dense':
+            Like 'min', but the rank of the next highest element is assigned
+            the rank immediately after those assigned to the tied elements.
+        'ordinal':
+            All values are given a distinct rank, corresponding to the order
+            that the values occur in `a`.
+        The default is 'average'.
     Returns
     -------
-    fastsort : ndarray of type int
-        sorted indices into the original array
-
-    """
-    # TODO: the wording in the docstring is nonsense.
-    it = np.argsort(a)
-    as_ = a[it]
-    return as_, it
-
-
-def scipy_rankdata(a):
-    """
-    Ranks the data, dealing with ties appropriately.
-
-    Equal values are assigned a rank that is the average of the ranks that
-    would have been otherwise assigned to all of the values within that set.
-    Ranks begin at 1, not 0.
-
-    Parameters
+    ranks : ndarray
+         An array of length equal to the size of `a`, containing rank
+         scores.
+    References
     ----------
-    a : array_like
-        This array is first flattened.
-
-    Returns
-    -------
-    rankdata : ndarray
-         An array of length equal to the size of `a`, containing rank scores.
-
+    .. [1] "Ranking", http://en.wikipedia.org/wiki/Ranking
     Examples
     --------
-    >>> scipy_rankdata([0, 2, 2, 3])
-    array([ 1. ,  2.5,  2.5,  4. ])
-
+    >>> from scipy.stats import rankdata
+    >>> rankdata([0, 2, 3, 2])
+    array([ 1. ,  2.5,  4. ,  2.5])
+    >>> rankdata([0, 2, 3, 2], method='min')
+    array([ 1,  2,  4,  2])
+    >>> rankdata([0, 2, 3, 2], method='max')
+    array([ 1,  3,  4,  3])
+    >>> rankdata([0, 2, 3, 2], method='dense')
+    array([ 1,  2,  3,  2])
+    >>> rankdata([0, 2, 3, 2], method='ordinal')
+    array([ 1,  2,  4,  3])
     """
-    a = np.ravel(a)
-    n = len(a)
-    svec, ivec = fastsort(a)
-    sumranks = 0
-    dupcount = 0
-    newarray = np.zeros(n, float)
-    for i in range(n):
-        sumranks += i
-        dupcount += 1
-        if i == n-1 or svec[i] != svec[i+1]:
-            averank = sumranks / float(dupcount) + 1
-            for j in range(i-dupcount+1, i+1):
-                newarray[ivec[j]] = averank
-            sumranks = 0
-            dupcount = 0
-    return newarray
+    if method not in ('average', 'min', 'max', 'dense', 'ordinal'):
+        raise ValueError('unknown method "{0}"'.format(method))
+
+    arr = np.ravel(np.asarray(a))
+    algo = 'mergesort' if method == 'ordinal' else 'quicksort'
+    sorter = np.argsort(arr, kind=algo)
+
+    inv = np.empty(sorter.size, dtype=np.intp)
+    inv[sorter] = np.arange(sorter.size, dtype=np.intp)
+
+    if method == 'ordinal':
+        return inv + 1
+
+    arr = arr[sorter]
+    obs = np.r_[True, arr[1:] != arr[:-1]]
+    dense = obs.cumsum()[inv]
+
+    if method == 'dense':
+        return dense
+
+    # cumulative counts of each unique value
+    count = np.r_[np.nonzero(obs)[0], len(obs)]
+
+    if method == 'max':
+        return count[dense]
+
+    if method == 'min':
+        return count[dense - 1] + 1
+
+    # average method
+    return .5 * (count[dense] + count[dense - 1] + 1)

@@ -4,7 +4,7 @@ __all__ = ['replace']
 
 
 def replace(arr, old, new):
-    "Slow replace (inplace) used for unaccelerated ndim/dtype combinations."
+    "Slow replace (inplace) used for unaccelerated dtypes."
     if type(arr) is not np.ndarray:
         raise TypeError("`arr` must be a numpy array.")
     if not issubclass(arr.dtype.type, np.inexact):
