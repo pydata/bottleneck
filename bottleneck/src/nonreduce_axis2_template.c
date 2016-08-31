@@ -9,7 +9,6 @@
 
 #define INIT(dt) \
     PyObject *_y = PyArray_EMPTY(ndim, shape, dt, 0); \
-    BN_BEGIN_ALLOW_THREADS \
     Py_ssize_t _i = 0; \
     char *_py = PyArray_BYTES((PyArrayObject *)_y); \
     char *_pa = PyArray_BYTES(a); \
@@ -37,10 +36,6 @@
     } \
     _index++;
 
-#define RETURN \
-    BN_END_ALLOW_THREADS \
-    return _y;
-
 #define  WHILE   while (_index < _size)
 
 #define  A0(dt)    *(dt *)(_pa)
@@ -48,6 +43,7 @@
 #define  AOLD(dt)  *(dt *)(_pa + (_i - window) * stride)
 #define  AX(dt, x) *(dt *)(_pa + x * stride)
 #define  YI(dt)    *(dt *)(_py + _i++ * _ystride)
+#define  YX(dt, x) *(dt *)(_py + x * _ystride)
 
 /* function signatures --------------------------------------------------- */
 
@@ -150,6 +146,122 @@ NRA(partsort, DTYPE0)
 /* dtype end */
 
 NRA_MAIN(partsort, 1)
+
+
+/* argpartsort ----------------------------------------------------------- */
+
+#define BUFFER_NEW(dtype) dtype *B = malloc(length * sizeof(dtype));
+#define BUFFER_DELETE free(B);
+
+#define ARGWIRTH(dtype0, dtype1) \
+    x = B[k]; \
+    i = l; \
+    j = r; \
+    do { \
+        while (B[i] < x) i++; \
+        while (x < B[j]) j--; \
+        if (i <= j) { \
+            dtype0 atmp = B[i]; \
+            B[i] = B[j]; \
+            B[j] = atmp; \
+            ytmp = YX(dtype1, i); \
+            YX(dtype1, i) = YX(dtype1, j); \
+            YX(dtype1, j) = ytmp; \
+            i++; \
+            j--; \
+        } \
+    } while (i <= j); \
+    if (j < k) l = i; \
+    if (k < i) r = j;
+
+#define ARGPARTITION(dtype0, dtype1) \
+    while (l < r) { \
+        dtype0 x; \
+        dtype0 al = B[l]; \
+        dtype0 ak = B[k]; \
+        dtype0 ar = B[r]; \
+        dtype1 ytmp; \
+        if (al > ak) { \
+            if (ak < ar) { \
+                if (al < ar) { \
+                    B[k] = al; \
+                    B[l] = ak; \
+                    ytmp = YX(dtype1, k); \
+                    YX(dtype1, k) = YX(dtype1, l); \
+                    YX(dtype1, l) = ytmp; \
+                } \
+                else { \
+                    B[k] = ar; \
+                    B[r] = ak; \
+                    ytmp = YX(dtype1, k); \
+                    YX(dtype1, k) = YX(dtype1, r); \
+                    YX(dtype1, r) = ytmp; \
+                } \
+            } \
+        } \
+        else { \
+            if (ak > ar) { \
+                if (al > ar) { \
+                    B[k] = al; \
+                    B[l] = ak; \
+                    ytmp = YX(dtype1, k); \
+                    YX(dtype1, k) = YX(dtype1, l); \
+                    YX(dtype1, l) = ytmp; \
+                } \
+                else { \
+                    B[k] = ar; \
+                    B[r] = ak; \
+                    ytmp = YX(dtype1, k); \
+                    YX(dtype1, k) = YX(dtype1, r); \
+                    YX(dtype1, r) = ytmp; \
+                } \
+            } \
+        } \
+        ARGWIRTH(dtype0, dtype1) \
+    }
+
+#define ARGPARTSORT(dtype0, dtype1) \
+    for (i = 0; i < length; i++) { \
+        B[i] = AX(dtype0, i); \
+        YX(dtype1, i) = i; \
+    } \
+    k = n - 1; \
+    l = 0; \
+    r = length - 1; \
+    ARGPARTITION(dtype0, dtype1)
+
+/* dtype = [['float64', 'intp'], ['float32', 'intp'], ['int64', 'intp'], ['int32', 'intp']] */
+NRA(argpartsort, DTYPE0)
+{
+    npy_intp *shape = PyArray_SHAPE(a);
+    Py_ssize_t length = PyArray_DIM(a, axis);
+    Py_ssize_t stride = PyArray_STRIDE(a, axis);
+    INIT(NPY_DTYPE1)
+    npy_intp i;
+    if (length == 0) return _y;
+    if (n < 1 || n > length) {
+        PyErr_Format(PyExc_ValueError,
+                     "`n` (=%d) must be between 1 and %zd, inclusive.",
+                     n, length);
+        return NULL;
+    }
+    BN_BEGIN_ALLOW_THREADS
+    BUFFER_NEW(npy_DTYPE0)
+    npy_intp j, l, r, k;
+    k = n - 1;
+    WHILE {
+        l = 0;
+        r = length - 1;
+        ARGPARTSORT(npy_DTYPE0, npy_DTYPE1)
+        NEXT
+    }
+    BUFFER_DELETE
+    BN_END_ALLOW_THREADS
+    return _y;
+}
+/* dtype end */
+
+NRA_MAIN(argpartsort, 1)
 
 
 /* python strings -------------------------------------------------------- */
@@ -414,11 +526,77 @@ array([1, 0, 2, 3, 4])
 
 MULTILINE STRING END */
 
+static char argpartsort_doc[] =
+/* MULTILINE STRING BEGIN
+argpartsort(arr, n, axis=-1)
+
+Return indices that would partially sort an array.
+
+A partially sorted array is one in which the `n` smallest values appear
+(in any order) in the first `n` elements. The remaining largest elements
+are also unordered. Due to the algorithm used (Wirth's method), the nth
+smallest element is in its sorted position (at index `n-1`).
+
+Shuffling the input array may change the output. The only guarantee is
+that the first `n` elements will be the `n` smallest and the remaining
+element will appear in the remainder of the output.
+
+This functions is not protected against NaN. Therefore, you may get
+unexpected results if the input contains NaN.
+
+Parameters
+----------
+arr : array_like
+    Input array. If `arr` is not an array, a conversion is attempted.
+n : int
+    The indices of the `n` smallest elements will appear in the first `n`
+    elements of the output array along the given `axis`.
+axis : {int, None}, optional
+    Axis along which the partial sort is performed. The default (axis=-1)
+    is to sort along the last axis.
+
+Returns
+-------
+y : ndarray
+    An array the same shape as the input array containing the indices
+    that partially sort `arr` such that the `n` smallest elements will
+    appear (unordered) in the first `n` elements.
+
+See Also
+--------
+bottleneck.partsort: Partial sorting of array elements along given axis.
+
+Notes
+-----
+Unexpected results may occur if the input array contains NaN.
+
+Examples
+--------
+Create a numpy array:
+
+>>> a = np.array([1, 0, 3, 4, 2])
+
+Find the indices that partially sort that array so that the first 3
+elements are the smallest 3 elements:
+
+>>> index = bn.argpartsort(a, n=3)
+>>> index
+array([0, 1, 4, 3, 2])
+
+Let's use the indices to partially sort the array (note, as in this
+example, that the smallest 3 elements may not be in order):
+
+>>> a[index]
+array([1, 0, 2, 4, 3])
+
+MULTILINE STRING END */
+
 /* python wrapper -------------------------------------------------------- */
 
 static PyMethodDef
 nra_methods[] = {
     {"partsort",    (PyCFunction)partsort,    VARKEY, partsort_doc},
+    {"argpartsort", (PyCFunction)argpartsort, VARKEY, argpartsort_doc},
     {NULL, NULL, 0, NULL}
 };
 

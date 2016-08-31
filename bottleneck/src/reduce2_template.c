@@ -835,7 +835,7 @@ REDUCE_MAIN(ss, 0, 0)
 
 /* median, nanmedian MACROS ---------------------------------------------- */
 
-#define B(dtype, i) buffer[i] /* dtype is used by partsort, but not here */
+#define B(dtype, i) buffer[i] /* used by PARTITION */
 
 #define EVEN_ODD(dtype, N) \
     if (N % 2 == 0) { \

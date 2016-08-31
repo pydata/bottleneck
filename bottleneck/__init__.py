@@ -52,6 +52,7 @@ except:
     pass
 try:
     from .nonreduce_axis2 import partsort as partsort2
+    from .nonreduce_axis2 import argpartsort as argpartsort2
 except:
     pass
 try:

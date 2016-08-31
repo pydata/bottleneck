@@ -80,6 +80,7 @@ def func_dict():
     d['nonreduce_axis'] = [bn.partsort,
                            bn.partsort2,
                            bn.argpartsort,
+                           bn.argpartsort2,
                            bn.rankdata,
                            bn.nanrankdata,
                            bn.push,
