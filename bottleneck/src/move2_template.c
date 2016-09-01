@@ -665,79 +665,54 @@ MOVE_MAIN(move_median, 0)
 
 /* move_rank-------------------------------------------------------------- */
 
+#define MOVE_RANK(dtype0, dtype1, limit) \
+    Py_ssize_t j; \
+    dtype0 ai, aj; \
+    dtype1 g, e, n, r; \
+    ai = AI(dtype0); \
+    if (ai == ai) { \
+        g = 0; \
+        e = 1; \
+        n = 1; \
+        r = 0; \
+        for (j = limit; j < _i; j++) { \
+            aj = AX(dtype0, j); \
+            if (aj == aj) { \
+                n++; \
+                if (ai > aj) g += 2; \
+                else if (ai == aj) e++; \
+            } \
+        } \
+        if (n < min_count) { \
+            r = BN_NAN; \
+        } \
+        else if (n == 1) { \
+            r = 0.0; \
+        } \
+        else { \
+            r = 0.5 * (g + e - 1.0); \
+            r = r / (n - 1.0); \
+            r = 2.0 * (r - 0.5); \
+        } \
+    } \
+    else { \
+        r = BN_NAN; \
+    } \
+
 /* dtype = [['float64', 'float64'], ['float32', 'float32']] */
 MOVE(move_rank, DTYPE0)
 {
     INIT(NPY_DTYPE1)
-    Py_ssize_t j;
-    npy_DTYPE0 ai, aj;
-    npy_DTYPE1 g, e, n, r;
     WHILE {
         WHILE0 {
             YI(npy_DTYPE1) = BN_NAN;
         }
         WHILE1 {
-            ai = AI(npy_DTYPE0);
-            if (ai == ai) {
-                g = 0;
-                e = 1;
-                n = 1;
-                r = 0;
-                for (j = 0; j < _i; j++) {
-                    aj = AX(npy_DTYPE0, j);
-                    if (aj == aj) {
-                        n++;
-                        if (ai > aj) g += 2;
-                        else if (ai == aj) e++;
-                    }
-                }
-                if (n < min_count) {
-                    r = BN_NAN;
-                }
-                else if (n == 1) {
-                    r = 0.0;
-                }
-                else {
-                    r = 0.5 * (g + e - 1.0);
-                    r = r / (n - 1.0);
-                    r = 2.0 * (r - 0.5);
-                }
-            }
-            else {
-                r = BN_NAN;
-            }
+            MOVE_RANK(npy_DTYPE0, npy_DTYPE1, 0)
             YI(npy_DTYPE1) = r;
         }
         WHILE2 {
-            ai = AI(npy_DTYPE0);
-            if (ai == ai) {
-                g = 0;
-                e = 1;
-                n = 1;
-                r = 0;
-                for (j = _i - window + 1; j < _i; j++) {
-                    aj = AX(npy_DTYPE0, j);
-                    if (aj == aj) {
-                        n++;
-                        if (ai > aj) g += 2;
-                        else if (ai == aj) e++;
-                    }
-                }
-                if (n < min_count) {
-                    r = BN_NAN;
-                }
-                else if (n == 1) {
-                    r = 0.0;
-                }
-                else {
-                    r = 0.5 * (g + e - 1.0);
-                    r = r / (n - 1.0);
-                    r = 2.0 * (r - 0.5);
-                }
-            }
-            else {
-                r = BN_NAN;
-            }
+            MOVE_RANK(npy_DTYPE0, npy_DTYPE1, _i - window + 1)
             YI(npy_DTYPE1) = r;
         }
         NEXT
