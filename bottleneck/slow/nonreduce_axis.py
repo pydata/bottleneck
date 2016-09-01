@@ -2,62 +2,36 @@ import numpy as np
 
 __all__ = ['rankdata', 'nanrankdata', 'partsort', 'argpartsort', 'push']
 
-rankdata_func = None
-
 
 def rankdata(arr, axis=None):
     "Slow rankdata function used for unaccelerated dtypes."
-    global rankdata_func
-    if rankdata_func is None:
-        try:
-            # Use scipy's rankdata
-            from scipy.stats import rankdata as imported_rankdata
-            rankdata_func = imported_rankdata
-        except ImportError:
-            # Use a local copy of scipy's rankdata
-            rankdata_func = scipy_rankdata
-    arr = np.asarray(arr)
-    if axis is None:
-        arr = arr.ravel()
-        axis = 0
-    elif axis < 0:
-        axis = range(arr.ndim)[axis]
-    y = np.empty(arr.shape)
-    itshape = list(arr.shape)
-    itshape.pop(axis)
-    for ij in np.ndindex(*itshape):
-        ijslice = list(ij[:axis]) + [slice(None)] + list(ij[axis:])
-        y[ijslice] = rankdata_func(arr[ijslice].astype('float'))
-    return y
+    return _rank(scipy_rankdata, arr, axis)
 
 
 def nanrankdata(arr, axis=None):
     "Slow nanrankdata function used for unaccelerated dtypes."
-    global rankdata_func
-    if rankdata_func is None:
-        try:
-            # Use scipy's rankdata
-            from scipy.stats import rankdata as imported_rankdata
-            rankdata_func = imported_rankdata
-        except ImportError:
-            # Use a local copy of scipy's rankdata
-            rankdata_func = scipy_rankdata
-    arr = np.asarray(arr)
+    return _rank(_nanrankdata_1d, arr, axis)
+
+
+def _rank(func1d, arr, axis):
+    arr = np.array(arr, copy=False)
     if axis is None:
         arr = arr.ravel()
         axis = 0
-    elif axis < 0:
-        axis = range(arr.ndim)[axis]
-    y = np.empty(arr.shape)
+    if arr.size == 0:
+        y = arr.astype(np.float64, copy=True)
+    else:
+        y = np.apply_along_axis(func1d, axis, arr)
+        if arr.dtype != np.float64:
+            y = y.astype(np.float64)
+    return y
+
+
+def _nanrankdata_1d(a):
+    y = np.empty(a.shape, dtype=np.float64)
     y.fill(np.nan)
-    itshape = list(arr.shape)
-    itshape.pop(axis)
-    for ij in np.ndindex(*itshape):
-        ijslice = list(ij[:axis]) + [slice(None)] + list(ij[axis:])
-        x1d = arr[ijslice].astype(float)
-        mask1d = ~np.isnan(x1d)
-        x1d[mask1d] = rankdata_func(x1d[mask1d])
-        y[ijslice] = x1d
+    idx = ~np.isnan(a)
+    y[idx] = scipy_rankdata(a[idx])
     return y
 
 
