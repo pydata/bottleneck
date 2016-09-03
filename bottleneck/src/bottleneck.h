@@ -1,3 +1,6 @@
+#ifndef BOTTLENECK_H
+#define BOTTLENECK_H
+
 #include <Python.h>
 #define NPY_NO_DEPRECATED_API NPY_1_11_API_VERSION
 #include <numpy/arrayobject.h>
@@ -147,3 +150,5 @@ BN_INLINE static float __bn_nanf(void)
         } \
         WIRTH(dtype) \
     }
+
+#endif /* BOTTLENECK_H */
