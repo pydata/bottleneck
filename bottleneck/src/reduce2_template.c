@@ -155,23 +155,23 @@ REDUCE_ALL(nansum, DTYPE0)
 
 REDUCE_ONE(nansum, DTYPE0)
 {
-    iter *it = new_iter(a, axis, ndim, length);
+    iter *it = iter_reduce_one(a, axis);
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     npy_DTYPE0 ai, asum;
-    if (length == 0) {
+    if (it->length == 0) {
         Py_ssize_t length = PyArray_SIZE((PyArrayObject *)y);
         for (it->i = 0; it->i < length; it->i++) YI = 0;
     }
     else {
-        WHILE99 {
+        WHILE99(it) {
             asum = 0;
-            FOR99 {
-                ai = AI99(npy_DTYPE0);
+            FOR99(it) {
+                ai = AI99(it, npy_DTYPE0);
                 if (ai == ai) asum += ai;
             }
             YI = asum;
-            NEXT99
+            NEXT99(it)
         }
     }
     free(it);
