@@ -155,7 +155,7 @@ REDUCE_ALL(nansum, DTYPE0)
 
 REDUCE_ONE(nansum, DTYPE0)
 {
-    iter *it = iter_reduce_one(a, axis);
+    iter *it = new_iter(a, axis);
     Y_INIT(NPY_DTYPE0, npy_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     npy_DTYPE0 ai, asum;

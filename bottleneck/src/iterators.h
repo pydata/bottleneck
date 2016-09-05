@@ -1,4 +1,4 @@
-#include "bottleneck.h"
+#include <numpy/arrayobject.h>
 
 struct _iter {
     int        ndim;
@@ -16,7 +16,7 @@ struct _iter {
 typedef struct _iter iter;
 
 static BN_INLINE iter *
-iter_reduce_one(PyArrayObject *a, int axis)
+new_iter(PyArrayObject *a, int axis)
 {
     int i, j = 0;
     npy_intp dim;
