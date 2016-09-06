@@ -58,6 +58,10 @@ new_iter(PyArrayObject *a, int axis)
     } \
     it->its++;
 
-#define  WHILE99(it)     while (it->its < it->nits)
-#define  FOR99(it)       for (it->i = 0; it->i < it->length; it->i++)
-#define  AI99(it, dt)    *(dt*)(it->p + it->i * it->stride)
+#define  WHILE99(it)       while (it->its < it->nits)
+#define  FOR99(it)         for (it->i = 0; it->i < it->length; it->i++)
+#define  FOR_REVERSE99(it) for (it->i = length - 1; it->i > -1; it->i--)
+#define  AIT(dt, it)      *(dt*)(it->p + it->i * it->stride)
+
+#define  ITER_LENGTH(it)   it->length
+#define  ITER_I(it)        it->i
