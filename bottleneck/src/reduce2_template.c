@@ -89,13 +89,7 @@
 /* low-level functions such as nansum_one_float64 */
 #define REDUCE_ONE(name, dtype) \
     static PyObject * \
-    name##_one_##dtype(PyArrayObject *a, \
-                       int axis, \
-                       Py_ssize_t stride, \
-                       Py_ssize_t length, \
-                       int ndim, \
-                       npy_intp* yshape, \
-                       int ddof)
+    name##_one_##dtype(iter *it, int ddof)
 
 /* top-level functions such as nansum */
 #define REDUCE_MAIN(name, ravel, has_ddof) \
@@ -121,8 +115,7 @@
 
 typedef PyObject *(*fall_t)(PyArrayObject *, int, Py_ssize_t, Py_ssize_t, int,
                             int);
-typedef PyObject *(*fone_t)(PyArrayObject *, int, Py_ssize_t, Py_ssize_t, int,
-                            npy_intp*, int);
+typedef PyObject *(*fone_t)(iter *, int);
 
 static PyObject *
 reducer(char *name,
@@ -160,8 +153,7 @@ REDUCE_ALL(nansum, DTYPE0)
 
 REDUCE_ONE(nansum, DTYPE0)
 {
-    iter *it = new_iter(a, axis);
-    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    Y_INIT99(NPY_DTYPE0, npy_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     npy_DTYPE0 ai, asum;
     if (ITER_LENGTH(it) == 0) {
@@ -178,7 +170,6 @@ REDUCE_ONE(nansum, DTYPE0)
             NEXT99(it)
         }
     }
-    free(it);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -200,8 +191,7 @@ REDUCE_ALL(nansum, DTYPE0)
 
 REDUCE_ONE(nansum, DTYPE0)
 {
-    iter *it = new_iter(a, axis);
-    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    Y_INIT99(NPY_DTYPE0, npy_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     npy_DTYPE0 asum;
     if (ITER_LENGTH(it) == 0) {
@@ -215,7 +205,6 @@ REDUCE_ONE(nansum, DTYPE0)
             NEXT99(it)
         }
     }
-    free(it);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -253,8 +242,7 @@ REDUCE_ALL(nanmean, DTYPE0)
 
 REDUCE_ONE(nanmean, DTYPE0)
 {
-    iter *it = new_iter(a, axis);
-    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    Y_INIT99(NPY_DTYPE0, npy_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     Py_ssize_t count;
     npy_DTYPE0 ai, asum;
@@ -280,7 +268,6 @@ REDUCE_ONE(nanmean, DTYPE0)
             NEXT99(it)
         }
     }
-    free(it);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -308,8 +295,7 @@ REDUCE_ALL(nanmean, DTYPE0)
 
 REDUCE_ONE(nanmean, DTYPE0)
 {
-    iter *it = new_iter(a, axis);
-    Y_INIT(NPY_DTYPE1, npy_DTYPE1)
+    Y_INIT99(NPY_DTYPE1, npy_DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     npy_DTYPE1 asum;
     if (ITER_LENGTH(it) == 0) {
@@ -319,8 +305,8 @@ REDUCE_ONE(nanmean, DTYPE0)
         WHILE99(it) {
             asum = 0;
             FOR99(it) asum += AIT(npy_DTYPE0, it);
-            if (length > 0) {
-                asum /= length;
+            if (ITER_LENGTH(it) > 0) {
+                asum /= ITER_LENGTH(it);
             } else {
                 asum = BN_NAN;
             }
@@ -328,7 +314,6 @@ REDUCE_ONE(nanmean, DTYPE0)
             NEXT99(it)
         }
     }
-    free(it);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -383,8 +368,7 @@ REDUCE_ALL(NAME, DTYPE0)
 
 REDUCE_ONE(NAME, DTYPE0)
 {
-    iter *it = new_iter(a, axis);
-    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    Y_INIT99(NPY_DTYPE0, npy_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     Py_ssize_t count;
     npy_DTYPE0 ai, asum, amean;
@@ -420,7 +404,6 @@ REDUCE_ONE(NAME, DTYPE0)
             NEXT99(it)
         }
     }
-    free(it);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -461,12 +444,11 @@ REDUCE_ALL(NAME, DTYPE0)
 
 REDUCE_ONE(NAME, DTYPE0)
 {
-    iter *it = new_iter(a, axis);
-    Y_INIT(NPY_DTYPE1, npy_DTYPE1)
+    Y_INIT99(NPY_DTYPE1, npy_DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     npy_DTYPE1 ai, asum, amean;
-    npy_DTYPE1 length_inv = 1.0 / length;
-    npy_DTYPE1 length_ddof_inv = 1.0 / (length - ddof);
+    npy_DTYPE1 length_inv = 1.0 / ITER_LENGTH(it);
+    npy_DTYPE1 length_ddof_inv = 1.0 / (ITER_LENGTH(it) - ddof);
     if (ITER_LENGTH(it) == 0) {
         FILL_Y(BN_NAN)
     }
@@ -490,7 +472,6 @@ REDUCE_ONE(NAME, DTYPE0)
             NEXT99(it)
         }
     }
-    free(it);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -535,8 +516,7 @@ REDUCE_ALL(NAME, DTYPE0)
 
 REDUCE_ONE(NAME, DTYPE0)
 {
-    iter *it = new_iter(a, axis);
-    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    Y_INIT99(NPY_DTYPE0, npy_DTYPE0)
     npy_DTYPE0 ai, extreme;
     int allnan;
     if (ITER_LENGTH(it) == 0) {
@@ -559,7 +539,6 @@ REDUCE_ONE(NAME, DTYPE0)
         YI = extreme;
         NEXT99(it)
     }
-    free(it);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -589,8 +568,7 @@ REDUCE_ALL(NAME, DTYPE0)
 
 REDUCE_ONE(NAME, DTYPE0)
 {
-    iter *it = new_iter(a, axis);
-    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    Y_INIT99(NPY_DTYPE0, npy_DTYPE0)
     npy_DTYPE0 ai, extreme;
     if (ITER_LENGTH(it) == 0) {
         VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
@@ -607,7 +585,6 @@ REDUCE_ONE(NAME, DTYPE0)
         YI = extreme;
         NEXT99(it)
     }
-    free(it);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -655,8 +632,7 @@ REDUCE_ALL(NAME, DTYPE0)
 
 REDUCE_ONE(NAME, DTYPE0)
 {
-    iter *it = new_iter(a, axis);
-    Y_INIT(NPY_INTP, npy_intp)
+    Y_INIT99(NPY_INTP, npy_intp)
     int allnan, err_code = 0;
     Py_ssize_t idx = 0;
     npy_DTYPE0 ai, extreme;
@@ -684,7 +660,6 @@ REDUCE_ONE(NAME, DTYPE0)
         }
         NEXT99(it)
     }
-    free(it);
     BN_END_ALLOW_THREADS
     if (err_code) {
         VALUE_ERR("All-NaN slice encountered");
@@ -719,8 +694,7 @@ REDUCE_ALL(NAME, DTYPE0)
 
 REDUCE_ONE(NAME, DTYPE0)
 {
-    iter *it = new_iter(a, axis);
-    Y_INIT(NPY_DTYPE1, npy_DTYPE1)
+    Y_INIT99(NPY_DTYPE1, npy_DTYPE1)
     npy_DTYPE1 idx = 0;
     npy_DTYPE0 ai, extreme;
     if (ITER_LENGTH(it) == 0) {
@@ -741,7 +715,6 @@ REDUCE_ONE(NAME, DTYPE0)
         YI = idx;
         NEXT99(it)
     }
-    free(it);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -772,8 +745,7 @@ REDUCE_ALL(ss, DTYPE0)
 
 REDUCE_ONE(ss, DTYPE0)
 {
-    iter *it = new_iter(a, axis);
-    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    Y_INIT99(NPY_DTYPE0, npy_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     npy_DTYPE0 ai, asum;
     if (ITER_LENGTH(it) == 0) {
@@ -790,7 +762,6 @@ REDUCE_ONE(ss, DTYPE0)
             NEXT99(it)
         }
     }
-    free(it);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -815,8 +786,7 @@ REDUCE_ALL(ss, DTYPE0)
 
 REDUCE_ONE(ss, DTYPE0)
 {
-    iter *it = new_iter(a, axis);
-    Y_INIT(NPY_DTYPE0, npy_DTYPE0)
+    Y_INIT99(NPY_DTYPE0, npy_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     npy_DTYPE0 ai, asum;
     if (ITER_LENGTH(it) == 0) {
@@ -833,7 +803,6 @@ REDUCE_ONE(ss, DTYPE0)
             NEXT99(it)
         }
     }
-    free(it);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -912,7 +881,62 @@ REDUCE_MAIN(ss, 0, 0)
     PARTITION(dtype) \
     EVEN_ODD(dtype, n)
 
-#define BUFFER_NEW(dtype) dtype *buffer = malloc(length * sizeof(dtype));
+#define MEDIAN99(dtype) \
+    npy_intp j, l, r, k; \
+    dtype ai; \
+    l = 0; \
+    for (i = 0; i < ITER_LENGTH(it); i++) { \
+        ai = AX99(dtype, i); \
+        if (ai == ai) { \
+            B(dtype, l++) = ai; \
+        } \
+    } \
+    if (l != ITER_LENGTH(it)) { \
+        med = BN_NAN; \
+        goto done; \
+    } \
+    k = ITER_LENGTH(it) >> 1; \
+    l = 0; \
+    r = ITER_LENGTH(it) - 1; \
+    PARTITION(dtype) \
+    EVEN_ODD(dtype, ITER_LENGTH(it))
+
+#define MEDIAN_INT99(dtype) \
+    npy_intp j, l, r, k; \
+    dtype ai; \
+    for (i = 0; i < ITER_LENGTH(it); i++) { \
+        B(dtype, i) = AX99(dtype, i); \
+    } \
+    k = ITER_LENGTH(it) >> 1; \
+    l = 0; \
+    r = ITER_LENGTH(it) - 1; \
+    PARTITION(dtype) \
+    EVEN_ODD(dtype, ITER_LENGTH(it))
+
+#define NANMEDIAN99(dtype) \
+    npy_intp j, l, r, k, n; \
+    dtype ai; \
+    l = 0; \
+    for (i = 0; i < ITER_LENGTH(it); i++) { \
+        ai = AX99(dtype, i); \
+        if (ai == ai) { \
+            B(dtype, l++) = ai; \
+        } \
+    } \
+    n = l; \
+    k = n >> 1; \
+    l = 0; \
+    r = n - 1; \
+    if (n == 0) { \
+        med = BN_NAN; \
+        goto done; \
+    } \
+    PARTITION(dtype) \
+    EVEN_ODD(dtype, n)
+
+#define BUFFER_NEW(dtype, length) \
+        dtype *buffer = malloc(length * sizeof(dtype));
+
 #define BUFFER_DELETE free(buffer);
 
 /* median, nanmedian ----------------------------------------------------- */
@@ -926,7 +950,7 @@ REDUCE_ALL(NAME, DTYPE0)
     npy_intp i;
     npy_DTYPE1 med;
     BN_BEGIN_ALLOW_THREADS
-    BUFFER_NEW(npy_DTYPE0)
+    BUFFER_NEW(npy_DTYPE0, length)
     if (length == 0) {
         med = BN_NAN;
     }
@@ -941,8 +965,7 @@ REDUCE_ALL(NAME, DTYPE0)
 
 REDUCE_ONE(NAME, DTYPE0)
 {
-    iter *it = new_iter(a, axis);
-    Y_INIT(NPY_DTYPE1, npy_DTYPE1)
+    Y_INIT99(NPY_DTYPE1, npy_DTYPE1)
     npy_intp i;
     npy_DTYPE1 med;
     BN_BEGIN_ALLOW_THREADS
@@ -950,19 +973,15 @@ REDUCE_ONE(NAME, DTYPE0)
         FILL_Y(BN_NAN)
     }
     else {
-        BUFFER_NEW(npy_DTYPE0)
+        BUFFER_NEW(npy_DTYPE0, ITER_LENGTH(it))
         WHILE99(it) {
-            /* TODO temp iterator translation layer to legacy code */
-            char *_pa = it->p;
-            npy_intp stride = it->stride;
-            FUNC(npy_DTYPE0)
+            FUNC99(npy_DTYPE0)
             done:
             YI = med;
             NEXT99(it)
         }
         BUFFER_DELETE
     }
-    free(it);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -980,7 +999,7 @@ REDUCE_ALL(median, DTYPE0)
         med = BN_NAN;
     }
     else {
-        BUFFER_NEW(npy_DTYPE0)
+        BUFFER_NEW(npy_DTYPE0, length)
         MEDIAN_INT(npy_DTYPE0)
         BUFFER_DELETE
     }
@@ -990,8 +1009,7 @@ REDUCE_ALL(median, DTYPE0)
 
 REDUCE_ONE(median, DTYPE0)
 {
-    iter *it = new_iter(a, axis);
-    Y_INIT(NPY_DTYPE1, npy_DTYPE1)
+    Y_INIT99(NPY_DTYPE1, npy_DTYPE1)
     npy_intp i;
     npy_DTYPE1 med;
     BN_BEGIN_ALLOW_THREADS
@@ -999,17 +1017,14 @@ REDUCE_ONE(median, DTYPE0)
         FILL_Y(BN_NAN)
     }
     else {
-        BUFFER_NEW(npy_DTYPE0)
+        BUFFER_NEW(npy_DTYPE0, ITER_LENGTH(it))
         WHILE99(it) {
-            /* TODO temp iterator translation layer to legacy code */
-            char *_pa = it->p;
-            MEDIAN_INT(npy_DTYPE0)
+            MEDIAN_INT99(npy_DTYPE0)
             YI = med;
             NEXT99(it)
         }
         BUFFER_DELETE
     }
-    free(it);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -1060,8 +1075,7 @@ REDUCE_ALL(anynan, DTYPE0)
 
 REDUCE_ONE(anynan, DTYPE0)
 {
-    iter *it = new_iter(a, axis);
-    Y_INIT(NPY_BOOL, npy_uint8)
+    Y_INIT99(NPY_BOOL, npy_uint8)
     BN_BEGIN_ALLOW_THREADS
     int f;
     npy_DTYPE0 ai;
@@ -1082,7 +1096,6 @@ REDUCE_ONE(anynan, DTYPE0)
             NEXT99(it)
         }
     }
-    free(it);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -1096,6 +1109,10 @@ REDUCE_ALL(anynan, DTYPE0)
 
 REDUCE_ONE(anynan, DTYPE0)
 {
+    /* TODO temp iterface to legacy code */
+    int ndim = it->ndim_m2 + 2;
+    npy_intp *yshape = it->shape;
+
     Y_INIT(NPY_BOOL, npy_uint8)
     Py_ssize_t _i;
     BN_BEGIN_ALLOW_THREADS
@@ -1135,8 +1152,7 @@ REDUCE_ALL(allnan, DTYPE0)
 
 REDUCE_ONE(allnan, DTYPE0)
 {
-    iter *it = new_iter(a, axis);
-    Y_INIT(NPY_BOOL, npy_uint8)
+    Y_INIT99(NPY_BOOL, npy_uint8)
     BN_BEGIN_ALLOW_THREADS
     int f;
     npy_DTYPE0 ai;
@@ -1157,7 +1173,6 @@ REDUCE_ONE(allnan, DTYPE0)
             NEXT99(it)
         }
     }
-    free(it);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -1173,12 +1188,15 @@ REDUCE_ALL(allnan, DTYPE0)
 
 REDUCE_ONE(allnan, DTYPE0)
 {
+    /* TODO temp iterface to legacy code */
+    int ndim = it->ndim_m2 + 2;
+    npy_intp *yshape = it->shape;
+
     Y_INIT(NPY_BOOL, npy_uint8)
     Py_ssize_t _i;
+    npy_intp length = PyArray_SIZE((PyArrayObject *)y);
     BN_BEGIN_ALLOW_THREADS
-    Py_ssize_t size = PyArray_SIZE(a);
-    length = PyArray_SIZE((PyArrayObject *)y);
-    if (size == 0) {
+    if (it->nits * it->length == 0) {
         FOR YI = 1;
     }
     else {
@@ -1319,7 +1337,6 @@ reducer(char *name,
     int ddof;
 
     Py_ssize_t i;
-    Py_ssize_t j = 0;
     Py_ssize_t stride;
     Py_ssize_t length;
 
@@ -1465,28 +1482,27 @@ reducer(char *name,
 
         /* we are reducing an array with ndim > 1 over a single axis */
 
-        npy_intp yshape[ndim - 1];
-        for (i=0; i < ndim; i++) {
-            if (i != axis) yshape[j++] = shape[i];
-        }
-        stride = strides[axis];
-        length = shape[axis];
+        PyObject *y;
+        iter *it = new_iter(a, axis);
 
         if (dtype == NPY_FLOAT64) {
-            return fone_float64(a, axis, stride, length, ndim, yshape, ddof);
+            y = fone_float64(it, ddof);
         }
         else if (dtype == NPY_FLOAT32) {
-            return fone_float32(a, axis, stride, length, ndim, yshape, ddof);
+            y = fone_float32(it, ddof);
         }
         else if (dtype == NPY_INT64) {
-            return fone_int64(a, axis, stride, length, ndim, yshape, ddof);
+            y = fone_int64(it, ddof);
         }
         else if (dtype == NPY_INT32) {
-            return fone_int32(a, axis, stride, length, ndim, yshape, ddof);
+            y = fone_int32(it, ddof);
         }
         else {
-            return slow(name, args, kwds);
+            y = slow(name, args, kwds);
         }
+
+        free(it);
+        return y;
     }
 }
 
