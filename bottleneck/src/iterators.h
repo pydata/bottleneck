@@ -47,7 +47,7 @@ new_iter(PyArrayObject *a, int axis)
     return it;
 }
 
-#define NEXT99(it) \
+#define NEXT99 \
     for (it->i = it->ndim_m2; it->i > -1; it->i--) { \
         if (it->indices[it->i] < it->shape[it->i] - 1) { \
             it->p += it->strides[it->i]; \
@@ -59,14 +59,17 @@ new_iter(PyArrayObject *a, int axis)
     } \
     it->its++;
 
-#define  WHILE99(it)       while (it->its < it->nits)
-#define  FOR99(it)         for (it->i = 0; it->i < it->length; it->i++)
-#define  FOR_REVERSE99(it) for (it->i = it->length - 1; it->i > -1; it->i--)
-#define  AIT(dt, it)      *(dt*)(it->p + it->i * it->stride)
-#define  AX99(dt, x)      *(dt*)(it->p + x * it->stride)
+#define  WHILE99        while (it->its < it->nits)
+#define  FOR99          for (it->i = 0; it->i < it->length; it->i++)
+#define  FOR_REVERSE99  for (it->i = it->length - 1; it->i > -1; it->i--)
+#define  AI99(dt)      *(dt*)(it->p + it->i * it->stride)
+#define  AX99(dt, x)   *(dt*)(it->p + x * it->stride)
 
-#define  ITER_LENGTH(it)   it->length
-#define  ITER_I(it)        it->i
+#define  NDIM           it->ndim_m2 + 2
+#define  SHAPE          it->shape
+#define  SIZE           it->nits * it->length
+#define  LENGTH         it->length
+#define  ITER_I         it->i
 
 #define Y_INIT99(dt0, dt1) \
     PyObject *y = PyArray_EMPTY(it->ndim_m2 + 1, it->shape, dt0, 0); \
