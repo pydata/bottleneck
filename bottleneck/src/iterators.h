@@ -18,10 +18,9 @@ struct _iter {
 typedef struct _iter iter;
 
 static BN_INLINE iter *
-new_iter(PyArrayObject *a, int axis)
+new_iter(iter *it, PyArrayObject *a, int axis)
 {
     int i, j = 0;
-    iter *it = malloc(sizeof(iter));
     int ndim = PyArray_NDIM(a);
     npy_intp *shape = PyArray_SHAPE(a);
     npy_intp *strides = PyArray_STRIDES(a);
@@ -50,13 +49,11 @@ new_iter(PyArrayObject *a, int axis)
 }
 
 static BN_INLINE iter *
-new_iter_all(PyArrayObject *a, int ravel)
+new_iter_all(iter *it, PyArrayObject *a, int ravel)
 {
-    int i, j = 0;
-    int ndim = PyArray_NDIM(a);
-    iter *it = malloc(sizeof(iter));
-    npy_intp *shape;
-    npy_intp *strides;
+    const int ndim = PyArray_NDIM(a);
+    const npy_intp *shape = PyArray_SHAPE(a);
+    const npy_intp *strides = PyArray_STRIDES(a);
 
     it->axis = 0;
     it->its = 0;
@@ -64,19 +61,19 @@ new_iter_all(PyArrayObject *a, int ravel)
 
     if (ndim == 1) {
         it->ndim_m2 = -1;
-        it->length = PyArray_DIM(a, 0);
-        it->stride = PyArray_STRIDE(a, 0);
+        it->length = shape[0];
+        it->stride = strides[0];
     }
     else if (C_CONTIGUOUS(a)) {
         it->ndim_m2 = -1;
         it->axis = ndim - 1;
         it->length = PyArray_SIZE(a);
-        it->stride = PyArray_STRIDE(a, ndim - 1);
+        it->stride = strides[ndim - 1];
     }
     else if (F_CONTIGUOUS(a)) {
         it->ndim_m2 = -1;
         it->length = PyArray_SIZE(a);
-        it->stride = PyArray_STRIDE(a, 0);
+        it->stride = strides[0];
     }
     else if (ravel) {
         it->ndim_m2 = -1;
@@ -86,9 +83,8 @@ new_iter_all(PyArrayObject *a, int ravel)
         it->stride = PyArray_STRIDE(a, 0);
     }
     else {
+        int i, j = 0;
         it->ndim_m2 = ndim - 2;
-        shape = PyArray_SHAPE(a);
-        strides = PyArray_STRIDES(a);
         it->stride = strides[0];
         for (i = 1; i < ndim; i++) {
             if (strides[i] < it->stride) {

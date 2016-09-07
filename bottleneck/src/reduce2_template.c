@@ -1175,10 +1175,8 @@ reducer(char *name,
     int dtype;
     int ddof;
 
+    iter it;
     PyArrayObject *a;
-
-    PyObject *y;
-    iter *it;
 
     PyObject *arr_obj = NULL;
     PyObject *axis_obj = Py_None;
@@ -1260,46 +1258,44 @@ reducer(char *name,
 
     if (reduce_all == 1) {
         /* we are reducing the array along all axes */
-        it = new_iter_all(a, ravel);
+        new_iter_all(&it, a, ravel);
         if (dtype == NPY_FLOAT64) {
-            y = fall_float64(it, ddof);
+            return fall_float64(&it, ddof);
         }
         else if (dtype == NPY_FLOAT32) {
-            y = fall_float32(it, ddof);
+            return fall_float32(&it, ddof);
         }
         else if (dtype == NPY_INT64) {
-            y = fall_int64(it, ddof);
+            return fall_int64(&it, ddof);
         }
         else if (dtype == NPY_INT32) {
-            y = fall_int32(it, ddof);
+            return fall_int32(&it, ddof);
         }
         else {
-            y = slow(name, args, kwds);
+            return slow(name, args, kwds);
         }
     }
     else {
         /* we are reducing an array with ndim > 1 over a single axis */
-        it = new_iter(a, axis);
+        new_iter(&it, a, axis);
         if (dtype == NPY_FLOAT64) {
-            y = fone_float64(it, ddof);
+            return fone_float64(&it, ddof);
         }
         else if (dtype == NPY_FLOAT32) {
-            y = fone_float32(it, ddof);
+            return fone_float32(&it, ddof);
         }
         else if (dtype == NPY_INT64) {
-            y = fone_int64(it, ddof);
+            return fone_int64(&it, ddof);
         }
         else if (dtype == NPY_INT32) {
-            y = fone_int32(it, ddof);
+            return fone_int32(&it, ddof);
         }
         else {
-            y = slow(name, args, kwds);
+            return slow(name, args, kwds);
         }
 
     }
 
-    free(it);
-    return y;
 }
 
 /* docstrings ------------------------------------------------------------- */
