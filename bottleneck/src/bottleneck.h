@@ -77,10 +77,9 @@ BN_INLINE static float __bn_nanf(void)
 #define BN_INFINITY ((npy_double)BN_INFINITYF)
 #define BN_NAN ((npy_double)BN_NANF)
 
-/* does not check for 0d which by definition is contiguous */
-#define IS_CONTIGUOUS(a) \
-    (PyArray_CHKFLAGS(a, NPY_ARRAY_C_CONTIGUOUS) || \
-     PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS))
+#define C_CONTIGUOUS(a) PyArray_CHKFLAGS(a, NPY_ARRAY_C_CONTIGUOUS)
+#define F_CONTIGUOUS(a) PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS)
+#define IS_CONTIGUOUS(a) (C_CONTIGUOUS(a) || F_CONTIGUOUS(a))
 
 /* WIRTH ----------------------------------------------------------------- */
 

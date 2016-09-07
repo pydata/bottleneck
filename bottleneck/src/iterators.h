@@ -15,6 +15,37 @@ struct _iter {
 };
 typedef struct _iter iter;
 
+void
+print_array(npy_intp *array, npy_intp length)
+{
+    int i;
+    for (i = 0; i < length; i++) {
+        printf("%zd ", array[i]);
+    }
+    printf("\n");
+}
+
+void
+print_iter(iter *it)
+{
+    npy_intp length = it->ndim_m2 + 1;
+    printf("-------------------------\n");
+    printf("ndim_m2  %d\n", it->ndim_m2);
+    printf("axis     %d\n", it->axis);
+    printf("length   %zd\n", it->length);
+    printf("stride   %zd\n", it->stride);
+    printf("i        %zd\n", it->i);
+    printf("its      %zd\n", it->its);
+    printf("nits     %zd\n", it->nits);
+    printf("indices  ");
+    print_array(it->indices, length);
+    printf("strides  ");
+    print_array(it->strides, length);
+    printf("shape    ");
+    print_array(it->shape, length);
+    printf("-------------------------\n");
+}
+
 static BN_INLINE iter *
 new_iter(PyArrayObject *a, int axis)
 {
@@ -47,6 +78,70 @@ new_iter(PyArrayObject *a, int axis)
     return it;
 }
 
+static BN_INLINE iter *
+new_iter_all(PyArrayObject *a, int ravel)
+{
+    int i, j = 0;
+    int ndim = PyArray_NDIM(a);
+    iter *it = malloc(sizeof(iter));
+    npy_intp *shape;
+    npy_intp *strides;
+
+    it->axis = 0;
+    it->its = 0;
+    it->nits = 1;
+
+    if (ndim == 1) {
+        it->ndim_m2 = -1;
+        it->length = PyArray_DIM(a, 0);
+        it->stride = PyArray_STRIDE(a, 0);
+    }
+    else if (C_CONTIGUOUS(a)) {
+        it->ndim_m2 = -1;
+        it->axis = ndim - 1;
+        it->length = PyArray_SIZE(a);
+        it->stride = PyArray_STRIDE(a, ndim - 1);
+    }
+    else if (F_CONTIGUOUS(a)) {
+        it->ndim_m2 = -1;
+        it->length = PyArray_SIZE(a);
+        it->stride = PyArray_STRIDE(a, 0);
+    }
+    else if (ravel) {
+        it->ndim_m2 = -1;
+        a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
+        Py_DECREF(a);
+        it->length = PyArray_DIM(a, 0);
+        it->stride = PyArray_STRIDE(a, 0);
+    }
+    else {
+        it->ndim_m2 = ndim - 2;
+        shape = PyArray_SHAPE(a);
+        strides = PyArray_STRIDES(a);
+        it->stride = strides[0];
+        for (i = 1; i < ndim; i++) {
+            if (strides[i] < it->stride) {
+                it->stride = strides[i];
+                it->axis = i;
+            }
+        }
+        it->length = shape[it->axis];
+        for (i = 0; i < ndim; i++) {
+            if (i != it->axis) {
+                it->indices[j] = 0;
+                it->strides[j] = strides[i];
+                it->shape[j] = shape[i];
+                it->nits *= shape[i];
+                j++;
+            }
+        }
+    }
+
+    it->p = PyArray_DATA(a);
+
+    return it;
+}
+
 #define NEXT99 \
     for (it->i = it->ndim_m2; it->i > -1; it->i--) { \
         if (it->indices[it->i] < it->shape[it->i] - 1) { \
@@ -64,6 +159,7 @@ new_iter(PyArrayObject *a, int axis)
 #define  FOR_REVERSE99  for (it->i = it->length - 1; it->i > -1; it->i--)
 #define  AI99(dt)      *(dt*)(it->p + it->i * it->stride)
 #define  AX99(dt, x)   *(dt*)(it->p + x * it->stride)
+#define  RESET99        it->its = 0;
 
 #define  NDIM           it->ndim_m2 + 2
 #define  SHAPE          it->shape
