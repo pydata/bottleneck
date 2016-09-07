@@ -1,5 +1,7 @@
 #include <numpy/arrayobject.h>
 
+/* one array iterators --------------------------------------------------- */
+
 struct _iter {
     int        ndim_m2;
     int        axis;
@@ -14,37 +16,6 @@ struct _iter {
     char      *p;
 };
 typedef struct _iter iter;
-
-void
-print_array(npy_intp *array, npy_intp length)
-{
-    int i;
-    for (i = 0; i < length; i++) {
-        printf("%zd ", array[i]);
-    }
-    printf("\n");
-}
-
-void
-print_iter(iter *it)
-{
-    npy_intp length = it->ndim_m2 + 1;
-    printf("-------------------------\n");
-    printf("ndim_m2  %d\n", it->ndim_m2);
-    printf("axis     %d\n", it->axis);
-    printf("length   %zd\n", it->length);
-    printf("stride   %zd\n", it->stride);
-    printf("i        %zd\n", it->i);
-    printf("its      %zd\n", it->its);
-    printf("nits     %zd\n", it->nits);
-    printf("indices  ");
-    print_array(it->indices, length);
-    printf("strides  ");
-    print_array(it->strides, length);
-    printf("shape    ");
-    print_array(it->shape, length);
-    printf("-------------------------\n");
-}
 
 static BN_INLINE iter *
 new_iter(PyArrayObject *a, int axis)
@@ -142,7 +113,7 @@ new_iter_all(PyArrayObject *a, int ravel)
     return it;
 }
 
-#define NEXT99 \
+#define NEXT \
     for (it->i = it->ndim_m2; it->i > -1; it->i--) { \
         if (it->indices[it->i] < it->shape[it->i] - 1) { \
             it->p += it->strides[it->i]; \
@@ -154,19 +125,60 @@ new_iter_all(PyArrayObject *a, int ravel)
     } \
     it->its++;
 
-#define  WHILE99        while (it->its < it->nits)
-#define  FOR99          for (it->i = 0; it->i < it->length; it->i++)
-#define  FOR_REVERSE99  for (it->i = it->length - 1; it->i > -1; it->i--)
-#define  AI99(dt)      *(dt*)(it->p + it->i * it->stride)
-#define  AX99(dt, x)   *(dt*)(it->p + x * it->stride)
-#define  RESET99        it->its = 0;
+void
+print_array(npy_intp *array, npy_intp length)
+{
+    int i;
+    for (i = 0; i < length; i++) {
+        printf("%zd ", array[i]);
+    }
+    printf("\n");
+}
+
+void
+print_iter(iter *it)
+{
+    npy_intp length = it->ndim_m2 + 1;
+    printf("-------------------------\n");
+    printf("ndim_m2  %d\n", it->ndim_m2);
+    printf("axis     %d\n", it->axis);
+    printf("length   %zd\n", it->length);
+    printf("stride   %zd\n", it->stride);
+    printf("i        %zd\n", it->i);
+    printf("its      %zd\n", it->its);
+    printf("nits     %zd\n", it->nits);
+    printf("indices  ");
+    print_array(it->indices, length);
+    printf("strides  ");
+    print_array(it->strides, length);
+    printf("shape    ");
+    print_array(it->shape, length);
+    printf("-------------------------\n");
+}
+
+/* macros used with iterators -------------------------------------------- */
 
 #define  NDIM           it->ndim_m2 + 2
 #define  SHAPE          it->shape
 #define  SIZE           it->nits * it->length
 #define  LENGTH         it->length
-#define  ITER_I         it->i
+#define  INDEX          it->i
 
-#define Y_INIT99(dt0, dt1) \
+#define  WHILE          while (it->its < it->nits)
+#define  FOR            for (it->i = 0; it->i < it->length; it->i++)
+#define  FOR_REVERSE    for (it->i = it->length - 1; it->i > -1; it->i--)
+#define  RESET          it->its = 0;
+
+#define  AI(dtype)      *(dtype *)(it->p + it->i * it->stride)
+#define  AX(dtype, x)   *(dtype *)(it->p + x * it->stride)
+
+#define Y_INIT(dt0, dt1) \
     PyObject *y = PyArray_EMPTY(it->ndim_m2 + 1, it->shape, dt0, 0); \
     dt1 *py = (dt1 *)PyArray_DATA((PyArrayObject *)y);
+
+#define YI *py++
+
+#define FILL_Y(value) \
+    int i; \
+    Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y); \
+    for (i = 0; i < size; i++) YI = value;
