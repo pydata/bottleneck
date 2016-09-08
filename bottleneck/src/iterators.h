@@ -17,13 +17,13 @@ struct _iter {
 };
 typedef struct _iter iter;
 
-static BN_INLINE iter *
-new_iter(iter *it, PyArrayObject *a, int axis)
+static BN_INLINE void
+init_iter_one(iter *it, PyArrayObject *a, int axis)
 {
     int i, j = 0;
-    int ndim = PyArray_NDIM(a);
-    npy_intp *shape = PyArray_SHAPE(a);
-    npy_intp *strides = PyArray_STRIDES(a);
+    const int ndim = PyArray_NDIM(a);
+    const npy_intp *shape = PyArray_SHAPE(a);
+    const npy_intp *strides = PyArray_STRIDES(a);
 
     it->ndim_m2 = ndim - 2;
     it->axis = axis;
@@ -44,12 +44,10 @@ new_iter(iter *it, PyArrayObject *a, int axis)
             j++;
         }
     }
-
-    return it;
 }
 
-static BN_INLINE iter *
-new_iter_all(iter *it, PyArrayObject *a, int ravel)
+static BN_INLINE void
+init_iter_all(iter *it, PyArrayObject *a, int ravel)
 {
     const int ndim = PyArray_NDIM(a);
     const npy_intp *shape = PyArray_SHAPE(a);
@@ -105,8 +103,6 @@ new_iter_all(iter *it, PyArrayObject *a, int ravel)
     }
 
     it->p = PyArray_DATA(a);
-
-    return it;
 }
 
 #define NEXT \

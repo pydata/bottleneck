@@ -1258,7 +1258,7 @@ reducer(char *name,
 
     if (reduce_all == 1) {
         /* we are reducing the array along all axes */
-        new_iter_all(&it, a, ravel);
+        init_iter_all(&it, a, ravel);
         if (dtype == NPY_FLOAT64) {
             return fall_float64(&it, ddof);
         }
@@ -1277,7 +1277,7 @@ reducer(char *name,
     }
     else {
         /* we are reducing an array with ndim > 1 over a single axis */
-        new_iter(&it, a, axis);
+        init_iter_one(&it, a, axis);
         if (dtype == NPY_FLOAT64) {
             return fone_float64(&it, ddof);
         }
