@@ -67,9 +67,9 @@ Bottleneck comes with a benchmark suite::
 
 Only arrays with data type (dtype) int32, int64, float32, and float64 are
 accelerated. All other dtypes result in calls to slower, unaccelerated
-functions. In the rare case of a 0 dimensional input array or a byte-swapped
-input array (e.g. a big-endian array on a little-endian operating system) the
-function will not be accelerated regardless of dtype.
+functions. In the rare case of a byte-swapped input array (e.g. a big-endian
+array on a little-endian operating system) the function will not be
+accelerated regardless of dtype.
 
 Where
 =====

@@ -31,17 +31,24 @@ init_iter_one(iter *it, PyArrayObject *a, int axis)
     it->nits = 1;
     it->p = PyArray_DATA(a);
 
-    for (i = 0; i < ndim; i++) {
-        if (i == axis) {
-            it->stride = strides[i];
-            it->length = shape[i];
-        }
-        else {
-            it->indices[j] = 0;
-            it->strides[j] = strides[i];
-            it->shape[j] = shape[i];
-            it->nits *= shape[i];
-            j++;
+    if (ndim == 0) {
+        it->ndim_m2 = -1;
+        it->length = 1;
+        it->stride = 0;
+    }
+    else {
+        for (i = 0; i < ndim; i++) {
+            if (i == axis) {
+                it->stride = strides[i];
+                it->length = shape[i];
+            }
+            else {
+                it->indices[j] = 0;
+                it->strides[j] = strides[i];
+                it->shape[j] = shape[i];
+                it->nits *= shape[i];
+                j++;
+            }
         }
     }
 }
@@ -49,6 +56,7 @@ init_iter_one(iter *it, PyArrayObject *a, int axis)
 static BN_INLINE void
 init_iter_all(iter *it, PyArrayObject *a, int ravel)
 {
+    int i, j = 0;
     const int ndim = PyArray_NDIM(a);
     const npy_intp *shape = PyArray_SHAPE(a);
     const npy_intp *strides = PyArray_STRIDES(a);
@@ -61,6 +69,11 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel)
         it->ndim_m2 = -1;
         it->length = shape[0];
         it->stride = strides[0];
+    }
+    else if (ndim == 0) {
+        it->ndim_m2 = -1;
+        it->length = 1;
+        it->stride = 0;
     }
     else if (C_CONTIGUOUS(a)) {
         it->ndim_m2 = -1;
@@ -81,7 +94,6 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel)
         it->stride = PyArray_STRIDE(a, 0);
     }
     else {
-        int i, j = 0;
         it->ndim_m2 = ndim - 2;
         it->stride = strides[0];
         for (i = 1; i < ndim; i++) {

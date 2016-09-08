@@ -1170,10 +1170,10 @@ reducer(char *name,
 {
 
     int ndim;
-    int reduce_all = 0;
     int axis;
     int dtype;
     int ddof;
+    int reduce_all = 0;
 
     iter it;
     PyArrayObject *a;
@@ -1201,20 +1201,6 @@ reducer(char *name,
         return slow(name, args, kwds);
     }
 
-    ndim = PyArray_NDIM(a);
-
-    /* defend against 0d beings */
-    if (ndim == 0) {
-        if (axis_obj == Py_None ||
-            axis_obj == PyInt_FromLong(0) ||
-            axis_obj == PyInt_FromLong(-1))
-            return slow(name, args, kwds);
-        else {
-            VALUE_ERR("axis out of bounds for 0d input");
-            return NULL;
-        }
-    }
-
     /* does user want to reduce over all axes? */
     if (axis_obj == Py_None) {
         reduce_all = 1;
@@ -1225,6 +1211,7 @@ reducer(char *name,
             TYPE_ERR("`axis` must be an integer or None");
             return NULL;
         }
+        ndim = PyArray_NDIM(a);
         if (axis < 0) {
             axis += ndim;
             if (axis < 0) {
