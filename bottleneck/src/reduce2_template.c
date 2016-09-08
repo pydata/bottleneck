@@ -35,21 +35,20 @@
 
 /* typedefs and prototypes ----------------------------------------------- */
 
-typedef PyObject *(*fall_t)(iter *it, int ddof);
-typedef PyObject *(*fone_t)(iter *it, int ddof);
+typedef PyObject *(*reduce_t)(iter *it, int ddof);
 
 static PyObject *
 reducer(char *name,
         PyObject *args,
         PyObject *kwds,
-        fall_t fall_float64,
-        fall_t fall_float32,
-        fall_t fall_int64,
-        fall_t fall_int32,
-        fone_t fone_float64,
-        fone_t fone_float32,
-        fone_t fone_int64,
-        fone_t fone_int32,
+        reduce_t fall_float64,
+        reduce_t fall_float32,
+        reduce_t fall_int64,
+        reduce_t fall_int32,
+        reduce_t fone_float64,
+        reduce_t fone_float32,
+        reduce_t fone_int64,
+        reduce_t fone_int32,
         int ravel,
         int has_ddof);
 
@@ -1157,14 +1156,14 @@ static PyObject *
 reducer(char *name,
         PyObject *args,
         PyObject *kwds,
-        fall_t fall_float64,
-        fall_t fall_float32,
-        fall_t fall_int64,
-        fall_t fall_int32,
-        fone_t fone_float64,
-        fone_t fone_float32,
-        fone_t fone_int64,
-        fone_t fone_int32,
+        reduce_t fall_float64,
+        reduce_t fall_float32,
+        reduce_t fall_int64,
+        reduce_t fall_int32,
+        reduce_t fone_float64,
+        reduce_t fone_float32,
+        reduce_t fone_int64,
+        reduce_t fone_int32,
         int ravel,
         int has_ddof)
 {

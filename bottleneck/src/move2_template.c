@@ -62,7 +62,7 @@
 #define  A0(dt)    *(dt *)(_pa)
 #define  AI(dt)    *(dt *)(_pa + _i * stride)
 #define  AOLD(dt)  *(dt *)(_pa + (_i - window) * stride)
-#define  AX(dt, x) *(dt*)(_pa + x * stride)
+#define  AX(dt, x) *(dt *)(_pa + x * stride)
 #define  YI(dt)    *(dt *)(_py + _i++ * _ystride)
 
 /* function signatures --------------------------------------------------- */

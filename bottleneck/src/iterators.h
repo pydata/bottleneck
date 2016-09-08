@@ -13,7 +13,7 @@ struct _iter {
     npy_intp   indices[NPY_MAXDIMS];
     npy_intp   strides[NPY_MAXDIMS];
     npy_intp   shape[NPY_MAXDIMS];
-    char      *p;
+    char       *p;
 };
 typedef struct _iter iter;
 
