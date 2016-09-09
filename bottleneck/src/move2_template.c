@@ -1,4 +1,5 @@
 #include "bottleneck.h"
+#include "iterators.h"
 #include "../csrc/move_median.h"
 
 /*
@@ -20,6 +21,9 @@
  * PyArray_ITER_NEXT.
  */
 
+#define Y_INIT99(dtype) \
+    PyObject *y = PyArray_EMPTY(ndim, shape, dtype, 0);
+
 #define INIT(dt) \
     PyObject *_y = PyArray_EMPTY(ndim, shape, dt, 0); \
     BN_BEGIN_ALLOW_THREADS \
@@ -35,7 +39,7 @@
     memset(_indices, 0, ndim * sizeof(npy_intp)); \
     if (length != 0) _size /= length;
 
-#define NEXT \
+#define NEXT33 \
     for (_i = ndim - 1; _i >= 0; _i--) { \
         if (_i == axis) continue; \
         if (_indices[_i] < shape[_i] - 1) { \
@@ -54,16 +58,26 @@
     BN_END_ALLOW_THREADS \
     return _y;
 
-#define  WHILE   while (_index < _size)
-#define  WHILE0  _i = 0; while (_i < min_count - 1)
-#define  WHILE1  while (_i < window)
-#define  WHILE2  while (_i < length)
+#define RETURN99 \
+    BN_END_ALLOW_THREADS \
+    return y;
 
-#define  A0(dt)    *(dt *)(_pa)
-#define  AI(dt)    *(dt *)(_pa + _i * stride)
-#define  AOLD(dt)  *(dt *)(_pa + (_i - window) * stride)
-#define  AX(dt, x) *(dt *)(_pa + x * stride)
-#define  YI(dt)    *(dt *)(_py + _i++ * _ystride)
+#define INIT_Y_AND_ITER(dtype) \
+    Y_INIT99(dtype) \
+    iter2 it; \
+    init_iter2(&it, a, y, axis); \
+    BN_BEGIN_ALLOW_THREADS
+
+#define  WHILE33   while (_index < _size)
+#define  WHILE033  _i = 0; while (_i < min_count - 1)
+#define  WHILE133  while (_i < window)
+#define  WHILE233  while (_i < length)
+
+#define  A033(dt)    *(dt *)(_pa)
+#define  AI33(dt)    *(dt *)(_pa + _i * stride)
+#define  AOLD33(dt)  *(dt *)(_pa + (_i - window) * stride)
+#define  AX33(dt, x) *(dt *)(_pa + x * stride)
+#define  YI33(dt)    *(dt *)(_py + _i++ * _ystride)
 
 /* function signatures --------------------------------------------------- */
 
@@ -123,30 +137,30 @@ mover(char *name,
 /* dtype = [['float64'], ['float32']] */
 MOVE(move_sum, DTYPE0)
 {
-    INIT(NPY_DTYPE0)
+    INIT_Y_AND_ITER(NPY_DTYPE0)
     Py_ssize_t count;
     npy_DTYPE0 asum, ai, aold;
-    WHILE {
+    WHILE99 {
         asum = count = 0;
-        WHILE0 {
-            ai = AI(npy_DTYPE0);
+        WHILE099 {
+            ai = AI99(npy_DTYPE0);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
-            YI(npy_DTYPE0) = BN_NAN;
+            YI99(npy_DTYPE0) = BN_NAN;
         }
-        WHILE1 {
-            ai = AI(npy_DTYPE0);
+        WHILE199 {
+            ai = AI99(npy_DTYPE0);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
-            YI(npy_DTYPE0) = count >= min_count ? asum : BN_NAN;
+            YI99(npy_DTYPE0) = count >= min_count ? asum : BN_NAN;
         }
-        WHILE2 {
-            ai = AI(npy_DTYPE0);
-            aold = AOLD(npy_DTYPE0);
+        WHILE299 {
+            ai = AI99(npy_DTYPE0);
+            aold = AOLD99(npy_DTYPE0);
             if (ai == ai) {
                 if (aold == aold) {
                     asum += ai - aold;
@@ -162,11 +176,11 @@ MOVE(move_sum, DTYPE0)
                     count--;
                 }
             }
-            YI(npy_DTYPE0) = count >= min_count ? asum : BN_NAN;
+            YI99(npy_DTYPE0) = count >= min_count ? asum : BN_NAN;
         }
-        NEXT
+        NEXT99
     }
-    RETURN
+    RETURN99
 }
 /* dtype end */
 
@@ -174,25 +188,25 @@ MOVE(move_sum, DTYPE0)
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(move_sum, DTYPE0)
 {
-    INIT(NPY_DTYPE1)
+    INIT_Y_AND_ITER(NPY_DTYPE1)
     npy_DTYPE1 asum;
-    WHILE {
+    WHILE99 {
         asum = 0;
-        WHILE0 {
-            asum += AI(npy_DTYPE0);
-            YI(npy_DTYPE1) = BN_NAN;
+        WHILE099 {
+            asum += AI99(npy_DTYPE0);
+            YI99(npy_DTYPE1) = BN_NAN;
         }
-        WHILE1 {
-            asum += AI(npy_DTYPE0);
-            YI(npy_DTYPE1) = asum;
+        WHILE199 {
+            asum += AI99(npy_DTYPE0);
+            YI99(npy_DTYPE1) = asum;
         }
-        WHILE2 {
-            asum += AI(npy_DTYPE0) - AOLD(npy_DTYPE0);
-            YI(npy_DTYPE1) = asum;
+        WHILE299 {
+            asum += AI99(npy_DTYPE0) - AOLD99(npy_DTYPE0);
+            YI99(npy_DTYPE1) = asum;
         }
-        NEXT
+        NEXT99
     }
-    RETURN
+    RETURN99
 }
 /* dtype end */
 
@@ -205,31 +219,31 @@ MOVE_MAIN(move_sum, 0)
 /* dtype = [['float64'], ['float32']] */
 MOVE(move_mean, DTYPE0)
 {
-    INIT(NPY_DTYPE0)
+    INIT_Y_AND_ITER(NPY_DTYPE0)
     Py_ssize_t count;
     npy_DTYPE0 asum, ai, aold, count_inv;
-    WHILE {
+    WHILE99 {
         asum = count = 0;
-        WHILE0 {
-            ai = AI(npy_DTYPE0);
+        WHILE099 {
+            ai = AI99(npy_DTYPE0);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
-            YI(npy_DTYPE0) = BN_NAN;
+            YI99(npy_DTYPE0) = BN_NAN;
         }
-        WHILE1 {
-            ai = AI(npy_DTYPE0);
+        WHILE199 {
+            ai = AI99(npy_DTYPE0);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
-            YI(npy_DTYPE0) = count >= min_count ? asum / count : BN_NAN;
+            YI99(npy_DTYPE0) = count >= min_count ? asum / count : BN_NAN;
         }
         count_inv = 1.0 / count;
-        WHILE2 {
-            ai = AI(npy_DTYPE0);
-            aold = AOLD(npy_DTYPE0);
+        WHILE299 {
+            ai = AI99(npy_DTYPE0);
+            aold = AOLD99(npy_DTYPE0);
             if (ai == ai) {
                 if (aold == aold) {
                     asum += ai - aold;
@@ -246,11 +260,11 @@ MOVE(move_mean, DTYPE0)
                     count_inv = 1.0 / count;
                 }
             }
-            YI(npy_DTYPE0) = count >= min_count ? asum * count_inv : BN_NAN;
+            YI99(npy_DTYPE0) = count >= min_count ? asum * count_inv : BN_NAN;
         }
-        NEXT
+        NEXT99
     }
-    RETURN
+    RETURN99
 }
 /* dtype end */
 
@@ -258,26 +272,26 @@ MOVE(move_mean, DTYPE0)
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(move_mean, DTYPE0)
 {
-    INIT(NPY_DTYPE1)
+    INIT_Y_AND_ITER(NPY_DTYPE1)
     npy_DTYPE1 asum, window_inv = 1.0 / window;
-    WHILE {
+    WHILE99 {
         asum = 0;
-        WHILE0 {
-            asum += AI(npy_DTYPE0);
-            YI(npy_DTYPE1) = BN_NAN;
+        WHILE099 {
+            asum += AI99(npy_DTYPE0);
+            YI99(npy_DTYPE1) = BN_NAN;
         }
-        WHILE1 {
-            asum += AI(npy_DTYPE0);
-            *(npy_DTYPE1*)(_py + _i * _ystride) = (npy_DTYPE1)asum / (_i + 1);
-            _i++;
+        WHILE199 {
+            asum += AI99(npy_DTYPE0);
+            *(npy_DTYPE1*)(it.py + it.i * it.ystride) = (npy_DTYPE1)asum / (it.i + 1);
+            it.i++;
         }
-        WHILE2 {
-            asum += AI(npy_DTYPE0) - AOLD(npy_DTYPE0);
-            YI(npy_DTYPE1) = (npy_DTYPE1)asum * window_inv;
+        WHILE299 {
+            asum += AI99(npy_DTYPE0) - AOLD99(npy_DTYPE0);
+            YI99(npy_DTYPE1) = (npy_DTYPE1)asum * window_inv;
         }
-        NEXT
+        NEXT99
     }
-    RETURN
+    RETURN99
 }
 /* dtype end */
 
@@ -292,23 +306,23 @@ MOVE_MAIN(move_mean, 0)
 /* dtype = [['float64'], ['float32']] */
 MOVE(NAME, DTYPE0)
 {
-    INIT(NPY_DTYPE0)
+    INIT_Y_AND_ITER(NPY_DTYPE0)
     Py_ssize_t count;
     npy_DTYPE0 delta, amean, assqdm, ai, aold, yi, count_inv, ddof_inv;
-    WHILE {
+    WHILE99 {
         amean = assqdm = count = 0;
-        WHILE0 {
-            ai = AI(npy_DTYPE0);
+        WHILE099 {
+            ai = AI99(npy_DTYPE0);
             if (ai == ai) {
                 count += 1;
                 delta = ai - amean;
                 amean += delta / count;
                 assqdm += delta * (ai - amean);
             }
-            YI(npy_DTYPE0) = BN_NAN;
+            YI99(npy_DTYPE0) = BN_NAN;
         }
-        WHILE1 {
-            ai = AI(npy_DTYPE0);
+        WHILE199 {
+            ai = AI99(npy_DTYPE0);
             if (ai == ai) {
                 count += 1;
                 delta = ai - amean;
@@ -324,13 +338,13 @@ MOVE(NAME, DTYPE0)
             else {
                 yi = BN_NAN;
             }
-            YI(npy_DTYPE0) = yi;
+            YI99(npy_DTYPE0) = yi;
         }
         count_inv = 1.0 / count;
         ddof_inv = 1.0 / (count - ddof);
-        WHILE2 {
-            ai = AI(npy_DTYPE0);
-            aold = AOLD(npy_DTYPE0);
+        WHILE299 {
+            ai = AI99(npy_DTYPE0);
+            aold = AOLD99(npy_DTYPE0);
             if (ai == ai) {
                 if (aold == aold) {
                     delta = ai - aold;
@@ -373,41 +387,41 @@ MOVE(NAME, DTYPE0)
             else {
                 yi = BN_NAN;
             }
-            YI(npy_DTYPE0) = yi;
+            YI99(npy_DTYPE0) = yi;
         }
-        NEXT
+        NEXT99
     }
-    RETURN
+    RETURN99
 }
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(NAME, DTYPE0)
 {
-    INIT(NPY_DTYPE1)
+    INIT_Y_AND_ITER(NPY_DTYPE1)
     int winddof = window - ddof;
     npy_DTYPE1 delta, amean, assqdm, yi, ai, aold;
     npy_DTYPE1 window_inv = 1.0 / window, winddof_inv = 1.0 / winddof;
-    WHILE {
+    WHILE99 {
         amean = assqdm = 0;
-        WHILE0 {
-            ai = AI(npy_DTYPE0);
+        WHILE099 {
+            ai = AI99(npy_DTYPE0);
             delta = ai - amean;
-            amean += delta / (_i + 1);
+            amean += delta / (INDEX99 + 1);
             assqdm += delta * (ai - amean);
-            YI(npy_DTYPE1) = BN_NAN;
+            YI99(npy_DTYPE1) = BN_NAN;
         }
-        WHILE1 {
-            ai = AI(npy_DTYPE0);
+        WHILE199 {
+            ai = AI99(npy_DTYPE0);
             delta = ai - amean;
-            amean += delta / (_i + 1);
+            amean += delta / (INDEX99 + 1);
             assqdm += delta * (ai - amean);
-            yi = FUNC(assqdm / (_i + 1 - ddof));
-            YI(npy_DTYPE1) = yi;
+            yi = FUNC(assqdm / (INDEX99 + 1 - ddof));
+            YI99(npy_DTYPE1) = yi;
         }
-        WHILE2 {
-            ai = AI(npy_DTYPE0);
-            aold = AOLD(npy_DTYPE0);
+        WHILE299 {
+            ai = AI99(npy_DTYPE0);
+            aold = AOLD99(npy_DTYPE0);
             delta = ai - aold;
             aold -= amean;
             amean += delta * window_inv;
@@ -416,11 +430,11 @@ MOVE(NAME, DTYPE0)
             if (assqdm < 0) {
                 assqdm = 0;
             }
-            YI(npy_DTYPE1) = FUNC(assqdm * winddof_inv);
+            YI99(npy_DTYPE1) = FUNC(assqdm * winddof_inv);
         }
-        NEXT
+        NEXT99
     }
-    RETURN
+    RETURN99
 }
 /* dtype end */
 
@@ -437,12 +451,12 @@ MOVE_MAIN(NAME, 1)
              'BIG_FLOAT':   ['BN_INFINITY', '-BN_INFINITY']} */
 
 #define MACRO_FLOAT(dtype, yi, code) \
-    ai = AI(dtype); \
+    ai = AI99(dtype); \
     if (ai == ai) count++; else ai = BIG_FLOAT; \
     code; \
     if (ai COMPARE extreme_pair->value) { \
         extreme_pair->value = ai; \
-        extreme_pair->death = _i + window; \
+        extreme_pair->death = INDEX99 + window; \
         last = extreme_pair; \
     } \
     else { \
@@ -453,17 +467,17 @@ MOVE_MAIN(NAME, 1)
         last++; \
         if (last == end) last = ring; \
         last->value = ai; \
-        last->death = _i + window; \
+        last->death = INDEX99 + window; \
     } \
-    yi_tmp = yi; /* yi might contain _i and YI contains _i++ */ \
-    YI(dtype) = yi_tmp;
+    yi_tmp = yi; /* yi might contain i and YI contains i++ */ \
+    YI99(dtype) = yi_tmp;
 
 #define MACRO_INT(a_dtype, y_dtype, yi, code) \
-    ai = AI(a_dtype); \
+    ai = AI99(a_dtype); \
     code; \
     if (ai COMPARE extreme_pair->value) { \
         extreme_pair->value = ai; \
-        extreme_pair->death = _i + window; \
+        extreme_pair->death = INDEX99 + window; \
         last = extreme_pair; \
     } \
     else { \
@@ -474,10 +488,10 @@ MOVE_MAIN(NAME, 1)
         last++; \
         if (last == end) last = ring; \
         last->value = ai; \
-        last->death = _i + window; \
+        last->death = INDEX99 + window; \
     } \
     yi_tmp = yi; \
-    YI(y_dtype) = yi_tmp;
+    YI99(y_dtype) = yi_tmp;
 /* repeat end */
 
 /* repeat = {
@@ -494,12 +508,12 @@ MOVE_MAIN(NAME, 1)
    'BIG_INT': ['NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0',
                'NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0'],
    'VALUE': ['extreme_pair->value',           'extreme_pair->value',
-             '_i-extreme_pair->death+window', '_i-extreme_pair->death+window']
+             'INDEX99-extreme_pair->death+window', 'INDEX99-extreme_pair->death+window']
    } */
 /* dtype = [['float64'], ['float32']] */
 MOVE(NAME, DTYPE0)
 {
-    INIT(NPY_DTYPE0)
+    INIT_Y_AND_ITER(NPY_DTYPE0)
     npy_DTYPE0 ai, aold, yi_tmp;
     Py_ssize_t count;
     pairs *ring;
@@ -507,45 +521,45 @@ MOVE(NAME, DTYPE0)
     pairs *end;
     pairs *last;
     ring = (pairs *)malloc(window * sizeof(pairs));
-    WHILE {
+    WHILE99 {
         count = 0;
         end = ring + window;
         last = ring;
         extreme_pair = ring;
-        ai = A0(npy_DTYPE0);
+        ai = A099(npy_DTYPE0);
         extreme_pair->value = ai == ai ? ai : BIG_FLOAT;
         extreme_pair->death = window;
-        WHILE0 {
+        WHILE099 {
             MACRO_FLOAT(npy_DTYPE0,
                         BN_NAN,
                         NULL)
         }
-        WHILE1 {
+        WHILE199 {
             MACRO_FLOAT(npy_DTYPE0,
                         count >= min_count ? VALUE : BN_NAN,
                         NULL)
         }
-        WHILE2 {
+        WHILE299 {
             MACRO_FLOAT(npy_DTYPE0,
                         count >= min_count ? VALUE : BN_NAN,
-                        aold = AOLD(npy_DTYPE0);
+                        aold = AOLD99(npy_DTYPE0);
                         if (aold == aold) count--;
-                        if (extreme_pair->death == _i) {
+                        if (extreme_pair->death == INDEX99) {
                             extreme_pair++;
                             if (extreme_pair >= end) extreme_pair = ring;
                         })
         }
-        NEXT
+        NEXT99
     }
     free(ring);
-    RETURN
+    RETURN99
 }
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(NAME, DTYPE0)
 {
-    INIT(NPY_DTYPE1)
+    INIT_Y_AND_ITER(NPY_DTYPE1)
     npy_DTYPE0 ai;
     npy_DTYPE1 yi_tmp;
     pairs *ring;
@@ -553,38 +567,38 @@ MOVE(NAME, DTYPE0)
     pairs *end;
     pairs *last;
     ring = (pairs *)malloc(window * sizeof(pairs));
-    WHILE {
+    WHILE99 {
         end = ring + window;
         last = ring;
         extreme_pair = ring;
-        ai = A0(npy_DTYPE0);
+        ai = A099(npy_DTYPE0);
         extreme_pair->value = ai;
         extreme_pair->death = window;
-        WHILE0 {
+        WHILE099 {
             MACRO_INT(npy_DTYPE0,
                       npy_DTYPE1,
                       BN_NAN,
                       NULL)
         }
-        WHILE1 {
+        WHILE199 {
             MACRO_INT(npy_DTYPE0,
                       npy_DTYPE1,
                       VALUE,
                       NULL)
         }
-        WHILE2 {
+        WHILE299 {
             MACRO_INT(npy_DTYPE0,
                       npy_DTYPE1,
                       VALUE,
-                      if (extreme_pair->death == _i) {
+                      if (extreme_pair->death == INDEX99) {
                           extreme_pair++;
                           if (extreme_pair >= end) extreme_pair = ring;
                       })
         }
-        NEXT
+        NEXT99
     }
     free(ring);
-    RETURN
+    RETURN99
 }
 /* dtype end */
 
@@ -597,30 +611,30 @@ MOVE_MAIN(NAME, 0)
 MOVE(move_median, DTYPE0)
 {
     if (window == 1) return PyArray_Copy(a);
-    INIT(NPY_DTYPE0)
+    INIT_Y_AND_ITER(NPY_DTYPE0)
     npy_DTYPE0 ai;
     mm_handle *mm = mm_new_nan(window, min_count);
     if (mm == NULL) {
         MEMORY_ERR("Could not allocate memory for move_median");
     }
-    WHILE {
-        WHILE0 {
-            ai = AI(npy_DTYPE0);
-            YI(npy_DTYPE0) = mm_update_init_nan(mm, ai);
+    WHILE99 {
+        WHILE099 {
+            ai = AI99(npy_DTYPE0);
+            YI99(npy_DTYPE0) = mm_update_init_nan(mm, ai);
         }
-        WHILE1 {
-            ai = AI(npy_DTYPE0);
-            YI(npy_DTYPE0) = mm_update_init_nan(mm, ai);
+        WHILE199 {
+            ai = AI99(npy_DTYPE0);
+            YI99(npy_DTYPE0) = mm_update_init_nan(mm, ai);
         }
-        WHILE2 {
-            ai = AI(npy_DTYPE0);
-            YI(npy_DTYPE0) = mm_update_nan(mm, ai);
+        WHILE299 {
+            ai = AI99(npy_DTYPE0);
+            YI99(npy_DTYPE0) = mm_update_nan(mm, ai);
         }
         mm_reset(mm);
-        NEXT
+        NEXT99
     }
     mm_free(mm);
-    RETURN
+    RETURN99
 }
 /* dtype end */
 
@@ -632,30 +646,30 @@ MOVE(move_median, DTYPE0)
                                   PyArray_DescrFromType(NPY_DTYPE1),
                                   PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS));
     }
-    INIT(NPY_DTYPE1)
+    INIT_Y_AND_ITER(NPY_DTYPE1)
     npy_DTYPE0 ai;
     mm_handle *mm = mm_new(window, min_count);
     if (mm == NULL) {
         MEMORY_ERR("Could not allocate memory for move_median");
     }
-    WHILE {
-        WHILE0 {
-            ai = AI(npy_DTYPE0);
-            YI(npy_DTYPE1) = mm_update_init(mm, ai);
+    WHILE99 {
+        WHILE099 {
+            ai = AI99(npy_DTYPE0);
+            YI99(npy_DTYPE1) = mm_update_init(mm, ai);
         }
-        WHILE1 {
-            ai = AI(npy_DTYPE0);
-            YI(npy_DTYPE1) = mm_update_init(mm, ai);
+        WHILE199 {
+            ai = AI99(npy_DTYPE0);
+            YI99(npy_DTYPE1) = mm_update_init(mm, ai);
         }
-        WHILE2 {
-            ai = AI(npy_DTYPE0);
-            YI(npy_DTYPE1) = mm_update(mm, ai);
+        WHILE299 {
+            ai = AI99(npy_DTYPE0);
+            YI99(npy_DTYPE1) = mm_update(mm, ai);
         }
         mm_reset(mm);
-        NEXT
+        NEXT99
     }
     mm_free(mm);
-    RETURN
+    RETURN99
 }
 /* dtype end */
 
@@ -669,14 +683,14 @@ MOVE_MAIN(move_median, 0)
     Py_ssize_t j; \
     dtype0 ai, aj; \
     dtype1 g, e, n, r; \
-    ai = AI(dtype0); \
+    ai = AI99(dtype0); \
     if (ai == ai) { \
         g = 0; \
         e = 1; \
         n = 1; \
         r = 0; \
-        for (j = limit; j < _i; j++) { \
-            aj = AX(dtype0, j); \
+        for (j = limit; j < INDEX99; j++) { \
+            aj = AX99(dtype0, j); \
             if (aj == aj) { \
                 n++; \
                 if (ai > aj) g += 2; \
@@ -702,66 +716,66 @@ MOVE_MAIN(move_median, 0)
 /* dtype = [['float64', 'float64'], ['float32', 'float32']] */
 MOVE(move_rank, DTYPE0)
 {
-    INIT(NPY_DTYPE1)
-    WHILE {
-        WHILE0 {
-            YI(npy_DTYPE1) = BN_NAN;
+    INIT_Y_AND_ITER(NPY_DTYPE1)
+    WHILE99 {
+        WHILE099 {
+            YI99(npy_DTYPE1) = BN_NAN;
         }
-        WHILE1 {
+        WHILE199 {
             MOVE_RANK(npy_DTYPE0, npy_DTYPE1, 0)
-            YI(npy_DTYPE1) = r;
+            YI99(npy_DTYPE1) = r;
         }
-        WHILE2 {
-            MOVE_RANK(npy_DTYPE0, npy_DTYPE1, _i - window + 1)
-            YI(npy_DTYPE1) = r;
+        WHILE299 {
+            MOVE_RANK(npy_DTYPE0, npy_DTYPE1, INDEX99 - window + 1)
+            YI99(npy_DTYPE1) = r;
         }
-        NEXT
+        NEXT99
     }
-    RETURN
+    RETURN99
 }
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(move_rank, DTYPE0)
 {
-    INIT(NPY_DTYPE1)
+    INIT_Y_AND_ITER(NPY_DTYPE1)
     Py_ssize_t j;
     npy_DTYPE0 ai, aj;
     npy_DTYPE1 g, e, r, window_inv = 0.5 * 1.0 / (window - 1);
-    WHILE {
-        WHILE0 {
-            YI(npy_DTYPE1) = BN_NAN;
+    WHILE99 {
+        WHILE099 {
+            YI99(npy_DTYPE1) = BN_NAN;
         }
-        WHILE1 {
-            ai = AI(npy_DTYPE0);
+        WHILE199 {
+            ai = AI99(npy_DTYPE0);
             g = 0;
             e = 1;
             r = 0;
-            for (j = 0; j < _i; j++) {
-                aj = AX(npy_DTYPE0, j);
+            for (j = 0; j < INDEX99; j++) {
+                aj = AX99(npy_DTYPE0, j);
                 if (ai > aj) g += 2;
                 else if (ai == aj) e++;
             }
-            if (_i < min_count - 1) {
+            if (INDEX99 < min_count - 1) {
                 r = BN_NAN;
             }
-            else if (_i == 0) {
+            else if (INDEX99 == 0) {
                 r = 0.0;
             }
             else {
                 r = 0.5 * (g + e - 1.0);
-                r = r / _i;
+                r = r / INDEX99;
                 r = 2.0 * (r - 0.5);
             }
-            YI(npy_DTYPE1) = r;
+            YI99(npy_DTYPE1) = r;
         }
-        WHILE2 {
-            ai = AI(npy_DTYPE0);
+        WHILE299 {
+            ai = AI99(npy_DTYPE0);
             g = 0;
             e = 1;
             r = 0;
-            for (j = _i - window + 1; j < _i; j++) {
-                aj = AX(npy_DTYPE0, j);
+            for (j = INDEX99 - window + 1; j < INDEX99; j++) {
+                aj = AX99(npy_DTYPE0, j);
                 if (aj == aj) {
                     if (ai > aj) g += 2;
                     else if (ai == aj) e++;
@@ -774,11 +788,11 @@ MOVE(move_rank, DTYPE0)
                 r = window_inv * (g + e - 1.0);
                 r = 2.0 * (r - 0.5);
             }
-            YI(npy_DTYPE1) = r;
+            YI99(npy_DTYPE1) = r;
         }
-        NEXT
+        NEXT99
     }
-    RETURN
+    RETURN99
 }
 /* dtype end */
 

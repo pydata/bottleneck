@@ -29,7 +29,7 @@ init_iter_one(iter *it, PyArrayObject *a, int axis)
     it->axis = axis;
     it->its = 0;
     it->nits = 1;
-    it->p = PyArray_DATA(a);
+    it->p = PyArray_BYTES(a);
 
     if (ndim == 0) {
         it->ndim_m2 = -1;
@@ -114,7 +114,7 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel)
         }
     }
 
-    it->p = PyArray_DATA(a);
+    it->p = PyArray_BYTES(a);
 }
 
 #define NEXT \
@@ -160,6 +160,78 @@ print_iter(iter *it)
     printf("-------------------------\n");
 }
 
+/* two array iterator ---------------------------------------------------- */
+
+struct _iter2 {
+    int        ndim_m2;
+    int        axis;
+    Py_ssize_t length;
+    Py_ssize_t astride;
+    Py_ssize_t ystride;
+    npy_intp   i;
+    npy_intp   its;
+    npy_intp   nits;
+    npy_intp   indices[NPY_MAXDIMS];
+    npy_intp   astrides[NPY_MAXDIMS];
+    npy_intp   ystrides[NPY_MAXDIMS];
+    npy_intp   shape[NPY_MAXDIMS];
+    char       *pa;
+    char       *py;
+};
+typedef struct _iter2 iter2;
+
+static BN_INLINE void
+init_iter2(iter2 *it, PyArrayObject *a, PyObject *y, int axis)
+{
+    int i, j = 0;
+    const int ndim = PyArray_NDIM(a);
+    const npy_intp *shape = PyArray_SHAPE(a);
+    const npy_intp *astrides = PyArray_STRIDES(a);
+    const npy_intp *ystrides = PyArray_STRIDES((PyArrayObject *)y);
+
+    /* to avoid compiler warning of uninitialized variables */
+    it->length = 0;
+    it->astride = 0;
+    it->ystride = 0;
+
+    it->ndim_m2 = ndim - 2;
+    it->axis = axis;
+    it->its = 0;
+    it->nits = 1;
+    it->pa = PyArray_BYTES(a);
+    it->py = PyArray_BYTES((PyArrayObject *)y);
+
+    for (i = 0; i < ndim; i++) {
+        if (i == axis) {
+            it->astride = astrides[i];
+            it->ystride = ystrides[i];
+            it->length = shape[i];
+        }
+        else {
+            it->indices[j] = 0;
+            it->astrides[j] = astrides[i];
+            it->ystrides[j] = ystrides[i];
+            it->shape[j] = shape[i];
+            it->nits *= shape[i];
+            j++;
+        }
+    }
+}
+
+#define NEXT99 \
+    for (it.i = it.ndim_m2; it.i > -1; it.i--) { \
+        if (it.indices[it.i] < it.shape[it.i] - 1) { \
+            it.pa += it.astrides[it.i]; \
+            it.py += it.ystrides[it.i]; \
+            it.indices[it.i]++; \
+            break; \
+        } \
+        it.pa -= it.indices[it.i] * it.astrides[it.i]; \
+        it.py -= it.indices[it.i] * it.ystrides[it.i]; \
+        it.indices[it.i] = 0; \
+    } \
+    it.its++;
+
 /* macros used with iterators -------------------------------------------- */
 
 #define  NDIM           it->ndim_m2 + 2
@@ -186,3 +258,15 @@ print_iter(iter *it)
     int i; \
     Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y); \
     for (i = 0; i < size; i++) YI = value;
+
+#define  WHILE99   while (it.its < it.nits)
+#define  WHILE099  it.i = 0; while (it.i < min_count - 1)
+#define  WHILE199  while (it.i < window)
+#define  WHILE299  while (it.i < it.length)
+
+#define  A099(dt)    *(dt *)(it.pa)
+#define  AI99(dt)    *(dt *)(it.pa + it.i * it.astride)
+#define  AOLD99(dt)  *(dt *)(it.pa + (it.i - window) * it.astride)
+#define  AX99(dt, x) *(dt *)(it.pa + x * it.astride)
+#define  YI99(dt)    *(dt *)(it.py + it.i++ * it.ystride)
+#define  INDEX99     it.i
