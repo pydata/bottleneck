@@ -11,14 +11,14 @@ struct _iter {
     int        ndim_m2;
     int        axis;
     Py_ssize_t length;
-    Py_ssize_t stride;
+    Py_ssize_t astride;
     npy_intp   i;
     npy_intp   its;
     npy_intp   nits;
     npy_intp   indices[NPY_MAXDIMS];
-    npy_intp   strides[NPY_MAXDIMS];
+    npy_intp   astrides[NPY_MAXDIMS];
     npy_intp   shape[NPY_MAXDIMS];
-    char       *p;
+    char       *pa;
 };
 typedef struct _iter iter;
 
@@ -34,22 +34,22 @@ init_iter_one(iter *it, PyArrayObject *a, int axis)
     it->axis = axis;
     it->its = 0;
     it->nits = 1;
-    it->p = PyArray_BYTES(a);
+    it->pa = PyArray_BYTES(a);
 
     if (ndim == 0) {
         it->ndim_m2 = -1;
         it->length = 1;
-        it->stride = 0;
+        it->astride = 0;
     }
     else {
         for (i = 0; i < ndim; i++) {
             if (i == axis) {
-                it->stride = strides[i];
+                it->astride = strides[i];
                 it->length = shape[i];
             }
             else {
                 it->indices[j] = 0;
-                it->strides[j] = strides[i];
+                it->astrides[j] = strides[i];
                 it->shape[j] = shape[i];
                 it->nits *= shape[i];
                 j++;
@@ -73,37 +73,37 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel)
     if (ndim == 1) {
         it->ndim_m2 = -1;
         it->length = shape[0];
-        it->stride = strides[0];
+        it->astride = strides[0];
     }
     else if (ndim == 0) {
         it->ndim_m2 = -1;
         it->length = 1;
-        it->stride = 0;
+        it->astride = 0;
     }
     else if (C_CONTIGUOUS(a)) {
         it->ndim_m2 = -1;
         it->axis = ndim - 1;
         it->length = PyArray_SIZE(a);
-        it->stride = strides[ndim - 1];
+        it->astride = strides[ndim - 1];
     }
     else if (F_CONTIGUOUS(a)) {
         it->ndim_m2 = -1;
         it->length = PyArray_SIZE(a);
-        it->stride = strides[0];
+        it->astride = strides[0];
     }
     else if (ravel) {
         it->ndim_m2 = -1;
         a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
         Py_DECREF(a);
         it->length = PyArray_DIM(a, 0);
-        it->stride = PyArray_STRIDE(a, 0);
+        it->astride = PyArray_STRIDE(a, 0);
     }
     else {
         it->ndim_m2 = ndim - 2;
-        it->stride = strides[0];
+        it->astride = strides[0];
         for (i = 1; i < ndim; i++) {
-            if (strides[i] < it->stride) {
-                it->stride = strides[i];
+            if (strides[i] < it->astride) {
+                it->astride = strides[i];
                 it->axis = i;
             }
         }
@@ -111,7 +111,7 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel)
         for (i = 0; i < ndim; i++) {
             if (i != it->axis) {
                 it->indices[j] = 0;
-                it->strides[j] = strides[i];
+                it->astrides[j] = strides[i];
                 it->shape[j] = shape[i];
                 it->nits *= shape[i];
                 j++;
@@ -119,17 +119,17 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel)
         }
     }
 
-    it->p = PyArray_BYTES(a);
+    it->pa = PyArray_BYTES(a);
 }
 
 #define NEXT \
     for (it.i = it.ndim_m2; it.i > -1; it.i--) { \
         if (it.indices[it.i] < it.shape[it.i] - 1) { \
-            it.p += it.strides[it.i]; \
+            it.pa += it.astrides[it.i]; \
             it.indices[it.i]++; \
             break; \
         } \
-        it.p -= it.indices[it.i] * it.strides[it.i]; \
+        it.pa -= it.indices[it.i] * it.astrides[it.i]; \
         it.indices[it.i] = 0; \
     } \
     it.its++;
@@ -192,7 +192,7 @@ init_iter2(iter2 *it, PyArrayObject *a, PyObject *y, int axis)
     }
 }
 
-#define NEXT99 \
+#define NEXT2 \
     for (it.i = it.ndim_m2; it.i > -1; it.i--) { \
         if (it.indices[it.i] < it.shape[it.i] - 1) { \
             it.pa += it.astrides[it.i]; \
@@ -215,35 +215,27 @@ init_iter2(iter2 *it, PyArrayObject *a, PyObject *y, int axis)
 #define  INDEX          it.i
 
 #define  WHILE          while (it.its < it.nits)
+#define  WHILE0         it.i = 0; while (it.i < min_count - 1)
+#define  WHILE1         while (it.i < window)
+#define  WHILE2         while (it.i < it.length)
+
 #define  FOR            for (it.i = 0; it.i < it.length; it.i++)
 #define  FOR_REVERSE    for (it.i = it.length - 1; it.i > -1; it.i--)
+
 #define  RESET          it.its = 0;
 
-#define  AI(dtype)      *(dtype *)(it.p + it.i * it.stride)
-#define  AX(dtype, x)   *(dtype *)(it.p + x * it.stride)
+#define  A0(dtype)      *(dtype *)(it.pa)
+#define  AI(dtype)      *(dtype *)(it.pa + it.i * it.astride)
+#define  AX(dtype, x)   *(dtype *)(it.pa + x * it.astride)
+#define  AOLD(dtype)    *(dtype *)(it.pa + (it.i - window) * it.astride)
 
-#define Y_INIT(dt0, dt1) \
-    PyObject *y = PyArray_EMPTY(it.ndim_m2 + 1, it.shape, dt0, 0); \
-    dt1 *py = (dt1 *)PyArray_DATA((PyArrayObject *)y);
-
-#define YI *py++
+#define  YPP            *py++
+#define  YI(dtype)      *(dtype *)(it.py + it.i++ * it.ystride)
 
 #define FILL_Y(value) \
     int i; \
     Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y); \
-    for (i = 0; i < size; i++) YI = value;
-
-#define  WHILE99   while (it.its < it.nits)
-#define  WHILE099  it.i = 0; while (it.i < min_count - 1)
-#define  WHILE199  while (it.i < window)
-#define  WHILE299  while (it.i < it.length)
-
-#define  A099(dt)    *(dt *)(it.pa)
-#define  AI99(dt)    *(dt *)(it.pa + it.i * it.astride)
-#define  AOLD99(dt)  *(dt *)(it.pa + (it.i - window) * it.astride)
-#define  AX99(dt, x) *(dt *)(it.pa + x * it.astride)
-#define  YI99(dt)    *(dt *)(it.py + it.i++ * it.ystride)
-#define  INDEX99     it.i
+    for (i = 0; i < size; i++) YPP = value;
 
 /* debug stuff ----------------------------------------------------------- */
 
@@ -265,14 +257,14 @@ print_iter(iter *it)
     printf("ndim_m2  %d\n", it->ndim_m2);
     printf("axis     %d\n", it->axis);
     printf("length   %zd\n", it->length);
-    printf("stride   %zd\n", it->stride);
+    printf("stride   %zd\n", it->astride);
     printf("i        %zd\n", it->i);
     printf("its      %zd\n", it->its);
     printf("nits     %zd\n", it->nits);
     printf("indices  ");
     print_array(it->indices, length);
     printf("strides  ");
-    print_array(it->strides, length);
+    print_array(it->astrides, length);
     printf("shape    ");
     print_array(it->shape, length);
     printf("-------------------------\n");

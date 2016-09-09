@@ -1,6 +1,8 @@
 #include "bottleneck.h"
 #include "iterators.h"
 
+/* init macros ----------------------------------------------------------- */
+
 #define INIT_ALL(dtype, ravel) \
     iter it; \
     init_iter_all(&it, a, ravel);
@@ -99,7 +101,7 @@ REDUCE_ONE(nansum, DTYPE0)
                 ai = AI(npy_DTYPE0);
                 if (ai == ai) asum += ai;
             }
-            YI = asum;
+            YPP = asum;
             NEXT
         }
     }
@@ -134,7 +136,7 @@ REDUCE_ONE(nansum, DTYPE0)
         WHILE {
             asum = 0;
             FOR asum += AI(npy_DTYPE0);
-            YI = asum;
+            YPP = asum;
             NEXT
         }
     }
@@ -197,7 +199,7 @@ REDUCE_ONE(nanmean, DTYPE0)
             } else {
                 asum = BN_NAN;
             }
-            YI = asum;
+            YPP = asum;
             NEXT
         }
     }
@@ -243,7 +245,7 @@ REDUCE_ONE(nanmean, DTYPE0)
             } else {
                 asum = BN_NAN;
             }
-            YI = asum;
+            YPP = asum;
             NEXT
         }
     }
@@ -333,7 +335,7 @@ REDUCE_ONE(NAME, DTYPE0)
             else {
                 asum = BN_NAN;
             }
-            YI = asum;
+            YPP = asum;
             NEXT
         }
     }
@@ -401,7 +403,7 @@ REDUCE_ONE(NAME, DTYPE0)
             else {
                 asum = BN_NAN;
             }
-            YI = asum;
+            YPP = asum;
             NEXT
         }
     }
@@ -469,7 +471,7 @@ REDUCE_ONE(NAME, DTYPE0)
             }
         }
         if (allnan) extreme = BN_NAN;
-        YI = extreme;
+        YPP = extreme;
         NEXT
     }
     BN_END_ALLOW_THREADS
@@ -515,7 +517,7 @@ REDUCE_ONE(NAME, DTYPE0)
             ai = AI(npy_DTYPE0);
             if (ai COMPARE extreme) extreme = ai;
         }
-        YI = extreme;
+        YPP = extreme;
         NEXT
     }
     BN_END_ALLOW_THREADS
@@ -587,7 +589,7 @@ REDUCE_ONE(NAME, DTYPE0)
             }
         }
         if (allnan == 0) {
-            YI = idx;
+            YPP = idx;
         } else {
             err_code = 1;
         }
@@ -645,7 +647,7 @@ REDUCE_ONE(NAME, DTYPE0)
                 idx = INDEX;
             }
         }
-        YI = idx;
+        YPP = idx;
         NEXT
     }
     BN_END_ALLOW_THREADS
@@ -691,7 +693,7 @@ REDUCE_ONE(ss, DTYPE0)
                 ai = AI(npy_DTYPE0);
                 asum += ai * ai;
             }
-            YI = asum;
+            YPP = asum;
             NEXT
         }
     }
@@ -732,7 +734,7 @@ REDUCE_ONE(ss, DTYPE0)
                 ai = AI(npy_DTYPE0);
                 asum += ai * ai;
             }
-            YI = asum;
+            YPP = asum;
             NEXT
         }
     }
@@ -857,7 +859,7 @@ REDUCE_ONE(NAME, DTYPE0)
         WHILE {
             FUNC(npy_DTYPE0)
             done:
-            YI = med;
+            YPP = med;
             NEXT
         }
         BUFFER_DELETE
@@ -900,7 +902,7 @@ REDUCE_ONE(median, DTYPE0)
         BUFFER_NEW(npy_DTYPE0, LENGTH)
         WHILE {
             MEDIAN_INT(npy_DTYPE0)
-            YI = med;
+            YPP = med;
             NEXT
         }
         BUFFER_DELETE
@@ -972,7 +974,7 @@ REDUCE_ONE(anynan, DTYPE0)
                     break;
                 }
             }
-            YI = f;
+            YPP = f;
             NEXT
         }
     }
@@ -1043,7 +1045,7 @@ REDUCE_ONE(allnan, DTYPE0)
                     break;
                 }
             }
-            YI = f;
+            YPP = f;
             NEXT
         }
     }
