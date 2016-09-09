@@ -1,6 +1,11 @@
 #include <numpy/arrayobject.h>
 
-/* one array iterators --------------------------------------------------- */
+/*
+   Bottleneck iterators are based on ideas from NumPy's PyArray_IterAllButAxis
+   and PyArray_ITER_NEXT.
+*/
+
+/* one input array ------------------------------------------------------- */
 
 struct _iter {
     int        ndim_m2;
@@ -129,38 +134,7 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel)
     } \
     it->its++;
 
-void
-print_array(npy_intp *array, npy_intp length)
-{
-    int i;
-    for (i = 0; i < length; i++) {
-        printf("%zd ", array[i]);
-    }
-    printf("\n");
-}
-
-void
-print_iter(iter *it)
-{
-    npy_intp length = it->ndim_m2 + 1;
-    printf("-------------------------\n");
-    printf("ndim_m2  %d\n", it->ndim_m2);
-    printf("axis     %d\n", it->axis);
-    printf("length   %zd\n", it->length);
-    printf("stride   %zd\n", it->stride);
-    printf("i        %zd\n", it->i);
-    printf("its      %zd\n", it->its);
-    printf("nits     %zd\n", it->nits);
-    printf("indices  ");
-    print_array(it->indices, length);
-    printf("strides  ");
-    print_array(it->strides, length);
-    printf("shape    ");
-    print_array(it->shape, length);
-    printf("-------------------------\n");
-}
-
-/* two array iterator ---------------------------------------------------- */
+/* two input arrays ------------------------------------------------------ */
 
 struct _iter2 {
     int        ndim_m2;
@@ -270,3 +244,36 @@ init_iter2(iter2 *it, PyArrayObject *a, PyObject *y, int axis)
 #define  AX99(dt, x) *(dt *)(it.pa + x * it.astride)
 #define  YI99(dt)    *(dt *)(it.py + it.i++ * it.ystride)
 #define  INDEX99     it.i
+
+/* debug stuff ----------------------------------------------------------- */
+
+void
+print_array(npy_intp *array, npy_intp length)
+{
+    int i;
+    for (i = 0; i < length; i++) {
+        printf("%zd ", array[i]);
+    }
+    printf("\n");
+}
+
+void
+print_iter(iter *it)
+{
+    npy_intp length = it->ndim_m2 + 1;
+    printf("-------------------------\n");
+    printf("ndim_m2  %d\n", it->ndim_m2);
+    printf("axis     %d\n", it->axis);
+    printf("length   %zd\n", it->length);
+    printf("stride   %zd\n", it->stride);
+    printf("i        %zd\n", it->i);
+    printf("its      %zd\n", it->its);
+    printf("nits     %zd\n", it->nits);
+    printf("indices  ");
+    print_array(it->indices, length);
+    printf("strides  ");
+    print_array(it->strides, length);
+    printf("shape    ");
+    print_array(it->shape, length);
+    printf("-------------------------\n");
+}
