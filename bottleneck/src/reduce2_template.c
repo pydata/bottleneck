@@ -945,11 +945,12 @@ REDUCE_ALL(anynan, DTYPE0)
             ai = AI(npy_DTYPE0);
             if (ai != ai) {
                 f = 1;
-                break;
+                goto done;
             }
         }
         NEXT
     }
+    done:
     BN_END_ALLOW_THREADS
     if (f) Py_RETURN_TRUE;
     Py_RETURN_FALSE;
@@ -1016,11 +1017,12 @@ REDUCE_ALL(allnan, DTYPE0)
             ai = AI(npy_DTYPE0);
             if (ai == ai) {
                 f = 1;
-                break;
+                goto done;
             }
         }
         NEXT
     }
+    done:
     BN_END_ALLOW_THREADS
     if (f) Py_RETURN_FALSE;
     Py_RETURN_TRUE;
