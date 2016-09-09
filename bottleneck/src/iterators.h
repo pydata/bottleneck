@@ -123,16 +123,16 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel)
 }
 
 #define NEXT \
-    for (it->i = it->ndim_m2; it->i > -1; it->i--) { \
-        if (it->indices[it->i] < it->shape[it->i] - 1) { \
-            it->p += it->strides[it->i]; \
-            it->indices[it->i]++; \
+    for (it.i = it.ndim_m2; it.i > -1; it.i--) { \
+        if (it.indices[it.i] < it.shape[it.i] - 1) { \
+            it.p += it.strides[it.i]; \
+            it.indices[it.i]++; \
             break; \
         } \
-        it->p -= it->indices[it->i] * it->strides[it->i]; \
-        it->indices[it->i] = 0; \
+        it.p -= it.indices[it.i] * it.strides[it.i]; \
+        it.indices[it.i] = 0; \
     } \
-    it->its++;
+    it.its++;
 
 /* two input arrays ------------------------------------------------------ */
 
@@ -208,22 +208,22 @@ init_iter2(iter2 *it, PyArrayObject *a, PyObject *y, int axis)
 
 /* macros used with iterators -------------------------------------------- */
 
-#define  NDIM           it->ndim_m2 + 2
-#define  SHAPE          it->shape
-#define  SIZE           it->nits * it->length
-#define  LENGTH         it->length
-#define  INDEX          it->i
+#define  NDIM           it.ndim_m2 + 2
+#define  SHAPE          it.shape
+#define  SIZE           it.nits * it.length
+#define  LENGTH         it.length
+#define  INDEX          it.i
 
-#define  WHILE          while (it->its < it->nits)
-#define  FOR            for (it->i = 0; it->i < it->length; it->i++)
-#define  FOR_REVERSE    for (it->i = it->length - 1; it->i > -1; it->i--)
-#define  RESET          it->its = 0;
+#define  WHILE          while (it.its < it.nits)
+#define  FOR            for (it.i = 0; it.i < it.length; it.i++)
+#define  FOR_REVERSE    for (it.i = it.length - 1; it.i > -1; it.i--)
+#define  RESET          it.its = 0;
 
-#define  AI(dtype)      *(dtype *)(it->p + it->i * it->stride)
-#define  AX(dtype, x)   *(dtype *)(it->p + x * it->stride)
+#define  AI(dtype)      *(dtype *)(it.p + it.i * it.stride)
+#define  AX(dtype, x)   *(dtype *)(it.p + x * it.stride)
 
 #define Y_INIT(dt0, dt1) \
-    PyObject *y = PyArray_EMPTY(it->ndim_m2 + 1, it->shape, dt0, 0); \
+    PyObject *y = PyArray_EMPTY(it.ndim_m2 + 1, it.shape, dt0, 0); \
     dt1 *py = (dt1 *)PyArray_DATA((PyArrayObject *)y);
 
 #define YI *py++

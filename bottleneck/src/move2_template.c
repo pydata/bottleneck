@@ -14,27 +14,17 @@
    Released under the Bottleneck license
 */
 
-/* iterator -------------------------------------------------------------- */
-
- /*
- * INIT and NEXT are loosely based on NumPy's PyArray_IterAllButAxis and
- * PyArray_ITER_NEXT.
- */
-
-#define Y_INIT99(dtype) \
-    PyObject *y = PyArray_EMPTY(ndim, shape, dtype, 0);
-
-#define RETURN99 \
-    BN_END_ALLOW_THREADS \
-    return y;
+/* macros ---------------------------------------------------------------- */
 
 #define INIT(dtype) \
-    Y_INIT99(dtype) \
+    PyObject *y = PyArray_EMPTY(ndim, shape, dtype, 0); \
+    BN_BEGIN_ALLOW_THREADS \
     iter2 it; \
-    init_iter2(&it, a, y, axis); \
-    BN_BEGIN_ALLOW_THREADS
+    init_iter2(&it, a, y, axis);
 
-/* function signatures --------------------------------------------------- */
+#define RETURN \
+    BN_END_ALLOW_THREADS \
+    return y;
 
 /* low-level functions such as move_sum_float64 */
 #define MOVE(name, dtype) \
@@ -133,7 +123,7 @@ MOVE(move_sum, DTYPE0)
         }
         NEXT99
     }
-    RETURN99
+    RETURN
 }
 /* dtype end */
 
@@ -159,7 +149,7 @@ MOVE(move_sum, DTYPE0)
         }
         NEXT99
     }
-    RETURN99
+    RETURN
 }
 /* dtype end */
 
@@ -217,7 +207,7 @@ MOVE(move_mean, DTYPE0)
         }
         NEXT99
     }
-    RETURN99
+    RETURN
 }
 /* dtype end */
 
@@ -244,7 +234,7 @@ MOVE(move_mean, DTYPE0)
         }
         NEXT99
     }
-    RETURN99
+    RETURN
 }
 /* dtype end */
 
@@ -344,7 +334,7 @@ MOVE(NAME, DTYPE0)
         }
         NEXT99
     }
-    RETURN99
+    RETURN
 }
 /* dtype end */
 
@@ -387,7 +377,7 @@ MOVE(NAME, DTYPE0)
         }
         NEXT99
     }
-    RETURN99
+    RETURN
 }
 /* dtype end */
 
@@ -505,7 +495,7 @@ MOVE(NAME, DTYPE0)
         NEXT99
     }
     free(ring);
-    RETURN99
+    RETURN
 }
 /* dtype end */
 
@@ -551,7 +541,7 @@ MOVE(NAME, DTYPE0)
         NEXT99
     }
     free(ring);
-    RETURN99
+    RETURN
 }
 /* dtype end */
 
@@ -587,7 +577,7 @@ MOVE(move_median, DTYPE0)
         NEXT99
     }
     mm_free(mm);
-    RETURN99
+    RETURN
 }
 /* dtype end */
 
@@ -622,7 +612,7 @@ MOVE(move_median, DTYPE0)
         NEXT99
     }
     mm_free(mm);
-    RETURN99
+    RETURN
 }
 /* dtype end */
 
@@ -684,7 +674,7 @@ MOVE(move_rank, DTYPE0)
         }
         NEXT99
     }
-    RETURN99
+    RETURN
 }
 /* dtype end */
 
@@ -745,7 +735,7 @@ MOVE(move_rank, DTYPE0)
         }
         NEXT99
     }
-    RETURN99
+    RETURN
 }
 /* dtype end */
 
