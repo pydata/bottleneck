@@ -1,49 +1,5 @@
 #include "bottleneck.h"
-
-/* iterator -------------------------------------------------------------- */
-
- /*
- * INIT and NEXT are loosely based on NumPy's PyArray_IterAllButAxis and
- * PyArray_ITER_NEXT.
- */
-
-#define INIT(dt) \
-    PyObject *_y = PyArray_EMPTY(ndim, shape, dt, 0); \
-    Py_ssize_t _i = 0; \
-    char *_py = PyArray_BYTES((PyArrayObject *)_y); \
-    char *_pa = PyArray_BYTES(a); \
-    const npy_intp *_ystrides = PyArray_STRIDES((PyArrayObject *)_y); \
-    const npy_intp *_astrides = PyArray_STRIDES(a); \
-    const npy_intp _ystride = _ystrides[axis]; \
-    npy_intp _index = 0; \
-    npy_intp _size = PyArray_SIZE(a); \
-    npy_intp _indices[ndim]; \
-    memset(_indices, 0, ndim * sizeof(npy_intp)); \
-    if (length != 0) _size /= length;
-
-#define NEXT \
-    for (_i = ndim - 1; _i >= 0; _i--) { \
-        if (_i == axis) continue; \
-        if (_indices[_i] < shape[_i] - 1) { \
-            _pa += _astrides[_i]; \
-            _py += _ystrides[_i]; \
-            _indices[_i]++; \
-            break; \
-        } \
-        _pa -= _indices[_i] * _astrides[_i]; \
-        _py -= _indices[_i] * _ystrides[_i]; \
-        _indices[_i] = 0; \
-    } \
-    _index++;
-
-#define  WHILE   while (_index < _size)
-
-#define  A0(dt)    *(dt *)(_pa)
-#define  AI(dt)    *(dt *)(_pa + _i * stride)
-#define  AOLD(dt)  *(dt *)(_pa + (_i - window) * stride)
-#define  AX(dt, x) *(dt *)(_pa + x * stride)
-#define  YI(dt)    *(dt *)(_py + _i++ * _ystride)
-#define  YX(dt, x) *(dt *)(_py + x * _ystride)
+#include "iterators.h"
 
 /* function signatures --------------------------------------------------- */
 
@@ -84,63 +40,36 @@ nonreducer_axis(char *name,
 
 /* partsort -------------------------------------------------------------- */
 
-#define INIT_FOR \
-    Py_ssize_t _i; \
-    char *_pa = PyArray_BYTES(a); \
-
-#define INIT_CORE \
-    INIT_FOR \
-    const npy_intp *_astrides = PyArray_STRIDES(a); \
-    const npy_intp *_ashape = PyArray_SHAPE(a); \
-    npy_intp _index = 0; \
-    npy_intp _size = PyArray_SIZE(a); \
-    npy_intp _indices[ndim]; \
-
-#define INIT2 \
-    INIT_CORE \
-    memset(_indices, 0, ndim * sizeof(npy_intp)); \
-    if (length != 0) _size /= length; \
-
-#define NEXT2 \
-    for (_i = ndim - 1; _i >= 0; _i--) { \
-        if (_i == axis) continue; \
-        if (_indices[_i] < _ashape[_i] - 1) { \
-            _pa += _astrides[_i]; \
-            _indices[_i]++; \
-            break; \
-        } \
-        _pa -= _indices[_i] * _astrides[_i]; \
-        _indices[_i] = 0; \
-    } \
-    _index++;
-
 #define B(dtype, i) AX(dtype, i) /* used by PARTITION */
 
 /* dtype = [['float64'], ['float32'], ['int64'], ['int32']] */
 NRA(partsort, DTYPE0)
 {
-    a = (PyArrayObject *)PyArray_NewCopy(a, NPY_ANYORDER);
-    Py_ssize_t length = PyArray_DIM(a, axis);
-    Py_ssize_t stride = PyArray_STRIDE(a, axis);
     npy_intp i;
-    INIT2
-    if (length == 0) return (PyObject *)a;
-    if (n < 1 || n > length) {
+    npy_intp j, l, r, k;
+    iter it;
+
+    a = (PyArrayObject *)PyArray_NewCopy(a, NPY_ANYORDER);
+    init_iter_one(&it, a, axis);
+
+    if (LENGTH == 0) return (PyObject *)a;
+    if (n < 1 || n > LENGTH) {
         PyErr_Format(PyExc_ValueError,
                      "`n` (=%d) must be between 1 and %zd, inclusive.",
-                     n, length);
+                     n, LENGTH);
         return NULL;
     }
+
     BN_BEGIN_ALLOW_THREADS
-    npy_intp j, l, r, k;
     k = n - 1;
     WHILE {
         l = 0;
-        r = length - 1;
+        r = LENGTH - 1;
         PARTITION(npy_DTYPE0)
-        NEXT2
+        NEXT
     }
     BN_END_ALLOW_THREADS
+
     return (PyObject *)a;
 }
 /* dtype end */
@@ -150,7 +79,7 @@ NRA_MAIN(partsort, 1)
 
 /* argpartsort ----------------------------------------------------------- */
 
-#define BUFFER_NEW(dtype) dtype *B = malloc(length * sizeof(dtype));
+#define BUFFER_NEW(dtype) dtype *B = malloc(LENGTH * sizeof(dtype));
 #define BUFFER_DELETE free(B);
 
 #define ARGWIRTH(dtype0, dtype1) \
@@ -221,28 +150,27 @@ NRA_MAIN(partsort, 1)
     }
 
 #define ARGPARTSORT(dtype0, dtype1) \
-    for (i = 0; i < length; i++) { \
+    for (i = 0; i < LENGTH; i++) { \
         B[i] = AX(dtype0, i); \
         YX(dtype1, i) = i; \
     } \
     k = n - 1; \
     l = 0; \
-    r = length - 1; \
+    r = LENGTH - 1; \
     ARGPARTITION(dtype0, dtype1)
 
 /* dtype = [['float64', 'intp'], ['float32', 'intp'], ['int64', 'intp'], ['int32', 'intp']] */
 NRA(argpartsort, DTYPE0)
 {
-    npy_intp *shape = PyArray_SHAPE(a);
-    Py_ssize_t length = PyArray_DIM(a, axis);
-    Py_ssize_t stride = PyArray_STRIDE(a, axis);
-    INIT(NPY_DTYPE1)
     npy_intp i;
-    if (length == 0) return _y;
-    if (n < 1 || n > length) {
+    PyObject *y = PyArray_EMPTY(PyArray_NDIM(a), PyArray_SHAPE(a), NPY_DTYPE1, 0);
+    iter2 it;
+    init_iter2(&it, a, y, axis);
+    if (LENGTH == 0) return y;
+    if (n < 1 || n > LENGTH) {
         PyErr_Format(PyExc_ValueError,
                      "`n` (=%d) must be between 1 and %zd, inclusive.",
-                     n, length);
+                     n, LENGTH);
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
@@ -251,13 +179,13 @@ NRA(argpartsort, DTYPE0)
     k = n - 1;
     WHILE {
         l = 0;
-        r = length - 1;
+        r = LENGTH - 1;
         ARGPARTSORT(npy_DTYPE0, npy_DTYPE1)
-        NEXT
+        NEXT2
     }
     BUFFER_DELETE
     BN_END_ALLOW_THREADS
-    return _y;
+    return y;
 }
 /* dtype end */
 
