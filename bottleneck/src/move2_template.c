@@ -17,7 +17,7 @@
 /* macros ---------------------------------------------------------------- */
 
 #define INIT(dtype) \
-    PyObject *y = PyArray_EMPTY(ndim, shape, dtype, 0); \
+    PyObject *y = PyArray_EMPTY(PyArray_NDIM(a), PyArray_SHAPE(a), dtype, 0); \
     iter2 it; \
     init_iter2(&it, a, y, axis);
 
@@ -28,8 +28,6 @@
                    int           window, \
                    int           min_count, \
                    int           axis, \
-                   int           ndim, \
-                   npy_intp*     shape, \
                    int           ddof)
 
 /* top-level functions such as move_sum */
@@ -57,8 +55,7 @@ struct _pairs {
 typedef struct _pairs pairs;
 
 /* function pointer for functions passed to mover */
-typedef PyObject *(*move_t)(PyArrayObject *, int, int, int, int,
-                            npy_intp*, int);
+typedef PyObject *(*move_t)(PyArrayObject *, int, int, int, int);
 
 static PyObject *
 mover(char *name,
@@ -914,8 +911,6 @@ mover(char *name,
     int ndim;
 
     Py_ssize_t length;
-    npy_intp *shape;
-
     PyArrayObject *a;
 
     PyObject *arr_obj = NULL;
@@ -1019,9 +1014,6 @@ mover(char *name,
     }
 
     length = PyArray_DIM(a, axis);
-    shape = PyArray_SHAPE(a);
-    dtype = PyArray_TYPE(a);
-
     if ((window < 1) || (window > length)) {
         PyErr_Format(PyExc_ValueError,
                      "Moving window (=%d) must between 1 and %zu, inclusive",
@@ -1029,17 +1021,19 @@ mover(char *name,
         return NULL;
     }
 
+    dtype = PyArray_TYPE(a);
+
     if (dtype == NPY_float64) {
-        return move_float64(a, window, mc, axis, ndim, shape, ddof);
+        return move_float64(a, window, mc, axis, ddof);
     }
     else if (dtype == NPY_float32) {
-        return move_float32(a, window, mc, axis, ndim, shape, ddof);
+        return move_float32(a, window, mc, axis, ddof);
     }
     else if (dtype == NPY_int64) {
-        return move_int64(a, window, mc, axis, ndim, shape, ddof);
+        return move_int64(a, window, mc, axis, ddof);
     }
     else if (dtype == NPY_int32) {
-        return move_int32(a, window, mc, axis, ndim, shape, ddof);
+        return move_int32(a, window, mc, axis, ddof);
     }
     else {
         return slow(name, args, kwds);
