@@ -18,13 +18,8 @@
 
 #define INIT(dtype) \
     PyObject *y = PyArray_EMPTY(ndim, shape, dtype, 0); \
-    BN_BEGIN_ALLOW_THREADS \
     iter2 it; \
     init_iter2(&it, a, y, axis);
-
-#define RETURN \
-    BN_END_ALLOW_THREADS \
-    return y;
 
 /* low-level functions such as move_sum_float64 */
 #define MOVE(name, dtype) \
@@ -80,9 +75,10 @@ mover(char *name,
 /* dtype = [['float64'], ['float32']] */
 MOVE(move_sum, DTYPE0)
 {
-    INIT(NPY_DTYPE0)
     Py_ssize_t count;
     npy_DTYPE0 asum, ai, aold;
+    INIT(NPY_DTYPE0)
+    BN_BEGIN_ALLOW_THREADS
     WHILE {
         asum = count = 0;
         WHILE0 {
@@ -123,7 +119,8 @@ MOVE(move_sum, DTYPE0)
         }
         NEXT2
     }
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
@@ -131,8 +128,9 @@ MOVE(move_sum, DTYPE0)
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(move_sum, DTYPE0)
 {
-    INIT(NPY_DTYPE1)
     npy_DTYPE1 asum;
+    INIT(NPY_DTYPE1)
+    BN_BEGIN_ALLOW_THREADS
     WHILE {
         asum = 0;
         WHILE0 {
@@ -149,7 +147,8 @@ MOVE(move_sum, DTYPE0)
         }
         NEXT2
     }
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
@@ -162,9 +161,10 @@ MOVE_MAIN(move_sum, 0)
 /* dtype = [['float64'], ['float32']] */
 MOVE(move_mean, DTYPE0)
 {
-    INIT(NPY_DTYPE0)
     Py_ssize_t count;
     npy_DTYPE0 asum, ai, aold, count_inv;
+    INIT(NPY_DTYPE0)
+    BN_BEGIN_ALLOW_THREADS
     WHILE {
         asum = count = 0;
         WHILE0 {
@@ -207,7 +207,8 @@ MOVE(move_mean, DTYPE0)
         }
         NEXT2
     }
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
@@ -215,8 +216,9 @@ MOVE(move_mean, DTYPE0)
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(move_mean, DTYPE0)
 {
-    INIT(NPY_DTYPE1)
     npy_DTYPE1 asum, window_inv = 1.0 / window;
+    INIT(NPY_DTYPE1)
+    BN_BEGIN_ALLOW_THREADS
     WHILE {
         asum = 0;
         WHILE0 {
@@ -234,7 +236,8 @@ MOVE(move_mean, DTYPE0)
         }
         NEXT2
     }
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
@@ -249,9 +252,10 @@ MOVE_MAIN(move_mean, 0)
 /* dtype = [['float64'], ['float32']] */
 MOVE(NAME, DTYPE0)
 {
-    INIT(NPY_DTYPE0)
     Py_ssize_t count;
     npy_DTYPE0 delta, amean, assqdm, ai, aold, yi, count_inv, ddof_inv;
+    INIT(NPY_DTYPE0)
+    BN_BEGIN_ALLOW_THREADS
     WHILE {
         amean = assqdm = count = 0;
         WHILE0 {
@@ -334,17 +338,19 @@ MOVE(NAME, DTYPE0)
         }
         NEXT2
     }
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(NAME, DTYPE0)
 {
-    INIT(NPY_DTYPE1)
     int winddof = window - ddof;
     npy_DTYPE1 delta, amean, assqdm, yi, ai, aold;
     npy_DTYPE1 window_inv = 1.0 / window, winddof_inv = 1.0 / winddof;
+    INIT(NPY_DTYPE1)
+    BN_BEGIN_ALLOW_THREADS
     WHILE {
         amean = assqdm = 0;
         WHILE0 {
@@ -377,7 +383,8 @@ MOVE(NAME, DTYPE0)
         }
         NEXT2
     }
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
@@ -456,7 +463,6 @@ MOVE_MAIN(NAME, 1)
 /* dtype = [['float64'], ['float32']] */
 MOVE(NAME, DTYPE0)
 {
-    INIT(NPY_DTYPE0)
     npy_DTYPE0 ai, aold, yi_tmp;
     Py_ssize_t count;
     pairs *ring;
@@ -464,6 +470,8 @@ MOVE(NAME, DTYPE0)
     pairs *end;
     pairs *last;
     ring = (pairs *)malloc(window * sizeof(pairs));
+    INIT(NPY_DTYPE0)
+    BN_BEGIN_ALLOW_THREADS
     WHILE {
         count = 0;
         end = ring + window;
@@ -495,14 +503,14 @@ MOVE(NAME, DTYPE0)
         NEXT2
     }
     free(ring);
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(NAME, DTYPE0)
 {
-    INIT(NPY_DTYPE1)
     npy_DTYPE0 ai;
     npy_DTYPE1 yi_tmp;
     pairs *ring;
@@ -510,6 +518,8 @@ MOVE(NAME, DTYPE0)
     pairs *end;
     pairs *last;
     ring = (pairs *)malloc(window * sizeof(pairs));
+    INIT(NPY_DTYPE1)
+    BN_BEGIN_ALLOW_THREADS
     WHILE {
         end = ring + window;
         last = ring;
@@ -541,7 +551,8 @@ MOVE(NAME, DTYPE0)
         NEXT2
     }
     free(ring);
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
@@ -553,13 +564,17 @@ MOVE_MAIN(NAME, 0)
 /* dtype = [['float64'], ['float32']] */
 MOVE(move_median, DTYPE0)
 {
-    if (window == 1) return PyArray_Copy(a);
-    INIT(NPY_DTYPE0)
     npy_DTYPE0 ai;
     mm_handle *mm = mm_new_nan(window, min_count);
+    INIT(NPY_DTYPE0)
+    if (window == 1) {
+        mm_free(mm);
+        return PyArray_Copy(a);
+    }
     if (mm == NULL) {
         MEMORY_ERR("Could not allocate memory for move_median");
     }
+    BN_BEGIN_ALLOW_THREADS
     WHILE {
         WHILE0 {
             ai = AI(npy_DTYPE0);
@@ -577,7 +592,8 @@ MOVE(move_median, DTYPE0)
         NEXT2
     }
     mm_free(mm);
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
@@ -589,12 +605,13 @@ MOVE(move_median, DTYPE0)
                                   PyArray_DescrFromType(NPY_DTYPE1),
                                   PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS));
     }
-    INIT(NPY_DTYPE1)
     npy_DTYPE0 ai;
     mm_handle *mm = mm_new(window, min_count);
+    INIT(NPY_DTYPE1)
     if (mm == NULL) {
         MEMORY_ERR("Could not allocate memory for move_median");
     }
+    BN_BEGIN_ALLOW_THREADS
     WHILE {
         WHILE0 {
             ai = AI(npy_DTYPE0);
@@ -612,7 +629,8 @@ MOVE(move_median, DTYPE0)
         NEXT2
     }
     mm_free(mm);
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
@@ -660,6 +678,7 @@ MOVE_MAIN(move_median, 0)
 MOVE(move_rank, DTYPE0)
 {
     INIT(NPY_DTYPE1)
+    BN_BEGIN_ALLOW_THREADS
     WHILE {
         WHILE0 {
             YI(npy_DTYPE1) = BN_NAN;
@@ -674,17 +693,19 @@ MOVE(move_rank, DTYPE0)
         }
         NEXT2
     }
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(move_rank, DTYPE0)
 {
-    INIT(NPY_DTYPE1)
     Py_ssize_t j;
     npy_DTYPE0 ai, aj;
     npy_DTYPE1 g, e, r, window_inv = 0.5 * 1.0 / (window - 1);
+    INIT(NPY_DTYPE1)
+    BN_BEGIN_ALLOW_THREADS
     WHILE {
         WHILE0 {
             YI(npy_DTYPE1) = BN_NAN;
@@ -735,7 +756,8 @@ MOVE(move_rank, DTYPE0)
         }
         NEXT2
     }
-    RETURN
+    BN_END_ALLOW_THREADS
+    return y;
 }
 /* dtype end */
 
