@@ -7,18 +7,20 @@
 
 /* one input array ------------------------------------------------------- */
 
+/* these iterators are used mostly by reduce functions such as nansum */
+
 struct _iter {
-    int        ndim_m2;
-    int        axis;
-    Py_ssize_t length;
-    Py_ssize_t astride;
-    npy_intp   i;
-    npy_intp   its;
-    npy_intp   nits;
-    npy_intp   indices[NPY_MAXDIMS];
-    npy_intp   astrides[NPY_MAXDIMS];
-    npy_intp   shape[NPY_MAXDIMS];
-    char       *pa;
+    int        ndim_m2; /* ndim - 2 */
+    int        axis;    /* axis to not iterate over */
+    Py_ssize_t length;  /* a.shape[axis] */
+    Py_ssize_t astride; /* a.strides[axis] */
+    npy_intp   i;       /* integer used by some macros */
+    npy_intp   its;     /* number of iterations completed */
+    npy_intp   nits;    /* number of iterations iterator plans to make */
+    npy_intp   indices[NPY_MAXDIMS];  /* current location of iterator */
+    npy_intp   astrides[NPY_MAXDIMS]; /* a.strides, a.strides[axis] removed */
+    npy_intp   shape[NPY_MAXDIMS];    /* a.shape, a.shape[axis] removed */
+    char       *pa;     /* pointer to data corresponding to indices */
 };
 typedef struct _iter iter;
 
@@ -135,6 +137,8 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel)
 
 /* two input arrays ------------------------------------------------------ */
 
+/* this iterator is used mostly by moving window functions such as move_sum */
+
 struct _iter2 {
     int        ndim_m2;
     int        axis;
@@ -207,6 +211,8 @@ init_iter2(iter2 *it, PyArrayObject *a, PyObject *y, int axis)
 
 /* macros used with iterators -------------------------------------------- */
 
+/* most of these macros assume iterator is named `it` */
+
 #define  NDIM           it.ndim_m2 + 2
 #define  SHAPE          it.shape
 #define  SIZE           it.nits * it.length
@@ -236,36 +242,3 @@ init_iter2(iter2 *it, PyArrayObject *a, PyObject *y, int axis)
     int i; \
     Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y); \
     for (i = 0; i < size; i++) YPP = value;
-
-/* debug stuff ----------------------------------------------------------- */
-
-void
-print_array(npy_intp *array, npy_intp length)
-{
-    int i;
-    for (i = 0; i < length; i++) {
-        printf("%zd ", array[i]);
-    }
-    printf("\n");
-}
-
-void
-print_iter(iter *it)
-{
-    npy_intp length = it->ndim_m2 + 1;
-    printf("-------------------------\n");
-    printf("ndim_m2  %d\n", it->ndim_m2);
-    printf("axis     %d\n", it->axis);
-    printf("length   %zd\n", it->length);
-    printf("stride   %zd\n", it->astride);
-    printf("i        %zd\n", it->i);
-    printf("its      %zd\n", it->its);
-    printf("nits     %zd\n", it->nits);
-    printf("indices  ");
-    print_array(it->indices, length);
-    printf("strides  ");
-    print_array(it->astrides, length);
-    printf("shape    ");
-    print_array(it->shape, length);
-    printf("-------------------------\n");
-}
