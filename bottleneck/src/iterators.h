@@ -30,18 +30,17 @@ init_iter_one(iter *it, PyArrayObject *a, int axis)
     const npy_intp *shape = PyArray_SHAPE(a);
     const npy_intp *strides = PyArray_STRIDES(a);
 
-    it->ndim_m2 = ndim - 2;
     it->axis = axis;
     it->its = 0;
     it->nits = 1;
     it->pa = PyArray_BYTES(a);
 
-    if (ndim == 0) {
-        it->ndim_m2 = -1;
-        it->length = 1;
-        it->astride = 0;
-    }
-    else {
+    it->ndim_m2 = -1;
+    it->length = 1;
+    it->astride = 0;
+
+    if (ndim != 0) {
+        it->ndim_m2 = ndim - 2;
         for (i = 0; i < ndim; i++) {
             if (i == axis) {
                 it->astride = strides[i];
@@ -231,6 +230,7 @@ init_iter2(iter2 *it, PyArrayObject *a, PyObject *y, int axis)
 
 #define  YPP            *py++
 #define  YI(dtype)      *(dtype *)(it.py + it.i++ * it.ystride)
+#define  YX(dtype, x)   *(dtype *)(it.py + x * it.ystride)
 
 #define FILL_Y(value) \
     int i; \
