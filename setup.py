@@ -56,19 +56,16 @@ def prepare_modules():
     from bottleneck.src.template import make_c_files
     make_c_files()
     ext_list += [Extension("bottleneck.reduce2",
-                           sources=["bottleneck/src/reduce2.c",
-                                    "bottleneck/src/slow.c"],
+                           sources=["bottleneck/src/reduce2.c"],
                            include_dirs=[np.get_include()],
                            extra_compile_args=['-O2'])]
     ext_list += [Extension("bottleneck.move2",
                            sources=["bottleneck/src/move2.c",
-                                    "bottleneck/src/slow.c",
                                     "bottleneck/csrc/move_median.c"],
                            include_dirs=[np.get_include()],
                            extra_compile_args=['-O2'])]
     ext_list += [Extension("bottleneck.nonreduce_axis2",
-                           sources=["bottleneck/src/nonreduce_axis2.c",
-                                    "bottleneck/src/slow.c"],
+                           sources=["bottleneck/src/nonreduce_axis2.c"],
                            include_dirs=[np.get_include()],
                            extra_compile_args=['-O2'])]
 
