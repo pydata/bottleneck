@@ -7,7 +7,7 @@
 
 /* one input array ------------------------------------------------------- */
 
-/* these iterators are used mostly by reduce functions such as nansum */
+/* these iterators are used mainly by reduce functions such as nansum */
 
 struct _iter {
     int        ndim_m2; /* ndim - 2 */
@@ -137,7 +137,7 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel)
 
 /* two input arrays ------------------------------------------------------ */
 
-/* this iterator is used mostly by moving window functions such as move_sum */
+/* this iterator is used mainly by moving window functions such as move_sum */
 
 struct _iter2 {
     int        ndim_m2;
@@ -209,6 +209,90 @@ init_iter2(iter2 *it, PyArrayObject *a, PyObject *y, int axis)
     } \
     it.its++;
 
+/* three input arrays ---------------------------------------------------- */
+
+/* this iterator is used mainly by rankdata and nanrankdata */
+
+struct _iter3 {
+    int        ndim_m2;
+    int        axis;
+    Py_ssize_t length;
+    Py_ssize_t astride;
+    Py_ssize_t ystride;
+    Py_ssize_t zstride;
+    npy_intp   i;
+    npy_intp   its;
+    npy_intp   nits;
+    npy_intp   indices[NPY_MAXDIMS];
+    npy_intp   astrides[NPY_MAXDIMS];
+    npy_intp   ystrides[NPY_MAXDIMS];
+    npy_intp   zstrides[NPY_MAXDIMS];
+    npy_intp   shape[NPY_MAXDIMS];
+    char       *pa;
+    char       *py;
+    char       *pz;
+};
+typedef struct _iter3 iter3;
+
+static BN_INLINE void
+init_iter3(iter3 *it, PyArrayObject *a, PyObject *y, PyObject *z, int axis)
+{
+    int i, j = 0;
+    const int ndim = PyArray_NDIM(a);
+    const npy_intp *shape = PyArray_SHAPE(a);
+    const npy_intp *astrides = PyArray_STRIDES(a);
+    const npy_intp *ystrides = PyArray_STRIDES((PyArrayObject *)y);
+    const npy_intp *zstrides = PyArray_STRIDES((PyArrayObject *)z);
+
+    /* to avoid compiler warning of uninitialized variables */
+    it->length = 0;
+    it->astride = 0;
+    it->ystride = 0;
+    it->zstride = 0;
+
+    it->ndim_m2 = ndim - 2;
+    it->axis = axis;
+    it->its = 0;
+    it->nits = 1;
+    it->pa = PyArray_BYTES(a);
+    it->py = PyArray_BYTES((PyArrayObject *)y);
+    it->pz = PyArray_BYTES((PyArrayObject *)z);
+
+    for (i = 0; i < ndim; i++) {
+        if (i == axis) {
+            it->astride = astrides[i];
+            it->ystride = ystrides[i];
+            it->zstride = zstrides[i];
+            it->length = shape[i];
+        }
+        else {
+            it->indices[j] = 0;
+            it->astrides[j] = astrides[i];
+            it->ystrides[j] = ystrides[i];
+            it->zstrides[j] = zstrides[i];
+            it->shape[j] = shape[i];
+            it->nits *= shape[i];
+            j++;
+        }
+    }
+}
+
+#define NEXT3 \
+    for (it.i = it.ndim_m2; it.i > -1; it.i--) { \
+        if (it.indices[it.i] < it.shape[it.i] - 1) { \
+            it.pa += it.astrides[it.i]; \
+            it.py += it.ystrides[it.i]; \
+            it.pz += it.zstrides[it.i]; \
+            it.indices[it.i]++; \
+            break; \
+        } \
+        it.pa -= it.indices[it.i] * it.astrides[it.i]; \
+        it.py -= it.indices[it.i] * it.ystrides[it.i]; \
+        it.pz -= it.indices[it.i] * it.zstrides[it.i]; \
+        it.indices[it.i] = 0; \
+    } \
+    it.its++;
+
 /* macros used with iterators -------------------------------------------- */
 
 /* most of these macros assume iterator is named `it` */
@@ -237,6 +321,8 @@ init_iter2(iter2 *it, PyArrayObject *a, PyObject *y, int axis)
 #define  YPP            *py++
 #define  YI(dtype)      *(dtype *)(it.py + it.i++ * it.ystride)
 #define  YX(dtype, x)   *(dtype *)(it.py + x * it.ystride)
+
+#define  ZX(dtype, x)   *(dtype *)(it.pz + x * it.zstride)
 
 #define FILL_Y(value) \
     int i; \

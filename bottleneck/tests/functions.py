@@ -82,6 +82,7 @@ def func_dict():
                            bn.argpartsort,
                            bn.argpartsort2,
                            bn.rankdata,
+                           bn.rankdata2,
                            bn.nanrankdata,
                            bn.push,
                            ]

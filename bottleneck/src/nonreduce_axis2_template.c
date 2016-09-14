@@ -192,6 +192,69 @@ NRA(argpartsort, DTYPE0)
 NRA_MAIN(argpartsort, 1)
 
 
+/* rankdata -------------------------------------------------------------- */
+
+/* dtype = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp'], ['int64', 'float64', 'intp'], ['int32', 'float64', 'intp']] */
+NRA(rankdata, DTYPE0)
+{
+    Py_ssize_t j=0, k, idx, dupcount=0, i;
+    npy_DTYPE1 old, new, averank, sumranks = 0;
+
+    PyObject *z = PyArray_ArgSort(a, axis, NPY_QUICKSORT);
+    PyObject *y = PyArray_EMPTY(PyArray_NDIM(a),
+                                PyArray_SHAPE(a), NPY_DTYPE1, 0);
+
+    iter3 it;
+    init_iter3(&it, a, y, z, axis);
+
+    BN_BEGIN_ALLOW_THREADS
+    if (LENGTH == 0) {
+        Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
+        npy_DTYPE1 *py = (npy_DTYPE1 *)PyArray_DATA(a);
+        for (i = 0; i < size; i++) YPP = BN_NAN;
+    }
+    else {
+        WHILE {
+            idx = ZX(npy_DTYPE2, 0);
+            old = AX(npy_DTYPE0, idx);
+            sumranks = 0;
+            dupcount = 0;
+            for (i = 0; i < LENGTH - 1; i++) {
+                sumranks += i;
+                dupcount++;
+                k = i + 1;
+                idx = ZX(npy_DTYPE2, k);
+                new = AX(npy_DTYPE0, idx);
+                if (old != new) {
+                    averank = sumranks / dupcount + 1;
+                    for (j = k - dupcount; j < k; j++) {
+                        idx = ZX(npy_DTYPE2, j);
+                        YX(npy_DTYPE1, idx) = averank;
+                    }
+                    sumranks = 0;
+                    dupcount = 0;
+                }
+                old = new;
+            }
+            sumranks += (LENGTH - 1);
+            dupcount++;
+            averank = sumranks / dupcount + 1;
+            for (j = LENGTH - dupcount; j < LENGTH; j++) {
+                idx = ZX(npy_DTYPE2, j);
+                YX(npy_DTYPE1, idx) = averank;
+            }
+            NEXT3
+        }
+    }
+    BN_END_ALLOW_THREADS
+
+    return y;
+}
+/* dtype end */
+
+NRA_MAIN(rankdata, 0)
+
+
 /* python strings -------------------------------------------------------- */
 
 PyObject *pystr_arr = NULL;
@@ -281,6 +344,69 @@ parse_args_n(PyObject *args,
 
 }
 
+static BN_INLINE int
+parse_args(PyObject *args,
+           PyObject *kwds,
+           PyObject **arr,
+           PyObject **axis)
+{
+    const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+    if (kwds) {
+        int nkwds_found = 0;
+        const Py_ssize_t nkwds = PyDict_Size(kwds);
+        PyObject *tmp;
+        switch (nargs) {
+            case 1: *arr = PyTuple_GET_ITEM(args, 0);
+            case 0: break;
+            default:
+                TYPE_ERR("wrong number of arguments");
+                return 0;
+        }
+        switch (nargs) {
+            case 0:
+                *arr = PyDict_GetItem(kwds, pystr_arr);
+                if (*arr == NULL) {
+                    TYPE_ERR("Cannot find `arr` keyword input");
+                    return 0;
+                }
+                nkwds_found += 1;
+            case 1:
+                tmp = PyDict_GetItem(kwds, pystr_axis);
+                if (tmp != NULL) {
+                    *axis = tmp;
+                    nkwds_found++;
+                }
+                break;
+            default:
+                TYPE_ERR("wrong number of arguments");
+                return 0;
+        }
+        if (nkwds_found != nkwds) {
+            TYPE_ERR("wrong number of keyword arguments");
+            return 0;
+        }
+        if (nargs + nkwds_found > 2) {
+            TYPE_ERR("too many arguments");
+            return 0;
+        }
+    }
+    else {
+        switch (nargs) {
+            case 2:
+                *axis = PyTuple_GET_ITEM(args, 1);
+            case 1:
+                *arr = PyTuple_GET_ITEM(args, 0);
+                break;
+            default:
+                TYPE_ERR("wrong number of arguments");
+                return 0;
+        }
+    }
+
+    return 1;
+
+}
+
 static PyObject *
 nonreducer_axis(char *name,
                 PyObject *args,
@@ -309,8 +435,9 @@ nonreducer_axis(char *name,
         }
     }
     else {
-        VALUE_ERR("not yet implemented");
-        return NULL;
+        if (!parse_args(args, kwds, &arr_obj, &axis_obj)) {
+            return NULL;
+        }
     }
 
     /* convert to array if necessary */
@@ -323,7 +450,6 @@ nonreducer_axis(char *name,
             return NULL;
         }
     }
-    dtype = PyArray_TYPE(a);
 
     /* check for byte swapped input array */
     if PyArray_ISBYTESWAPPED(a) {
@@ -333,11 +459,18 @@ nonreducer_axis(char *name,
     /* defend against the axis of negativity */
     ndim = PyArray_NDIM(a);
     if (axis_obj == NULL) {
-        axis = ndim - 1;
-        if (axis < 0) {
-            PyErr_Format(PyExc_ValueError,
-                         "axis(=%d) out of bounds", axis);
-            return NULL;
+        if (has_n) {
+            axis = ndim - 1;
+            if (axis < 0) {
+                PyErr_Format(PyExc_ValueError,
+                             "axis(=%d) out of bounds", axis);
+                return NULL;
+            }
+        }
+        else {
+            a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
+            axis = 0;
+            ndim = 1;
         }
     }
     else if (axis_obj == Py_None) {
@@ -377,6 +510,7 @@ nonreducer_axis(char *name,
         }
     }
 
+    dtype = PyArray_TYPE(a);
     if (dtype == NPY_float64)      return nra_float64(a, axis, ndim, n);
     else if (dtype == NPY_float32) return nra_float32(a, axis, ndim, n);
     else if (dtype == NPY_int64)   return nra_int64(a, axis, ndim, n);
@@ -519,12 +653,55 @@ array([1, 0, 2, 4, 3])
 
 MULTILINE STRING END */
 
+static char rankdata_doc[] =
+/* MULTILINE STRING BEGIN
+rankdata(arr, axis=None)
+
+Ranks the data, dealing with ties appropriately.
+
+Equal values are assigned a rank that is the average of the ranks that
+would have been otherwise assigned to all of the values within that set.
+Ranks begin at 1, not 0.
+
+Parameters
+----------
+arr : array_like
+    Input array. If `arr` is not an array, a conversion is attempted.
+axis : {int, None}, optional
+    Axis along which the elements of the array are ranked. The default
+    (axis=None) is to rank the elements of the flattened array.
+
+Returns
+-------
+y : ndarray
+    An array with the same shape as `arr`. The dtype is 'float64'.
+
+See also
+--------
+bottleneck.nanrankdata: Ranks the data dealing with ties and NaNs.
+
+Examples
+--------
+>>> bn.rankdata([0, 2, 2, 3])
+array([ 1. ,  2.5,  2.5,  4. ])
+>>> bn.rankdata([[0, 2], [2, 3]])
+array([ 1. ,  2.5,  2.5,  4. ])
+>>> bn.rankdata([[0, 2], [2, 3]], axis=0)
+array([[ 1.,  1.],
+       [ 2.,  2.]])
+>>> bn.rankdata([[0, 2], [2, 3]], axis=1)
+array([[ 1.,  2.],
+       [ 1.,  2.]])
+
+MULTILINE STRING END */
+
 /* python wrapper -------------------------------------------------------- */
 
 static PyMethodDef
 nra_methods[] = {
     {"partsort",    (PyCFunction)partsort,    VARKEY, partsort_doc},
     {"argpartsort", (PyCFunction)argpartsort, VARKEY, argpartsort_doc},
+    {"rankdata",    (PyCFunction)rankdata,    VARKEY, rankdata_doc},
     {NULL, NULL, 0, NULL}
 };
 
