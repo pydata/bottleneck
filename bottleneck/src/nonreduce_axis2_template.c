@@ -159,11 +159,13 @@ NRA_MAIN(partsort, 1)
     r = LENGTH - 1; \
     ARGPARTITION(dtype0, dtype1)
 
-/* dtype = [['float64', 'intp'], ['float32', 'intp'], ['int64', 'intp'], ['int32', 'intp']] */
+/* dtype = [['float64', 'intp'], ['float32', 'intp'],
+            ['int64',   'intp'], ['int32',   'intp']] */
 NRA(argpartsort, DTYPE0)
 {
     npy_intp i;
-    PyObject *y = PyArray_EMPTY(PyArray_NDIM(a), PyArray_SHAPE(a), NPY_DTYPE1, 0);
+    PyObject *y = PyArray_EMPTY(PyArray_NDIM(a), PyArray_SHAPE(a),
+                                NPY_DTYPE1, 0);
     iter2 it;
     init_iter2(&it, a, y, axis);
     if (LENGTH == 0) return y;
@@ -194,7 +196,8 @@ NRA_MAIN(argpartsort, 1)
 
 /* rankdata -------------------------------------------------------------- */
 
-/* dtype = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp'], ['int64', 'float64', 'intp'], ['int32', 'float64', 'intp']] */
+/* dtype = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp'],
+            ['int64',   'float64', 'intp'], ['int32',   'float64', 'intp']] */
 NRA(rankdata, DTYPE0)
 {
     Py_ssize_t j=0, k, idx, dupcount=0, i;

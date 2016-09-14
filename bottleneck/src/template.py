@@ -108,7 +108,7 @@ def expand_functions_dtype(lines):
 
 
 def dtype_info(lines):
-    line = 'n'.join(lines)
+    line = ''.join(lines)
     dtypes = re.findall(r'\[.*\]', line)
     if len(dtypes) != 1:
         raise ValueError("expecting exactly one dtype specification")
