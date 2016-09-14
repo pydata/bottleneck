@@ -322,7 +322,7 @@ init_iter3(iter3 *it, PyArrayObject *a, PyObject *y, PyObject *z, int axis)
 #define  YI(dtype)      *(dtype *)(it.py + it.i++ * it.ystride)
 #define  YX(dtype, x)   *(dtype *)(it.py + x * it.ystride)
 
-#define  ZX(dtype, x)   *(dtype *)(it.pz + x * it.zstride)
+#define  ZX(dtype, x)   *(dtype *)(it.pz + (x) * it.zstride)
 
 #define FILL_Y(value) \
     int i; \

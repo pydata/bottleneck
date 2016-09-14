@@ -136,7 +136,8 @@ def test_transpose():
 
 def test_nonreduce_axis():
     "Test nonreduce axis functions"
-    funcs = [bn.rankdata, bn.rankdata2, bn.nanrankdata, bn.push]
+    funcs = [bn.rankdata, bn.rankdata2, bn.nanrankdata, bn.nanrankdata2,
+             bn.push]
     for func in funcs:
         yield reduce_unit_maker, func
 

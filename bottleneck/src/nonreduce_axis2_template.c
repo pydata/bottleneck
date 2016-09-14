@@ -258,6 +258,92 @@ NRA(rankdata, DTYPE0)
 NRA_MAIN(rankdata, 0)
 
 
+/* nanrankdata ----------------------------------------------------------- */
+
+/* dtype = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp']] */
+NRA(nanrankdata, DTYPE0)
+{
+    Py_ssize_t j=0, k, idx, dupcount=0, i;
+    npy_DTYPE1 old, new, averank, sumranks = 0;
+
+    PyObject *z = PyArray_ArgSort(a, axis, NPY_QUICKSORT);
+    PyObject *y = PyArray_EMPTY(PyArray_NDIM(a),
+                                PyArray_SHAPE(a), NPY_DTYPE1, 0);
+
+    iter3 it;
+    init_iter3(&it, a, y, z, axis);
+
+    BN_BEGIN_ALLOW_THREADS
+    if (LENGTH == 0) {
+        Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
+        npy_DTYPE1 *py = (npy_DTYPE1 *)PyArray_DATA(a);
+        for (i = 0; i < size; i++) YPP = BN_NAN;
+    }
+    else {
+        WHILE {
+            idx = ZX(npy_DTYPE2, 0);
+            old = AX(npy_DTYPE0, idx);
+            sumranks = 0;
+            dupcount = 0;
+            for (i = 0; i < LENGTH - 1; i++) {
+                sumranks += i;
+                dupcount++;
+                k = i + 1;
+                idx = ZX(npy_DTYPE2, k);
+                new = AX(npy_DTYPE0, idx);
+                if (old != new) {
+                    if (old == old) {
+                        averank = sumranks / dupcount + 1;
+                        for (j = k - dupcount; j < k; j++) {
+                            idx = ZX(npy_DTYPE2, j);
+                            YX(npy_DTYPE1, idx) = averank;
+                        }
+                    }
+                    else {
+                        idx = ZX(npy_DTYPE2, i);
+                        YX(npy_DTYPE1, idx) = BN_NAN;
+                    }
+                    sumranks = 0;
+                    dupcount = 0;
+                }
+                old = new;
+            }
+            sumranks += (LENGTH - 1);
+            dupcount++;
+            averank = sumranks / dupcount + 1;
+            if (old == old) {
+                for (j = LENGTH - dupcount; j < LENGTH; j++) {
+                    idx = ZX(npy_DTYPE2, j);
+                    YX(npy_DTYPE1, idx) = averank;
+                }
+            }
+            else {
+                idx = ZX(npy_DTYPE2, LENGTH - 1);
+                YX(npy_DTYPE1, idx) = BN_NAN;
+            }
+            NEXT3
+        }
+    }
+    BN_END_ALLOW_THREADS
+
+    return y;
+}
+/* dtype end */
+
+static PyObject *
+nanrankdata(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    return nonreducer_axis("nanrankdata",
+                           args,
+                           kwds,
+                           nanrankdata_float64,
+                           nanrankdata_float32,
+                           rankdata_int64,
+                           rankdata_int32,
+                           0);
+}
+
+
 /* python strings -------------------------------------------------------- */
 
 PyObject *pystr_arr = NULL;
@@ -694,6 +780,50 @@ array([[ 1.,  2.],
 
 MULTILINE STRING END */
 
+static char nanrankdata_doc[] =
+/* MULTILINE STRING BEGIN
+nanrankdata(arr, axis=None)
+
+Ranks the data, dealing with ties and NaNs appropriately.
+
+Equal values are assigned a rank that is the average of the ranks that
+would have been otherwise assigned to all of the values within that set.
+Ranks begin at 1, not 0.
+
+NaNs in the input array are returned as NaNs.
+
+Parameters
+----------
+arr : array_like
+    Input array. If `arr` is not an array, a conversion is attempted.
+axis : {int, None}, optional
+    Axis along which the elements of the array are ranked. The default
+    (axis=None) is to rank the elements of the flattened array.
+
+Returns
+-------
+y : ndarray
+    An array with the same shape as `arr`. The dtype is 'float64'.
+
+See also
+--------
+bottleneck.rankdata: Ranks the data, dealing with ties and appropriately.
+
+Examples
+--------
+>>> bn.nanrankdata([np.nan, 2, 2, 3])
+array([ nan,  1.5,  1.5,  3. ])
+>>> bn.nanrankdata([[np.nan, 2], [2, 3]])
+array([ nan,  1.5,  1.5,  3. ])
+>>> bn.nanrankdata([[np.nan, 2], [2, 3]], axis=0)
+array([[ nan,   1.],
+       [  1.,   2.]])
+>>> bn.nanrankdata([[np.nan, 2], [2, 3]], axis=1)
+array([[ nan,   1.],
+       [  1.,   2.]])
+
+MULTILINE STRING END */
+
 /* python wrapper -------------------------------------------------------- */
 
 static PyMethodDef
@@ -701,6 +831,7 @@ nra_methods[] = {
     {"partsort",    (PyCFunction)partsort,    VARKEY, partsort_doc},
     {"argpartsort", (PyCFunction)argpartsort, VARKEY, argpartsort_doc},
     {"rankdata",    (PyCFunction)rankdata,    VARKEY, rankdata_doc},
+    {"nanrankdata", (PyCFunction)nanrankdata, VARKEY, nanrankdata_doc},
     {NULL, NULL, 0, NULL}
 };
 
