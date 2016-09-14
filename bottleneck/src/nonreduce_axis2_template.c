@@ -6,7 +6,7 @@
 /* low-level functions such as move_sum_float64 */
 #define NRA(name, dtype) \
     static PyObject * \
-    name##_##dtype(PyArrayObject *a, int axis, int ndim, int n)
+    name##_##dtype(PyArrayObject *a, int axis, int n)
 
 /* top-level functions such as move_sum */
 #define NRA_MAIN(name, has_n) \
@@ -26,7 +26,7 @@
 /* typedefs and prototypes ----------------------------------------------- */
 
 /* function pointer for functions passed to nonreducer_axis */
-typedef PyObject *(*nra_t)(PyArrayObject *, int, int, int);
+typedef PyObject *(*nra_t)(PyArrayObject *, int, int);
 
 static PyObject *
 nonreducer_axis(char *name,
@@ -421,7 +421,6 @@ nonreducer_axis(char *name,
     int n;
     int axis;
     int dtype;
-    int ndim;
 
     PyArrayObject *a;
 
@@ -457,10 +456,9 @@ nonreducer_axis(char *name,
     }
 
     /* defend against the axis of negativity */
-    ndim = PyArray_NDIM(a);
     if (axis_obj == NULL) {
         if (has_n) {
-            axis = ndim - 1;
+            axis = PyArray_NDIM(a) - 1;
             if (axis < 0) {
                 PyErr_Format(PyExc_ValueError,
                              "axis(=%d) out of bounds", axis);
@@ -470,13 +468,11 @@ nonreducer_axis(char *name,
         else {
             a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
             axis = 0;
-            ndim = 1;
         }
     }
     else if (axis_obj == Py_None) {
         a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
         axis = 0;
-        ndim = 1;
     }
     else {
         axis = PyArray_PyIntAsInt(axis_obj);
@@ -485,14 +481,14 @@ nonreducer_axis(char *name,
             return NULL;
         }
         if (axis < 0) {
-            axis += ndim;
+            axis += PyArray_NDIM(a);
             if (axis < 0) {
                 PyErr_Format(PyExc_ValueError,
                              "axis(=%d) out of bounds", axis);
                 return NULL;
             }
         }
-        else if (axis >= ndim) {
+        else if (axis >= PyArray_NDIM(a)) {
             PyErr_Format(PyExc_ValueError, "axis(=%d) out of bounds", axis);
             return NULL;
         }
@@ -511,10 +507,10 @@ nonreducer_axis(char *name,
     }
 
     dtype = PyArray_TYPE(a);
-    if (dtype == NPY_float64)      return nra_float64(a, axis, ndim, n);
-    else if (dtype == NPY_float32) return nra_float32(a, axis, ndim, n);
-    else if (dtype == NPY_int64)   return nra_int64(a, axis, ndim, n);
-    else if (dtype == NPY_int32)   return nra_int32(a, axis, ndim, n);
+    if      (dtype == NPY_float64) return nra_float64(a, axis, n);
+    else if (dtype == NPY_float32) return nra_float32(a, axis, n);
+    else if (dtype == NPY_int64)   return nra_int64(a, axis, n);
+    else if (dtype == NPY_int32)   return nra_int32(a, axis, n);
     else                           return slow(name, args, kwds);
 
 }
