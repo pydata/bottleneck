@@ -687,7 +687,9 @@ nonreducer_axis(char *name,
             }
         }
         else {
-            a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
+            if (PyArray_NDIM(a) != 1) {
+                a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
+            }
             axis = 0;
         }
     }
@@ -696,7 +698,9 @@ nonreducer_axis(char *name,
             VALUE_ERR("`axis` cannot be None");
             return NULL;
         }
-        a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
+        if (PyArray_NDIM(a) != 1) {
+            a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
+        }
         axis = 0;
     }
     else {
