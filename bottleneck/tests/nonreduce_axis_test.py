@@ -1,8 +1,11 @@
 import numpy as np
-from numpy.testing import assert_equal, assert_array_equal
+from numpy.testing import (assert_equal, assert_array_equal,
+                           assert_array_almost_equal, assert_raises)
 
 import bottleneck as bn
-from .reduce_test import unit_maker as reduce_unit_maker
+from .reduce_test import (arrays_strides, unit_maker as reduce_unit_maker,
+                          unit_maker_argparse as unit_maker_parse_rankdata)
+from .functions import nonreduce_axis_functions
 
 DTYPES = [np.float64, np.float32, np.int64, np.int32]
 nan = np.nan
@@ -160,3 +163,112 @@ def test_push2():
         actual = bn.push2(arr.copy(), n=n)
         desired = bn.slow.push(arr.copy(), n=n)
         assert_array_equal(actual, desired, "failed on n=%s" % str(n))
+
+
+# ---------------------------------------------------------------------------
+# Test with arrays that are not C ordered
+
+def test_strides():
+    "test nonreducer_axis functions with non-C ordered arrays"
+    for func in nonreduce_axis_functions():
+        yield unit_maker_strides, func
+
+
+def unit_maker_strides(func, decimal=5):
+    "Test that bn.xxx gives the same output as bn.slow.xxx."
+    fmt = '\nfunc %s | input %s (%s) | shape %s | axis %s\n'
+    fmt += '\nInput array:\n%s\n'
+    fmt += '\nStrides: %s\n'
+    fmt += '\nFlags: \n%s\n'
+    name = func.__name__
+    func0 = eval('bn.slow.%s' % name)
+    for i, arr in enumerate(arrays_strides()):
+        if arr.ndim == 0:
+            axes = [None]  # numpy can't handle e.g. np.nanmean(9, axis=-1)
+        else:
+            axes = list(range(-1, arr.ndim)) + [None]
+        for axis in axes:
+            # do not use arr.copy() here because it will C order the array
+            if name in ('partsort', 'argpartsort', 'push'):
+                if axis is None:
+                    if name == 'push':
+                        continue
+                    n = min(2, arr.size)
+                else:
+                    n = min(2, arr.shape[axis])
+                actual = func(arr, n, axis=axis)
+                desired = func0(arr, n, axis=axis)
+            else:
+                actual = func(arr, axis=axis)
+                desired = func0(arr, axis=axis)
+            tup = (name, 'a'+str(i), str(arr.dtype), str(arr.shape),
+                   str(axis), arr, arr.strides, arr.flags)
+            err_msg = fmt % tup
+            assert_array_almost_equal(actual, desired, decimal, err_msg)
+            err_msg += '\n dtype mismatch %s %s'
+
+
+# ---------------------------------------------------------------------------
+# Test argument parsing
+
+def test_arg_parsing():
+    "test argument parsing in nonreduce_axis"
+    for func in nonreduce_axis_functions():
+        name = func.__name__
+        if name in ('partsort', 'argpartsort'):
+            yield unit_maker_parse, func
+        elif name in ('push'):
+            yield unit_maker_parse, func
+        elif name in ('rankdata', 'nanrankdata'):
+            yield unit_maker_parse_rankdata, func
+        else:
+            fmt = "``%s` is an unknown nonreduce_axis function"
+            raise ValueError(fmt % name)
+        yield unit_maker_raises, func
+
+
+def unit_maker_parse(func, decimal=5):
+    "test argument parsing."
+
+    name = func.__name__
+    func0 = eval('bn.slow.%s' % name)
+
+    arr = np.array([1., 2, 3])
+
+    fmt = '\n%s' % func
+    fmt += '%s\n'
+    fmt += '\nInput array:\n%s\n' % arr
+
+    actual = func(arr, 1)
+    desired = func0(arr, 1)
+    err_msg = fmt % "(arr, 1)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(arr, 1, axis=0)
+    desired = func0(arr, 1, axis=0)
+    err_msg = fmt % "(arr, 1, axis=0)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    if name != 'push':
+
+        actual = func(arr, 2, None)
+        desired = func0(arr, 2, None)
+        err_msg = fmt % "(arr, 2, None)"
+        assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+        actual = func(arr, 1, axis=None)
+        desired = func0(arr, 1, axis=None)
+        err_msg = fmt % "(arr, 1, axis=None)"
+        assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+
+def unit_maker_raises(func):
+    "test argument parsing raises in nonreduce_axis"
+    arr = np.array([1., 2, 3])
+    assert_raises(TypeError, func)
+    assert_raises(TypeError, func, axis=arr)
+    assert_raises(TypeError, func, arr, axis=0, extra=0)
+    assert_raises(TypeError, func, arr, axis=0, arr=arr)
+    if func.__name__ in ('partsort', 'argpartsort'):
+        assert_raises(TypeError, func, arr, 0, 0, 0, 0, 0)
+        assert_raises(TypeError, func, arr, axis='0')
