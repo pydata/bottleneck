@@ -9,7 +9,7 @@
     name##_##dtype(PyArrayObject *a, int axis, int n)
 
 /* top-level functions such as move_sum */
-#define NRA_MAIN(name, has_n) \
+#define NRA_MAIN(name, parse) \
     static PyObject * \
     name(PyObject *self, PyObject *args, PyObject *kwds) \
     { \
@@ -20,10 +20,13 @@
                                name##_float32, \
                                name##_int64, \
                                name##_int32, \
-                               has_n); \
+                               parse); \
     }
 
 /* typedefs and prototypes ----------------------------------------------- */
+
+/* how should input be parsed? */
+typedef enum {PARSE_PARTSORT, PARSE_RANKDATA, PARSE_PUSH} parse_type;
 
 /* function pointer for functions passed to nonreducer_axis */
 typedef PyObject *(*nra_t)(PyArrayObject *, int, int);
@@ -36,7 +39,7 @@ nonreducer_axis(char *name,
                 nra_t,
                 nra_t,
                 nra_t,
-                int);
+                parse_type);
 
 /* partsort -------------------------------------------------------------- */
 
@@ -74,7 +77,7 @@ NRA(partsort, DTYPE0)
 }
 /* dtype end */
 
-NRA_MAIN(partsort, 1)
+NRA_MAIN(partsort, PARSE_PARTSORT)
 
 
 /* argpartsort ----------------------------------------------------------- */
@@ -191,7 +194,7 @@ NRA(argpartsort, DTYPE0)
 }
 /* dtype end */
 
-NRA_MAIN(argpartsort, 1)
+NRA_MAIN(argpartsort, PARSE_PARTSORT)
 
 
 /* rankdata -------------------------------------------------------------- */
@@ -255,7 +258,7 @@ NRA(rankdata, DTYPE0)
 }
 /* dtype end */
 
-NRA_MAIN(rankdata, 0)
+NRA_MAIN(rankdata, PARSE_RANKDATA)
 
 
 /* nanrankdata ----------------------------------------------------------- */
@@ -340,8 +343,56 @@ nanrankdata(PyObject *self, PyObject *args, PyObject *kwds)
                            nanrankdata_float32,
                            rankdata_int64,
                            rankdata_int32,
-                           0);
+                           PARSE_RANKDATA);
 }
+
+
+/* push ------------------------------------------------------------------ */
+
+/* dtype = [['float64'], ['float32']] */
+NRA(push, DTYPE0)
+{
+    npy_intp index;
+    npy_DTYPE0 ai, ai_last, n_float;
+    PyObject *y = PyArray_Copy(a);
+    iter it;
+    init_iter_one(&it, (PyArrayObject *)y, axis);
+    if (LENGTH == 0 || NDIM == 0) {
+        return y;
+    }
+    n_float = n < 0 ? BN_INFINITY : (npy_DTYPE0)n;
+    BN_BEGIN_ALLOW_THREADS
+    WHILE {
+        index = 0;
+        ai_last = BN_NAN;
+        FOR {
+            ai = AI(npy_DTYPE0);
+            if (ai == ai) {
+                ai_last = ai;
+                index = INDEX;
+            }
+            else {
+                if (INDEX - index <= n_float) {
+                    AI(npy_DTYPE0) = ai_last;
+                }
+            }
+        }
+        NEXT
+    }
+    BN_END_ALLOW_THREADS
+    return y;
+}
+/* dtype end */
+
+/* dtype = [['int64'], ['int32']] */
+NRA(push, DTYPE0)
+{
+    PyObject *y = PyArray_Copy(a);
+    return y;
+}
+/* dtype end */
+
+NRA_MAIN(push, PARSE_PUSH)
 
 
 /* python strings -------------------------------------------------------- */
@@ -361,11 +412,11 @@ intern_strings(void) {
 /* nonreducer_axis ------------------------------------------------------- */
 
 static BN_INLINE int
-parse_args_n(PyObject *args,
-             PyObject *kwds,
-             PyObject **arr,
-             PyObject **n,
-             PyObject **axis)
+parse_partsort(PyObject *args,
+               PyObject *kwds,
+               PyObject **arr,
+               PyObject **n,
+               PyObject **axis)
 {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     if (kwds) {
@@ -434,10 +485,10 @@ parse_args_n(PyObject *args,
 }
 
 static BN_INLINE int
-parse_args(PyObject *args,
-           PyObject *kwds,
-           PyObject **arr,
-           PyObject **axis)
+parse_rankdata(PyObject *args,
+               PyObject *kwds,
+               PyObject **arr,
+               PyObject **axis)
 {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     if (kwds) {
@@ -496,6 +547,79 @@ parse_args(PyObject *args,
 
 }
 
+static BN_INLINE int
+parse_push(PyObject *args,
+           PyObject *kwds,
+           PyObject **arr,
+           PyObject **n,
+           PyObject **axis)
+{
+    const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+    if (kwds) {
+        int nkwds_found = 0;
+        const Py_ssize_t nkwds = PyDict_Size(kwds);
+        PyObject *tmp;
+        switch (nargs) {
+            case 2: *n = PyTuple_GET_ITEM(args, 1);
+            case 1: *arr = PyTuple_GET_ITEM(args, 0);
+            case 0: break;
+            default:
+                TYPE_ERR("wrong number of arguments");
+                return 0;
+        }
+        switch (nargs) {
+            case 0:
+                *arr = PyDict_GetItem(kwds, pystr_arr);
+                if (*arr == NULL) {
+                    TYPE_ERR("Cannot find `arr` keyword input");
+                    return 0;
+                }
+                nkwds_found += 1;
+            case 1:
+                tmp = PyDict_GetItem(kwds, pystr_n);
+                if (tmp != NULL) {
+                    *n = tmp;
+                    nkwds_found++;
+                }
+            case 2:
+                tmp = PyDict_GetItem(kwds, pystr_axis);
+                if (tmp != NULL) {
+                    *axis = tmp;
+                    nkwds_found++;
+                }
+                break;
+            default:
+                TYPE_ERR("wrong number of arguments");
+                return 0;
+        }
+        if (nkwds_found != nkwds) {
+            TYPE_ERR("wrong number of keyword arguments");
+            return 0;
+        }
+        if (nargs + nkwds_found > 3) {
+            TYPE_ERR("too many arguments");
+            return 0;
+        }
+    }
+    else {
+        switch (nargs) {
+            case 3:
+                *axis = PyTuple_GET_ITEM(args, 2);
+            case 2:
+                *n = PyTuple_GET_ITEM(args, 1);
+            case 1:
+                *arr = PyTuple_GET_ITEM(args, 0);
+                break;
+            default:
+                TYPE_ERR("wrong number of arguments");
+                return 0;
+        }
+    }
+
+    return 1;
+
+}
+
 static PyObject *
 nonreducer_axis(char *name,
                 PyObject *args,
@@ -504,7 +628,7 @@ nonreducer_axis(char *name,
                 nra_t nra_float32,
                 nra_t nra_int64,
                 nra_t nra_int32,
-                int has_n)
+                parse_type parse)
 {
 
     int n;
@@ -517,15 +641,23 @@ nonreducer_axis(char *name,
     PyObject *n_obj = NULL;
     PyObject *axis_obj = NULL;
 
-    if (has_n) {
-        if (!parse_args_n(args, kwds, &arr_obj, &n_obj, &axis_obj)) {
+    if (parse == PARSE_PARTSORT) {
+        if (!parse_partsort(args, kwds, &arr_obj, &n_obj, &axis_obj)) {
+            return NULL;
+        }
+    }
+    else if (parse == PARSE_RANKDATA) {
+        if (!parse_rankdata(args, kwds, &arr_obj, &axis_obj)) {
+            return NULL;
+        }
+    }
+    else if (parse == PARSE_PUSH) {
+        if (!parse_push(args, kwds, &arr_obj, &n_obj, &axis_obj)) {
             return NULL;
         }
     }
     else {
-        if (!parse_args(args, kwds, &arr_obj, &axis_obj)) {
-            return NULL;
-        }
+        RUNTIME_ERR("Unknown parse type; please report error.");
     }
 
     /* convert to array if necessary */
@@ -546,7 +678,7 @@ nonreducer_axis(char *name,
 
     /* defend against the axis of negativity */
     if (axis_obj == NULL) {
-        if (has_n) {
+        if (parse == PARSE_PARTSORT || parse == PARSE_PUSH) {
             axis = PyArray_NDIM(a) - 1;
             if (axis < 0) {
                 PyErr_Format(PyExc_ValueError,
@@ -560,6 +692,10 @@ nonreducer_axis(char *name,
         }
     }
     else if (axis_obj == Py_None) {
+        if (parse == PARSE_PUSH) {
+            VALUE_ERR("`axis` cannot be None");
+            return NULL;
+        }
         a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
         axis = 0;
     }
@@ -591,6 +727,10 @@ nonreducer_axis(char *name,
         n = PyArray_PyIntAsInt(n_obj);
         if (error_converting(n)) {
             TYPE_ERR("`n` must be an integer");
+            return NULL;
+        }
+        if (n < 0 && parse == PARSE_PUSH) {
+            VALUE_ERR("`n` must be nonnegative");
             return NULL;
         }
     }
@@ -824,6 +964,49 @@ array([[ nan,   1.],
 
 MULTILINE STRING END */
 
+static char push_doc[] =
+/* MULTILINE STRING BEGIN
+push(arr, n=None, axis=-1)
+
+Fill missing values (NaNs) with most recent non-missing values.
+
+Filling proceeds along the specified axis from small index values to large
+index values.
+
+Parameters
+----------
+arr : array_like
+    Input array. If `arr` is not an array, a conversion is attempted.
+n : {int, None}, optional
+    How far to push values. If the most recent non-NaN array element is
+    more than `n` index positions away, than a NaN is returned. The default
+    (n = None) is to push the entire length of the slice. If `n` is an integer
+    it must be nonnegative.
+axis : int, optional
+    Axis along which the elements of the array are pushed. The default
+    (axis=-1) is to push along the last axis of the input array.
+
+Returns
+-------
+y : ndarray
+    An array with the same shape and dtype as `arr`.
+
+See also
+--------
+bottleneck.replace: Replace specified value of an array with new value.
+
+Examples
+--------
+>>> arr = np.array([5, np.nan, np.nan, 6, np.nan])
+>>> bn.push(arr)
+    array([ 5.,  5.,  5.,  6.,  6.])
+>>> bn.push(arr, n=1)
+    array([  5.,   5.,  nan,   6.,   6.])
+>>> bn.push(arr, n=2)
+    array([ 5.,  5.,  5.,  6.,  6.])
+
+MULTILINE STRING END */
+
 /* python wrapper -------------------------------------------------------- */
 
 static PyMethodDef
@@ -832,6 +1015,7 @@ nra_methods[] = {
     {"argpartsort", (PyCFunction)argpartsort, VARKEY, argpartsort_doc},
     {"rankdata",    (PyCFunction)rankdata,    VARKEY, rankdata_doc},
     {"nanrankdata", (PyCFunction)nanrankdata, VARKEY, nanrankdata_doc},
+    {"push",        (PyCFunction)push,        VARKEY, push_doc},
     {NULL, NULL, 0, NULL}
 };
 

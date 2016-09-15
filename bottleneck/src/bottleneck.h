@@ -11,7 +11,7 @@
 #define THREADS 1
 #if THREADS
     #define BN_BEGIN_ALLOW_THREADS Py_BEGIN_ALLOW_THREADS
-    #define BN_END_ALLOW_THREADS Py_END_ALLOW_THREADS
+    #define BN_END_ALLOW_THREADS   Py_END_ALLOW_THREADS
 #else
     #define BN_BEGIN_ALLOW_THREADS
     #define BN_END_ALLOW_THREADS
@@ -20,9 +20,9 @@
 /* for ease of dtype templating */
 #define NPY_float64 NPY_FLOAT64
 #define NPY_float32 NPY_FLOAT32
-#define NPY_int64 NPY_INT64
-#define NPY_int32 NPY_INT32
-#define NPY_intp NPY_INTP
+#define NPY_int64   NPY_INT64
+#define NPY_int32   NPY_INT32
+#define NPY_intp    NPY_INTP
 #define NPY_MAX_int64 NPY_MAX_INT64
 #define NPY_MAX_int32 NPY_MAX_INT32
 #define NPY_MIN_int64 NPY_MIN_INT64
@@ -38,9 +38,10 @@
 #define VARKEY METH_VARARGS | METH_KEYWORDS
 #define error_converting(x) (((x) == -1) && PyErr_Occurred())
 
-#define VALUE_ERR(text) PyErr_SetString(PyExc_ValueError, text)
-#define TYPE_ERR(text) PyErr_SetString(PyExc_TypeError, text)
-#define MEMORY_ERR(text) PyErr_SetString(PyExc_MemoryError, text)
+#define VALUE_ERR(text)   PyErr_SetString(PyExc_ValueError, text)
+#define TYPE_ERR(text)    PyErr_SetString(PyExc_TypeError, text)
+#define MEMORY_ERR(text)  PyErr_SetString(PyExc_MemoryError, text)
+#define RUNTIME_ERR(text) PyErr_SetString(PyExc_RuntimeError, text)
 
 /* `inline` copied from NumPy. */
 #if defined(_MSC_VER)
@@ -72,9 +73,9 @@ BN_INLINE static float __bn_nanf(void)
 }
 
 #define BN_INFINITYF __bn_inff()
-#define BN_NANF __bn_nanf()
+#define BN_NANF      __bn_nanf()
 #define BN_INFINITY ((npy_double)BN_INFINITYF)
-#define BN_NAN ((npy_double)BN_NANF)
+#define BN_NAN      ((npy_double)BN_NANF)
 
 #define C_CONTIGUOUS(a) PyArray_CHKFLAGS(a, NPY_ARRAY_C_CONTIGUOUS)
 #define F_CONTIGUOUS(a) PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS)

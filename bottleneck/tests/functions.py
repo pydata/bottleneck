@@ -86,5 +86,6 @@ def func_dict():
                            bn.nanrankdata,
                            bn.nanrankdata2,
                            bn.push,
+                           bn.push2,
                            ]
     return d
