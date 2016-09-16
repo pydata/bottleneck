@@ -11,7 +11,23 @@ Bottleneck 1.2.0
 
 *Release date: in development, not yet released*
 
+This release is a complete rewrite of Bottleneck.
 
+**C**
+
+- Bottleneck is now written in C
+- Cython is no longer a dependency
+
+**Redesign**
+
+**Beware**
+
+**Thanks**
+
+- Christoph Gohlke helped with Windows compatibility
+- Jennifer Olsen provided comments and suggestions on design
+- A special thanks to the Cython developers. The quickest way to appreciate
+  their work is to remove Cython from your project.
 
 Older versions
 ==============
