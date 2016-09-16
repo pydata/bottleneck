@@ -178,9 +178,9 @@ REDUCE_ALL(nanmean, DTYPE0)
 REDUCE_ONE(nanmean, DTYPE0)
 {
     Py_ssize_t count;
+    npy_DTYPE0 ai, asum;
     INIT_ONE(NPY_DTYPE0, npy_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
-    npy_DTYPE0 ai, asum;
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     }
@@ -304,9 +304,9 @@ REDUCE_ALL(NAME, DTYPE0)
 REDUCE_ONE(NAME, DTYPE0)
 {
     Py_ssize_t count;
+    npy_DTYPE0 ai, asum, amean;
     INIT_ONE(NPY_DTYPE0, npy_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
-    npy_DTYPE0 ai, asum, amean;
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     }

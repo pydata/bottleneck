@@ -7,14 +7,15 @@
 
 /* THREADS=1 releases the GIL but increases function call
  * overhead. THREADS=0 does not release the GIL but keeps
- * function call overhead low. */
+ * function call overhead low. Curly brackets are for C89
+ * support. */
 #define THREADS 1
 #if THREADS
-    #define BN_BEGIN_ALLOW_THREADS Py_BEGIN_ALLOW_THREADS
-    #define BN_END_ALLOW_THREADS   Py_END_ALLOW_THREADS
+    #define BN_BEGIN_ALLOW_THREADS Py_BEGIN_ALLOW_THREADS {
+    #define BN_END_ALLOW_THREADS   ;} Py_END_ALLOW_THREADS
 #else
-    #define BN_BEGIN_ALLOW_THREADS
-    #define BN_END_ALLOW_THREADS
+    #define BN_BEGIN_ALLOW_THREADS {
+    #define BN_END_ALLOW_THREADS }
 #endif
 
 /* for ease of dtype templating */

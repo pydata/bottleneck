@@ -55,7 +55,7 @@ static inline void mm_swap_heap_heads(mm_node **s_heap, idx_t n_s,
 /* At the start of bn.move_median two heaps are created. One heap contains the
  * small values (a max heap); the other heap contains the large values (a min
  * heap). The handle, containing information about the heaps, is returned. */
-inline mm_handle *
+mm_handle *
 mm_new(const idx_t window, idx_t min_count)
 {
 
@@ -79,7 +79,7 @@ mm_new(const idx_t window, idx_t min_count)
 /* Insert a new value, ai, into one of the heaps. Use this function when
  * the heaps contain less than window-1 nodes. Returns the median value.
  * Once there are window-1 nodes in the heap, switch to using mm_update. */
-inline ai_t
+ai_t
 mm_update_init(mm_handle *mm, ai_t ai)
 {
 
@@ -135,7 +135,7 @@ mm_update_init(mm_handle *mm, ai_t ai)
  * when the double heap contains at least window-1 nodes. Returns the median
  * value. If there are less than window-1 nodes in the heap, use
  * mm_update_init. */
-inline ai_t
+ai_t
 mm_update(mm_handle *mm, ai_t ai)
 {
     /* node is oldest node with ai of newest node */
@@ -172,7 +172,7 @@ mm_update(mm_handle *mm, ai_t ai)
  * heap contains the small values (a max heap); the other heap contains the
  * large values (a min heap); the nan array contains the NaNs. The handle,
  * containing information about the heaps and the nan array is returned. */
-inline mm_handle *
+mm_handle *
 mm_new_nan(const idx_t window, idx_t min_count)
 {
 
@@ -197,7 +197,7 @@ mm_new_nan(const idx_t window, idx_t min_count)
  * function when there are less than window-1 nodes. Returns the median
  * value. Once there are window-1 nodes in the heap, switch to using
  * mm_update_nan. */
-inline ai_t
+ai_t
 mm_update_init_nan(mm_handle *mm, ai_t ai)
 {
 
@@ -270,7 +270,7 @@ mm_update_init_nan(mm_handle *mm, ai_t ai)
 /* Insert a new value, ai, into one of the heaps or the nan array. Use this
  * function when there are at least window-1 nodes. Returns the median value.
  * If there are less than window-1 nodes, use mm_update_init_nan. */
-inline ai_t
+ai_t
 mm_update_nan(mm_handle *mm, ai_t ai)
 {
     idx_t n_s, n_l, n_n;
@@ -486,7 +486,7 @@ mm_update_nan(mm_handle *mm, ai_t ai)
 /* At the end of each slice the double heap and nan array are reset (mm_reset)
  * to prepare for the next slice. In the 2d input array case (with axis=1),
  * each slice is a row of the input array. */
-inline void
+void
 mm_reset(mm_handle *mm)
 {
     mm->n_l = 0;
@@ -498,7 +498,7 @@ mm_reset(mm_handle *mm)
 
 
 /* After bn.move_median is done, free the memory */
-inline void
+void
 mm_free(mm_handle *mm)
 {
     free(mm->node_data);

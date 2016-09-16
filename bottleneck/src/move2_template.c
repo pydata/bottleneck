@@ -462,11 +462,10 @@ MOVE(NAME, DTYPE0)
 {
     npy_DTYPE0 ai, aold, yi_tmp;
     Py_ssize_t count;
-    pairs *ring;
     pairs *extreme_pair;
     pairs *end;
     pairs *last;
-    ring = (pairs *)malloc(window * sizeof(pairs));
+    pairs *ring = (pairs *)malloc(window * sizeof(pairs));
     INIT(NPY_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
@@ -510,11 +509,10 @@ MOVE(NAME, DTYPE0)
 {
     npy_DTYPE0 ai;
     npy_DTYPE1 yi_tmp;
-    pairs *ring;
     pairs *extreme_pair;
     pairs *end;
     pairs *last;
-    ring = (pairs *)malloc(window * sizeof(pairs));
+    pairs *ring = (pairs *)malloc(window * sizeof(pairs));
     INIT(NPY_DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
@@ -597,14 +595,14 @@ MOVE(move_median, DTYPE0)
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(move_median, DTYPE0)
 {
+    npy_DTYPE0 ai;
+    mm_handle *mm = mm_new(window, min_count);
+    INIT(NPY_DTYPE1)
     if (window == 1) {
         return PyArray_CastToType(a,
                                   PyArray_DescrFromType(NPY_DTYPE1),
                                   PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS));
     }
-    npy_DTYPE0 ai;
-    mm_handle *mm = mm_new(window, min_count);
-    INIT(NPY_DTYPE1)
     if (mm == NULL) {
         MEMORY_ERR("Could not allocate memory for move_median");
     }
