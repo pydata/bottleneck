@@ -1487,7 +1487,7 @@ def move_median(arr, int window, min_count=None, axis=-1):
         return slow.move_median(arr, window, min_count, axis)
 
 
-cdef extern from "csrc/move_median.c":
+cdef extern from "src/move_median/move_median.c":
     struct _mm_node:
         np.npy_uint32   small
         np.npy_uint64   idx

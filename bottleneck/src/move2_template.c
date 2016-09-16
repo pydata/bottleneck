@@ -1,6 +1,6 @@
 #include "bottleneck.h"
 #include "iterators.h"
-#include "../csrc/move_median.h"
+#include "move_median/move_median.h"
 
 /*
    move_min, move_max, move_argmin, and move_argmax are based on
