@@ -419,9 +419,9 @@ parse_partsort(PyObject *args,
                PyObject **axis)
 {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
-    if (kwds) {
+    const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
+    if (nkwds) {
         int nkwds_found = 0;
-        const Py_ssize_t nkwds = PyDict_Size(kwds);
         PyObject *tmp;
         switch (nargs) {
             case 2: *n = PyTuple_GET_ITEM(args, 1);
@@ -491,9 +491,9 @@ parse_rankdata(PyObject *args,
                PyObject **axis)
 {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
-    if (kwds) {
+    const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
+    if (nkwds) {
         int nkwds_found = 0;
-        const Py_ssize_t nkwds = PyDict_Size(kwds);
         PyObject *tmp;
         switch (nargs) {
             case 1: *arr = PyTuple_GET_ITEM(args, 0);
@@ -555,9 +555,9 @@ parse_push(PyObject *args,
            PyObject **axis)
 {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
-    if (kwds) {
+    const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
+    if (nkwds) {
         int nkwds_found = 0;
-        const Py_ssize_t nkwds = PyDict_Size(kwds);
         PyObject *tmp;
         switch (nargs) {
             case 2: *n = PyTuple_GET_ITEM(args, 1);

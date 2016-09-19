@@ -261,6 +261,18 @@ def unit_maker_parse(func, decimal=5):
         err_msg = fmt % "(arr, 1, axis=None)"
         assert_array_almost_equal(actual, desired, decimal, err_msg)
 
+        # regression test: make sure len(kwargs) == 0 doesn't raise
+        args = (arr, 1, -1)
+        kwargs = {}
+        func(*args, **kwargs)
+
+    else:
+
+        # regression test: make sure len(kwargs) == 0 doesn't raise
+        args = (arr, 1)
+        kwargs = {}
+        func(*args, **kwargs)
+
 
 def unit_maker_raises(func):
     "test argument parsing raises in nonreduce_axis"

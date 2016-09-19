@@ -792,9 +792,9 @@ parse_args(PyObject *args,
            PyObject **ddof)
 {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
-    if (kwds) {
+    const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
+    if (nkwds) {
         int nkwds_found = 0;
-        const Py_ssize_t nkwds = PyDict_Size(kwds);
         PyObject *tmp;
         switch (nargs) {
             case 4:

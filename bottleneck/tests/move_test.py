@@ -195,6 +195,11 @@ def unit_maker_argparse(func, decimal=5):
         err_msg = fmt % "(arr, 2, 1, -1, ddof=1)"
         assert_array_almost_equal(actual, desired, decimal, err_msg)
 
+    # regression test: make sure len(kwargs) == 0 doesn't raise
+    args = (arr, 1, 1, -1)
+    kwargs = {}
+    func(*args, **kwargs)
+
 
 def test_arg_parse_raises():
     "test argument parsing raises in move"

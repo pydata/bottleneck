@@ -128,7 +128,6 @@ def test_replace_unsafe_cast():
         assert_raises(ValueError, bn.slow.replace, a.copy(), 0, 0.1)
 
 
-@np.testing.decorators.skipif(1, "issue #145")  # TODO: remove
 def test_replace2_unsafe_cast():
     "Test replace for unsafe casts"
     dtypes = ['int32', 'int64']

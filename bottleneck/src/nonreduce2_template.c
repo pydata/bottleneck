@@ -315,14 +315,14 @@ MULTILINE STRING END */
 
 static PyMethodDef
 nonreduce_methods[] = {
-    {"replace",    (PyCFunction)replace,    VARKEY, replace_doc},
+    {"replace", (PyCFunction)replace, VARKEY, replace_doc},
     {NULL, NULL, 0, NULL}
 };
 
 
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef
-move_def = {
+nonreduce_def = {
    PyModuleDef_HEAD_INIT,
    "nonreduce2",
    nonreduce_doc,
