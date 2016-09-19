@@ -46,6 +46,10 @@ try:
 except:
     pass
 try:
+    from .nonreduce2 import replace as replace2
+except:
+    pass
+try:
     from .nonreduce_axis import (partsort, argpartsort, rankdata, nanrankdata,
                                  push)
 except:

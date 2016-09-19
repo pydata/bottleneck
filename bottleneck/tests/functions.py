@@ -76,7 +76,7 @@ def func_dict():
                  bn.move_rank,
                  bn.move_rank2,
                  ]
-    d['nonreduce'] = [bn.replace]
+    d['nonreduce'] = [bn.replace, bn.replace2]
     d['nonreduce_axis'] = [bn.partsort,
                            bn.partsort2,
                            bn.argpartsort,

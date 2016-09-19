@@ -10,49 +10,82 @@ DTYPES = [np.float64, np.float32, np.int64, np.int32]
 nan = np.nan
 
 
-def arrays(dtypes=DTYPES, nans=True):
+def test_nonreduce():
+    "test nonreduce functions"
+    for func in [bn.replace2]:  # TODO: use nonreduce_functions after rm Cython
+        yield unit_maker, func
+
+
+def arrays(dtypes=DTYPES):
     "Iterator that yield arrays to use for unit testing."
+
+    nan = np.nan
+    inf = np.inf
+
+    # nan and inf
+    yield np.array([inf, nan])
+    yield np.array([inf, -inf])
+    yield np.array([nan, inf])
+
+    # byte swapped
+    yield np.array([1, 2, 3], dtype='>f4')
+    yield np.array([1, 2, 3], dtype='<f4')
+
+    # make sure slow is called
+    yield np.array([1, 2, 3], dtype=np.float16)
+
+    # ties
+    yield np.array([0, 0, 0])
+    yield np.array([0, 0, 0], dtype=np.float64)
+    yield np.array([1, 1, 1], dtype=np.float64)
+
+    # 0d input
+    yield np.array(-9)
+    yield np.array(0)
+    yield np.array(9)
+    yield np.array(-9.0)
+    yield np.array(0.0)
+    yield np.array(9.0)
+    yield np.array(-inf)
+    yield np.array(inf)
+    yield np.array(nan)
+
     ss = {}
     ss[0] = {'size':  0, 'shapes': [(0,), (0, 0), (2, 0), (2, 0, 1)]}
     ss[1] = {'size':  4, 'shapes': [(4,)]}
     ss[2] = {'size':  6, 'shapes': [(1, 6), (2, 3)]}
     ss[3] = {'size':  6, 'shapes': [(1, 2, 3)]}
     ss[4] = {'size': 24, 'shapes': [(1, 2, 3, 4)]}
-    for ndim in ss:
-        size = ss[ndim]['size']
-        shapes = ss[ndim]['shapes']
-        for dtype in dtypes:
-            a = np.arange(size, dtype=dtype)
-            for shape in shapes:
-                a = a.reshape(shape)
-                yield a
-            if issubclass(a.dtype.type, np.inexact):
-                if nans:
-                    for i in range(a.size):
-                        a.flat[i] = np.nan
-                        yield a
-                for i in range(a.size):
-                    a.flat[i] = np.inf
-                    yield a
-    yield np.array([0, 2, 3], dtype='>f4')
-    yield np.array([0, 2, 3], dtype='<f4')
-    yield np.array([1, 2, 3], dtype=np.float16)  # make sure slow is called
-    if nans:
-        # nanmedian regression tests
-        a = np.array([1, nan, nan, 2])
-        yield a
-        a = np.vstack((a, a))
-        yield a
-        yield a.reshape(1, 2, 4)
+    for seed in (1, 2):
+        rs = np.random.RandomState(seed)
+        for ndim in ss:
+            size = ss[ndim]['size']
+            shapes = ss[ndim]['shapes']
+            for dtype in dtypes:
+                a = np.arange(size, dtype=dtype)
+                if issubclass(a.dtype.type, np.inexact):
+                    idx = rs.rand(*a.shape) < 0.2
+                    a[idx] = inf
+                    idx = rs.rand(*a.shape) < 0.2
+                    a[idx] = nan
+                    idx = rs.rand(*a.shape) < 0.2
+                    a[idx] *= -1
+                    idx = rs.rand(*a.shape) < 0.2
+                    a[idx] = 0
+                rs.shuffle(a)
+                for shape in shapes:
+                    yield a.reshape(shape)
 
 
-def unit_maker(func, func0, nans=True):
+def unit_maker(func):
     "Test that bn.xxx gives the same output as np.xxx."
     msg = '\nfunc %s | input %s (%s) | shape %s | old %f | new %f\n'
     msg += '\nInput array:\n%s\n'
+    name = func.__name__
+    func0 = eval('bn.slow.%s' % name)
     olds = [0, np.nan, np.inf]
     news = [1, 0, np.nan]
-    for i, arr in enumerate(arrays(nans=nans)):
+    for i, arr in enumerate(arrays()):
         for old in olds:
             for new in news:
                 if not issubclass(arr.dtype.type, np.inexact):
@@ -70,7 +103,7 @@ def unit_maker(func, func0, nans=True):
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
                     func0(desired, old, new)
-                tup = (func.__name__, 'a'+str(i), str(arr.dtype),
+                tup = (name, 'a'+str(i), str(arr.dtype),
                        str(arr.shape), old, new, arr)
                 err_msg = msg % tup
                 assert_array_equal(actual, desired, err_msg=err_msg)
@@ -81,25 +114,30 @@ def unit_maker(func, func0, nans=True):
                     assert_equal(da, dd, err_msg % (da, dd))
 
 
-def test_replace():
-    "Test replace."
-    yield unit_maker, bn.replace, bn.slow.replace
-
-
 # ---------------------------------------------------------------------------
 # Check that exceptions are raised
 
 def test_replace_unsafe_cast():
-    "Test replace for unsafe casts."
+    "Test replace for unsafe casts"
     dtypes = ['int32', 'int64']
-    shapes = [(0,), (2, 0), (1, 2, 0)]
-    for shape in shapes:
-        for dtype in dtypes:
-            a = np.zeros(shape, dtype=dtype)
-            assert_raises(ValueError, bn.replace, a, 0.1, 0)
-            assert_raises(ValueError, bn.replace, a, 0, 0.1)
-            assert_raises(ValueError, bn.slow.replace, a, 0.1, 0)
-            assert_raises(ValueError, bn.slow.replace, a, 0, 0.1)
+    for dtype in dtypes:
+        a = np.zeros(3, dtype=dtype)
+        assert_raises(ValueError, bn.replace, a.copy(), 0.1, 0)
+        assert_raises(ValueError, bn.replace, a.copy(), 0, 0.1)
+        assert_raises(ValueError, bn.slow.replace, a.copy(), 0.1, 0)
+        assert_raises(ValueError, bn.slow.replace, a.copy(), 0, 0.1)
+
+
+@np.testing.decorators.skipif(1, "issue #145")  # TODO: remove
+def test_replace2_unsafe_cast():
+    "Test replace for unsafe casts"
+    dtypes = ['int32', 'int64']
+    for dtype in dtypes:
+        a = np.zeros(3, dtype=dtype)
+        assert_raises(ValueError, bn.replace2, a.copy(), 0.1, 0)
+        assert_raises(ValueError, bn.replace2, a.copy(), 0, 0.1)
+        assert_raises(ValueError, bn.slow.replace, a.copy(), 0.1, 0)
+        assert_raises(ValueError, bn.slow.replace, a.copy(), 0, 0.1)
 
 
 def test_non_array():
@@ -108,6 +146,10 @@ def test_non_array():
     assert_raises(TypeError, bn.replace, a, 0, 1)
     a = (1, 2, 3)
     assert_raises(TypeError, bn.replace, a, 0, 1)
+    a = [1, 2, 3]
+    assert_raises(TypeError, bn.replace2, a, 0, 1)
+    a = (1, 2, 3)
+    assert_raises(TypeError, bn.replace2, a, 0, 1)
 
 
 # ---------------------------------------------------------------------------
@@ -119,6 +161,20 @@ def test_replace_nan_int():
     a = np.arange(2*3*4).reshape(2, 3, 4)
     actual = a.copy()
     bn.replace(actual, np.nan, 0)
+    desired = a.copy()
+    msg = 'replace failed on int input looking for nans'
+    assert_array_equal(actual, desired, err_msg=msg)
+    actual = a.copy()
+    bn.slow.replace(actual, np.nan, 0)
+    msg = 'slow.replace failed on int input looking for nans'
+    assert_array_equal(actual, desired, err_msg=msg)
+
+
+def test_replace2_nan_int():
+    "Test replace, int array, old=nan, new=0"
+    a = np.arange(2*3*4).reshape(2, 3, 4)
+    actual = a.copy()
+    bn.replace2(actual, np.nan, 0)
     desired = a.copy()
     msg = 'replace failed on int input looking for nans'
     assert_array_equal(actual, desired, err_msg=msg)
