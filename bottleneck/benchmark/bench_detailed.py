@@ -40,11 +40,15 @@ def benchsuite(function):
 
     is_reduce_like = (function in bn.get_functions('reduce', as_string=True) or
                       function in ['rankdata', 'nanrankdata'])
+    is_move_like = (function in bn.get_functions('move', as_string=True) or
+                    function in ['partsort', 'argpartsort', 'push'])
 
     if is_reduce_like:
         suite = suite_reduce(function)
-    elif function in bn.get_functions('move', as_string=True):
+    elif is_move_like:
         suite = suite_move(function)
+    elif function == 'replace':
+        suite = suite_replace(function)
     else:
         raise ValueError("`function` (%s) not recognized" % function)
 
@@ -107,6 +111,63 @@ def suite_reduce(function):
         sig_array.append(("%s%s(a, 2)", arr))
     for arr in arrays_0d:
         sig_array.append(("%s%s(a)", arr))
+
+    f = function
+    suite = []
+    for signature, array in sig_array:
+        run = {}
+        run['name'] = [signature % (f, ''), array]
+        run['statements'] = [signature % (f, "_c"), signature % (f, "")]
+        run['setup'] = setup % (f, f, f, array)
+        suite.append(run)
+
+    return suite
+
+
+def suite_replace(function):
+
+    setup = """
+        import numpy as np
+        from bottleneck import %s
+        from bottleneck import %s2 as %s_c
+        from numpy import array
+        from numpy.random import rand
+        a=%s
+    """
+
+    arrays_1d = [
+                 "rand(1)",
+                 "rand(10)",
+                 "rand(100)",
+                 "rand(1000)",
+                 "rand(1000000)",
+                 "rand(1).astype(np.float16)",
+                 ]
+
+    arrays_2d = [
+                 "rand(1, 1)",
+                 "rand(10, 10)",
+                 "rand(100, 100)",
+                 "rand(1000, 1000)",
+                 "rand(1000000, 2)",
+                 "rand(2, 1000000)",
+                 "rand(4, 1)[::2]",
+                 "rand(200, 100)[::2]",
+                 "rand(2000000, 2)[::2]",
+                 "rand(2, 2000000)[:, ::2]",
+                 ]
+
+    arrays_3d = ["rand(100, 100, 100)"]
+
+    sig_array = []
+    for arr in arrays_1d:
+        sig_array.append(("%s%s(a, np.nan, 0)", arr))
+    for arr in arrays_2d:
+        sig_array.append(("%s%s(a, np.nan, 0)", arr))
+    for arr in arrays_2d:
+        sig_array.append(("%s%s(a, np.nan, 0)", arr))
+    for arr in arrays_3d:
+        sig_array.append(("%s%s(a, np.nan, 0)", arr))
 
     f = function
     suite = []
