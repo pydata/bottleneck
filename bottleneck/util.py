@@ -1,29 +1,19 @@
 import bottleneck as bn
 
 
-def reduce_functions():
-    return func_dict()['reduce']
-
-
-def move_functions():
-    return func_dict()['move']
-
-
-def nonreduce_functions():
-    return func_dict()['nonreduce']
-
-
-def nonreduce_axis_functions():
-    return func_dict()['nonreduce_axis']
-
-
-def all_functions():
-    a = []
-    funcs = func_dict()
-    for key in funcs:
-        for func in funcs[key]:
-            a.append(func)
-    return a
+def get_functions(module_name, as_string=False):
+    "Returns a list of functions, optionally as string function names"
+    if module_name == 'all':
+        funcs = []
+        funcs_in_dict = func_dict()
+        for key in funcs_in_dict:
+            for func in funcs_in_dict[key]:
+                funcs.append(func)
+    else:
+        funcs = func_dict()[module_name]
+    if as_string:
+        funcs = [f.__name__ for f in funcs]
+    return funcs
 
 
 def func_dict():

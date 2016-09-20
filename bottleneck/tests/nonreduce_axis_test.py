@@ -5,7 +5,6 @@ from numpy.testing import (assert_equal, assert_array_equal,
 import bottleneck as bn
 from .reduce_test import (arrays_strides, unit_maker as reduce_unit_maker,
                           unit_maker_argparse as unit_maker_parse_rankdata)
-from .functions import nonreduce_axis_functions
 
 DTYPES = [np.float64, np.float32, np.int64, np.int32]
 nan = np.nan
@@ -170,7 +169,7 @@ def test_push2():
 
 def test_strides():
     "test nonreducer_axis functions with non-C ordered arrays"
-    for func in nonreduce_axis_functions():
+    for func in bn.get_functions('nonreduce_axis'):
         yield unit_maker_strides, func
 
 
@@ -213,7 +212,7 @@ def unit_maker_strides(func, decimal=5):
 
 def test_arg_parsing():
     "test argument parsing in nonreduce_axis"
-    for func in nonreduce_axis_functions():
+    for func in bn.get_functions('nonreduce_axis'):
         name = func.__name__
         if name in ('partsort', 'argpartsort'):
             yield unit_maker_parse, func

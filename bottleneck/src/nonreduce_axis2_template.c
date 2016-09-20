@@ -254,6 +254,7 @@ NRA(rankdata, DTYPE0)
     }
     BN_END_ALLOW_THREADS
 
+    Py_DECREF(z);
     return y;
 }
 /* dtype end */
@@ -329,6 +330,7 @@ NRA(nanrankdata, DTYPE0)
     }
     BN_END_ALLOW_THREADS
 
+    Py_DECREF(z);
     return y;
 }
 /* dtype end */

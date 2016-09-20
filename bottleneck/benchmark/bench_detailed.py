@@ -3,10 +3,10 @@ import numpy as np
 import bottleneck as bn
 from .autotimeit import autotimeit
 
-__all__ = ['bench2']
+__all__ = ['bench_detailed']
 
 
-def bench2(function='nansum'):
+def bench_detailed(function='nansum'):
     "Bottleneck benchmark of C rewrite."
 
     tab = '    '
@@ -38,10 +38,15 @@ def timer(statements, setup):
 
 def benchsuite(function):
 
-    if function.startswith("move_"):
+    is_reduce_like = (function in bn.get_functions('reduce', as_string=True) or
+                      function in ['rankdata', 'nanrankdata'])
+
+    if is_reduce_like:
+        suite = suite_reduce(function)
+    elif function in bn.get_functions('move', as_string=True):
         suite = suite_move(function)
     else:
-        suite = suite_reduce(function)
+        raise ValueError("`function` (%s) not recognized" % function)
 
     # Strip leading spaces from setup code
     for i, run in enumerate(suite):
@@ -97,7 +102,9 @@ def suite_reduce(function):
     for arr in arrays_2d:
         sig_array.append(("%s%s(a, 1)", arr))
     for arr in arrays_3d:
+        sig_array.append(("%s%s(a, 0)", arr))
         sig_array.append(("%s%s(a, 1)", arr))
+        sig_array.append(("%s%s(a, 2)", arr))
     for arr in arrays_0d:
         sig_array.append(("%s%s(a)", arr))
 
@@ -124,14 +131,14 @@ def suite_move(function):
     """
 
     sig_array = [
-                 ("%s%s(a, 2)", "rand(2)"),
-                 ("%s%s(a, 2)", "rand(100)"),
-                 ("%s%s(a, 2)", "rand(1000)"),
-                 ("%s%s(a, 2)", "rand(1000*1000)"),
-                 ("%s%s(a, 200)", "rand(1000*1000)"),
-                 ("%s%s(a, 2)", "rand(1000, 1000)"),
-                 ("%s%s(a, 2)", "rand(1000, 2)"),
-                 ("%s%s(a, 2)", "rand(1000, 1000, 2)"),
+                 ("%s%s(a, 2)",   "rand(2)"),
+                 ("%s%s(a, 10)",  "rand(100)"),
+                 ("%s%s(a, 100)", "rand(1000)"),
+                 ("%s%s(a, 2)",   "rand(1000*1000)"),
+                 ("%s%s(a, 100)", "rand(1000*1000)"),
+                 ("%s%s(a, 2)",   "rand(1000, 1000)"),
+                 ("%s%s(a, 2)",   "rand(1000, 2)"),
+                 ("%s%s(a, 2)",   "rand(1000, 1000, 2)"),
                 ]
 
     f = function
