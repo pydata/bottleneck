@@ -313,16 +313,16 @@ init_iter3(iter3 *it, PyArrayObject *a, PyObject *y, PyObject *z, int axis)
 
 #define  RESET          it.its = 0;
 
-#define  A0(dtype)      *(dtype *)(it.pa)
-#define  AI(dtype)      *(dtype *)(it.pa + it.i * it.astride)
-#define  AX(dtype, x)   *(dtype *)(it.pa + (x) * it.astride)
-#define  AOLD(dtype)    *(dtype *)(it.pa + (it.i - window) * it.astride)
+#define  A0(dtype)      *(npy_##dtype *)(it.pa)
+#define  AI(dtype)      *(npy_##dtype *)(it.pa + it.i * it.astride)
+#define  AX(dtype, x)   *(npy_##dtype *)(it.pa + (x) * it.astride)
+#define  AOLD(dtype)    *(npy_##dtype *)(it.pa + (it.i - window) * it.astride)
 
 #define  YPP            *py++
-#define  YI(dtype)      *(dtype *)(it.py + it.i++ * it.ystride)
-#define  YX(dtype, x)   *(dtype *)(it.py + (x) * it.ystride)
+#define  YI(dtype)      *(npy_##dtype *)(it.py + it.i++ * it.ystride)
+#define  YX(dtype, x)   *(npy_##dtype *)(it.py + (x) * it.ystride)
 
-#define  ZX(dtype, x)   *(dtype *)(it.pz + (x) * it.zstride)
+#define  ZX(dtype, x)   *(npy_##dtype *)(it.pz + (x) * it.zstride)
 
 #define FILL_Y(value) \
     int i; \

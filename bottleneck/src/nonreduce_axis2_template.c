@@ -68,7 +68,7 @@ NRA(partsort, DTYPE0)
     WHILE {
         l = 0;
         r = LENGTH - 1;
-        PARTITION(npy_DTYPE0)
+        PARTITION(DTYPE0)
         NEXT
     }
     BN_END_ALLOW_THREADS
@@ -93,7 +93,7 @@ NRA_MAIN(partsort, PARSE_PARTSORT)
         while (B[i] < x) i++; \
         while (x < B[j]) j--; \
         if (i <= j) { \
-            dtype0 atmp = B[i]; \
+            npy_##dtype0 atmp = B[i]; \
             B[i] = B[j]; \
             B[j] = atmp; \
             ytmp = YX(dtype1, i); \
@@ -108,11 +108,11 @@ NRA_MAIN(partsort, PARSE_PARTSORT)
 
 #define ARGPARTITION(dtype0, dtype1) \
     while (l < r) { \
-        dtype0 x; \
-        dtype0 al = B[l]; \
-        dtype0 ak = B[k]; \
-        dtype0 ar = B[r]; \
-        dtype1 ytmp; \
+        npy_##dtype0 x; \
+        npy_##dtype0 al = B[l]; \
+        npy_##dtype0 ak = B[k]; \
+        npy_##dtype0 ar = B[r]; \
+        npy_##dtype1 ytmp; \
         if (al > ak) { \
             if (ak < ar) { \
                 if (al < ar) { \
@@ -185,7 +185,7 @@ NRA(argpartsort, DTYPE0)
     WHILE {
         l = 0;
         r = LENGTH - 1;
-        ARGPARTSORT(npy_DTYPE0, npy_DTYPE1)
+        ARGPARTSORT(DTYPE0, DTYPE1)
         NEXT2
     }
     BUFFER_DELETE
@@ -221,21 +221,21 @@ NRA(rankdata, DTYPE0)
     }
     else {
         WHILE {
-            idx = ZX(npy_DTYPE2, 0);
-            old = AX(npy_DTYPE0, idx);
+            idx = ZX(DTYPE2, 0);
+            old = AX(DTYPE0, idx);
             sumranks = 0;
             dupcount = 0;
             for (i = 0; i < LENGTH - 1; i++) {
                 sumranks += i;
                 dupcount++;
                 k = i + 1;
-                idx = ZX(npy_DTYPE2, k);
-                new = AX(npy_DTYPE0, idx);
+                idx = ZX(DTYPE2, k);
+                new = AX(DTYPE0, idx);
                 if (old != new) {
                     averank = sumranks / dupcount + 1;
                     for (j = k - dupcount; j < k; j++) {
-                        idx = ZX(npy_DTYPE2, j);
-                        YX(npy_DTYPE1, idx) = averank;
+                        idx = ZX(DTYPE2, j);
+                        YX(DTYPE1, idx) = averank;
                     }
                     sumranks = 0;
                     dupcount = 0;
@@ -246,8 +246,8 @@ NRA(rankdata, DTYPE0)
             dupcount++;
             averank = sumranks / dupcount + 1;
             for (j = LENGTH - dupcount; j < LENGTH; j++) {
-                idx = ZX(npy_DTYPE2, j);
-                YX(npy_DTYPE1, idx) = averank;
+                idx = ZX(DTYPE2, j);
+                YX(DTYPE1, idx) = averank;
             }
             NEXT3
         }
@@ -284,27 +284,27 @@ NRA(nanrankdata, DTYPE0)
     }
     else {
         WHILE {
-            idx = ZX(npy_DTYPE2, 0);
-            old = AX(npy_DTYPE0, idx);
+            idx = ZX(DTYPE2, 0);
+            old = AX(DTYPE0, idx);
             sumranks = 0;
             dupcount = 0;
             for (i = 0; i < LENGTH - 1; i++) {
                 sumranks += i;
                 dupcount++;
                 k = i + 1;
-                idx = ZX(npy_DTYPE2, k);
-                new = AX(npy_DTYPE0, idx);
+                idx = ZX(DTYPE2, k);
+                new = AX(DTYPE0, idx);
                 if (old != new) {
                     if (old == old) {
                         averank = sumranks / dupcount + 1;
                         for (j = k - dupcount; j < k; j++) {
-                            idx = ZX(npy_DTYPE2, j);
-                            YX(npy_DTYPE1, idx) = averank;
+                            idx = ZX(DTYPE2, j);
+                            YX(DTYPE1, idx) = averank;
                         }
                     }
                     else {
-                        idx = ZX(npy_DTYPE2, i);
-                        YX(npy_DTYPE1, idx) = BN_NAN;
+                        idx = ZX(DTYPE2, i);
+                        YX(DTYPE1, idx) = BN_NAN;
                     }
                     sumranks = 0;
                     dupcount = 0;
@@ -316,13 +316,13 @@ NRA(nanrankdata, DTYPE0)
             averank = sumranks / dupcount + 1;
             if (old == old) {
                 for (j = LENGTH - dupcount; j < LENGTH; j++) {
-                    idx = ZX(npy_DTYPE2, j);
-                    YX(npy_DTYPE1, idx) = averank;
+                    idx = ZX(DTYPE2, j);
+                    YX(DTYPE1, idx) = averank;
                 }
             }
             else {
-                idx = ZX(npy_DTYPE2, LENGTH - 1);
-                YX(npy_DTYPE1, idx) = BN_NAN;
+                idx = ZX(DTYPE2, LENGTH - 1);
+                YX(DTYPE1, idx) = BN_NAN;
             }
             NEXT3
         }
@@ -366,14 +366,14 @@ NRA(push, DTYPE0)
         index = 0;
         ai_last = BN_NAN;
         FOR {
-            ai = AI(npy_DTYPE0);
+            ai = AI(DTYPE0);
             if (ai == ai) {
                 ai_last = ai;
                 index = INDEX;
             }
             else {
                 if (INDEX - index <= n_float) {
-                    AI(npy_DTYPE0) = ai_last;
+                    AI(DTYPE0) = ai_last;
                 }
             }
         }

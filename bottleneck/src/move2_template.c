@@ -79,24 +79,24 @@ MOVE(move_sum, DTYPE0)
     WHILE {
         asum = count = 0;
         WHILE0 {
-            ai = AI(npy_DTYPE0);
+            ai = AI(DTYPE0);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
-            YI(npy_DTYPE0) = BN_NAN;
+            YI(DTYPE0) = BN_NAN;
         }
         WHILE1 {
-            ai = AI(npy_DTYPE0);
+            ai = AI(DTYPE0);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
-            YI(npy_DTYPE0) = count >= min_count ? asum : BN_NAN;
+            YI(DTYPE0) = count >= min_count ? asum : BN_NAN;
         }
         WHILE2 {
-            ai = AI(npy_DTYPE0);
-            aold = AOLD(npy_DTYPE0);
+            ai = AI(DTYPE0);
+            aold = AOLD(DTYPE0);
             if (ai == ai) {
                 if (aold == aold) {
                     asum += ai - aold;
@@ -112,7 +112,7 @@ MOVE(move_sum, DTYPE0)
                     count--;
                 }
             }
-            YI(npy_DTYPE0) = count >= min_count ? asum : BN_NAN;
+            YI(DTYPE0) = count >= min_count ? asum : BN_NAN;
         }
         NEXT2
     }
@@ -131,16 +131,16 @@ MOVE(move_sum, DTYPE0)
     WHILE {
         asum = 0;
         WHILE0 {
-            asum += AI(npy_DTYPE0);
-            YI(npy_DTYPE1) = BN_NAN;
+            asum += AI(DTYPE0);
+            YI(DTYPE1) = BN_NAN;
         }
         WHILE1 {
-            asum += AI(npy_DTYPE0);
-            YI(npy_DTYPE1) = asum;
+            asum += AI(DTYPE0);
+            YI(DTYPE1) = asum;
         }
         WHILE2 {
-            asum += AI(npy_DTYPE0) - AOLD(npy_DTYPE0);
-            YI(npy_DTYPE1) = asum;
+            asum += AI(DTYPE0) - AOLD(DTYPE0);
+            YI(DTYPE1) = asum;
         }
         NEXT2
     }
@@ -165,25 +165,25 @@ MOVE(move_mean, DTYPE0)
     WHILE {
         asum = count = 0;
         WHILE0 {
-            ai = AI(npy_DTYPE0);
+            ai = AI(DTYPE0);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
-            YI(npy_DTYPE0) = BN_NAN;
+            YI(DTYPE0) = BN_NAN;
         }
         WHILE1 {
-            ai = AI(npy_DTYPE0);
+            ai = AI(DTYPE0);
             if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
-            YI(npy_DTYPE0) = count >= min_count ? asum / count : BN_NAN;
+            YI(DTYPE0) = count >= min_count ? asum / count : BN_NAN;
         }
         count_inv = 1.0 / count;
         WHILE2 {
-            ai = AI(npy_DTYPE0);
-            aold = AOLD(npy_DTYPE0);
+            ai = AI(DTYPE0);
+            aold = AOLD(DTYPE0);
             if (ai == ai) {
                 if (aold == aold) {
                     asum += ai - aold;
@@ -200,7 +200,7 @@ MOVE(move_mean, DTYPE0)
                     count_inv = 1.0 / count;
                 }
             }
-            YI(npy_DTYPE0) = count >= min_count ? asum * count_inv : BN_NAN;
+            YI(DTYPE0) = count >= min_count ? asum * count_inv : BN_NAN;
         }
         NEXT2
     }
@@ -219,17 +219,17 @@ MOVE(move_mean, DTYPE0)
     WHILE {
         asum = 0;
         WHILE0 {
-            asum += AI(npy_DTYPE0);
-            YI(npy_DTYPE1) = BN_NAN;
+            asum += AI(DTYPE0);
+            YI(DTYPE1) = BN_NAN;
         }
         WHILE1 {
-            asum += AI(npy_DTYPE0);
+            asum += AI(DTYPE0);
             *(npy_DTYPE1*)(it.py + it.i * it.ystride) = (npy_DTYPE1)asum / (it.i + 1);
             it.i++;
         }
         WHILE2 {
-            asum += AI(npy_DTYPE0) - AOLD(npy_DTYPE0);
-            YI(npy_DTYPE1) = (npy_DTYPE1)asum * window_inv;
+            asum += AI(DTYPE0) - AOLD(DTYPE0);
+            YI(DTYPE1) = (npy_DTYPE1)asum * window_inv;
         }
         NEXT2
     }
@@ -256,17 +256,17 @@ MOVE(NAME, DTYPE0)
     WHILE {
         amean = assqdm = count = 0;
         WHILE0 {
-            ai = AI(npy_DTYPE0);
+            ai = AI(DTYPE0);
             if (ai == ai) {
                 count += 1;
                 delta = ai - amean;
                 amean += delta / count;
                 assqdm += delta * (ai - amean);
             }
-            YI(npy_DTYPE0) = BN_NAN;
+            YI(DTYPE0) = BN_NAN;
         }
         WHILE1 {
-            ai = AI(npy_DTYPE0);
+            ai = AI(DTYPE0);
             if (ai == ai) {
                 count += 1;
                 delta = ai - amean;
@@ -282,13 +282,13 @@ MOVE(NAME, DTYPE0)
             else {
                 yi = BN_NAN;
             }
-            YI(npy_DTYPE0) = yi;
+            YI(DTYPE0) = yi;
         }
         count_inv = 1.0 / count;
         ddof_inv = 1.0 / (count - ddof);
         WHILE2 {
-            ai = AI(npy_DTYPE0);
-            aold = AOLD(npy_DTYPE0);
+            ai = AI(DTYPE0);
+            aold = AOLD(DTYPE0);
             if (ai == ai) {
                 if (aold == aold) {
                     delta = ai - aold;
@@ -331,7 +331,7 @@ MOVE(NAME, DTYPE0)
             else {
                 yi = BN_NAN;
             }
-            YI(npy_DTYPE0) = yi;
+            YI(DTYPE0) = yi;
         }
         NEXT2
     }
@@ -351,23 +351,23 @@ MOVE(NAME, DTYPE0)
     WHILE {
         amean = assqdm = 0;
         WHILE0 {
-            ai = AI(npy_DTYPE0);
+            ai = AI(DTYPE0);
             delta = ai - amean;
             amean += delta / (INDEX + 1);
             assqdm += delta * (ai - amean);
-            YI(npy_DTYPE1) = BN_NAN;
+            YI(DTYPE1) = BN_NAN;
         }
         WHILE1 {
-            ai = AI(npy_DTYPE0);
+            ai = AI(DTYPE0);
             delta = ai - amean;
             amean += delta / (INDEX + 1);
             assqdm += delta * (ai - amean);
             yi = FUNC(assqdm / (INDEX + 1 - ddof));
-            YI(npy_DTYPE1) = yi;
+            YI(DTYPE1) = yi;
         }
         WHILE2 {
-            ai = AI(npy_DTYPE0);
-            aold = AOLD(npy_DTYPE0);
+            ai = AI(DTYPE0);
+            aold = AOLD(DTYPE0);
             delta = ai - aold;
             aold -= amean;
             amean += delta * window_inv;
@@ -376,7 +376,7 @@ MOVE(NAME, DTYPE0)
             if (assqdm < 0) {
                 assqdm = 0;
             }
-            YI(npy_DTYPE1) = FUNC(assqdm * winddof_inv);
+            YI(DTYPE1) = FUNC(assqdm * winddof_inv);
         }
         NEXT2
     }
@@ -473,23 +473,23 @@ MOVE(NAME, DTYPE0)
         end = ring + window;
         last = ring;
         extreme_pair = ring;
-        ai = A0(npy_DTYPE0);
+        ai = A0(DTYPE0);
         extreme_pair->value = ai == ai ? ai : BIG_FLOAT;
         extreme_pair->death = window;
         WHILE0 {
-            MACRO_FLOAT(npy_DTYPE0,
+            MACRO_FLOAT(DTYPE0,
                         BN_NAN,
                         NULL)
         }
         WHILE1 {
-            MACRO_FLOAT(npy_DTYPE0,
+            MACRO_FLOAT(DTYPE0,
                         count >= min_count ? VALUE : BN_NAN,
                         NULL)
         }
         WHILE2 {
-            MACRO_FLOAT(npy_DTYPE0,
+            MACRO_FLOAT(DTYPE0,
                         count >= min_count ? VALUE : BN_NAN,
-                        aold = AOLD(npy_DTYPE0);
+                        aold = AOLD(DTYPE0);
                         if (aold == aold) count--;
                         if (extreme_pair->death == INDEX) {
                             extreme_pair++;
@@ -519,24 +519,24 @@ MOVE(NAME, DTYPE0)
         end = ring + window;
         last = ring;
         extreme_pair = ring;
-        ai = A0(npy_DTYPE0);
+        ai = A0(DTYPE0);
         extreme_pair->value = ai;
         extreme_pair->death = window;
         WHILE0 {
-            MACRO_INT(npy_DTYPE0,
-                      npy_DTYPE1,
+            MACRO_INT(DTYPE0,
+                      DTYPE1,
                       BN_NAN,
                       NULL)
         }
         WHILE1 {
-            MACRO_INT(npy_DTYPE0,
-                      npy_DTYPE1,
+            MACRO_INT(DTYPE0,
+                      DTYPE1,
                       VALUE,
                       NULL)
         }
         WHILE2 {
-            MACRO_INT(npy_DTYPE0,
-                      npy_DTYPE1,
+            MACRO_INT(DTYPE0,
+                      DTYPE1,
                       VALUE,
                       if (extreme_pair->death == INDEX) {
                           extreme_pair++;
@@ -572,16 +572,16 @@ MOVE(move_median, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         WHILE0 {
-            ai = AI(npy_DTYPE0);
-            YI(npy_DTYPE0) = mm_update_init_nan(mm, ai);
+            ai = AI(DTYPE0);
+            YI(DTYPE0) = mm_update_init_nan(mm, ai);
         }
         WHILE1 {
-            ai = AI(npy_DTYPE0);
-            YI(npy_DTYPE0) = mm_update_init_nan(mm, ai);
+            ai = AI(DTYPE0);
+            YI(DTYPE0) = mm_update_init_nan(mm, ai);
         }
         WHILE2 {
-            ai = AI(npy_DTYPE0);
-            YI(npy_DTYPE0) = mm_update_nan(mm, ai);
+            ai = AI(DTYPE0);
+            YI(DTYPE0) = mm_update_nan(mm, ai);
         }
         mm_reset(mm);
         NEXT2
@@ -609,16 +609,16 @@ MOVE(move_median, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         WHILE0 {
-            ai = AI(npy_DTYPE0);
-            YI(npy_DTYPE1) = mm_update_init(mm, ai);
+            ai = AI(DTYPE0);
+            YI(DTYPE1) = mm_update_init(mm, ai);
         }
         WHILE1 {
-            ai = AI(npy_DTYPE0);
-            YI(npy_DTYPE1) = mm_update_init(mm, ai);
+            ai = AI(DTYPE0);
+            YI(DTYPE1) = mm_update_init(mm, ai);
         }
         WHILE2 {
-            ai = AI(npy_DTYPE0);
-            YI(npy_DTYPE1) = mm_update(mm, ai);
+            ai = AI(DTYPE0);
+            YI(DTYPE1) = mm_update(mm, ai);
         }
         mm_reset(mm);
         NEXT2
@@ -637,8 +637,8 @@ MOVE_MAIN(move_median, 0)
 
 #define MOVE_RANK(dtype0, dtype1, limit) \
     Py_ssize_t j; \
-    dtype0 ai, aj; \
-    dtype1 g, e, n, r; \
+    npy_##dtype0 ai, aj; \
+    npy_##dtype1 g, e, n, r; \
     ai = AI(dtype0); \
     if (ai == ai) { \
         g = 0; \
@@ -676,15 +676,15 @@ MOVE(move_rank, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         WHILE0 {
-            YI(npy_DTYPE1) = BN_NAN;
+            YI(DTYPE1) = BN_NAN;
         }
         WHILE1 {
-            MOVE_RANK(npy_DTYPE0, npy_DTYPE1, 0)
-            YI(npy_DTYPE1) = r;
+            MOVE_RANK(DTYPE0, DTYPE1, 0)
+            YI(DTYPE1) = r;
         }
         WHILE2 {
-            MOVE_RANK(npy_DTYPE0, npy_DTYPE1, INDEX - window + 1)
-            YI(npy_DTYPE1) = r;
+            MOVE_RANK(DTYPE0, DTYPE1, INDEX - window + 1)
+            YI(DTYPE1) = r;
         }
         NEXT2
     }
@@ -703,15 +703,15 @@ MOVE(move_rank, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         WHILE0 {
-            YI(npy_DTYPE1) = BN_NAN;
+            YI(DTYPE1) = BN_NAN;
         }
         WHILE1 {
-            ai = AI(npy_DTYPE0);
+            ai = AI(DTYPE0);
             g = 0;
             e = 1;
             r = 0;
             for (j = 0; j < INDEX; j++) {
-                aj = AX(npy_DTYPE0, j);
+                aj = AX(DTYPE0, j);
                 if (ai > aj) g += 2;
                 else if (ai == aj) e++;
             }
@@ -726,15 +726,15 @@ MOVE(move_rank, DTYPE0)
                 r = r / INDEX;
                 r = 2.0 * (r - 0.5);
             }
-            YI(npy_DTYPE1) = r;
+            YI(DTYPE1) = r;
         }
         WHILE2 {
-            ai = AI(npy_DTYPE0);
+            ai = AI(DTYPE0);
             g = 0;
             e = 1;
             r = 0;
             for (j = INDEX - window + 1; j < INDEX; j++) {
-                aj = AX(npy_DTYPE0, j);
+                aj = AX(DTYPE0, j);
                 if (aj == aj) {
                     if (ai > aj) g += 2;
                     else if (ai == aj) e++;
@@ -747,7 +747,7 @@ MOVE(move_rank, DTYPE0)
                 r = window_inv * (g + e - 1.0);
                 r = 2.0 * (r - 0.5);
             }
-            YI(npy_DTYPE1) = r;
+            YI(DTYPE1) = r;
         }
         NEXT2
     }

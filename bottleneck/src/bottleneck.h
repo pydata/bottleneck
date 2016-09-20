@@ -106,7 +106,7 @@ BN_INLINE static float __bn_nanf(void)
         while (B(dtype, i) < x) i++; \
         while (x < B(dtype, j)) j--; \
         if (i <= j) { \
-            dtype atmp = B(dtype, i); \
+            npy_##dtype atmp = B(dtype, i); \
             B(dtype, i) = B(dtype, j); \
             B(dtype, j) = atmp; \
             i++; \
@@ -120,10 +120,10 @@ BN_INLINE static float __bn_nanf(void)
 
 #define PARTITION(dtype) \
     while (l < r) { \
-        dtype x; \
-        dtype al = B(dtype, l); \
-        dtype ak = B(dtype, k); \
-        dtype ar = B(dtype, r); \
+        npy_##dtype x; \
+        npy_##dtype al = B(dtype, l); \
+        npy_##dtype ak = B(dtype, k); \
+        npy_##dtype ar = B(dtype, r); \
         if (al > ak) { \
             if (ak < ar) { \
                 if (al < ar) { \

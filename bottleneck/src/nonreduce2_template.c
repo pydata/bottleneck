@@ -29,7 +29,7 @@ replace_DTYPE0(PyArrayObject *a, double old, double new)
     if (old == old) {
         WHILE {
             FOR {
-                if (AI(npy_DTYPE0) == old) AI(npy_DTYPE0) = new;
+                if (AI(DTYPE0) == old) AI(DTYPE0) = new;
             }
             NEXT
         }
@@ -37,8 +37,8 @@ replace_DTYPE0(PyArrayObject *a, double old, double new)
     else {
         WHILE {
             FOR {
-                ai = AI(npy_DTYPE0);
-                if (ai != ai) AI(npy_DTYPE0) = new;
+                ai = AI(DTYPE0);
+                if (ai != ai) AI(DTYPE0) = new;
             }
             NEXT
         }
@@ -71,7 +71,7 @@ replace_DTYPE0(PyArrayObject *a, double old, double new)
         BN_BEGIN_ALLOW_THREADS
         WHILE {
             FOR {
-                if (AI(npy_DTYPE0) == oldint) AI(npy_DTYPE0) = newint;
+                if (AI(DTYPE0) == oldint) AI(DTYPE0) = newint;
             }
             NEXT
         }
