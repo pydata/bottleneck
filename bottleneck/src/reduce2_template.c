@@ -3,9 +3,13 @@
 
 /* init macros ----------------------------------------------------------- */
 
-#define INIT_ALL(ravel) \
+#define INIT_ALL \
     iter it; \
-    init_iter_all(&it, a, ravel);
+    init_iter_all(&it, a, 0);
+
+#define INIT_ALL_RAVEL \
+    iter it; \
+    init_iter_all(&it, a, 1);
 
 #define INIT_ONE(dtype0, dtype1) \
     iter it; \
@@ -73,7 +77,7 @@ reducer(char *name,
 REDUCE_ALL(nansum, DTYPE0)
 {
     npy_DTYPE0 ai, asum = 0;
-    INIT_ALL(0)
+    INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR {
@@ -114,7 +118,7 @@ REDUCE_ONE(nansum, DTYPE0)
 REDUCE_ALL(nansum, DTYPE0)
 {
     npy_DTYPE0 asum = 0;
-    INIT_ALL(0)
+    INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR asum += AI(DTYPE0);
@@ -155,7 +159,7 @@ REDUCE_ALL(nanmean, DTYPE0)
 {
     Py_ssize_t count = 0;
     npy_DTYPE0 ai, asum = 0;
-    INIT_ALL(0)
+    INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR {
@@ -213,7 +217,7 @@ REDUCE_ALL(nanmean, DTYPE0)
 {
     Py_ssize_t total_length = 0;
     npy_DTYPE1 asum = 0;
-    INIT_ALL(0)
+    INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR asum += AI(DTYPE0);
@@ -266,7 +270,7 @@ REDUCE_ALL(NAME, DTYPE0)
 {
     Py_ssize_t count = 0;
     npy_DTYPE0 ai, amean, out, asum = 0;
-    INIT_ALL(0)
+    INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR {
@@ -350,7 +354,7 @@ REDUCE_ALL(NAME, DTYPE0)
     npy_DTYPE1 out;
     Py_ssize_t size = 0;
     npy_DTYPE1 ai, amean, asum = 0;
-    INIT_ALL(0)
+    INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR asum += AI(DTYPE0);
@@ -427,7 +431,7 @@ REDUCE_ALL(NAME, DTYPE0)
 {
     npy_DTYPE0 ai, extreme = BIG_FLOAT;
     int allnan = 1;
-    INIT_ALL(0)
+    INIT_ALL
     if (SIZE == 0) {
         VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
                   "So Bottleneck too.");
@@ -483,7 +487,7 @@ REDUCE_ONE(NAME, DTYPE0)
 REDUCE_ALL(NAME, DTYPE0)
 {
     npy_DTYPE0 ai, extreme = BIG_INT;
-    INIT_ALL(0)
+    INIT_ALL
     if (SIZE == 0) {
         VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
                   "So Bottleneck too.");
@@ -541,7 +545,7 @@ REDUCE_ALL(NAME, DTYPE0)
     npy_DTYPE0 ai, extreme = BIG_FLOAT;
     int allnan = 1;
     Py_ssize_t idx = 0;
-    INIT_ALL(1)
+    INIT_ALL_RAVEL
     if (SIZE == 0) {
         VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
                   "So Bottleneck too.");
@@ -609,7 +613,7 @@ REDUCE_ALL(NAME, DTYPE0)
 {
     npy_DTYPE1 idx = 0;
     npy_DTYPE0 ai, extreme = BIG_INT;
-    INIT_ALL(1)
+    INIT_ALL_RAVEL
     if (SIZE == 0) {
         VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
                   "So Bottleneck too.");
@@ -665,7 +669,7 @@ REDUCE_MAIN(NAME, 1, 0)
 REDUCE_ALL(ss, DTYPE0)
 {
     npy_DTYPE0 ai, asum = 0;
-    INIT_ALL(0)
+    INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR {
@@ -706,7 +710,7 @@ REDUCE_ONE(ss, DTYPE0)
 REDUCE_ALL(ss, DTYPE0)
 {
     npy_DTYPE0 ai, asum = 0;
-    INIT_ALL(0)
+    INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR {
@@ -830,7 +834,7 @@ REDUCE_ALL(NAME, DTYPE0)
 {
     npy_intp i;
     npy_DTYPE1 med;
-    INIT_ALL(1)
+    INIT_ALL_RAVEL
     BN_BEGIN_ALLOW_THREADS
     BUFFER_NEW(DTYPE0, LENGTH)
     if (LENGTH == 0) {
@@ -875,7 +879,7 @@ REDUCE_ALL(median, DTYPE0)
 {
     npy_intp i;
     npy_DTYPE1 med;
-    INIT_ALL(1)
+    INIT_ALL_RAVEL
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         med = BN_NAN;
@@ -938,7 +942,7 @@ REDUCE_ALL(anynan, DTYPE0)
 {
     int f = 0;
     npy_DTYPE0 ai;
-    INIT_ALL(0)
+    INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR {
@@ -1010,7 +1014,7 @@ REDUCE_ALL(allnan, DTYPE0)
 {
     int f = 0;
     npy_DTYPE0 ai;
-    INIT_ALL(0)
+    INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR {
