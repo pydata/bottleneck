@@ -21,21 +21,21 @@ def prepare_modules():
     from bottleneck.src.template import make_c_files
 
     make_c_files()
-    ext_list = [Extension("bottleneck.reduce2",
-                          sources=["bottleneck/src/reduce2.c"],
+    ext_list = [Extension("bottleneck.reduce",
+                          sources=["bottleneck/src/reduce.c"],
                           include_dirs=[np.get_include()],
                           extra_compile_args=['-O2'])]
-    ext_list += [Extension("bottleneck.move2",
-                           sources=["bottleneck/src/move2.c",
+    ext_list += [Extension("bottleneck.move",
+                           sources=["bottleneck/src/move.c",
                                     "bottleneck/src/move_median/move_median.c"],
                            include_dirs=[np.get_include()],
                            extra_compile_args=['-O2'])]
-    ext_list += [Extension("bottleneck.nonreduce2",
-                           sources=["bottleneck/src/nonreduce2.c"],
+    ext_list += [Extension("bottleneck.nonreduce",
+                           sources=["bottleneck/src/nonreduce.c"],
                            include_dirs=[np.get_include()],
                            extra_compile_args=['-O2'])]
-    ext_list += [Extension("bottleneck.nonreduce_axis2",
-                           sources=["bottleneck/src/nonreduce_axis2.c"],
+    ext_list += [Extension("bottleneck.nonreduce_axis",
+                           sources=["bottleneck/src/nonreduce_axis.c"],
                            include_dirs=[np.get_include()],
                            extra_compile_args=['-O2'])]
 
@@ -65,7 +65,7 @@ CLASSIFIERS = ["Development Status :: 4 - Beta",
                "Intended Audience :: Science/Research",
                "License :: OSI Approved :: BSD License",
                "Operating System :: OS Independent",
-               "Programming Language :: Cython",
+               "Programming Language :: C",
                "Programming Language :: Python",
                "Programming Language :: Python :: 3",
                "Topic :: Scientific/Engineering"]

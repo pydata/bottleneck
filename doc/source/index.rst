@@ -2,7 +2,7 @@
 Bottleneck
 ==========
 
-Fast NumPy array functions written in Cython.
+Fast NumPy array functions written in C.
 
 .. toctree::
    :maxdepth: 2

@@ -7,24 +7,24 @@ from . import slow
 # rebuild using the templates. So try to import the compiled Bottleneck
 # functions to the top level, but move on if not successful.
 try:
-    from .reduce2 import (nansum, nanmean, nanstd, nanvar, nanmin, nanmax,
-                          median, nanmedian, ss, nanargmin, nanargmax, anynan,
-                          allnan)
+    from .reduce import (nansum, nanmean, nanstd, nanvar, nanmin, nanmax,
+                         median, nanmedian, ss, nanargmin, nanargmax, anynan,
+                         allnan)
 except:
     pass
 try:
-    from .nonreduce2 import replace
+    from .nonreduce import replace
 except:
     pass
 try:
-    from .nonreduce_axis2 import (partsort, argpartsort, rankdata, nanrankdata,
-                                  push)
+    from .nonreduce_axis import (partsort, argpartsort, rankdata, nanrankdata,
+                                 push)
 except:
     pass
 try:
-    from .move2 import (move_sum, move_mean, move_std, move_var, move_min,
-                        move_max, move_argmin, move_argmax, move_median,
-                        move_rank)
+    from .move import (move_sum, move_mean, move_std, move_var, move_min,
+                       move_max, move_argmin, move_argmax, move_median,
+                       move_rank)
 except:
     pass
 

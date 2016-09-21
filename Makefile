@@ -54,5 +54,5 @@ clean:
 	rm -rf build dist Bottleneck.egg-info
 	find . -name \*.pyc -delete
 	rm -rf ${srcdir}/*.html ${srcdir}/build
-	rm -rf ${srcdir}/*2.c
-	rm -rf ${srcdir}/*2.so
+	rm -rf ${srcdir}/*.c
+	rm -rf ${srcdir}/*.so

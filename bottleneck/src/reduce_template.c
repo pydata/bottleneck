@@ -1994,7 +1994,7 @@ reduce_methods[] = {
 static struct PyModuleDef
 reduce_def = {
    PyModuleDef_HEAD_INIT,
-   "reduce2",
+   "reduce",
    reduce_doc,
    -1,
    reduce_methods
@@ -2005,16 +2005,16 @@ reduce_def = {
 PyMODINIT_FUNC
 #if PY_MAJOR_VERSION >= 3
 #define RETVAL m
-PyInit_reduce2(void)
+PyInit_reduce(void)
 #else
 #define RETVAL
-initreduce2(void)
+initreduce(void)
 #endif
 {
     #if PY_MAJOR_VERSION >=3
         PyObject *m = PyModule_Create(&reduce_def);
     #else
-        PyObject *m = Py_InitModule3("reduce2", reduce_methods, reduce_doc);
+        PyObject *m = Py_InitModule3("reduce", reduce_methods, reduce_doc);
     #endif
     if (m == NULL) return RETVAL;
     import_array();

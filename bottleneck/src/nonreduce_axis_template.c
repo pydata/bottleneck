@@ -1030,7 +1030,7 @@ nra_methods[] = {
 static struct PyModuleDef
 nra_def = {
    PyModuleDef_HEAD_INIT,
-   "nonreduce_axis2",
+   "nonreduce_axis",
    nra_doc,
    -1,
    nra_methods
@@ -1041,16 +1041,16 @@ nra_def = {
 PyMODINIT_FUNC
 #if PY_MAJOR_VERSION >= 3
 #define RETVAL m
-PyInit_nonreduce_axis2(void)
+PyInit_nonreduce_axis(void)
 #else
 #define RETVAL
-initnonreduce_axis2(void)
+initnonreduce_axis(void)
 #endif
 {
     #if PY_MAJOR_VERSION >=3
         PyObject *m = PyModule_Create(&nra_def);
     #else
-        PyObject *m = Py_InitModule3("nonreduce_axis2", nra_methods, nra_doc);
+        PyObject *m = Py_InitModule3("nonreduce_axis", nra_methods, nra_doc);
     #endif
     if (m == NULL) return RETVAL;
     import_array();

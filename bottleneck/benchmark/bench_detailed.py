@@ -87,8 +87,7 @@ def benchsuite(function, fraction_nan):
      (2,  "rand(100, 100, 100)", "(a, 1)", None,             None),
      (2,  "rand(100, 100, 100)", "(a, 2)", "(a, 20)",        "(a, np.nan, 0)"),
 
-     # TODO replace last None with (a, 0, 2) after removing cython
-     (10, "array(1)",            "(a)",    None,             None),
+     (10, "array(1)",            "(a)",    None,             "(a, 0, 2)"),
 
      ]
 

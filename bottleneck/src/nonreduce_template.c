@@ -291,7 +291,8 @@ new : scalar
 
 Returns
 -------
-None, the operation is inplace.
+Returns a view of the input array after performing the replacements,
+if any.
 
 Examples
 --------
@@ -324,7 +325,7 @@ nonreduce_methods[] = {
 static struct PyModuleDef
 nonreduce_def = {
    PyModuleDef_HEAD_INIT,
-   "nonreduce2",
+   "nonreduce",
    nonreduce_doc,
    -1,
    nonreduce_methods
@@ -335,16 +336,16 @@ nonreduce_def = {
 PyMODINIT_FUNC
 #if PY_MAJOR_VERSION >= 3
 #define RETVAL m
-PyInit_nonreduce2(void)
+PyInit_nonreduce(void)
 #else
 #define RETVAL
-initnonreduce2(void)
+initnonreduce(void)
 #endif
 {
     #if PY_MAJOR_VERSION >=3
         PyObject *m = PyModule_Create(&nonreduce_def);
     #else
-        PyObject *m = Py_InitModule3("nonreduce2", nonreduce_methods,
+        PyObject *m = Py_InitModule3("nonreduce", nonreduce_methods,
                                      nonreduce_doc);
     #endif
     if (m == NULL) return RETVAL;

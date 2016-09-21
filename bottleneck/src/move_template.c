@@ -1528,7 +1528,7 @@ move_methods[] = {
 static struct PyModuleDef
 move_def = {
    PyModuleDef_HEAD_INIT,
-   "move2",
+   "move",
    move_doc,
    -1,
    move_methods
@@ -1539,16 +1539,16 @@ move_def = {
 PyMODINIT_FUNC
 #if PY_MAJOR_VERSION >= 3
 #define RETVAL m
-PyInit_move2(void)
+PyInit_move(void)
 #else
 #define RETVAL
-initmove2(void)
+initmove(void)
 #endif
 {
     #if PY_MAJOR_VERSION >=3
         PyObject *m = PyModule_Create(&move_def);
     #else
-        PyObject *m = Py_InitModule3("move2", move_methods, move_doc);
+        PyObject *m = Py_InitModule3("move", move_methods, move_doc);
     #endif
     if (m == NULL) return RETVAL;
     import_array();
