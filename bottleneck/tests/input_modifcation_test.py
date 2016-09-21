@@ -4,8 +4,7 @@ import warnings
 
 import numpy as np
 from numpy.testing import assert_equal
-import bottleneck as bn  # noqa
-from .functions import all_functions
+import bottleneck as bn
 
 DTYPES = [np.float64, np.float32, np.int64, np.int32]
 nan = np.nan
@@ -63,5 +62,5 @@ def unit_maker(func, nans=True):
 
 def test_modification():
     "Test for illegal inplace modification of input array"
-    for func in all_functions():
+    for func in bn.get_functions('all'):
         yield unit_maker, func

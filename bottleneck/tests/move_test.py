@@ -5,14 +5,13 @@ import numpy as np
 from numpy.testing import (assert_equal, assert_array_almost_equal,
                            assert_raises)
 import bottleneck as bn
-from .functions import move_functions
 
 DTYPES = [np.float64, np.float32, np.int64, np.int32]
 
 
 def test_move():
     "test move functions"
-    for func in move_functions():
+    for func in bn.get_functions('move'):
         yield unit_maker, func
 
 
@@ -81,7 +80,7 @@ def unit_maker(func):
 
 def test_strides():
     "test move functions with non-C ordered arrays"
-    for func in move_functions():
+    for func in bn.get_functions('move'):
         yield unit_maker_strides, func
 
 
@@ -138,7 +137,7 @@ def unit_maker_strides(func, decimal=5):
 
 def test_arg_parsing():
     "test argument parsing"
-    for func in move_functions():
+    for func in bn.get_functions('move'):
         yield unit_maker_argparse, func
 
 
@@ -203,7 +202,7 @@ def unit_maker_argparse(func, decimal=5):
 
 def test_arg_parse_raises():
     "test argument parsing raises in move"
-    for func in move_functions():
+    for func in bn.get_functions('move'):
         yield unit_maker_argparse_raises, func
 
 

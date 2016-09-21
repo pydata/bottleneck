@@ -1,8 +1,7 @@
 "Check that functions can handle scalar input"
 
 from numpy.testing import assert_array_almost_equal
-import bottleneck as bn  # noqa
-from .functions import reduce_functions, nonreduce_axis_functions
+import bottleneck as bn
 
 
 def unit_maker(func, func0, args=tuple()):
@@ -18,7 +17,7 @@ def unit_maker(func, func0, args=tuple()):
 
 def test_scalar_input():
     "Test scalar input"
-    funcs = reduce_functions() + nonreduce_axis_functions()
+    funcs = bn.get_functions('reduce') + bn.get_functions('nonreduce_axis')
     for func in funcs:
         if func.__name__ not in ('partsort', 'argpartsort', 'push'):
             yield unit_maker, func, eval('bn.slow.%s' % func.__name__)

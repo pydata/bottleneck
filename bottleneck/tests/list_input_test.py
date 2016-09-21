@@ -4,15 +4,14 @@ import warnings
 
 import numpy as np
 from numpy.testing import assert_array_almost_equal
-import bottleneck as bn  # noqa
-from .functions import all_functions
+import bottleneck as bn
 
 DTYPES = [np.float64, np.float32, np.int64, np.int32]
 
 
 def test_list_input():
     "Check that functions can handle list input"
-    for func in all_functions():
+    for func in bn.get_functions('all'):
         if func.__name__ != 'replace':
             yield unit_maker, func
 
