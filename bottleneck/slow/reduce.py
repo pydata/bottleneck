@@ -1,6 +1,6 @@
 import warnings
 import numpy as np
-from numpy import nanmean, nanmedian
+from numpy import nanmean
 
 __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
            'nanmin', 'nanmax', 'nanargmin', 'nanargmax', 'ss', 'anynan',
@@ -63,6 +63,13 @@ def median(arr, axis=None):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         return np.median(arr, axis=axis)
+
+
+def nanmedian(arr, axis=None):
+    "Slow nanmedian function used for unaccelerated dtypes."
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        return np.nanmedian(arr, axis=axis)
 
 
 def ss(arr, axis=None):

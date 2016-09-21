@@ -33,8 +33,7 @@ def bench_detailed(function='nansum', fraction_nan=0.0):
     # Header
     print('%s benchmark' % function)
     print("%sBottleneck %s; Numpy %s" % (tab, bn.__version__, np.__version__))
-    print("%sSpeed is Bottleneck Cython time divided by Bottleneck C time"
-          % tab)
+    print("%sSpeed is NumPy time divided by Bottleneck time" % tab)
     if fraction_nan == 0:
         print("%sNone of the array elements are NaN" % tab)
     else:
@@ -87,20 +86,9 @@ def benchsuite(function, fraction_nan):
      (2,  "rand(100, 100, 100)", "(a, 1)", None,             None),
      (2,  "rand(100, 100, 100)", "(a, 2)", "(a, 20)",        "(a, np.nan, 0)"),
 
-     (10, "array(1)",            "(a)",    None,             "(a, 0, 2)"),
+     (10, "array(1.0)",          "(a)",    None,             "(a, 0, 2)"),
 
      ]
-
-    setup = """
-        import numpy as np
-        from bottleneck import %s
-        from bottleneck import %s2 as %s_c
-        from numpy.random import rand
-        from numpy import array
-        a = %s
-        if %s != 0: a[a < %s] = np.nan
-    """
-    setup = '\n'.join([s.strip() for s in setup.split('\n')])
 
     # what kind of function signature do we need to use?
     if function in bn.get_functions('reduce', as_string=True):
@@ -116,6 +104,20 @@ def benchsuite(function, fraction_nan):
     else:
         raise ValueError("`function` (%s) not recognized" % function)
 
+    setup = """
+        import numpy as np
+        from bottleneck import %s as bn_fn
+        try: from numpy import %s as sl_fn
+        except ImportError: from bottleneck.slow import %s as sl_fn
+        if "%s" == "median": from bottleneck.slow import median as sl_fn
+        if "%s" == "nanmedian": from bottleneck.slow import nanmedian as sl_fn
+        from numpy.random import rand
+        from numpy import array
+        a = %s
+        if %s != 0: a[a < %s] = np.nan
+    """
+    setup = '\n'.join([s.strip() for s in setup.split('\n')])
+
     # create benchmark suite
     f = function
     suite = []
@@ -127,8 +129,9 @@ def benchsuite(function, fraction_nan):
         array = instructions[1]
         run = {}
         run['name'] = [f + signature, array]
-        run['statements'] = [f + "_c" + signature, f + signature]
-        run['setup'] = setup % (f, f, f, array, fraction_nan, fraction_nan)
+        run['statements'] = ["bn_fn" + signature, "sl_fn" + signature]
+        run['setup'] = setup % (f, f, f, f, f, array,
+                                fraction_nan, fraction_nan)
         run['repeat'] = repeat
         suite.append(run)
 
