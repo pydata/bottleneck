@@ -6,8 +6,11 @@ from .autotimeit import autotimeit
 __all__ = ['bench_detailed']
 
 
-def bench_detailed(function='nansum'):
-    "Bottleneck benchmark of C rewrite."
+def bench_detailed(function='nansum', fraction_nan=0.0):
+    "benchmark of a single function"
+
+    if fraction_nan < 0 or fraction_nan > 1:
+        raise ValueError("`fraction_nan` must be between 0 and 1, inclusive")
 
     tab = '    '
 
@@ -16,10 +19,15 @@ def bench_detailed(function='nansum'):
     print("%sBottleneck %s; Numpy %s" % (tab, bn.__version__, np.__version__))
     print("%sSpeed is Bottleneck Cython time divided by Bottleneck C time"
           % tab)
+    if fraction_nan == 0:
+        print("%sNone of the array elements are NaN" % tab)
+    else:
+        print("%s%.1f%% of the array elements are NaN (on average)"
+              % (tab, fraction_nan * 100))
     print("")
 
     print("   Speed  Call                     Array")
-    suite = benchsuite(function)
+    suite = benchsuite(function, fraction_nan)
     for test in suite:
         name = test["name"]
         speed = timer(test['statements'], test['setup'], test['repeat'])
@@ -36,7 +44,7 @@ def timer(statements, setup, repeat):
     return speed
 
 
-def benchsuite(function):
+def benchsuite(function, fraction_nan):
 
     repeat_array_sig = [
 
@@ -74,7 +82,8 @@ def benchsuite(function):
         from bottleneck import %s2 as %s_c
         from numpy.random import rand
         from numpy import array
-        a=%s
+        a = %s
+        if %s != 0: a[a < %s] = np.nan
     """
     setup = '\n'.join([s.strip() for s in setup.split('\n')])
 
@@ -104,7 +113,7 @@ def benchsuite(function):
         run = {}
         run['name'] = [f + signature, array]
         run['statements'] = [f + "_c" + signature, f + signature]
-        run['setup'] = setup % (f, f, f, array)
+        run['setup'] = setup % (f, f, f, array, fraction_nan, fraction_nan)
         run['repeat'] = repeat
         suite.append(run)
 
