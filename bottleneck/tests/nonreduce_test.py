@@ -12,7 +12,7 @@ nan = np.nan
 
 def test_nonreduce():
     "test nonreduce functions"
-    for func in [bn.replace2]:  # TODO: use nonreduce_functions after rm Cython
+    for func in bn.get_functions('nonreduce'):
         yield unit_maker, func
 
 
@@ -128,27 +128,12 @@ def test_replace_unsafe_cast():
         assert_raises(ValueError, bn.slow.replace, a.copy(), 0, 0.1)
 
 
-def test_replace2_unsafe_cast():
-    "Test replace for unsafe casts"
-    dtypes = ['int32', 'int64']
-    for dtype in dtypes:
-        a = np.zeros(3, dtype=dtype)
-        assert_raises(ValueError, bn.replace2, a.copy(), 0.1, 0)
-        assert_raises(ValueError, bn.replace2, a.copy(), 0, 0.1)
-        assert_raises(ValueError, bn.slow.replace, a.copy(), 0.1, 0)
-        assert_raises(ValueError, bn.slow.replace, a.copy(), 0, 0.1)
-
-
 def test_non_array():
     "Test that non-array input raises"
     a = [1, 2, 3]
     assert_raises(TypeError, bn.replace, a, 0, 1)
     a = (1, 2, 3)
     assert_raises(TypeError, bn.replace, a, 0, 1)
-    a = [1, 2, 3]
-    assert_raises(TypeError, bn.replace2, a, 0, 1)
-    a = (1, 2, 3)
-    assert_raises(TypeError, bn.replace2, a, 0, 1)
 
 
 # ---------------------------------------------------------------------------
@@ -160,20 +145,6 @@ def test_replace_nan_int():
     a = np.arange(2*3*4).reshape(2, 3, 4)
     actual = a.copy()
     bn.replace(actual, np.nan, 0)
-    desired = a.copy()
-    msg = 'replace failed on int input looking for nans'
-    assert_array_equal(actual, desired, err_msg=msg)
-    actual = a.copy()
-    bn.slow.replace(actual, np.nan, 0)
-    msg = 'slow.replace failed on int input looking for nans'
-    assert_array_equal(actual, desired, err_msg=msg)
-
-
-def test_replace2_nan_int():
-    "Test replace, int array, old=nan, new=0"
-    a = np.arange(2*3*4).reshape(2, 3, 4)
-    actual = a.copy()
-    bn.replace2(actual, np.nan, 0)
     desired = a.copy()
     msg = 'replace failed on int input looking for nans'
     assert_array_equal(actual, desired, err_msg=msg)

@@ -18,17 +18,6 @@ help:
 	@echo "sdist   -->  Make source distribution"
 	@echo "doc     -->  Build Sphinx manual"
 
-# TODO: c_rewrite clean up
-all2: clean2 build2 test flake8
-build2:
-	${PYTHON} setup_c_rewrite.py build_ext --inplace
-clean2:
-	rm -rf build dist Bottleneck.egg-info
-	find . -name \*.pyc -delete
-	rm -rf ${srcdir}/*.html ${srcdir}/build
-	rm -rf ${srcdir}/*2.c
-	rm -rf ${srcdir}/*2.so
-
 all: clean build test flake8
 
 build:
@@ -64,5 +53,6 @@ doc:
 clean:
 	rm -rf build dist Bottleneck.egg-info
 	find . -name \*.pyc -delete
-	rm -rf ${srcdir}/*.c ${srcdir}/*.html ${srcdir}/build
-	rm -rf ${srcdir}/*.so ${srcdir}/*.pyx
+	rm -rf ${srcdir}/*.html ${srcdir}/build
+	rm -rf ${srcdir}/*2.c
+	rm -rf ${srcdir}/*2.so
