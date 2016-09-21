@@ -7,7 +7,23 @@ __all__ = ['bench_detailed']
 
 
 def bench_detailed(function='nansum', fraction_nan=0.0):
-    "benchmark of a single function"
+    """
+    Benchmark a single function.
+
+    Parameters
+    ----------
+    function : str, optional
+        Name of function, as a string, to benchmark. Default ('nansum') is
+        to benchmark bn.nansum.
+    fraction_nan : float, optional
+        Fraction of array elements that should, on average, be NaN. The
+        default (0.0) is not to set any elements to NaN.
+
+    Returns
+    -------
+    A benchmark report is printed to stdout.
+
+    """
 
     if fraction_nan < 0 or fraction_nan > 1:
         raise ValueError("`fraction_nan` must be between 0 and 1, inclusive")
