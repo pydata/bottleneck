@@ -9,18 +9,17 @@ from numpy.testing import (assert_equal, assert_raises,
                            assert_array_almost_equal)
 
 import bottleneck as bn
-from .functions import reduce_functions
 
 DTYPES = [np.float64, np.float32, np.int64, np.int32]
 
 
 def test_reduce():
     "test reduce functions"
-    for func in reduce_functions():
+    for func in bn.get_functions('reduce'):
         yield unit_maker, func
 
 
-def arrays(dtypes=DTYPES):
+def arrays(dtypes, name):
     "Iterator that yields arrays to use for unit testing."
 
     # nan and inf
@@ -63,30 +62,34 @@ def arrays(dtypes=DTYPES):
     ss[2] = {'size': 12, 'shapes': [(2, 6), (3, 4)]}
     ss[3] = {'size': 16, 'shapes': [(2, 2, 4)]}
     ss[4] = {'size': 24, 'shapes': [(1, 2, 3, 4)]}
-    rs = np.random.RandomState([1, 2, 4])
-    for ndim in ss:
-        size = ss[ndim]['size']
-        shapes = ss[ndim]['shapes']
-        for dtype in dtypes:
-            a = np.arange(size, dtype=dtype)
-            if issubclass(a.dtype.type, np.inexact):
-                idx = rs.rand(*a.shape) < 0.2
-                a[idx] = inf
-                idx = rs.rand(*a.shape) < 0.2
-                a[idx] = nan
-                idx = rs.rand(*a.shape) < 0.2
-                a[idx] *= -1
-            rs.shuffle(a)
-            for shape in shapes:
-                yield a.reshape(shape)
+    for seed in (1, 2):
+        rs = np.random.RandomState(seed)
+        for ndim in ss:
+            size = ss[ndim]['size']
+            shapes = ss[ndim]['shapes']
+            for dtype in dtypes:
+                a = np.arange(size, dtype=dtype)
+                if issubclass(a.dtype.type, np.inexact):
+                    if name not in ('nanargmin', 'nanargmax'):
+                        # numpy can't handle eg np.nanargmin([np.nan, np.inf])
+                        idx = rs.rand(*a.shape) < 0.2
+                        a[idx] = inf
+                    idx = rs.rand(*a.shape) < 0.2
+                    a[idx] = nan
+                    idx = rs.rand(*a.shape) < 0.2
+                    a[idx] *= -1
+                rs.shuffle(a)
+                for shape in shapes:
+                    yield a.reshape(shape)
 
 
 def unit_maker(func, decimal=5):
     "Test that bn.xxx gives the same output as bn.slow.xxx."
     fmt = '\nfunc %s | input %s (%s) | shape %s | axis %s\n'
     fmt += '\nInput array:\n%s\n'
-    func0 = eval('bn.slow.%s' % func.__name__)
-    for i, arr in enumerate(arrays()):
+    name = func.__name__
+    func0 = eval('bn.slow.%s' % name)
+    for i, arr in enumerate(arrays(DTYPES, name)):
         if arr.ndim == 0:
             axes = [None]  # numpy can't handle e.g. np.nanmean(9, axis=-1)
         else:
@@ -110,7 +113,6 @@ def unit_maker(func, decimal=5):
             if actualraised and desiredraised:
                 pass
             else:
-                name = func.__name__
                 tup = (name, 'a'+str(i), str(arr.dtype), str(arr.shape),
                        str(axis), arr)
                 err_msg = fmt % tup
@@ -135,7 +137,7 @@ def unit_maker(func, decimal=5):
 
 def test_strides():
     "test reduce functions with non-C ordered arrays"
-    for func in reduce_functions():
+    for func in bn.get_functions('reduce'):
         yield unit_maker_strides, func
 
 
@@ -190,6 +192,86 @@ def unit_maker_strides(func, decimal=5):
             err_msg = fmt % tup
             assert_array_almost_equal(actual, desired, decimal, err_msg)
             err_msg += '\n dtype mismatch %s %s'
+
+
+# ---------------------------------------------------------------------------
+# Test argument parsing
+
+def test_arg_parsing():
+    "test argument parsing"
+    for func in bn.get_functions('reduce'):
+        yield unit_maker_argparse, func
+
+
+def unit_maker_argparse(func, decimal=5):
+    "test argument parsing."
+
+    name = func.__name__
+    func0 = eval('bn.slow.%s' % name)
+
+    arr = np.array([1., 2, 3])
+
+    fmt = '\n%s' % func
+    fmt += '%s\n'
+    fmt += '\nInput array:\n%s\n' % arr
+
+    actual = func(arr)
+    desired = func0(arr)
+    err_msg = fmt % "(arr)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(arr, 0)
+    desired = func0(arr, 0)
+    err_msg = fmt % "(arr, 0)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(arr, None)
+    desired = func0(arr, None)
+    err_msg = fmt % "(arr, None)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(arr, axis=0)
+    desired = func0(arr, axis=0)
+    err_msg = fmt % "(arr, axis=0)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(arr, axis=None)
+    desired = func0(arr, axis=None)
+    err_msg = fmt % "(arr, axis=None)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    # add tests like the following when bottleneck switches from
+    # arr to a in function signatures. Numpy uses a.
+    #  actual = func(arr=arr)
+    #  desired = func0(a=arr)
+    #  err_msg = fmt % "(arr)"
+    #  assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    # regression test: make sure len(kwargs) == 0 doesn't raise
+    args = (arr, 0)
+    kwargs = {}
+    func(*args, **kwargs)
+
+
+def test_arg_parse_raises():
+    "test argument parsing raises in reduce"
+    for func in bn.get_functions('reduce'):
+        yield unit_maker_argparse_raises, func
+
+
+def unit_maker_argparse_raises(func):
+    "test argument parsing raises in reduce"
+    arr = np.array([1., 2, 3])
+    assert_raises(TypeError, func)
+    assert_raises(TypeError, func, axis=arr)
+    assert_raises(TypeError, func, arr, axis=0, extra=0)
+    assert_raises(TypeError, func, arr, axis=0, arr=arr)
+    assert_raises(TypeError, func, arr, 0, 0, 0, 0, 0)
+    assert_raises(TypeError, func, arr, axis='0')
+    if func.__name__ not in ('nanstd', 'nanvar'):
+        assert_raises(TypeError, func, arr, ddof=0)
+    assert_raises(TypeError, func, arr, arr)
+    # assert_raises(TypeError, func, None) results vary
 
 
 # ---------------------------------------------------------------------------

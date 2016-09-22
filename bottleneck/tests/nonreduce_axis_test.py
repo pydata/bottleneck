@@ -1,12 +1,10 @@
-"Test partsort and argpartsort."
-
-import warnings
-
 import numpy as np
-from numpy.testing import assert_equal, assert_array_equal
+from numpy.testing import (assert_equal, assert_array_equal,
+                           assert_array_almost_equal, assert_raises)
 
 import bottleneck as bn
-from .reduce_test import unit_maker as reduce_unit_maker
+from .reduce_test import (arrays_strides, unit_maker as reduce_unit_maker,
+                          unit_maker_argparse as unit_maker_parse_rankdata)
 
 DTYPES = [np.float64, np.float32, np.int64, np.int32]
 nan = np.nan
@@ -15,72 +13,116 @@ nan = np.nan
 # ---------------------------------------------------------------------------
 # partsort, argpartsort
 
-def arrays(dtypes=DTYPES):
-    "Iterator that yield arrays to use for unit testing."
-    ss = {}
-    ss[0] = {'size':  0, 'shapes': [(0,), (0, 0), (2, 0), (2, 0, 1)]}
-    ss[1] = {'size':  4, 'shapes': [(4,)]}
-    ss[2] = {'size':  6, 'shapes': [(1, 6), (2, 3)]}
-    ss[3] = {'size':  6, 'shapes': [(1, 2, 3)]}
-    ss[4] = {'size': 24, 'shapes': [(1, 2, 3, 4)]}
-    for ndim in ss:
-        size = ss[ndim]['size']
-        shapes = ss[ndim]['shapes']
-        for dtype in dtypes:
-            a = np.arange(size, dtype=dtype)
-            for shape in shapes:
-                a = a.reshape(shape)
-                yield a
-                yield -a
-            for i in range(0, a.size, 2):
-                a.flat[i] *= -1
-                yield a
-    yield np.array([1, 2, 3], dtype='>f4')
-    yield np.array([1, 2, 3], dtype='<f4')
-    yield np.array([1, 2, 3], dtype=np.float16)  # make sure slow is called
-
-
-def unit_maker(func, func0):
-    "Test bn.(arg)partsort gives same output as bn.slow.(arg)partsort."
-    msg = '\nfunc %s | input %s (%s) | shape %s | n %d | axis %s\n'
-    msg += '\nInput array:\n%s\n'
-    for i, arr in enumerate(arrays()):
-        for axis in list(range(-arr.ndim, arr.ndim)) + [None]:
-            if axis is None:
-                n = arr.size
-            else:
-                n = arr.shape[axis]
-            n = max(n // 2, 1)
-            with np.errstate(invalid='ignore'):
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore")
-                    actual = func(arr.copy(), n, axis=axis)
-                actual[:n] = np.sort(actual[:n], axis=axis)
-                actual[n:] = np.sort(actual[n:], axis=axis)
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore")
-                    desired = func0(arr.copy(), n, axis=axis)
-                    desired[:n] = np.sort(desired[:n], axis=axis)
-                    desired[n:] = np.sort(desired[n:], axis=axis)
-            tup = (func.__name__, 'a'+str(i), str(arr.dtype),
-                   str(arr.shape), n, str(axis), arr)
-            err_msg = msg % tup
-            assert_array_equal(actual, desired, err_msg)
-            err_msg += '\n dtype mismatch %s %s'
-            if hasattr(actual, 'dtype') and hasattr(desired, 'dtype'):
-                da = actual.dtype
-                dd = desired.dtype
-                assert_equal(da, dd, err_msg % (da, dd))
-
-
 def test_partsort():
-    "Test partsort."
-    yield unit_maker, bn.partsort, bn.slow.partsort
+    "test partsort"
+    for func in (bn.partsort,):
+        yield unit_maker, func
 
 
 def test_argpartsort():
-    "Test argpartsort."
-    yield unit_maker, bn.argpartsort, bn.slow.argpartsort
+    "test argpartsort"
+    for func in (bn.argpartsort,):
+        yield unit_maker, func
+
+
+def unit_maker(func):
+    "test partsort or argpartsort"
+
+    length = 9
+    nrepeat = 10
+
+    msg = '\nfunc %s | input %s (%s) | shape %s | n %d | axis %s\n'
+    msg += '\nInput array:\n%s\n'
+
+    name = func.__name__
+    func0 = eval('bn.slow.%s' % name)
+
+    rs = np.random.RandomState([1, 2, 3])
+    for ndim in (1, 2):
+        if ndim == 1:
+            shape = (length,)
+        elif ndim == 2:
+            shape = (2, length)
+        for i in range(nrepeat):
+            a = rs.randint(0, 10, shape)
+            for dtype in DTYPES:
+                a = a.astype(dtype)
+                for axis in list(range(-1, ndim)) + [None]:
+                    if axis is None:
+                        nmax = a.size
+                    else:
+                        nmax = a.shape[axis]
+                    n = rs.randint(1, nmax)
+                    s0 = func0(a, n, axis)
+                    s1 = func(a, n, axis)
+                    if name == 'argpartsort':
+                        s0 = complete_the_argpartsort(s0, a, n, axis)
+                        s1 = complete_the_argpartsort(s1, a, n, axis)
+                    else:
+                        s0 = complete_the_partsort(s0, n, axis)
+                        s1 = complete_the_partsort(s1, n, axis)
+                    tup = (name, 'a'+str(i), str(a.dtype), str(a.shape), n,
+                           str(axis), a)
+                    err_msg = msg % tup
+                    assert_array_equal(s1, s0, err_msg)
+
+
+def complete_the_partsort(a, n, axis):
+    ndim = a.ndim
+    if axis is None:
+        if ndim != 1:
+            raise ValueError("`a` must be 1d when axis is None")
+        axis = 0
+    elif axis < 0:
+        axis += ndim
+        if axis < 0:
+            raise ValueError("`axis` out of range")
+    if ndim == 1:
+        a[:n-1] = np.sort(a[:n-1])
+        a[n:] = np.sort(a[n:])
+    elif ndim == 2:
+        if axis == 0:
+            for i in range(a.shape[1]):
+                a[:n-1, i] = np.sort(a[:n-1, i])
+                a[n:, i] = np.sort(a[n:, i])
+        elif axis == 1:
+            for i in range(a.shape[0]):
+                a[i, :n-1] = np.sort(a[i, :n-1])
+                a[i, n:] = np.sort(a[i, n:])
+        else:
+            raise ValueError("`axis` out of range")
+    else:
+        raise ValueError("`a.ndim` must be 1 or 2")
+    return a
+
+
+def complete_the_argpartsort(index, a, n, axis):
+    ndim = a.ndim
+    if axis is None:
+        if index.ndim != 1:
+            raise ValueError("`index` must be 1d when axis is None")
+        axis = 0
+        ndim = 1
+        a = a.copy().reshape(-1)
+    elif axis < 0:
+        axis += ndim
+        if axis < 0:
+            raise ValueError("`axis` out of range")
+    if ndim == 1:
+        a = a[index]
+    elif ndim == 2:
+        if axis == 0:
+            for i in range(a.shape[1]):
+                a[:, i] = a[index[:, i], i]
+        elif axis == 1:
+            for i in range(a.shape[0]):
+                a[i] = a[i, index[i]]
+        else:
+            raise ValueError("`axis` out of range")
+    else:
+        raise ValueError("`a.ndim` must be 1 or 2")
+    a = complete_the_partsort(a, n, axis)
+    return a
 
 
 def test_transpose():
@@ -101,11 +143,132 @@ def test_nonreduce_axis():
         yield reduce_unit_maker, func
 
 
-def test_push_2():
-    "Test push #2."
-    ns = (np.inf, -1, 0, 1, 2, 3, 4, 5, 1.1, 1.5, 1.9)
+def test_push():
+    "Test push"
+    ns = (0, 1, 2, 3, 4, 5)
     arr = np.array([np.nan, 1, 2, np.nan, np.nan, np.nan, np.nan, 3, np.nan])
     for n in ns:
         actual = bn.push(arr.copy(), n=n)
         desired = bn.slow.push(arr.copy(), n=n)
         assert_array_equal(actual, desired, "failed on n=%s" % str(n))
+
+
+# ---------------------------------------------------------------------------
+# Test with arrays that are not C ordered
+
+def test_strides():
+    "test nonreducer_axis functions with non-C ordered arrays"
+    for func in bn.get_functions('nonreduce_axis'):
+        yield unit_maker_strides, func
+
+
+def unit_maker_strides(func, decimal=5):
+    "Test that bn.xxx gives the same output as bn.slow.xxx."
+    fmt = '\nfunc %s | input %s (%s) | shape %s | axis %s\n'
+    fmt += '\nInput array:\n%s\n'
+    fmt += '\nStrides: %s\n'
+    fmt += '\nFlags: \n%s\n'
+    name = func.__name__
+    func0 = eval('bn.slow.%s' % name)
+    for i, arr in enumerate(arrays_strides()):
+        if arr.ndim == 0:
+            axes = [None]  # numpy can't handle e.g. np.nanmean(9, axis=-1)
+        else:
+            axes = list(range(-1, arr.ndim)) + [None]
+        for axis in axes:
+            # do not use arr.copy() here because it will C order the array
+            if name in ('partsort', 'argpartsort', 'push'):
+                if axis is None:
+                    if name == 'push':
+                        continue
+                    n = min(2, arr.size)
+                else:
+                    n = min(2, arr.shape[axis])
+                actual = func(arr, n, axis=axis)
+                desired = func0(arr, n, axis=axis)
+            else:
+                actual = func(arr, axis=axis)
+                desired = func0(arr, axis=axis)
+            tup = (name, 'a'+str(i), str(arr.dtype), str(arr.shape),
+                   str(axis), arr, arr.strides, arr.flags)
+            err_msg = fmt % tup
+            assert_array_almost_equal(actual, desired, decimal, err_msg)
+            err_msg += '\n dtype mismatch %s %s'
+
+
+# ---------------------------------------------------------------------------
+# Test argument parsing
+
+def test_arg_parsing():
+    "test argument parsing in nonreduce_axis"
+    for func in bn.get_functions('nonreduce_axis'):
+        name = func.__name__
+        if name in ('partsort', 'argpartsort'):
+            yield unit_maker_parse, func
+        elif name in ('push'):
+            yield unit_maker_parse, func
+        elif name in ('rankdata', 'nanrankdata'):
+            yield unit_maker_parse_rankdata, func
+        else:
+            fmt = "``%s` is an unknown nonreduce_axis function"
+            raise ValueError(fmt % name)
+        yield unit_maker_raises, func
+
+
+def unit_maker_parse(func, decimal=5):
+    "test argument parsing."
+
+    name = func.__name__
+    func0 = eval('bn.slow.%s' % name)
+
+    arr = np.array([1., 2, 3])
+
+    fmt = '\n%s' % func
+    fmt += '%s\n'
+    fmt += '\nInput array:\n%s\n' % arr
+
+    actual = func(arr, 1)
+    desired = func0(arr, 1)
+    err_msg = fmt % "(arr, 1)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(arr, 1, axis=0)
+    desired = func0(arr, 1, axis=0)
+    err_msg = fmt % "(arr, 1, axis=0)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    if name != 'push':
+
+        actual = func(arr, 2, None)
+        desired = func0(arr, 2, None)
+        err_msg = fmt % "(arr, 2, None)"
+        assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+        actual = func(arr, 1, axis=None)
+        desired = func0(arr, 1, axis=None)
+        err_msg = fmt % "(arr, 1, axis=None)"
+        assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+        # regression test: make sure len(kwargs) == 0 doesn't raise
+        args = (arr, 1, -1)
+        kwargs = {}
+        func(*args, **kwargs)
+
+    else:
+
+        # regression test: make sure len(kwargs) == 0 doesn't raise
+        args = (arr, 1)
+        kwargs = {}
+        func(*args, **kwargs)
+
+
+def unit_maker_raises(func):
+    "test argument parsing raises in nonreduce_axis"
+    arr = np.array([1., 2, 3])
+    assert_raises(TypeError, func)
+    assert_raises(TypeError, func, axis=arr)
+    assert_raises(TypeError, func, arr, axis=0, extra=0)
+    assert_raises(TypeError, func, arr, axis=0, arr=arr)
+    if func.__name__ in ('partsort', 'argpartsort'):
+        assert_raises(TypeError, func, arr, 0, 0, 0, 0, 0)
+        assert_raises(TypeError, func, arr, axis='0')

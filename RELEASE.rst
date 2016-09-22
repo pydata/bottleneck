@@ -11,7 +11,28 @@ Bottleneck 1.2.0
 
 *Release date: in development, not yet released*
 
+This release is a complete rewrite of Bottleneck.
 
+**Port to C**
+
+- Bottleneck is now written in C
+- Cython is no longer a dependency
+- Source tarball size reduced by 80%
+- Build time reduced by 66%
+- Install size reduced by 45%
+
+**Redesign**
+
+- Besides porting to C, much of bottleneck has been redesigned to be
+  simpler and faster. For example, bottleneck now uses its own N-dimensional
+  array iterators, reducing function call overhead.
+
+**Thanks**
+
+- Christoph Gohlke: Windows compatibility
+- Jennifer Olsen: comments and suggestions
+- A special thanks to the Cython developers. The quickest way to appreciate
+  their work is to remove Cython from your project. It is not easy.
 
 Older versions
 ==============

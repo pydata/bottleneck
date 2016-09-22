@@ -8,7 +8,7 @@ help:
 	@echo "Available tasks:"
 	@echo "help    -->  This help page"
 	@echo "all     -->  clean, build, flake8, test"
-	@echo "build   -->  Build the Cython extension modules"
+	@echo "build   -->  Build the Python C extensions"
 	@echo "clean   -->  Remove all the build files for a fresh start"
 	@echo "test    -->  Run unit tests"
 	@echo "flake8  -->  Check for pep8 errors"
@@ -53,5 +53,6 @@ doc:
 clean:
 	rm -rf build dist Bottleneck.egg-info
 	find . -name \*.pyc -delete
-	rm -rf ${srcdir}/*.c ${srcdir}/*.html ${srcdir}/build
-	rm -rf ${srcdir}/*.so ${srcdir}/*.pyx
+	rm -rf ${srcdir}/*.html ${srcdir}/build
+	rm -rf ${srcdir}/*.c
+	rm -rf ${srcdir}/*.so

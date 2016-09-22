@@ -5,17 +5,17 @@ matrix:
         - os: linux
           env: TEST_DEPS="flake8" PYTHON_VERSION="2.7" PYTHON_ARCH="64" TEST_RUN="style"
         - os: linux
-          env: TEST_DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="2.7" PYTHON_ARCH="64"
+          env: TEST_DEPS="numpy==1.11.0 nose" PYTHON_VERSION="2.7" PYTHON_ARCH="64"
         - os: linux
-          env: TEST_DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="3.4" PYTHON_ARCH="64" TEST_RUN="sdist"
+          env: TEST_DEPS="numpy==1.11.0 nose" PYTHON_VERSION="3.4" PYTHON_ARCH="64" TEST_RUN="sdist"
         - os: linux
-          env: TEST_DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="3.5" PYTHON_ARCH="64" TEST_RUN="cythonless"
+          env: TEST_DEPS="numpy==1.11.0 nose" PYTHON_VERSION="3.5" PYTHON_ARCH="64"
         - os: osx
-          env: TEST_DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="3.4" PYTHON_ARCH="64" TEST_RUN="cythonless"
+          env: TEST_DEPS="numpy==1.11.0 nose" PYTHON_VERSION="2.7" PYTHON_ARCH="64" TEST_RUN="sdist"
         - os: osx
-          env: TEST_DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="3.5" PYTHON_ARCH="64"
+          env: TEST_DEPS="numpy==1.11.0 nose" PYTHON_VERSION="3.4" PYTHON_ARCH="64"
         - os: osx
-          env: TEST_DEPS="numpy==1.11.0 nose cython" PYTHON_VERSION="2.7" PYTHON_ARCH="64" TEST_RUN="sdist"
+          env: TEST_DEPS="numpy==1.11.0 nose" PYTHON_VERSION="3.5" PYTHON_ARCH="64"
 
 before_install:
     - uname -a

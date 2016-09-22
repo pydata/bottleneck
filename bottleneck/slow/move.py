@@ -1,8 +1,4 @@
-"""
-Alternative methods (non-Cython) of calculating moving window statistics.
-
-These function are slow but useful for unit testing.
-"""
+"Alternative methods of calculating moving window statistics."
 
 import warnings
 
@@ -26,12 +22,12 @@ def move_mean(arr, window, min_count=None, axis=-1):
 
 def move_std(arr, window, min_count=None, axis=-1, ddof=0):
     "Slow move_std for unaccelerated dtype"
-    return move_func(np.nanstd, arr, window, min_count, axis=axis)
+    return move_func(np.nanstd, arr, window, min_count, axis=axis, ddof=ddof)
 
 
 def move_var(arr, window, min_count=None, axis=-1, ddof=0):
     "Slow move_var for unaccelerated dtype"
-    return move_func(np.nanvar, arr, window, min_count, axis=axis)
+    return move_func(np.nanvar, arr, window, min_count, axis=axis, ddof=ddof)
 
 
 def move_min(arr, window, min_count=None, axis=-1):

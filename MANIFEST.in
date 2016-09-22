@@ -1,7 +1,12 @@
-include LICENSE README.rst RELEASE.rst bottleneck/LICENSE
-include Makefile tox.ini ez_setup.py
-recursive-include bottleneck/template *.pyx
-recursive-include bottleneck/ *.c *.h
-recursive-include bottleneck/csrc *.c *.h
+include README.rst RELEASE.rst
+include LICENSE bottleneck/LICENSE
+include Makefile tox.ini
+
+recursive-include bottleneck/src *.c *.h
+exclude bottleneck/src/reduce.c
+exclude bottleneck/src/move.c
+exclude bottleneck/src/nonreduce.c
+exclude bottleneck/src/nonreduce_axis.c
+
 recursive-include doc *
 recursive-exclude doc/build *

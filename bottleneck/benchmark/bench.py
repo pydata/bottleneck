@@ -114,9 +114,8 @@ def benchsuite(shapes, dtype, axis, nans, order, functions):
         return setups
 
     # non-moving window functions
-    funcs = ['nansum', 'nanmean', 'nanstd', 'nanvar', 'nanmin', 'nanmax',
-             'median', 'nanmedian', 'ss', 'nanargmin', 'nanargmax', 'anynan',
-             'allnan', 'rankdata', 'nanrankdata']
+    funcs = bn.get_functions("reduce", as_string=True)
+    funcs += ['rankdata', 'nanrankdata']
     for func in funcs:
         if functions is not None and func not in functions:
             continue
@@ -127,9 +126,8 @@ def benchsuite(shapes, dtype, axis, nans, order, functions):
             from bottleneck import %s as bn_func
             try: from numpy import %s as sl_func
             except ImportError: from bottleneck.slow import %s as sl_func
-            if "%s" == "rankdata": sl_func([1, 2, 3])
             if "%s" == "median": from bottleneck.slow import median as sl_func
-        """ % (func, func, func, func, func)
+        """ % (func, func, func, func)
         run['setups'] = getsetups(setup, shapes, nans, order)
         suite.append(run)
 
@@ -176,9 +174,7 @@ def benchsuite(shapes, dtype, axis, nans, order, functions):
         suite.append(run)
 
     # moving window functions
-    funcs = ['move_sum', 'move_mean', 'move_std', 'move_var', 'move_min',
-             'move_max', 'move_argmin', 'move_argmax', 'move_median',
-             'move_rank']
+    funcs = bn.get_functions('move', as_string=True)
     for func in funcs:
         if functions is not None and func not in functions:
             continue
