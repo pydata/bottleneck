@@ -9,67 +9,33 @@ except ImportError:
     from ez_setup import use_setuptools
     use_setuptools()
 
-try:
-    from Cython.Build import cythonize
-    CYTHON_AVAILABLE = True
-except ImportError:
-    CYTHON_AVAILABLE = False
-
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
 
 
 def prepare_modules():
 
-    modules = ['reduce', 'nonreduce', 'nonreduce_axis', 'move']
-
     # Don't attempt to import numpy until it needed; this
     # enables pip to install numpy before bottleneck
     import numpy as np
-
-    # info needed to compile bottleneck
-    kwargs = {}
-    for module in modules:
-        # `-O3` causes slow down of nanmin and nanmax; force `-O2`
-        kwargs[module] = {'include_dirs': [np.get_include()],
-                          'extra_compile_args': ['-O2']}
-        if module == 'move':
-            kwargs[module]['extra_compile_args'].insert(0, '-std=gnu89')
-
-    if CYTHON_AVAILABLE:
-        # create the C files
-        from bottleneck.template.template import make_pyx
-        make_pyx()
-        ext_list = [Extension("bottleneck.%s" % module,
-                              sources=["bottleneck/%s.pyx" % module],
-                              **kwargs[module])
-                    for module in modules]
-        ext_list = cythonize(ext_list)
-    else:
-        # assume the presence of shipped C files
-        ext_list = [Extension("bottleneck.%s" % module,
-                              sources=["bottleneck/%s.c" % module],
-                              **kwargs[module])
-                    for module in modules]
-
-    # c rewrite
     from bottleneck.src.template import make_c_files
+
     make_c_files()
-    ext_list += [Extension("bottleneck.reduce2",
-                           sources=["bottleneck/src/reduce2.c"],
-                           include_dirs=[np.get_include()],
-                           extra_compile_args=['-O2'])]
-    ext_list += [Extension("bottleneck.move2",
-                           sources=["bottleneck/src/move2.c",
+    ext_list = [Extension("bottleneck.reduce",
+                          sources=["bottleneck/src/reduce.c"],
+                          include_dirs=[np.get_include()],
+                          extra_compile_args=['-O2'])]
+    ext_list += [Extension("bottleneck.move",
+                           sources=["bottleneck/src/move.c",
                                     "bottleneck/src/move_median/move_median.c"],
                            include_dirs=[np.get_include()],
                            extra_compile_args=['-O2'])]
-    ext_list += [Extension("bottleneck.nonreduce2",
-                           sources=["bottleneck/src/nonreduce2.c"],
+    ext_list += [Extension("bottleneck.nonreduce",
+                           sources=["bottleneck/src/nonreduce.c"],
                            include_dirs=[np.get_include()],
                            extra_compile_args=['-O2'])]
-    ext_list += [Extension("bottleneck.nonreduce_axis2",
-                           sources=["bottleneck/src/nonreduce_axis2.c"],
+    ext_list += [Extension("bottleneck.nonreduce_axis",
+                           sources=["bottleneck/src/nonreduce_axis.c"],
                            include_dirs=[np.get_include()],
                            extra_compile_args=['-O2'])]
 
@@ -99,7 +65,7 @@ CLASSIFIERS = ["Development Status :: 4 - Beta",
                "Intended Audience :: Science/Research",
                "License :: OSI Approved :: BSD License",
                "Operating System :: OS Independent",
-               "Programming Language :: Cython",
+               "Programming Language :: C",
                "Programming Language :: Python",
                "Programming Language :: Python :: 3",
                "Topic :: Scientific/Engineering"]

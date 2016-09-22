@@ -270,7 +270,7 @@ def unit_maker_argparse_raises(func):
     assert_raises(TypeError, func, arr, axis='0')
     if func.__name__ not in ('nanstd', 'nanvar'):
         assert_raises(TypeError, func, arr, ddof=0)
-    # assert_raises(TypeError, func, arr, arr) TODO: add after dropping cython
+    assert_raises(TypeError, func, arr, arr)
     # assert_raises(TypeError, func, None) results vary
 
 

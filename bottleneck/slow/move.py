@@ -1,8 +1,4 @@
-"""
-Alternative methods (non-Cython) of calculating moving window statistics.
-
-These function are slow but useful for unit testing.
-"""
+"Alternative methods of calculating moving window statistics."
 
 import warnings
 

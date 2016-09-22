@@ -15,7 +15,7 @@ nan = np.nan
 
 def test_partsort():
     "test partsort"
-    for func in (bn.partsort, bn.partsort2):
+    for func in (bn.partsort,):
         yield unit_maker, func
 
 
@@ -138,28 +138,17 @@ def test_transpose():
 
 def test_nonreduce_axis():
     "Test nonreduce axis functions"
-    funcs = [bn.rankdata, bn.rankdata2, bn.nanrankdata, bn.nanrankdata2,
-             bn.push, bn.push2]
+    funcs = [bn.rankdata, bn.nanrankdata, bn.push]
     for func in funcs:
         yield reduce_unit_maker, func
 
 
 def test_push():
     "Test push"
-    ns = (np.inf, -1, 0, 1, 2, 3, 4, 5, 1.1, 1.5, 1.9)
-    arr = np.array([np.nan, 1, 2, np.nan, np.nan, np.nan, np.nan, 3, np.nan])
-    for n in ns:
-        actual = bn.push(arr.copy(), n=n)
-        desired = bn.slow.push(arr.copy(), n=n)
-        assert_array_equal(actual, desired, "failed on n=%s" % str(n))
-
-
-def test_push2():
-    "Test push2"
     ns = (0, 1, 2, 3, 4, 5)
     arr = np.array([np.nan, 1, 2, np.nan, np.nan, np.nan, np.nan, 3, np.nan])
     for n in ns:
-        actual = bn.push2(arr.copy(), n=n)
+        actual = bn.push(arr.copy(), n=n)
         desired = bn.slow.push(arr.copy(), n=n)
         assert_array_equal(actual, desired, "failed on n=%s" % str(n))
 

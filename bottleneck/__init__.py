@@ -13,53 +13,12 @@ try:
 except:
     pass
 try:
-    from .reduce2 import nansum as nansum2
-    from .reduce2 import nanmean as nanmean2
-    from .reduce2 import nanstd as nanstd2
-    from .reduce2 import nanvar as nanvar2
-    from .reduce2 import nanmin as nanmin2
-    from .reduce2 import nanmax as nanmax2
-    from .reduce2 import nanargmin as nanargmin2
-    from .reduce2 import nanargmax as nanargmax2
-    from .reduce2 import ss as ss2
-    from .reduce2 import median as median2
-    from .reduce2 import nanmedian as nanmedian2
-    from .reduce2 import anynan as anynan2
-    from .reduce2 import allnan as allnan2
-except:
-    pass
-try:
-    from .move2 import move_sum as move_sum2
-    from .move2 import move_mean as move_mean2
-    from .move2 import move_std as move_std2
-    from .move2 import move_var as move_var2
-    from .move2 import move_min as move_min2
-    from .move2 import move_max as move_max2
-    from .move2 import move_argmin as move_argmin2
-    from .move2 import move_argmax as move_argmax2
-    from .move2 import move_median as move_median2
-    from .move2 import move_rank as move_rank2
-except:
-    pass
-try:
     from .nonreduce import replace
-except:
-    pass
-try:
-    from .nonreduce2 import replace as replace2
 except:
     pass
 try:
     from .nonreduce_axis import (partsort, argpartsort, rankdata, nanrankdata,
                                  push)
-except:
-    pass
-try:
-    from .nonreduce_axis2 import partsort as partsort2
-    from .nonreduce_axis2 import argpartsort as argpartsort2
-    from .nonreduce_axis2 import rankdata as rankdata2
-    from .nonreduce_axis2 import nanrankdata as nanrankdata2
-    from .nonreduce_axis2 import push as push2
 except:
     pass
 try:
