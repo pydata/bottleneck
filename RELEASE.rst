@@ -20,8 +20,12 @@ This release is a complete rewrite of Bottleneck.
 - Source tarball size reduced by 80%
 - Build time reduced by 66%
 - Install size reduced by 45%
+
+**Redesign**
+
 - Besides porting to C, much of bottleneck has been redesigned to be
-  simpler and faster
+  simpler and faster. For example, bottleneck now uses its own N-dimensional
+  array iterators, reducing function call overhead.
 
 **Thanks**
 

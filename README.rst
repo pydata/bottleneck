@@ -65,25 +65,8 @@ Bottleneck comes with a benchmark suite::
         move_median   928.0       43.4      919.9      143.3
         move_rank    1028.0        3.0     1148.9       11.2
 
-You can also run a detailed benchmark on a single function::
-
-    >>> bn.bench_detailed("move_median", fraction_nan=0.3)
-    move_median benchmark
-        Bottleneck 1.2.0dev; Numpy 1.11.0
-        Speed is NumPy time divided by Bottleneck time
-        30.0% of the array elements are NaN (on average)
-
-       Speed  Call                     Array
-        84.3  move_median(a, 1)        rand(1)
-      1044.5  move_median(a, 2)        rand(10)
-      1937.1  move_median(a, 20)       rand(100)
-      1691.5  move_median(a, 200)      rand(1000)
-       941.3  move_median(a, 200)      rand(1000000)
-      2569.7  move_median(a, 2)        rand(10, 10)
-       123.7  move_median(a, 20)       rand(100, 100)
-       195.8  move_median(a, 200)      rand(1000, 1000)
-        23.1  move_median(a, 2)        rand(100000, 2)
-        25.5  move_median(a, 20)       rand(100, 100, 100)
+You can also run a detailed benchmark for a single function using, for
+example, the command `bn.bench_detailed("move_median", fraction_nan=0.3)`.
 
 Only arrays with data type (dtype) int32, int64, float32, and float64 are
 accelerated. All other dtypes result in calls to slower, unaccelerated
