@@ -1,4 +1,4 @@
-.. image:: https://travis-ci.org/kwgoodman/bottleneck.svg?branch=c_rewrite
+.. image:: https://travis-ci.org/kwgoodman/bottleneck.svg?branch=master
     :target: https://travis-ci.org/kwgoodman/bottleneck
 ==========
 Bottleneck
@@ -29,41 +29,61 @@ Bottleneck comes with a benchmark suite::
 
     >>> bn.bench()
     Bottleneck performance benchmark
-        Bottleneck 1.1.0; Numpy 1.11.0
+        Bottleneck 1.2.0dev; Numpy 1.11.0
         Speed is NumPy time divided by Bottleneck time
         NaN means approx one-third NaNs; float64 and axis=-1 are used
 
                      no NaN     no NaN      NaN        NaN
                        (10,)   (1000,1000)   (10,)   (1000,1000)
-        nansum         61.5        2.3       61.1        7.4
-        nanmean       219.4        3.5      219.3        8.3
-        nanstd        350.5        2.7      355.3        7.1
-        nanvar        363.6        2.7      357.3        7.1
-        nanmin         51.0        1.0       51.1        1.4
-        nanmax         51.7        1.0       51.6        2.1
-        median         92.4        0.8      110.5        5.3
-        nanmedian      90.1        3.9      109.8       12.0
-        ss             29.5        1.6       29.1        1.6
-        nanargmin      91.5        3.0       93.0        7.5
-        nanargmax      92.9        2.9       93.8        8.3
-        anynan         24.4        0.7       26.2       55.2
-        allnan         26.4       62.3       26.2       59.0
-        rankdata       44.2        1.5       44.9        2.2
-        nanrankdata    57.0       26.6       52.5       41.9
-        partsort        5.9        0.9        5.9        1.1
-        argpartsort     2.8        0.9        3.0        0.7
-        replace        10.0        1.1       10.0        1.1
-        push          207.6       20.2      204.6       25.7
-        move_sum      307.0      154.0      307.6      407.8
-        move_mean     750.2      149.7      760.0      539.2
-        move_std     1070.9       77.8     1093.5      370.4
-        move_var     1035.1      107.2     1059.8      367.6
-        move_min      218.6       23.1      219.6       51.4
-        move_max      239.7       23.0      243.8       92.3
-        move_argmin   391.5       40.6      405.9      243.6
-        move_argmax   386.9       41.3      404.5      279.0
-        move_median   508.7       42.1      501.8      160.2
-        move_rank     575.7        2.9      630.2       11.1
+        nansum         64.1        2.3       63.7        7.4
+        nanmean       217.7        3.5      216.3        8.3
+        nanstd        355.6        2.7      383.6        7.0
+        nanvar        348.8        2.7      370.2        7.0
+        nanmin         57.3        1.0       48.1        1.3
+        nanmax         51.9        1.0       56.8        2.1
+        median        175.6        1.1      231.0        5.1
+        nanmedian     158.0        5.0      185.6       39.8
+        ss             32.3        1.6       32.4        1.6
+        nanargmin      92.9        2.2       94.1        5.8
+        nanargmax      96.4        2.2       97.2        6.1
+        anynan         22.0        0.5       23.4       73.0
+        allnan         26.2      105.8       25.6       80.1
+        rankdata      101.8        2.7      100.5        5.1
+        nanrankdata   121.8        2.9      124.7        5.1
+        partsort        7.4        1.0        8.1        1.0
+        argpartsort     6.2        1.1        6.7        0.9
+        replace        18.1        1.4       18.0        1.5
+        push          304.1       19.6      319.3       26.4
+        move_sum      695.6      210.2      645.6      562.7
+        move_mean    1615.4      333.9     1612.8      481.4
+        move_std     2576.8      168.3     2672.2      396.9
+        move_var     2551.7      211.5     2568.8      394.7
+        move_min      524.6       25.9      536.6       59.8
+        move_max      460.5       25.9      467.3       96.8
+        move_argmin   800.6       41.3      839.0      256.9
+        move_argmax   833.3       43.4      872.1      305.4
+        move_median   928.0       43.4      919.9      143.3
+        move_rank    1028.0        3.0     1148.9       11.2
+
+You can also run a detailed benchmark on a single function::
+
+    >>> bn.bench_detailed("move_median", fraction_nan=0.3)
+    move_median benchmark
+        Bottleneck 1.2.0dev; Numpy 1.11.0
+        Speed is NumPy time divided by Bottleneck time
+        30.0% of the array elements are NaN (on average)
+
+       Speed  Call                     Array
+        84.3  move_median(a, 1)        rand(1)
+      1044.5  move_median(a, 2)        rand(10)
+      1937.1  move_median(a, 20)       rand(100)
+      1691.5  move_median(a, 200)      rand(1000)
+       941.3  move_median(a, 200)      rand(1000000)
+      2569.7  move_median(a, 2)        rand(10, 10)
+       123.7  move_median(a, 20)       rand(100, 100)
+       195.8  move_median(a, 200)      rand(1000, 1000)
+        23.1  move_median(a, 2)        rand(100000, 2)
+        25.5  move_median(a, 20)       rand(100, 100, 100)
 
 Only arrays with data type (dtype) int32, int64, float32, and float64 are
 accelerated. All other dtypes result in calls to slower, unaccelerated
@@ -94,7 +114,7 @@ Requirements:
 
 ======================== ====================================================
 Bottleneck               Python 2.7, 3.4, 3.5; NumPy 1.11.0
-Compile                  gcc or clang or MinGW
+Compile                  gcc, clang, MinGW or MSVC
 Unit tests               nose
 ======================== ====================================================
 
