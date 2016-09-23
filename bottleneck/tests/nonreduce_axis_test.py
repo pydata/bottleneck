@@ -146,10 +146,10 @@ def test_nonreduce_axis():
 def test_push():
     "Test push"
     ns = (0, 1, 2, 3, 4, 5)
-    arr = np.array([np.nan, 1, 2, np.nan, np.nan, np.nan, np.nan, 3, np.nan])
+    a = np.array([np.nan, 1, 2, np.nan, np.nan, np.nan, np.nan, 3, np.nan])
     for n in ns:
-        actual = bn.push(arr.copy(), n=n)
-        desired = bn.slow.push(arr.copy(), n=n)
+        actual = bn.push(a.copy(), n=n)
+        desired = bn.slow.push(a.copy(), n=n)
         assert_array_equal(actual, desired, "failed on n=%s" % str(n))
 
 
@@ -170,27 +170,27 @@ def unit_maker_strides(func, decimal=5):
     fmt += '\nFlags: \n%s\n'
     name = func.__name__
     func0 = eval('bn.slow.%s' % name)
-    for i, arr in enumerate(arrays_strides()):
-        if arr.ndim == 0:
+    for i, a in enumerate(arrays_strides()):
+        if a.ndim == 0:
             axes = [None]  # numpy can't handle e.g. np.nanmean(9, axis=-1)
         else:
-            axes = list(range(-1, arr.ndim)) + [None]
+            axes = list(range(-1, a.ndim)) + [None]
         for axis in axes:
-            # do not use arr.copy() here because it will C order the array
+            # do not use a.copy() here because it will C order the array
             if name in ('partsort', 'argpartsort', 'push'):
                 if axis is None:
                     if name == 'push':
                         continue
-                    n = min(2, arr.size)
+                    n = min(2, a.size)
                 else:
-                    n = min(2, arr.shape[axis])
-                actual = func(arr, n, axis=axis)
-                desired = func0(arr, n, axis=axis)
+                    n = min(2, a.shape[axis])
+                actual = func(a, n, axis=axis)
+                desired = func0(a, n, axis=axis)
             else:
-                actual = func(arr, axis=axis)
-                desired = func0(arr, axis=axis)
-            tup = (name, 'a'+str(i), str(arr.dtype), str(arr.shape),
-                   str(axis), arr, arr.strides, arr.flags)
+                actual = func(a, axis=axis)
+                desired = func0(a, axis=axis)
+            tup = (name, 'a'+str(i), str(a.dtype), str(a.shape),
+                   str(axis), a, a.strides, a.flags)
             err_msg = fmt % tup
             assert_array_almost_equal(actual, desired, decimal, err_msg)
             err_msg += '\n dtype mismatch %s %s'
@@ -221,54 +221,54 @@ def unit_maker_parse(func, decimal=5):
     name = func.__name__
     func0 = eval('bn.slow.%s' % name)
 
-    arr = np.array([1., 2, 3])
+    a = np.array([1., 2, 3])
 
     fmt = '\n%s' % func
     fmt += '%s\n'
-    fmt += '\nInput array:\n%s\n' % arr
+    fmt += '\nInput array:\n%s\n' % a
 
-    actual = func(arr, 1)
-    desired = func0(arr, 1)
-    err_msg = fmt % "(arr, 1)"
+    actual = func(a, 1)
+    desired = func0(a, 1)
+    err_msg = fmt % "(a, 1)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
-    actual = func(arr, 1, axis=0)
-    desired = func0(arr, 1, axis=0)
-    err_msg = fmt % "(arr, 1, axis=0)"
+    actual = func(a, 1, axis=0)
+    desired = func0(a, 1, axis=0)
+    err_msg = fmt % "(a, 1, axis=0)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
     if name != 'push':
 
-        actual = func(arr, 2, None)
-        desired = func0(arr, 2, None)
-        err_msg = fmt % "(arr, 2, None)"
+        actual = func(a, 2, None)
+        desired = func0(a, 2, None)
+        err_msg = fmt % "(a, 2, None)"
         assert_array_almost_equal(actual, desired, decimal, err_msg)
 
-        actual = func(arr, 1, axis=None)
-        desired = func0(arr, 1, axis=None)
-        err_msg = fmt % "(arr, 1, axis=None)"
+        actual = func(a, 1, axis=None)
+        desired = func0(a, 1, axis=None)
+        err_msg = fmt % "(a, 1, axis=None)"
         assert_array_almost_equal(actual, desired, decimal, err_msg)
 
         # regression test: make sure len(kwargs) == 0 doesn't raise
-        args = (arr, 1, -1)
+        args = (a, 1, -1)
         kwargs = {}
         func(*args, **kwargs)
 
     else:
 
         # regression test: make sure len(kwargs) == 0 doesn't raise
-        args = (arr, 1)
+        args = (a, 1)
         kwargs = {}
         func(*args, **kwargs)
 
 
 def unit_maker_raises(func):
     "test argument parsing raises in nonreduce_axis"
-    arr = np.array([1., 2, 3])
+    a = np.array([1., 2, 3])
     assert_raises(TypeError, func)
-    assert_raises(TypeError, func, axis=arr)
-    assert_raises(TypeError, func, arr, axis=0, extra=0)
-    assert_raises(TypeError, func, arr, axis=0, arr=arr)
+    assert_raises(TypeError, func, axis=a)
+    assert_raises(TypeError, func, a, axis=0, extra=0)
+    assert_raises(TypeError, func, a, axis=0, a=a)
     if func.__name__ in ('partsort', 'argpartsort'):
-        assert_raises(TypeError, func, arr, 0, 0, 0, 0, 0)
-        assert_raises(TypeError, func, arr, axis='0')
+        assert_raises(TypeError, func, a, 0, 0, 0, 0, 0)
+        assert_raises(TypeError, func, a, axis='0')

@@ -39,16 +39,16 @@ def unit_maker(func):
     msg += '\nInput array:\n%s\n'
     name = func.__name__
     func0 = eval('bn.slow.%s' % name)
-    for i, arr in enumerate(lists()):
+    for i, a in enumerate(lists()):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             try:
-                actual = func(arr)
-                desired = func0(arr)
+                actual = func(a)
+                desired = func0(a)
             except TypeError:
-                actual = func(arr, 2)
-                desired = func0(arr, 2)
-        a = np.array(arr)
-        tup = (name, 'a'+str(i), str(a.dtype), str(a.shape), arr)
+                actual = func(a, 2)
+                desired = func0(a, 2)
+        a = np.array(a)
+        tup = (name, 'a'+str(i), str(a.dtype), str(a.shape), a)
         err_msg = msg % tup
         assert_array_almost_equal(actual, desired, err_msg=err_msg)

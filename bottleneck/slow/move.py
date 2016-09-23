@@ -10,48 +10,48 @@ __all__ = ['move_sum', 'move_mean', 'move_std', 'move_var', 'move_min',
            'move_rank']
 
 
-def move_sum(arr, window, min_count=None, axis=-1):
+def move_sum(a, window, min_count=None, axis=-1):
     "Slow move_sum for unaccelerated dtype"
-    return move_func(np.nansum, arr, window, min_count, axis=axis)
+    return move_func(np.nansum, a, window, min_count, axis=axis)
 
 
-def move_mean(arr, window, min_count=None, axis=-1):
+def move_mean(a, window, min_count=None, axis=-1):
     "Slow move_mean for unaccelerated dtype"
-    return move_func(np.nanmean, arr, window, min_count, axis=axis)
+    return move_func(np.nanmean, a, window, min_count, axis=axis)
 
 
-def move_std(arr, window, min_count=None, axis=-1, ddof=0):
+def move_std(a, window, min_count=None, axis=-1, ddof=0):
     "Slow move_std for unaccelerated dtype"
-    return move_func(np.nanstd, arr, window, min_count, axis=axis, ddof=ddof)
+    return move_func(np.nanstd, a, window, min_count, axis=axis, ddof=ddof)
 
 
-def move_var(arr, window, min_count=None, axis=-1, ddof=0):
+def move_var(a, window, min_count=None, axis=-1, ddof=0):
     "Slow move_var for unaccelerated dtype"
-    return move_func(np.nanvar, arr, window, min_count, axis=axis, ddof=ddof)
+    return move_func(np.nanvar, a, window, min_count, axis=axis, ddof=ddof)
 
 
-def move_min(arr, window, min_count=None, axis=-1):
+def move_min(a, window, min_count=None, axis=-1):
     "Slow move_min for unaccelerated dtype"
-    return move_func(np.nanmin, arr, window, min_count, axis=axis)
+    return move_func(np.nanmin, a, window, min_count, axis=axis)
 
 
-def move_max(arr, window, min_count=None, axis=-1):
+def move_max(a, window, min_count=None, axis=-1):
     "Slow move_max for unaccelerated dtype"
-    return move_func(np.nanmax, arr, window, min_count, axis=axis)
+    return move_func(np.nanmax, a, window, min_count, axis=axis)
 
 
-def move_argmin(arr, window, min_count=None, axis=-1):
+def move_argmin(a, window, min_count=None, axis=-1):
     "Slow move_argmin for unaccelerated dtype"
-    def argmin(arr, axis):
-        arr = np.array(arr, copy=False)
-        flip = [slice(None)] * arr.ndim
+    def argmin(a, axis):
+        a = np.array(a, copy=False)
+        flip = [slice(None)] * a.ndim
         flip[axis] = slice(None, None, -1)
-        arr = arr[flip]  # if tie, pick index of rightmost tie
+        a = a[flip]  # if tie, pick index of rightmost tie
         try:
-            idx = np.nanargmin(arr, axis=axis)
+            idx = np.nanargmin(a, axis=axis)
         except ValueError:
             # an all nan slice encountered
-            a = arr.copy()
+            a = a.copy()
             mask = np.isnan(a)
             np.copyto(a, np.inf, where=mask)
             idx = np.argmin(a, axis=axis).astype(np.float64)
@@ -61,21 +61,21 @@ def move_argmin(arr, window, min_count=None, axis=-1):
                 mask = np.all(mask, axis=axis)
                 idx[mask] = np.nan
         return idx
-    return move_func(argmin, arr, window, min_count, axis=axis)
+    return move_func(argmin, a, window, min_count, axis=axis)
 
 
-def move_argmax(arr, window, min_count=None, axis=-1):
+def move_argmax(a, window, min_count=None, axis=-1):
     "Slow move_argmax for unaccelerated dtype"
-    def argmax(arr, axis):
-        arr = np.array(arr, copy=False)
-        flip = [slice(None)] * arr.ndim
+    def argmax(a, axis):
+        a = np.array(a, copy=False)
+        flip = [slice(None)] * a.ndim
         flip[axis] = slice(None, None, -1)
-        arr = arr[flip]  # if tie, pick index of rightmost tie
+        a = a[flip]  # if tie, pick index of rightmost tie
         try:
-            idx = np.nanargmax(arr, axis=axis)
+            idx = np.nanargmax(a, axis=axis)
         except ValueError:
             # an all nan slice encountered
-            a = arr.copy()
+            a = a.copy()
             mask = np.isnan(a)
             np.copyto(a, -np.inf, where=mask)
             idx = np.argmax(a, axis=axis).astype(np.float64)
@@ -85,24 +85,24 @@ def move_argmax(arr, window, min_count=None, axis=-1):
                 mask = np.all(mask, axis=axis)
                 idx[mask] = np.nan
         return idx
-    return move_func(argmax, arr, window, min_count, axis=axis)
+    return move_func(argmax, a, window, min_count, axis=axis)
 
 
-def move_median(arr, window, min_count=None, axis=-1):
+def move_median(a, window, min_count=None, axis=-1):
     "Slow move_median for unaccelerated dtype"
-    return move_func(np.nanmedian, arr, window, min_count, axis=axis)
+    return move_func(np.nanmedian, a, window, min_count, axis=axis)
 
 
-def move_rank(arr, window, min_count=None, axis=-1):
+def move_rank(a, window, min_count=None, axis=-1):
     "Slow move_rank for unaccelerated dtype"
-    return move_func(lastrank, arr, window, min_count, axis=axis)
+    return move_func(lastrank, a, window, min_count, axis=axis)
 
 
 # magic utility functions ---------------------------------------------------
 
-def move_func(func, arr, window, min_count=None, axis=-1, **kwargs):
+def move_func(func, a, window, min_count=None, axis=-1, **kwargs):
     "Generic moving window function implemented with a python loop."
-    arr = np.array(arr, copy=False)
+    a = np.array(a, copy=False)
     if min_count is None:
         mc = window
     else:
@@ -112,44 +112,43 @@ def move_func(func, arr, window, min_count=None, axis=-1, **kwargs):
             raise ValueError(msg % (mc, window))
         elif mc <= 0:
             raise ValueError("`min_count` must be greater than zero.")
-    if arr.ndim == 0:
+    if a.ndim == 0:
         raise ValueError("moving window functions require ndim > 0")
     if axis is None:
         raise ValueError("An `axis` value of None is not supported.")
     if window < 1:
         raise ValueError("`window` must be at least 1.")
-    if window > arr.shape[axis]:
+    if window > a.shape[axis]:
         raise ValueError("`window` is too long.")
-    if issubclass(arr.dtype.type, np.inexact):
-        y = np.empty_like(arr)
+    if issubclass(a.dtype.type, np.inexact):
+        y = np.empty_like(a)
     else:
-        y = np.empty(arr.shape)
-    idx1 = [slice(None)] * arr.ndim
+        y = np.empty(a.shape)
+    idx1 = [slice(None)] * a.ndim
     idx2 = list(idx1)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        for i in range(arr.shape[axis]):
+        for i in range(a.shape[axis]):
             win = min(window, i + 1)
             idx1[axis] = slice(i + 1 - win, i + 1)
             idx2[axis] = i
-            a = arr[idx1]
-            y[idx2] = func(a, axis=axis, **kwargs)
-    idx = _mask(arr, window, mc, axis)
+            y[idx2] = func(a[idx1], axis=axis, **kwargs)
+    idx = _mask(a, window, mc, axis)
     y[idx] = np.nan
     return y
 
 
-def _mask(arr, window, min_count, axis):
-    n = (arr == arr).cumsum(axis)
-    idx1 = [slice(None)] * arr.ndim
-    idx2 = [slice(None)] * arr.ndim
-    idx3 = [slice(None)] * arr.ndim
+def _mask(a, window, min_count, axis):
+    n = (a == a).cumsum(axis)
+    idx1 = [slice(None)] * a.ndim
+    idx2 = [slice(None)] * a.ndim
+    idx3 = [slice(None)] * a.ndim
     idx1[axis] = slice(window, None)
     idx2[axis] = slice(None, -window)
     idx3[axis] = slice(None, window)
     nidx1 = n[idx1]
     nidx1 = nidx1 - n[idx2]
-    idx = np.empty(arr.shape, dtype=np.bool)
+    idx = np.empty(a.shape, dtype=np.bool)
     idx[idx1] = nidx1 < min_count
     idx[idx3] = n[idx3] < min_count
     return idx
@@ -157,7 +156,7 @@ def _mask(arr, window, min_count, axis):
 
 # ---------------------------------------------------------------------------
 
-def lastrank(arr, axis=-1):
+def lastrank(a, axis=-1):
     """
     The ranking of the last element along the axis, ignoring NaNs.
 
@@ -166,8 +165,8 @@ def lastrank(arr, axis=-1):
 
     Parameters
     ----------
-    arr : ndarray
-        Input array. If `arr` is not an array, a conversion is attempted.
+    a : ndarray
+        Input array. If `a` is not an array, a conversion is attempted.
     axis : int, optional
         The axis over which to rank. By default (axis=-1) the ranking
         (and reducing) is performed over the last axis.
@@ -210,7 +209,7 @@ def lastrank(arr, axis=-1):
     -0.5
 
     """
-    a = np.array(arr, copy=False)
+    a = np.array(a, copy=False)
     ndim = a.ndim
     if a.size == 0:
         # At least one dimension has length 0

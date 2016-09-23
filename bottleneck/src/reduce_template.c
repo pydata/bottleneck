@@ -1087,16 +1087,16 @@ REDUCE_MAIN(allnan, 0, 0)
 
 /* python strings -------------------------------------------------------- */
 
-PyObject *pystr_arr = NULL;
+PyObject *pystr_a = NULL;
 PyObject *pystr_axis = NULL;
 PyObject *pystr_ddof = NULL;
 
 static int
 intern_strings(void) {
-    pystr_arr = PyString_InternFromString("arr");
+    pystr_a = PyString_InternFromString("a");
     pystr_axis = PyString_InternFromString("axis");
     pystr_ddof = PyString_InternFromString("ddof");
-    return pystr_arr && pystr_axis && pystr_ddof;
+    return pystr_a && pystr_axis && pystr_ddof;
 }
 
 /* reducer --------------------------------------------------------------- */
@@ -1105,7 +1105,7 @@ static BN_INLINE int
 parse_args(PyObject *args,
            PyObject *kwds,
            int has_ddof,
-           PyObject **arr,
+           PyObject **a,
            PyObject **axis,
            PyObject **ddof)
 {
@@ -1122,7 +1122,7 @@ parse_args(PyObject *args,
                     TYPE_ERR("wrong number of arguments");
                     return 0;
                 }
-            case 1: *arr = PyTuple_GET_ITEM(args, 0);
+            case 1: *a = PyTuple_GET_ITEM(args, 0);
             case 0: break;
             default:
                 TYPE_ERR("wrong number of arguments");
@@ -1130,9 +1130,9 @@ parse_args(PyObject *args,
         }
         switch (nargs) {
             case 0:
-                *arr = PyDict_GetItem(kwds, pystr_arr);
-                if (*arr == NULL) {
-                    TYPE_ERR("Cannot find `arr` keyword input");
+                *a = PyDict_GetItem(kwds, pystr_a);
+                if (*a == NULL) {
+                    TYPE_ERR("Cannot find `a` keyword input");
                     return 0;
                 }
                 nkwds_found += 1;
@@ -1177,7 +1177,7 @@ parse_args(PyObject *args,
             case 2:
                 *axis = PyTuple_GET_ITEM(args, 1);
             case 1:
-                *arr = PyTuple_GET_ITEM(args, 0);
+                *a = PyTuple_GET_ITEM(args, 0);
                 break;
             default:
                 TYPE_ERR("wrong number of arguments");
@@ -1213,19 +1213,19 @@ reducer(char *name,
 
     PyArrayObject *a;
 
-    PyObject *arr_obj = NULL;
+    PyObject *a_obj = NULL;
     PyObject *axis_obj = Py_None;
     PyObject *ddof_obj = NULL;
 
-    if (!parse_args(args, kwds, has_ddof, &arr_obj, &axis_obj, &ddof_obj)) {
+    if (!parse_args(args, kwds, has_ddof, &a_obj, &axis_obj, &ddof_obj)) {
         return NULL;
     }
 
     /* convert to array if necessary */
-    if PyArray_Check(arr_obj) {
-        a = (PyArrayObject *)arr_obj;
+    if PyArray_Check(a_obj) {
+        a = (PyArrayObject *)a_obj;
     } else {
-        a = (PyArrayObject *)PyArray_FROM_O(arr_obj);
+        a = (PyArrayObject *)PyArray_FROM_O(a_obj);
         if (a == NULL) {
             return NULL;
         }
@@ -1325,7 +1325,7 @@ static char reduce_doc[] =
 
 static char nansum_doc[] =
 /* MULTILINE STRING BEGIN
-nansum(arr, axis=None)
+nansum(a, axis=None)
 
 Sum of array elements along given axis treating NaNs as zero.
 
@@ -1335,8 +1335,8 @@ return values.
 
 Parameters
 ----------
-arr : array_like
-    Array containing numbers whose sum is desired. If `arr` is not an
+a : array_like
+    Array containing numbers whose sum is desired. If `a` is not an
     array, a conversion is attempted.
 axis : {int, None}, optional
     Axis along which the sum is computed. The default (axis=None) is to
@@ -1345,8 +1345,8 @@ axis : {int, None}, optional
 Returns
 -------
 y : ndarray
-    An array with the same shape as `arr`, with the specified axis removed.
-    If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+    An array with the same shape as `a`, with the specified axis removed.
+    If `a` is a 0-d array, or if axis is None, a scalar is returned.
 
 Notes
 -----
@@ -1383,7 +1383,7 @@ MULTILINE STRING END */
 
 static char nanmean_doc[] =
 /* MULTILINE STRING BEGIN
-nanmean(arr, axis=None)
+nanmean(a, axis=None)
 
 Mean of array elements along given axis ignoring NaNs.
 
@@ -1391,8 +1391,8 @@ Mean of array elements along given axis ignoring NaNs.
 
 Parameters
 ----------
-arr : array_like
-    Array containing numbers whose mean is desired. If `arr` is not an
+a : array_like
+    Array containing numbers whose mean is desired. If `a` is not an
     array, a conversion is attempted.
 axis : {int, None}, optional
     Axis along which the means are computed. The default (axis=None) is to
@@ -1401,8 +1401,8 @@ axis : {int, None}, optional
 Returns
 -------
 y : ndarray
-    An array with the same shape as `arr`, with the specified axis removed.
-    If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+    An array with the same shape as `a`, with the specified axis removed.
+    If `a` is a 0-d array, or if axis is None, a scalar is returned.
     `float64` intermediate and return values are used for integer inputs.
 
 See also
@@ -1445,7 +1445,7 @@ MULTILINE STRING END */
 
 static char nanstd_doc[] =
 /* MULTILINE STRING BEGIN
-nanstd(arr, axis=None, ddof=0)
+nanstd(a, axis=None, ddof=0)
 
 Standard deviation along the specified axis, ignoring NaNs.
 
@@ -1456,19 +1456,19 @@ is used.
 
 An example of a one-pass algorithm:
 
-    >>> np.sqrt((arr*arr).mean() - arr.mean()**2)
+    >>> np.sqrt((a*a).mean() - a.mean()**2)
 
 An example of a two-pass algorithm:
 
-    >>> np.sqrt(((arr - arr.mean())**2).mean())
+    >>> np.sqrt(((a - a.mean())**2).mean())
 
 Note in the two-pass algorithm the mean must be found (first pass) before
 the squared deviation (second pass) can be found.
 
 Parameters
 ----------
-arr : array_like
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : array_like
+    Input array. If `a` is not an array, a conversion is attempted.
 axis : {int, None}, optional
     Axis along which the standard deviation is computed. The default
     (axis=None) is to compute the standard deviation of the flattened
@@ -1481,8 +1481,8 @@ ddof : int, optional
 Returns
 -------
 y : ndarray
-    An array with the same shape as `arr`, with the specified axis removed.
-    If `arr` is a 0-d array, or if axis is None, a scalar is returned.
+    An array with the same shape as `a`, with the specified axis removed.
+    If `a` is a 0-d array, or if axis is None, a scalar is returned.
     `float64` intermediate and return values are used for integer inputs.
     If ddof is >= the number of non-NaN elements in a slice or the slice
     contains only NaNs, then the result for that slice is NaN.
@@ -1519,7 +1519,7 @@ MULTILINE STRING END */
 
 static char nanvar_doc[] =
 /* MULTILINE STRING BEGIN
-nanvar(arr, axis=None, ddof=0)
+nanvar(a, axis=None, ddof=0)
 
 Variance along the specified axis, ignoring NaNs.
 
@@ -1530,19 +1530,19 @@ is used.
 
 An example of a one-pass algorithm:
 
-    >>> (arr*arr).mean() - arr.mean()**2
+    >>> (a*a).mean() - a.mean()**2
 
 An example of a two-pass algorithm:
 
-    >>> ((arr - arr.mean())**2).mean()
+    >>> ((a - a.mean())**2).mean()
 
 Note in the two-pass algorithm the mean must be found (first pass) before
 the squared deviation (second pass) can be found.
 
 Parameters
 ----------
-arr : array_like
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : array_like
+    Input array. If `a` is not an array, a conversion is attempted.
 axis : {int, None}, optional
     Axis along which the variance is computed. The default (axis=None) is
     to compute the variance of the flattened array.
@@ -1554,8 +1554,8 @@ ddof : int, optional
 Returns
 -------
 y : ndarray
-    An array with the same shape as `arr`, with the specified axis
-    removed. If `arr` is a 0-d array, or if axis is None, a scalar is
+    An array with the same shape as `a`, with the specified axis
+    removed. If `a` is a 0-d array, or if axis is None, a scalar is
     returned. `float64` intermediate and return values are used for
     integer inputs. If ddof is >= the number of non-NaN elements in a
     slice or the slice contains only NaNs, then the result for that slice
@@ -1593,7 +1593,7 @@ MULTILINE STRING END */
 
 static char nanmin_doc[] =
 /* MULTILINE STRING BEGIN
-nanmin(arr, axis=None)
+nanmin(a, axis=None)
 
 Minimum values along specified axis, ignoring NaNs.
 
@@ -1601,8 +1601,8 @@ When all-NaN slices are encountered, NaN is returned for that slice.
 
 Parameters
 ----------
-arr : array_like
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : array_like
+    Input array. If `a` is not an array, a conversion is attempted.
 axis : {int, None}, optional
     Axis along which the minimum is computed. The default (axis=None) is
     to compute the minimum of the flattened array.
@@ -1610,9 +1610,9 @@ axis : {int, None}, optional
 Returns
 -------
 y : ndarray
-    An array with the same shape as `arr`, with the specified axis removed.
-    If `arr` is a 0-d array, or if axis is None, a scalar is returned. The
-    same dtype as `arr` is returned.
+    An array with the same shape as `a`, with the specified axis removed.
+    If `a` is a 0-d array, or if axis is None, a scalar is returned. The
+    same dtype as `a` is returned.
 
 See also
 --------
@@ -1637,7 +1637,7 @@ MULTILINE STRING END */
 
 static char nanmax_doc[] =
 /* MULTILINE STRING BEGIN
-nanmax(arr, axis=None)
+nanmax(a, axis=None)
 
 Maximum values along specified axis, ignoring NaNs.
 
@@ -1645,8 +1645,8 @@ When all-NaN slices are encountered, NaN is returned for that slice.
 
 Parameters
 ----------
-arr : array_like
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : array_like
+    Input array. If `a` is not an array, a conversion is attempted.
 axis : {int, None}, optional
     Axis along which the maximum is computed. The default (axis=None) is
     to compute the maximum of the flattened array.
@@ -1654,9 +1654,9 @@ axis : {int, None}, optional
 Returns
 -------
 y : ndarray
-    An array with the same shape as `arr`, with the specified axis removed.
-    If `arr` is a 0-d array, or if axis is None, a scalar is returned. The
-    same dtype as `arr` is returned.
+    An array with the same shape as `a`, with the specified axis removed.
+    If `a` is a 0-d array, or if axis is None, a scalar is returned. The
+    same dtype as `a` is returned.
 
 See also
 --------
@@ -1681,7 +1681,7 @@ MULTILINE STRING END */
 
 static char nanargmin_doc[] =
 /* MULTILINE STRING BEGIN
-nanargmin(arr, axis=None)
+nanargmin(a, axis=None)
 
 Indices of the minimum values along an axis, ignoring NaNs.
 
@@ -1691,7 +1691,7 @@ can be trusted if a slice contains only NaNs and Infs.
 Parameters
 ----------
 a : array_like
-    Input array. If `arr` is not an array, a conversion is attempted.
+    Input array. If `a` is not an array, a conversion is attempted.
 axis : {int, None}, optional
     Axis along which to operate. By default (axis=None) flattened input
     is used.
@@ -1722,7 +1722,7 @@ MULTILINE STRING END */
 
 static char nanargmax_doc[] =
 /* MULTILINE STRING BEGIN
-nanargmax(arr, axis=None)
+nanargmax(a, axis=None)
 
 Indices of the maximum values along an axis, ignoring NaNs.
 
@@ -1732,7 +1732,7 @@ can be trusted if a slice contains only NaNs and Infs.
 Parameters
 ----------
 a : array_like
-    Input array. If `arr` is not an array, a conversion is attempted.
+    Input array. If `a` is not an array, a conversion is attempted.
 axis : {int, None}, optional
     Axis along which to operate. By default (axis=None) flattened input
     is used.
@@ -1763,14 +1763,14 @@ MULTILINE STRING END */
 
 static char ss_doc[] =
 /* MULTILINE STRING BEGIN
-ss(arr, axis=None)
+ss(a, axis=None)
 
 Sum of the square of each element along the specified axis.
 
 Parameters
 ----------
-arr : array_like
-    Array whose sum of squares is desired. If `arr` is not an array, a
+a : array_like
+    Array whose sum of squares is desired. If `a` is not an array, a
     conversion is attempted.
 axis : {int, None}, optional
     Axis along which the sum of squares is computed. The default
@@ -1797,14 +1797,14 @@ MULTILINE STRING END */
 
 static char median_doc[] =
 /* MULTILINE STRING BEGIN
-median(arr, axis=None)
+median(a, axis=None)
 
 Median of array elements along given axis.
 
 Parameters
 ----------
-arr : array_like
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : array_like
+    Input array. If `a` is not an array, a conversion is attempted.
 axis : {int, None}, optional
     Axis along which the median is computed. The default (axis=None) is to
     compute the median of the flattened array.
@@ -1812,8 +1812,8 @@ axis : {int, None}, optional
 Returns
 -------
 y : ndarray
-    An array with the same shape as `arr`, except that the specified axis
-    has been removed. If `arr` is a 0d array, or if axis is None, a scalar
+    An array with the same shape as `a`, except that the specified axis
+    has been removed. If `a` is a 0d array, or if axis is None, a scalar
     is returned. `float64` return values are used for integer inputs. NaN
     is returned for a slice that contains one or more NaNs.
 
@@ -1835,14 +1835,14 @@ MULTILINE STRING END */
 
 static char nanmedian_doc[] =
 /* MULTILINE STRING BEGIN
-nanmedian(arr, axis=None)
+nanmedian(a, axis=None)
 
 Median of array elements along given axis ignoring NaNs.
 
 Parameters
 ----------
-arr : array_like
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : array_like
+    Input array. If `a` is not an array, a conversion is attempted.
 axis : {int, None}, optional
     Axis along which the median is computed. The default (axis=None) is to
     compute the median of the flattened array.
@@ -1850,8 +1850,8 @@ axis : {int, None}, optional
 Returns
 -------
 y : ndarray
-    An array with the same shape as `arr`, except that the specified axis
-    has been removed. If `arr` is a 0d array, or if axis is None, a scalar
+    An array with the same shape as `a`, except that the specified axis
+    has been removed. If `a` is a 0d array, or if axis is None, a scalar
     is returned. `float64` return values are used for integer inputs.
 
 See also
@@ -1875,16 +1875,16 @@ MULTILINE STRING END */
 
 static char anynan_doc[] =
 /* MULTILINE STRING BEGIN
-anynan(arr, axis=None)
+anynan(a, axis=None)
 
 Test whether any array element along a given axis is NaN.
 
-Returns the same output as np.isnan(arr).any(axis)
+Returns the same output as np.isnan(a).any(axis)
 
 Parameters
 ----------
-arr : array_like
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : array_like
+    Input array. If `a` is not an array, a conversion is attempted.
 axis : {int, None}, optional
     Axis along which NaNs are searched. The default (`axis` = ``None``)
     is to search for NaNs over a flattened input array.
@@ -1916,18 +1916,18 @@ MULTILINE STRING END */
 
 static char allnan_doc[] =
 /* MULTILINE STRING BEGIN
-allnan(arr, axis=None)
+allnan(a, axis=None)
 
 Test whether all array elements along a given axis are NaN.
 
-Returns the same output as np.isnan(arr).all(axis)
+Returns the same output as np.isnan(a).all(axis)
 
 Note that allnan([]) is True to match np.isnan([]).all() and all([])
 
 Parameters
 ----------
-arr : array_like
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : array_like
+    Input array. If `a` is not an array, a conversion is attempted.
 axis : {int, None}, optional
     Axis along which NaNs are searched. The default (`axis` = ``None``)
     is to search for NaNs over a flattened input array.

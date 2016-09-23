@@ -89,13 +89,13 @@ def timer(statements, setups):
 
 
 def getarray(shape, dtype, nans=False, order='C'):
-    arr = np.arange(np.prod(shape), dtype=dtype)
-    if nans and issubclass(arr.dtype.type, np.inexact):
-        arr[::3] = np.nan
+    a = np.arange(np.prod(shape), dtype=dtype)
+    if nans and issubclass(a.dtype.type, np.inexact):
+        a[::3] = np.nan
     else:
         rs = np.random.RandomState(shape)
-        rs.shuffle(arr)
-    return np.array(arr.reshape(*shape), order=order)
+        rs.shuffle(a)
+    return np.array(a.reshape(*shape), order=order)
 
 
 def benchsuite(shapes, dtype, axis, nans, order, functions):

@@ -9,17 +9,17 @@ Bottleneck is a collection of fast NumPy array functions written in C.
 Let's give it a try. Create a NumPy array::
 
     >>> import numpy as np
-    >>> arr = np.array([1, 2, np.nan, 4, 5])
+    >>> a = np.array([1, 2, np.nan, 4, 5])
 
 Find the nanmean::
 
     >>> import bottleneck as bn
-    >>> bn.nanmean(arr)
+    >>> bn.nanmean(a)
     3.0
 
 Moving window mean::
 
-    >>> bn.move_mean(arr, window=2, min_count=1)
+    >>> bn.move_mean(a, window=2, min_count=1)
     array([ 1. ,  1.5,  2. ,  4. ,  4.5])
 
 Benchmark
@@ -66,7 +66,9 @@ Bottleneck comes with a benchmark suite::
         move_rank    1028.0        3.0     1148.9       11.2
 
 You can also run a detailed benchmark for a single function using, for
-example, the command `bn.bench_detailed("move_median", fraction_nan=0.3)`.
+example, the command::
+
+    >>> bn.bench_detailed("move_median", fraction_nan=0.3)
 
 Only arrays with data type (dtype) int32, int64, float32, and float64 are
 accelerated. All other dtypes result in calls to slower, unaccelerated

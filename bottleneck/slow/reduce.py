@@ -7,85 +7,85 @@ __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
            'allnan']
 
 
-def nansum(arr, axis=None):
+def nansum(a, axis=None):
     "Slow nansum function used for unaccelerated dtype."
-    arr = np.asarray(arr)
-    y = np.nansum(arr, axis=axis)
-    if y.dtype != arr.dtype:
-        y = y.astype(arr.dtype)
+    a = np.asarray(a)
+    y = np.nansum(a, axis=axis)
+    if y.dtype != a.dtype:
+        y = y.astype(a.dtype)
     return y
 
 
-def nanargmin(arr, axis=None):
+def nanargmin(a, axis=None):
     "Slow nanargmin function used for unaccelerated dtypes."
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        return np.nanargmin(arr, axis=axis)
+        return np.nanargmin(a, axis=axis)
 
 
-def nanargmax(arr, axis=None):
+def nanargmax(a, axis=None):
     "Slow nanargmax function used for unaccelerated dtypes."
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        return np.nanargmax(arr, axis=axis)
+        return np.nanargmax(a, axis=axis)
 
 
-def nanvar(arr, axis=None, ddof=0):
+def nanvar(a, axis=None, ddof=0):
     "Slow nanvar function used for unaccelerated dtypes."
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        return np.nanvar(arr, axis=axis, ddof=ddof)
+        return np.nanvar(a, axis=axis, ddof=ddof)
 
 
-def nanstd(arr, axis=None, ddof=0):
+def nanstd(a, axis=None, ddof=0):
     "Slow nanstd function used for unaccelerated dtypes."
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        return np.nanstd(arr, axis=axis, ddof=ddof)
+        return np.nanstd(a, axis=axis, ddof=ddof)
 
 
-def nanmin(arr, axis=None):
+def nanmin(a, axis=None):
     "Slow nanmin function used for unaccelerated dtypes."
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        return np.nanmin(arr, axis=axis)
+        return np.nanmin(a, axis=axis)
 
 
-def nanmax(arr, axis=None):
+def nanmax(a, axis=None):
     "Slow nanmax function used for unaccelerated dtypes."
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        return np.nanmax(arr, axis=axis)
+        return np.nanmax(a, axis=axis)
 
 
-def median(arr, axis=None):
+def median(a, axis=None):
     "Slow median function used for unaccelerated dtypes."
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        return np.median(arr, axis=axis)
+        return np.median(a, axis=axis)
 
 
-def nanmedian(arr, axis=None):
+def nanmedian(a, axis=None):
     "Slow nanmedian function used for unaccelerated dtypes."
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        return np.nanmedian(arr, axis=axis)
+        return np.nanmedian(a, axis=axis)
 
 
-def ss(arr, axis=None):
+def ss(a, axis=None):
     "Slow sum of squares used for unaccelerated dtypes."
-    arr = np.asarray(arr)
-    y = np.multiply(arr, arr).sum(axis)
-    if y.dtype != arr.dtype:
-        y = y.astype(arr.dtype)
+    a = np.asarray(a)
+    y = np.multiply(a, a).sum(axis)
+    if y.dtype != a.dtype:
+        y = y.astype(a.dtype)
     return y
 
 
-def anynan(arr, axis=None):
+def anynan(a, axis=None):
     "Slow check for Nans used for unaccelerated dtypes."
-    return np.isnan(arr).any(axis)
+    return np.isnan(a).any(axis)
 
 
-def allnan(arr, axis=None):
+def allnan(a, axis=None):
     "Slow check for all Nans used for unaccelerated dtypes."
-    return np.isnan(arr).all(axis)
+    return np.isnan(a).all(axis)

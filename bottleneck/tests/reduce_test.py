@@ -89,32 +89,32 @@ def unit_maker(func, decimal=5):
     fmt += '\nInput array:\n%s\n'
     name = func.__name__
     func0 = eval('bn.slow.%s' % name)
-    for i, arr in enumerate(arrays(DTYPES, name)):
-        if arr.ndim == 0:
+    for i, a in enumerate(arrays(DTYPES, name)):
+        if a.ndim == 0:
             axes = [None]  # numpy can't handle e.g. np.nanmean(9, axis=-1)
         else:
-            axes = list(range(-1, arr.ndim)) + [None]
+            axes = list(range(-1, a.ndim)) + [None]
         for axis in axes:
             actual = 'Crashed'
             desired = 'Crashed'
             actualraised = False
             try:
-                # do not use arr.copy() here because it will C order the array
-                actual = func(arr, axis=axis)
+                # do not use a.copy() here because it will C order the array
+                actual = func(a, axis=axis)
             except:
                 actualraised = True
             desiredraised = False
             try:
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
-                    desired = func0(arr, axis=axis)
+                    desired = func0(a, axis=axis)
             except:
                 desiredraised = True
             if actualraised and desiredraised:
                 pass
             else:
-                tup = (name, 'a'+str(i), str(arr.dtype), str(arr.shape),
-                       str(axis), arr)
+                tup = (name, 'a'+str(i), str(a.dtype), str(a.shape),
+                       str(axis), a)
                 err_msg = fmt % tup
                 if actualraised != desiredraised:
                     if actualraised:
@@ -178,17 +178,17 @@ def unit_maker_strides(func, decimal=5):
     fmt += '\nFlags: \n%s\n'
     name = func.__name__
     func0 = eval('bn.slow.%s' % name)
-    for i, arr in enumerate(arrays_strides()):
-        if arr.ndim == 0:
+    for i, a in enumerate(arrays_strides()):
+        if a.ndim == 0:
             axes = [None]  # numpy can't handle e.g. np.nanmean(9, axis=-1)
         else:
-            axes = list(range(-1, arr.ndim)) + [None]
+            axes = list(range(-1, a.ndim)) + [None]
         for axis in axes:
-            # do not use arr.copy() here because it will C order the array
-            actual = func(arr, axis=axis)
-            desired = func0(arr, axis=axis)
-            tup = (name, 'a'+str(i), str(arr.dtype), str(arr.shape),
-                   str(axis), arr, arr.strides, arr.flags)
+            # do not use a.copy() here because it will C order the array
+            actual = func(a, axis=axis)
+            desired = func0(a, axis=axis)
+            tup = (name, 'a'+str(i), str(a.dtype), str(a.shape),
+                   str(axis), a, a.strides, a.flags)
             err_msg = fmt % tup
             assert_array_almost_equal(actual, desired, decimal, err_msg)
             err_msg += '\n dtype mismatch %s %s'
@@ -209,46 +209,44 @@ def unit_maker_argparse(func, decimal=5):
     name = func.__name__
     func0 = eval('bn.slow.%s' % name)
 
-    arr = np.array([1., 2, 3])
+    a = np.array([1., 2, 3])
 
     fmt = '\n%s' % func
     fmt += '%s\n'
-    fmt += '\nInput array:\n%s\n' % arr
+    fmt += '\nInput array:\n%s\n' % a
 
-    actual = func(arr)
-    desired = func0(arr)
-    err_msg = fmt % "(arr)"
+    actual = func(a)
+    desired = func0(a)
+    err_msg = fmt % "(a)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
-    actual = func(arr, 0)
-    desired = func0(arr, 0)
-    err_msg = fmt % "(arr, 0)"
+    actual = func(a, 0)
+    desired = func0(a, 0)
+    err_msg = fmt % "(a, 0)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
-    actual = func(arr, None)
-    desired = func0(arr, None)
-    err_msg = fmt % "(arr, None)"
+    actual = func(a, None)
+    desired = func0(a, None)
+    err_msg = fmt % "(a, None)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
-    actual = func(arr, axis=0)
-    desired = func0(arr, axis=0)
-    err_msg = fmt % "(arr, axis=0)"
+    actual = func(a, axis=0)
+    desired = func0(a, axis=0)
+    err_msg = fmt % "(a, axis=0)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
-    actual = func(arr, axis=None)
-    desired = func0(arr, axis=None)
-    err_msg = fmt % "(arr, axis=None)"
+    actual = func(a, axis=None)
+    desired = func0(a, axis=None)
+    err_msg = fmt % "(a, axis=None)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
-    # add tests like the following when bottleneck switches from
-    # arr to a in function signatures. Numpy uses a.
-    #  actual = func(arr=arr)
-    #  desired = func0(a=arr)
-    #  err_msg = fmt % "(arr)"
-    #  assert_array_almost_equal(actual, desired, decimal, err_msg)
+    actual = func(a=a)
+    desired = func0(a=a)
+    err_msg = fmt % "(a)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
 
     # regression test: make sure len(kwargs) == 0 doesn't raise
-    args = (arr, 0)
+    args = (a, 0)
     kwargs = {}
     func(*args, **kwargs)
 
@@ -261,16 +259,16 @@ def test_arg_parse_raises():
 
 def unit_maker_argparse_raises(func):
     "test argument parsing raises in reduce"
-    arr = np.array([1., 2, 3])
+    a = np.array([1., 2, 3])
     assert_raises(TypeError, func)
-    assert_raises(TypeError, func, axis=arr)
-    assert_raises(TypeError, func, arr, axis=0, extra=0)
-    assert_raises(TypeError, func, arr, axis=0, arr=arr)
-    assert_raises(TypeError, func, arr, 0, 0, 0, 0, 0)
-    assert_raises(TypeError, func, arr, axis='0')
+    assert_raises(TypeError, func, axis=a)
+    assert_raises(TypeError, func, a, axis=0, extra=0)
+    assert_raises(TypeError, func, a, axis=0, a=a)
+    assert_raises(TypeError, func, a, 0, 0, 0, 0, 0)
+    assert_raises(TypeError, func, a, axis='0')
     if func.__name__ not in ('nanstd', 'nanvar'):
-        assert_raises(TypeError, func, arr, ddof=0)
-    assert_raises(TypeError, func, arr, arr)
+        assert_raises(TypeError, func, a, ddof=0)
+    assert_raises(TypeError, func, a, a)
     # assert_raises(TypeError, func, None) results vary
 
 

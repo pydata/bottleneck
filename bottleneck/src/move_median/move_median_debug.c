@@ -1,6 +1,6 @@
 #include "move_median.h"
 
-ai_t *mm_move_median(ai_t *arr, idx_t length, idx_t window, idx_t min_count);
+ai_t *mm_move_median(ai_t *a, idx_t length, idx_t window, idx_t min_count);
 int mm_assert_equal(ai_t *actual, ai_t *desired, ai_t *input, idx_t length,
                     char *err_msg);
 int mm_unit_test(void);
@@ -20,7 +20,7 @@ int main(void)
 
 
 /* moving window median of 1d arrays returns output array */
-ai_t *mm_move_median(ai_t *arr, idx_t length, idx_t window, idx_t min_count)
+ai_t *mm_move_median(ai_t *a, idx_t length, idx_t window, idx_t min_count)
 {
     mm_handle *mm;
     ai_t *out;
@@ -30,16 +30,16 @@ ai_t *mm_move_median(ai_t *arr, idx_t length, idx_t window, idx_t min_count)
     mm = mm_new_nan(window, min_count);
     for (i=0; i < length; i++) {
         if (i < window) {
-            out[i] = mm_update_init_nan(mm, arr[i]);
+            out[i] = mm_update_init_nan(mm, a[i]);
         } else {
-            out[i] = mm_update_nan(mm, arr[i]);
+            out[i] = mm_update_nan(mm, a[i]);
         }
         if (i == window) {
             mm_print_line();
             printf("window complete; switch to mm_update\n");
         }
         mm_print_line();
-        printf("inserting ai = %f\n", arr[i]);
+        printf("inserting ai = %f\n", a[i]);
         mm_print_chain(mm);
         mm_dump(mm);
         printf("\nmedian = %f\n\n", out[i]);

@@ -98,16 +98,16 @@ replace(PyObject *self, PyObject *args, PyObject *kwds)
 
 /* python strings -------------------------------------------------------- */
 
-PyObject *pystr_arr = NULL;
+PyObject *pystr_a = NULL;
 PyObject *pystr_old = NULL;
 PyObject *pystr_new = NULL;
 
 static int
 intern_strings(void) {
-    pystr_arr = PyString_InternFromString("arr");
+    pystr_a = PyString_InternFromString("a");
     pystr_old = PyString_InternFromString("old");
     pystr_new = PyString_InternFromString("new");
-    return pystr_arr && pystr_old && pystr_new;
+    return pystr_a && pystr_old && pystr_new;
 }
 
 /* nonreduce ------------------------------------------------------------- */
@@ -115,7 +115,7 @@ intern_strings(void) {
 static BN_INLINE int
 parse_args(PyObject *args,
            PyObject *kwds,
-           PyObject **arr,
+           PyObject **a,
            PyObject **old,
            PyObject **new)
 {
@@ -125,7 +125,7 @@ parse_args(PyObject *args,
         int nkwds_found = 0;
         switch (nargs) {
             case 2: *old = PyTuple_GET_ITEM(args, 1);
-            case 1: *arr = PyTuple_GET_ITEM(args, 0);
+            case 1: *a = PyTuple_GET_ITEM(args, 0);
             case 0: break;
             default:
                 TYPE_ERR("wrong number of arguments 1");
@@ -133,9 +133,9 @@ parse_args(PyObject *args,
         }
         switch (nargs) {
             case 0:
-                *arr = PyDict_GetItem(kwds, pystr_arr);
-                if (*arr == NULL) {
-                    TYPE_ERR("Cannot find `arr` keyword input");
+                *a = PyDict_GetItem(kwds, pystr_a);
+                if (*a == NULL) {
+                    TYPE_ERR("Cannot find `a` keyword input");
                     return 0;
                 }
                 nkwds_found += 1;
@@ -170,7 +170,7 @@ parse_args(PyObject *args,
     else {
         switch (nargs) {
             case 3:
-                *arr = PyTuple_GET_ITEM(args, 0);
+                *a = PyTuple_GET_ITEM(args, 0);
                 *old = PyTuple_GET_ITEM(args, 1);
                 *new = PyTuple_GET_ITEM(args, 2);
                 break;
@@ -198,22 +198,22 @@ nonreducer(char *name,
     double old, new;
     PyArrayObject *a;
 
-    PyObject *arr_obj = NULL;
+    PyObject *a_obj = NULL;
     PyObject *old_obj = NULL;
     PyObject *new_obj = NULL;
 
-    if (!parse_args(args, kwds, &arr_obj, &old_obj, &new_obj)) return NULL;
+    if (!parse_args(args, kwds, &a_obj, &old_obj, &new_obj)) return NULL;
 
     /* convert to array if necessary */
-    if PyArray_Check(arr_obj) {
-        a = (PyArrayObject *)arr_obj;
+    if PyArray_Check(a_obj) {
+        a = (PyArrayObject *)a_obj;
     } else {
         if (inplace) {
             TYPE_ERR("works in place so input must be an array, "
                      "not (e.g.) a list");
             return NULL;
         }
-        a = (PyArrayObject *)PyArray_FROM_O(arr_obj);
+        a = (PyArrayObject *)PyArray_FROM_O(a_obj);
         if (a == NULL) {
             return NULL;
         }
@@ -267,27 +267,27 @@ static char nonreduce_doc[] =
 
 static char replace_doc[] =
 /* MULTILINE STRING BEGIN
-replace(arr, old, new)
+replace(a, old, new)
 
 Replace (inplace) given scalar values of an array with new values.
 
 The equivalent numpy function:
 
-    arr[arr==old] = new
+    a[a==old] = new
 
 Or in the case where old=np.nan:
 
-    arr[np.isnan(old)] = new
+    a[np.isnan(old)] = new
 
 Parameters
 ----------
-arr : numpy.ndarray
+a : numpy.ndarray
     The input array, which is also the output array since this functions
     works inplace.
 old : scalar
-    All elements in `arr` with this value will be replaced by `new`.
+    All elements in `a` with this value will be replaced by `new`.
 new : scalar
-    All elements in `arr` with a value of `old` will be replaced by `new`.
+    All elements in `a` with a value of `old` will be replaced by `new`.
 
 Returns
 -------

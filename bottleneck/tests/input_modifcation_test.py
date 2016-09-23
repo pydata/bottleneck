@@ -39,25 +39,25 @@ def unit_maker(func, nans=True):
     "Test that bn.xxx gives the same output as np.xxx."
     msg = "\nInput array modifed by %s.\n\n"
     msg += "input array before:\n%s\nafter:\n%s\n"
-    for i, arr in enumerate(arrays(DTYPES)):
-        for axis in list(range(-arr.ndim, arr.ndim)) + [None]:
+    for i, a in enumerate(arrays(DTYPES)):
+        for axis in list(range(-a.ndim, a.ndim)) + [None]:
             with np.errstate(invalid='ignore'):
-                arr1 = arr.copy()
-                arr2 = arr.copy()
+                a1 = a.copy()
+                a2 = a.copy()
                 if ('move_' in func.__name__) or ('sort' in func.__name__):
                     if axis is None:
                         continue
                     with warnings.catch_warnings():
                         warnings.simplefilter("ignore")
-                        func(arr1, 1, axis=axis)
+                        func(a1, 1, axis=axis)
                 else:
                     try:
                         with warnings.catch_warnings():
                             warnings.simplefilter("ignore")
-                            func(arr1, axis=axis)
+                            func(a1, axis=axis)
                     except:
                         continue
-                assert_equal(arr1, arr2, msg % (func.__name__, arr1, arr2))
+                assert_equal(a1, a2, msg % (func.__name__, a1, a2))
 
 
 def test_modification():

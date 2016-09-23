@@ -762,7 +762,7 @@ MOVE_MAIN(move_rank, 0)
 
 /* python strings -------------------------------------------------------- */
 
-PyObject *pystr_arr = NULL;
+PyObject *pystr_a = NULL;
 PyObject *pystr_window = NULL;
 PyObject *pystr_min_count = NULL;
 PyObject *pystr_axis = NULL;
@@ -770,12 +770,12 @@ PyObject *pystr_ddof = NULL;
 
 static int
 intern_strings(void) {
-    pystr_arr = PyString_InternFromString("arr");
+    pystr_a = PyString_InternFromString("a");
     pystr_window = PyString_InternFromString("window");
     pystr_min_count = PyString_InternFromString("min_count");
     pystr_axis = PyString_InternFromString("axis");
     pystr_ddof = PyString_InternFromString("ddof");
-    return pystr_arr && pystr_window && pystr_min_count &&
+    return pystr_a && pystr_window && pystr_min_count &&
            pystr_axis && pystr_ddof;
 }
 
@@ -785,7 +785,7 @@ static BN_INLINE int
 parse_args(PyObject *args,
            PyObject *kwds,
            int has_ddof,
-           PyObject **arr,
+           PyObject **a,
            PyObject **window,
            PyObject **min_count,
            PyObject **axis,
@@ -806,7 +806,7 @@ parse_args(PyObject *args,
                 }
             case 3: *min_count = PyTuple_GET_ITEM(args, 2);
             case 2: *window = PyTuple_GET_ITEM(args, 1);
-            case 1: *arr = PyTuple_GET_ITEM(args, 0);
+            case 1: *a = PyTuple_GET_ITEM(args, 0);
             case 0: break;
             default:
                 TYPE_ERR("wrong number of arguments");
@@ -814,9 +814,9 @@ parse_args(PyObject *args,
         }
         switch (nargs) {
             case 0:
-                *arr = PyDict_GetItem(kwds, pystr_arr);
-                if (*arr == NULL) {
-                    TYPE_ERR("Cannot find `arr` keyword input");
+                *a = PyDict_GetItem(kwds, pystr_a);
+                if (*a == NULL) {
+                    TYPE_ERR("Cannot find `a` keyword input");
                     return 0;
                 }
                 nkwds_found += 1;
@@ -877,7 +877,7 @@ parse_args(PyObject *args,
                 *min_count = PyTuple_GET_ITEM(args, 2);
             case 2:
                 *window = PyTuple_GET_ITEM(args, 1);
-                *arr = PyTuple_GET_ITEM(args, 0);
+                *a = PyTuple_GET_ITEM(args, 0);
                 break;
             default:
                 TYPE_ERR("wrong number of arguments");
@@ -911,23 +911,23 @@ mover(char *name,
     Py_ssize_t length;
     PyArrayObject *a;
 
-    PyObject *arr_obj = NULL;
+    PyObject *a_obj = NULL;
     PyObject *window_obj = NULL;
     PyObject *min_count_obj = Py_None;
     PyObject *axis_obj = NULL;
     PyObject *ddof_obj = NULL;
 
-    if (!parse_args(args, kwds, has_ddof, &arr_obj, &window_obj,
+    if (!parse_args(args, kwds, has_ddof, &a_obj, &window_obj,
                     &min_count_obj, &axis_obj, &ddof_obj)) {
         return NULL;
     }
 
     /* convert to array if necessary */
-    if PyArray_Check(arr_obj) {
-        a = (PyArrayObject *)arr_obj;
+    if PyArray_Check(a_obj) {
+        a = (PyArrayObject *)a_obj;
     }
     else {
-        a = (PyArrayObject *)PyArray_FROM_O(arr_obj);
+        a = (PyArrayObject *)PyArray_FROM_O(a_obj);
         if (a == NULL) {
             return NULL;
         }
@@ -1046,7 +1046,7 @@ static char move_doc[] =
 
 static char move_sum_doc[] =
 /* MULTILINE STRING BEGIN
-move_sum(arr, window, min_count=None, axis=-1)
+move_sum(a, window, min_count=None, axis=-1)
 
 Moving window sum along the specified axis, optionally ignoring NaNs.
 
@@ -1057,8 +1057,8 @@ incorrectly be NaN.
 
 Parameters
 ----------
-arr : ndarray
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : ndarray
+    Input array. If `a` is not an array, a conversion is attempted.
 window : int
     The number of elements in the moving window.
 min_count: {int, None}, optional
@@ -1077,17 +1077,17 @@ y : ndarray
 
 Examples
 --------
->>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
->>> bn.move_sum(arr, window=2)
+>>> a = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
+>>> bn.move_sum(a, window=2)
 array([ nan,   3.,   5.,  nan,  nan])
->>> bn.move_sum(arr, window=2, min_count=1)
+>>> bn.move_sum(a, window=2, min_count=1)
 array([ 1.,  3.,  5.,  3.,  5.])
 
 MULTILINE STRING END */
 
 static char move_mean_doc[] =
 /* MULTILINE STRING BEGIN
-move_mean(arr, window, min_count=None, axis=-1)
+move_mean(a, window, min_count=None, axis=-1)
 
 Moving window mean along the specified axis, optionally ignoring NaNs.
 
@@ -1098,8 +1098,8 @@ incorrectly be NaN.
 
 Parameters
 ----------
-arr : ndarray
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : ndarray
+    Input array. If `a` is not an array, a conversion is attempted.
 window : int
     The number of elements in the moving window.
 min_count: {int, None}, optional
@@ -1118,17 +1118,17 @@ y : ndarray
 
 Examples
 --------
->>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
->>> bn.move_mean(arr, window=2)
+>>> a = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
+>>> bn.move_mean(a, window=2)
 array([ nan,  1.5,  2.5,  nan,  nan])
->>> bn.move_mean(arr, window=2, min_count=1)
+>>> bn.move_mean(a, window=2, min_count=1)
 array([ 1. ,  1.5,  2.5,  3. ,  5. ])
 
 MULTILINE STRING END */
 
 static char move_std_doc[] =
 /* MULTILINE STRING BEGIN
-move_std(arr, window, min_count=None, axis=-1, ddof=0)
+move_std(a, window, min_count=None, axis=-1, ddof=0)
 
 Moving window standard deviation along the specified axis, optionally
 ignoring NaNs.
@@ -1144,8 +1144,8 @@ standard deviation.
 
 Parameters
 ----------
-arr : ndarray
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : ndarray
+    Input array. If `a` is not an array, a conversion is attempted.
 window : int
     The number of elements in the moving window.
 min_count: {int, None}, optional
@@ -1168,17 +1168,17 @@ y : ndarray
 
 Examples
 --------
->>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
->>> bn.move_std(arr, window=2)
+>>> a = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
+>>> bn.move_std(a, window=2)
 array([ nan,  0.5,  0.5,  nan,  nan])
->>> bn.move_std(arr, window=2, min_count=1)
+>>> bn.move_std(a, window=2, min_count=1)
 array([ 0. ,  0.5,  0.5,  0. ,  0. ])
 
 MULTILINE STRING END */
 
 static char move_var_doc[] =
 /* MULTILINE STRING BEGIN
-move_var(arr, window, min_count=None, axis=-1, ddof=0)
+move_var(a, window, min_count=None, axis=-1, ddof=0)
 
 Moving window variance along the specified axis, optionally ignoring NaNs.
 
@@ -1193,8 +1193,8 @@ standard deviation.
 
 Parameters
 ----------
-arr : ndarray
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : ndarray
+    Input array. If `a` is not an array, a conversion is attempted.
 window : int
     The number of elements in the moving window.
 min_count: {int, None}, optional
@@ -1217,17 +1217,17 @@ y : ndarray
 
 Examples
 --------
->>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
->>> bn.move_var(arr, window=2)
+>>> a = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
+>>> bn.move_var(a, window=2)
 array([ nan,  0.25,  0.25,  nan,  nan])
->>> bn.move_var(arr, window=2, min_count=1)
+>>> bn.move_var(a, window=2, min_count=1)
 array([ 0. ,  0.25,  0.25,  0. ,  0. ])
 
 MULTILINE STRING END */
 
 static char move_min_doc[] =
 /* MULTILINE STRING BEGIN
-move_min(arr, window, min_count=None, axis=-1)
+move_min(a, window, min_count=None, axis=-1)
 
 Moving window minimum along the specified axis, optionally ignoring NaNs.
 
@@ -1235,8 +1235,8 @@ float64 output is returned for all input data types.
 
 Parameters
 ----------
-arr : ndarray
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : ndarray
+    Input array. If `a` is not an array, a conversion is attempted.
 window : int
     The number of elements in the moving window.
 min_count: {int, None}, optional
@@ -1256,17 +1256,17 @@ y : ndarray
 
 Examples
 --------
->>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
->>> bn.move_min(arr, window=2)
+>>> a = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
+>>> bn.move_min(a, window=2)
 array([ nan,   1.,   2.,  nan,  nan])
->>> bn.move_min(arr, window=2, min_count=1)
+>>> bn.move_min(a, window=2, min_count=1)
 array([ 1.,  1.,  2.,  3.,  5.])
 
 MULTILINE STRING END */
 
 static char move_max_doc[] =
 /* MULTILINE STRING BEGIN
-move_max(arr, window, min_count=None, axis=-1)
+move_max(a, window, min_count=None, axis=-1)
 
 Moving window maximum along the specified axis, optionally ignoring NaNs.
 
@@ -1274,8 +1274,8 @@ float64 output is returned for all input data types.
 
 Parameters
 ----------
-arr : ndarray
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : ndarray
+    Input array. If `a` is not an array, a conversion is attempted.
 window : int
     The number of elements in the moving window.
 min_count: {int, None}, optional
@@ -1295,17 +1295,17 @@ y : ndarray
 
 Examples
 --------
->>> arr = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
->>> bn.move_max(arr, window=2)
+>>> a = np.array([1.0, 2.0, 3.0, np.nan, 5.0])
+>>> bn.move_max(a, window=2)
 array([ nan,   2.,   3.,  nan,  nan])
->>> bn.move_max(arr, window=2, min_count=1)
+>>> bn.move_max(a, window=2, min_count=1)
 array([ 1.,  2.,  3.,  3.,  5.])
 
 MULTILINE STRING END */
 
 static char move_argmin_doc[] =
 /* MULTILINE STRING BEGIN
-move_argmin(arr, window, min_count=None, axis=-1)
+move_argmin(a, window, min_count=None, axis=-1)
 
 Moving window index of minimum along the specified axis, optionally
 ignoring NaNs.
@@ -1321,8 +1321,8 @@ float64 output is returned for all input data types.
 
 Parameters
 ----------
-arr : ndarray
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : ndarray
+    Input array. If `a` is not an array, a conversion is attempted.
 window : int
     The number of elements in the moving window.
 min_count: {int, None}, optional
@@ -1342,23 +1342,23 @@ y : ndarray
 
 Examples
 --------
->>> arr = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
->>> bn.move_argmin(arr, window=2)
+>>> a = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+>>> bn.move_argmin(a, window=2)
 array([ nan,   1.,   1.,   1.,   1.])
 
->>> arr = np.array([5.0, 4.0, 3.0, 2.0, 1.0])
->>> bn.move_argmin(arr, window=2)
+>>> a = np.array([5.0, 4.0, 3.0, 2.0, 1.0])
+>>> bn.move_argmin(a, window=2)
 array([ nan,   0.,   0.,   0.,   0.])
 
->>> arr = np.array([2.0, 3.0, 4.0, 1.0, 7.0, 5.0, 6.0])
->>> bn.move_argmin(arr, window=3)
+>>> a = np.array([2.0, 3.0, 4.0, 1.0, 7.0, 5.0, 6.0])
+>>> bn.move_argmin(a, window=3)
 array([ nan,  nan,   2.,   0.,   1.,   2.,   1.])
 
 MULTILINE STRING END */
 
 static char move_argmax_doc[] =
 /* MULTILINE STRING BEGIN
-move_argmax(arr, window, min_count=None, axis=-1)
+move_argmax(a, window, min_count=None, axis=-1)
 
 Moving window index of maximum along the specified axis, optionally
 ignoring NaNs.
@@ -1374,8 +1374,8 @@ float64 output is returned for all input data types.
 
 Parameters
 ----------
-arr : ndarray
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : ndarray
+    Input array. If `a` is not an array, a conversion is attempted.
 window : int
     The number of elements in the moving window.
 min_count: {int, None}, optional
@@ -1395,23 +1395,23 @@ y : ndarray
 
 Examples
 --------
->>> arr = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
->>> bn.move_argmax(arr, window=2)
+>>> a = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+>>> bn.move_argmax(a, window=2)
 array([ nan,   0.,   0.,   0.,   0.])
 
->>> arr = np.array([5.0, 4.0, 3.0, 2.0, 1.0])
->>> bn.move_argmax(arr, window=2)
+>>> a = np.array([5.0, 4.0, 3.0, 2.0, 1.0])
+>>> bn.move_argmax(a, window=2)
 array([ nan,   1.,   1.,   1.,   1.])
 
->>> arr = np.array([2.0, 3.0, 4.0, 1.0, 7.0, 5.0, 6.0])
->>> bn.move_argmax(arr, window=3)
+>>> a = np.array([2.0, 3.0, 4.0, 1.0, 7.0, 5.0, 6.0])
+>>> bn.move_argmax(a, window=3)
 array([ nan,  nan,   0.,   1.,   0.,   1.,   2.])
 
 MULTILINE STRING END */
 
 static char move_median_doc[] =
 /* MULTILINE STRING BEGIN
-move_median(arr, window, min_count=None, axis=-1)
+move_median(a, window, min_count=None, axis=-1)
 
 Moving window median along the specified axis, optionally ignoring NaNs.
 
@@ -1419,8 +1419,8 @@ float64 output is returned for all input data types.
 
 Parameters
 ----------
-arr : ndarray
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : ndarray
+    Input array. If `a` is not an array, a conversion is attempted.
 window : int
     The number of elements in the moving window.
 min_count: {int, None}, optional
@@ -1439,17 +1439,17 @@ y : ndarray
 
 Examples
 --------
->>> arr = np.array([1.0, 2.0, 3.0, 4.0])
->>> bn.move_median(arr, window=2)
+>>> a = np.array([1.0, 2.0, 3.0, 4.0])
+>>> bn.move_median(a, window=2)
 array([ nan,  1.5,  2.5,  3.5])
->>> bn.move_median(arr, window=2, min_count=1)
+>>> bn.move_median(a, window=2, min_count=1)
 array([ 1. ,  1.5,  2.5,  3.5])
 
 MULTILINE STRING END */
 
 static char move_rank_doc[] =
 /* MULTILINE STRING BEGIN
-move_rank(arr, window, min_count=None, axis=-1)
+move_rank(a, window, min_count=None, axis=-1)
 
 Moving window ranking along the specified axis, optionally ignoring NaNs.
 
@@ -1464,8 +1464,8 @@ in the input array, the shorter the runtime.
 
 Parameters
 ----------
-arr : ndarray
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : ndarray
+    Input array. If `a` is not an array, a conversion is attempted.
 window : int
     The number of elements in the moving window.
 min_count: {int, None}, optional
@@ -1488,20 +1488,20 @@ Examples
 With window=3 and no ties, there are 3 possible output values, i.e.
 [-1., 0., 1.]:
 
->>> arr = np.array([1, 2, 3, 9, 8, 7, 5, 6, 4])
->>> bn.move_rank(arr, window=3)
+>>> a = np.array([1, 2, 3, 9, 8, 7, 5, 6, 4])
+>>> bn.move_rank(a, window=3)
     array([ nan,  nan,   1.,   1.,   0.,  -1.,  -1.,   0.,  -1.])
 
 Ties are broken by averaging the rankings of the tied elements:
 
->>> arr = np.array([1, 2, 3, 3, 3, 4])
->>> bn.move_rank(arr, window=3)
+>>> a = np.array([1, 2, 3, 3, 3, 4])
+>>> bn.move_rank(a, window=3)
     array([ nan,  nan,  1. ,  0.5,  0. ,  1. ])
 
 In an increasing sequence, the moving window ranking is always equal to 1:
 
->>> arr = np.array([1, 2, 3, 4, 5])
->>> bn.move_rank(arr, window=2)
+>>> a = np.array([1, 2, 3, 4, 5])
+>>> bn.move_rank(a, window=2)
     array([ nan,   1.,   1.,   1.,   1.])
 
 MULTILINE STRING END */

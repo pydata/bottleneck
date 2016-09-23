@@ -56,17 +56,17 @@ def unit_maker(func):
         decimal = 3
     else:
         decimal = 5
-    for i, arr in enumerate(arrays()):
-        axes = range(-1, arr.ndim)
+    for i, a in enumerate(arrays()):
+        axes = range(-1, a.ndim)
         for axis in axes:
-            windows = range(1, arr.shape[axis])
+            windows = range(1, a.shape[axis])
             for window in windows:
                 min_counts = list(range(1, window + 1)) + [None]
                 for min_count in min_counts:
-                    actual = func(arr, window, min_count, axis=axis)
-                    desired = func0(arr, window, min_count, axis=axis)
+                    actual = func(a, window, min_count, axis=axis)
+                    desired = func0(a, window, min_count, axis=axis)
                     tup = (func_name, window, str(min_count), 'a'+str(i),
-                           str(arr.dtype), str(arr.shape), str(axis), arr)
+                           str(a.dtype), str(a.shape), str(axis), a)
                     err_msg = fmt % tup
                     aaae(actual, desired, decimal, err_msg)
                     err_msg += '\n dtype mismatch %s %s'
@@ -119,14 +119,14 @@ def unit_maker_strides(func, decimal=5):
     fmt += '\nFlags: \n%s\n'
     name = func.__name__
     func0 = eval('bn.slow.%s' % name)
-    for i, arr in enumerate(arrays_strides()):
-        axes = list(range(-1, arr.ndim))
+    for i, a in enumerate(arrays_strides()):
+        axes = list(range(-1, a.ndim))
         for axis in axes:
-            # do not use arr.copy() here because it will C order the array
-            actual = func(arr, window=2, min_count=1, axis=axis)
-            desired = func0(arr, window=2, min_count=1, axis=axis)
-            tup = (name, 'a'+str(i), str(arr.dtype), str(arr.shape),
-                   str(axis), arr, arr.strides, arr.flags)
+            # do not use a.copy() here because it will C order the array
+            actual = func(a, window=2, min_count=1, axis=axis)
+            desired = func0(a, window=2, min_count=1, axis=axis)
+            tup = (name, 'a'+str(i), str(a.dtype), str(a.shape),
+                   str(axis), a, a.strides, a.flags)
             err_msg = fmt % tup
             assert_array_almost_equal(actual, desired, decimal, err_msg)
             err_msg += '\n dtype mismatch %s %s'
@@ -147,55 +147,60 @@ def unit_maker_argparse(func, decimal=5):
     name = func.__name__
     func0 = eval('bn.slow.%s' % name)
 
-    arr = np.array([1., 2, 3])
+    a = np.array([1., 2, 3])
 
     fmt = '\n%s' % func
     fmt += '%s\n'
-    fmt += '\nInput array:\n%s\n' % arr
+    fmt += '\nInput array:\n%s\n' % a
 
-    actual = func(arr, 2)
-    desired = func0(arr, 2)
-    err_msg = fmt % "(arr, 2)"
+    actual = func(a, 2)
+    desired = func0(a, 2)
+    err_msg = fmt % "(a, 2)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
-    actual = func(arr, 2, 1)
-    desired = func0(arr, 2, 1)
-    err_msg = fmt % "(arr, 2, 1)"
+    actual = func(a, 2, 1)
+    desired = func0(a, 2, 1)
+    err_msg = fmt % "(a, 2, 1)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
-    actual = func(arr, window=2)
-    desired = func0(arr, window=2)
-    err_msg = fmt % "(arr, window=2)"
+    actual = func(a, window=2)
+    desired = func0(a, window=2)
+    err_msg = fmt % "(a, window=2)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
-    actual = func(arr, window=2, min_count=1)
-    desired = func0(arr, window=2, min_count=1)
-    err_msg = fmt % "(arr, window=2, min_count=1)"
+    actual = func(a, window=2, min_count=1)
+    desired = func0(a, window=2, min_count=1)
+    err_msg = fmt % "(a, window=2, min_count=1)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
-    actual = func(arr, window=2, min_count=1, axis=0)
-    desired = func0(arr, window=2, min_count=1, axis=0)
-    err_msg = fmt % "(arr, window=2, min_count=1, axis=0)"
+    actual = func(a, window=2, min_count=1, axis=0)
+    desired = func0(a, window=2, min_count=1, axis=0)
+    err_msg = fmt % "(a, window=2, min_count=1, axis=0)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
-    actual = func(arr, min_count=1, window=2, axis=0)
-    desired = func0(arr, min_count=1, window=2, axis=0)
-    err_msg = fmt % "(arr, min_count=1, window=2, axis=0)"
+    actual = func(a, min_count=1, window=2, axis=0)
+    desired = func0(a, min_count=1, window=2, axis=0)
+    err_msg = fmt % "(a, min_count=1, window=2, axis=0)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
-    actual = func(arr, axis=-1, min_count=None, window=2)
-    desired = func0(arr, axis=-1, min_count=None, window=2)
-    err_msg = fmt % "(arr, axis=-1, min_count=None, window=2)"
+    actual = func(a, axis=-1, min_count=None, window=2)
+    desired = func0(a, axis=-1, min_count=None, window=2)
+    err_msg = fmt % "(a, axis=-1, min_count=None, window=2)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    actual = func(a=a, axis=-1, min_count=None, window=2)
+    desired = func0(a=a, axis=-1, min_count=None, window=2)
+    err_msg = fmt % "(a=a, axis=-1, min_count=None, window=2)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
     if name in ('move_std', 'move_var'):
-        actual = func(arr, 2, 1, -1, ddof=1)
-        desired = func0(arr, 2, 1, -1, ddof=1)
-        err_msg = fmt % "(arr, 2, 1, -1, ddof=1)"
+        actual = func(a, 2, 1, -1, ddof=1)
+        desired = func0(a, 2, 1, -1, ddof=1)
+        err_msg = fmt % "(a, 2, 1, -1, ddof=1)"
         assert_array_almost_equal(actual, desired, decimal, err_msg)
 
     # regression test: make sure len(kwargs) == 0 doesn't raise
-    args = (arr, 1, 1, -1)
+    args = (a, 1, 1, -1)
     kwargs = {}
     func(*args, **kwargs)
 
@@ -208,16 +213,16 @@ def test_arg_parse_raises():
 
 def unit_maker_argparse_raises(func):
     "test argument parsing raises in move"
-    arr = np.array([1., 2, 3])
+    a = np.array([1., 2, 3])
     assert_raises(TypeError, func)
-    assert_raises(TypeError, func, axis=arr)
-    assert_raises(TypeError, func, arr, 2, axis=0, extra=0)
-    assert_raises(TypeError, func, arr, 2, axis=0, arr=arr)
-    assert_raises(TypeError, func, arr, 2, 2, 0, 0, 0)
-    assert_raises(TypeError, func, arr, 2, axis='0')
-    assert_raises(TypeError, func, arr, 1, min_count='1')
+    assert_raises(TypeError, func, axis=a)
+    assert_raises(TypeError, func, a, 2, axis=0, extra=0)
+    assert_raises(TypeError, func, a, 2, axis=0, a=a)
+    assert_raises(TypeError, func, a, 2, 2, 0, 0, 0)
+    assert_raises(TypeError, func, a, 2, axis='0')
+    assert_raises(TypeError, func, a, 1, min_count='1')
     if func.__name__ not in ('move_std', 'move_var'):
-        assert_raises(TypeError, func, arr, 2, ddof=0)
+        assert_raises(TypeError, func, a, 2, ddof=0)
 
 
 # ---------------------------------------------------------------------------
@@ -233,14 +238,14 @@ def test_move_inf():
     fmt = '\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n'
     funcs = [bn.move_min, bn.move_max, bn.move_argmin, bn.move_argmax,
              bn.move_rank, bn.move_median]
-    arr = np.array([1, 2, np.inf, 3, 4, 5])
+    a = np.array([1, 2, np.inf, 3, 4, 5])
     window = 3
     min_count = 2
     for func in funcs:
-        actual = func(arr, window=window, min_count=min_count)
+        actual = func(a, window=window, min_count=min_count)
         func0 = eval('bn.slow.%s' % func.__name__)
-        desired = func0(arr, window=window, min_count=min_count)
-        err_msg = fmt % (func.__name__, window, min_count, arr)
+        desired = func0(a, window=window, min_count=min_count)
+        err_msg = fmt % (func.__name__, window, min_count, a)
         assert_array_almost_equal(actual, desired, decimal=5, err_msg=err_msg)
 
 

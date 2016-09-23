@@ -399,16 +399,16 @@ NRA_MAIN(push, PARSE_PUSH)
 
 /* python strings -------------------------------------------------------- */
 
-PyObject *pystr_arr = NULL;
+PyObject *pystr_a = NULL;
 PyObject *pystr_n = NULL;
 PyObject *pystr_axis = NULL;
 
 static int
 intern_strings(void) {
-    pystr_arr = PyString_InternFromString("arr");
+    pystr_a = PyString_InternFromString("a");
     pystr_n = PyString_InternFromString("n");
     pystr_axis = PyString_InternFromString("axis");
-    return pystr_arr && pystr_n && pystr_axis;
+    return pystr_a && pystr_n && pystr_axis;
 }
 
 /* nonreducer_axis ------------------------------------------------------- */
@@ -416,7 +416,7 @@ intern_strings(void) {
 static BN_INLINE int
 parse_partsort(PyObject *args,
                PyObject *kwds,
-               PyObject **arr,
+               PyObject **a,
                PyObject **n,
                PyObject **axis)
 {
@@ -427,7 +427,7 @@ parse_partsort(PyObject *args,
         PyObject *tmp;
         switch (nargs) {
             case 2: *n = PyTuple_GET_ITEM(args, 1);
-            case 1: *arr = PyTuple_GET_ITEM(args, 0);
+            case 1: *a = PyTuple_GET_ITEM(args, 0);
             case 0: break;
             default:
                 TYPE_ERR("wrong number of arguments");
@@ -435,9 +435,9 @@ parse_partsort(PyObject *args,
         }
         switch (nargs) {
             case 0:
-                *arr = PyDict_GetItem(kwds, pystr_arr);
-                if (*arr == NULL) {
-                    TYPE_ERR("Cannot find `arr` keyword input");
+                *a = PyDict_GetItem(kwds, pystr_a);
+                if (*a == NULL) {
+                    TYPE_ERR("Cannot find `a` keyword input");
                     return 0;
                 }
                 nkwds_found += 1;
@@ -474,7 +474,7 @@ parse_partsort(PyObject *args,
                 *axis = PyTuple_GET_ITEM(args, 2);
             case 2:
                 *n = PyTuple_GET_ITEM(args, 1);
-                *arr = PyTuple_GET_ITEM(args, 0);
+                *a = PyTuple_GET_ITEM(args, 0);
                 break;
             default:
                 TYPE_ERR("wrong number of arguments");
@@ -489,7 +489,7 @@ parse_partsort(PyObject *args,
 static BN_INLINE int
 parse_rankdata(PyObject *args,
                PyObject *kwds,
-               PyObject **arr,
+               PyObject **a,
                PyObject **axis)
 {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
@@ -498,7 +498,7 @@ parse_rankdata(PyObject *args,
         int nkwds_found = 0;
         PyObject *tmp;
         switch (nargs) {
-            case 1: *arr = PyTuple_GET_ITEM(args, 0);
+            case 1: *a = PyTuple_GET_ITEM(args, 0);
             case 0: break;
             default:
                 TYPE_ERR("wrong number of arguments");
@@ -506,9 +506,9 @@ parse_rankdata(PyObject *args,
         }
         switch (nargs) {
             case 0:
-                *arr = PyDict_GetItem(kwds, pystr_arr);
-                if (*arr == NULL) {
-                    TYPE_ERR("Cannot find `arr` keyword input");
+                *a = PyDict_GetItem(kwds, pystr_a);
+                if (*a == NULL) {
+                    TYPE_ERR("Cannot find `a` keyword input");
                     return 0;
                 }
                 nkwds_found += 1;
@@ -537,7 +537,7 @@ parse_rankdata(PyObject *args,
             case 2:
                 *axis = PyTuple_GET_ITEM(args, 1);
             case 1:
-                *arr = PyTuple_GET_ITEM(args, 0);
+                *a = PyTuple_GET_ITEM(args, 0);
                 break;
             default:
                 TYPE_ERR("wrong number of arguments");
@@ -552,7 +552,7 @@ parse_rankdata(PyObject *args,
 static BN_INLINE int
 parse_push(PyObject *args,
            PyObject *kwds,
-           PyObject **arr,
+           PyObject **a,
            PyObject **n,
            PyObject **axis)
 {
@@ -563,7 +563,7 @@ parse_push(PyObject *args,
         PyObject *tmp;
         switch (nargs) {
             case 2: *n = PyTuple_GET_ITEM(args, 1);
-            case 1: *arr = PyTuple_GET_ITEM(args, 0);
+            case 1: *a = PyTuple_GET_ITEM(args, 0);
             case 0: break;
             default:
                 TYPE_ERR("wrong number of arguments");
@@ -571,9 +571,9 @@ parse_push(PyObject *args,
         }
         switch (nargs) {
             case 0:
-                *arr = PyDict_GetItem(kwds, pystr_arr);
-                if (*arr == NULL) {
-                    TYPE_ERR("Cannot find `arr` keyword input");
+                *a = PyDict_GetItem(kwds, pystr_a);
+                if (*a == NULL) {
+                    TYPE_ERR("Cannot find `a` keyword input");
                     return 0;
                 }
                 nkwds_found += 1;
@@ -610,7 +610,7 @@ parse_push(PyObject *args,
             case 2:
                 *n = PyTuple_GET_ITEM(args, 1);
             case 1:
-                *arr = PyTuple_GET_ITEM(args, 0);
+                *a = PyTuple_GET_ITEM(args, 0);
                 break;
             default:
                 TYPE_ERR("wrong number of arguments");
@@ -639,22 +639,22 @@ nonreducer_axis(char *name,
 
     PyArrayObject *a;
 
-    PyObject *arr_obj = NULL;
+    PyObject *a_obj = NULL;
     PyObject *n_obj = NULL;
     PyObject *axis_obj = NULL;
 
     if (parse == PARSE_PARTSORT) {
-        if (!parse_partsort(args, kwds, &arr_obj, &n_obj, &axis_obj)) {
+        if (!parse_partsort(args, kwds, &a_obj, &n_obj, &axis_obj)) {
             return NULL;
         }
     }
     else if (parse == PARSE_RANKDATA) {
-        if (!parse_rankdata(args, kwds, &arr_obj, &axis_obj)) {
+        if (!parse_rankdata(args, kwds, &a_obj, &axis_obj)) {
             return NULL;
         }
     }
     else if (parse == PARSE_PUSH) {
-        if (!parse_push(args, kwds, &arr_obj, &n_obj, &axis_obj)) {
+        if (!parse_push(args, kwds, &a_obj, &n_obj, &axis_obj)) {
             return NULL;
         }
     }
@@ -663,11 +663,11 @@ nonreducer_axis(char *name,
     }
 
     /* convert to array if necessary */
-    if PyArray_Check(arr_obj) {
-        a = (PyArrayObject *)arr_obj;
+    if PyArray_Check(a_obj) {
+        a = (PyArrayObject *)a_obj;
     }
     else {
-        a = (PyArrayObject *)PyArray_FROM_O(arr_obj);
+        a = (PyArrayObject *)PyArray_FROM_O(a_obj);
         if (a == NULL) {
             return NULL;
         }
@@ -757,7 +757,7 @@ static char nra_doc[] =
 
 static char partsort_doc[] =
 /* MULTILINE STRING BEGIN
-partsort(arr, n, axis=-1)
+partsort(a, n, axis=-1)
 
 Partial sorting of array elements along given axis.
 
@@ -775,8 +775,8 @@ unexpected results if the input contains NaN.
 
 Parameters
 ----------
-arr : array_like
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : array_like
+    Input array. If `a` is not an array, a conversion is attempted.
 n : int
     The `n` smallest elements will appear (unordered) in the first `n`
     elements of the output array.
@@ -821,7 +821,7 @@ MULTILINE STRING END */
 
 static char argpartsort_doc[] =
 /* MULTILINE STRING BEGIN
-argpartsort(arr, n, axis=-1)
+argpartsort(a, n, axis=-1)
 
 Return indices that would partially sort an array.
 
@@ -839,8 +839,8 @@ unexpected results if the input contains NaN.
 
 Parameters
 ----------
-arr : array_like
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : array_like
+    Input array. If `a` is not an array, a conversion is attempted.
 n : int
     The indices of the `n` smallest elements will appear in the first `n`
     elements of the output array along the given `axis`.
@@ -852,7 +852,7 @@ Returns
 -------
 y : ndarray
     An array the same shape as the input array containing the indices
-    that partially sort `arr` such that the `n` smallest elements will
+    that partially sort `a` such that the `n` smallest elements will
     appear (unordered) in the first `n` elements.
 
 See Also
@@ -886,7 +886,7 @@ MULTILINE STRING END */
 
 static char rankdata_doc[] =
 /* MULTILINE STRING BEGIN
-rankdata(arr, axis=None)
+rankdata(a, axis=None)
 
 Ranks the data, dealing with ties appropriately.
 
@@ -896,8 +896,8 @@ Ranks begin at 1, not 0.
 
 Parameters
 ----------
-arr : array_like
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : array_like
+    Input array. If `a` is not an array, a conversion is attempted.
 axis : {int, None}, optional
     Axis along which the elements of the array are ranked. The default
     (axis=None) is to rank the elements of the flattened array.
@@ -905,7 +905,7 @@ axis : {int, None}, optional
 Returns
 -------
 y : ndarray
-    An array with the same shape as `arr`. The dtype is 'float64'.
+    An array with the same shape as `a`. The dtype is 'float64'.
 
 See also
 --------
@@ -928,7 +928,7 @@ MULTILINE STRING END */
 
 static char nanrankdata_doc[] =
 /* MULTILINE STRING BEGIN
-nanrankdata(arr, axis=None)
+nanrankdata(a, axis=None)
 
 Ranks the data, dealing with ties and NaNs appropriately.
 
@@ -940,8 +940,8 @@ NaNs in the input array are returned as NaNs.
 
 Parameters
 ----------
-arr : array_like
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : array_like
+    Input array. If `a` is not an array, a conversion is attempted.
 axis : {int, None}, optional
     Axis along which the elements of the array are ranked. The default
     (axis=None) is to rank the elements of the flattened array.
@@ -949,7 +949,7 @@ axis : {int, None}, optional
 Returns
 -------
 y : ndarray
-    An array with the same shape as `arr`. The dtype is 'float64'.
+    An array with the same shape as `a`. The dtype is 'float64'.
 
 See also
 --------
@@ -972,7 +972,7 @@ MULTILINE STRING END */
 
 static char push_doc[] =
 /* MULTILINE STRING BEGIN
-push(arr, n=None, axis=-1)
+push(a, n=None, axis=-1)
 
 Fill missing values (NaNs) with most recent non-missing values.
 
@@ -981,8 +981,8 @@ index values.
 
 Parameters
 ----------
-arr : array_like
-    Input array. If `arr` is not an array, a conversion is attempted.
+a : array_like
+    Input array. If `a` is not an array, a conversion is attempted.
 n : {int, None}, optional
     How far to push values. If the most recent non-NaN array element is
     more than `n` index positions away, than a NaN is returned. The default
@@ -995,7 +995,7 @@ axis : int, optional
 Returns
 -------
 y : ndarray
-    An array with the same shape and dtype as `arr`.
+    An array with the same shape and dtype as `a`.
 
 See also
 --------
@@ -1003,12 +1003,12 @@ bottleneck.replace: Replace specified value of an array with new value.
 
 Examples
 --------
->>> arr = np.array([5, np.nan, np.nan, 6, np.nan])
->>> bn.push(arr)
+>>> a = np.array([5, np.nan, np.nan, 6, np.nan])
+>>> bn.push(a)
     array([ 5.,  5.,  5.,  6.,  6.])
->>> bn.push(arr, n=1)
+>>> bn.push(a, n=1)
     array([  5.,   5.,  nan,   6.,   6.])
->>> bn.push(arr, n=2)
+>>> bn.push(a, n=2)
     array([ 5.,  5.,  5.,  6.,  6.])
 
 MULTILINE STRING END */

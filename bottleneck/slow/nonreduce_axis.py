@@ -3,26 +3,26 @@ import numpy as np
 __all__ = ['rankdata', 'nanrankdata', 'partsort', 'argpartsort', 'push']
 
 
-def rankdata(arr, axis=None):
+def rankdata(a, axis=None):
     "Slow rankdata function used for unaccelerated dtypes."
-    return _rank(scipy_rankdata, arr, axis)
+    return _rank(scipy_rankdata, a, axis)
 
 
-def nanrankdata(arr, axis=None):
+def nanrankdata(a, axis=None):
     "Slow nanrankdata function used for unaccelerated dtypes."
-    return _rank(_nanrankdata_1d, arr, axis)
+    return _rank(_nanrankdata_1d, a, axis)
 
 
-def _rank(func1d, arr, axis):
-    arr = np.array(arr, copy=False)
+def _rank(func1d, a, axis):
+    a = np.array(a, copy=False)
     if axis is None:
-        arr = arr.ravel()
+        a = a.ravel()
         axis = 0
-    if arr.size == 0:
-        y = arr.astype(np.float64, copy=True)
+    if a.size == 0:
+        y = a.astype(np.float64, copy=True)
     else:
-        y = np.apply_along_axis(func1d, axis, arr)
-        if arr.dtype != np.float64:
+        y = np.apply_along_axis(func1d, axis, a)
+        if a.dtype != np.float64:
             y = y.astype(np.float64)
     return y
 
@@ -35,26 +35,24 @@ def _nanrankdata_1d(a):
     return y
 
 
-def partsort(arr, n, axis=-1):
+def partsort(a, n, axis=-1):
     "Slow partial sort used for unaccelerated dtypes."
-    return np.partition(arr, n - 1, axis)
+    return np.partition(a, n - 1, axis)
 
 
-def argpartsort(arr, n, axis=-1):
+def argpartsort(a, n, axis=-1):
     "Slow partial argsort used for unaccelerated dtypes."
-    if type(arr) is np.ndarray:
-        a = arr
-    else:
+    if type(a) is not np.ndarray:
         # bug in numpy 1.9.1: `a` cannot be a list
-        a = np.array(arr, copy=False)
+        a = np.array(a, copy=False)
     return np.argpartition(a, n - 1, axis)
 
 
-def push(arr, n=np.inf, axis=-1):
+def push(a, n=np.inf, axis=-1):
     "Slow push used for unaccelerated dtypes."
     if axis is None:
         raise ValueError("`axis` cannot be None")
-    y = np.array(arr)
+    y = np.array(a)
     ndim = y.ndim
     if axis != -1 or axis != ndim - 1:
         y = np.rollaxis(y, axis, ndim)
@@ -149,9 +147,9 @@ def scipy_rankdata(a, method='average'):
     if method not in ('average', 'min', 'max', 'dense', 'ordinal'):
         raise ValueError('unknown method "{0}"'.format(method))
 
-    arr = np.ravel(np.asarray(a))
+    a = np.ravel(np.asarray(a))
     algo = 'mergesort' if method == 'ordinal' else 'quicksort'
-    sorter = np.argsort(arr, kind=algo)
+    sorter = np.argsort(a, kind=algo)
 
     inv = np.empty(sorter.size, dtype=np.intp)
     inv[sorter] = np.arange(sorter.size, dtype=np.intp)
@@ -159,8 +157,8 @@ def scipy_rankdata(a, method='average'):
     if method == 'ordinal':
         return inv + 1
 
-    arr = arr[sorter]
-    obs = np.r_[True, arr[1:] != arr[:-1]]
+    a = a[sorter]
+    obs = np.r_[True, a[1:] != a[:-1]]
     dense = obs.cumsum()[inv]
 
     if method == 'dense':
