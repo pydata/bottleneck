@@ -19,13 +19,13 @@ matrix:
 
 before_install:
     - uname -a
-    - source "ci/travis/conda_setup.sh"
+    - source "tools/travis/conda_setup.sh"
 
 install:
-    - source "ci/travis/conda_install.sh"
+    - source "tools/travis/conda_install.sh"
 
 script:
-    - source "ci/travis/bn_setup.sh"
+    - source "tools/travis/bn_setup.sh"
 
 notifications:
     email:
