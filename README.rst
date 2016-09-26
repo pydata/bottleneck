@@ -50,8 +50,8 @@ Bottleneck comes with a benchmark suite::
         allnan         26.2      105.8       25.6       80.1
         rankdata      101.8        2.7      100.5        5.1
         nanrankdata   121.8        2.9      124.7        5.1
-        partsort        7.4        1.0        8.1        1.0
-        argpartsort     6.2        1.1        6.7        0.9
+        partition       7.4        1.0        8.1        1.0
+        argpartition    6.2        1.1        6.7        0.9
         replace        18.1        1.4       18.0        1.5
         push          304.1       19.6      319.3       26.4
         move_sum      695.6      210.2      645.6      562.7

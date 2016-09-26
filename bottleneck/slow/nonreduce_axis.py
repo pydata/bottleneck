@@ -1,6 +1,7 @@
 import numpy as np
+from numpy import partition, argpartition
 
-__all__ = ['rankdata', 'nanrankdata', 'partsort', 'argpartsort', 'push']
+__all__ = ['rankdata', 'nanrankdata', 'partition', 'argpartition', 'push']
 
 
 def rankdata(a, axis=None):
@@ -33,19 +34,6 @@ def _nanrankdata_1d(a):
     idx = ~np.isnan(a)
     y[idx] = scipy_rankdata(a[idx])
     return y
-
-
-def partsort(a, n, axis=-1):
-    "Slow partial sort used for unaccelerated dtypes."
-    return np.partition(a, n - 1, axis)
-
-
-def argpartsort(a, n, axis=-1):
-    "Slow partial argsort used for unaccelerated dtypes."
-    if type(a) is not np.ndarray:
-        # bug in numpy 1.9.1: `a` cannot be a list
-        a = np.array(a, copy=False)
-    return np.argpartition(a, n - 1, axis)
 
 
 def push(a, n=np.inf, axis=-1):

@@ -16,7 +16,7 @@ reduce                             :meth:`nansum <bottleneck.nansum>`, :meth:`na
 non-reduce                         :meth:`replace <bottleneck.replace>`
 
 non-reduce with axis               :meth:`rankdata <bottleneck.rankdata>`, :meth:`nanrankdata <bottleneck.nanrankdata>`,
-                                   :meth:`partsort <bottleneck.partsort>`, :meth:`argpartsort <bottleneck.argpartsort>`,
+                                   :meth:`partition <bottleneck.partition>`, :meth:`argpartition <bottleneck.argpartition>`,
                                    :meth:`push <bottleneck.push>`
 
 moving window                      :meth:`move_sum <bottleneck.move_sum>`, :meth:`move_mean <bottleneck.move_mean>`,
@@ -113,11 +113,11 @@ axis.
 
 ------------
 
-.. autofunction:: bottleneck.partsort
+.. autofunction:: bottleneck.partition
 
 ------------
 
-.. autofunction:: bottleneck.argpartsort
+.. autofunction:: bottleneck.argpartition
 
 ------------
 

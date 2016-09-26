@@ -97,7 +97,7 @@ def benchsuite(function, fraction_nan):
         index = 1
     elif function in ['rankdata', 'nanrankdata']:
         index = 0
-    elif function in ['partsort', 'argpartsort', 'push']:
+    elif function in ['partition', 'argpartition', 'push']:
         index = 1
     elif function == 'replace':
         index = 2

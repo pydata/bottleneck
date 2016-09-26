@@ -27,6 +27,15 @@ This release is a complete rewrite of Bottleneck.
   simpler and faster. For example, bottleneck now uses its own N-dimensional
   array iterators, reducing function call overhead.
 
+**Beware**
+
+- Functions partsort and argpartsort have been renamed to partition and
+  argpartition to match NumPy. Additionally the meaning of the input
+  arguments have changed: bn.partsort(a, n) is now equivalent to
+  bn.partition(a, kth=n-1). Similarly for bn.argpartition.
+- The keyword for array input has been changed from `arr` to `a` in all
+  functions. It now matches NumPy.
+
 **Thanks**
 
 - Christoph Gohlke: Windows compatibility

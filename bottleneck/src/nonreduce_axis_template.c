@@ -41,12 +41,12 @@ nonreducer_axis(char *name,
                 nra_t,
                 parse_type);
 
-/* partsort -------------------------------------------------------------- */
+/* partition ------------------------------------------------------------- */
 
 #define B(dtype, i) AX(dtype, i) /* used by PARTITION */
 
 /* dtype = [['float64'], ['float32'], ['int64'], ['int32']] */
-NRA(partsort, DTYPE0)
+NRA(partition, DTYPE0)
 {
     npy_intp i;
     npy_intp j, l, r, k;
@@ -56,15 +56,15 @@ NRA(partsort, DTYPE0)
     init_iter_one(&it, a, axis);
 
     if (LENGTH == 0) return (PyObject *)a;
-    if (n < 1 || n > LENGTH) {
+    if (n < 0 || n > LENGTH - 1) {
         PyErr_Format(PyExc_ValueError,
-                     "`n` (=%d) must be between 1 and %zd, inclusive.",
-                     n, LENGTH);
+                     "`n` (=%d) must be between 0 and %zd, inclusive.",
+                     n, LENGTH - 1);
         return NULL;
     }
 
     BN_BEGIN_ALLOW_THREADS
-    k = n - 1;
+    k = n;
     WHILE {
         l = 0;
         r = LENGTH - 1;
@@ -77,10 +77,10 @@ NRA(partsort, DTYPE0)
 }
 /* dtype end */
 
-NRA_MAIN(partsort, PARSE_PARTSORT)
+NRA_MAIN(partition, PARSE_PARTSORT)
 
 
-/* argpartsort ----------------------------------------------------------- */
+/* argpartition ----------------------------------------------------------- */
 
 #define BUFFER_NEW(dtype) dtype *B = malloc(LENGTH * sizeof(dtype));
 #define BUFFER_DELETE free(B);
@@ -157,14 +157,13 @@ NRA_MAIN(partsort, PARSE_PARTSORT)
         B[i] = AX(dtype0, i); \
         YX(dtype1, i) = i; \
     } \
-    k = n - 1; \
     l = 0; \
     r = LENGTH - 1; \
     ARGPARTITION(dtype0, dtype1)
 
 /* dtype = [['float64', 'intp'], ['float32', 'intp'],
             ['int64',   'intp'], ['int32',   'intp']] */
-NRA(argpartsort, DTYPE0)
+NRA(argpartition, DTYPE0)
 {
     npy_intp i;
     PyObject *y = PyArray_EMPTY(PyArray_NDIM(a), PyArray_SHAPE(a),
@@ -172,16 +171,16 @@ NRA(argpartsort, DTYPE0)
     iter2 it;
     init_iter2(&it, a, y, axis);
     if (LENGTH == 0) return y;
-    if (n < 1 || n > LENGTH) {
+    if (n < 0 || n > LENGTH - 1) {
         PyErr_Format(PyExc_ValueError,
-                     "`n` (=%d) must be between 1 and %zd, inclusive.",
-                     n, LENGTH);
+                     "`n` (=%d) must be between 0 and %zd, inclusive.",
+                     n, LENGTH - 1);
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
     BUFFER_NEW(npy_DTYPE0)
     npy_intp j, l, r, k;
-    k = n - 1;
+    k = n;
     WHILE {
         l = 0;
         r = LENGTH - 1;
@@ -194,7 +193,7 @@ NRA(argpartsort, DTYPE0)
 }
 /* dtype end */
 
-NRA_MAIN(argpartsort, PARSE_PARTSORT)
+NRA_MAIN(argpartition, PARSE_PARTSORT)
 
 
 /* rankdata -------------------------------------------------------------- */
@@ -401,12 +400,14 @@ NRA_MAIN(push, PARSE_PUSH)
 
 PyObject *pystr_a = NULL;
 PyObject *pystr_n = NULL;
+PyObject *pystr_kth = NULL;
 PyObject *pystr_axis = NULL;
 
 static int
 intern_strings(void) {
     pystr_a = PyString_InternFromString("a");
     pystr_n = PyString_InternFromString("n");
+    pystr_kth = PyString_InternFromString("kth");
     pystr_axis = PyString_InternFromString("axis");
     return pystr_a && pystr_n && pystr_axis;
 }
@@ -414,11 +415,11 @@ intern_strings(void) {
 /* nonreducer_axis ------------------------------------------------------- */
 
 static BN_INLINE int
-parse_partsort(PyObject *args,
-               PyObject *kwds,
-               PyObject **a,
-               PyObject **n,
-               PyObject **axis)
+parse_partition(PyObject *args,
+                PyObject *kwds,
+                PyObject **a,
+                PyObject **n,
+                PyObject **axis)
 {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
@@ -442,9 +443,9 @@ parse_partsort(PyObject *args,
                 }
                 nkwds_found += 1;
             case 1:
-                *n = PyDict_GetItem(kwds, pystr_n);
+                *n = PyDict_GetItem(kwds, pystr_kth);
                 if (*n == NULL) {
-                    TYPE_ERR("Cannot find `n` keyword input");
+                    TYPE_ERR("Cannot find `kth` keyword input");
                     return 0;
                 }
                 nkwds_found++;
@@ -644,7 +645,7 @@ nonreducer_axis(char *name,
     PyObject *axis_obj = NULL;
 
     if (parse == PARSE_PARTSORT) {
-        if (!parse_partsort(args, kwds, &a_obj, &n_obj, &axis_obj)) {
+        if (!parse_partition(args, kwds, &a_obj, &n_obj, &axis_obj)) {
             return NULL;
         }
     }
@@ -755,20 +756,20 @@ nonreducer_axis(char *name,
 static char nra_doc[] =
 "Bottleneck non-reducing functions that operate along an axis.";
 
-static char partsort_doc[] =
+static char partition_doc[] =
 /* MULTILINE STRING BEGIN
-partsort(a, n, axis=-1)
+partition(a, kth, axis=-1)
 
-Partial sorting of array elements along given axis.
+Partition array elements along given axis.
 
-A partially sorted array is one in which the `n` smallest values appear
-(in any order) in the first `n` elements. The remaining largest elements
-are also unordered. Due to the algorithm used (Wirth's method), the nth
-smallest element is in its sorted position (at index `n-1`).
+A 1d array B is partitioned at array index `kth` if three conditions
+are met: (1) B[kth] is in its sorted position, (2) all elements to the
+left of `kth` are less than or equal to B[kth], and (3) all elements
+to the right of `kth` are greater than or equal to B[kth]. Note that
+the array elements in conditions (2) and (3) are in general unordered.
 
 Shuffling the input array may change the output. The only guarantee is
-that the first `n` elements will be the `n` smallest and the remaining
-element will appear in the remainder of the output.
+given by the three conditions above.
 
 This functions is not protected against NaN. Therefore, you may get
 unexpected results if the input contains NaN.
@@ -777,22 +778,23 @@ Parameters
 ----------
 a : array_like
     Input array. If `a` is not an array, a conversion is attempted.
-n : int
-    The `n` smallest elements will appear (unordered) in the first `n`
-    elements of the output array.
+kth : int
+    The value of the element at index `kth` will be in its sorted
+    postion. Smaller (larger) or equal values will be to the left
+    (right) of index `kth`.
 axis : {int, None}, optional
-    Axis along which the partial sort is performed. The default (axis=-1)
-    is to sort along the last axis.
+    Axis along which the partition is performed. The default
+    (axis=-1) is to partition along the last axis.
 
 Returns
 -------
 y : ndarray
-    A partially sorted copy of the input array where the `n` smallest
-    elements will appear (unordered) in the first `n` elements.
+    A partitioned copy of the input array with the same shape and
+    type of `a`.
 
 See Also
 --------
-bottleneck.argpartsort: Indices that would partially sort an array
+bottleneck.argpartition: Indices that would partition an array
 
 Notes
 -----
@@ -804,35 +806,35 @@ Create a numpy array:
 
 >>> a = np.array([1, 0, 3, 4, 2])
 
-Partially sort array so that the first 3 elements are the smallest 3
-elements (note, as in this example, that the smallest 3 elements may not
-be sorted):
+Partition array so that the first 3 elements (indices 0, 1, 2) are the
+smallest 3 elements (note, as in this example, that the smallest 3
+elements may not be sorted):
 
->>> bn.partsort(a, n=3)
+>>> bn.partition(a, kth=2)
 array([1, 0, 2, 4, 3])
 
-Now partially sort array so that the last 2 elements are the largest 2
+Now Partition array so that the last 2 elements are the largest 2
 elements:
 
->>> bn.partsort(a, n=a.shape[0]-2)
+>>> bn.partition(a, kth=3)
 array([1, 0, 2, 3, 4])
 
 MULTILINE STRING END */
 
-static char argpartsort_doc[] =
+static char argpartition_doc[] =
 /* MULTILINE STRING BEGIN
-argpartsort(a, n, axis=-1)
+argpartition(a, kth, axis=-1)
 
-Return indices that would partially sort an array.
+Return indices that would partition array along the given axis.
 
-A partially sorted array is one in which the `n` smallest values appear
-(in any order) in the first `n` elements. The remaining largest elements
-are also unordered. Due to the algorithm used (Wirth's method), the nth
-smallest element is in its sorted position (at index `n-1`).
+A 1d array B is partitioned at array index `kth` if three conditions
+are met: (1) B[kth] is in its sorted position, (2) all elements to the
+left of `kth` are less than or equal to B[kth], and (3) all elements
+to the right of `kth` are greater than or equal to B[kth]. Note that
+the array elements in conditions (2) and (3) are in general unordered.
 
 Shuffling the input array may change the output. The only guarantee is
-that the first `n` elements will be the `n` smallest and the remaining
-element will appear in the remainder of the output.
+given by the three conditions above.
 
 This functions is not protected against NaN. Therefore, you may get
 unexpected results if the input contains NaN.
@@ -841,23 +843,23 @@ Parameters
 ----------
 a : array_like
     Input array. If `a` is not an array, a conversion is attempted.
-n : int
-    The indices of the `n` smallest elements will appear in the first `n`
-    elements of the output array along the given `axis`.
+kth : int
+    The value of the element at index `kth` will be in its sorted
+    postion. Smaller (larger) or equal values will be to the left
+    (right) of index `kth`.
 axis : {int, None}, optional
-    Axis along which the partial sort is performed. The default (axis=-1)
-    is to sort along the last axis.
+    Axis along which the partition is performed. The default (axis=-1)
+    is to partition along the last axis.
 
 Returns
 -------
 y : ndarray
     An array the same shape as the input array containing the indices
-    that partially sort `a` such that the `n` smallest elements will
-    appear (unordered) in the first `n` elements.
+    that partition `a`.
 
 See Also
 --------
-bottleneck.partsort: Partial sorting of array elements along given axis.
+bottleneck.partition: Partition array elements along given axis.
 
 Notes
 -----
@@ -867,20 +869,20 @@ Examples
 --------
 Create a numpy array:
 
->>> a = np.array([1, 0, 3, 4, 2])
+>>> a = np.array([10, 0, 30, 40, 20])
 
-Find the indices that partially sort that array so that the first 3
+Find the indices that partition the array so that the first 3
 elements are the smallest 3 elements:
 
->>> index = bn.argpartsort(a, n=3)
+>>> index = bn.argpartition(a, kth=2)
 >>> index
 array([0, 1, 4, 3, 2])
 
-Let's use the indices to partially sort the array (note, as in this
+Let's use the indices to partition the array (note, as in this
 example, that the smallest 3 elements may not be in order):
 
 >>> a[index]
-array([1, 0, 2, 4, 3])
+array([10, 0, 20, 40, 30])
 
 MULTILINE STRING END */
 
@@ -1017,11 +1019,11 @@ MULTILINE STRING END */
 
 static PyMethodDef
 nra_methods[] = {
-    {"partsort",    (PyCFunction)partsort,    VARKEY, partsort_doc},
-    {"argpartsort", (PyCFunction)argpartsort, VARKEY, argpartsort_doc},
-    {"rankdata",    (PyCFunction)rankdata,    VARKEY, rankdata_doc},
-    {"nanrankdata", (PyCFunction)nanrankdata, VARKEY, nanrankdata_doc},
-    {"push",        (PyCFunction)push,        VARKEY, push_doc},
+    {"partition",    (PyCFunction)partition,    VARKEY, partition_doc},
+    {"argpartition", (PyCFunction)argpartition, VARKEY, argpartition_doc},
+    {"rankdata",     (PyCFunction)rankdata,     VARKEY, rankdata_doc},
+    {"nanrankdata",  (PyCFunction)nanrankdata,  VARKEY, nanrankdata_doc},
+    {"push",         (PyCFunction)push,         VARKEY, push_doc},
     {NULL, NULL, 0, NULL}
 };
 

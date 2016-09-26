@@ -11,22 +11,22 @@ nan = np.nan
 
 
 # ---------------------------------------------------------------------------
-# partsort, argpartsort
+# partition, argpartition
 
-def test_partsort():
-    "test partsort"
-    for func in (bn.partsort,):
+def test_partition():
+    "test partition"
+    for func in (bn.partition,):
         yield unit_maker, func
 
 
-def test_argpartsort():
-    "test argpartsort"
-    for func in (bn.argpartsort,):
+def test_argpartition():
+    "test argpartition"
+    for func in (bn.argpartition,):
         yield unit_maker, func
 
 
 def unit_maker(func):
-    "test partsort or argpartsort"
+    "test partition or argpartition"
 
     length = 9
     nrepeat = 10
@@ -49,25 +49,25 @@ def unit_maker(func):
                 a = a.astype(dtype)
                 for axis in list(range(-1, ndim)) + [None]:
                     if axis is None:
-                        nmax = a.size
+                        nmax = a.size - 1
                     else:
-                        nmax = a.shape[axis]
-                    n = rs.randint(1, nmax)
+                        nmax = a.shape[axis] - 1
+                    n = rs.randint(0, nmax)
                     s0 = func0(a, n, axis)
                     s1 = func(a, n, axis)
-                    if name == 'argpartsort':
-                        s0 = complete_the_argpartsort(s0, a, n, axis)
-                        s1 = complete_the_argpartsort(s1, a, n, axis)
+                    if name == 'argpartition':
+                        s0 = complete_the_argpartition(s0, a, n, axis)
+                        s1 = complete_the_argpartition(s1, a, n, axis)
                     else:
-                        s0 = complete_the_partsort(s0, n, axis)
-                        s1 = complete_the_partsort(s1, n, axis)
+                        s0 = complete_the_partition(s0, n, axis)
+                        s1 = complete_the_partition(s1, n, axis)
                     tup = (name, 'a'+str(i), str(a.dtype), str(a.shape), n,
                            str(axis), a)
                     err_msg = msg % tup
                     assert_array_equal(s1, s0, err_msg)
 
 
-def complete_the_partsort(a, n, axis):
+def complete_the_partition(a, n, axis):
     ndim = a.ndim
     if axis is None:
         if ndim != 1:
@@ -78,17 +78,17 @@ def complete_the_partsort(a, n, axis):
         if axis < 0:
             raise ValueError("`axis` out of range")
     if ndim == 1:
-        a[:n-1] = np.sort(a[:n-1])
-        a[n:] = np.sort(a[n:])
+        a[:n] = np.sort(a[:n])
+        a[n+1:] = np.sort(a[n+1:])
     elif ndim == 2:
         if axis == 0:
             for i in range(a.shape[1]):
-                a[:n-1, i] = np.sort(a[:n-1, i])
-                a[n:, i] = np.sort(a[n:, i])
+                a[:n, i] = np.sort(a[:n, i])
+                a[n+1:, i] = np.sort(a[n+1:, i])
         elif axis == 1:
             for i in range(a.shape[0]):
-                a[i, :n-1] = np.sort(a[i, :n-1])
-                a[i, n:] = np.sort(a[i, n:])
+                a[i, :n] = np.sort(a[i, :n])
+                a[i, n+1:] = np.sort(a[i, n+1:])
         else:
             raise ValueError("`axis` out of range")
     else:
@@ -96,7 +96,7 @@ def complete_the_partsort(a, n, axis):
     return a
 
 
-def complete_the_argpartsort(index, a, n, axis):
+def complete_the_argpartition(index, a, n, axis):
     ndim = a.ndim
     if axis is None:
         if index.ndim != 1:
@@ -121,16 +121,16 @@ def complete_the_argpartsort(index, a, n, axis):
             raise ValueError("`axis` out of range")
     else:
         raise ValueError("`a.ndim` must be 1 or 2")
-    a = complete_the_partsort(a, n, axis)
+    a = complete_the_partition(a, n, axis)
     return a
 
 
 def test_transpose():
-    "partsort transpose test"
+    "partition transpose test"
     a = np.arange(12).reshape(4, 3)
-    actual = bn.partsort(a.T, 2, -1).T
-    desired = bn.slow.partsort(a.T, 2, -1).T
-    assert_equal(actual, desired, 'partsort transpose test')
+    actual = bn.partition(a.T, 2, -1).T
+    desired = bn.slow.partition(a.T, 2, -1).T
+    assert_equal(actual, desired, 'partition transpose test')
 
 
 # ---------------------------------------------------------------------------
@@ -177,13 +177,13 @@ def unit_maker_strides(func, decimal=5):
             axes = list(range(-1, a.ndim)) + [None]
         for axis in axes:
             # do not use a.copy() here because it will C order the array
-            if name in ('partsort', 'argpartsort', 'push'):
+            if name in ('partition', 'argpartition', 'push'):
                 if axis is None:
                     if name == 'push':
                         continue
-                    n = min(2, a.size)
+                    n = min(2, a.size - 1)
                 else:
-                    n = min(2, a.shape[axis])
+                    n = min(2, a.shape[axis] - 1)
                 actual = func(a, n, axis=axis)
                 desired = func0(a, n, axis=axis)
             else:
@@ -203,7 +203,7 @@ def test_arg_parsing():
     "test argument parsing in nonreduce_axis"
     for func in bn.get_functions('nonreduce_axis'):
         name = func.__name__
-        if name in ('partsort', 'argpartsort'):
+        if name in ('partition', 'argpartition'):
             yield unit_maker_parse, func
         elif name in ('push'):
             yield unit_maker_parse, func
@@ -269,6 +269,6 @@ def unit_maker_raises(func):
     assert_raises(TypeError, func, axis=a)
     assert_raises(TypeError, func, a, axis=0, extra=0)
     assert_raises(TypeError, func, a, axis=0, a=a)
-    if func.__name__ in ('partsort', 'argpartsort'):
+    if func.__name__ in ('partition', 'argpartition'):
         assert_raises(TypeError, func, a, 0, 0, 0, 0, 0)
         assert_raises(TypeError, func, a, axis='0')
