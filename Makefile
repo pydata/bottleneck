@@ -13,8 +13,8 @@ help:
 	@echo "test    -->  Run unit tests"
 	@echo "flake8  -->  Check for pep8 errors"
 	@echo "readme  -->  Update benchmark results in README.rst"
-	@echo "coverage-->  Unit test coverage (doesn't check compiled functions)"
 	@echo "bench   -->  Run performance benchmark"
+	@echo "detail  -->  Detailed benchmarks for all functions"
 	@echo "sdist   -->  Make source distribution"
 	@echo "doc     -->  Build Sphinx manual"
 
@@ -27,17 +27,16 @@ test:
 	${PYTHON} -c "import bottleneck;bottleneck.test()"
 
 flake8:
-	flake8 bottleneck
+	flake8 --exclude=doc .
 
 readme:
 	PYTHONPATH=`pwd`:PYTHONPATH ${PYTHON} tools/update_readme.py
 
-coverage:
-	rm -rf .coverage
-	${PYTHON} -c "import bottleneck; bottleneck.test(coverage=True)"
-
 bench:
 	${PYTHON} -c "import bottleneck; bottleneck.bench()"
+
+detail:
+	${PYTHON} -c "import bottleneck; bottleneck.bench_detailed('all')"
 
 sdist:
 	rm -f MANIFEST

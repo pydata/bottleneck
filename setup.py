@@ -21,25 +21,25 @@ def prepare_modules():
     from bottleneck.src.template import make_c_files
 
     make_c_files()
-    ext_list = [Extension("bottleneck.reduce",
-                          sources=["bottleneck/src/reduce.c"],
-                          include_dirs=[np.get_include()],
-                          extra_compile_args=['-O2'])]
-    ext_list += [Extension("bottleneck.move",
-                           sources=["bottleneck/src/move.c",
-                                    "bottleneck/src/move_median/move_median.c"],
-                           include_dirs=[np.get_include()],
-                           extra_compile_args=['-O2'])]
-    ext_list += [Extension("bottleneck.nonreduce",
-                           sources=["bottleneck/src/nonreduce.c"],
-                           include_dirs=[np.get_include()],
-                           extra_compile_args=['-O2'])]
-    ext_list += [Extension("bottleneck.nonreduce_axis",
-                           sources=["bottleneck/src/nonreduce_axis.c"],
-                           include_dirs=[np.get_include()],
-                           extra_compile_args=['-O2'])]
+    ext = [Extension("bottleneck.reduce",
+                     sources=["bottleneck/src/reduce.c"],
+                     include_dirs=[np.get_include()],
+                     extra_compile_args=['-O2'])]
+    ext += [Extension("bottleneck.move",
+                      sources=["bottleneck/src/move.c",
+                               "bottleneck/src/move_median/move_median.c"],
+                      include_dirs=[np.get_include()],
+                      extra_compile_args=['-O2'])]
+    ext += [Extension("bottleneck.nonreduce",
+                      sources=["bottleneck/src/nonreduce.c"],
+                      include_dirs=[np.get_include()],
+                      extra_compile_args=['-O2'])]
+    ext += [Extension("bottleneck.nonreduce_axis",
+                      sources=["bottleneck/src/nonreduce_axis.c"],
+                      include_dirs=[np.get_include()],
+                      extra_compile_args=['-O2'])]
 
-    return ext_list
+    return ext
 
 
 def get_long_description():
