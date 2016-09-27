@@ -46,7 +46,7 @@ sdist:
 
 # doc directory exists so use phony
 .PHONY: doc
-doc:
+doc: clean build
 	rm -rf build/sphinx
 	${PYTHON} setup.py build_sphinx
 
