@@ -34,6 +34,9 @@ def bench(dtype='float64', axis=-1,
         A list of strings specifying which functions to include in the
         benchmark. By default (None) all functions are included in the
         benchmark.
+    functions : {list, None}, optional
+        A list of function names (strings) to benchmark. By default (None)
+        all functions are benchmarked.
 
     Returns
     -------

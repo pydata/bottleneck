@@ -8,13 +8,14 @@ __all__ = ['bench_detailed']
 
 def bench_detailed(function='nansum', fraction_nan=0.0):
     """
-    Benchmark a single function.
+    Benchmark a single function in detail or, optionally, all functions.
 
     Parameters
     ----------
     function : str, optional
         Name of function, as a string, to benchmark. Default ('nansum') is
-        to benchmark bn.nansum.
+        to benchmark bn.nansum. If `function` is 'all' then detailed
+        benchmarks are run on all bottleneck functions.
     fraction_nan : float, optional
         Fraction of array elements that should, on average, be NaN. The
         default (0.0) is not to set any elements to NaN.
@@ -24,6 +25,13 @@ def bench_detailed(function='nansum', fraction_nan=0.0):
     A benchmark report is printed to stdout.
 
     """
+
+    if function == 'all':
+        # benchmark all bottleneck functions
+        funcs = bn.get_functions('all', as_string=True)
+        funcs.sort()
+        for func in funcs:
+            bench_detailed(func, fraction_nan)
 
     if fraction_nan < 0 or fraction_nan > 1:
         raise ValueError("`fraction_nan` must be between 0 and 1, inclusive")
@@ -61,6 +69,25 @@ def timer(statements, setup, repeat):
 
 def benchsuite(function, fraction_nan):
 
+    # setup is called before each run of each function
+    setup = """
+        from bottleneck import %s as bn_fn
+        try: from numpy import %s as sl_fn
+        except ImportError: from bottleneck.slow import %s as sl_fn
+
+        # avoid all-nan slice warnings from np.median and np.nanmedian
+        if "%s" == "median": from bottleneck.slow import median as sl_fn
+        if "%s" == "nanmedian": from bottleneck.slow import nanmedian as sl_fn
+
+        from numpy import array, nan
+        from numpy.random import RandomState
+        rand = RandomState(123).rand
+
+        a = %s
+        if %s != 0: a[a < %s] = nan
+    """
+    setup = '\n'.join([s.strip() for s in setup.split('\n')])
+
     # what kind of function signature do we need to use?
     if function in bn.get_functions('reduce', as_string=True):
         index = 0
@@ -75,22 +102,8 @@ def benchsuite(function, fraction_nan):
     else:
         raise ValueError("`function` (%s) not recognized" % function)
 
-    setup = """
-        import numpy as np
-        from bottleneck import %s as bn_fn
-        try: from numpy import %s as sl_fn
-        except ImportError: from bottleneck.slow import %s as sl_fn
-        if "%s" == "median": from bottleneck.slow import median as sl_fn
-        if "%s" == "nanmedian": from bottleneck.slow import nanmedian as sl_fn
-        from numpy.random import rand
-        from numpy import array
-        a = %s
-        if %s != 0: a[a < %s] = np.nan
-    """
-    setup = '\n'.join([s.strip() for s in setup.split('\n')])
-
     # create benchmark suite
-    instructions = get_suite_instructions()
+    instructions = get_instructions()
     f = function
     suite = []
     for instruction in instructions:
@@ -110,7 +123,7 @@ def benchsuite(function, fraction_nan):
     return suite
 
 
-def get_suite_instructions():
+def get_instructions():
 
     instructions = [
 
