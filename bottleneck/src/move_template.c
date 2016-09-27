@@ -479,12 +479,12 @@ MOVE(NAME, DTYPE0)
         WHILE0 {
             MACRO_FLOAT(DTYPE0,
                         BN_NAN,
-                        NULL)
+                        )
         }
         WHILE1 {
             MACRO_FLOAT(DTYPE0,
                         count >= min_count ? VALUE : BN_NAN,
-                        NULL)
+                        )
         }
         WHILE2 {
             MACRO_FLOAT(DTYPE0,
@@ -526,13 +526,13 @@ MOVE(NAME, DTYPE0)
             MACRO_INT(DTYPE0,
                       DTYPE1,
                       BN_NAN,
-                      NULL)
+                      )
         }
         WHILE1 {
             MACRO_INT(DTYPE0,
                       DTYPE1,
                       VALUE,
-                      NULL)
+                      )
         }
         WHILE2 {
             MACRO_INT(DTYPE0,
