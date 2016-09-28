@@ -85,7 +85,8 @@ metadata = dict(name='Bottleneck',
                 packages=find_packages(),
                 package_data={'bottleneck': ['LICENSE']},
                 requires=['numpy'],
-                install_requires=['numpy'])
+                install_requires=['numpy'],
+                setup_requires=['numpy'])
 
 
 if not(len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or
