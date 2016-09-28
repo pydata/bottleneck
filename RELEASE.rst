@@ -27,6 +27,13 @@ This release is a complete rewrite of Bottleneck.
   simpler and faster. For example, bottleneck now uses its own N-dimensional
   array iterators, reducing function call overhead.
 
+**New features**
+
+- The new function bench_detailed runs a detailed performance benchmark on
+  a single bottleneck function.
+- Bottleneck can be installed on systems that do not yet have NumPy
+  installed. Previously that only worked on some systems.
+
 **Beware**
 
 - Functions partsort and argpartsort have been renamed to partition and

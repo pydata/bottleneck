@@ -1,6 +1,5 @@
 # flake8: noqa
 
-from . import slow
 
 # If you bork the build (e.g. by messing around with the templates),
 # you still want to be able to import Bottleneck so that you can
@@ -28,10 +27,15 @@ try:
 except:
     pass
 
-from bottleneck.version import __version__
-from bottleneck.benchmark.bench import bench
-from bottleneck.benchmark.bench_detailed import bench_detailed
-from bottleneck.util import get_functions
+
+try:
+    from . import slow
+    from bottleneck.version import __version__
+    from bottleneck.benchmark.bench import bench
+    from bottleneck.benchmark.bench_detailed import bench_detailed
+    from bottleneck.util import get_functions
+except:
+    pass
 
 try:
     from numpy.testing import Tester

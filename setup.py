@@ -11,32 +11,43 @@ except ImportError:
 
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
+from setuptools.command.build_ext import build_ext as _build_ext
+
+
+# workaround for installing bottleneck when numpy is not present
+# taken from:
+# stackoverflow.com/questions/19919905/
+# how-to-bootstrap-numpy-installation-in-setup-py#21621689
+class build_ext(_build_ext):
+    def finalize_options(self):
+        _build_ext.finalize_options(self)
+        # Prevent numpy from thinking it is still in its setup process:
+        __builtins__.__NUMPY_SETUP__ = False
+        import numpy
+        self.include_dirs.append(numpy.get_include())
 
 
 def prepare_modules():
 
-    # Don't attempt to import numpy until it needed; this
-    # enables pip to install numpy before bottleneck
-    import numpy as np
     from bottleneck.src.template import make_c_files
 
     make_c_files()
     ext = [Extension("bottleneck.reduce",
                      sources=["bottleneck/src/reduce.c"],
-                     include_dirs=[np.get_include()],
+                     include_dirs=[],
                      extra_compile_args=['-O2'])]
     ext += [Extension("bottleneck.move",
                       sources=["bottleneck/src/move.c",
                                "bottleneck/src/move_median/move_median.c"],
-                      include_dirs=[np.get_include()],
+                      include_dirs=[],
                       extra_compile_args=['-O2'])]
     ext += [Extension("bottleneck.nonreduce",
                       sources=["bottleneck/src/nonreduce.c"],
-                      include_dirs=[np.get_include()],
+                      include_dirs=[],
                       extra_compile_args=['-O2'])]
     ext += [Extension("bottleneck.nonreduce_axis",
                       sources=["bottleneck/src/nonreduce_axis.c"],
-                      include_dirs=[np.get_include()],
+                      include_dirs=[],
                       extra_compile_args=['-O2'])]
 
     return ext
@@ -85,7 +96,9 @@ metadata = dict(name='Bottleneck',
                 packages=find_packages(),
                 package_data={'bottleneck': ['LICENSE']},
                 requires=['numpy'],
-                install_requires=['numpy'])
+                install_requires=['numpy'],
+                cmdclass={'build_ext': build_ext},
+                setup_requires=['numpy'])
 
 
 if not(len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or
