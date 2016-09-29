@@ -32,7 +32,7 @@
     name##_one_##dtype(PyArrayObject *a, int axis, int ddof)
 
 /* top-level functions such as nansum */
-#define REDUCE_MAIN(name, ravel, has_ddof) \
+#define REDUCE_MAIN(name, has_ddof) \
     static PyObject * \
     name(PyObject *self, PyObject *args, PyObject *kwds) \
     { \
@@ -47,7 +47,6 @@
                        name##_one_float32, \
                        name##_one_int64, \
                        name##_one_int32, \
-                       ravel, \
                        has_ddof); \
     }
 
@@ -68,7 +67,6 @@ reducer(char *name,
         fone_t fone_float32,
         fone_t fone_int64,
         fone_t fone_int32,
-        int ravel,
         int has_ddof);
 
 /* nansum ---------------------------------------------------------------- */
@@ -149,7 +147,7 @@ REDUCE_ONE(nansum, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(nansum, 0, 0)
+REDUCE_MAIN(nansum, 0)
 
 
 /* nanmean ---------------------------------------------------------------- */
@@ -258,7 +256,7 @@ REDUCE_ONE(nanmean, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(nanmean, 0, 0)
+REDUCE_MAIN(nanmean, 0)
 
 
 /* nanstd, nanvar- ------------------------------------------------------- */
@@ -416,7 +414,7 @@ REDUCE_ONE(NAME, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(NAME, 0, 1)
+REDUCE_MAIN(NAME, 1)
 /* repeat end */
 
 
@@ -529,7 +527,7 @@ REDUCE_ONE(NAME, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(NAME, 0, 0)
+REDUCE_MAIN(NAME, 0)
 /* repeat end */
 
 
@@ -659,7 +657,7 @@ REDUCE_ONE(NAME, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(NAME, 1, 0)
+REDUCE_MAIN(NAME, 0)
 /* repeat end */
 
 
@@ -747,7 +745,7 @@ REDUCE_ONE(ss, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(ss, 0, 0)
+REDUCE_MAIN(ss, 0)
 
 
 /* median, nanmedian MACROS ---------------------------------------------- */
@@ -916,7 +914,7 @@ REDUCE_ONE(median, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(median, 1, 0)
+REDUCE_MAIN(median, 0)
 
 static PyObject *
 nanmedian(PyObject *self, PyObject *args, PyObject *kwds)
@@ -932,7 +930,7 @@ nanmedian(PyObject *self, PyObject *args, PyObject *kwds)
                    nanmedian_one_float32,
                    median_one_int64,
                    median_one_int32,
-                   1, 0);
+                   0);
 }
 
 /* anynan ---------------------------------------------------------------- */
@@ -1004,7 +1002,7 @@ REDUCE_ONE(anynan, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(anynan, 0, 0)
+REDUCE_MAIN(anynan, 0)
 
 
 /* allnan ---------------------------------------------------------------- */
@@ -1082,7 +1080,7 @@ REDUCE_ONE(allnan, DTYPE0)
 }
 /* dtype end */
 
-REDUCE_MAIN(allnan, 0, 0)
+REDUCE_MAIN(allnan, 0)
 
 
 /* python strings -------------------------------------------------------- */
@@ -1201,7 +1199,6 @@ reducer(char *name,
         fone_t fone_float32,
         fone_t fone_int64,
         fone_t fone_int32,
-        int ravel,
         int has_ddof)
 {
 
