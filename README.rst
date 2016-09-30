@@ -35,35 +35,35 @@ Bottleneck comes with a benchmark suite::
 
                      no NaN     no NaN      NaN        NaN
                        (10,)   (1000,1000)   (10,)   (1000,1000)
-        nansum         64.1        2.3       63.7        7.4
-        nanmean       217.7        3.5      216.3        8.3
-        nanstd        355.6        2.7      383.6        7.0
-        nanvar        348.8        2.7      370.2        7.0
-        nanmin         57.3        1.0       48.1        1.3
-        nanmax         51.9        1.0       56.8        2.1
-        median        175.6        1.1      231.0        5.1
-        nanmedian     158.0        5.0      185.6       39.8
-        ss             32.3        1.6       32.4        1.6
-        nanargmin      92.9        2.2       94.1        5.8
-        nanargmax      96.4        2.2       97.2        6.1
-        anynan         22.0        0.5       23.4       73.0
-        allnan         26.2      105.8       25.6       80.1
-        rankdata      101.8        2.7      100.5        5.1
-        nanrankdata   121.8        2.9      124.7        5.1
-        partition       7.4        1.0        8.1        1.0
-        argpartition    6.2        1.1        6.7        0.9
-        replace        18.1        1.4       18.0        1.5
-        push          304.1       19.6      319.3       26.4
-        move_sum      695.6      210.2      645.6      562.7
-        move_mean    1615.4      333.9     1612.8      481.4
-        move_std     2576.8      168.3     2672.2      396.9
-        move_var     2551.7      211.5     2568.8      394.7
-        move_min      524.6       25.9      536.6       59.8
-        move_max      460.5       25.9      467.3       96.8
-        move_argmin   800.6       41.3      839.0      256.9
-        move_argmax   833.3       43.4      872.1      305.4
-        move_median   928.0       43.4      919.9      143.3
-        move_rank    1028.0        3.0     1148.9       11.2
+        nansum        117.4        2.3      114.6        7.3
+        nanmean       433.2        3.5      429.7        8.2
+        nanstd        665.9        2.7      680.8        6.9
+        nanvar        710.8        2.6      664.4        6.9
+        nanmin         96.1        1.0       94.5        1.3
+        nanmax         95.0        1.0       98.4        2.1
+        median        251.5        1.1      372.5        5.2
+        nanmedian     268.9        5.3      335.5       41.8
+        ss             58.9        1.6       58.4        1.6
+        nanargmin     193.4        2.2      197.8        6.0
+        nanargmax     192.9        2.2      195.9        6.4
+        anynan         44.3        0.5       49.1       58.2
+        allnan         49.3       59.2       49.4       59.7
+        rankdata      137.4        2.7      142.2        5.2
+        nanrankdata   164.6        3.0      164.2        5.1
+        partition       9.0        1.0        9.8        1.1
+        argpartition    7.8        1.1        8.7        1.0
+        replace        21.3        1.4       21.3        1.4
+        push          564.4       22.7      564.1       29.4
+        move_sum      932.3      196.2      927.7      445.6
+        move_mean    2417.4      226.2     2431.8      373.0
+        move_std     3587.7      127.5     3547.3      200.5
+        move_var     3676.2      199.0     3690.7      349.5
+        move_min      755.3       27.3      769.2       65.8
+        move_max      731.9       27.2      753.2      111.9
+        move_argmin  1112.9       41.5     1173.6      242.5
+        move_argmax   812.3       44.2      780.7      306.5
+        move_median  1043.2       42.9     1043.1      142.1
+        move_rank    1680.8        2.4     1919.6        9.0
 
 You can also run a detailed benchmark for a single function using, for
 example, the command::
@@ -80,10 +80,10 @@ Where
 =====
 
 ===================   ========================================================
- download             http://pypi.python.org/pypi/Bottleneck
+ download             https://pypi.python.org/pypi/Bottleneck
  docs                 http://berkeleyanalytics.com/bottleneck
- code                 http://github.com/kwgoodman/bottleneck
- mailing list         http://groups.google.com/group/bottle-neck
+ code                 https://github.com/kwgoodman/bottleneck
+ mailing list         https://groups.google.com/group/bottle-neck
 ===================   ========================================================
 
 License

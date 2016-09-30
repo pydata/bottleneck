@@ -30,13 +30,10 @@ def bench(dtype='float64', axis=-1,
     order : {'C', 'F'}, optional
         Whether to store multidimensional data in C- or Fortran-contiguous
         (row- or column-wise) order in memory.
-        functions : {list, None}, optional
+    functions : {list, None}, optional
         A list of strings specifying which functions to include in the
         benchmark. By default (None) all functions are included in the
         benchmark.
-    functions : {list, None}, optional
-        A list of function names (strings) to benchmark. By default (None)
-        all functions are benchmarked.
 
     Returns
     -------
@@ -106,8 +103,7 @@ def benchsuite(shapes, dtype, axis, nans, order, functions):
     suite = []
 
     def getsetups(setup, shapes, nans, order):
-        template = """import numpy as np
-        import bottleneck as bn
+        template = """
         from bottleneck.benchmark.bench import getarray
         a = getarray(%s, 'DTYPE', %s, '%s')
         %s"""
@@ -124,7 +120,7 @@ def benchsuite(shapes, dtype, axis, nans, order, functions):
             continue
         run = {}
         run['name'] = func
-        run['statements'] = ["bn_func(a, axis=AXIS)", "sl_func(a, axis=AXIS)"]
+        run['statements'] = ["bn_func(a, AXIS)", "sl_func(a, AXIS)"]
         setup = """
             from bottleneck import %s as bn_func
             try: from numpy import %s as sl_func
@@ -141,8 +137,8 @@ def benchsuite(shapes, dtype, axis, nans, order, functions):
             continue
         run = {}
         run['name'] = func
-        run['statements'] = ["bn_func(a, n, axis=AXIS)",
-                             "sl_func(a, n, axis=AXIS)"]
+        run['statements'] = ["bn_func(a, n, AXIS)",
+                             "sl_func(a, n, AXIS)"]
         setup = """
             from bottleneck import %s as bn_func
             from bottleneck.slow import %s as sl_func
@@ -161,14 +157,15 @@ def benchsuite(shapes, dtype, axis, nans, order, functions):
         run = {}
         run['name'] = func
         if func == 'replace':
-            run['statements'] = ["bn_func(a, np.nan, 0)",
-                                 "slow_func(a, np.nan, 0)"]
+            run['statements'] = ["bn_func(a, nan, 0)",
+                                 "slow_func(a, nan, 0)"]
         elif func == 'push':
-            run['statements'] = ["bn_func(a, 5, axis=AXIS)",
-                                 "slow_func(a, 5, axis=AXIS)"]
+            run['statements'] = ["bn_func(a, 5, AXIS)",
+                                 "slow_func(a, 5, AXIS)"]
         else:
             raise ValueError('Unknow function name')
         setup = """
+            from numpy import nan
             from bottleneck import %s as bn_func
             from bottleneck.slow import %s as slow_func
         """ % (func, func)
@@ -182,8 +179,8 @@ def benchsuite(shapes, dtype, axis, nans, order, functions):
             continue
         run = {}
         run['name'] = func
-        run['statements'] = ["bn_func(a, window=w, axis=AXIS)",
-                             "sw_func(a, window=w, axis=AXIS)"]
+        run['statements'] = ["bn_func(a, w, 1, AXIS)",
+                             "sw_func(a, w, 1, AXIS)"]
         setup = """
             from bottleneck.slow.move import %s as sw_func
             from bottleneck import %s as bn_func
