@@ -25,13 +25,17 @@ else:
 class CondaWrapper(object):
     """Manage the AppVeyor Miniconda installation through Python.
 
-    AppVeyor has pre-installed Python 2.7.x as well as Miniconda (2 and 3). Thus
-    we only need to configure that properly and create the desired environment.
+    AppVeyor has pre-installed Python 2.7.x as well as Miniconda (2 and 3).
+    Thus we only need to configure that properly and create the desired
+    environment.
     """
 
     def __init__(self, version, arch, home, venv, **kw_args):
         super(CondaWrapper, self).__init__(**kw_args)
-        self.logger = logging.getLogger("{}.{}".format(__name__, self.__class__.__name__))
+        self.logger = logging.getLogger("{}.{}".format(
+            __name__,
+            self.__class__.__name__
+        ))
         self.version = version
         self.arch = arch
         self.home = home
@@ -41,7 +45,7 @@ class CondaWrapper(object):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        return False # False reraises the exception
+        return False  # False reraises the exception
 
     def configure(self):
         self.logger.info("Configuring '%s'...", self.home)
@@ -51,10 +55,10 @@ class CondaWrapper(object):
 #        cmd = "SET PATH="+self.home+";"+self.home+"\\Scripts;"
 #        msg = check_output(cmd, shell=True)
 #        self.logger.debug(decode(msg))
-        #import os
-        #self.logger.debug( os.listdir( "C:\\"))
+#        import os
+#        self.logger.debug( os.listdir( "C:\\"))
         cmd = ["conda", "config", "--set", "always_yes", "yes", "--set",
-            "changeps1", "no"]
+               "changeps1", "no"]
         msg = check_output(cmd, shell=True)
         self.logger.debug(decode(msg))
         self.logger.info("Done.")
@@ -68,7 +72,8 @@ class CondaWrapper(object):
 
     def create(self, *args):
         self.logger.info("Creating environment '%s'...", self.venv)
-        cmd = ["conda", "create", "-q", "-n", self.venv, "python="+ self.version] + list(args)
+        cmd = ["conda", "create", "-q", "-n", self.venv,
+               "python=" + self.version] + list(args)
         msg = check_output(cmd, shell=True)
         self.logger.debug(decode(msg))
         cmd = ["activate", self.venv]
