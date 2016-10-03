@@ -45,6 +45,7 @@ This release is a complete rewrite of Bottleneck.
 
 **Thanks**
 
+- Moritz E. Beber: continuous integration with AppVeyor
 - Christoph Gohlke: Windows compatibility
 - Jennifer Olsen: comments and suggestions
 - A special thanks to the Cython developers. The quickest way to appreciate

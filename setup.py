@@ -111,7 +111,7 @@ elif sys.argv[1] == 'build_sphinx':
     readme = 'README.rst'
     intro = os.path.join('doc', 'source', 'intro.rst')
     with open(readme, 'r') as infile, open(intro, 'w') as outfile:
-        txt = infile.readlines()[2:]  # skip travis build status
+        txt = infile.readlines()[4:]  # skip travis, appveyor build status
         outfile.write(''.join(txt))
 
 setup(**metadata)
