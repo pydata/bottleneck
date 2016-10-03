@@ -7,7 +7,7 @@ __all__ = ['bench']
 
 
 def bench(dtype='float64', axis=-1,
-          shapes=[(10,), (100,), (1000, 1000), (1000, 1000)],
+          shapes=[(100,), (1000,), (1000, 1000), (1000, 1000)],
           nans=[False, True, False, True],
           order='C',
           functions=None):
@@ -26,7 +26,7 @@ def bench(dtype='float64', axis=-1,
     nans : list, optional
         A list of the bools (True or False), one for each tuple in the
         `shapes` list, that tells whether the input arrays should be randomly
-        filled with one-third NaNs.
+        filled with one-fifth NaNs.
     order : {'C', 'F'}, optional
         Whether to store multidimensional data in C- or Fortran-contiguous
         (row- or column-wise) order in memory.
@@ -54,10 +54,10 @@ def bench(dtype='float64', axis=-1,
     print("%sBottleneck %s; Numpy %s" % (tab, bn.__version__, np.__version__))
     print("%sSpeed is NumPy time divided by Bottleneck time" % tab)
     tup = (tab, dtype, axis)
-    print("%sNaN means approx one-third NaNs; %s and axis=%s are used" % tup)
+    print("%sNaN means approx one-fifth NaNs; %s and axis=%s are used" % tup)
 
     print('')
-    header = [" "*14]
+    header = [" "*15]
     for nan in nans:
         if nan:
             header.append("NaN".center(11))
@@ -91,7 +91,7 @@ def timer(statements, setups):
 def getarray(shape, dtype, nans=False, order='C'):
     a = np.arange(np.prod(shape), dtype=dtype)
     if nans and issubclass(a.dtype.type, np.inexact):
-        a[::3] = np.nan
+        a[::5] = np.nan
     else:
         rs = np.random.RandomState(shape)
         rs.shuffle(a)

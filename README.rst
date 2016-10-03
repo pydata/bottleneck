@@ -33,39 +33,39 @@ Bottleneck comes with a benchmark suite::
     Bottleneck performance benchmark
         Bottleneck 1.2.0dev; Numpy 1.11.0
         Speed is NumPy time divided by Bottleneck time
-        NaN means approx one-third NaNs; float64 and axis=-1 are used
+        NaN means approx one-fifth NaNs; float64 and axis=-1 are used
 
-                     no NaN      NaN       no NaN      NaN
-                       (10,)      (100,)  (1000,1000)(1000,1000)
-        nansum         98.0       56.9        2.3        7.4
-        nanmean       380.8      209.8        3.3        8.1
-        nanstd        603.4      239.7        2.7        7.1
-        nanvar        614.3      246.1        2.6        6.9
-        nanmin         87.4       51.5        1.0        1.4
-        nanmax         88.2       42.4        1.0        2.1
-        median        239.8      182.4        1.1        5.1
-        nanmedian     248.9      127.3        5.0       39.8
-        ss             50.8       28.4        1.6        1.6
-        nanargmin     171.0       97.5        2.3        6.1
-        nanargmax     170.8       98.9        2.3        6.5
-        anynan         39.4       44.0        0.6       76.7
-        allnan         42.8       42.8      110.0       86.4
-        rankdata      140.4       50.5        2.7        5.0
-        nanrankdata   150.6       57.1        2.9        4.8
-        partition       9.3        7.5        1.0        1.1
-        argpartition    8.2        5.0        1.1        1.0
-        replace        19.2       12.2        1.4        1.4
-        push          546.8     3329.4       20.1       27.1
-        move_sum      936.2     4056.2      192.1      442.4
-        move_mean    2160.0     9471.2      234.2      379.2
-        move_std     3411.7     6630.1      129.5      205.5
-        move_var     3572.4     9862.9      203.4      351.7
-        move_min      689.3     2379.6       25.3       60.4
-        move_max      661.3     2549.4       25.2      105.0
-        move_argmin  1082.1     3744.3       40.7      240.5
-        move_argmax  1130.6     4461.5       43.1      303.4
-        move_median  1126.4     1823.9       42.6      142.5
-        move_rank    1608.3     2222.5        2.3        9.0
+                      no NaN      NaN       no NaN      NaN
+                       (100,)    (1000,)  (1000,1000)(1000,1000)
+        nansum         59.3       16.7        2.3        5.0
+        nanmean       208.7       47.0        3.5        6.1
+        nanstd        242.9       43.0        2.7        4.9
+        nanvar        231.7       40.8        2.7        4.9
+        nanmin         32.0        5.3        0.4        0.7
+        nanmax         32.1        5.4        0.4        0.8
+        median        106.4       53.6        1.0        5.3
+        nanmedian     106.4       29.2        4.9       32.4
+        ss             27.9        6.5        1.6        1.6
+        nanargmin      55.7        9.4        1.2        2.0
+        nanargmax      56.4        9.6        1.2        2.3
+        anynan         22.3       49.8        0.5      112.8
+        allnan         42.1       46.6      114.4       65.9
+        rankdata       50.9        8.2        2.7        6.6
+        nanrankdata    56.8        8.5        2.9        7.1
+        partition       4.0        3.5        1.0        1.7
+        argpartition    3.0        2.5        1.1        1.5
+        replace        12.5        3.9        1.5        1.4
+        push         3432.7     9640.6       19.7       20.0
+        move_sum     4799.6     9430.4      194.7      374.2
+        move_mean   11372.1    19312.2      250.4      398.1
+        move_std     9343.7    12246.2      134.1      242.7
+        move_var    12343.5    18427.2      209.8      385.5
+        move_min     2343.7     3806.8       25.2       85.1
+        move_max     2122.2     4308.0       25.1      109.0
+        move_argmin  3703.3     5836.4       40.5      179.1
+        move_argmax  3608.2     7683.3       42.9      226.1
+        move_median  1772.2     1143.7       42.8      114.2
+        move_rank    1282.9      241.4        2.5        7.3
 
 You can also run a detailed benchmark for a single function using, for
 example, the command::
