@@ -7,8 +7,8 @@ __all__ = ['bench']
 
 
 def bench(dtype='float64', axis=-1,
-          shapes=[(10,), (1000, 1000), (10,), (1000, 1000)],
-          nans=[False, False, True, True],
+          shapes=[(10,), (100,), (1000, 1000), (1000, 1000)],
+          nans=[False, True, False, True],
           order='C',
           functions=None):
     """

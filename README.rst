@@ -35,37 +35,37 @@ Bottleneck comes with a benchmark suite::
         Speed is NumPy time divided by Bottleneck time
         NaN means approx one-third NaNs; float64 and axis=-1 are used
 
-                     no NaN     no NaN      NaN        NaN
-                       (10,)   (1000,1000)   (10,)   (1000,1000)
-        nansum        117.4        2.3      114.6        7.3
-        nanmean       433.2        3.5      429.7        8.2
-        nanstd        665.9        2.7      680.8        6.9
-        nanvar        710.8        2.6      664.4        6.9
-        nanmin         96.1        1.0       94.5        1.3
-        nanmax         95.0        1.0       98.4        2.1
-        median        251.5        1.1      372.5        5.2
-        nanmedian     268.9        5.3      335.5       41.8
-        ss             58.9        1.6       58.4        1.6
-        nanargmin     193.4        2.2      197.8        6.0
-        nanargmax     192.9        2.2      195.9        6.4
-        anynan         44.3        0.5       49.1       58.2
-        allnan         49.3       59.2       49.4       59.7
-        rankdata      137.4        2.7      142.2        5.2
-        nanrankdata   164.6        3.0      164.2        5.1
-        partition       9.0        1.0        9.8        1.1
-        argpartition    7.8        1.1        8.7        1.0
-        replace        21.3        1.4       21.3        1.4
-        push          564.4       22.7      564.1       29.4
-        move_sum      932.3      196.2      927.7      445.6
-        move_mean    2417.4      226.2     2431.8      373.0
-        move_std     3587.7      127.5     3547.3      200.5
-        move_var     3676.2      199.0     3690.7      349.5
-        move_min      755.3       27.3      769.2       65.8
-        move_max      731.9       27.2      753.2      111.9
-        move_argmin  1112.9       41.5     1173.6      242.5
-        move_argmax   812.3       44.2      780.7      306.5
-        move_median  1043.2       42.9     1043.1      142.1
-        move_rank    1680.8        2.4     1919.6        9.0
+                     no NaN      NaN       no NaN      NaN
+                       (10,)      (100,)  (1000,1000)(1000,1000)
+        nansum         98.0       56.9        2.3        7.4
+        nanmean       380.8      209.8        3.3        8.1
+        nanstd        603.4      239.7        2.7        7.1
+        nanvar        614.3      246.1        2.6        6.9
+        nanmin         87.4       51.5        1.0        1.4
+        nanmax         88.2       42.4        1.0        2.1
+        median        239.8      182.4        1.1        5.1
+        nanmedian     248.9      127.3        5.0       39.8
+        ss             50.8       28.4        1.6        1.6
+        nanargmin     171.0       97.5        2.3        6.1
+        nanargmax     170.8       98.9        2.3        6.5
+        anynan         39.4       44.0        0.6       76.7
+        allnan         42.8       42.8      110.0       86.4
+        rankdata      140.4       50.5        2.7        5.0
+        nanrankdata   150.6       57.1        2.9        4.8
+        partition       9.3        7.5        1.0        1.1
+        argpartition    8.2        5.0        1.1        1.0
+        replace        19.2       12.2        1.4        1.4
+        push          546.8     3329.4       20.1       27.1
+        move_sum      936.2     4056.2      192.1      442.4
+        move_mean    2160.0     9471.2      234.2      379.2
+        move_std     3411.7     6630.1      129.5      205.5
+        move_var     3572.4     9862.9      203.4      351.7
+        move_min      689.3     2379.6       25.3       60.4
+        move_max      661.3     2549.4       25.2      105.0
+        move_argmin  1082.1     3744.3       40.7      240.5
+        move_argmax  1130.6     4461.5       43.1      303.4
+        move_median  1126.4     1823.9       42.6      142.5
+        move_rank    1608.3     2222.5        2.3        9.0
 
 You can also run a detailed benchmark for a single function using, for
 example, the command::
