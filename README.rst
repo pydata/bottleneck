@@ -1,7 +1,7 @@
 .. image:: https://travis-ci.org/kwgoodman/bottleneck.svg?branch=master
     :target: https://travis-ci.org/kwgoodman/bottleneck
-.. image:: https://ci.appveyor.com/project/kwgoodman/bottleneck
-    :target: https://ci.appveyor.com/api/projects/status/github/kwgoodman/bottleneck?svg=true&passingText=passing&failingText=failing&pendingText=pending
+.. image:: https://ci.appveyor.com/api/projects/status/github/kwgoodman/bottleneck?svg=true&passingText=passing&failingText=failing&pendingText=pending
+    :target: https://ci.appveyor.com/project/kwgoodman/bottleneck
 ==========
 Bottleneck
 ==========
