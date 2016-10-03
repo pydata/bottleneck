@@ -9,7 +9,9 @@ environment:
         # /E:ON and /V:ON options are not enabled in the batch script intepreter
         # See: http://stackoverflow.com/a/13751649/163740
         CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\tools\\appveyor\\windows_sdk.cmd"
-        TEST_CMD: 'pip install --verbose "."'
+        TEST_CMD:
+            - 'pip install --verbose "."'
+            - 'python "tools/test-installed-bottleneck.py"'
 
     matrix:
         - PYTHON_VERSION: "2.7"
