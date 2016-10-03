@@ -10,8 +10,8 @@ environment:
         # See: http://stackoverflow.com/a/13751649/163740
         CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\tools\\appveyor\\windows_sdk.cmd"
         TEST_CMD:
-            - 'pip install --verbose "."'
-            - 'python "tools/test-installed-bottleneck.py"'
+            - "pip install --verbose ."
+            - "python tools\\test-installed-bottleneck.py"
 
     matrix:
         - PYTHON_VERSION: "2.7"
@@ -47,7 +47,7 @@ environment:
 install:
     - "SET PATH=%CONDA_HOME%;%CONDA_HOME%\\Scripts;%PATH%"
     # configures the Miniconda environment (Py2/Py3, 32/64 bit)
-    - python -u tools\appveyor\conda_setup.py
+    - "python -u tools\\appveyor\\conda_setup.py"
 
 build: false
 
