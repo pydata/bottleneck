@@ -34,20 +34,16 @@ def prepare_modules():
     make_c_files()
     ext = [Extension("bottleneck.reduce",
                      sources=["bottleneck/src/reduce.c"],
-                     include_dirs=[],
                      extra_compile_args=['-O2'])]
     ext += [Extension("bottleneck.move",
                       sources=["bottleneck/src/move.c",
                                "bottleneck/src/move_median/move_median.c"],
-                      include_dirs=[],
                       extra_compile_args=['-O2'])]
     ext += [Extension("bottleneck.nonreduce",
                       sources=["bottleneck/src/nonreduce.c"],
-                      include_dirs=[],
                       extra_compile_args=['-O2'])]
     ext += [Extension("bottleneck.nonreduce_axis",
                       sources=["bottleneck/src/nonreduce_axis.c"],
-                      include_dirs=[],
                       extra_compile_args=['-O2'])]
 
     return ext
