@@ -22,7 +22,7 @@ else:
         return string.decode()
 
 
-class CondaManager(object):
+class CondaWrapper(object):
     """Manage the AppVeyor Miniconda installation through Python.
 
     AppVeyor has pre-installed Python 2.7.x as well as Miniconda (2 and 3). Thus
@@ -30,7 +30,7 @@ class CondaManager(object):
     """
 
     def __init__(self, version, arch, home, venv, **kw_args):
-        super(CondaManager, self).__init__(**kw_args)
+        super(CondaWrapper, self).__init__(**kw_args)
         self.logger = logging.getLogger("{}.{}".format(__name__, self.__class__.__name__))
         self.version = version
         self.arch = arch
