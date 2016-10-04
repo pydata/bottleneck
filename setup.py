@@ -15,22 +15,19 @@ from setuptools.command.build_ext import build_ext as _build_ext
 
 
 # workaround for installing bottleneck when numpy is not present
-# taken from:
-# stackoverflow.com/questions/19919905/
-# how-to-bootstrap-numpy-installation-in-setup-py#21621689
 class build_ext(_build_ext):
+    # taken from: stackoverflow.com/questions/19919905/
+    # how-to-bootstrap-numpy-installation-in-setup-py#21621689
     def finalize_options(self):
         _build_ext.finalize_options(self)
-        # Prevent numpy from thinking it is still in its setup process:
+        # prevent numpy from thinking it is still in its setup process
         __builtins__.__NUMPY_SETUP__ = False
         import numpy
         self.include_dirs.append(numpy.get_include())
 
 
 def prepare_modules():
-
     from bottleneck.src.template import make_c_files
-
     make_c_files()
     ext = [Extension("bottleneck.reduce",
                      sources=["bottleneck/src/reduce.c"],
@@ -45,7 +42,6 @@ def prepare_modules():
     ext += [Extension("bottleneck.nonreduce_axis",
                       sources=["bottleneck/src/nonreduce_axis.c"],
                       extra_compile_args=['-O2'])]
-
     return ext
 
 
