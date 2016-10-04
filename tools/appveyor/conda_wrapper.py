@@ -30,14 +30,13 @@ class CondaWrapper(object):
     environment.
     """
 
-    def __init__(self, version, arch, home, venv, **kw_args):
+    def __init__(self, version, home, venv, **kw_args):
         super(CondaWrapper, self).__init__(**kw_args)
         self.logger = logging.getLogger("{}.{}".format(
             __name__,
             self.__class__.__name__
         ))
         self.version = version
-        self.arch = arch
         self.home = home
         self.venv = venv
 
@@ -49,14 +48,6 @@ class CondaWrapper(object):
 
     def configure(self):
         self.logger.info("Configuring '%s'...", self.home)
-#        cmd = r"SET PYTHON="+self.home
-#        msg = check_output(cmd, shell=True)
-#        self.logger.debug(decode(msg))
-#        cmd = "SET PATH="+self.home+";"+self.home+"\\Scripts;"
-#        msg = check_output(cmd, shell=True)
-#        self.logger.debug(decode(msg))
-#        import os
-#        self.logger.debug( os.listdir( "C:\\"))
         cmd = ["conda", "config", "--set", "always_yes", "yes", "--set",
                "changeps1", "no"]
         msg = check_output(cmd, shell=True)

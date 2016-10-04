@@ -19,7 +19,7 @@ environment:
         - PYTHON_VERSION: "2.7"
           PYTHON_ARCH: "64"
           platform: x64
-          CONDA_HOME: "C:\\Miniconda"
+          CONDA_HOME: "C:\\Miniconda-x64"
 
         - PYTHON_VERSION: "3.4"
           PYTHON_ARCH: "32"
@@ -29,7 +29,7 @@ environment:
         - PYTHON_VERSION: "3.4"
           PYTHON_ARCH: "64"
           platform: x64
-          CONDA_HOME: "C:\\Miniconda3"
+          CONDA_HOME: "C:\\Miniconda3-x64"
 
         - PYTHON_VERSION: "3.5"
           PYTHON_ARCH: "32"
@@ -39,7 +39,7 @@ environment:
         - PYTHON_VERSION: "3.5"
           PYTHON_ARCH: "64"
           platform: x64
-          CONDA_HOME: "C:\\Miniconda3"
+          CONDA_HOME: "C:\\Miniconda3-x64"
 
 install:
     - "SET PATH=%CONDA_HOME%;%CONDA_HOME%\\Scripts;%PATH%"
