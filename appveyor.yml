@@ -48,6 +48,7 @@ environment:
           CONDA_FORCE_32BIT:
 
 install:
+    - "wmic OS get OSArchitecture"
     - "SET PATH=%CONDA_HOME%;%CONDA_HOME%\\Scripts;%PATH%"
     # configures the Miniconda environment (Py2/Py3, 32/64 bit)
     - "python -u tools\\appveyor\\conda_setup.py"
