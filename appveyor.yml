@@ -15,47 +15,43 @@ environment:
           PYTHON_ARCH: "32"
           platform: x86
           CONDA_HOME: "C:\\Miniconda"
-          CONDA_FORCE_32BIT: 1
 
         - PYTHON_VERSION: "2.7"
           PYTHON_ARCH: "64"
           platform: x64
           CONDA_HOME: "C:\\Miniconda"
-          CONDA_FORCE_32BIT:
 
         - PYTHON_VERSION: "3.4"
           PYTHON_ARCH: "32"
           platform: x86
           CONDA_HOME: "C:\\Miniconda3"
-          CONDA_FORCE_32BIT: 1
 
         - PYTHON_VERSION: "3.4"
           PYTHON_ARCH: "64"
           platform: x64
           CONDA_HOME: "C:\\Miniconda3"
-          CONDA_FORCE_32BIT:
 
         - PYTHON_VERSION: "3.5"
           PYTHON_ARCH: "32"
           platform: x86
           CONDA_HOME: "C:\\Miniconda3"
-          CONDA_FORCE_32BIT: 1
 
         - PYTHON_VERSION: "3.5"
           PYTHON_ARCH: "64"
           platform: x64
           CONDA_HOME: "C:\\Miniconda3"
-          CONDA_FORCE_32BIT:
 
 install:
     - "wmic OS get OSArchitecture"
     - "SET PATH=%CONDA_HOME%;%CONDA_HOME%\\Scripts;%PATH%"
     # configures the Miniconda environment (Py2/Py3, 32/64 bit)
+    - "python -c 'import sys;print(sys.executable);print(sys.maxsize)'"
     - "python -u tools\\appveyor\\conda_setup.py"
 
 build: false
 
 test_script:
     - "activate %CONDA_VENV%"
+    - "python -c 'import sys;print(sys.executable);print(sys.maxsize)'"
     - "%CMD_IN_ENV% pip install --verbose ."
     - "python tools\\test-installed-bottleneck.py"
