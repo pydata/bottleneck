@@ -72,6 +72,16 @@ class CondaWrapper(object):
 
     def create(self, *args):
         self.logger.info("Creating environment '%s'...", self.venv)
+        if self.arch == "64":
+            cmd = ["set", "CONDA_FORCE_32BIT="]
+        elif self.arch == "32":
+            cmd = ["set", "CONDA_FORCE_32BIT=1"]
+        else:
+            raise ValueError("unknown architecture '{}'".format(self.arch))
+        # according to https://github.com/conda/conda/issues/1744 we only
+        # need to set this during creation not activation of the venv
+        msg = check_output(cmd, shell=True)
+        self.logger.debug(decode(msg))
         cmd = ["conda", "create", "-q", "-n", self.venv,
                "python=" + self.version] + list(args)
         msg = check_output(cmd, shell=True)
