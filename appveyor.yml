@@ -42,16 +42,16 @@ environment:
           CONDA_HOME: "C:\\Miniconda3"
 
 install:
-    - "wmic OS get OSArchitecture"
     - "SET PATH=%CONDA_HOME%;%CONDA_HOME%\\Scripts;%PATH%"
     # configures the Miniconda environment (Py2/Py3, 32/64 bit)
-    - "python -c 'import sys;print(sys.executable);print(sys.maxsize)'"
+    - "wmic OS get OSArchitecture"
+    - "python -c \"import sys;print(sys.executable);print(sys.maxsize)\""
     - "python -u tools\\appveyor\\conda_setup.py"
 
 build: false
 
 test_script:
     - "activate %CONDA_VENV%"
-    - "python -c 'import sys;print(sys.executable);print(sys.maxsize)'"
+    - "python -c \"import sys;print(sys.executable);print(sys.maxsize)\""
     - "%CMD_IN_ENV% pip install --verbose ."
     - "python tools\\test-installed-bottleneck.py"
