@@ -800,7 +800,8 @@ REDUCE_MAIN(ss, 0)
     l = 0; \
     r = LENGTH - 1; \
     PARTITION(dtype) \
-    EVEN_ODD(dtype, LENGTH)
+    EVEN_ODD(dtype, LENGTH) \
+    for (i = 0; i < LENGTH; i++) printf("B[%d]=%d\n", (int)i, (int)B(dtype, i));
 
 #define NANMEDIAN(dtype) \
     npy_intp j, l, r, k, n; \
