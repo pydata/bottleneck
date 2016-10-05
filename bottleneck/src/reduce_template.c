@@ -757,9 +757,13 @@ REDUCE_MAIN(ss, 0)
         npy_##dtype amax = -BN_INFINITY; \
         for (i = 0; i < k; i++) { \
             ai = B(dtype, i); \
+            printf("bi=%d\n", (int)ai); \
             if (ai > amax) amax = ai; \
         } \
+        printf("amax=%d\n", (int)amax); \
+        printf("B[k]=%d\n", (int)B(dtype, k)); \
         med = 0.5 * (B(dtype, k) + amax); \
+        printf("med=%f\n", med); \
     } \
     else { \
         med =  B(dtype, k); \
