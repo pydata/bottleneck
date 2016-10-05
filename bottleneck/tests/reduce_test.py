@@ -5,8 +5,7 @@ import traceback
 
 from nose.tools import ok_
 import numpy as np
-from numpy.testing import (assert_equal, assert_raises,
-                           assert_array_almost_equal)
+from numpy.testing import assert_array_almost_equal, assert_equal
 
 import bottleneck as bn
 
