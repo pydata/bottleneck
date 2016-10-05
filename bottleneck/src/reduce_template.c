@@ -789,6 +789,7 @@ REDUCE_MAIN(ss, 0)
     npy_intp j, l, r, k; \
     npy_##dtype ai; \
     for (i = 0; i < LENGTH; i++) { \
+        printf("ai=%d\n", (int)AX(dtype, i)); \
         B(dtype, i) = AX(dtype, i); \
     } \
     k = LENGTH >> 1; \
