@@ -855,7 +855,7 @@ Returns
 -------
 y : ndarray
     An array the same shape as the input array containing the indices
-    that partition `a`.
+    that partition `a`. The dtype of the indices is numpy.intp.
 
 See Also
 --------
