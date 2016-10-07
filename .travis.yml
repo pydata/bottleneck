@@ -11,17 +11,14 @@ matrix:
         # python 2.7
         - os: osx
           env: TEST_DEPS="numpy==1.11.0 nose" PYTHON_VERSION="2.7" PYTHON_ARCH="64" TEST_RUN="sdist"
-          osx_image: xcode6.4
 
         # python 3.4
         - os: osx
           env: TEST_DEPS="numpy==1.11.0 nose" PYTHON_VERSION="3.4" PYTHON_ARCH="64"
-          osx_image: xcode6.4
 
         # python 3.5
         - os: osx
           env: TEST_DEPS="numpy==1.11.0 nose" PYTHON_VERSION="3.5" PYTHON_ARCH="64"
-          osx_image: xcode6.4
 
 before_install:
     - uname -a
