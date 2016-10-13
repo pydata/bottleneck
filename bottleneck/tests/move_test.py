@@ -41,7 +41,10 @@ def arrays(dtypes=DTYPES):
                 a[idx] *= -1
             rs.shuffle(a)
             for shape in shapes:
-                yield a.reshape(shape)
+                b = a.reshape(shape)
+                yield b
+                if b.ndim > 1:
+                    yield b.T
 
 
 def unit_maker(func):
