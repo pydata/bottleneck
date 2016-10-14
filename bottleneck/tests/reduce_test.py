@@ -2,6 +2,7 @@
 
 import warnings
 import traceback
+#  from itertools import permutations
 
 from nose.tools import ok_
 import numpy as np
@@ -17,6 +18,20 @@ def test_reduce():
     "test reduce functions"
     for func in bn.get_functions('reduce'):
         yield unit_maker, func
+
+
+def array_iter(arrays_func, *args):
+    for a in arrays_func(*args):
+        if a.ndim < 2:
+            yield a
+        #  this is good for an extra check but in everyday development it
+        #  is a pain because it doubles the unit test run time
+        #  elif a.ndim == 3:
+        #      for axes in permutations(range(a.ndim)):
+        #          yield np.transpose(a, axes)
+        else:
+            yield a
+            yield a.T
 
 
 def arrays(dtypes, name):
@@ -89,7 +104,7 @@ def unit_maker(func, decimal=5):
     fmt += '\nInput array:\n%s\n'
     name = func.__name__
     func0 = eval('bn.slow.%s' % name)
-    for i, a in enumerate(arrays(DTYPES, name)):
+    for i, a in enumerate(array_iter(arrays, DTYPES, name)):
         if a.ndim == 0:
             axes = [None]  # numpy can't handle e.g. np.nanmean(9, axis=-1)
         else:
@@ -178,7 +193,7 @@ def unit_maker_strides(func, decimal=5):
     fmt += '\nFlags: \n%s\n'
     name = func.__name__
     func0 = eval('bn.slow.%s' % name)
-    for i, a in enumerate(arrays_strides()):
+    for i, a in enumerate(array_iter(arrays_strides)):
         if a.ndim == 0:
             axes = [None]  # numpy can't handle e.g. np.nanmean(9, axis=-1)
         else:

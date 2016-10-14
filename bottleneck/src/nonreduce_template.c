@@ -24,7 +24,7 @@ replace_DTYPE0(PyArrayObject *a, double old, double new)
 {
     npy_DTYPE0 ai;
     iter it;
-    init_iter_all(&it, a, 0);
+    init_iter_all(&it, a, 0, 1);
     BN_BEGIN_ALLOW_THREADS
     if (old == old) {
         WHILE {
@@ -56,7 +56,7 @@ replace_DTYPE0(PyArrayObject *a, double old, double new)
 {
     npy_DTYPE0 oldint, newint;
     iter it;
-    init_iter_all(&it, a, 0);
+    init_iter_all(&it, a, 0, 1);
     if (old == old) {
         oldint = (npy_DTYPE0)old;
         newint = (npy_DTYPE0)new;

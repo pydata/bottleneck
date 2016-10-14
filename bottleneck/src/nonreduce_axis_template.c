@@ -26,7 +26,7 @@
 /* typedefs and prototypes ----------------------------------------------- */
 
 /* how should input be parsed? */
-typedef enum {PARSE_PARTSORT, PARSE_RANKDATA, PARSE_PUSH} parse_type;
+typedef enum {PARSE_PARTITION, PARSE_RANKDATA, PARSE_PUSH} parse_type;
 
 /* function pointer for functions passed to nonreducer_axis */
 typedef PyObject *(*nra_t)(PyArrayObject *, int, int);
@@ -77,7 +77,7 @@ NRA(partition, DTYPE0)
 }
 /* dtype end */
 
-NRA_MAIN(partition, PARSE_PARTSORT)
+NRA_MAIN(partition, PARSE_PARTITION)
 
 
 /* argpartition ----------------------------------------------------------- */
@@ -193,7 +193,7 @@ NRA(argpartition, DTYPE0)
 }
 /* dtype end */
 
-NRA_MAIN(argpartition, PARSE_PARTSORT)
+NRA_MAIN(argpartition, PARSE_PARTITION)
 
 
 /* rankdata -------------------------------------------------------------- */
@@ -644,7 +644,7 @@ nonreducer_axis(char *name,
     PyObject *n_obj = NULL;
     PyObject *axis_obj = NULL;
 
-    if (parse == PARSE_PARTSORT) {
+    if (parse == PARSE_PARTITION) {
         if (!parse_partition(args, kwds, &a_obj, &n_obj, &axis_obj)) {
             return NULL;
         }
@@ -681,7 +681,7 @@ nonreducer_axis(char *name,
 
     /* defend against the axis of negativity */
     if (axis_obj == NULL) {
-        if (parse == PARSE_PARTSORT || parse == PARSE_PUSH) {
+        if (parse == PARSE_PARTITION || parse == PARSE_PUSH) {
             axis = PyArray_NDIM(a) - 1;
             if (axis < 0) {
                 PyErr_Format(PyExc_ValueError,
@@ -691,7 +691,7 @@ nonreducer_axis(char *name,
         }
         else {
             if (PyArray_NDIM(a) != 1) {
-                a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
+                a = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
             }
             axis = 0;
         }
@@ -702,7 +702,7 @@ nonreducer_axis(char *name,
             return NULL;
         }
         if (PyArray_NDIM(a) != 1) {
-            a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
+            a = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
         }
         axis = 0;
     }

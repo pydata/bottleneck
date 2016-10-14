@@ -31,41 +31,41 @@ Bottleneck comes with a benchmark suite::
 
     >>> bn.bench()
     Bottleneck performance benchmark
-        Bottleneck 1.2.0dev; Numpy 1.11.0
+        Bottleneck 1.2.0dev; Numpy 1.11.2
         Speed is NumPy time divided by Bottleneck time
         NaN means approx one-fifth NaNs; float64 and axis=-1 are used
 
                       no NaN      NaN       no NaN      NaN
                        (100,)    (1000,)  (1000,1000)(1000,1000)
-        nansum         59.3       16.7        2.3        5.0
-        nanmean       208.7       47.0        3.5        6.1
-        nanstd        242.9       43.0        2.7        4.9
-        nanvar        231.7       40.8        2.7        4.9
-        nanmin         32.0        5.3        0.4        0.7
-        nanmax         32.1        5.4        0.4        0.8
-        median        106.4       53.6        1.0        5.3
-        nanmedian     106.4       29.2        4.9       32.4
-        ss             27.9        6.5        1.6        1.6
-        nanargmin      55.7        9.4        1.2        2.0
-        nanargmax      56.4        9.6        1.2        2.3
-        anynan         22.3       49.8        0.5      112.8
-        allnan         42.1       46.6      114.4       65.9
-        rankdata       50.9        8.2        2.7        6.6
-        nanrankdata    56.8        8.5        2.9        7.1
-        partition       4.0        3.5        1.0        1.7
-        argpartition    3.0        2.5        1.1        1.5
-        replace        12.5        3.9        1.5        1.4
-        push         3432.7     9640.6       19.7       20.0
-        move_sum     4799.6     9430.4      194.7      374.2
-        move_mean   11372.1    19312.2      250.4      398.1
-        move_std     9343.7    12246.2      134.1      242.7
-        move_var    12343.5    18427.2      209.8      385.5
-        move_min     2343.7     3806.8       25.2       85.1
-        move_max     2122.2     4308.0       25.1      109.0
-        move_argmin  3703.3     5836.4       40.5      179.1
-        move_argmax  3608.2     7683.3       42.9      226.1
-        move_median  1772.2     1143.7       42.8      114.2
-        move_rank    1282.9      241.4        2.5        7.3
+        nansum         58.3       16.6        2.3        5.1
+        nanmean       258.7       46.1        3.5        5.1
+        nanstd        238.4       42.9        2.8        5.0
+        nanvar        229.9       41.4        2.7        5.0
+        nanmin         44.6       12.9        0.8        0.9
+        nanmax         41.8       12.9        0.8        1.8
+        median         99.6       51.4        1.1        5.7
+        nanmedian     102.1       26.5        5.0       31.2
+        ss             27.4        6.4        1.6        1.6
+        nanargmin      72.6       24.6        2.3        3.4
+        nanargmax      70.1       29.2        2.4        4.6
+        anynan         22.1       49.9        0.5      114.6
+        allnan         43.3       48.4      115.8       66.7
+        rankdata       50.3        8.0        2.6        6.5
+        nanrankdata    52.5        8.1        2.9        6.8
+        partition       4.1        3.6        1.0        2.0
+        argpartition    2.7        2.2        1.1        1.5
+        replace        13.7        4.9        1.5        1.5
+        push         3231.6     7437.4       20.1       19.6
+        move_sum     4173.5     8955.4      194.7      374.8
+        move_mean   10265.5    18540.0      222.8      372.2
+        move_std     8910.9    12158.5      128.7      234.5
+        move_var    11969.4    18323.8      202.7      378.7
+        move_min     2164.6     3676.3       23.9       57.2
+        move_max     1995.0     4206.0       23.8      108.8
+        move_argmin  3380.5     5559.1       40.5      180.5
+        move_argmax  3386.5     7278.1       43.0      227.2
+        move_median  1762.3     1134.9      157.9      118.5
+        move_rank    1203.6      223.2        2.7        7.8
 
 You can also run a detailed benchmark for a single function using, for
 example, the command::
@@ -125,6 +125,6 @@ After you have installed Bottleneck, run the suite of unit tests::
     >>> import bottleneck as bn
     >>> bn.test()
     <snip>
-    Ran 198 tests in 17.205s
+    Ran 198 tests in 27.205s
     OK
     <nose.result.TextTestResult run=198 errors=0 failures=0>

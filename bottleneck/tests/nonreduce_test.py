@@ -5,6 +5,7 @@ import warnings
 import numpy as np
 from numpy.testing import assert_equal, assert_array_equal, assert_raises
 import bottleneck as bn
+from .reduce_test import array_iter
 
 DTYPES = [np.float64, np.float32, np.int64, np.int32]
 nan = np.nan
@@ -85,7 +86,7 @@ def unit_maker(func):
     func0 = eval('bn.slow.%s' % name)
     olds = [0, np.nan, np.inf]
     news = [1, 0, np.nan]
-    for i, arr in enumerate(arrays()):
+    for i, arr in enumerate(array_iter(arrays)):
         for old in olds:
             for new in news:
                 if not issubclass(arr.dtype.type, np.inexact):

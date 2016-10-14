@@ -60,7 +60,7 @@ init_iter_one(iter *it, PyArrayObject *a, int axis)
 }
 
 static BN_INLINE void
-init_iter_all(iter *it, PyArrayObject *a, int ravel)
+init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
 {
     int i, j = 0;
     const int ndim = PyArray_NDIM(a);
@@ -88,13 +88,29 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel)
         it->astride = strides[ndim - 1];
     }
     else if (F_CONTIGUOUS(a)) {
-        it->ndim_m2 = -1;
-        it->length = PyArray_SIZE(a);
-        it->astride = strides[0];
+        if (anyorder || !ravel) {
+            it->ndim_m2 = -1;
+            it->length = PyArray_SIZE(a);
+            it->astride = strides[0];
+        } else {
+            it->ndim_m2 = -1;
+            if (anyorder) {
+                a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
+            } else {
+                a = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
+            }
+            Py_DECREF(a);
+            it->length = PyArray_DIM(a, 0);
+            it->astride = PyArray_STRIDE(a, 0);
+        }
     }
     else if (ravel) {
         it->ndim_m2 = -1;
-        a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
+        if (anyorder) {
+            a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
+        } else {
+            a = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
+        }
         Py_DECREF(a);
         it->length = PyArray_DIM(a, 0);
         it->astride = PyArray_STRIDE(a, 0);

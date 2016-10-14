@@ -4,7 +4,8 @@ from numpy.testing import (assert_equal, assert_array_equal,
 
 import bottleneck as bn
 from .reduce_test import (arrays_strides, unit_maker as reduce_unit_maker,
-                          unit_maker_argparse as unit_maker_parse_rankdata)
+                          unit_maker_argparse as unit_maker_parse_rankdata,
+                          array_iter)
 
 DTYPES = [np.float64, np.float32, np.int64, np.int32]
 nan = np.nan
@@ -68,6 +69,13 @@ def unit_maker(func):
 
 
 def complete_the_partition(a, n, axis):
+
+    def func1d(a, n):
+        a[:n] = np.sort(a[:n])
+        a[n+1:] = np.sort(a[n+1:])
+        return a
+
+    a = a.copy()
     ndim = a.ndim
     if axis is None:
         if ndim != 1:
@@ -77,33 +85,19 @@ def complete_the_partition(a, n, axis):
         axis += ndim
         if axis < 0:
             raise ValueError("`axis` out of range")
-    if ndim == 1:
-        a[:n] = np.sort(a[:n])
-        a[n+1:] = np.sort(a[n+1:])
-    elif ndim == 2:
-        if axis == 0:
-            for i in range(a.shape[1]):
-                a[:n, i] = np.sort(a[:n, i])
-                a[n+1:, i] = np.sort(a[n+1:, i])
-        elif axis == 1:
-            for i in range(a.shape[0]):
-                a[i, :n] = np.sort(a[i, :n])
-                a[i, n+1:] = np.sort(a[i, n+1:])
-        else:
-            raise ValueError("`axis` out of range")
-    else:
-        raise ValueError("`a.ndim` must be 1 or 2")
+    a = np.apply_along_axis(func1d, axis, a, n)
     return a
 
 
 def complete_the_argpartition(index, a, n, axis):
+    a = a.copy()
     ndim = a.ndim
     if axis is None:
         if index.ndim != 1:
             raise ValueError("`index` must be 1d when axis is None")
         axis = 0
         ndim = 1
-        a = a.copy().reshape(-1)
+        a = a.reshape(-1)
     elif axis < 0:
         axis += ndim
         if axis < 0:
@@ -117,6 +111,21 @@ def complete_the_argpartition(index, a, n, axis):
         elif axis == 1:
             for i in range(a.shape[0]):
                 a[i] = a[i, index[i]]
+        else:
+            raise ValueError("`axis` out of range")
+    elif ndim == 3:
+        if axis == 0:
+            for i in range(a.shape[1]):
+                for j in range(a.shape[2]):
+                    a[:, i, j] = a[index[:, i, j], i, j]
+        elif axis == 1:
+            for i in range(a.shape[0]):
+                for j in range(a.shape[2]):
+                    a[i, :, j] = a[i, index[i, :, j], j]
+        elif axis == 2:
+            for i in range(a.shape[0]):
+                for j in range(a.shape[1]):
+                    a[i, j, :] = a[i, j, index[i, j, :]]
         else:
             raise ValueError("`axis` out of range")
     else:
@@ -170,7 +179,7 @@ def unit_maker_strides(func, decimal=5):
     fmt += '\nFlags: \n%s\n'
     name = func.__name__
     func0 = eval('bn.slow.%s' % name)
-    for i, a in enumerate(arrays_strides()):
+    for i, a in enumerate(array_iter(arrays_strides)):
         if a.ndim == 0:
             axes = [None]  # numpy can't handle e.g. np.nanmean(9, axis=-1)
         else:
@@ -186,6 +195,12 @@ def unit_maker_strides(func, decimal=5):
                     n = min(2, a.shape[axis] - 1)
                 actual = func(a, n, axis=axis)
                 desired = func0(a, n, axis=axis)
+                if name == 'argpartition':
+                    actual = complete_the_argpartition(actual, a, n, axis)
+                    desired = complete_the_argpartition(desired, a, n, axis)
+                elif name == 'partition':
+                    actual = complete_the_partition(actual, n, axis)
+                    desired = complete_the_partition(desired, n, axis)
             else:
                 actual = func(a, axis=axis)
                 desired = func0(a, axis=axis)
