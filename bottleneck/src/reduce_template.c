@@ -5,11 +5,11 @@
 
 #define INIT_ALL \
     iter it; \
-    init_iter_all(&it, a, 0);
+    init_iter_all(&it, a, 0, 1);
 
 #define INIT_ALL_RAVEL \
     iter it; \
-    init_iter_all(&it, a, 1);
+    init_iter_all(&it, a, 1, 0);
 
 #define INIT_ONE(dtype0, dtype1) \
     iter it; \

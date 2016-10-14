@@ -5,6 +5,7 @@ import numpy as np
 from numpy.testing import (assert_equal, assert_array_almost_equal,
                            assert_raises)
 import bottleneck as bn
+from .reduce_test import array_iter
 
 DTYPES = [np.float64, np.float32, np.int64, np.int32]
 
@@ -41,10 +42,7 @@ def arrays(dtypes=DTYPES):
                 a[idx] *= -1
             rs.shuffle(a)
             for shape in shapes:
-                b = a.reshape(shape)
-                yield b
-                if b.ndim > 1:
-                    yield b.T
+                yield a.reshape(shape)
 
 
 def unit_maker(func):
@@ -59,7 +57,7 @@ def unit_maker(func):
         decimal = 3
     else:
         decimal = 5
-    for i, a in enumerate(arrays()):
+    for i, a in enumerate(array_iter(arrays)):
         axes = range(-1, a.ndim)
         for axis in axes:
             windows = range(1, a.shape[axis])
