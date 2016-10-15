@@ -40,8 +40,6 @@ def arrays(dtypes, name):
     # nan and inf
     nan = np.nan
     inf = np.inf
-    yield np.array([inf, nan])
-    yield np.array([inf, -inf])
     # yield np.array([nan, inf])  np.nanargmin can't handle this one
 
     # byte swapped
@@ -66,8 +64,6 @@ def arrays(dtypes, name):
     yield np.array(-9.0)
     yield np.array(0.0)
     yield np.array(9.0)
-    yield np.array(-inf)
-    yield np.array(inf)
     yield np.array(nan)
 
     # Automate a bunch of arrays to test
@@ -88,7 +84,6 @@ def arrays(dtypes, name):
                     if name not in ('nanargmin', 'nanargmax'):
                         # numpy can't handle eg np.nanargmin([np.nan, np.inf])
                         idx = rs.rand(*a.shape) < 0.2
-                        a[idx] = inf
                     idx = rs.rand(*a.shape) < 0.2
                     a[idx] = nan
                     idx = rs.rand(*a.shape) < 0.2
