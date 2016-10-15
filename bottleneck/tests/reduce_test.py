@@ -73,7 +73,7 @@ def arrays(dtypes, name):
     # Automate a bunch of arrays to test
     ss = {}
     ss[0] = {'size':  0, 'shapes': [(0,), (0, 0), (2, 0), (2, 0, 1)]}
-    ss[1] = {'size':  8, 'shapes': [(8,)]}
+    ss[1] = {'size':  7, 'shapes': [(7,)]}
     ss[2] = {'size': 12, 'shapes': [(2, 6), (3, 4)]}
     ss[3] = {'size': 16, 'shapes': [(2, 2, 4)]}
     ss[4] = {'size': 24, 'shapes': [(1, 2, 3, 4)]}
