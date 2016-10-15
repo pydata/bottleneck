@@ -31,7 +31,7 @@ def prepare_modules():
     make_c_files()
     ext = [Extension("bottleneck.reduce",
                      sources=["bottleneck/src/reduce.c"],
-                     extra_compile_args=['-O2'])]
+                     extra_compile_args=['-O2', '-std=c89'])]
     ext += [Extension("bottleneck.move",
                       sources=["bottleneck/src/move.c",
                                "bottleneck/src/move_median/move_median.c"],
