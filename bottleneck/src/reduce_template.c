@@ -754,7 +754,7 @@ REDUCE_MAIN(ss, 0)
 
 #define EVEN_ODD(dtype, N) \
     if (N % 2 == 0) { \
-        npy_##dtype amax = -BN_INFINITY; \
+        npy_##dtype amax = -1000000.0; \
         for (i = 0; i < k; i++) { \
             ai = B(dtype, i); \
             if (ai > amax) amax = ai; \
