@@ -11,6 +11,7 @@ else
         pip install --verbose "${ARCHIVE[0]}"
     else
         pip install --verbose "."
+    fi
     # Workaround for https://github.com/travis-ci/travis-ci/issues/6522
     set +e
     python "tools/test-installed-bottleneck.py"
