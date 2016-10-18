@@ -79,6 +79,7 @@ def array_iter(arrays_func, *args):
 def array_generator(func_name, dtypes):
     "Iterator that yields arrays to use for unit testing."
 
+    # define nan and inf
     if func_name in ('partition', 'argpartition'):
         nan = 0
     else:
@@ -92,6 +93,8 @@ def array_generator(func_name, dtypes):
     # nan and inf
     yield np.array([inf, nan])
     yield np.array([inf, -inf])
+    yield np.array([nan, 2, 3])
+    yield np.array([-inf, 2, 3])
     if func_name != 'nanargmin':
         yield np.array([nan, inf])
 
@@ -99,10 +102,11 @@ def array_generator(func_name, dtypes):
     yield np.array([1, 2, 3], dtype='>f4')
     yield np.array([1, 2, 3], dtype='<f4')
 
-    # make sure slow is called
+    # make sure slow is callable
     yield np.array([1, 2, 3], dtype=np.float16)
 
     # regression tests
+    yield np.array([1, 2, 3]) + 1e9  # check that move_std is robust
     yield np.array([0, 0, 0])  # nanargmax/nanargmin
     yield np.array([1, nan, nan, 2])  # nanmedian
 
@@ -123,7 +127,7 @@ def array_generator(func_name, dtypes):
         yield np.array(inf)
         yield np.array(nan)
 
-    # Automate a bunch of arrays to test
+    # automate a bunch of arrays to test
     ss = {}
     ss[0] = {'size':  0, 'shapes': [(0,), (0, 0), (2, 0), (2, 0, 1)]}
     ss[1] = {'size':  8, 'shapes': [(8,)]}
