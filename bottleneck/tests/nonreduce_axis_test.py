@@ -3,12 +3,9 @@ from numpy.testing import (assert_equal, assert_array_equal,
                            assert_array_almost_equal, assert_raises)
 
 import bottleneck as bn
-from .reduce_test import (arrays_strides, unit_maker as reduce_unit_maker,
-                          unit_maker_argparse as unit_maker_parse_rankdata,
-                          array_iter)
-
-DTYPES = [np.float64, np.float32, np.int64, np.int32]
-nan = np.nan
+from .reduce_test import (unit_maker as reduce_unit_maker,
+                          unit_maker_argparse as unit_maker_parse_rankdata)
+from .util import arrays, array_order
 
 
 # ---------------------------------------------------------------------------
@@ -29,43 +26,36 @@ def test_argpartition():
 def unit_maker(func):
     "test partition or argpartition"
 
-    length = 9
-    nrepeat = 10
-
-    msg = '\nfunc %s | input %s (%s) | shape %s | n %d | axis %s\n'
+    msg = '\nfunc %s | input %s (%s) | shape %s | n %d | axis %s | order %s\n'
     msg += '\nInput array:\n%s\n'
 
     name = func.__name__
     func0 = eval('bn.slow.%s' % name)
 
     rs = np.random.RandomState([1, 2, 3])
-    for ndim in (1, 2):
-        if ndim == 1:
-            shape = (length,)
-        elif ndim == 2:
-            shape = (2, length)
-        for i in range(nrepeat):
-            a = rs.randint(0, 10, shape)
-            for dtype in DTYPES:
-                a = a.astype(dtype)
-                for axis in list(range(-1, ndim)) + [None]:
-                    if axis is None:
-                        nmax = a.size - 1
-                    else:
-                        nmax = a.shape[axis] - 1
-                    n = rs.randint(0, nmax)
-                    s0 = func0(a, n, axis)
-                    s1 = func(a, n, axis)
-                    if name == 'argpartition':
-                        s0 = complete_the_argpartition(s0, a, n, axis)
-                        s1 = complete_the_argpartition(s1, a, n, axis)
-                    else:
-                        s0 = complete_the_partition(s0, n, axis)
-                        s1 = complete_the_partition(s1, n, axis)
-                    tup = (name, 'a'+str(i), str(a.dtype), str(a.shape), n,
-                           str(axis), a)
-                    err_msg = msg % tup
-                    assert_array_equal(s1, s0, err_msg)
+    for i, a in enumerate(arrays(name)):
+        if a.ndim == 0 or a.size == 0 or a.ndim > 3:
+            continue
+        for axis in list(range(-1, a.ndim)) + [None]:
+            if axis is None:
+                nmax = a.size - 1
+            else:
+                nmax = a.shape[axis] - 1
+            if nmax < 1:
+                continue
+            n = rs.randint(nmax)
+            s0 = func0(a, n, axis)
+            s1 = func(a, n, axis)
+            if name == 'argpartition':
+                s0 = complete_the_argpartition(s0, a, n, axis)
+                s1 = complete_the_argpartition(s1, a, n, axis)
+            else:
+                s0 = complete_the_partition(s0, n, axis)
+                s1 = complete_the_partition(s1, n, axis)
+            tup = (name, 'a'+str(i), str(a.dtype), str(a.shape), n,
+                   str(axis), array_order(a), a)
+            err_msg = msg % tup
+            assert_array_equal(s1, s0, err_msg)
 
 
 def complete_the_partition(a, n, axis):
@@ -129,7 +119,7 @@ def complete_the_argpartition(index, a, n, axis):
         else:
             raise ValueError("`axis` out of range")
     else:
-        raise ValueError("`a.ndim` must be 1 or 2")
+        raise ValueError("`a.ndim` must be 1, 2, or 3")
     a = complete_the_partition(a, n, axis)
     return a
 
@@ -160,55 +150,6 @@ def test_push():
         actual = bn.push(a.copy(), n=n)
         desired = bn.slow.push(a.copy(), n=n)
         assert_array_equal(actual, desired, "failed on n=%s" % str(n))
-
-
-# ---------------------------------------------------------------------------
-# Test with arrays that are not C ordered
-
-def test_strides():
-    "test nonreducer_axis functions with non-C ordered arrays"
-    for func in bn.get_functions('nonreduce_axis'):
-        yield unit_maker_strides, func
-
-
-def unit_maker_strides(func, decimal=5):
-    "Test that bn.xxx gives the same output as bn.slow.xxx."
-    fmt = '\nfunc %s | input %s (%s) | shape %s | axis %s\n'
-    fmt += '\nInput array:\n%s\n'
-    fmt += '\nStrides: %s\n'
-    fmt += '\nFlags: \n%s\n'
-    name = func.__name__
-    func0 = eval('bn.slow.%s' % name)
-    for i, a in enumerate(array_iter(arrays_strides)):
-        if a.ndim == 0:
-            axes = [None]  # numpy can't handle e.g. np.nanmean(9, axis=-1)
-        else:
-            axes = list(range(-1, a.ndim)) + [None]
-        for axis in axes:
-            # do not use a.copy() here because it will C order the array
-            if name in ('partition', 'argpartition', 'push'):
-                if axis is None:
-                    if name == 'push':
-                        continue
-                    n = min(2, a.size - 1)
-                else:
-                    n = min(2, a.shape[axis] - 1)
-                actual = func(a, n, axis=axis)
-                desired = func0(a, n, axis=axis)
-                if name == 'argpartition':
-                    actual = complete_the_argpartition(actual, a, n, axis)
-                    desired = complete_the_argpartition(desired, a, n, axis)
-                elif name == 'partition':
-                    actual = complete_the_partition(actual, n, axis)
-                    desired = complete_the_partition(desired, n, axis)
-            else:
-                actual = func(a, axis=axis)
-                desired = func0(a, axis=axis)
-            tup = (name, 'a'+str(i), str(a.dtype), str(a.shape),
-                   str(axis), a, a.strides, a.flags)
-            err_msg = fmt % tup
-            assert_array_almost_equal(actual, desired, decimal, err_msg)
-            err_msg += '\n dtype mismatch %s %s'
 
 
 # ---------------------------------------------------------------------------
