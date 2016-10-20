@@ -31,7 +31,7 @@ Bottleneck comes with a benchmark suite::
 
     >>> bn.bench()
     Bottleneck performance benchmark
-        Bottleneck 1.2.0dev; Numpy 1.11.2
+        Bottleneck 1.2.0; Numpy 1.11.2
         Speed is NumPy time divided by Bottleneck time
         NaN means approx one-fifth NaNs; float64 and axis=-1 are used
 
