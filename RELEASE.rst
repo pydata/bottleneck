@@ -6,8 +6,19 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
-Bottleneck 1.2.0
+Bottleneck 1.3.0
 ================
+
+*Release date: not yet released, in development*
+
+
+Older versions
+==============
+
+Release notes from past releases.
+
+Bottleneck 1.2.0
+----------------
 
 *Release date: 2016-10-20*
 
@@ -50,11 +61,6 @@ This release is a complete rewrite of Bottleneck.
 - Jennifer Olsen: comments and suggestions
 - A special thanks to the Cython developers. The quickest way to appreciate
   their work is to remove Cython from your project. It is not easy.
-
-Older versions
-==============
-
-Release notes from past releases.
 
 Bottleneck 1.1.0
 ----------------
