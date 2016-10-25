@@ -11,6 +11,9 @@ Bottleneck 1.3.0
 
 *Release date: not yet released, in development*
 
+**Bug Fixes**
+
+- #156 installing bottleneck when two versions of numpy are present
 
 Older versions
 ==============

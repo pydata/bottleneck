@@ -23,7 +23,8 @@ class build_ext(_build_ext):
         # prevent numpy from thinking it is still in its setup process
         __builtins__.__NUMPY_SETUP__ = False
         import numpy
-        self.include_dirs.append(numpy.get_include())
+        # place numpy includes first, see gh #156
+        self.include_dirs.insert(0, numpy.get_include())
 
 
 def prepare_modules():
