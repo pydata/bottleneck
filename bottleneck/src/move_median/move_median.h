@@ -14,16 +14,6 @@ typedef double ai_t;
     #define NUM_CHILDREN 8
 #endif
 
-#if defined(_MSC_VER) && (_MSC_VER < 1900)
-    #define inline __inline
-    static __inline ai_t __NAN() {
-      ai_t value;
-      memset(&value, 0xFF, sizeof(value));
-      return value;
-    }
-    #define NAN __NAN()
-#endif
-
 /* Find indices of parent and first child */
 #define P_IDX(i) ((i) - 1) / NUM_CHILDREN
 #define FC_IDX(i) NUM_CHILDREN * (i) + 1
@@ -75,3 +65,30 @@ ai_t mm_update_nan(mm_handle *mm, ai_t ai);
 /* functions common to non-nan and nan cases */
 void mm_reset(mm_handle *mm);
 void mm_free(mm_handle *mm);
+
+/* Copied from numpy ----------------------------------------------------- */
+
+#define NPY_NO_DEPRECATED_API NPY_1_11_API_VERSION
+#include <numpy/arrayobject.h>
+
+#if defined(_MSC_VER)
+        #define MM_INLINE __inline
+#elif defined(__GNUC__)
+	#if defined(__STRICT_ANSI__)
+		#define MM_INLINE __inline__
+	#else
+		#define MM_INLINE inline
+	#endif
+#else
+        #define MM_INLINE
+#endif
+
+/* NAN like macro (same behavior as glibc) */
+MM_INLINE static float __mm_nanf(void)
+{
+    const union {npy_uint32 __i; float __f;} __bint = {0x7fc00000UL};
+    return __bint.__f;
+}
+
+#define MM_NANF  __mm_nanf()
+#define MM_NAN   ((npy_double)MM_NANF)
