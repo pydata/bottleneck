@@ -66,29 +66,28 @@ ai_t mm_update_nan(mm_handle *mm, ai_t ai);
 void mm_reset(mm_handle *mm);
 void mm_free(mm_handle *mm);
 
-/* Copied from numpy ----------------------------------------------------- */
+/* Copied from Cython ---------------------------------------------------- */
 
-#define NPY_NO_DEPRECATED_API NPY_1_11_API_VERSION
-#include <numpy/arrayobject.h>
-
-#if defined(_MSC_VER)
-        #define MM_INLINE __inline
-#elif defined(__GNUC__)
-	#if defined(__STRICT_ANSI__)
-		#define MM_INLINE __inline__
-	#else
-		#define MM_INLINE inline
-	#endif
-#else
-        #define MM_INLINE
+/* inline attribute */
+#ifndef MM_INLINE
+    #if defined(__GNUC__)
+      #define MM_INLINE __inline__
+    #elif defined(_MSC_VER)
+      #define MM_INLINE __inline
+    #elif defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+      #define MM_INLINE inline
+    #else
+      #define MM_INLINE
+    #endif
 #endif
 
-/* NAN like macro (same behavior as glibc) */
-MM_INLINE static float __mm_nanf(void)
-{
-    const union {npy_uint32 __i; float __f;} __bint = {0x7fc00000UL};
-    return __bint.__f;
-}
-
-#define MM_NANF  __mm_nanf()
-#define MM_NAN   ((npy_double)MM_NANF)
+/* NaN */
+#ifdef NAN
+    #define MM_NAN() ((float) NAN)
+#else
+    static MM_INLINE float MM_NAN() {
+        float value;
+        memset(&value, 0xFF, sizeof(value));
+        return value;
+    }
+#endif

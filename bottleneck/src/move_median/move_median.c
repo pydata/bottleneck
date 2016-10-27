@@ -463,7 +463,7 @@ mm_update_nan(mm_handle *mm, ai_t ai)
                 mm->s_first_leaf = FIRST_LEAF(mm->n_s);
                 heapify_small_node(mm, n_s);
 
-            }   
+            }
 
             /* plug nan array hole */
             if (idx != n_n - 1) {
@@ -521,7 +521,7 @@ mm_get_median(mm_handle *mm)
 {
     idx_t n_total = mm->n_l + mm->n_s;
     if (n_total < mm->min_count)
-        return MM_NAN;
+        return MM_NAN();
     if (min(mm->window, n_total) % 2 == 1)
         return mm->s_heap[0]->ai;
     return (mm->s_heap[0]->ai + mm->l_heap[0]->ai) / 2.0;
