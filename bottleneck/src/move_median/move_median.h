@@ -1,3 +1,4 @@
+#include <string.h>
 #include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
@@ -83,9 +84,9 @@ void mm_free(mm_handle *mm);
 
 /* NaN */
 #ifdef NAN
-    #define MM_NAN() ((float) NAN)
+    #define MM_NAN(void) ((float) NAN)
 #else
-    static MM_INLINE float MM_NAN() {
+    static MM_INLINE float MM_NAN(void) {
         float value;
         memset(&value, 0xFF, sizeof(value));
         return value;
