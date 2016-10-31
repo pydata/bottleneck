@@ -13,7 +13,8 @@ Bottleneck 1.3.0
 
 **Bug Fixes**
 
-- #156 installing bottleneck when two versions of numpy are present
+- #156 Installing bottleneck when two versions of NumPy are present
+- #157 Compiling on Ubuntu 14.04 inside a Windows 7 WMware
 
 Older versions
 ==============

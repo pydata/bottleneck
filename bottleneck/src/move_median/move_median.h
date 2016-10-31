@@ -84,7 +84,7 @@ void mm_free(mm_handle *mm);
 
 /* NaN */
 #ifdef NAN
-    #define MM_NAN(void) ((float) NAN)
+    #define MM_NAN() ((float) NAN)
 #else
     static MM_INLINE float MM_NAN(void) {
         float value;
