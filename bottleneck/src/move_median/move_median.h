@@ -1,3 +1,4 @@
+#include <string.h>
 #include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
@@ -12,16 +13,6 @@ typedef double ai_t;
 #else
     /* maximum of 8 due to the manual loop-unrolling used in the code */
     #define NUM_CHILDREN 8
-#endif
-
-#if defined(_MSC_VER) && (_MSC_VER < 1900)
-    #define inline __inline
-    static __inline ai_t __NAN() {
-      ai_t value;
-      memset(&value, 0xFF, sizeof(value));
-      return value;
-    }
-    #define NAN __NAN()
 #endif
 
 /* Find indices of parent and first child */
@@ -75,3 +66,29 @@ ai_t mm_update_nan(mm_handle *mm, ai_t ai);
 /* functions common to non-nan and nan cases */
 void mm_reset(mm_handle *mm);
 void mm_free(mm_handle *mm);
+
+/* Copied from Cython ---------------------------------------------------- */
+
+/* inline attribute */
+#ifndef MM_INLINE
+    #if defined(__GNUC__)
+      #define MM_INLINE __inline__
+    #elif defined(_MSC_VER)
+      #define MM_INLINE __inline
+    #elif defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+      #define MM_INLINE inline
+    #else
+      #define MM_INLINE
+    #endif
+#endif
+
+/* NaN */
+#ifdef NAN
+    #define MM_NAN() ((float) NAN)
+#else
+    static MM_INLINE float MM_NAN(void) {
+        float value;
+        memset(&value, 0xFF, sizeof(value));
+        return value;
+    }
+#endif

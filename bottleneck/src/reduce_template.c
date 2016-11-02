@@ -1203,7 +1203,7 @@ reducer(char *name,
 {
 
     int ndim;
-    int axis;
+    int axis = 0; /* initialize to avoid compiler error */
     int dtype;
     int ddof;
     int reduce_all = 0;
