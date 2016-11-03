@@ -780,7 +780,7 @@ a : array_like
     Input array. If `a` is not an array, a conversion is attempted.
 kth : int
     The value of the element at index `kth` will be in its sorted
-    postion. Smaller (larger) or equal values will be to the left
+    position. Smaller (larger) or equal values will be to the left
     (right) of index `kth`.
 axis : {int, None}, optional
     Axis along which the partition is performed. The default
@@ -845,7 +845,7 @@ a : array_like
     Input array. If `a` is not an array, a conversion is attempted.
 kth : int
     The value of the element at index `kth` will be in its sorted
-    postion. Smaller (larger) or equal values will be to the left
+    position. Smaller (larger) or equal values will be to the left
     (right) of index `kth`.
 axis : {int, None}, optional
     Axis along which the partition is performed. The default (axis=-1)
