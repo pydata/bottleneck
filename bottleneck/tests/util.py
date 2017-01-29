@@ -155,6 +155,7 @@ def array_generator(func_name, dtypes):
                     yield a.reshape(shape)
 
     # non-contiguous arrays
+    yield np.array([[1, 2], [3, 4]])[:, [1]]  # gh 161
     for dtype in dtypes:
         # 1d
         a = np.arange(12).astype(dtype)
