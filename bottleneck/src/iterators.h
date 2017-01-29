@@ -81,13 +81,15 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
         it->length = 1;
         it->astride = 0;
     }
-    else if (C_CONTIGUOUS(a)) {
+    /* The &&! in the next two else ifs is to deal with relaxed
+     * stride checking introduced in numpy 1.12.0; see gh #161 */
+    else if (C_CONTIGUOUS(a) && !F_CONTIGUOUS(a)) {
         it->ndim_m2 = -1;
         it->axis = ndim - 1;
         it->length = PyArray_SIZE(a);
         it->astride = strides[ndim - 1];
     }
-    else if (F_CONTIGUOUS(a)) {
+    else if (F_CONTIGUOUS(a) && !C_CONTIGUOUS(a)) {
         if (anyorder || !ravel) {
             it->ndim_m2 = -1;
             it->length = PyArray_SIZE(a);
