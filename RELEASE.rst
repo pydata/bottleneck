@@ -11,6 +11,8 @@ Bottleneck 1.3.0
 
 *Release date: not yet released, in development*
 
+- Support for NumPy's relaxed strides checking
+
 **Bug Fixes**
 
 - #156 Installing bottleneck when two versions of NumPy are present
