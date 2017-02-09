@@ -11,6 +11,12 @@
     iter it; \
     init_iter_all(&it, a, 1, 0);
 
+/* used with INIT_ALL_RAVEL */
+#define DECREF_INIT_ALL_RAVEL \
+    if (it.a_ravel != NULL) { \
+        Py_DECREF(it.a_ravel); \
+    }
+
 #define INIT_ONE(dtype0, dtype1) \
     iter it; \
     PyObject *y; \
@@ -545,6 +551,7 @@ REDUCE_ALL(NAME, DTYPE0)
     Py_ssize_t idx = 0;
     INIT_ALL_RAVEL
     if (SIZE == 0) {
+        DECREF_INIT_ALL_RAVEL
         VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
                   "So Bottleneck too.");
         return NULL;
@@ -559,6 +566,7 @@ REDUCE_ALL(NAME, DTYPE0)
         }
     }
     BN_END_ALLOW_THREADS
+    DECREF_INIT_ALL_RAVEL
     if (allnan) {
         VALUE_ERR("All-NaN slice encountered");
         return NULL;
@@ -613,6 +621,7 @@ REDUCE_ALL(NAME, DTYPE0)
     npy_DTYPE0 ai, extreme = BIG_INT;
     INIT_ALL_RAVEL
     if (SIZE == 0) {
+        DECREF_INIT_ALL_RAVEL
         VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
                   "So Bottleneck too.");
         return NULL;
@@ -626,6 +635,7 @@ REDUCE_ALL(NAME, DTYPE0)
         }
     }
     BN_END_ALLOW_THREADS
+    DECREF_INIT_ALL_RAVEL
     return PyInt_FromLong(idx);
 }
 
@@ -844,6 +854,7 @@ REDUCE_ALL(NAME, DTYPE0)
     done:
     BUFFER_DELETE
     BN_END_ALLOW_THREADS
+    DECREF_INIT_ALL_RAVEL
     return PyFloat_FromDouble(med);
 }
 
@@ -888,6 +899,7 @@ REDUCE_ALL(median, DTYPE0)
         BUFFER_DELETE
     }
     BN_END_ALLOW_THREADS
+    DECREF_INIT_ALL_RAVEL
     return PyFloat_FromDouble(med);
 }
 

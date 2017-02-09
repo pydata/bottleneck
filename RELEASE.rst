@@ -17,6 +17,10 @@ Bottleneck 1.3.0
 
 - #156 Installing bottleneck when two versions of NumPy are present
 - #157 Compiling on Ubuntu 14.04 inside a Windows 7 WMware
+- #159 Occasional segmentation fault in nanargmin, nanargmax, median,
+       and nanmedian when all of the following conditions are met:
+       axis is None, input array is 2d or greater, and input array is not C
+       contiguous.
 
 Older versions
 ==============

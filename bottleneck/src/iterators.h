@@ -21,6 +21,7 @@ struct _iter {
     npy_intp   astrides[NPY_MAXDIMS]; /* a.strides, a.strides[axis] removed */
     npy_intp   shape[NPY_MAXDIMS];    /* a.shape, a.shape[axis] removed */
     char       *pa;     /* pointer to data corresponding to indices */
+    PyArrayObject *a_ravel; /* NULL or pointer to ravelled input array */
 };
 typedef struct _iter iter;
 
@@ -59,6 +60,11 @@ init_iter_one(iter *it, PyArrayObject *a, int axis)
     }
 }
 
+/*
+ * If both ravel != 0 and it.a_ravel != NULL then you are responsible for
+ * calling Py_DECREF(it.a_ravel) after you are done with the iterator.
+ * See nanargmin for an example.
+ */
 static BN_INLINE void
 init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
 {
@@ -70,6 +76,7 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
     it->axis = 0;
     it->its = 0;
     it->nits = 1;
+    it->a_ravel = NULL;
 
     if (ndim == 1) {
         it->ndim_m2 = -1;
@@ -101,7 +108,7 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
             } else {
                 a = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
             }
-            Py_DECREF(a);
+            it->a_ravel = a;
             it->length = PyArray_DIM(a, 0);
             it->astride = PyArray_STRIDE(a, 0);
         }
@@ -113,7 +120,7 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
         } else {
             a = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
         }
-        Py_DECREF(a);
+        it->a_ravel = a;
         it->length = PyArray_DIM(a, 0);
         it->astride = PyArray_STRIDE(a, 0);
     }
