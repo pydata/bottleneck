@@ -6,9 +6,11 @@ from .autotimeit import autotimeit
 __all__ = ['bench']
 
 
-def bench(dtype='float64', axis=-1,
-          shapes=[(100,), (1000,), (1000, 1000), (1000, 1000)],
-          nans=[False, True, False, True],
+def bench(shapes=[(100,), (1000, 1000), (1000, 1000), (1000, 1000),
+                  (1000, 1000)],
+          axes=[0, 0, 0, 1, 1],
+          nans=[False, False, True, False, True],
+          dtype='float64',
           order='C',
           functions=None):
     """
@@ -16,17 +18,17 @@ def bench(dtype='float64', axis=-1,
 
     Parameters
     ----------
-    dtype : str, optional
-        Data type string such as 'float64', which is the default.
-    axis : int, optional
-        Axis along which to perform the calculations that are being
-        benchmarked. The default is the last axis (axis=-1).
     shapes : list, optional
         A list of tuple shapes of input arrays to use in the benchmark.
+    axes : list, optional
+        List of axes along which to perform the calculations that are being
+        benchmarked.
     nans : list, optional
         A list of the bools (True or False), one for each tuple in the
         `shapes` list, that tells whether the input arrays should be randomly
         filled with one-fifth NaNs.
+    dtype : str, optional
+        Data type string such as 'float64', which is the default.
     order : {'C', 'F'}, optional
         Whether to store multidimensional data in C- or Fortran-contiguous
         (row- or column-wise) order in memory.
@@ -43,21 +45,17 @@ def bench(dtype='float64', axis=-1,
 
     if len(shapes) != len(nans):
         raise ValueError("`shapes` and `nans` must have the same length")
-
-    dtype = str(dtype)
-    axis = str(axis)
-
-    tab = '    '
+    if len(shapes) != len(axes):
+        raise ValueError("`shapes` and `axes` must have the same length")
 
     # Header
     print('Bottleneck performance benchmark')
-    print("%sBottleneck %s; Numpy %s" % (tab, bn.__version__, np.__version__))
-    print("%sSpeed is NumPy time divided by Bottleneck time" % tab)
-    tup = (tab, dtype, axis)
-    print("%sNaN means approx one-fifth NaNs; %s and axis=%s are used" % tup)
+    print("    Bottleneck %s; Numpy %s" % (bn.__version__, np.__version__))
+    print("    Speed is NumPy time divided by Bottleneck time")
+    print("    NaN means approx one-fifth NaNs; %s used" % str(dtype))
 
     print('')
-    header = [" "*15]
+    header = [" "*11]
     for nan in nans:
         if nan:
             header.append("NaN".center(11))
@@ -65,13 +63,17 @@ def bench(dtype='float64', axis=-1,
             header.append("no NaN".center(11))
     print("".join(header))
     header = ["".join(str(shape).split(" ")).center(11) for shape in shapes]
-    header = [" "*16] + header
+    header = [" "*12] + header
+    print("".join(header))
+    header = ["".join(("axis=" + str(axis)).split(" ")).center(11)
+              for axis in axes]
+    header = [" "*12] + header
     print("".join(header))
 
-    suite = benchsuite(shapes, dtype, axis, nans, order, functions)
+    suite = benchsuite(shapes, dtype, nans, axes, order, functions)
     for test in suite:
         name = test["name"].ljust(12)
-        fmt = tab + name + "%7.1f" + "%11.1f"*(len(shapes) - 1)
+        fmt = name + "%7.1f" + "%11.1f"*(len(shapes) - 1)
         speed = timer(test['statements'], test['setups'])
         print(fmt % tuple(speed))
 
@@ -88,28 +90,31 @@ def timer(statements, setups):
     return speed
 
 
-def getarray(shape, dtype, nans=False, order='C'):
+def getarray(shape, dtype, nans, order):
     a = np.arange(np.prod(shape), dtype=dtype)
     if nans and issubclass(a.dtype.type, np.inexact):
         a[::5] = np.nan
-    else:
-        rs = np.random.RandomState(shape)
-        rs.shuffle(a)
+    rs = np.random.RandomState(shape)
+    rs.shuffle(a)
     return np.array(a.reshape(*shape), order=order)
 
 
-def benchsuite(shapes, dtype, axis, nans, order, functions):
+def benchsuite(shapes, dtype, nans, axes, order, functions):
 
     suite = []
 
-    def getsetups(setup, shapes, nans, order):
+    def getsetups(setup, shapes, nans, axes, dtype, order):
         template = """
         from bottleneck.benchmark.bench import getarray
-        a = getarray(%s, 'DTYPE', %s, '%s')
+        a = getarray(%s, '%s', %s, '%s')
+        axis=%s
         %s"""
         setups = []
-        for shape, nan in zip(shapes, nans):
-            setups.append(template % (str(shape), str(nan), order, setup))
+        for shape, axis, nan in zip(shapes, axes, nans):
+            s = template % (str(shape), str(dtype), str(nan), str(order),
+                            str(axis), setup)
+            s = '\n'.join([line.strip() for line in s.split('\n')])
+            setups.append(s)
         return setups
 
     # non-moving window functions
@@ -120,14 +125,14 @@ def benchsuite(shapes, dtype, axis, nans, order, functions):
             continue
         run = {}
         run['name'] = func
-        run['statements'] = ["bn_func(a, AXIS)", "sl_func(a, AXIS)"]
+        run['statements'] = ["bn_func(a, axis)", "sl_func(a, axis)"]
         setup = """
             from bottleneck import %s as bn_func
             try: from numpy import %s as sl_func
             except ImportError: from bottleneck.slow import %s as sl_func
             if "%s" == "median": from bottleneck.slow import median as sl_func
         """ % (func, func, func, func)
-        run['setups'] = getsetups(setup, shapes, nans, order)
+        run['setups'] = getsetups(setup, shapes, nans, axes, dtype, order)
         suite.append(run)
 
     # partition, argpartition
@@ -137,16 +142,16 @@ def benchsuite(shapes, dtype, axis, nans, order, functions):
             continue
         run = {}
         run['name'] = func
-        run['statements'] = ["bn_func(a, n, AXIS)",
-                             "sl_func(a, n, AXIS)"]
+        run['statements'] = ["bn_func(a, n, axis)",
+                             "sl_func(a, n, axis)"]
         setup = """
             from bottleneck import %s as bn_func
             from bottleneck.slow import %s as sl_func
-            if AXIS is None: n = a.size
-            else: n = a.shape[AXIS] - 1
+            if axis is None: n = a.size
+            else: n = a.shape[axis] - 1
             n = max(n / 2, 0)
         """ % (func, func)
-        run['setups'] = getsetups(setup, shapes, nans, order)
+        run['setups'] = getsetups(setup, shapes, nans, axes, dtype, order)
         suite.append(run)
 
     # replace, push
@@ -160,8 +165,8 @@ def benchsuite(shapes, dtype, axis, nans, order, functions):
             run['statements'] = ["bn_func(a, nan, 0)",
                                  "slow_func(a, nan, 0)"]
         elif func == 'push':
-            run['statements'] = ["bn_func(a, 5, AXIS)",
-                                 "slow_func(a, 5, AXIS)"]
+            run['statements'] = ["bn_func(a, 5, axis)",
+                                 "slow_func(a, 5, axis)"]
         else:
             raise ValueError('Unknow function name')
         setup = """
@@ -169,7 +174,7 @@ def benchsuite(shapes, dtype, axis, nans, order, functions):
             from bottleneck import %s as bn_func
             from bottleneck.slow import %s as slow_func
         """ % (func, func)
-        run['setups'] = getsetups(setup, shapes, nans, order)
+        run['setups'] = getsetups(setup, shapes, nans, axes, dtype, order)
         suite.append(run)
 
     # moving window functions
@@ -179,38 +184,14 @@ def benchsuite(shapes, dtype, axis, nans, order, functions):
             continue
         run = {}
         run['name'] = func
-        run['statements'] = ["bn_func(a, w, 1, AXIS)",
-                             "sw_func(a, w, 1, AXIS)"]
+        run['statements'] = ["bn_func(a, w, 1, axis)",
+                             "sw_func(a, w, 1, axis)"]
         setup = """
             from bottleneck.slow.move import %s as sw_func
             from bottleneck import %s as bn_func
-            w = a.shape[AXIS] // 5
+            w = a.shape[axis] // 5
         """ % (func, func)
-        run['setups'] = getsetups(setup, shapes, nans, order)
-        if axis != 'None':
-            suite.append(run)
-
-    # Strip leading spaces from setup code
-    for i, run in enumerate(suite):
-        for j in range(len(run['setups'])):
-            t = run['setups'][j]
-            t = '\n'.join([z.strip() for z in t.split('\n')])
-            suite[i]['setups'][j] = t
-
-    # Set dtype and axis in setups
-    for i, run in enumerate(suite):
-        for j in range(len(run['setups'])):
-            t = run['setups'][j]
-            t = t.replace('DTYPE', dtype)
-            t = t.replace('AXIS', axis)
-            suite[i]['setups'][j] = t
-
-    # Set dtype and axis in statements
-    for i, run in enumerate(suite):
-        for j in range(2):
-            t = run['statements'][j]
-            t = t.replace('DTYPE', dtype)
-            t = t.replace('AXIS', axis)
-            suite[i]['statements'][j] = t
+        run['setups'] = getsetups(setup, shapes, nans, axes, dtype, order)
+        suite.append(run)
 
     return suite
