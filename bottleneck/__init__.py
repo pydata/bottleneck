@@ -1,5 +1,22 @@
 # flake8: noqa
 
+# looped unrolled
+try:
+    from .reduce2 import nansum as nansum2
+    from .reduce2 import nanmean as nanmean2
+    from .reduce2 import nanstd as nanstd2
+    from .reduce2 import nanvar as nanvar2
+    from .reduce2 import nanmin as nanmin2
+    from .reduce2 import nanmax as nanmax2
+    from .reduce2 import median as median2
+    from .reduce2 import nanmedian as nanmedian2
+    from .reduce2 import ss as ss2
+    from .reduce2 import nanargmin as nanargmin2
+    from .reduce2 import nanargmax as nanargmax2
+    from .reduce2 import anynan as anynan2
+    from .reduce2 import allnan as allnan2
+except:
+    pass
 
 # If you bork the build (e.g. by messing around with the templates),
 # you still want to be able to import Bottleneck so that you can
@@ -32,6 +49,7 @@ try:
     from . import slow
     from bottleneck.version import __version__
     from bottleneck.benchmark.bench import bench
+    from bottleneck.benchmark.bench2 import bench2
     from bottleneck.benchmark.bench_detailed import bench_detailed
     from bottleneck.tests.util import get_functions
 except:
