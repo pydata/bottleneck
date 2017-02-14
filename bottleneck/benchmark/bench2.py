@@ -3,24 +3,26 @@ import numpy as np
 import bottleneck as bn
 from .autotimeit import autotimeit
 
-__all__ = ['bench2', 'bench2_overhead', 'bench2_all']
+__all__ = ['bench2', 'bench2_all']
 
 FUNCTIONS = ['nansum']
 
 
 def bench2_all():
-    bench2_overhead('float64')
-    print
-    bench2_overhead('int64')
+    bench2(shapes=[(10, 10), (10, 10), (10, 10), (10, 10), (10, 10), (10, 10)],
+           dtype='float64')
     print
     bench2(dtype='float64')
     print
-    bench2(dtype='int64')
-
-
-def bench2_overhead(dtype):
-    bench2(shapes=[(10, 10), (10, 10), (10, 10), (10, 10),
-                   (10, 10), (10, 10)], dtype=dtype)
+    bench2(shapes=[(10, 10), (10, 10), (10, 10)],
+           axes=[None, 0, 1],
+           nans=[False, False, False],
+           dtype='int64')
+    print
+    bench2(shapes=[(1000, 1000), (1000, 1000), (1000, 1000)],
+           axes=[None, 0, 1],
+           nans=[False, False, False],
+           dtype='int64')
 
 
 def bench2(shapes=[(1000, 1000), (1000, 1000), (1000, 1000), (1000, 1000),

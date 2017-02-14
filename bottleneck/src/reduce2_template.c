@@ -80,36 +80,48 @@ reducer(char *name,
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(nansum, DTYPE0)
 {
-    npy_DTYPE0 ai, asum = 0;
+    npy_DTYPE0 ai, asum[4];
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
+    asum[0] = asum[1] = asum[2] = asum[3] = 0;
     WHILE {
-        FOR {
-            ai = AI(DTYPE0);
-            if (ai == ai) asum += ai;
+        for (it.i = 0; it.i < it.length - it.length % 4; it.i += 4) {
+            ai = AX(DTYPE0, it.i + 0); if (ai == ai) asum[0] += ai;
+            ai = AX(DTYPE0, it.i + 1); if (ai == ai) asum[1] += ai;
+            ai = AX(DTYPE0, it.i + 2); if (ai == ai) asum[2] += ai;
+            ai = AX(DTYPE0, it.i + 3); if (ai == ai) asum[3] += ai;
+        }
+        for (; it.i < it.length; it.i++) {
+            ai = AX(DTYPE0, it.i + 0); if (ai == ai) asum[0] += ai;
         }
         NEXT
     }
+    asum[0] = asum[0] + asum[1] + asum[2] + asum[3];
     BN_END_ALLOW_THREADS
-    return PyFloat_FromDouble(asum);
+    return PyFloat_FromDouble(asum[0]);
 }
 
 REDUCE_ONE(nansum, DTYPE0)
 {
-    npy_DTYPE0 ai, asum;
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
     }
     else {
+        npy_DTYPE0 ai, asum[4];
         WHILE {
-            asum = 0;
-            FOR {
-                ai = AI(DTYPE0);
-                if (ai == ai) asum += ai;
+            asum[0] = asum[1] = asum[2] = asum[3] = 0;
+            for (it.i = 0; it.i < it.length - it.length % 4; it.i += 4) {
+                ai = AX(DTYPE0, it.i + 0); if (ai == ai) asum[0] += ai;
+                ai = AX(DTYPE0, it.i + 1); if (ai == ai) asum[1] += ai;
+                ai = AX(DTYPE0, it.i + 2); if (ai == ai) asum[2] += ai;
+                ai = AX(DTYPE0, it.i + 3); if (ai == ai) asum[3] += ai;
             }
-            YPP = asum;
+            for (; it.i < it.length; it.i++) {
+                ai = AX(DTYPE0, it.i + 0); if (ai == ai) asum[0] += ai;
+            }
+            YPP = asum[0] + asum[1] + asum[2] + asum[3];
             NEXT
         }
     }
@@ -121,30 +133,48 @@ REDUCE_ONE(nansum, DTYPE0)
 /* dtype = [['int64'], ['int32']] */
 REDUCE_ALL(nansum, DTYPE0)
 {
-    npy_DTYPE0 asum = 0;
+    npy_DTYPE0 ai, asum[4];
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
+    asum[0] = asum[1] = asum[2] = asum[3] = 0;
     WHILE {
-        FOR asum += AI(DTYPE0);
+        for (it.i = 0; it.i < it.length - it.length % 4; it.i += 4) {
+            ai = AX(DTYPE0, it.i + 0); asum[0] += ai;
+            ai = AX(DTYPE0, it.i + 1); asum[1] += ai;
+            ai = AX(DTYPE0, it.i + 2); asum[2] += ai;
+            ai = AX(DTYPE0, it.i + 3); asum[3] += ai;
+        }
+        for (; it.i < it.length; it.i++) {
+            ai = AX(DTYPE0, it.i + 0); asum[0] += ai;
+        }
         NEXT
     }
+    asum[0] = asum[0] + asum[1] + asum[2] + asum[3];
     BN_END_ALLOW_THREADS
-    return PyInt_FromLong(asum);
+    return PyFloat_FromDouble(asum[0]);
 }
 
 REDUCE_ONE(nansum, DTYPE0)
 {
-    npy_DTYPE0 asum;
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
     }
     else {
+        npy_DTYPE0 ai, asum[4];
         WHILE {
-            asum = 0;
-            FOR asum += AI(DTYPE0);
-            YPP = asum;
+            asum[0] = asum[1] = asum[2] = asum[3] = 0;
+            for (it.i = 0; it.i < it.length - it.length % 4; it.i += 4) {
+                ai = AX(DTYPE0, it.i + 0); asum[0] += ai;
+                ai = AX(DTYPE0, it.i + 1); asum[1] += ai;
+                ai = AX(DTYPE0, it.i + 2); asum[2] += ai;
+                ai = AX(DTYPE0, it.i + 3); asum[3] += ai;
+            }
+            for (; it.i < it.length; it.i++) {
+                ai = AX(DTYPE0, it.i + 0); asum[0] += ai;
+            }
+            YPP = asum[0] + asum[1] + asum[2] + asum[3];
             NEXT
         }
     }
