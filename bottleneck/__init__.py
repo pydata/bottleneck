@@ -49,7 +49,7 @@ try:
     from . import slow
     from bottleneck.version import __version__
     from bottleneck.benchmark.bench import bench
-    from bottleneck.benchmark.bench2 import bench2
+    from bottleneck.benchmark.bench2 import *
     from bottleneck.benchmark.bench_detailed import bench_detailed
     from bottleneck.tests.util import get_functions
 except:
