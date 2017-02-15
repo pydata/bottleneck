@@ -168,7 +168,7 @@ REDUCE_MAIN(nansum, 0)
 
 /* nanmean ---------------------------------------------------------------- */
 
-#define NANMEAN_UNROLL(dtype) \
+#define SUM_AND_COUNT_UNROLL(dtype) \
     for (it.i = 0; it.i < it.length - it.length % 4; it.i += 4) { \
         ai = AX(dtype, it.i + 0); if (ai == ai) {x[0] += ai; count[0]++;}; \
         ai = AX(dtype, it.i + 1); if (ai == ai) {x[1] += ai; count[1]++;}; \
@@ -189,7 +189,7 @@ REDUCE_ALL(nanmean, DTYPE0)
     ZERO4(x)
     ZERO4(count)
     WHILE {
-        NANMEAN_UNROLL(DTYPE0)
+        SUM_AND_COUNT_UNROLL(DTYPE0)
         NEXT
     }
     BN_END_ALLOW_THREADS
@@ -213,7 +213,7 @@ REDUCE_ONE(nanmean, DTYPE0)
         WHILE {
             ZERO4(x);
             ZERO4(count);
-            NANMEAN_UNROLL(DTYPE0)
+            SUM_AND_COUNT_UNROLL(DTYPE0)
             if (SUM4(count) > 0) {
                 YPP = SUM4(x) / SUM4(count);
             } else {
@@ -272,40 +272,41 @@ REDUCE_MAIN(nanmean, 0)
 
 /* nanstd, nanvar- ------------------------------------------------------- */
 
+#define SS_UNROLL(dtype, if_stmt) \
+    for (it.i = 0; it.i < it.length - it.length % 4; it.i += 4) { \
+        ai = AX(dtype, it.i + 0); if_stmt {ai -= am; x[0] += ai * ai;}; \
+        ai = AX(dtype, it.i + 1); if_stmt {ai -= am; x[1] += ai * ai;}; \
+        ai = AX(dtype, it.i + 2); if_stmt {ai -= am; x[2] += ai * ai;}; \
+        ai = AX(dtype, it.i + 3); if_stmt {ai -= am; x[3] += ai * ai;}; \
+    } \
+    for (; it.i < it.length; it.i++) { \
+        ai = AX(dtype, it.i + 0); if_stmt {ai -= am; x[0] += ai * ai;}; \
+    }
+
 /* repeat = {'NAME': ['nanstd', 'nanvar'],
              'FUNC': ['sqrt',   '']} */
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(NAME, DTYPE0)
 {
-    Py_ssize_t count = 0;
-    npy_DTYPE0 ai, amean, out, asum = 0;
+    Py_ssize_t count[4];
+    npy_DTYPE0 ai, am, out, x[4];
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
+    ZERO4(x)
+    ZERO4(count)
     WHILE {
-        FOR {
-            ai = AI(DTYPE0);
-            if (ai == ai) {
-                asum += ai;
-                count++;
-            }
-        }
+        SUM_AND_COUNT_UNROLL(DTYPE0)
         NEXT
     }
-    if (count > ddof) {
-        amean = asum / count;
-        asum = 0;
+    if (SUM4(count) > ddof) {
+        am = SUM4(x) / SUM4(count);
+        ZERO4(x);
         RESET
         WHILE {
-            FOR {
-                ai = AI(DTYPE0);
-                if (ai == ai) {
-                    ai -= amean;
-                    asum += ai * ai;
-                }
-            }
+            SS_UNROLL(DTYPE0, if (ai == ai))
             NEXT
         }
-        out = FUNC(asum / (count - ddof));
+        out = FUNC(SUM4(x) / (SUM4(count) - ddof));
     }
     else {
         out = BN_NAN;
@@ -316,8 +317,8 @@ REDUCE_ALL(NAME, DTYPE0)
 
 REDUCE_ONE(NAME, DTYPE0)
 {
-    Py_ssize_t count;
-    npy_DTYPE0 ai, asum, amean;
+    Py_ssize_t count[4];
+    npy_DTYPE0 ai, am, x[4];
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
@@ -325,30 +326,18 @@ REDUCE_ONE(NAME, DTYPE0)
     }
     else {
         WHILE {
-            asum = count = 0;
-            FOR {
-                ai = AI(DTYPE0);
-                if (ai == ai) {
-                    asum += ai;
-                    count++;
-                }
-            }
-            if (count > ddof) {
-                amean = asum / count;
-                asum = 0;
-                FOR {
-                    ai = AI(DTYPE0);
-                    if (ai == ai) {
-                        ai -= amean;
-                        asum += ai * ai;
-                    }
-                }
-                asum = FUNC(asum / (count - ddof));
+            ZERO4(x)
+            ZERO4(count)
+            SUM_AND_COUNT_UNROLL(DTYPE0)
+            if (SUM4(count) > ddof) {
+                am = SUM4(x) / SUM4(count);
+                ZERO4(x)
+                SS_UNROLL(DTYPE0, if (ai == ai))
+                YPP = FUNC(SUM4(x) / (SUM4(count) - ddof));
             }
             else {
-                asum = BN_NAN;
+                YPP = BN_NAN;
             }
-            YPP = asum;
             NEXT
         }
     }
@@ -361,27 +350,23 @@ REDUCE_ONE(NAME, DTYPE0)
 REDUCE_ALL(NAME, DTYPE0)
 {
     npy_DTYPE1 out;
-    Py_ssize_t size = 0;
-    npy_DTYPE1 ai, amean, asum = 0;
+    npy_DTYPE1 ai, am, x[4];
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
+    ZERO4(x)
     WHILE {
-        FOR asum += AI(DTYPE0);
-        size += LENGTH;
+        SUM_UNROLL(DTYPE0, )
         NEXT
     }
-    if (size > ddof) {
-        amean = asum / size;
-        asum = 0;
+    if (SIZE > ddof) {
+        am = SUM4(x) / SIZE;
+        ZERO4(x)
         RESET
         WHILE {
-            FOR {
-                ai = AI(DTYPE0) - amean;
-                asum += ai * ai;
-            }
+            SS_UNROLL(DTYPE0, )
             NEXT
         }
-        out = FUNC(asum / (size - ddof));
+        out = FUNC(SUM4(x) / (SIZE - ddof));
     }
     else {
         out = BN_NAN;
@@ -392,7 +377,7 @@ REDUCE_ALL(NAME, DTYPE0)
 
 REDUCE_ONE(NAME, DTYPE0)
 {
-    npy_DTYPE1 ai, asum, amean, length_inv, length_ddof_inv;
+    npy_DTYPE1 ai, x[4], am, length_inv, length_ddof_inv;
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     length_inv = 1.0 / LENGTH;
@@ -402,21 +387,17 @@ REDUCE_ONE(NAME, DTYPE0)
     }
     else {
         WHILE {
-            asum = 0;
-            FOR asum += AI(DTYPE0);
+            ZERO4(x)
+            SUM_UNROLL(DTYPE0, )
             if (LENGTH > ddof) {
-                amean = asum * length_inv;
-                asum = 0;
-                FOR {
-                    ai = AI(DTYPE0) - amean;
-                    asum += ai * ai;
-                }
-                asum = FUNC(asum * length_ddof_inv);
+                am = SUM4(x) * length_inv;
+                ZERO4(x)
+                SS_UNROLL(DTYPE0, )
+                YPP = FUNC(SUM4(x) * length_ddof_inv);
             }
             else {
-                asum = BN_NAN;
+                YPP = BN_NAN;
             }
-            YPP = asum;
             NEXT
         }
     }

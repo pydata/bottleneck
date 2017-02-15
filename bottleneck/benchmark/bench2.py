@@ -5,7 +5,7 @@ from .autotimeit import autotimeit
 
 __all__ = ['bench2', 'bench2_all']
 
-FUNCTIONS = ['nansum', 'nanmean']
+FUNCTIONS = ['nansum', 'nanmean', 'nanstd', 'nanvar']
 
 
 def bench2_all():
