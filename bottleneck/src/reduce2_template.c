@@ -88,8 +88,8 @@ reducer(char *name,
         ai = AX(dtype, it.i + 0); if_stmt x[0] += ai; \
     }
 
-#define ZERO_X  x[0] = x[1] = x[2] = x[3] = 0;
-#define SUM_X   x[0] + x[1] + x[2] + x[3]
+#define ZERO4(x)  x[0] = x[1] = x[2] = x[3] = 0;
+#define SUM4(x)  (x[0] + x[1] + x[2] + x[3])
 
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(nansum, DTYPE0)
@@ -97,13 +97,13 @@ REDUCE_ALL(nansum, DTYPE0)
     npy_DTYPE0 ai, x[4];
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
-    ZERO_X
+    ZERO4(x)
     WHILE {
         SUM_UNROLL(DTYPE0, if (ai == ai))
         NEXT
     }
     BN_END_ALLOW_THREADS
-    return PyFloat_FromDouble(SUM_X);
+    return PyFloat_FromDouble(SUM4(x));
 }
 
 REDUCE_ONE(nansum, DTYPE0)
@@ -116,9 +116,9 @@ REDUCE_ONE(nansum, DTYPE0)
     else {
         npy_DTYPE0 ai, x[4];
         WHILE {
-            ZERO_X
+            ZERO4(x)
             SUM_UNROLL(DTYPE0, if (ai == ai))
-            YPP = SUM_X;
+            YPP = SUM4(x);
             NEXT
         }
     }
@@ -133,13 +133,13 @@ REDUCE_ALL(nansum, DTYPE0)
     npy_DTYPE0 ai, x[4];
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
-    ZERO_X
+    ZERO4(x)
     WHILE {
         SUM_UNROLL(DTYPE0, )
         NEXT
     }
     BN_END_ALLOW_THREADS
-    return PyFloat_FromDouble(SUM_X);
+    return PyFloat_FromDouble(SUM4(x));
 }
 
 REDUCE_ONE(nansum, DTYPE0)
@@ -152,9 +152,9 @@ REDUCE_ONE(nansum, DTYPE0)
     else {
         npy_DTYPE0 ai, x[4];
         WHILE {
-            ZERO_X
+            ZERO4(x)
             SUM_UNROLL(DTYPE0, )
-            YPP = SUM_X;
+            YPP = SUM4(x);
             NEXT
         }
     }
@@ -168,26 +168,33 @@ REDUCE_MAIN(nansum, 0)
 
 /* nanmean ---------------------------------------------------------------- */
 
+#define NANMEAN_UNROLL(dtype) \
+    for (it.i = 0; it.i < it.length - it.length % 4; it.i += 4) { \
+        ai = AX(dtype, it.i + 0); if (ai == ai) {x[0] += ai; count[0]++;}; \
+        ai = AX(dtype, it.i + 1); if (ai == ai) {x[1] += ai; count[1]++;}; \
+        ai = AX(dtype, it.i + 2); if (ai == ai) {x[2] += ai; count[2]++;}; \
+        ai = AX(dtype, it.i + 3); if (ai == ai) {x[3] += ai; count[3]++;}; \
+    } \
+    for (; it.i < it.length; it.i++) { \
+        ai = AX(dtype, it.i + 0); if (ai == ai) {x[0] += ai; count[0]++;}; \
+    }
+
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(nanmean, DTYPE0)
 {
-    Py_ssize_t count = 0;
-    npy_DTYPE0 ai, asum = 0;
+    Py_ssize_t count[4];
+    npy_DTYPE0 ai, x[4];
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
+    ZERO4(x)
+    ZERO4(count)
     WHILE {
-        FOR {
-            ai = AI(DTYPE0);
-            if (ai == ai) {
-                asum += ai;
-                count += 1;
-            }
-        }
+        NANMEAN_UNROLL(DTYPE0)
         NEXT
     }
     BN_END_ALLOW_THREADS
-    if (count > 0) {
-        return PyFloat_FromDouble(asum / count);
+    if (SUM4(count) > 0) {
+        return PyFloat_FromDouble(SUM4(x) / SUM4(count));
     } else {
         return PyFloat_FromDouble(BN_NAN);
     }
@@ -195,8 +202,8 @@ REDUCE_ALL(nanmean, DTYPE0)
 
 REDUCE_ONE(nanmean, DTYPE0)
 {
-    Py_ssize_t count;
-    npy_DTYPE0 ai, asum;
+    Py_ssize_t count[4];
+    npy_DTYPE0 ai, x[4];
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
@@ -204,20 +211,14 @@ REDUCE_ONE(nanmean, DTYPE0)
     }
     else {
         WHILE {
-            asum = count = 0;
-            FOR {
-                ai = AI(DTYPE0);
-                if (ai == ai) {
-                    asum += ai;
-                    count += 1;
-                }
-            }
-            if (count > 0) {
-                asum /= count;
+            ZERO4(x);
+            ZERO4(count);
+            NANMEAN_UNROLL(DTYPE0)
+            if (SUM4(count) > 0) {
+                YPP = SUM4(x) / SUM4(count);
             } else {
-                asum = BN_NAN;
+                YPP = BN_NAN;
             }
-            YPP = asum;
             NEXT
         }
     }
@@ -229,18 +230,17 @@ REDUCE_ONE(nanmean, DTYPE0)
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 REDUCE_ALL(nanmean, DTYPE0)
 {
-    Py_ssize_t total_length = 0;
-    npy_DTYPE1 asum = 0;
+    npy_DTYPE1 ai, x[4];
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
+    ZERO4(x)
     WHILE {
-        FOR asum += AI(DTYPE0);
-        total_length += LENGTH;
+        SUM_UNROLL(DTYPE0, )
         NEXT
     }
     BN_END_ALLOW_THREADS
-    if (total_length > 0) {
-        return PyFloat_FromDouble(asum / total_length);
+    if (SIZE > 0) {
+        return PyFloat_FromDouble(SUM4(x) / SIZE);
     } else {
         return PyFloat_FromDouble(BN_NAN);
     }
@@ -248,7 +248,7 @@ REDUCE_ALL(nanmean, DTYPE0)
 
 REDUCE_ONE(nanmean, DTYPE0)
 {
-    npy_DTYPE1 asum;
+    npy_DTYPE1 ai, x[4];
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
@@ -256,14 +256,9 @@ REDUCE_ONE(nanmean, DTYPE0)
     }
     else {
         WHILE {
-            asum = 0;
-            FOR asum += AI(DTYPE0);
-            if (LENGTH > 0) {
-                asum /= LENGTH;
-            } else {
-                asum = BN_NAN;
-            }
-            YPP = asum;
+            ZERO4(x)
+            SUM_UNROLL(DTYPE0, )
+            YPP = SUM4(x) / LENGTH;
             NEXT
         }
     }

@@ -324,7 +324,7 @@ init_iter3(iter3 *it, PyArrayObject *a, PyObject *y, PyObject *z, int axis)
 
 #define  NDIM           it.ndim_m2 + 2
 #define  SHAPE          it.shape
-#define  SIZE           it.nits * it.length
+#define  SIZE           (it.nits * it.length)
 #define  LENGTH         it.length
 #define  INDEX          it.i
 
