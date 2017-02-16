@@ -412,15 +412,46 @@ REDUCE_MAIN(NAME, 1)
 
 /* nanmin, nanmax -------------------------------------------------------- */
 
+#define EXTREME_UNROLL(dtype, compare) \
+    for (it.i = 0; it.i < it.length - it.length % 4; it.i += 4) { \
+        ai = AX(dtype, it.i+0); if (ai compare x[0]) x[0]=ai; \
+        ai = AX(dtype, it.i+1); if (ai compare x[1]) x[1]=ai; \
+        ai = AX(dtype, it.i+2); if (ai compare x[2]) x[2]=ai; \
+        ai = AX(dtype, it.i+3); if (ai compare x[3]) x[3]=ai; \
+    } \
+    for (; it.i < it.length; it.i++) { \
+        ai = AX(dtype, it.i+0); if (ai compare x[0]) x[0]=ai; \
+    }
+
+#define NAN_EXTREME_UNROLL(dtype, compare) \
+    for (it.i = 0; it.i < it.length - it.length % 4; it.i += 4) { \
+        ai = AX(dtype, it.i+0); if (ai compare x[0]) {x[0]=ai; allnan[0]=0;}; \
+        ai = AX(dtype, it.i+1); if (ai compare x[1]) {x[1]=ai; allnan[1]=0;}; \
+        ai = AX(dtype, it.i+2); if (ai compare x[2]) {x[2]=ai; allnan[2]=0;}; \
+        ai = AX(dtype, it.i+3); if (ai compare x[3]) {x[3]=ai; allnan[3]=0;}; \
+    } \
+    for (; it.i < it.length; it.i++) { \
+        ai = AX(dtype, it.i+0); if (ai compare x[0]) {x[0]=ai; allnan[0]=0;}; \
+    }
+
+#define FILL4(x, fill_value)  x[0] = x[1] = x[2] = x[3] = fill_value;
+#define PRODUCT4(x)  (x[0] * x[1] * x[2] * x[3])
+
+#define EXTREME4(x, compare) \
+    if (x[0] compare x[1]) x[0] = x[1]; \
+    if (x[0] compare x[2]) x[0] = x[2]; \
+    if (x[0] compare x[3]) x[0] = x[3]; \
+
 /* repeat = {'NAME':      ['nanmin',         'nanmax'],
              'COMPARE':   ['<=',             '>='],
+             'CMP':       ['>',              '<'],
              'BIG_FLOAT': ['BN_INFINITY',    '-BN_INFINITY'],
              'BIG_INT':   ['NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0']} */
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(NAME, DTYPE0)
 {
-    npy_DTYPE0 ai, extreme = BIG_FLOAT;
-    int allnan = 1;
+    npy_DTYPE0 ai, x[4];
+    int allnan[4];
     INIT_ALL
     if (SIZE == 0) {
         VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
@@ -428,25 +459,25 @@ REDUCE_ALL(NAME, DTYPE0)
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
+    FILL4(x, BIG_FLOAT)
+    FILL4(allnan, 1)
     WHILE {
-        FOR {
-            ai = AI(DTYPE0);
-            if (ai COMPARE extreme) {
-                extreme = ai;
-                allnan = 0;
-            }
-        }
+        NAN_EXTREME_UNROLL(DTYPE0, COMPARE)
         NEXT
     }
-    if (allnan) extreme = BN_NAN;
     BN_END_ALLOW_THREADS
-    return PyFloat_FromDouble(extreme);
+    if (PRODUCT4(allnan)) {
+        return PyFloat_FromDouble(BN_NAN);
+    } else {
+        EXTREME4(x, CMP)
+        return PyFloat_FromDouble(x[0]);
+    }
 }
 
 REDUCE_ONE(NAME, DTYPE0)
 {
-    npy_DTYPE0 ai, extreme;
-    int allnan;
+    npy_DTYPE0 ai, x[4];
+    int allnan[4];
     INIT_ONE(DTYPE0, DTYPE0)
     if (LENGTH == 0) {
         VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
@@ -455,17 +486,15 @@ REDUCE_ONE(NAME, DTYPE0)
     }
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        extreme = BIG_FLOAT;
-        allnan = 1;
-        FOR {
-            ai = AI(DTYPE0);
-            if (ai COMPARE extreme) {
-                extreme = ai;
-                allnan = 0;
-            }
+        FILL4(x, BIG_FLOAT)
+        FILL4(allnan, 1)
+        NAN_EXTREME_UNROLL(DTYPE0, COMPARE)
+        if (PRODUCT4(allnan)) {
+            YPP = BN_NAN;
+        } else {
+            EXTREME4(x, CMP)
+            YPP = x[0];
         }
-        if (allnan) extreme = BN_NAN;
-        YPP = extreme;
         NEXT
     }
     BN_END_ALLOW_THREADS
@@ -476,7 +505,7 @@ REDUCE_ONE(NAME, DTYPE0)
 /* dtype = [['int64'], ['int32']] */
 REDUCE_ALL(NAME, DTYPE0)
 {
-    npy_DTYPE0 ai, extreme = BIG_INT;
+    npy_DTYPE0 ai, x[4];
     INIT_ALL
     if (SIZE == 0) {
         VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
@@ -484,20 +513,19 @@ REDUCE_ALL(NAME, DTYPE0)
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
+    FILL4(x, BIG_INT)
     WHILE {
-        FOR {
-            ai = AI(DTYPE0);
-            if (ai COMPARE extreme) extreme = ai;
-        }
+        EXTREME_UNROLL(DTYPE0, COMPARE)
         NEXT
     }
+    EXTREME4(x, CMP)
     BN_END_ALLOW_THREADS
-    return PyInt_FromLong(extreme);
+    return PyInt_FromLong(x[0]);
 }
 
 REDUCE_ONE(NAME, DTYPE0)
 {
-    npy_DTYPE0 ai, extreme;
+    npy_DTYPE0 ai, x[4];
     INIT_ONE(DTYPE0, DTYPE0)
     if (LENGTH == 0) {
         VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
@@ -506,12 +534,10 @@ REDUCE_ONE(NAME, DTYPE0)
     }
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        extreme = BIG_INT;
-        FOR {
-            ai = AI(DTYPE0);
-            if (ai COMPARE extreme) extreme = ai;
-        }
-        YPP = extreme;
+        FILL4(x, BIG_INT)
+        EXTREME_UNROLL(DTYPE0, COMPARE)
+        EXTREME4(x, CMP)
+        YPP = x[0];
         NEXT
     }
     BN_END_ALLOW_THREADS
