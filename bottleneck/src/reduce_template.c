@@ -129,6 +129,7 @@ REDUCE_ALL(nansum, DTYPE0)
         NEXT
     }
     BN_END_ALLOW_THREADS
+    printf("%ld\n", asum);
     return PyLong_FromLong(asum);
 }
 
