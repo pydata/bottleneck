@@ -129,7 +129,7 @@ REDUCE_ALL(nansum, DTYPE0)
         NEXT
     }
     BN_END_ALLOW_THREADS
-    return PyInt_FromLong(asum);
+    return PyLong_FromLong(asum);
 }
 
 REDUCE_ONE(nansum, DTYPE0)
