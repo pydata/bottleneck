@@ -27,7 +27,7 @@ test:
 	${PYTHON} -c "import bottleneck;bottleneck.test()"
 
 flake8:
-	flake8 --exclude=doc .
+	flake8 --exclude=doc,.tox .
 
 readme:
 	PYTHONPATH=`pwd`:PYTHONPATH ${PYTHON} tools/update_readme.py

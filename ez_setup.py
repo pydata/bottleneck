@@ -260,6 +260,7 @@ def download_file_insecure(url, target):
         if dst:
             dst.close()
 
+
 download_file_insecure.viable = lambda: True
 
 
