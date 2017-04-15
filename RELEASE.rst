@@ -6,12 +6,13 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
-Bottleneck 1.3.0
+Bottleneck 1.2.1
 ================
 
 *Release date: not yet released, in development*
 
-- Support for NumPy's relaxed strides checking
+This release adds support for NumPy's relaxed strides checking and
+fixes a few bugs.
 
 **Bug Fixes**
 
