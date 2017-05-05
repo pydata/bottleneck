@@ -31,7 +31,6 @@
 
 #if PY_MAJOR_VERSION >= 3
     #define PyString_FromString PyBytes_FromString
-    #define PyInt_FromLong PyLong_FromLong
     #define PyInt_AsLong PyLong_AsLong
     #define PyString_InternFromString PyUnicode_InternFromString
 #endif

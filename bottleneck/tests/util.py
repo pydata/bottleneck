@@ -109,6 +109,7 @@ def array_generator(func_name, dtypes):
     yield np.array([1, 2, 3]) + 1e9  # check that move_std is robust
     yield np.array([0, 0, 0])  # nanargmax/nanargmin
     yield np.array([1, nan, nan, 2])  # nanmedian
+    yield np.array([2**31], dtype=np.int64)  # overflows on windows
 
     # ties
     yield np.array([0, 0, 0])

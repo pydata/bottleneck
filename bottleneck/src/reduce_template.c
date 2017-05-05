@@ -129,7 +129,7 @@ REDUCE_ALL(nansum, DTYPE0)
         NEXT
     }
     BN_END_ALLOW_THREADS
-    return PyInt_FromLong(asum);
+    return PyLong_FromLongLong(asum);
 }
 
 REDUCE_ONE(nansum, DTYPE0)
@@ -506,7 +506,7 @@ REDUCE_ALL(NAME, DTYPE0)
         NEXT
     }
     BN_END_ALLOW_THREADS
-    return PyInt_FromLong(extreme);
+    return PyLong_FromLongLong(extreme);
 }
 
 REDUCE_ONE(NAME, DTYPE0)
@@ -571,7 +571,7 @@ REDUCE_ALL(NAME, DTYPE0)
         VALUE_ERR("All-NaN slice encountered");
         return NULL;
     } else {
-        return PyInt_FromLong(idx);
+        return PyLong_FromLongLong(idx);
     }
 }
 
@@ -636,7 +636,7 @@ REDUCE_ALL(NAME, DTYPE0)
     }
     BN_END_ALLOW_THREADS
     DECREF_INIT_ALL_RAVEL
-    return PyInt_FromLong(idx);
+    return PyLong_FromLongLong(idx);
 }
 
 REDUCE_ONE(NAME, DTYPE0)
@@ -728,7 +728,7 @@ REDUCE_ALL(ss, DTYPE0)
         NEXT
     }
     BN_END_ALLOW_THREADS
-    return PyInt_FromLong(asum);
+    return PyLong_FromLongLong(asum);
 }
 
 REDUCE_ONE(ss, DTYPE0)
