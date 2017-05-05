@@ -22,6 +22,7 @@ fixes a few bugs.
   and nanmedian when all of the following conditions are met:
   axis is None, input array is 2d or greater, and input array is not C
   contiguous.
+- #163 Reducing np.array([2**31], dtype=np.int64) overflows on Windows
 
 Older versions
 ==============
