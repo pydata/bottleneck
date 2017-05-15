@@ -9,7 +9,7 @@ see the commit log at http://github.com/kwgoodman/bottleneck
 Bottleneck 1.2.1
 ================
 
-*Release date: not yet released, in development*
+*Release date: 2017-05-15*
 
 This release adds support for NumPy's relaxed strides checking and
 fixes a few bugs.
