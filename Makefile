@@ -17,6 +17,7 @@ help:
 	@echo "detail  -->  Detailed benchmarks for all functions"
 	@echo "sdist   -->  Make source distribution"
 	@echo "doc     -->  Build Sphinx manual"
+	@echo "pypi    -->  Upload to pypi"
 
 all: clean build test flake8
 
@@ -38,11 +39,12 @@ bench:
 detail:
 	${PYTHON} -c "import bottleneck; bottleneck.bench_detailed('all')"
 
-sdist:
-	rm -f MANIFEST
-	find . -name \*.pyc -delete
+sdist: clean
 	${PYTHON} setup.py sdist
 	git status
+
+pypi: clean
+	${PYTHON} setup.py sdist upload -r pypi
 
 # doc directory exists so use phony
 .PHONY: doc
@@ -53,6 +55,7 @@ doc: clean build
 clean:
 	rm -rf build dist Bottleneck.egg-info
 	find . -name \*.pyc -delete
+	rm -f MANIFEST
 	rm -rf ${srcdir}/*.html ${srcdir}/build
 	rm -rf ${srcdir}/*.c
 	rm -rf ${srcdir}/*.so
