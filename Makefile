@@ -40,6 +40,7 @@ detail:
 
 sdist:
 	rm -f MANIFEST
+	find . -name \*.pyc -delete
 	${PYTHON} setup.py sdist
 	git status
 
