@@ -6,8 +6,13 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
+Bottleneck 1.3.0
+----------------
+
+*Release date: Not yet released; in development*
+
 Bottleneck 1.2.1
-================
+----------------
 
 *Release date: 2017-05-15*
 
@@ -23,11 +28,6 @@ fixes a few bugs.
   axis is None, input array is 2d or greater, and input array is not C
   contiguous.
 - #163 Reducing np.array([2**31], dtype=np.int64) overflows on Windows
-
-Older versions
-==============
-
-Release notes from past releases.
 
 Bottleneck 1.2.0
 ----------------
