@@ -43,9 +43,7 @@ copyright = u'2010-2017 Keith Goodman'
 
 # Grab version from bottleneck/version.py
 ver_file = os.path.join('..', '..', 'bottleneck', 'version.py')
-fid = file(ver_file, 'r')
-VER = fid.read()
-fid.close()
+VER = open(ver_file, 'r').read()
 VER = VER.split("= ")
 VER = VER[1].strip()
 VER = VER.strip('"')
