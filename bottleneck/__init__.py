@@ -2,19 +2,19 @@
 
 # looped unrolled
 try:
-    from .reduce2 import nansum as nansum2
-    from .reduce2 import nanmean as nanmean2
-    from .reduce2 import nanstd as nanstd2
-    from .reduce2 import nanvar as nanvar2
-    from .reduce2 import nanmin as nanmin2
-    from .reduce2 import nanmax as nanmax2
-    from .reduce2 import median as median2
-    from .reduce2 import nanmedian as nanmedian2
-    from .reduce2 import ss as ss2
-    from .reduce2 import nanargmin as nanargmin2
-    from .reduce2 import nanargmax as nanargmax2
-    from .reduce2 import anynan as anynan2
-    from .reduce2 import allnan as allnan2
+    from .reduce2 import nansum2
+    from .reduce2 import nanmean2
+    from .reduce2 import nanstd2
+    from .reduce2 import nanvar2
+    from .reduce2 import nanmin2
+    from .reduce2 import nanmax2
+    from .reduce2 import median2
+    from .reduce2 import nanmedian2
+    from .reduce2 import ss2
+    from .reduce2 import nanargmin2
+    from .reduce2 import nanargmax2
+    from .reduce2 import anynan2
+    from .reduce2 import allnan2
 except:
     pass
 

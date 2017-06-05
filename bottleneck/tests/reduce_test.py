@@ -24,6 +24,11 @@ def unit_maker(func, decimal=5):
     fmt = '\nfunc %s | input %s (%s) | shape %s | axis %s | order %s\n'
     fmt += '\nInput array:\n%s\n'
     name = func.__name__
+
+    # temporary reduce2 hack
+    if name[-1] == '2':
+        name = name[:-1]
+
     func0 = eval('bn.slow.%s' % name)
     for i, a in enumerate(arrays(name)):
         if a.ndim == 0:
@@ -81,6 +86,11 @@ def unit_maker_argparse(func, decimal=5):
     "test argument parsing."
 
     name = func.__name__
+
+    # temporary reduce2 hack
+    if name[-1] == '2':
+        name = name[:-1]
+
     func0 = eval('bn.slow.%s' % name)
 
     a = np.array([1., 2, 3])
@@ -140,7 +150,8 @@ def unit_maker_argparse_raises(func):
     assert_raises(TypeError, func, a, axis=0, a=a)
     assert_raises(TypeError, func, a, 0, 0, 0, 0, 0)
     assert_raises(TypeError, func, a, axis='0')
-    if func.__name__ not in ('nanstd', 'nanvar'):
+    # temporary reduce2 hack
+    if func.__name__ not in ('nanstd', 'nanvar', 'nanstd2', 'nanvar2'):
         assert_raises(TypeError, func, a, ddof=0)
     assert_raises(TypeError, func, a, a)
     # assert_raises(TypeError, func, None) results vary

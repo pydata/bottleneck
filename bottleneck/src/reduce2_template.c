@@ -1994,19 +1994,19 @@ MULTILINE STRING END */
 
 static PyMethodDef
 reduce_methods[] = {
-    {"nansum",    (PyCFunction)nansum,    VARKEY, nansum_doc},
-    {"nanmean",   (PyCFunction)nanmean,   VARKEY, nanmean_doc},
-    {"nanstd",    (PyCFunction)nanstd,    VARKEY, nanstd_doc},
-    {"nanvar",    (PyCFunction)nanvar,    VARKEY, nanvar_doc},
-    {"nanmin",    (PyCFunction)nanmin,    VARKEY, nanmin_doc},
-    {"nanmax",    (PyCFunction)nanmax,    VARKEY, nanmax_doc},
-    {"nanargmin", (PyCFunction)nanargmin, VARKEY, nanargmin_doc},
-    {"nanargmax", (PyCFunction)nanargmax, VARKEY, nanargmax_doc},
-    {"ss",        (PyCFunction)ss,        VARKEY, ss_doc},
-    {"median",    (PyCFunction)median,    VARKEY, median_doc},
-    {"nanmedian", (PyCFunction)nanmedian, VARKEY, nanmedian_doc},
-    {"anynan",    (PyCFunction)anynan,    VARKEY, anynan_doc},
-    {"allnan",    (PyCFunction)allnan,    VARKEY, allnan_doc},
+    {"nansum2",    (PyCFunction)nansum,    VARKEY, nansum_doc},
+    {"nanmean2",   (PyCFunction)nanmean,   VARKEY, nanmean_doc},
+    {"nanstd2",    (PyCFunction)nanstd,    VARKEY, nanstd_doc},
+    {"nanvar2",    (PyCFunction)nanvar,    VARKEY, nanvar_doc},
+    {"nanmin2",    (PyCFunction)nanmin,    VARKEY, nanmin_doc},
+    {"nanmax2",    (PyCFunction)nanmax,    VARKEY, nanmax_doc},
+    {"nanargmin2", (PyCFunction)nanargmin, VARKEY, nanargmin_doc},
+    {"nanargmax2", (PyCFunction)nanargmax, VARKEY, nanargmax_doc},
+    {"ss2",        (PyCFunction)ss,        VARKEY, ss_doc},
+    {"median2",    (PyCFunction)median,    VARKEY, median_doc},
+    {"nanmedian2", (PyCFunction)nanmedian, VARKEY, nanmedian_doc},
+    {"anynan2",    (PyCFunction)anynan,    VARKEY, anynan_doc},
+    {"allnan2",    (PyCFunction)allnan,    VARKEY, allnan_doc},
     {NULL, NULL, 0, NULL}
 };
 

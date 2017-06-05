@@ -19,5 +19,11 @@ def test_scalar_input():
     "Test scalar input"
     funcs = bn.get_functions('reduce') + bn.get_functions('nonreduce_axis')
     for func in funcs:
-        if func.__name__ not in ('partition', 'argpartition', 'push'):
-            yield unit_maker, func, eval('bn.slow.%s' % func.__name__)
+
+        # temporary reduce2 hack
+        name = func.__name__
+        if name[-1] == '2':
+            name = name[:-1]
+
+        if name not in ('partition', 'argpartition', 'push'):
+            yield unit_maker, func, eval('bn.slow.%s' % name)

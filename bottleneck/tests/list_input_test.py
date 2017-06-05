@@ -37,6 +37,11 @@ def unit_maker(func):
     msg = '\nfunc %s | input %s (%s) | shape %s\n'
     msg += '\nInput array:\n%s\n'
     name = func.__name__
+
+    # temporary reduce2 hack
+    if name[-1] == '2':
+        name = name[:-1]
+
     func0 = eval('bn.slow.%s' % name)
     for i, a in enumerate(lists()):
         with warnings.catch_warnings():
