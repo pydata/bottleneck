@@ -112,7 +112,7 @@ To install Bottleneck on GNU/Linux, Mac OS X, et al.::
     $ sudo python setup.py install
 
 To install bottleneck on Windows, first install MinGW and add it to your
-system path. Then install Bottleneck with the commands::
+system path. Then install Bottleneck with the command::
 
     python setup.py install --compiler=mingw32
 
