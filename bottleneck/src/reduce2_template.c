@@ -434,7 +434,12 @@ REDUCE_MAIN(NAME, 1)
         ai = AX(dtype, it.i+0); if (ai compare x[0]) {x[0]=ai; allnan[0]=0;}; \
     }
 
-#define FILL4(x, fill_value)  x[0] = x[1] = x[2] = x[3] = fill_value;
+#define FILL4(x, fill_value)  \
+        x[0] = fill_value; \
+        x[1] = fill_value; \
+        x[2] = fill_value; \
+        x[3] = fill_value;
+
 #define PRODUCT4(x)  (x[0] * x[1] * x[2] * x[3])
 
 #define EXTREME4(x, compare) \
