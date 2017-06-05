@@ -7,9 +7,15 @@ These are the major changes made in each release. For details of the changes
 see the commit log at http://github.com/kwgoodman/bottleneck
 
 Bottleneck 1.3.0
-----------------
+================
 
 *Release date: Not yet released; in development*
+
+- Remove numpydoc package from Bottleneck source distribution
+
+**Bug Fixes**
+
+- #170 Documentation fails to build on Python 3
 
 Bottleneck 1.2.1
 ----------------

@@ -104,6 +104,7 @@ Requirements:
 Bottleneck               Python 2.7, 3.5, 3.6; NumPy 1.12.1
 Compile                  gcc, clang, MinGW or MSVC
 Unit tests               nose
+Documentation            sphinx, numpydoc
 ======================== ====================================================
 
 To install Bottleneck on GNU/Linux, Mac OS X, et al.::
