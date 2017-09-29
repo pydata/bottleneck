@@ -84,7 +84,7 @@ Where
 
 ===================   ========================================================
  download             https://pypi.python.org/pypi/Bottleneck
- docs                 http://berkeleyanalytics.com/bottleneck
+ docs                 https://kwgoodman.github.io/bottleneck-doc
  code                 https://github.com/kwgoodman/bottleneck
  mailing list         https://groups.google.com/group/bottle-neck
 ===================   ========================================================
