@@ -11,11 +11,13 @@ Bottleneck 1.3.0
 
 *Release date: Not yet released; in development*
 
+- Move documentation to https://kwgoodman.github.io/bottleneck-doc
 - Remove numpydoc package from Bottleneck source distribution
 
 **Bug Fixes**
 
 - #170 Documentation fails to build on Python 3
+- #175 bn.bench() crashes on python 3.6.3, numpy 1.13.3
 
 Bottleneck 1.2.1
 ----------------

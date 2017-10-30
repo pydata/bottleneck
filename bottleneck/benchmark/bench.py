@@ -149,7 +149,7 @@ def benchsuite(shapes, dtype, nans, axes, order, functions):
             from bottleneck.slow import %s as sl_func
             if axis is None: n = a.size
             else: n = a.shape[axis] - 1
-            n = max(n / 2, 0)
+            n = max(n // 2, 0)
         """ % (func, func)
         run['setups'] = getsetups(setup, shapes, nans, axes, dtype, order)
         suite.append(run)
