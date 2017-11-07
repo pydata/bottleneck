@@ -38,8 +38,8 @@ def _nanrankdata_1d(a):
 
 def push(a, n=np.inf, axis=-1):
     "Slow push used for unaccelerated dtypes."
-    if axis is None:
-        raise ValueError("`axis` cannot be None")
+    if n is None:
+        n = np.inf
     y = np.array(a)
     ndim = y.ndim
     if axis != -1 or axis != ndim - 1:

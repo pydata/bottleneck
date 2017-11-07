@@ -144,7 +144,7 @@ def test_nonreduce_axis():
 
 def test_push():
     "Test push"
-    ns = (0, 1, 2, 3, 4, 5)
+    ns = (0, 1, 2, 3, 4, 5, None)
     a = np.array([np.nan, 1, 2, np.nan, np.nan, np.nan, np.nan, 3, np.nan])
     for n in ns:
         actual = bn.push(a.copy(), n=n)

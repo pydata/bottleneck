@@ -18,6 +18,7 @@ Bottleneck 1.3.0
 
 - #170 Documentation fails to build on Python 3
 - #175 bn.bench() crashes on python 3.6.3, numpy 1.13.3
+- #178 bn.push(a, n=None) raises when None is explicitly passed
 
 Bottleneck 1.2.1
 ----------------
