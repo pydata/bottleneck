@@ -13,6 +13,7 @@ Bottleneck 1.3.0
 
 - Move documentation to https://kwgoodman.github.io/bottleneck-doc
 - Remove numpydoc package from Bottleneck source distribution
+- Test (tox, travis, appveyor) against latest numpy (in conda)
 
 **Bug Fixes**
 

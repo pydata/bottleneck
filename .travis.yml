@@ -8,31 +8,49 @@ matrix:
         # test installing bottleneck tarball before installing numpy;
         # start this test first because it takes the longest
         - os: linux
-          env: TEST_DEPS="numpy==1.12.1 nose" PYTHON_VERSION="2.7" PYTHON_ARCH="64" TEST_RUN="sdist"
+          env: TEST_DEPS="numpy nose"
+               PYTHON_VERSION="2.7"
+               PYTHON_ARCH="64"
+               TEST_RUN="sdist"
 
          # flake8
         - os: linux
-          env: TEST_DEPS="flake8" PYTHON_VERSION="2.7" PYTHON_ARCH="64" TEST_RUN="style"
+          env: TEST_DEPS="flake8"
+               PYTHON_VERSION="2.7"
+               PYTHON_ARCH="64"
+               TEST_RUN="style"
 
-        # python 3.4
+        # python 3.5
         - os: linux
-          env: TEST_DEPS="numpy==1.12.1 nose" PYTHON_VERSION="3.5" PYTHON_ARCH="64" TEST_RUN="sdist"
+          env: TEST_DEPS="numpy nose"
+               PYTHON_VERSION="3.5"
+               PYTHON_ARCH="64"
+               TEST_RUN="sdist"
 
-         # python 3.5
+         # python 3.6
         - os: linux
-          env: TEST_DEPS="numpy==1.12.1 nose" PYTHON_VERSION="3.6" PYTHON_ARCH="64"
+          env: TEST_DEPS="numpy nose"
+               PYTHON_VERSION="3.6"
+               PYTHON_ARCH="64"
 
         # python 2.7
         - os: osx
-          env: TEST_DEPS="numpy==1.12.1 nose" PYTHON_VERSION="2.7" PYTHON_ARCH="64" TEST_RUN="sdist"
-
-        # python 3.4
-        - os: osx
-          env: TEST_DEPS="numpy==1.12.1 nose" PYTHON_VERSION="3.5" PYTHON_ARCH="64"
+          env: TEST_DEPS="numpy nose"
+               PYTHON_VERSION="2.7"
+               PYTHON_ARCH="64"
+               TEST_RUN="sdist"
 
         # python 3.5
         - os: osx
-          env: TEST_DEPS="numpy==1.12.1 nose" PYTHON_VERSION="3.6" PYTHON_ARCH="64"
+          env: TEST_DEPS="numpy nose"
+               PYTHON_VERSION="3.5"
+               PYTHON_ARCH="64"
+
+        # python 3.6
+        - os: osx
+          env: TEST_DEPS="numpy nose"
+               PYTHON_VERSION="3.6"
+               PYTHON_ARCH="64"
 
 before_install:
     - uname -a
