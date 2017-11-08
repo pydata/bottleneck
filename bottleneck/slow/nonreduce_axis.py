@@ -36,7 +36,7 @@ def _nanrankdata_1d(a):
     return y
 
 
-def push(a, n=np.inf, axis=-1):
+def push(a, n=None, axis=-1):
     "Slow push used for unaccelerated dtypes."
     if n is None:
         n = np.inf
