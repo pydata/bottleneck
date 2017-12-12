@@ -15,6 +15,7 @@ Bottleneck 1.3.0
 - Remove numpydoc package from Bottleneck source distribution
 - bn.slow.nansum and bn.slow.ss now longer coerce output to have the same
   dtype as input
+- Test (tox, travis, appveyor) against latest numpy (in conda)
 
 **Bug Fixes**
 
