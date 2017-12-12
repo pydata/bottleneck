@@ -185,7 +185,7 @@ def has_powershell():
     try:
         try:
             subprocess.check_call(cmd, stdout=devnull, stderr=devnull)
-        except:
+        except:  # noqa
             return False
     finally:
         devnull.close()
@@ -206,7 +206,7 @@ def has_curl():
     try:
         try:
             subprocess.check_call(cmd, stdout=devnull, stderr=devnull)
-        except:
+        except:  # noqa
             return False
     finally:
         devnull.close()
@@ -227,7 +227,7 @@ def has_wget():
     try:
         try:
             subprocess.check_call(cmd, stdout=devnull, stderr=devnull)
-        except:
+        except:  # noqa
             return False
     finally:
         devnull.close()

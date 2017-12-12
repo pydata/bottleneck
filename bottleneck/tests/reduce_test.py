@@ -37,14 +37,14 @@ def unit_maker(func, decimal=5, skip_dtype=['nansum', 'ss']):
             try:
                 # do not use a.copy() here because it will C order the array
                 actual = func(a, axis=axis)
-            except:
+            except:  # noqa
                 actualraised = True
             desiredraised = False
             try:
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
                     desired = func0(a, axis=axis)
-            except:
+            except:  # noqa
                 desiredraised = True
             if actualraised and desiredraised:
                 pass
