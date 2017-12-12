@@ -1,19 +1,10 @@
 import warnings
 import numpy as np
-from numpy import nanmean
+from numpy import nanmean, nansum
 
 __all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
            'nanmin', 'nanmax', 'nanargmin', 'nanargmax', 'ss', 'anynan',
            'allnan']
-
-
-def nansum(a, axis=None):
-    "Slow nansum function used for unaccelerated dtype."
-    a = np.asarray(a)
-    y = np.nansum(a, axis=axis)
-    if y.dtype != a.dtype:
-        y = y.astype(a.dtype)
-    return y
 
 
 def nanargmin(a, axis=None):
@@ -76,8 +67,6 @@ def ss(a, axis=None):
     "Slow sum of squares used for unaccelerated dtypes."
     a = np.asarray(a)
     y = np.multiply(a, a).sum(axis)
-    if y.dtype != a.dtype:
-        y = y.astype(a.dtype)
     return y
 
 

@@ -13,6 +13,8 @@ Bottleneck 1.3.0
 
 - Move documentation to https://kwgoodman.github.io/bottleneck-doc
 - Remove numpydoc package from Bottleneck source distribution
+- bn.slow.nansum and bn.slow.ss now longer coerce output to have the same
+  dtype as input
 
 **Bug Fixes**
 

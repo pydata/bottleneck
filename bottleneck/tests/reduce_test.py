@@ -19,7 +19,7 @@ def test_reduce():
         yield unit_maker, func
 
 
-def unit_maker(func, decimal=5):
+def unit_maker(func, decimal=5, skip_dtype=['nansum', 'ss']):
     "Test that bn.xxx gives the same output as bn.slow.xxx."
     fmt = '\nfunc %s | input %s (%s) | shape %s | axis %s | order %s\n'
     fmt += '\nInput array:\n%s\n'
@@ -62,10 +62,11 @@ def unit_maker(func, decimal=5):
                     ok_(False, err_msg)
                 assert_array_almost_equal(actual, desired, decimal, err_msg)
                 err_msg += '\n dtype mismatch %s %s'
-                if hasattr(actual, 'dtype') and hasattr(desired, 'dtype'):
-                    da = actual.dtype
-                    dd = desired.dtype
-                    assert_equal(da, dd, err_msg % (da, dd))
+                if name not in skip_dtype:
+                    if hasattr(actual, 'dtype') and hasattr(desired, 'dtype'):
+                        da = actual.dtype
+                        dd = desired.dtype
+                        assert_equal(da, dd, err_msg % (da, dd))
 
 
 # ---------------------------------------------------------------------------
