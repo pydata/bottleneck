@@ -52,7 +52,7 @@ def unit_maker(func, nans=True):
                         with warnings.catch_warnings():
                             warnings.simplefilter("ignore")
                             func(a1, axis=axis)
-                    except:
+                    except:  # noqa
                         continue
                 assert_equal(a1, a2, msg % (func.__name__, a1, a2))
 

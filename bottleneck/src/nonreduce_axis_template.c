@@ -726,8 +726,11 @@ nonreducer_axis(char *name,
         }
     }
 
-    /* ddof */
+    /* n */
     if (n_obj == NULL) {
+        n = -1;
+    }
+    else if (parse == PARSE_PUSH && n_obj == Py_None) {
         n = -1;
     }
     else {
