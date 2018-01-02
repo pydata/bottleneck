@@ -110,6 +110,7 @@ def array_generator(func_name, dtypes):
     yield np.array([0, 0, 0])  # nanargmax/nanargmin
     yield np.array([1, nan, nan, 2])  # nanmedian
     yield np.array([2**31], dtype=np.int64)  # overflows on windows
+    yield np.array([[1.0, 2], [3, 4]])[..., np.newaxis]  # issue #183
 
     # ties
     yield np.array([0, 0, 0])
