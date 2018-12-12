@@ -132,7 +132,7 @@ def move_func(func, a, window, min_count=None, axis=-1, **kwargs):
             win = min(window, i + 1)
             idx1[axis] = slice(i + 1 - win, i + 1)
             idx2[axis] = i
-            y[idx2] = func(a[idx1], axis=axis, **kwargs)
+            y[tuple(idx2)] = func(a[tuple(idx1)], axis=axis, **kwargs)
     idx = _mask(a, window, mc, axis)
     y[idx] = np.nan
     return y
@@ -146,6 +146,9 @@ def _mask(a, window, min_count, axis):
     idx1[axis] = slice(window, None)
     idx2[axis] = slice(None, -window)
     idx3[axis] = slice(None, window)
+    idx1 = tuple(idx1)
+    idx2 = tuple(idx2)
+    idx3 = tuple(idx3)
     nidx1 = n[idx1]
     nidx1 = nidx1 - n[idx2]
     idx = np.empty(a.shape, dtype=np.bool)
@@ -222,8 +225,10 @@ def lastrank(a, axis=-1):
         return r
     indlast = [slice(None)] * ndim
     indlast[axis] = slice(-1, None)
+    indlast = tuple(indlast)
     indlast2 = [slice(None)] * ndim
     indlast2[axis] = -1
+    indlast2 = tuple(indlast2)
     n = (~np.isnan(a)).sum(axis)
     a_indlast = a[indlast]
     g = (a_indlast > a).sum(axis)
