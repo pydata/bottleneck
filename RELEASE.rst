@@ -24,6 +24,7 @@ Bottleneck 1.3.0
 - #178 bn.push(a, n=None) raises when None is explicitly passed
 - #183 bn.nansum(a) wrong output when a = np.ones((2, 2))[..., np.newaxis]
   same issue of other reduce functions
+- #194 silenced FutureWarning from NumPy in the slow version of move functions
 
 Bottleneck 1.2.1
 ----------------
