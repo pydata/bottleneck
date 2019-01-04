@@ -1221,6 +1221,7 @@ reducer(char *name,
     int reduce_all = 0;
 
     PyArrayObject *a;
+    PyObject *y;
 
     PyObject *a_obj = NULL;
     PyObject *axis_obj = Py_None;
@@ -1233,6 +1234,7 @@ reducer(char *name,
     /* convert to array if necessary */
     if PyArray_Check(a_obj) {
         a = (PyArrayObject *)a_obj;
+        Py_INCREF(a);
     } else {
         a = (PyArrayObject *)PyArray_FROM_O(a_obj);
         if (a == NULL) {
@@ -1253,7 +1255,7 @@ reducer(char *name,
         axis = PyArray_PyIntAsInt(axis_obj);
         if (error_converting(axis)) {
             TYPE_ERR("`axis` must be an integer or None");
-            return NULL;
+            goto error;
         }
         ndim = PyArray_NDIM(a);
         if (axis < 0) {
@@ -1261,12 +1263,12 @@ reducer(char *name,
             if (axis < 0) {
                 PyErr_Format(PyExc_ValueError,
                              "axis(=%d) out of bounds", axis);
-                return NULL;
+                goto error;
             }
         }
         else if (axis >= ndim) {
             PyErr_Format(PyExc_ValueError, "axis(=%d) out of bounds", axis);
-            return NULL;
+            goto error;
         }
         if (ndim == 1) {
             reduce_all = 1;
@@ -1281,7 +1283,7 @@ reducer(char *name,
         ddof = PyArray_PyIntAsInt(ddof_obj);
         if (error_converting(ddof)) {
             TYPE_ERR("`ddof` must be an integer");
-            return NULL;
+            goto error;
         }
     }
 
@@ -1290,40 +1292,48 @@ reducer(char *name,
     if (reduce_all == 1) {
         /* we are reducing the array along all axes */
         if (dtype == NPY_FLOAT64) {
-            return fall_float64(a, ddof);
+            y = fall_float64(a, ddof);
         }
         else if (dtype == NPY_FLOAT32) {
-            return fall_float32(a, ddof);
+            y = fall_float32(a, ddof);
         }
         else if (dtype == NPY_INT64) {
-            return fall_int64(a, ddof);
+            y = fall_int64(a, ddof);
         }
         else if (dtype == NPY_INT32) {
-            return fall_int32(a, ddof);
+            y = fall_int32(a, ddof);
         }
         else {
-            return slow(name, args, kwds);
+            y = slow(name, args, kwds);
         }
     }
     else {
         /* we are reducing an array with ndim > 1 over a single axis */
         if (dtype == NPY_FLOAT64) {
-            return fone_float64(a, axis, ddof);
+            y = fone_float64(a, axis, ddof);
         }
         else if (dtype == NPY_FLOAT32) {
-            return fone_float32(a, axis, ddof);
+            y = fone_float32(a, axis, ddof);
         }
         else if (dtype == NPY_INT64) {
-            return fone_int64(a, axis, ddof);
+            y = fone_int64(a, axis, ddof);
         }
         else if (dtype == NPY_INT32) {
-            return fone_int32(a, axis, ddof);
+            y = fone_int32(a, axis, ddof);
         }
         else {
-            return slow(name, args, kwds);
+            y = slow(name, args, kwds);
         }
 
     }
+
+    Py_DECREF(a);
+
+    return y;
+
+error:
+    Py_DECREF(a);
+    return NULL;
 
 }
 

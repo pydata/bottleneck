@@ -196,7 +196,9 @@ nonreducer(char *name,
 {
     int dtype;
     double old, new;
+
     PyArrayObject *a;
+    PyObject *y;
 
     PyObject *a_obj = NULL;
     PyObject *old_obj = NULL;
@@ -207,6 +209,7 @@ nonreducer(char *name,
     /* convert to array if necessary */
     if PyArray_Check(a_obj) {
         a = (PyArrayObject *)a_obj;
+        Py_INCREF(a);
     } else {
         if (inplace) {
             TYPE_ERR("works in place so input must be an array, "
@@ -227,36 +230,44 @@ nonreducer(char *name,
     /* old */
     if (old_obj == NULL) {
         RUNTIME_ERR("`old_obj` should never be NULL; please report this bug.");
-        return NULL;
+        goto error;
     }
     else {
         old = PyFloat_AsDouble(old_obj);
         if (error_converting(old)) {
             TYPE_ERR("`old` must be a number");
-            return NULL;
+            goto error;
         }
     }
 
     /* new */
     if (new_obj == NULL) {
         RUNTIME_ERR("`new_obj` should never be NULL; please report this bug.");
-        return NULL;
+        goto error;
     }
     else {
         new = PyFloat_AsDouble(new_obj);
         if (error_converting(new)) {
             TYPE_ERR("`new` must be a number");
-            return NULL;
+            goto error;
         }
     }
 
     dtype = PyArray_TYPE(a);
 
-    if      (dtype == NPY_float64) return nr_float64(a, old, new);
-    else if (dtype == NPY_float32) return nr_float32(a, old, new);
-    else if (dtype == NPY_int64)   return nr_int64(a, old, new);
-    else if (dtype == NPY_int32)   return nr_int32(a, old, new);
-    else                           return slow(name, args, kwds);
+    if      (dtype == NPY_float64) y = nr_float64(a, old, new);
+    else if (dtype == NPY_float32) y = nr_float32(a, old, new);
+    else if (dtype == NPY_int64)   y = nr_int64(a, old, new);
+    else if (dtype == NPY_int32)   y = nr_int32(a, old, new);
+    else                           y = slow(name, args, kwds);
+
+    Py_DECREF(a);
+
+    return y;
+
+error:
+    Py_DECREF(a);
+    return NULL;
 
 }
 

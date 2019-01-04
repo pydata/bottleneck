@@ -639,6 +639,7 @@ nonreducer_axis(char *name,
     int dtype;
 
     PyArrayObject *a;
+    PyObject *y;
 
     PyObject *a_obj = NULL;
     PyObject *n_obj = NULL;
@@ -666,6 +667,7 @@ nonreducer_axis(char *name,
     /* convert to array if necessary */
     if PyArray_Check(a_obj) {
         a = (PyArrayObject *)a_obj;
+        Py_INCREF(a);
     }
     else {
         a = (PyArrayObject *)PyArray_FROM_O(a_obj);
@@ -686,7 +688,7 @@ nonreducer_axis(char *name,
             if (axis < 0) {
                 PyErr_Format(PyExc_ValueError,
                              "axis(=%d) out of bounds", axis);
-                return NULL;
+                goto error;
             }
         }
         else {
@@ -699,7 +701,7 @@ nonreducer_axis(char *name,
     else if (axis_obj == Py_None) {
         if (parse == PARSE_PUSH) {
             VALUE_ERR("`axis` cannot be None");
-            return NULL;
+            goto error;
         }
         if (PyArray_NDIM(a) != 1) {
             a = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
@@ -710,19 +712,19 @@ nonreducer_axis(char *name,
         axis = PyArray_PyIntAsInt(axis_obj);
         if (error_converting(axis)) {
             TYPE_ERR("`axis` must be an integer");
-            return NULL;
+            goto error;
         }
         if (axis < 0) {
             axis += PyArray_NDIM(a);
             if (axis < 0) {
                 PyErr_Format(PyExc_ValueError,
                              "axis(=%d) out of bounds", axis);
-                return NULL;
+                goto error;
             }
         }
         else if (axis >= PyArray_NDIM(a)) {
             PyErr_Format(PyExc_ValueError, "axis(=%d) out of bounds", axis);
-            return NULL;
+            goto error;
         }
     }
 
@@ -737,20 +739,28 @@ nonreducer_axis(char *name,
         n = PyArray_PyIntAsInt(n_obj);
         if (error_converting(n)) {
             TYPE_ERR("`n` must be an integer");
-            return NULL;
+            goto error;
         }
         if (n < 0 && parse == PARSE_PUSH) {
             VALUE_ERR("`n` must be nonnegative");
-            return NULL;
+            goto error;
         }
     }
 
     dtype = PyArray_TYPE(a);
-    if      (dtype == NPY_float64) return nra_float64(a, axis, n);
-    else if (dtype == NPY_float32) return nra_float32(a, axis, n);
-    else if (dtype == NPY_int64)   return nra_int64(a, axis, n);
-    else if (dtype == NPY_int32)   return nra_int32(a, axis, n);
-    else                           return slow(name, args, kwds);
+    if      (dtype == NPY_float64) y = nra_float64(a, axis, n);
+    else if (dtype == NPY_float32) y = nra_float32(a, axis, n);
+    else if (dtype == NPY_int64)   y = nra_int64(a, axis, n);
+    else if (dtype == NPY_int32)   y = nra_int32(a, axis, n);
+    else                           y = slow(name, args, kwds);
+
+    Py_DECREF(a);
+
+    return y;
+
+error:
+    Py_DECREF(a);
+    return NULL;
 
 }
 

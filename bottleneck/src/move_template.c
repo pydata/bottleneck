@@ -909,7 +909,9 @@ mover(char *name,
     int ndim;
 
     Py_ssize_t length;
+
     PyArrayObject *a;
+    PyObject *y;
 
     PyObject *a_obj = NULL;
     PyObject *window_obj = NULL;
@@ -925,6 +927,7 @@ mover(char *name,
     /* convert to array if necessary */
     if PyArray_Check(a_obj) {
         a = (PyArrayObject *)a_obj;
+        Py_INCREF(a);
     }
     else {
         a = (PyArrayObject *)PyArray_FROM_O(a_obj);
@@ -942,7 +945,7 @@ mover(char *name,
     window = PyArray_PyIntAsInt(window_obj);
     if (error_converting(window)) {
         TYPE_ERR("`window` must be an integer");
-        return NULL;
+        goto error;
     }
 
     /* min_count */
@@ -953,17 +956,17 @@ mover(char *name,
         mc = PyArray_PyIntAsInt(min_count_obj);
         if (error_converting(mc)) {
             TYPE_ERR("`min_count` must be an integer or None");
-            return NULL;
+            goto error;
         }
         if (mc > window) {
             PyErr_Format(PyExc_ValueError,
                          "min_count (%d) cannot be greater than window (%d)",
                          mc, window);
-            return NULL;
+            goto error;
         }
         else if (mc <= 0) {
             VALUE_ERR("`min_count` must be greater than zero.");
-            return NULL;
+            goto error;
         }
     }
 
@@ -972,7 +975,7 @@ mover(char *name,
     /* defend against 0d beings */
     if (ndim == 0) {
         VALUE_ERR("moving window functions require ndim > 0");
-        return NULL;
+        goto error;
     }
 
     /* defend against the axis of negativity */
@@ -983,19 +986,19 @@ mover(char *name,
         axis = PyArray_PyIntAsInt(axis_obj);
         if (error_converting(axis)) {
             TYPE_ERR("`axis` must be an integer");
-            return NULL;
+            goto error;
         }
         if (axis < 0) {
             axis += ndim;
             if (axis < 0) {
                 PyErr_Format(PyExc_ValueError,
                              "axis(=%d) out of bounds", axis);
-                return NULL;
+                goto error;
             }
         }
         else if (axis >= ndim) {
             PyErr_Format(PyExc_ValueError, "axis(=%d) out of bounds", axis);
-            return NULL;
+            goto error;
         }
     }
 
@@ -1007,7 +1010,7 @@ mover(char *name,
         ddof = PyArray_PyIntAsInt(ddof_obj);
         if (error_converting(ddof)) {
             TYPE_ERR("`ddof` must be an integer");
-            return NULL;
+            goto error;
         }
     }
 
@@ -1016,26 +1019,34 @@ mover(char *name,
         PyErr_Format(PyExc_ValueError,
                      "Moving window (=%d) must between 1 and %zu, inclusive",
                      window, length);
-        return NULL;
+        goto error;
     }
 
     dtype = PyArray_TYPE(a);
 
     if (dtype == NPY_float64) {
-        return move_float64(a, window, mc, axis, ddof);
+        y = move_float64(a, window, mc, axis, ddof);
     }
     else if (dtype == NPY_float32) {
-        return move_float32(a, window, mc, axis, ddof);
+        y = move_float32(a, window, mc, axis, ddof);
     }
     else if (dtype == NPY_int64) {
-        return move_int64(a, window, mc, axis, ddof);
+        y = move_int64(a, window, mc, axis, ddof);
     }
     else if (dtype == NPY_int32) {
-        return move_int32(a, window, mc, axis, ddof);
+        y = move_int32(a, window, mc, axis, ddof);
     }
     else {
-        return slow(name, args, kwds);
+        y = slow(name, args, kwds);
     }
+
+    Py_DECREF(a);
+
+    return y;
+
+error:
+    Py_DECREF(a);
+    return NULL;
 
 }
 
