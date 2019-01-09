@@ -1,6 +1,7 @@
 include README.rst RELEASE.rst
 include LICENSE bottleneck/LICENSE
 include Makefile tox.ini
+include pyproject.toml
 
 recursive-include bottleneck/src *.c *.h
 exclude bottleneck/src/reduce.c
