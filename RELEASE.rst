@@ -25,6 +25,7 @@ Bottleneck 1.3.0
 - #183 bn.nansum(a) wrong output when a = np.ones((2, 2))[..., np.newaxis]
   same issue of other reduce functions
 - #194 Silenced FutureWarning from NumPy in the slow version of move functions
+- #195 Installing bottleneck onto a system that does not already have Numpy
 - #201 Memory leaked when input was not a NumPy array
 
 Bottleneck 1.2.1
