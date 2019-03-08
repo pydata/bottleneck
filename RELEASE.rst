@@ -9,7 +9,7 @@ see the commit log at http://github.com/kwgoodman/bottleneck
 Bottleneck 1.3.0
 ================
 
-*Release date: 2019-03-08*
+*Release date: Not yet released; in development*
 
 - Move documentation to https://kwgoodman.github.io/bottleneck-doc
 - Remove numpydoc package from Bottleneck source distribution
