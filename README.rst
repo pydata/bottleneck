@@ -1,3 +1,5 @@
+**July 26, 2019: Due to health problems, I can no longer maintain bottleneck. I hope that bottleneck is forked and a dominant fork emerges. Thanks to all who have reported issues and made PRs or just stopped by to say hello.**
+
 .. image:: https://travis-ci.org/kwgoodman/bottleneck.svg?branch=master
     :target: https://travis-ci.org/kwgoodman/bottleneck
 .. image:: https://ci.appveyor.com/api/projects/status/github/kwgoodman/bottleneck?svg=true&passingText=passing&failingText=failing&pendingText=pending
