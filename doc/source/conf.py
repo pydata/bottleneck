@@ -18,6 +18,8 @@ import sys, os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.append(os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('../sphinxext'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
+import bottleneck
 
 # -- General configuration -----------------------------------------------------
 
@@ -41,21 +43,14 @@ master_doc = 'index'
 project = u'Bottleneck'
 copyright = u'2010-2019 Keith Goodman'
 
-# Grab version from bottleneck/version.py
-ver_file = os.path.join('..', '..', 'bottleneck', 'version.py')
-VER = open(ver_file, 'r').read()
-VER = VER.split("= ")
-VER = VER[1].strip()
-VER = VER.strip('"')
-
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = VER
+version = bottleneck.__version__
 # The full version, including alpha/beta/rc tags.
-release = VER
+release = bottleneck.__version__
 
 # JP: added from sphinxdocs
 #autosummary_generate = True

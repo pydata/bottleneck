@@ -30,7 +30,6 @@ except:
 
 try:
     from . import slow
-    from bottleneck.version import __version__
     from bottleneck.benchmark.bench import bench
     from bottleneck.benchmark.bench_detailed import bench_detailed
     from bottleneck.tests.util import get_functions
@@ -43,3 +42,7 @@ try:
     del Tester
 except (ImportError, ValueError):
     print("No Bottleneck unit testing available.")
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
