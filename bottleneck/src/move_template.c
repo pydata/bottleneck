@@ -735,10 +735,8 @@ MOVE(move_rank, DTYPE0)
             r = 0;
             for (j = INDEX - window + 1; j < INDEX; j++) {
                 aj = AX(DTYPE0, j);
-                if (aj == aj) {
-                    if (ai > aj) g += 2;
-                    else if (ai == aj) e++;
-                }
+		if (ai > aj) g += 2;
+		else if (ai == aj) e++;
             }
             if (window == 1) {
                 r = 0.0;
