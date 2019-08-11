@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-import os
 import sys
 
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
 from setuptools.command.build_ext import build_ext as _build_ext
+import versioneer
 
 
 # workaround for installing bottleneck when numpy is not present
@@ -23,6 +23,10 @@ class build_ext(_build_ext):
         import numpy
         # place numpy includes first, see gh #156
         self.include_dirs.insert(0, numpy.get_include())
+
+
+cmdclass = versioneer.get_cmdclass()
+cmdclass['build_ext'] = build_ext
 
 
 def prepare_modules():
@@ -52,16 +56,6 @@ def get_long_description():
     return long_description
 
 
-def get_version_str():
-    ver_file = os.path.join('bottleneck', 'version.py')
-    with open(ver_file, 'r') as fid:
-        version = fid.read()
-    version = version.split("= ")
-    version = version[1].strip()
-    version = version.strip("\"")
-    return version
-
-
 CLASSIFIERS = ["Development Status :: 4 - Beta",
                "Environment :: Console",
                "Intended Audience :: Science/Research",
@@ -83,12 +77,13 @@ metadata = dict(name='Bottleneck',
                 license="Simplified BSD",
                 classifiers=CLASSIFIERS,
                 platforms="OS Independent",
-                version=get_version_str(),
+                version=versioneer.get_version(),
                 packages=find_packages(),
                 package_data={'bottleneck': ['LICENSE']},
                 requires=['numpy'],
                 install_requires=['numpy'],
-                cmdclass={'build_ext': build_ext},
+                cmdclass=cmdclass,
+                setup_requires=['numpy'],
                 ext_modules=prepare_modules())
 
 

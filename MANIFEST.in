@@ -11,3 +11,5 @@ exclude bottleneck/src/nonreduce_axis.c
 
 recursive-include doc *
 recursive-exclude doc/build *
+include versioneer.py
+include bottleneck/_version.py
