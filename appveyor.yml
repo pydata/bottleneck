@@ -45,6 +45,16 @@ environment:
           platform: x64
           CONDA_HOME: "C:\\Miniconda3-x64"
 
+        - PYTHON_VERSION: "3.7"
+          PYTHON_ARCH: "32"
+          platform: x86
+          CONDA_HOME: "C:\\Miniconda3"
+
+        - PYTHON_VERSION: "3.7"
+          PYTHON_ARCH: "64"
+          platform: x64
+          CONDA_HOME: "C:\\Miniconda3-x64"
+
 install:
     - "SET PATH=%CONDA_HOME%;%CONDA_HOME%\\Scripts;%PATH%"
     # configures the Miniconda environment (Py2/Py3, 32/64 bit)
