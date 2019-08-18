@@ -22,7 +22,8 @@ matrix:
 
         # python 3.5
         - os: linux
-          env: TEST_DEPS="numpy nose"
+          env: TEST_DEPS="nose"
+               PIP_DEPS="numpy>=1.16"
                PYTHON_VERSION="3.5"
                PYTHON_ARCH="64"
                TEST_RUN="sdist"
@@ -42,7 +43,8 @@ matrix:
 
         # python 3.5
         - os: osx
-          env: TEST_DEPS="numpy nose"
+          env: TEST_DEPS="nose"
+               PIP_DEPS="numpy>=1.16"
                PYTHON_VERSION="3.5"
                PYTHON_ARCH="64"
 
