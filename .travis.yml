@@ -3,6 +3,7 @@ language: generic
 sudo: false
 
 matrix:
+    fast_finish: true
     include:
 
         # test installing bottleneck tarball before installing numpy;
