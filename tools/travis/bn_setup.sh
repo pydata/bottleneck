@@ -8,9 +8,9 @@ else
     if [ "${TEST_RUN}" = "sdist" ]; then
         python setup.py sdist
         ARCHIVE=`ls dist/*.tar.gz`
-        pip install --verbose "${ARCHIVE[0]}"
+        pip install "${ARCHIVE[0]}"
     else
-        pip install --verbose "."
+        pip install "."
     fi
     # Workaround for https://github.com/travis-ci/travis-ci/issues/6522
     set +e
