@@ -76,11 +76,11 @@ CLASSIFIERS = ["Development Status :: 4 - Beta",
 
 
 metadata = dict(name='Bottleneck',
-                maintainer="Keith Goodman",
+                maintainer="Christopher Whelan",
                 maintainer_email="bottle-neck@googlegroups.com",
                 description="Fast NumPy array functions written in C",
                 long_description=get_long_description(),
-                url="https://github.com/kwgoodman/bottleneck",
+                url="https://github.com/pydata/bottleneck",
                 download_url="http://pypi.python.org/pypi/Bottleneck",
                 license="Simplified BSD",
                 classifiers=CLASSIFIERS,

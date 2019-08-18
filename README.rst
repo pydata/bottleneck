@@ -1,9 +1,8 @@
-**July 26, 2019: Due to health problems, I can no longer maintain bottleneck. I hope that bottleneck is forked and a dominant fork emerges. Thanks to all who have reported issues and made PRs or just stopped by to say hello.**
+.. image:: https://travis-ci.org/pydata/bottleneck.svg?branch=master
+    :target: https://travis-ci.org/pydata/bottleneck
+.. image:: https://ci.appveyor.com/api/projects/status/github/pydata/bottleneck?svg=true&passingText=passing&failingText=failing&pendingText=pending
+    :target: https://ci.appveyor.com/project/pydata/bottleneck
 
-.. image:: https://travis-ci.org/kwgoodman/bottleneck.svg?branch=master
-    :target: https://travis-ci.org/kwgoodman/bottleneck
-.. image:: https://ci.appveyor.com/api/projects/status/github/kwgoodman/bottleneck?svg=true&passingText=passing&failingText=failing&pendingText=pending
-    :target: https://ci.appveyor.com/project/kwgoodman/bottleneck
 ==========
 Bottleneck
 ==========
@@ -87,7 +86,7 @@ Where
 ===================   ========================================================
  download             https://pypi.python.org/pypi/Bottleneck
  docs                 https://kwgoodman.github.io/bottleneck-doc
- code                 https://github.com/kwgoodman/bottleneck
+ code                 https://github.com/pydata/bottleneck
  mailing list         https://groups.google.com/group/bottle-neck
 ===================   ========================================================
 
