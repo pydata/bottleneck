@@ -11,9 +11,9 @@ from .util import DTYPES
 def arrays(dtypes):
     "Iterator that yield arrays to use for unit testing."
     ss = {}
-    ss[1] = {'size':  4, 'shapes': [(4,)]}
-    ss[2] = {'size':  6, 'shapes': [(2, 3)]}
-    ss[3] = {'size':  6, 'shapes': [(1, 2, 3)]}
+    ss[1] = {'size': 4, 'shapes': [(4,)]}
+    ss[2] = {'size': 6, 'shapes': [(2, 3)]}
+    ss[3] = {'size': 6, 'shapes': [(1, 2, 3)]}
     rs = np.random.RandomState([1, 2, 3])
     for ndim in ss:
         size = ss[ndim]['size']

@@ -264,6 +264,6 @@ def get_instructions():
          "(a, 0, 2)",
          10),
 
-     ]
+    ]
 
     return instructions

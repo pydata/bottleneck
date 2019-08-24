@@ -49,7 +49,7 @@ def unit_maker(func, decimal=5, skip_dtype=['nansum', 'ss']):
             if actualraised and desiredraised:
                 pass
             else:
-                tup = (name, 'a'+str(i), str(a.dtype), str(a.shape),
+                tup = (name, 'a' + str(i), str(a.dtype), str(a.shape),
                        str(axis), array_order(a), a)
                 err_msg = fmt % tup
                 if actualraised != desiredraised:

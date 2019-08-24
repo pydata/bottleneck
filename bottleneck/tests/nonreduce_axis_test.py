@@ -52,7 +52,7 @@ def unit_maker(func):
             else:
                 s0 = complete_the_partition(s0, n, axis)
                 s1 = complete_the_partition(s1, n, axis)
-            tup = (name, 'a'+str(i), str(a.dtype), str(a.shape), n,
+            tup = (name, 'a' + str(i), str(a.dtype), str(a.shape), n,
                    str(axis), array_order(a), a)
             err_msg = msg % tup
             assert_array_equal(s1, s0, err_msg)
@@ -62,7 +62,7 @@ def complete_the_partition(a, n, axis):
 
     def func1d(a, n):
         a[:n] = np.sort(a[:n])
-        a[n+1:] = np.sort(a[n+1:])
+        a[n + 1:] = np.sort(a[n + 1:])
         return a
 
     a = a.copy()

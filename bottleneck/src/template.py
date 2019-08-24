@@ -42,7 +42,7 @@ def repeat_templating(lines):
         func_list = lines[idx0:idx1]
         func_list = expand_functions_repeat(func_list)
         # the +1 below is to skip the /* repeat end */ line
-        lines = lines[:idx0] + func_list + lines[idx1+1:]
+        lines = lines[:idx0] + func_list + lines[idx1 + 1:]
         index = idx0
     return lines
 
@@ -93,7 +93,7 @@ def dtype_templating(lines):
         func_list = lines[idx0:idx1]
         func_list = expand_functions_dtype(func_list)
         # the +1 below is to skip the /* dtype end */ line
-        lines = lines[:idx0] + func_list + lines[idx1+1:]
+        lines = lines[:idx0] + func_list + lines[idx1 + 1:]
         index = idx0
     return lines
 
@@ -142,9 +142,9 @@ def string_templating(lines):
         idx0, idx1 = next_block(lines, index, STRING_BEGIN, STRING_END)
         if idx0 is None:
             break
-        str_list = lines[idx0+1:idx1]
+        str_list = lines[idx0 + 1:idx1]
         str_list = quote_string(str_list)
-        lines = lines[:idx0] + str_list + lines[idx1+1:]
+        lines = lines[:idx0] + str_list + lines[idx1 + 1:]
         index = idx0
     return lines
 
