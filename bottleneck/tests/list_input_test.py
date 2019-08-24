@@ -18,9 +18,9 @@ def test_list_input():
 def lists(dtypes=DTYPES):
     "Iterator that yields lists to use for unit testing."
     ss = {}
-    ss[1] = {'size':  4, 'shapes': [(4,)]}
-    ss[2] = {'size':  6, 'shapes': [(1, 6), (2, 3)]}
-    ss[3] = {'size':  6, 'shapes': [(1, 2, 3)]}
+    ss[1] = {'size': 4, 'shapes': [(4,)]}
+    ss[2] = {'size': 6, 'shapes': [(1, 6), (2, 3)]}
+    ss[3] = {'size': 6, 'shapes': [(1, 2, 3)]}
     ss[4] = {'size': 24, 'shapes': [(1, 2, 3, 4)]}
     for ndim in ss:
         size = ss[ndim]['size']
@@ -48,6 +48,6 @@ def unit_maker(func):
                 actual = func(a, 2)
                 desired = func0(a, 2)
         a = np.array(a)
-        tup = (name, 'a'+str(i), str(a.dtype), str(a.shape), a)
+        tup = (name, 'a' + str(i), str(a.dtype), str(a.shape), a)
         err_msg = msg % tup
         assert_array_almost_equal(actual, desired, err_msg=err_msg)

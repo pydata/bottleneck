@@ -45,7 +45,7 @@ def unit_maker(func):
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
                     func0(desired, old, new)
-                tup = (name, 'a'+str(i), str(arr.dtype),
+                tup = (name, 'a' + str(i), str(arr.dtype),
                        str(arr.shape), old, new, array_order(arr), arr)
                 err_msg = msg % tup
                 assert_array_equal(actual, desired, err_msg=err_msg)
@@ -84,7 +84,7 @@ def test_non_array():
 
 def test_replace_nan_int():
     "Test replace, int array, old=nan, new=0"
-    a = np.arange(2*3*4).reshape(2, 3, 4)
+    a = np.arange(2 * 3 * 4).reshape(2, 3, 4)
     actual = a.copy()
     bn.replace(actual, np.nan, 0)
     desired = a.copy()

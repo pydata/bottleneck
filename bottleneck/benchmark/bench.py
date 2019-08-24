@@ -55,7 +55,7 @@ def bench(shapes=[(100,), (1000, 1000), (1000, 1000), (1000, 1000),
     print("    NaN means approx one-fifth NaNs; %s used" % str(dtype))
 
     print('')
-    header = [" "*11]
+    header = [" " * 11]
     for nan in nans:
         if nan:
             header.append("NaN".center(11))
@@ -63,17 +63,17 @@ def bench(shapes=[(100,), (1000, 1000), (1000, 1000), (1000, 1000),
             header.append("no NaN".center(11))
     print("".join(header))
     header = ["".join(str(shape).split(" ")).center(11) for shape in shapes]
-    header = [" "*12] + header
+    header = [" " * 12] + header
     print("".join(header))
     header = ["".join(("axis=" + str(axis)).split(" ")).center(11)
               for axis in axes]
-    header = [" "*12] + header
+    header = [" " * 12] + header
     print("".join(header))
 
     suite = benchsuite(shapes, dtype, nans, axes, order, functions)
     for test in suite:
         name = test["name"].ljust(12)
-        fmt = name + "%7.1f" + "%11.1f"*(len(shapes) - 1)
+        fmt = name + "%7.1f" + "%11.1f" * (len(shapes) - 1)
         speed = timer(test['statements'], test['setups'])
         print(fmt % tuple(speed))
 

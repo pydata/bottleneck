@@ -3,7 +3,7 @@
 set -ev # exit on first error, print commands
 
 if [ "${TEST_RUN}" = "style" ]; then
-    flake8 --exclude=doc .
+    flake8
 else
     if [ "${TEST_RUN}" = "sdist" ]; then
         python setup.py sdist

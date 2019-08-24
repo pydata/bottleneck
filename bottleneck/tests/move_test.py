@@ -35,7 +35,7 @@ def unit_maker(func):
                 for min_count in min_counts:
                     actual = func(a, window, min_count, axis=axis)
                     desired = func0(a, window, min_count, axis=axis)
-                    tup = (func_name, window, str(min_count), 'a'+str(i),
+                    tup = (func_name, window, str(min_count), 'a' + str(i),
                            str(a.dtype), str(a.shape), str(axis),
                            array_order(a), a)
                     err_msg = fmt % tup
