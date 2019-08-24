@@ -89,20 +89,7 @@ metadata = dict(name='Bottleneck',
                 requires=['numpy'],
                 install_requires=['numpy'],
                 cmdclass={'build_ext': build_ext},
-                setup_requires=['numpy'])
+                ext_modules=prepare_modules())
 
-
-if not(len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or
-       sys.argv[1] in ('--help-commands', 'egg_info', '--version', 'clean',
-                       'build_sphinx'))):
-    # build bottleneck
-    metadata['ext_modules'] = prepare_modules()
-elif sys.argv[1] == 'build_sphinx':
-    # create intro.rst (from readme file) for sphinx manual
-    readme = 'README.rst'
-    intro = os.path.join('doc', 'source', 'intro.rst')
-    with open(readme, 'r') as infile, open(intro, 'w') as outfile:
-        txt = infile.readlines()[4:]  # skip travis, appveyor build status
-        outfile.write(''.join(txt))
 
 setup(**metadata)
