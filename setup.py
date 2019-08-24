@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import sys
 
 from setuptools import setup, find_packages
@@ -28,9 +29,13 @@ class build_ext(_build_ext):
 cmdclass = versioneer.get_cmdclass()
 cmdclass['build_ext'] = build_ext
 
+# Add our template path to the path so that we don't have a circular reference
+# of working install to be able to re-compile
+sys.path.append(os.path.join(os.path.dirname(__file__), 'bottleneck/src'))
+
 
 def prepare_modules():
-    from bottleneck.src.template import make_c_files
+    from bn_template import make_c_files
     make_c_files()
     ext = [Extension("bottleneck.reduce",
                      sources=["bottleneck/src/reduce.c"],
