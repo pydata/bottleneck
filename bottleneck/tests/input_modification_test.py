@@ -34,7 +34,7 @@ def arrays(dtypes):
 
 def unit_maker(func, nans=True):
     "Test that bn.xxx gives the same output as np.xxx."
-    msg = "\nInput array modifed by %s.\n\n"
+    msg = "\nInput array modified by %s.\n\n"
     msg += "input array before:\n%s\nafter:\n%s\n"
     for i, a in enumerate(arrays(DTYPES)):
         for axis in list(range(-a.ndim, a.ndim)) + [None]:
