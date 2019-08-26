@@ -14,9 +14,9 @@ from bottleneck.benchmark.bench import bench
 from bottleneck.benchmark.bench_detailed import bench_detailed
 from bottleneck.tests.util import get_functions
 
-from numpy.testing import Tester
-test = Tester().test
-del Tester
+from ._pytesttester import PytestTester
+test = PytestTester(__name__)
+del PytestTester
 
 from ._version import get_versions  # noqa: E402
 __version__ = get_versions()['version']

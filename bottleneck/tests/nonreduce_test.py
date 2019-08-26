@@ -6,15 +6,11 @@ import numpy as np
 from numpy.testing import assert_equal, assert_array_equal, assert_raises
 import bottleneck as bn
 from .util import arrays, array_order
+import pytest
 
 
-def test_nonreduce():
-    "test nonreduce functions"
-    for func in bn.get_functions('nonreduce'):
-        yield unit_maker, func
-
-
-def unit_maker(func):
+@pytest.mark.parametrize("func", bn.get_functions('nonreduce'))
+def test_nonreduce(func):
     "Test that bn.xxx gives the same output as np.xxx."
     msg = '\nfunc %s | input %s (%s) | shape %s | old %f | new %f | order %s\n'
     msg += '\nInput array:\n%s\n'

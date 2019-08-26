@@ -5,15 +5,11 @@ from numpy.testing import (assert_equal, assert_array_almost_equal,
                            assert_raises)
 import bottleneck as bn
 from .util import arrays, array_order
+import pytest
 
 
-def test_move():
-    "test move functions"
-    for func in bn.get_functions('move'):
-        yield unit_maker, func
-
-
-def unit_maker(func):
+@pytest.mark.parametrize("func", bn.get_functions('move'))
+def test_move(func):
     "Test that bn.xxx gives the same output as a reference function."
     fmt = ('\nfunc %s | window %d | min_count %s | input %s (%s) | shape %s | '
            'axis %s | order %s\n')
@@ -48,13 +44,9 @@ def unit_maker(func):
 # ---------------------------------------------------------------------------
 # Test argument parsing
 
-def test_arg_parsing():
-    "test argument parsing"
-    for func in bn.get_functions('move'):
-        yield unit_maker_argparse, func
 
-
-def unit_maker_argparse(func, decimal=5):
+@pytest.mark.parametrize("func", bn.get_functions('move'))
+def test_arg_parsing(func, decimal=5):
     "test argument parsing."
 
     name = func.__name__
@@ -118,13 +110,8 @@ def unit_maker_argparse(func, decimal=5):
     func(*args, **kwargs)
 
 
-def test_arg_parse_raises():
-    "test argument parsing raises in move"
-    for func in bn.get_functions('move'):
-        yield unit_maker_argparse_raises, func
-
-
-def unit_maker_argparse_raises(func):
+@pytest.mark.parametrize("func", bn.get_functions('move'))
+def test_arg_parse_raises(func):
     "test argument parsing raises in move"
     a = np.array([1., 2, 3])
     assert_raises(TypeError, func)

@@ -6,13 +6,7 @@ import numpy as np
 from numpy.testing import assert_array_almost_equal
 import bottleneck as bn
 from .util import DTYPES
-
-
-def test_list_input():
-    "Check that functions can handle list input"
-    for func in bn.get_functions('all'):
-        if func.__name__ != 'replace':
-            yield unit_maker, func
+import pytest
 
 
 def lists(dtypes=DTYPES):
@@ -32,11 +26,14 @@ def lists(dtypes=DTYPES):
                 yield a.astype(dtype).tolist()
 
 
-def unit_maker(func):
+@pytest.mark.parametrize("func", bn.get_functions('all'))
+def test_list_input(func):
     "Test that bn.xxx gives the same output as bn.slow.xxx for list input."
     msg = '\nfunc %s | input %s (%s) | shape %s\n'
     msg += '\nInput array:\n%s\n'
     name = func.__name__
+    if name == 'replace':
+        return
     func0 = eval('bn.slow.%s' % name)
     for i, a in enumerate(lists()):
         with warnings.catch_warnings():

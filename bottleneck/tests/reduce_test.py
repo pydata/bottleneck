@@ -10,12 +10,13 @@ from numpy.testing import (assert_equal, assert_raises,
 
 import bottleneck as bn
 from .util import arrays, array_order, DTYPES
+import pytest
 
 
-def test_reduce():
+@pytest.mark.parametrize("func", bn.get_functions("reduce"))
+def test_reduce(func):
     "test reduce functions"
-    for func in bn.get_functions('reduce'):
-        yield unit_maker, func
+    return unit_maker(func)
 
 
 def unit_maker(func, decimal=5, skip_dtype=['nansum', 'ss']):
@@ -71,10 +72,10 @@ def unit_maker(func, decimal=5, skip_dtype=['nansum', 'ss']):
 # ---------------------------------------------------------------------------
 # Test argument parsing
 
-def test_arg_parsing():
+@pytest.mark.parametrize("func", bn.get_functions("reduce"))
+def test_arg_parsing(func):
     "test argument parsing"
-    for func in bn.get_functions('reduce'):
-        yield unit_maker_argparse, func
+    return unit_maker_argparse(func)
 
 
 def unit_maker_argparse(func, decimal=5):
@@ -125,10 +126,10 @@ def unit_maker_argparse(func, decimal=5):
     func(*args, **kwargs)
 
 
-def test_arg_parse_raises():
+@pytest.mark.parametrize("func", bn.get_functions("reduce"))
+def test_arg_parse_raises(func):
     "test argument parsing raises in reduce"
-    for func in bn.get_functions('reduce'):
-        yield unit_maker_argparse_raises, func
+    return unit_maker_argparse_raises(func)
 
 
 def unit_maker_argparse_raises(func):
