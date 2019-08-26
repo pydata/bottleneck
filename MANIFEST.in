@@ -13,3 +13,5 @@ recursive-include doc *
 recursive-exclude doc/build *
 include versioneer.py
 include bottleneck/_version.py
+
+global-exclude *~
