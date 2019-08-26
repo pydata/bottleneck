@@ -7,3 +7,5 @@ MANIFEST
 .coverage
 *.egg-info
 .*.swp
+*~
+\#*#
