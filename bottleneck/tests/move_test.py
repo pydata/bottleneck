@@ -1,6 +1,5 @@
 "Test moving window functions."
 
-from nose.tools import assert_true
 import numpy as np
 from numpy.testing import (assert_equal, assert_array_almost_equal,
                            assert_raises)
@@ -202,12 +201,12 @@ def test_move_std_sqrt():
          0.00028718669878572767]
     err_msg = "Square root of negative number. ndim = %d"
     b = bn.move_std(a, window=3)
-    assert_true(np.isfinite(b[2:]).all(), err_msg % 1)
+    assert np.isfinite(b[2:]).all(), err_msg % 1
 
     a2 = np.array([a, a])
     b = bn.move_std(a2, window=3, axis=1)
-    assert_true(np.isfinite(b[:, 2:]).all(), err_msg % 2)
+    assert np.isfinite(b[:, 2:]).all(), err_msg % 2
 
     a3 = np.array([[a, a], [a, a]])
     b = bn.move_std(a3, window=3, axis=2)
-    assert_true(np.isfinite(b[:, :, 2:]).all(), err_msg % 3)
+    assert np.isfinite(b[:, :, 2:]).all(), err_msg % 3
