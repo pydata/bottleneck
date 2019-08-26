@@ -1,4 +1,4 @@
-shallow_clone: true # download the zip instead of the whole history
+shallow_clone: false # download the zip instead of the whole history
 
 environment:
 
