@@ -194,7 +194,8 @@ REDUCE_ONE(nanmean, DTYPE0)
     }
     else {
         WHILE {
-            asum = count = 0;
+            count = 0;
+            asum = 0;
             FOR {
                 ai = AI(DTYPE0);
                 if (ai == ai) {
@@ -320,7 +321,8 @@ REDUCE_ONE(NAME, DTYPE0)
     }
     else {
         WHILE {
-            asum = count = 0;
+            count = 0;
+            asum = 0;
             FOR {
                 ai = AI(DTYPE0);
                 if (ai == ai) {
