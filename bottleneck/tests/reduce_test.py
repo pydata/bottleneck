@@ -4,7 +4,6 @@ import warnings
 import traceback
 #  from itertools import permutations
 
-from nose.tools import ok_
 import numpy as np
 from numpy.testing import (assert_equal, assert_raises,
                            assert_array_almost_equal)
@@ -59,7 +58,7 @@ def unit_maker(func, decimal=5, skip_dtype=['nansum', 'ss']):
                         fmt2 = '\nbn.%s ran\nbn.slow.%s raised\n\n%s'
                     msg = fmt2 % (name, name, traceback.format_exc())
                     err_msg += msg
-                    ok_(False, err_msg)
+                    assert False, err_msg
                 assert_array_almost_equal(actual, desired, decimal, err_msg)
                 err_msg += '\n dtype mismatch %s %s'
                 if name not in skip_dtype:
