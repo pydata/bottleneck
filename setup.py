@@ -89,7 +89,8 @@ metadata = dict(name='Bottleneck',
                 install_requires=['numpy'],
                 cmdclass=cmdclass,
                 setup_requires=['numpy'],
-                ext_modules=prepare_modules())
+                ext_modules=prepare_modules(),
+                zip_safe=False)
 
 
 setup(**metadata)
