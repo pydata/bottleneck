@@ -6,24 +6,14 @@ import bottleneck as bn
 from .reduce_test import (unit_maker as reduce_unit_maker,
                           unit_maker_argparse as unit_maker_parse_rankdata)
 from .util import arrays, array_order
-
+import pytest
 
 # ---------------------------------------------------------------------------
 # partition, argpartition
 
-def test_partition():
-    "test partition"
-    for func in (bn.partition,):
-        yield unit_maker, func
 
-
-def test_argpartition():
-    "test argpartition"
-    for func in (bn.argpartition,):
-        yield unit_maker, func
-
-
-def unit_maker(func):
+@pytest.mark.parametrize("func", (bn.partition, bn.argpartition))
+def test_partition_and_argpartition(func):
     "test partition or argpartition"
 
     msg = '\nfunc %s | input %s (%s) | shape %s | n %d | axis %s | order %s\n'
@@ -135,11 +125,10 @@ def test_transpose():
 # ---------------------------------------------------------------------------
 # rankdata, nanrankdata, push
 
-def test_nonreduce_axis():
+@pytest.mark.parametrize("func", (bn.rankdata, bn.nanrankdata, bn.push))
+def test_nonreduce_axis(func):
     "Test nonreduce axis functions"
-    funcs = [bn.rankdata, bn.nanrankdata, bn.push]
-    for func in funcs:
-        yield reduce_unit_maker, func
+    return reduce_unit_maker(func)
 
 
 def test_push():
@@ -155,20 +144,20 @@ def test_push():
 # ---------------------------------------------------------------------------
 # Test argument parsing
 
-def test_arg_parsing():
+@pytest.mark.parametrize("func", bn.get_functions('nonreduce_axis'))
+def test_arg_parsing(func):
     "test argument parsing in nonreduce_axis"
-    for func in bn.get_functions('nonreduce_axis'):
-        name = func.__name__
-        if name in ('partition', 'argpartition'):
-            yield unit_maker_parse, func
-        elif name in ('push'):
-            yield unit_maker_parse, func
-        elif name in ('rankdata', 'nanrankdata'):
-            yield unit_maker_parse_rankdata, func
-        else:
-            fmt = "``%s` is an unknown nonreduce_axis function"
-            raise ValueError(fmt % name)
-        yield unit_maker_raises, func
+    name = func.__name__
+    if name in ('partition', 'argpartition'):
+        return unit_maker_parse(func)
+    elif name in ('push'):
+        return unit_maker_parse(func)
+    elif name in ('rankdata', 'nanrankdata'):
+        return unit_maker_parse_rankdata(func)
+    else:
+        fmt = "``%s` is an unknown nonreduce_axis function"
+        raise ValueError(fmt % name)
+    return unit_maker_raises(func)
 
 
 def unit_maker_parse(func, decimal=5):

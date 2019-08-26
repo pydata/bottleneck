@@ -6,6 +6,7 @@ import numpy as np
 from numpy.testing import assert_equal
 import bottleneck as bn
 from .util import DTYPES
+import pytest
 
 
 def arrays(dtypes):
@@ -32,7 +33,8 @@ def arrays(dtypes):
                 yield a
 
 
-def unit_maker(func, nans=True):
+@pytest.mark.parametrize("func", bn.get_functions('all'))
+def test_modification(func, nans=True):
     "Test that bn.xxx gives the same output as np.xxx."
     msg = "\nInput array modified by %s.\n\n"
     msg += "input array before:\n%s\nafter:\n%s\n"
@@ -55,9 +57,3 @@ def unit_maker(func, nans=True):
                     except:  # noqa
                         continue
                 assert_equal(a1, a2, msg % (func.__name__, a1, a2))
-
-
-def test_modification():
-    "Test for illegal inplace modification of input array"
-    for func in bn.get_functions('all'):
-        yield unit_maker, func

@@ -12,7 +12,8 @@ else
     else
         pip install "."
     fi
-    # Workaround for https://github.com/travis-ci/travis-ci/issues/6522
+    python setup.py build_ext --inplace
     set +e
+    # Workaround for https://github.com/travis-ci/travis-ci/issues/6522
     python "tools/test-installed-bottleneck.py"
 fi
