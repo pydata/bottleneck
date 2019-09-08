@@ -7,12 +7,19 @@ def make_c_files():
     modules = ['reduce', 'move', 'nonreduce', 'nonreduce_axis']
     dirpath = os.path.dirname(__file__)
     for module in modules:
-        filepath = os.path.join(dirpath, module + '_template.c')
-        with open(filepath, 'r') as f:
+        template_file = os.path.join(dirpath, module + '_template.c')
+        target_file = os.path.join(dirpath, module + '.c')
+
+        if (
+            os.path.exists(target_file)
+            and os.stat(template_file).st_mtime < os.stat(target_file).st_mtime
+        ):
+            continue
+
+        with open(template_file, 'r') as f:
             src_str = f.read()
         src_str = template(src_str)
-        filepath = os.path.join(dirpath, module + '.c')
-        with open(filepath, 'w') as f:
+        with open(target_file, 'w') as f:
             f.write(src_str)
 
 
