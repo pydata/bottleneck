@@ -1001,11 +1001,13 @@ REDUCE_ONE(anynan, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64'], ['int32']] */
+BN_OPT_3
 REDUCE_ALL(anynan, DTYPE0)
 {
     Py_RETURN_FALSE;
 }
 
+BN_OPT_3
 REDUCE_ONE(anynan, DTYPE0)
 {
     INIT_ONE(BOOL, uint8)
@@ -1073,12 +1075,14 @@ REDUCE_ONE(allnan, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64'], ['int32']] */
+BN_OPT_3
 REDUCE_ALL(allnan, DTYPE0)
 {
     if (PyArray_SIZE(a) == 0) Py_RETURN_TRUE;
     Py_RETURN_FALSE;
 }
 
+BN_OPT_3
 REDUCE_ONE(allnan, DTYPE0)
 {
     INIT_ONE(BOOL, uint8)
