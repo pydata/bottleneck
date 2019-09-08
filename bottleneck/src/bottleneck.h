@@ -44,7 +44,7 @@
 #define MEMORY_ERR(text)  PyErr_SetString(PyExc_MemoryError, text)
 #define RUNTIME_ERR(text) PyErr_SetString(PyExc_RuntimeError, text)
 
-/* `inline` copied from NumPy. */
+/* `inline` and `opt_3` copied from NumPy. */
 #if defined(_MSC_VER)
         #define BN_INLINE __inline
 #elif defined(__GNUC__)
@@ -55,6 +55,12 @@
 	#endif
 #else
         #define BN_INLINE
+#endif
+
+#if HAVE_ATTRIBUTE_OPTIMIZE_OPT_3
+    #define BN_OPT_3 __attribute__((optimize("O3")))
+#else
+    #define BN_OPT_3
 #endif
 
 /*
