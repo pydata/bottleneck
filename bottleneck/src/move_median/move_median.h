@@ -24,7 +24,7 @@ typedef double ai_t;
 #define LH 1
 #define NA 2
 
-#define FIRST_LEAF(n) ceil((n - 1) / (double)NUM_CHILDREN)
+#define FIRST_LEAF(n) (idx_t) ceil((n - 1) / (double)NUM_CHILDREN)
 
 struct _mm_node {
     int              region; /* SH small heap, LH large heap, NA nan array */
