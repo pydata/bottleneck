@@ -37,18 +37,23 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'bottleneck/src'))
 def prepare_modules():
     from bn_template import make_c_files
     make_c_files()
+    base_includes = ["bottleneck/src/bottleneck.h"]
     ext = [Extension("bottleneck.reduce",
                      sources=["bottleneck/src/reduce.c"],
+                     depends=base_includes,
                      extra_compile_args=['-O2'])]
     ext += [Extension("bottleneck.move",
                       sources=["bottleneck/src/move.c",
                                "bottleneck/src/move_median/move_median.c"],
+                      depends=base_includes,
                       extra_compile_args=['-O2'])]
     ext += [Extension("bottleneck.nonreduce",
                       sources=["bottleneck/src/nonreduce.c"],
+                      depends=base_includes,
                       extra_compile_args=['-O2'])]
     ext += [Extension("bottleneck.nonreduce_axis",
                       sources=["bottleneck/src/nonreduce_axis.c"],
+                      depends=base_includes,
                       extra_compile_args=['-O2'])]
     return ext
 
