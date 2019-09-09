@@ -4,6 +4,7 @@
 #include <Python.h>
 #define NPY_NO_DEPRECATED_API NPY_1_11_API_VERSION
 #include <numpy/arrayobject.h>
+#include <bn_config.h>
 
 /* THREADS=1 releases the GIL but increases function call
  * overhead. THREADS=0 does not release the GIL but keeps

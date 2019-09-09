@@ -6,8 +6,16 @@ import sys
 from setuptools import setup, find_packages, Command
 from setuptools.extension import Extension
 from setuptools.command.build_ext import build_ext as _build_ext
+from distutils.command.config import config as _config
 import versioneer
 import shutil
+
+
+class config(_config):
+    def run(self):
+        from bn_config import create_config_h
+
+        create_config_h(self)
 
 
 class clean(Command):
@@ -29,6 +37,10 @@ class clean(Command):
             for f in files:
                 if f.endswith(".pyc") or f.endswith(".so"):
                     self.delete_files.append(os.path.join(root, f))
+
+        config_h = "bottleneck/src/bn_config.h"
+        if os.path.exists(config_h):
+            self.delete_files.append(config_h)
 
         if os.path.exists("build"):
             self.delete_dirs.append("build")
@@ -58,11 +70,21 @@ class build_ext(_build_ext):
         import numpy
         # place numpy includes first, see gh #156
         self.include_dirs.insert(0, numpy.get_include())
+        self.include_dirs.append("bottleneck/src")
+
+    def build_extensions(self):
+        from bn_template import make_c_files
+
+        self.run_command("config")
+        make_c_files()
+
+        _build_ext.build_extensions(self)
 
 
 cmdclass = versioneer.get_cmdclass()
 cmdclass['build_ext'] = build_ext
 cmdclass['clean'] = clean
+cmdclass['config'] = config
 
 # Add our template path to the path so that we don't have a circular reference
 # of working install to be able to re-compile
@@ -70,9 +92,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'bottleneck/src'))
 
 
 def prepare_modules():
-    from bn_template import make_c_files
-    make_c_files()
-    base_includes = ["bottleneck/src/bottleneck.h"]
+    base_includes = ["bottleneck/src/bottleneck.h",
+                     "bottleneck/src/bn_config.h"]
     ext = [Extension("bottleneck.reduce",
                      sources=["bottleneck/src/reduce.c"],
                      depends=base_includes,
