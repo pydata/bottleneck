@@ -160,5 +160,5 @@ class TimeAllNan2D:
 
         assert self.arr.flags[order + "_CONTIGUOUS"]
 
-    def time_anynan(self, dtype, shape, order, axis, case):
-        bn.anynan(self.arr, axis=axis)
+    def time_allnan(self, dtype, shape, order, axis, case):
+        bn.allnan(self.arr, axis=axis)
