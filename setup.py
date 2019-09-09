@@ -3,10 +3,44 @@
 import os
 import sys
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Command
 from setuptools.extension import Extension
 from setuptools.command.build_ext import build_ext as _build_ext
 import versioneer
+import shutil
+
+
+class clean(Command):
+    user_options = []
+
+    def initialize_options(self):
+        self.all = True
+        self.delete_dirs = []
+        self.delete_files = []
+
+        for root, dirs, files in os.walk("bottleneck"):
+            for d in dirs:
+                if d == "__pycache__":
+                    self.delete_dirs.append(os.path.join(root, d))
+
+            if "__pycache__" in root:
+                continue
+
+            for f in files:
+                if f.endswith(".pyc") or f.endswith(".so"):
+                    self.delete_files.append(os.path.join(root, f))
+
+        if os.path.exists("build"):
+            self.delete_dirs.append("build")
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        for delete_dir in self.delete_dirs:
+            shutil.rmtree(delete_dir)
+        for delete_file in self.delete_files:
+            os.unlink(delete_file)
 
 
 # workaround for installing bottleneck when numpy is not present
@@ -28,6 +62,7 @@ class build_ext(_build_ext):
 
 cmdclass = versioneer.get_cmdclass()
 cmdclass['build_ext'] = build_ext
+cmdclass['clean'] = clean
 
 # Add our template path to the path so that we don't have a circular reference
 # of working install to be able to re-compile
