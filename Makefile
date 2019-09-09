@@ -59,3 +59,4 @@ clean:
 	rm -rf ${srcdir}/*.html ${srcdir}/build
 	rm -rf ${srcdir}/*.c
 	rm -rf ${srcdir}/*.so
+	rm -rf ${srcdir}/bn_config.h
