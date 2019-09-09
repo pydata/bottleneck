@@ -19,7 +19,7 @@ class config(_config):
 
 
 class clean(Command):
-    user_options = []
+    user_options = [("all", "a", "")]
 
     def initialize_options(self):
         self.all = True
