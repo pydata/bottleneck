@@ -2,6 +2,9 @@
 language: generic
 sudo: false
 
+git:
+    depth: false
+
 matrix:
     fast_finish: true
     include:
