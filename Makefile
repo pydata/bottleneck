@@ -2,7 +2,7 @@
 
 PYTHON=python
 
-srcdir := bottleneck/
+srcdir := bottleneck
 
 help:
 	@echo "Available tasks:"
