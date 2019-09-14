@@ -94,7 +94,7 @@ License
 =======
 
 Bottleneck is distributed under a Simplified BSD license. See the LICENSE file
-for details.
+and LICENSES directory for details.
 
 Install
 =======
