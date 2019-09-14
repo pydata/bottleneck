@@ -24,6 +24,13 @@ matrix:
                PYTHON_ARCH="64"
                TEST_RUN="style"
 
+         # doc check
+        - os: linux
+          env: TEST_DEPS="sphinx numpydoc"
+               PYTHON_VERSION="3.7"
+               PYTHON_ARCH="64"
+               TEST_RUN="doc"
+
         # python 3.5
         - os: linux
           env: TEST_DEPS="pytest"
