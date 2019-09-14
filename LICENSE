@@ -1,13 +1,3 @@
-=======
-License
-=======
-
-Bottleneck is distributed under a Simplified BSD license. Parts of NumPy and
-SciPy, which have BSD licenses, are included in Bottleneck.
-
-Bottleneck license
-==================
-
 Copyright (c) 2010-2019 Keith Goodman
 All rights reserved.
 
