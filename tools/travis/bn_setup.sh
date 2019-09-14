@@ -14,6 +14,10 @@ else
     fi
     python setup.py build_ext --inplace
     set +e
-    # Workaround for https://github.com/travis-ci/travis-ci/issues/6522
-    python "tools/test-installed-bottleneck.py"
+    if [ "${TEST_RUN}" = "doc" ]; then
+	make doc
+    else
+	# Workaround for https://github.com/travis-ci/travis-ci/issues/6522
+	python "tools/test-installed-bottleneck.py"
+    fi
 fi
