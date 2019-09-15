@@ -1,6 +1,7 @@
 
 language: generic
 sudo: false
+cache: pip
 
 git:
     depth: false
