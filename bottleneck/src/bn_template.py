@@ -18,7 +18,7 @@ def make_c_files():
 
         with open(template_file, "r") as f:
             src_str = f.read()
-        src_str = template(src_str)
+        src_str = '#line 1 "{}"\n'.format(template_file) + template(src_str)
         if len(src_str) and src_str[-1] != "\n":
             src_str += "\n"
         with open(target_file, "w") as f:
@@ -27,7 +27,23 @@ def make_c_files():
 
 def template(src_str):
     src_list = src_str.splitlines()
-    src_list = repeat_templating(src_list)
+    line_numbers = []
+    last_empty_ind = 0
+    for i, l in enumerate(src_list):
+        if l.strip().endswith("{") and not l.startswith(" "):
+            line_numbers.append(last_empty_ind)
+
+        if len(l.strip()) == 0 or "*/" in l:
+            last_empty_ind = i + 1
+
+    line_numbers = set(line_numbers)
+    new_src_list = []
+    for i, l in enumerate(src_list):
+        if i in line_numbers:
+            new_src_list.append("#line {}".format(i + 1))
+        new_src_list.append(l)
+
+    src_list = repeat_templating(new_src_list)
     src_list = dtype_templating(src_list)
     src_list = string_templating(src_list)
     src_str = "\n".join(src_list)
