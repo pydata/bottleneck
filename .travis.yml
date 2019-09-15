@@ -32,6 +32,13 @@ matrix:
                PYTHON_ARCH="64"
                TEST_RUN="doc"
 
+        # coverage
+        - os: linux
+          env: TEST_DEPS="numpy pytest pytest-cov"
+               PYTHON_VERSION="3.7"
+               PYTHON_ARCH="64"
+               TEST_RUN="coverage"
+
         # python 3.5
         - os: linux
           env: TEST_DEPS="pytest"
