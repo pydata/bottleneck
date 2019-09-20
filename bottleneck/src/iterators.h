@@ -14,6 +14,7 @@ struct _iter {
     int        axis;    /* axis to not iterate over */
     Py_ssize_t length;  /* a.shape[axis] */
     Py_ssize_t astride; /* a.strides[axis] */
+    npy_intp   stride;  /* element-level stride to take in the array */
     npy_intp   i;       /* integer used by some macros */
     npy_intp   its;     /* number of iterations completed */
     npy_intp   nits;    /* number of iterations iterator plans to make */
@@ -32,6 +33,7 @@ init_iter_one(iter *it, PyArrayObject *a, int axis)
     const int ndim = PyArray_NDIM(a);
     const npy_intp *shape = PyArray_SHAPE(a);
     const npy_intp *strides = PyArray_STRIDES(a);
+    const npy_intp item_size = PyArray_ITEMSIZE(a);
 
     it->axis = axis;
     it->its = 0;
@@ -58,6 +60,7 @@ init_iter_one(iter *it, PyArrayObject *a, int axis)
             }
         }
     }
+    it->stride = it->astride / item_size;
 }
 
 /*
@@ -72,6 +75,7 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
     const int ndim = PyArray_NDIM(a);
     const npy_intp *shape = PyArray_SHAPE(a);
     const npy_intp *strides = PyArray_STRIDES(a);
+    const npy_intp item_size = PyArray_ITEMSIZE(a);
 
     it->axis = 0;
     it->its = 0;
@@ -166,6 +170,7 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
         }
     }
 
+    it->stride = it->astride / item_size;
     it->pa = PyArray_BYTES(a);
 }
 
@@ -359,10 +364,14 @@ init_iter3(iter3 *it, PyArrayObject *a, PyObject *y, PyObject *z, int axis)
 
 #define  RESET          it.its = 0;
 
+#define  PA(dtype)      (npy_##dtype *)(it.pa)
+
 #define  A0(dtype)      *(npy_##dtype *)(it.pa)
 #define  AI(dtype)      *(npy_##dtype *)(it.pa + it.i * it.astride)
 #define  AX(dtype, x)   *(npy_##dtype *)(it.pa + (x) * it.astride)
 #define  AOLD(dtype)    *(npy_##dtype *)(it.pa + (it.i - window) * it.astride)
+
+#define  SI(pa)         pa[it.i * it.stride]    
 
 #define  YPP            *py++
 #define  YI(dtype)      *(npy_##dtype *)(it.py + it.i++ * it.ystride)
