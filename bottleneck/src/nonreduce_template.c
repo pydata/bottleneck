@@ -19,26 +19,28 @@ nonreducer(char *name,
 /* replace --------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-static PyObject *
+static BN_OPT_3 PyObject *
 replace_DTYPE0(PyArrayObject *a, double old, double new)
 {
-    npy_DTYPE0 ai;
     iter it;
     init_iter_all(&it, a, 0, 1);
     BN_BEGIN_ALLOW_THREADS
+    const npy_DTYPE0 oldf = (npy_DTYPE0)old;
+    const npy_DTYPE0 newf = (npy_DTYPE0)new;
     if (old == old) {
         WHILE {
+            npy_DTYPE0* array = PA(DTYPE0);
             FOR {
-                if (AI(DTYPE0) == old) AI(DTYPE0) = new;
+                array[it.i] = array[it.i] == oldf ? newf : array[it.i];
             }
             NEXT
         }
     }
     else {
         WHILE {
+            npy_DTYPE0* array = PA(DTYPE0);
             FOR {
-                ai = AI(DTYPE0);
-                if (ai != ai) AI(DTYPE0) = new;
+                array[it.i] = array[it.i] != array[it.i] ? newf : array[it.i];
             }
             NEXT
         }
@@ -51,15 +53,14 @@ replace_DTYPE0(PyArrayObject *a, double old, double new)
 
 
 /* dtype = [['int64'], ['int32']] */
-static PyObject *
+static BN_OPT_3 PyObject *
 replace_DTYPE0(PyArrayObject *a, double old, double new)
 {
-    npy_DTYPE0 oldint, newint;
     iter it;
     init_iter_all(&it, a, 0, 1);
     if (old == old) {
-        oldint = (npy_DTYPE0)old;
-        newint = (npy_DTYPE0)new;
+        const npy_DTYPE0 oldint = (npy_DTYPE0)old;
+        const npy_DTYPE0 newint = (npy_DTYPE0)new;
         if (oldint != old) {
             VALUE_ERR("Cannot safely cast `old` to int");
             return NULL;
@@ -70,8 +71,11 @@ replace_DTYPE0(PyArrayObject *a, double old, double new)
         }
         BN_BEGIN_ALLOW_THREADS
         WHILE {
-            FOR {
-                if (AI(DTYPE0) == oldint) AI(DTYPE0) = newint;
+            npy_DTYPE0* array = (npy_DTYPE0 *)it.pa;
+            npy_intp i;
+            // clang has a large perf regression when using the FOR macro here
+            for (i=0; i < it.length; i++) {
+                array[i] = array[i] == oldint ? newint : array[i];
             }
             NEXT
         }
