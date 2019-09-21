@@ -45,18 +45,6 @@
 #define RUNTIME_ERR(text) PyErr_SetString(PyExc_RuntimeError, text)
 
 /* `inline` and `opt_3` copied from NumPy. */
-#if defined(_MSC_VER)
-        #define BN_INLINE __inline
-#elif defined(__GNUC__)
-	#if defined(__STRICT_ANSI__)
-		#define BN_INLINE __inline__
-	#else
-		#define BN_INLINE inline
-	#endif
-#else
-        #define BN_INLINE
-#endif
-
 #if HAVE_ATTRIBUTE_OPTIMIZE_OPT_3
     #define BN_OPT_3 __attribute__((optimize("O3")))
 #else
@@ -67,13 +55,13 @@
  * NAN and INFINITY like macros (same behavior as glibc for NAN, same as C99
  * for INFINITY). Copied from NumPy.
  */
-BN_INLINE static float __bn_inff(void)
+static inline float __bn_inff(void)
 {
     const union { npy_uint32 __i; float __f;} __bint = {0x7f800000UL};
     return __bint.__f;
 }
 
-BN_INLINE static float __bn_nanf(void)
+static inline float __bn_nanf(void)
 {
     const union { npy_uint32 __i; float __f;} __bint = {0x7fc00000UL};
     return __bint.__f;

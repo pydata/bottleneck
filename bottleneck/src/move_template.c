@@ -779,7 +779,7 @@ intern_strings(void) {
 
 /* mover ----------------------------------------------------------------- */
 
-static BN_INLINE int
+static inline int
 parse_args(PyObject *args,
            PyObject *kwds,
            int has_ddof,

@@ -108,7 +108,9 @@ def prepare_modules():
     ext += [Extension("bottleneck.move",
                       sources=["bottleneck/src/move.c",
                                "bottleneck/src/move_median/move_median.c"],
-                      depends=base_includes,
+                      depends=base_includes + [
+                          "bottleneck/src/move_median/move_median.h"
+                      ],
                       extra_compile_args=['-O2'])]
     ext += [Extension("bottleneck.nonreduce",
                       sources=["bottleneck/src/nonreduce.c"],

@@ -116,7 +116,7 @@ intern_strings(void) {
 
 /* nonreduce ------------------------------------------------------------- */
 
-static BN_INLINE int
+static inline int
 parse_args(PyObject *args,
            PyObject *kwds,
            PyObject **a,
