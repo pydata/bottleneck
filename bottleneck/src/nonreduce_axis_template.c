@@ -414,7 +414,7 @@ intern_strings(void) {
 
 /* nonreducer_axis ------------------------------------------------------- */
 
-static BN_INLINE int
+static inline int
 parse_partition(PyObject *args,
                 PyObject *kwds,
                 PyObject **a,
@@ -487,7 +487,7 @@ parse_partition(PyObject *args,
 
 }
 
-static BN_INLINE int
+static inline int
 parse_rankdata(PyObject *args,
                PyObject *kwds,
                PyObject **a,
@@ -550,7 +550,7 @@ parse_rankdata(PyObject *args,
 
 }
 
-static BN_INLINE int
+static inline int
 parse_push(PyObject *args,
            PyObject *kwds,
            PyObject **a,

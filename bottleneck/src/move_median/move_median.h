@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
+#include <bn_config.h>
 
 typedef size_t idx_t;
 typedef double ai_t;
@@ -69,24 +70,11 @@ void mm_free(mm_handle *mm);
 
 /* Copied from Cython ---------------------------------------------------- */
 
-/* inline attribute */
-#ifndef MM_INLINE
-    #if defined(__GNUC__)
-      #define MM_INLINE __inline__
-    #elif defined(_MSC_VER)
-      #define MM_INLINE __inline
-    #elif defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-      #define MM_INLINE inline
-    #else
-      #define MM_INLINE
-    #endif
-#endif
-
 /* NaN */
 #ifdef NAN
     #define MM_NAN() ((float) NAN)
 #else
-    static MM_INLINE float MM_NAN(void) {
+    static inline float MM_NAN(void) {
         float value;
         memset(&value, 0xFF, sizeof(value));
         return value;
