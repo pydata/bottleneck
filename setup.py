@@ -93,7 +93,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'bottleneck/src'))
 
 def prepare_modules():
     base_includes = ["bottleneck/src/bottleneck.h",
-                     "bottleneck/src/bn_config.h"]
+                     "bottleneck/src/bn_config.h",
+                     "bottleneck/src/iterators.h"]
     ext = [Extension("bottleneck.reduce",
                      sources=["bottleneck/src/reduce.c"],
                      depends=base_includes,
