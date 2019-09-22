@@ -28,6 +28,10 @@ Bottleneck 1.3.0
 - #195 Installing bottleneck onto a system that does not already have Numpy
 - #201 Memory leaked when input was not a NumPy array
 
+**Contributors**
+
+.. contributors:: v1.2.1..HEAD
+
 Bottleneck 1.2.1
 ----------------
 
@@ -45,6 +49,10 @@ fixes a few bugs.
   axis is None, input array is 2d or greater, and input array is not C
   contiguous.
 - #163 Reducing np.array([2**31], dtype=np.int64) overflows on Windows
+
+**Contributors**
+
+.. contributors:: v1.2.0..v1.2.1
 
 Bottleneck 1.2.0
 ----------------
@@ -90,6 +98,10 @@ This release is a complete rewrite of Bottleneck.
 - Jennifer Olsen: comments and suggestions
 - A special thanks to the Cython developers. The quickest way to appreciate
   their work is to remove Cython from your project. It is not easy.
+
+**Contributors**
+
+.. contributors:: v1.1.0..v1.2.0
 
 Bottleneck 1.1.0
 ----------------
@@ -145,6 +157,10 @@ Alphabeticaly by last name
 - Christoph Gohlke revived Windows compatibility
 - Jennifer Olsen added NaN support to move_median
 
+**Contributors**
+
+.. contributors:: v1.0.0..v1.1.0
+
 Bottleneck 1.0.0
 ----------------
 
@@ -193,6 +209,10 @@ This release is a complete rewrite of Bottleneck.
 - Can now install bottleneck with pip even if numpy is not already installed
 - bn.move_max, bn.move_min now return float32 for float32 input
 
+**Contributors**
+
+.. contributors:: v0.8.0..v1.0.0
+
 Bottleneck 0.8.0
 ----------------
 
@@ -208,6 +228,10 @@ This version of Bottleneck requires NumPy 1.8.
 **Bug fixes**
 
 - nanargmax/nanargmin wrong for redundant max/min values in 1d int arrays
+
+**Contributors**
+
+.. contributors:: v0.7.0..v0.8.0
 
 Bottleneck 0.7.0
 ----------------
@@ -229,6 +253,10 @@ Bottleneck 0.7.0
 - #57 scipy optional yet some unit tests depend on scipy
 - #49, #55 now works on Mac OS X 10.8 using clang compiler
 - #60 nanstd([1.0], ddof=1) and nanvar([1.0], ddof=1) crash
+
+**Contributors**
+
+.. contributors:: v0.6.0..v0.7.0
 
 Bottleneck 0.6.0
 ----------------
@@ -260,6 +288,10 @@ Thanks to Dougal Sutherland, Bottleneck now runs on Python 3.2.
 - #31 Confusing error message in partsort and argpartsort
 - #32 Update path in MANIFEST.in
 - #35 Wrong output for very large (2**31) input arrays
+
+**Contributors**
+
+.. contributors:: v0.5.0..v0.6.0
 
 Bottleneck 0.5.0
 ----------------
