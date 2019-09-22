@@ -644,7 +644,7 @@ REDUCE_ONE(NAME, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         extreme = BIG_INT;
-        FOR_REVERSE{
+        FOR_REVERSE {
             ai = AI(DTYPE0);
             if (ai COMPARE extreme) {
                 extreme = ai;
@@ -692,7 +692,7 @@ REDUCE_ONE(ss, DTYPE0)
     } else {
         WHILE {
             asum = 0;
-            FOR{
+            FOR {
                 ai = AI(DTYPE0);
                 asum += ai * ai;
             }
@@ -732,7 +732,7 @@ REDUCE_ONE(ss, DTYPE0)
     } else {
         WHILE {
             asum = 0;
-            FOR{
+            FOR {
                 ai = AI(DTYPE0);
                 asum += ai * ai;
             }

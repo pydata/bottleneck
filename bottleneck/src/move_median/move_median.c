@@ -631,7 +631,7 @@ mm_get_smallest_child(mm_node **heap, idx_t window, idx_t idx, mm_node **child)
     idx_t i1 = i0 + NUM_CHILDREN;
     i1 = min(i1, window);
 
-    switch(i1 - i0) {
+    switch (i1 - i0) {
         case  8: if (heap[i0 + 7]->ai < heap[idx]->ai) { idx = i0 + 7; }
         case  7: if (heap[i0 + 6]->ai < heap[idx]->ai) { idx = i0 + 6; }
         case  6: if (heap[i0 + 5]->ai < heap[idx]->ai) { idx = i0 + 5; }
@@ -656,7 +656,7 @@ mm_get_largest_child(mm_node **heap, idx_t window, idx_t idx, mm_node **child)
     idx_t i1 = i0 + NUM_CHILDREN;
     i1 = min(i1, window);
 
-    switch(i1 - i0) {
+    switch (i1 - i0) {
         case  8: if (heap[i0 + 7]->ai > heap[idx]->ai) { idx = i0 + 7; }
         case  7: if (heap[i0 + 6]->ai > heap[idx]->ai) { idx = i0 + 6; }
         case  6: if (heap[i0 + 5]->ai > heap[idx]->ai) { idx = i0 + 5; }
