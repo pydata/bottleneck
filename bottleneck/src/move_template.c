@@ -100,13 +100,11 @@ MOVE(move_sum, DTYPE0)
             if (ai == ai) {
                 if (aold == aold) {
                     asum += ai - aold;
-                }
-                else {
+                } else {
                     asum += ai;
                     count++;
                 }
-            }
-            else {
+            } else {
                 if (aold == aold) {
                     asum -= aold;
                     count--;
@@ -192,8 +190,7 @@ MOVE(move_mean, DTYPE0)
                     count++;
                     count_inv = 1.0 / count;
                 }
-            }
-            else {
+            } else {
                 if (aold == aold) {
                     asum -= aold;
                     count--;
@@ -278,8 +275,7 @@ MOVE(NAME, DTYPE0)
                     assqdm = 0;
                 }
                 yi = FUNC(assqdm / (count - ddof));
-            }
-            else {
+            } else {
                 yi = BN_NAN;
             }
             YI(DTYPE0) = yi;
@@ -296,8 +292,7 @@ MOVE(NAME, DTYPE0)
                     amean += delta * count_inv;
                     ai -= amean;
                     assqdm += (ai + aold) * delta;
-                }
-                else {
+                } else {
                     count++;
                     count_inv = 1.0 / count;
                     ddof_inv = 1.0 / (count - ddof);
@@ -305,8 +300,7 @@ MOVE(NAME, DTYPE0)
                     amean += delta * count_inv;
                     assqdm += delta * (ai - amean);
                 }
-            }
-            else {
+            } else {
                 if (aold == aold) {
                     count--;
                     count_inv = 1.0 / count;
@@ -315,8 +309,7 @@ MOVE(NAME, DTYPE0)
                         delta = aold - amean;
                         amean -= delta * count_inv;
                         assqdm -= delta * (aold - amean);
-                    }
-                    else {
+                    } else {
                         amean = 0;
                         assqdm = 0;
                     }
@@ -327,8 +320,7 @@ MOVE(NAME, DTYPE0)
                     assqdm = 0;
                 }
                 yi = FUNC(assqdm * ddof_inv);
-            }
-            else {
+            } else {
                 yi = BN_NAN;
             }
             YI(DTYPE0) = yi;
@@ -405,8 +397,7 @@ MOVE_MAIN(NAME, 1)
         extreme_pair->value = ai; \
         extreme_pair->death = INDEX + window; \
         last = extreme_pair; \
-    } \
-    else { \
+    } else { \
         while (last->value FLIP ai) { \
             if (last == ring) last = end; \
             last--; \
@@ -426,8 +417,7 @@ MOVE_MAIN(NAME, 1)
         extreme_pair->value = ai; \
         extreme_pair->death = INDEX + window; \
         last = extreme_pair; \
-    } \
-    else { \
+    } else { \
         while (last->value FLIP ai) { \
             if (last == ring) last = end; \
             last--; \
@@ -649,23 +639,23 @@ MOVE_MAIN(move_median, 0)
             aj = AX(dtype0, j); \
             if (aj == aj) { \
                 n++; \
-                if (ai > aj) g += 2; \
-                else if (ai == aj) e++; \
+                if (ai > aj) { \
+                    g += 2; \
+                } else if (ai == aj) { \
+                    e++; \
+                } \
             } \
         } \
         if (n < min_count) { \
             r = BN_NAN; \
-        } \
-        else if (n == 1) { \
+        } else if (n == 1) { \
             r = 0.0; \
-        } \
-        else { \
+        } else { \
             r = 0.5 * (g + e - 1.0); \
             r = r / (n - 1.0); \
             r = 2.0 * (r - 0.5); \
         } \
-    } \
-    else { \
+    } else { \
         r = BN_NAN; \
     } \
 
@@ -712,16 +702,17 @@ MOVE(move_rank, DTYPE0)
             r = 0;
             for (j = 0; j < INDEX; j++) {
                 aj = AX(DTYPE0, j);
-                if (ai > aj) g += 2;
-                else if (ai == aj) e++;
+                if (ai > aj) {
+                    g += 2;
+                } else if (ai == aj) {
+                    e++;
+                }
             }
             if (INDEX < min_count - 1) {
                 r = BN_NAN;
-            }
-            else if (INDEX == 0) {
+            } else if (INDEX == 0) {
                 r = 0.0;
-            }
-            else {
+            } else {
                 r = 0.5 * (g + e - 1.0);
                 r = r / INDEX;
                 r = 2.0 * (r - 0.5);
@@ -735,13 +726,15 @@ MOVE(move_rank, DTYPE0)
             r = 0;
             for (j = INDEX - window + 1; j < INDEX; j++) {
                 aj = AX(DTYPE0, j);
-		if (ai > aj) g += 2;
-		else if (ai == aj) e++;
+		if (ai > aj) {
+                    g += 2;
+                } else if (ai == aj) {
+                    e++;
+                }
             }
             if (window == 1) {
                 r = 0.0;
-            }
-            else {
+            } else {
                 r = window_inv * (g + e - 1.0);
                 r = 2.0 * (r - 0.5);
             }
@@ -859,8 +852,7 @@ parse_args(PyObject *args,
             TYPE_ERR("too many arguments");
             return 0;
         }
-    }
-    else {
+    } else {
         switch (nargs) {
             case 5:
                 if (has_ddof) {
@@ -926,8 +918,7 @@ mover(char *name,
     if PyArray_Check(a_obj) {
         a = (PyArrayObject *)a_obj;
         Py_INCREF(a);
-    }
-    else {
+    } else {
         a = (PyArrayObject *)PyArray_FROM_O(a_obj);
         if (a == NULL) {
             return NULL;
@@ -949,8 +940,7 @@ mover(char *name,
     /* min_count */
     if (min_count_obj == Py_None) {
         mc = window;
-    }
-    else {
+    } else {
         mc = PyArray_PyIntAsInt(min_count_obj);
         if (error_converting(mc)) {
             TYPE_ERR("`min_count` must be an integer or None");
@@ -961,8 +951,7 @@ mover(char *name,
                          "min_count (%d) cannot be greater than window (%d)",
                          mc, window);
             goto error;
-        }
-        else if (mc <= 0) {
+        } else if (mc <= 0) {
             VALUE_ERR("`min_count` must be greater than zero.");
             goto error;
         }
@@ -979,8 +968,7 @@ mover(char *name,
     /* defend against the axis of negativity */
     if (axis_obj == NULL) {
         axis = ndim - 1;
-    }
-    else {
+    } else {
         axis = PyArray_PyIntAsInt(axis_obj);
         if (error_converting(axis)) {
             TYPE_ERR("`axis` must be an integer");
@@ -993,8 +981,7 @@ mover(char *name,
                              "axis(=%d) out of bounds", axis);
                 goto error;
             }
-        }
-        else if (axis >= ndim) {
+        } else if (axis >= ndim) {
             PyErr_Format(PyExc_ValueError, "axis(=%d) out of bounds", axis);
             goto error;
         }
@@ -1003,8 +990,7 @@ mover(char *name,
     /* ddof */
     if (ddof_obj == NULL) {
         ddof = 0;
-    }
-    else {
+    } else {
         ddof = PyArray_PyIntAsInt(ddof_obj);
         if (error_converting(ddof)) {
             TYPE_ERR("`ddof` must be an integer");
@@ -1024,17 +1010,13 @@ mover(char *name,
 
     if (dtype == NPY_float64) {
         y = move_float64(a, window, mc, axis, ddof);
-    }
-    else if (dtype == NPY_float32) {
+    } else if (dtype == NPY_float32) {
         y = move_float32(a, window, mc, axis, ddof);
-    }
-    else if (dtype == NPY_int64) {
+    } else if (dtype == NPY_int64) {
         y = move_int64(a, window, mc, axis, ddof);
-    }
-    else if (dtype == NPY_int32) {
+    } else if (dtype == NPY_int32) {
         y = move_int32(a, window, mc, axis, ddof);
-    }
-    else {
+    } else {
         y = slow(name, args, kwds);
     }
 

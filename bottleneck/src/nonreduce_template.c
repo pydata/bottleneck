@@ -35,8 +35,7 @@ replace_DTYPE0(PyArrayObject *a, double old, double new)
             }
             NEXT
         }
-    }
-    else {
+    } else {
         WHILE {
             npy_DTYPE0* array = PA(DTYPE0);
             FOR {
@@ -170,8 +169,7 @@ parse_args(PyObject *args,
             TYPE_ERR("too many arguments");
             return 0;
         }
-    }
-    else {
+    } else {
         switch (nargs) {
             case 3:
                 *a = PyTuple_GET_ITEM(args, 0);
@@ -235,8 +233,7 @@ nonreducer(char *name,
     if (old_obj == NULL) {
         RUNTIME_ERR("`old_obj` should never be NULL; please report this bug.");
         goto error;
-    }
-    else {
+    } else {
         old = PyFloat_AsDouble(old_obj);
         if (error_converting(old)) {
             TYPE_ERR("`old` must be a number");
@@ -248,8 +245,7 @@ nonreducer(char *name,
     if (new_obj == NULL) {
         RUNTIME_ERR("`new_obj` should never be NULL; please report this bug.");
         goto error;
-    }
-    else {
+    } else {
         new = PyFloat_AsDouble(new_obj);
         if (error_converting(new)) {
             TYPE_ERR("`new` must be a number");

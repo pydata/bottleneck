@@ -66,13 +66,12 @@ int mm_assert_equal(ai_t *actual, ai_t *desired, ai_t *input, idx_t length,
     {
         if (isnan(actual[i]) && isnan(desired[i])) {
             printf("%9f %9f %9f\n", input[i], actual[i], desired[i]);
-        }
-        else if (actual[i] != desired[i]) {
+        } else if (actual[i] != desired[i]) {
             failed = 1;
             printf("%9f %9f %9f BUG\n", input[i], actual[i], desired[i]);
-        }
-        else
+        } else {
             printf("%9f %9f %9f\n", input[i], actual[i], desired[i]);
+        }
     }
 
     return failed;
