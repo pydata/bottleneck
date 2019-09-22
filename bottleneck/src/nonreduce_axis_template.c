@@ -121,8 +121,7 @@ NRA_MAIN(partition, PARSE_PARTITION)
                     ytmp = YX(dtype1, k); \
                     YX(dtype1, k) = YX(dtype1, l); \
                     YX(dtype1, l) = ytmp; \
-                } \
-                else { \
+                } else { \
                     B[k] = ar; \
                     B[r] = ak; \
                     ytmp = YX(dtype1, k); \
@@ -130,8 +129,7 @@ NRA_MAIN(partition, PARSE_PARTITION)
                     YX(dtype1, r) = ytmp; \
                 } \
             } \
-        } \
-        else { \
+        } else { \
             if (ak > ar) { \
                 if (al > ar) { \
                     B[k] = al; \
@@ -139,8 +137,7 @@ NRA_MAIN(partition, PARSE_PARTITION)
                     ytmp = YX(dtype1, k); \
                     YX(dtype1, k) = YX(dtype1, l); \
                     YX(dtype1, l) = ytmp; \
-                } \
-                else { \
+                } else { \
                     B[k] = ar; \
                     B[r] = ak; \
                     ytmp = YX(dtype1, k); \
@@ -217,8 +214,7 @@ NRA(rankdata, DTYPE0)
         Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
         npy_DTYPE1 *py = (npy_DTYPE1 *)PyArray_DATA(a);
         for (i = 0; i < size; i++) YPP = BN_NAN;
-    }
-    else {
+    } else {
         WHILE {
             idx = ZX(DTYPE2, 0);
             old = AX(DTYPE0, idx);
@@ -281,8 +277,7 @@ NRA(nanrankdata, DTYPE0)
         Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
         npy_DTYPE1 *py = (npy_DTYPE1 *)PyArray_DATA(a);
         for (i = 0; i < size; i++) YPP = BN_NAN;
-    }
-    else {
+    } else {
         WHILE {
             idx = ZX(DTYPE2, 0);
             old = AX(DTYPE0, idx);
@@ -301,8 +296,7 @@ NRA(nanrankdata, DTYPE0)
                             idx = ZX(DTYPE2, j);
                             YX(DTYPE1, idx) = averank;
                         }
-                    }
-                    else {
+                    } else {
                         idx = ZX(DTYPE2, i);
                         YX(DTYPE1, idx) = BN_NAN;
                     }
@@ -319,8 +313,7 @@ NRA(nanrankdata, DTYPE0)
                     idx = ZX(DTYPE2, j);
                     YX(DTYPE1, idx) = averank;
                 }
-            }
-            else {
+            } else {
                 idx = ZX(DTYPE2, LENGTH - 1);
                 YX(DTYPE1, idx) = BN_NAN;
             }
@@ -371,8 +364,7 @@ NRA(push, DTYPE0)
             if (ai == ai) {
                 ai_last = ai;
                 index = INDEX;
-            }
-            else {
+            } else {
                 if (INDEX - index <= n_float) {
                     AI(DTYPE0) = ai_last;
                 }
@@ -468,8 +460,7 @@ parse_partition(PyObject *args,
             TYPE_ERR("too many arguments");
             return 0;
         }
-    }
-    else {
+    } else {
         switch (nargs) {
             case 3:
                 *axis = PyTuple_GET_ITEM(args, 2);
@@ -532,8 +523,7 @@ parse_rankdata(PyObject *args,
             TYPE_ERR("too many arguments");
             return 0;
         }
-    }
-    else {
+    } else {
         switch (nargs) {
             case 2:
                 *axis = PyTuple_GET_ITEM(args, 1);
@@ -603,8 +593,7 @@ parse_push(PyObject *args,
             TYPE_ERR("too many arguments");
             return 0;
         }
-    }
-    else {
+    } else {
         switch (nargs) {
             case 3:
                 *axis = PyTuple_GET_ITEM(args, 2);
@@ -649,18 +638,15 @@ nonreducer_axis(char *name,
         if (!parse_partition(args, kwds, &a_obj, &n_obj, &axis_obj)) {
             return NULL;
         }
-    }
-    else if (parse == PARSE_RANKDATA) {
+    } else if (parse == PARSE_RANKDATA) {
         if (!parse_rankdata(args, kwds, &a_obj, &axis_obj)) {
             return NULL;
         }
-    }
-    else if (parse == PARSE_PUSH) {
+    } else if (parse == PARSE_PUSH) {
         if (!parse_push(args, kwds, &a_obj, &n_obj, &axis_obj)) {
             return NULL;
         }
-    }
-    else {
+    } else {
         RUNTIME_ERR("Unknown parse type; please report error.");
     }
 
@@ -668,8 +654,7 @@ nonreducer_axis(char *name,
     if PyArray_Check(a_obj) {
         a = (PyArrayObject *)a_obj;
         Py_INCREF(a);
-    }
-    else {
+    } else {
         a = (PyArrayObject *)PyArray_FROM_O(a_obj);
         if (a == NULL) {
             return NULL;
@@ -690,15 +675,13 @@ nonreducer_axis(char *name,
                              "axis(=%d) out of bounds", axis);
                 goto error;
             }
-        }
-        else {
+        } else {
             if (PyArray_NDIM(a) != 1) {
                 a = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
             }
             axis = 0;
         }
-    }
-    else if (axis_obj == Py_None) {
+    } else if (axis_obj == Py_None) {
         if (parse == PARSE_PUSH) {
             VALUE_ERR("`axis` cannot be None");
             goto error;
@@ -707,8 +690,7 @@ nonreducer_axis(char *name,
             a = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
         }
         axis = 0;
-    }
-    else {
+    } else {
         axis = PyArray_PyIntAsInt(axis_obj);
         if (error_converting(axis)) {
             TYPE_ERR("`axis` must be an integer");
@@ -721,8 +703,7 @@ nonreducer_axis(char *name,
                              "axis(=%d) out of bounds", axis);
                 goto error;
             }
-        }
-        else if (axis >= PyArray_NDIM(a)) {
+        } else if (axis >= PyArray_NDIM(a)) {
             PyErr_Format(PyExc_ValueError, "axis(=%d) out of bounds", axis);
             goto error;
         }
@@ -731,11 +712,9 @@ nonreducer_axis(char *name,
     /* n */
     if (n_obj == NULL) {
         n = -1;
-    }
-    else if (parse == PARSE_PUSH && n_obj == Py_None) {
+    } else if (parse == PARSE_PUSH && n_obj == Py_None) {
         n = -1;
-    }
-    else {
+    } else {
         n = PyArray_PyIntAsInt(n_obj);
         if (error_converting(n)) {
             TYPE_ERR("`n` must be an integer");

@@ -123,20 +123,17 @@ static inline float __bn_nanf(void)
                 if (al < ar) { \
                     B(dtype, k) = al; \
                     B(dtype, l) = ak; \
-                } \
-                else { \
+                } else { \
                     B(dtype, k) = ar; \
                     B(dtype, r) = ak; \
                 } \
             } \
-        } \
-        else { \
+        } else { \
             if (ak > ar) { \
                 if (al > ar) { \
                     B(dtype, k) = al; \
                     B(dtype, l) = ak; \
-                } \
-                else { \
+                } else { \
                     B(dtype, k) = ar; \
                     B(dtype, r) = ak; \
                 } \
@@ -178,8 +175,7 @@ slow(char *name, PyObject *args, PyObject *kwds)
             Py_XDECREF(func);
             return NULL;
         }
-    }
-    else {
+    } else {
         Py_XDECREF(func);
         PyErr_Format(PyExc_RuntimeError,
                      "bottleneck.slow.%s is not callable", name);

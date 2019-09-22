@@ -101,8 +101,7 @@ REDUCE_ONE(nansum, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
-    }
-    else {
+    } else {
         WHILE {
             asum = 0;
             FOR {
@@ -139,8 +138,7 @@ REDUCE_ONE(nansum, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
-    }
-    else {
+    } else {
         WHILE {
             asum = 0;
             FOR asum += AI(DTYPE0);
@@ -191,8 +189,7 @@ REDUCE_ONE(nanmean, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
-    }
-    else {
+    } else {
         WHILE {
             count = 0;
             asum = 0;
@@ -244,8 +241,7 @@ REDUCE_ONE(nanmean, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
-    }
-    else {
+    } else {
         WHILE {
             asum = 0;
             FOR asum += AI(DTYPE0);
@@ -302,8 +298,7 @@ REDUCE_ALL(NAME, DTYPE0)
             NEXT
         }
         out = FUNC(asum / (count - ddof));
-    }
-    else {
+    } else {
         out = BN_NAN;
     }
     BN_END_ALLOW_THREADS
@@ -318,8 +313,7 @@ REDUCE_ONE(NAME, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
-    }
-    else {
+    } else {
         WHILE {
             count = 0;
             asum = 0;
@@ -341,8 +335,7 @@ REDUCE_ONE(NAME, DTYPE0)
                     }
                 }
                 asum = FUNC(asum / (count - ddof));
-            }
-            else {
+            } else {
                 asum = BN_NAN;
             }
             YPP = asum;
@@ -379,8 +372,7 @@ REDUCE_ALL(NAME, DTYPE0)
             NEXT
         }
         out = FUNC(asum / (size - ddof));
-    }
-    else {
+    } else {
         out = BN_NAN;
     }
     BN_END_ALLOW_THREADS
@@ -396,8 +388,7 @@ REDUCE_ONE(NAME, DTYPE0)
     length_ddof_inv = 1.0 / (LENGTH - ddof);
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
-    }
-    else {
+    } else {
         WHILE {
             asum = 0;
             FOR asum += AI(DTYPE0);
@@ -409,8 +400,7 @@ REDUCE_ONE(NAME, DTYPE0)
                     asum += ai * ai;
                 }
                 asum = FUNC(asum * length_ddof_inv);
-            }
-            else {
+            } else {
                 asum = BN_NAN;
             }
             YPP = asum;
@@ -699,8 +689,7 @@ REDUCE_ONE(ss, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
-    }
-    else {
+    } else {
         WHILE {
             asum = 0;
             FOR{
@@ -740,8 +729,7 @@ REDUCE_ONE(ss, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
-    }
-    else {
+    } else {
         WHILE {
             asum = 0;
             FOR{
@@ -772,8 +760,7 @@ REDUCE_MAIN(ss, 0)
             if (ai > amax) amax = ai; \
         } \
         med = 0.5 * (B(dtype, k) + amax); \
-    } \
-    else { \
+    } else { \
         med =  B(dtype, k); \
     } \
 
@@ -849,8 +836,7 @@ REDUCE_ALL(NAME, DTYPE0)
     BUFFER_NEW(DTYPE0, LENGTH)
     if (LENGTH == 0) {
         med = BN_NAN;
-    }
-    else {
+    } else {
         FUNC(DTYPE0)
     }
     done:
@@ -868,8 +854,7 @@ REDUCE_ONE(NAME, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
-    }
-    else {
+    } else {
         BUFFER_NEW(DTYPE0, LENGTH)
         WHILE {
             FUNC(DTYPE0)
@@ -894,8 +879,7 @@ REDUCE_ALL(median, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         med = BN_NAN;
-    }
-    else {
+    } else {
         BUFFER_NEW(DTYPE0, LENGTH)
         MEDIAN_INT(DTYPE0)
         BUFFER_DELETE
@@ -913,8 +897,7 @@ REDUCE_ONE(median, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
-    }
-    else {
+    } else {
         BUFFER_NEW(DTYPE0, LENGTH)
         WHILE {
             MEDIAN_INT(DTYPE0)
@@ -980,8 +963,7 @@ REDUCE_ONE(anynan, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
-    }
-    else {
+    } else {
         WHILE {
             f = 0;
             FOR {
@@ -1054,8 +1036,7 @@ REDUCE_ONE(allnan, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(1)
-    }
-    else {
+    } else {
         WHILE {
             f = 1;
             FOR {
@@ -1089,8 +1070,7 @@ REDUCE_ONE(allnan, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (SIZE == 0) {
         FILL_Y(1);
-    }
-    else {
+    } else {
         FILL_Y(0);
     }
     BN_END_ALLOW_THREADS
@@ -1180,8 +1160,7 @@ parse_args(PyObject *args,
             TYPE_ERR("too many arguments");
             return 0;
         }
-    }
-    else {
+    } else {
         switch (nargs) {
             case 3:
                 if (has_ddof) {
@@ -1256,8 +1235,7 @@ reducer(char *name,
     /* does user want to reduce over all axes? */
     if (axis_obj == Py_None) {
         reduce_all = 1;
-    }
-    else {
+    } else {
         axis = PyArray_PyIntAsInt(axis_obj);
         if (error_converting(axis)) {
             TYPE_ERR("`axis` must be an integer or None");
@@ -1271,8 +1249,7 @@ reducer(char *name,
                              "axis(=%d) out of bounds", axis);
                 goto error;
             }
-        }
-        else if (axis >= ndim) {
+        } else if (axis >= ndim) {
             PyErr_Format(PyExc_ValueError, "axis(=%d) out of bounds", axis);
             goto error;
         }
@@ -1284,8 +1261,7 @@ reducer(char *name,
     /* ddof */
     if (ddof_obj == NULL) {
         ddof = 0;
-    }
-    else {
+    } else {
         ddof = PyArray_PyIntAsInt(ddof_obj);
         if (error_converting(ddof)) {
             TYPE_ERR("`ddof` must be an integer");
@@ -1299,35 +1275,26 @@ reducer(char *name,
         /* we are reducing the array along all axes */
         if (dtype == NPY_FLOAT64) {
             y = fall_float64(a, ddof);
-        }
-        else if (dtype == NPY_FLOAT32) {
+        } else if (dtype == NPY_FLOAT32) {
             y = fall_float32(a, ddof);
-        }
-        else if (dtype == NPY_INT64) {
+        } else if (dtype == NPY_INT64) {
             y = fall_int64(a, ddof);
-        }
-        else if (dtype == NPY_INT32) {
+        } else if (dtype == NPY_INT32) {
             y = fall_int32(a, ddof);
-        }
-        else {
+        } else {
             y = slow(name, args, kwds);
         }
-    }
-    else {
+    } else {
         /* we are reducing an array with ndim > 1 over a single axis */
         if (dtype == NPY_FLOAT64) {
             y = fone_float64(a, axis, ddof);
-        }
-        else if (dtype == NPY_FLOAT32) {
+        } else if (dtype == NPY_FLOAT32) {
             y = fone_float32(a, axis, ddof);
-        }
-        else if (dtype == NPY_INT64) {
+        } else if (dtype == NPY_INT64) {
             y = fone_int64(a, axis, ddof);
-        }
-        else if (dtype == NPY_INT32) {
+        } else if (dtype == NPY_INT32) {
             y = fone_int32(a, axis, ddof);
-        }
-        else {
+        } else {
             y = slow(name, args, kwds);
         }
 

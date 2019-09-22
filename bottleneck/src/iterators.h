@@ -50,8 +50,7 @@ init_iter_one(iter *it, PyArrayObject *a, int axis)
             if (i == axis) {
                 it->astride = strides[i];
                 it->length = shape[i];
-            }
-            else {
+            } else {
                 it->indices[j] = 0;
                 it->astrides[j] = strides[i];
                 it->shape[j] = shape[i];
@@ -89,15 +88,13 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
         it->ndim_m2 = -1;
         it->length = shape[0];
         it->astride = strides[0];
-    }
-    else if (ndim == 0) {
+    } else if (ndim == 0) {
         it->ndim_m2 = -1;
         it->length = 1;
         it->astride = 0;
-    }
-    /* The &&! in the next two else ifs is to deal with relaxed
-     * stride checking introduced in numpy 1.12.0; see gh #161 */
-    else if (C_CONTIGUOUS(a) && !F_CONTIGUOUS(a)) {
+    } else if (C_CONTIGUOUS(a) && !F_CONTIGUOUS(a)) {
+        /* The &&! in the next two else ifs is to deal with relaxed
+         * stride checking introduced in numpy 1.12.0; see gh #161 */
         it->ndim_m2 = -1;
         it->axis = ndim - 1;
         it->length = PyArray_SIZE(a);
@@ -111,8 +108,7 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
             it->astride = strides[i];
             break;
        }
-    }
-    else if (F_CONTIGUOUS(a) && !C_CONTIGUOUS(a)) {
+    } else if (F_CONTIGUOUS(a) && !C_CONTIGUOUS(a)) {
         if (anyorder || !ravel) {
             it->ndim_m2 = -1;
             it->length = PyArray_SIZE(a);
@@ -137,8 +133,7 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
             it->length = PyArray_DIM(a, 0);
             it->astride = PyArray_STRIDE(a, 0);
         }
-    }
-    else if (ravel) {
+    } else if (ravel) {
         it->ndim_m2 = -1;
         if (anyorder) {
             a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
@@ -148,8 +143,7 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
         it->a_ravel = a;
         it->length = PyArray_DIM(a, 0);
         it->astride = PyArray_STRIDE(a, 0);
-    }
-    else {
+    } else {
         it->ndim_m2 = ndim - 2;
         it->astride = strides[0];
         for (i = 1; i < ndim; i++) {
@@ -234,8 +228,7 @@ init_iter2(iter2 *it, PyArrayObject *a, PyObject *y, int axis)
             it->astride = astrides[i];
             it->ystride = ystrides[i];
             it->length = shape[i];
-        }
-        else {
+        } else {
             it->indices[j] = 0;
             it->astrides[j] = astrides[i];
             it->ystrides[j] = ystrides[i];
@@ -315,8 +308,7 @@ init_iter3(iter3 *it, PyArrayObject *a, PyObject *y, PyObject *z, int axis)
             it->ystride = ystrides[i];
             it->zstride = zstrides[i];
             it->length = shape[i];
-        }
-        else {
+        } else {
             it->indices[j] = 0;
             it->astrides[j] = astrides[i];
             it->ystrides[j] = ystrides[i];
