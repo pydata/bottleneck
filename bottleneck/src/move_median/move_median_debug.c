@@ -247,7 +247,7 @@ void mm_dump(mm_handle *mm)
         if (mm->newest->region == NA) {
             idx1 = mm->newest->idx;
         }
-        for(i = 0; i < (int)mm->n_n; ++i) {
+        for (i = 0; i < (int)mm->n_n; ++i) {
             idx = mm->n_array[i]->idx;
             if (i == idx0 && i == idx1) {
                 printf("\t%i >%f<\n", idx, mm->n_array[i]->ai);
@@ -270,15 +270,15 @@ void mm_dump(mm_handle *mm)
             printf("Last: %f\n", (double)mm->newest->ai);
 
         printf("\n\nSmall heap:\n");
-        for(i = 0; i < (int)mm->n_s; ++i) {
+        for (i = 0; i < (int)mm->n_s; ++i) {
             printf("%i %f\n", (int)mm->s_heap[i]->idx, mm->s_heap[i]->ai);
         }
         printf("\n\nLarge heap:\n");
-        for(i = 0; i < (int)mm->n_l; ++i) {
+        for (i = 0; i < (int)mm->n_l; ++i) {
             printf("%i %f\n", (int)mm->l_heap[i]->idx, mm->l_heap[i]->ai);
         }
         printf("\n\nNaN heap:\n");
-        for(i = 0; i < (int)mm->n_n; ++i) {
+        for (i = 0; i < (int)mm->n_n; ++i) {
             printf("%i %f\n", (int)mm->n_array[i]->idx, mm->n_array[i]->ai);
         }
     }
@@ -296,7 +296,7 @@ mm_print_binary_heap(mm_node **heap, idx_t n_array, idx_t oldest_idx,
     int i, j, k, pos, x=1, level=0;
 
     print_pos[0] = 0;
-    for(i=0,j=1; i<(int)n_array; i++,j++) {
+    for (i=0,j=1; i<(int)n_array; i++,j++) {
         pos = print_pos[(i-1)/2];
         pos +=  (i%2?-1:1)*(line_width/(pow(2,level+1))+1);
 
