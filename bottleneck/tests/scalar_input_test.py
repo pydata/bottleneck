@@ -4,8 +4,10 @@ from numpy.testing import assert_array_almost_equal
 import bottleneck as bn
 import pytest
 
+
 @pytest.mark.parametrize("func", bn.get_functions('reduce') +  # noqa: W504
-                         bn.get_functions('nonreduce_axis'))
+                         bn.get_functions('nonreduce_axis'),
+                         ids=lambda x: x.__name__)
 def test_scalar_input(func, args=tuple()):
     "Test that bn.xxx gives the same output as bn.slow.xxx for scalar input."
     if func.__name__ in ('partition', 'argpartition', 'push'):

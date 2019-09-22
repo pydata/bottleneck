@@ -26,7 +26,8 @@ def lists(dtypes=DTYPES):
                 yield a.astype(dtype).tolist()
 
 
-@pytest.mark.parametrize("func", bn.get_functions('all'))
+@pytest.mark.parametrize("func", bn.get_functions('all'),
+                         ids=lambda x: x.__name__)
 def test_list_input(func):
     "Test that bn.xxx gives the same output as bn.slow.xxx for list input."
     msg = '\nfunc %s | input %s (%s) | shape %s\n'
