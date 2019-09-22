@@ -19,6 +19,8 @@ def make_c_files():
         with open(template_file, 'r') as f:
             src_str = f.read()
         src_str = template(src_str)
+        if len(src_str) and src_str[-1] != '\n':
+            src_str += '\n'
         with open(target_file, 'w') as f:
             f.write(src_str)
 
