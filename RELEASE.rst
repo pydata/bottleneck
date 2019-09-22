@@ -19,14 +19,14 @@ Bottleneck 1.3.0
 
 **Bug Fixes**
 
-- #170 Documentation fails to build on Python 3
-- #175 bn.bench() crashes on python 3.6.3, numpy 1.13.3
-- #178 bn.push(a, n=None) raises when None is explicitly passed
-- #183 bn.nansum(a) wrong output when a = np.ones((2, 2))[..., np.newaxis]
-  same issue of other reduce functions
-- #194 Silenced FutureWarning from NumPy in the slow version of move functions
-- #195 Installing bottleneck onto a system that does not already have Numpy
-- #201 Memory leaked when input was not a NumPy array
+- Documentation fails to build on Python 3 (:issue:`170`)
+- bn.bench() crashes on python 3.6.3, numpy 1.13.3 (:issue:`175`)
+- bn.push(a, n=None) raises when None is explicitly passed (:issue:`178`)
+- bn.nansum(a) wrong output when a = np.ones((2, 2))[..., np.newaxis]
+  same issue of other reduce functions (:issue:`183`)
+- Silenced FutureWarning from NumPy in the slow version of move functions (:issue:`194`)
+- Installing bottleneck onto a system that does not already have Numpy (:issue:`195`)
+- Memory leaked when input was not a NumPy array (:issue:`201`)
 
 **Contributors**
 
@@ -42,13 +42,13 @@ fixes a few bugs.
 
 **Bug Fixes**
 
-- #156 Installing bottleneck when two versions of NumPy are present
-- #157 Compiling on Ubuntu 14.04 inside a Windows 7 WMware
-- #159 Occasional segmentation fault in nanargmin, nanargmax, median,
+- Installing bottleneck when two versions of NumPy are present (:issue:`156`)
+- Compiling on Ubuntu 14.04 inside a Windows 7 WMware (:issue:`157`)
+- Occasional segmentation fault in nanargmin, nanargmax, median,
   and nanmedian when all of the following conditions are met:
   axis is None, input array is 2d or greater, and input array is not C
-  contiguous.
-- #163 Reducing np.array([2**31], dtype=np.int64) overflows on Windows
+  contiguous. (:issue:`159`)
+- Reducing np.array([2**31], dtype=np.int64) overflows on Windows (:issue:`163`)
 
 **Contributors**
 
@@ -248,11 +248,11 @@ Bottleneck 0.7.0
 
 **Bug fixes**
 
-- #50 move_std, move_nanstd return inappropriate NaNs (sqrt of negative #)
-- #52 `make test` fails on some computers
-- #57 scipy optional yet some unit tests depend on scipy
-- #49, #55 now works on Mac OS X 10.8 using clang compiler
-- #60 nanstd([1.0], ddof=1) and nanvar([1.0], ddof=1) crash
+- move_std, move_nanstd return inappropriate NaNs (sqrt of negative #) (:issue:`50`)
+- `make test` fails on some computers (:issue:`52`)
+- scipy optional yet some unit tests depend on scipy (:issue:`57`)
+- now works on Mac OS X 10.8 using clang compiler (:issue:`49`, :issue:`55`)
+- nanstd([1.0], ddof=1) and nanvar([1.0], ddof=1) crash (:issue:`60`)
 
 **Contributors**
 
@@ -285,9 +285,9 @@ Thanks to Dougal Sutherland, Bottleneck now runs on Python 3.2.
 
 **Bug fixes**
 
-- #31 Confusing error message in partsort and argpartsort
-- #32 Update path in MANIFEST.in
-- #35 Wrong output for very large (2**31) input arrays
+- Confusing error message in partsort and argpartsort (:issue:`31`)
+- Update path in MANIFEST.in (:issue:`32`)
+- Wrong output for very large (2**31) input arrays (:issue:`35`)
 
 **Contributors**
 
@@ -319,10 +319,10 @@ window median.
 
 **Bug fixes**
 
-- #14 Support python 2.5 by importing `with` statement
-- #22 nanmedian wrong for particular ordering of NaN and non-NaN elements
-- #26 argpartsort, nanargmin, nanargmax returned wrong dtype on 64-bit Windows
-- #29 rankdata and nanrankdata crashed on 64-bit Windows
+- Support python 2.5 by importing `with` statement (:issue:`14`)
+- nanmedian wrong for particular ordering of NaN and non-NaN elements (:issue:`22`)
+- argpartsort, nanargmin, nanargmax returned wrong dtype on 64-bit Windows (:issue:`26`)
+- rankdata and nanrankdata crashed on 64-bit Windows (:issue:`29`)
 
 Bottleneck 0.4.3
 ----------------
@@ -333,8 +333,8 @@ This is a bug fix release.
 
 **Bug fixes**
 
-- #11 median and nanmedian modified (partial sort) input array
-- #12 nanmedian wrong when odd number of elements with all but last a NaN
+- median and nanmedian modified (partial sort) input array (:issue:`11`)
+- nanmedian wrong when odd number of elements with all but last a NaN (:issue:`12`)
 
 **Enhancement**
 
@@ -391,9 +391,9 @@ operating systems.
 
 **Bug fixes**
 
-- #6 Some functions gave wrong output dtype for some input dtypes on 32 bit OS
-- #7 Some functions choked on size zero input arrays
-- #8 Segmentation fault with Cython 0.14.1 (but not 0.13)
+- Some functions gave wrong output dtype for some input dtypes on 32 bit OS (:issue:`6`)
+- Some functions choked on size zero input arrays (:issue:`7`)
+- Segmentation fault with Cython 0.14.1 (but not 0.13) (:issue:`8`)
 
 Bottleneck 0.3.0
 ----------------

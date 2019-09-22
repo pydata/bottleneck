@@ -28,6 +28,7 @@ import bottleneck
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.githubpages',
+    'sphinx.ext.extlinks',
     'numpydoc',
     'contributors',
 ]
@@ -217,3 +218,7 @@ latex_documents = [
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
+extlinks = {
+    "issue": ("https://github.com/pydata/bottleneck/issues/%s", "#"),
+}
