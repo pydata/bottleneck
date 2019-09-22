@@ -38,6 +38,12 @@ class clean(Command):
                 if f.endswith(".pyc") or f.endswith(".so"):
                     self.delete_files.append(os.path.join(root, f))
 
+                if f.endswith(".c") and "template" in f:
+                    generated_file = os.path.join(root,
+                                                  f.replace("_template", ""))
+                    if os.path.exists(generated_file):
+                        self.delete_files.append(generated_file)
+
         config_h = "bottleneck/src/bn_config.h"
         if os.path.exists(config_h):
             self.delete_files.append(config_h)
