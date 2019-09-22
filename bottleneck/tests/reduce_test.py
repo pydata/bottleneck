@@ -13,7 +13,8 @@ from .util import arrays, array_order, DTYPES
 import pytest
 
 
-@pytest.mark.parametrize("func", bn.get_functions("reduce"))
+@pytest.mark.parametrize("func", bn.get_functions("reduce"),
+                         ids=lambda x: x.__name__)
 def test_reduce(func):
     "test reduce functions"
     return unit_maker(func)
@@ -72,7 +73,8 @@ def unit_maker(func, decimal=5, skip_dtype=['nansum', 'ss']):
 # ---------------------------------------------------------------------------
 # Test argument parsing
 
-@pytest.mark.parametrize("func", bn.get_functions("reduce"))
+@pytest.mark.parametrize("func", bn.get_functions("reduce"),
+                         ids=lambda x: x.__name__)
 def test_arg_parsing(func):
     "test argument parsing"
     return unit_maker_argparse(func)

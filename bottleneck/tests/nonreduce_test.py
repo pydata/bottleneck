@@ -9,7 +9,8 @@ from .util import arrays, array_order
 import pytest
 
 
-@pytest.mark.parametrize("func", bn.get_functions('nonreduce'))
+@pytest.mark.parametrize("func", bn.get_functions('nonreduce'),
+                         ids=lambda x: x.__name__)
 def test_nonreduce(func):
     "Test that bn.xxx gives the same output as np.xxx."
     msg = '\nfunc %s | input %s (%s) | shape %s | old %f | new %f | order %s\n'

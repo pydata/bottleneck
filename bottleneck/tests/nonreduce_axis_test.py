@@ -12,7 +12,8 @@ import pytest
 # partition, argpartition
 
 
-@pytest.mark.parametrize("func", (bn.partition, bn.argpartition))
+@pytest.mark.parametrize("func", (bn.partition, bn.argpartition),
+                         ids=lambda x: x.__name__)
 def test_partition_and_argpartition(func):
     "test partition or argpartition"
 
@@ -125,7 +126,8 @@ def test_transpose():
 # ---------------------------------------------------------------------------
 # rankdata, nanrankdata, push
 
-@pytest.mark.parametrize("func", (bn.rankdata, bn.nanrankdata, bn.push))
+@pytest.mark.parametrize("func", (bn.rankdata, bn.nanrankdata, bn.push),
+                         ids=lambda x: x.__name__)
 def test_nonreduce_axis(func):
     "Test nonreduce axis functions"
     return reduce_unit_maker(func)
@@ -144,7 +146,8 @@ def test_push():
 # ---------------------------------------------------------------------------
 # Test argument parsing
 
-@pytest.mark.parametrize("func", bn.get_functions('nonreduce_axis'))
+@pytest.mark.parametrize("func", bn.get_functions('nonreduce_axis'),
+                         ids=lambda x: x.__name__)
 def test_arg_parsing(func):
     "test argument parsing in nonreduce_axis"
     name = func.__name__

@@ -33,7 +33,8 @@ def arrays(dtypes):
                 yield a
 
 
-@pytest.mark.parametrize("func", bn.get_functions('all'))
+@pytest.mark.parametrize("func", bn.get_functions('all'),
+                         ids=lambda x: x.__name__)
 def test_modification(func, nans=True):
     "Test that bn.xxx gives the same output as np.xxx."
     msg = "\nInput array modified by %s.\n\n"

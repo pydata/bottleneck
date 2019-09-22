@@ -8,7 +8,8 @@ from .util import arrays, array_order
 import pytest
 
 
-@pytest.mark.parametrize("func", bn.get_functions('move'))
+@pytest.mark.parametrize("func", bn.get_functions('move'),
+                         ids=lambda x: x.__name__)
 def test_move(func):
     "Test that bn.xxx gives the same output as a reference function."
     fmt = ('\nfunc %s | window %d | min_count %s | input %s (%s) | shape %s | '
@@ -45,7 +46,8 @@ def test_move(func):
 # Test argument parsing
 
 
-@pytest.mark.parametrize("func", bn.get_functions('move'))
+@pytest.mark.parametrize("func", bn.get_functions('move'),
+                         ids=lambda x: x.__name__)
 def test_arg_parsing(func, decimal=5):
     "test argument parsing."
 
@@ -110,7 +112,8 @@ def test_arg_parsing(func, decimal=5):
     func(*args, **kwargs)
 
 
-@pytest.mark.parametrize("func", bn.get_functions('move'))
+@pytest.mark.parametrize("func", bn.get_functions('move'),
+                         ids=lambda x: x.__name__)
 def test_arg_parse_raises(func):
     "test argument parsing raises in move"
     a = np.array([1., 2, 3])
