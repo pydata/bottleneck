@@ -380,6 +380,6 @@ init_iter3(iter3 *it, PyArrayObject *a, PyObject *y, PyObject *z, int axis)
 #define  ZX(dtype, x)   *(npy_##dtype *)(it.pz + (x) * it.zstride)
 
 #define FILL_Y(value) \
-    int i; \
+    int _i; \
     Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y); \
-    for (i = 0; i < size; i++) YPP = value;
+    for (_i = 0; _i < size; _i++) YPP = value;
