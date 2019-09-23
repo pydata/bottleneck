@@ -19,10 +19,12 @@ conda create -q -n "${TEST_NAME}" "${TEST_DEPS[@]}" python="${PYTHON_VERSION}"
 set +v # we dont want to see commands in the conda script
 
 source activate "${TEST_NAME}"
+conda update pip
 conda info -a
 conda list
 
 if [ -n "${PIP_DEPS}" ]; then
+    pip install --upgrade pip
     # Install numpy via pip for python=3.5 and numpy=1.16
     pip install ${PIP_DEPS}
 fi
