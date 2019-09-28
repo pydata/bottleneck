@@ -11,6 +11,10 @@
     iter it; \
     init_iter_all(&it, a, 1, 0);
 
+#define INIT_ALL_RAVEL_ANY_ORDER \
+    iter it; \
+    init_iter_all(&it, a, 1, 1);
+
 /* used with INIT_ALL_RAVEL */
 #define DECREF_INIT_ALL_RAVEL \
     if (it.a_ravel != NULL) { \
@@ -827,11 +831,12 @@ REDUCE_MAIN(ss, 0)
 /* repeat = {'NAME': ['median', 'nanmedian'],
              'FUNC': ['MEDIAN', 'NANMEDIAN']} */
 /* dtype = [['float64', 'float64'], ['float32', 'float32']] */
+
 REDUCE_ALL(NAME, DTYPE0)
 {
     npy_intp i;
     npy_DTYPE1 med;
-    INIT_ALL_RAVEL
+    INIT_ALL_RAVEL_ANY_ORDER
     BN_BEGIN_ALLOW_THREADS
     BUFFER_NEW(DTYPE0, LENGTH)
     if (LENGTH == 0) {
@@ -842,7 +847,6 @@ REDUCE_ALL(NAME, DTYPE0)
     done:
     BUFFER_DELETE
     BN_END_ALLOW_THREADS
-    DECREF_INIT_ALL_RAVEL
     return PyFloat_FromDouble(med);
 }
 
@@ -875,7 +879,7 @@ REDUCE_ALL(median, DTYPE0)
 {
     npy_intp i;
     npy_DTYPE1 med;
-    INIT_ALL_RAVEL
+    INIT_ALL_RAVEL_ANY_ORDER
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         med = BN_NAN;
@@ -885,7 +889,6 @@ REDUCE_ALL(median, DTYPE0)
         BUFFER_DELETE
     }
     BN_END_ALLOW_THREADS
-    DECREF_INIT_ALL_RAVEL
     return PyFloat_FromDouble(med);
 }
 
