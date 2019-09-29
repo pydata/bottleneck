@@ -64,6 +64,7 @@ build: false
 
 test_script:
     - "activate %CONDA_VENV%"
+    - "%CMD_IN_ENV% python.exe -m pip install --upgrade pip"
     - "%CMD_IN_ENV% pip install ."
     - "%CMD_IN_ENV% python setup.py build_ext --inplace"
     - "python tools\\test-installed-bottleneck.py"
