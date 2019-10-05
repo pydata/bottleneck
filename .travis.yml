@@ -18,9 +18,9 @@ matrix:
                PYTHON_ARCH="64"
                TEST_RUN="sdist"
 
-         # flake8
+         # flake8 and black
         - os: linux
-          env: TEST_DEPS="flake8"
+          env: TEST_DEPS="flake8 black"
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
                TEST_RUN="style"

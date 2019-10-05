@@ -1,7 +1,7 @@
 import numpy as np
 from numpy import partition, argpartition
 
-__all__ = ['rankdata', 'nanrankdata', 'partition', 'argpartition', 'push']
+__all__ = ["rankdata", "nanrankdata", "partition", "argpartition", "push"]
 
 
 def rankdata(a, axis=None):
@@ -53,7 +53,7 @@ def push(a, n=None, axis=-1):
     count = np.empty(y.shape[:-1])
     recent.fill(np.nan)
     count.fill(np.nan)
-    with np.errstate(invalid='ignore'):
+    with np.errstate(invalid="ignore"):
         for i in range(y.shape[-1]):
             idx = (i - count) > n
             recent[idx] = np.nan
@@ -80,7 +80,7 @@ def push(a, n=None, axis=-1):
 # Code taken from scipy master branch on Aug 31, 2016.
 
 
-def scipy_rankdata(a, method='average'):
+def scipy_rankdata(a, method="average"):
     """
     rankdata(a, method='average')
     Assign ranks to data, dealing with ties appropriately.
@@ -132,34 +132,34 @@ def scipy_rankdata(a, method='average'):
     >>> rankdata([0, 2, 3, 2], method='ordinal')
     array([ 1,  2,  4,  3])
     """
-    if method not in ('average', 'min', 'max', 'dense', 'ordinal'):
+    if method not in ("average", "min", "max", "dense", "ordinal"):
         raise ValueError('unknown method "{0}"'.format(method))
 
     a = np.ravel(np.asarray(a))
-    algo = 'mergesort' if method == 'ordinal' else 'quicksort'
+    algo = "mergesort" if method == "ordinal" else "quicksort"
     sorter = np.argsort(a, kind=algo)
 
     inv = np.empty(sorter.size, dtype=np.intp)
     inv[sorter] = np.arange(sorter.size, dtype=np.intp)
 
-    if method == 'ordinal':
+    if method == "ordinal":
         return inv + 1
 
     a = a[sorter]
     obs = np.r_[True, a[1:] != a[:-1]]
     dense = obs.cumsum()[inv]
 
-    if method == 'dense':
+    if method == "dense":
         return dense
 
     # cumulative counts of each unique value
     count = np.r_[np.nonzero(obs)[0], len(obs)]
 
-    if method == 'max':
+    if method == "max":
         return count[dense]
 
-    if method == 'min':
+    if method == "min":
         return count[dense - 1] + 1
 
     # average method
-    return .5 * (count[dense] + count[dense - 1] + 1)
+    return 0.5 * (count[dense] + count[dense - 1] + 1)

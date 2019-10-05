@@ -1,6 +1,6 @@
 import numpy as np
 
-__all__ = ['replace']
+__all__ = ["replace"]
 
 
 def replace(a, old, new):

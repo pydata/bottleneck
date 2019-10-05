@@ -1,23 +1,23 @@
 "Test moving window functions."
 
 import numpy as np
-from numpy.testing import (assert_equal, assert_array_almost_equal,
-                           assert_raises)
+from numpy.testing import assert_equal, assert_array_almost_equal, assert_raises
 import bottleneck as bn
 from .util import arrays, array_order
 import pytest
 
 
-@pytest.mark.parametrize("func", bn.get_functions('move'),
-                         ids=lambda x: x.__name__)
+@pytest.mark.parametrize("func", bn.get_functions("move"), ids=lambda x: x.__name__)
 def test_move(func):
     "Test that bn.xxx gives the same output as a reference function."
-    fmt = ('\nfunc %s | window %d | min_count %s | input %s (%s) | shape %s | '
-           'axis %s | order %s\n')
-    fmt += '\nInput array:\n%s\n'
+    fmt = (
+        "\nfunc %s | window %d | min_count %s | input %s (%s) | shape %s | "
+        "axis %s | order %s\n"
+    )
+    fmt += "\nInput array:\n%s\n"
     aaae = assert_array_almost_equal
     func_name = func.__name__
-    func0 = eval('bn.slow.%s' % func_name)
+    func0 = eval("bn.slow.%s" % func_name)
     if func_name == "move_var":
         decimal = 3
     else:
@@ -31,12 +31,20 @@ def test_move(func):
                 for min_count in min_counts:
                     actual = func(a, window, min_count, axis=axis)
                     desired = func0(a, window, min_count, axis=axis)
-                    tup = (func_name, window, str(min_count), 'a' + str(i),
-                           str(a.dtype), str(a.shape), str(axis),
-                           array_order(a), a)
+                    tup = (
+                        func_name,
+                        window,
+                        str(min_count),
+                        "a" + str(i),
+                        str(a.dtype),
+                        str(a.shape),
+                        str(axis),
+                        array_order(a),
+                        a,
+                    )
                     err_msg = fmt % tup
                     aaae(actual, desired, decimal, err_msg)
-                    err_msg += '\n dtype mismatch %s %s'
+                    err_msg += "\n dtype mismatch %s %s"
                     da = actual.dtype
                     dd = desired.dtype
                     assert_equal(da, dd, err_msg % (da, dd))
@@ -46,19 +54,18 @@ def test_move(func):
 # Test argument parsing
 
 
-@pytest.mark.parametrize("func", bn.get_functions('move'),
-                         ids=lambda x: x.__name__)
+@pytest.mark.parametrize("func", bn.get_functions("move"), ids=lambda x: x.__name__)
 def test_arg_parsing(func, decimal=5):
     "test argument parsing."
 
     name = func.__name__
-    func0 = eval('bn.slow.%s' % name)
+    func0 = eval("bn.slow.%s" % name)
 
-    a = np.array([1., 2, 3])
+    a = np.array([1.0, 2, 3])
 
-    fmt = '\n%s' % func
-    fmt += '%s\n'
-    fmt += '\nInput array:\n%s\n' % a
+    fmt = "\n%s" % func
+    fmt += "%s\n"
+    fmt += "\nInput array:\n%s\n" % a
 
     actual = func(a, 2)
     desired = func0(a, 2)
@@ -100,7 +107,7 @@ def test_arg_parsing(func, decimal=5):
     err_msg = fmt % "(a=a, axis=-1, min_count=None, window=2)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
-    if name in ('move_std', 'move_var'):
+    if name in ("move_std", "move_var"):
         actual = func(a, 2, 1, -1, ddof=1)
         desired = func0(a, 2, 1, -1, ddof=1)
         err_msg = fmt % "(a, 2, 1, -1, ddof=1)"
@@ -112,19 +119,18 @@ def test_arg_parsing(func, decimal=5):
     func(*args, **kwargs)
 
 
-@pytest.mark.parametrize("func", bn.get_functions('move'),
-                         ids=lambda x: x.__name__)
+@pytest.mark.parametrize("func", bn.get_functions("move"), ids=lambda x: x.__name__)
 def test_arg_parse_raises(func):
     "test argument parsing raises in move"
-    a = np.array([1., 2, 3])
+    a = np.array([1.0, 2, 3])
     assert_raises(TypeError, func)
     assert_raises(TypeError, func, axis=a)
     assert_raises(TypeError, func, a, 2, axis=0, extra=0)
     assert_raises(TypeError, func, a, 2, axis=0, a=a)
     assert_raises(TypeError, func, a, 2, 2, 0, 0, 0)
-    assert_raises(TypeError, func, a, 2, axis='0')
-    assert_raises(TypeError, func, a, 1, min_count='1')
-    if func.__name__ not in ('move_std', 'move_var'):
+    assert_raises(TypeError, func, a, 2, axis="0")
+    assert_raises(TypeError, func, a, 1, min_count="1")
+    if func.__name__ not in ("move_std", "move_var"):
         assert_raises(TypeError, func, a, 2, ddof=0)
 
 
@@ -136,9 +142,10 @@ def test_arg_parse_raises(func):
 # increase size to 30. With those two changes the unit tests will take a
 # LONG time to run.
 
+
 def test_move_median_with_nans():
     "test move_median.c with nans"
-    fmt = '\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n'
+    fmt = "\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n"
     aaae = assert_array_almost_equal
     min_count = 1
     size = 10
@@ -161,7 +168,7 @@ def test_move_median_with_nans():
 
 def test_move_median_without_nans():
     "test move_median.c without nans"
-    fmt = '\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n'
+    fmt = "\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n"
     aaae = assert_array_almost_equal
     min_count = 1
     size = 10
@@ -181,14 +188,17 @@ def test_move_median_without_nans():
 # ----------------------------------------------------------------------------
 # Regression test for square roots of negative numbers
 
+
 def test_move_std_sqrt():
     "Test move_std for neg sqrt."
 
-    a = [0.0011448196318903589,
-         0.00028718669878572767,
-         0.00028718669878572767,
-         0.00028718669878572767,
-         0.00028718669878572767]
+    a = [
+        0.0011448196318903589,
+        0.00028718669878572767,
+        0.00028718669878572767,
+        0.00028718669878572767,
+        0.00028718669878572767,
+    ]
     err_msg = "Square root of negative number. ndim = %d"
     b = bn.move_std(a, window=3)
     assert np.isfinite(b[2:]).all(), err_msg % 1

@@ -2,9 +2,21 @@ import warnings
 import numpy as np
 from numpy import nanmean, nansum
 
-__all__ = ['median', 'nanmedian', 'nansum', 'nanmean', 'nanvar', 'nanstd',
-           'nanmin', 'nanmax', 'nanargmin', 'nanargmax', 'ss', 'anynan',
-           'allnan']
+__all__ = [
+    "median",
+    "nanmedian",
+    "nansum",
+    "nanmean",
+    "nanvar",
+    "nanstd",
+    "nanmin",
+    "nanmax",
+    "nanargmin",
+    "nanargmax",
+    "ss",
+    "anynan",
+    "allnan",
+]
 
 
 def nanargmin(a, axis=None):

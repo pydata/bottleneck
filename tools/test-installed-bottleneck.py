@@ -25,26 +25,46 @@ import bottleneck
 sys.path.pop(0)
 
 parser = OptionParser("usage: %prog [options] -- [nosetests options]")
-parser.add_option("-v", "--verbose",
-                  action="count", dest="verbose", default=1,
-                  help="increase verbosity")
-parser.add_option("--doctests",
-                  action="store_true", dest="doctests", default=False,
-                  help="Run doctests in module")
-parser.add_option("--coverage",
-                  action="store_true", dest="coverage", default=False,
-                  help="report coverage requires 'coverage' module")
-parser.add_option("-m", "--mode",
-                  action="store", dest="mode", default="fast",
-                  help="'fast', 'full', or something that could be "
-                       "passed to nosetests -A [default: %default]")
+parser.add_option(
+    "-v",
+    "--verbose",
+    action="count",
+    dest="verbose",
+    default=1,
+    help="increase verbosity",
+)
+parser.add_option(
+    "--doctests",
+    action="store_true",
+    dest="doctests",
+    default=False,
+    help="Run doctests in module",
+)
+parser.add_option(
+    "--coverage",
+    action="store_true",
+    dest="coverage",
+    default=False,
+    help="report coverage requires 'coverage' module",
+)
+parser.add_option(
+    "-m",
+    "--mode",
+    action="store",
+    dest="mode",
+    default="fast",
+    help="'fast', 'full', or something that could be "
+    "passed to nosetests -A [default: %default]",
+)
 (options, args) = parser.parse_args()
 
-result = bottleneck.test(options.mode,
-                         verbose=options.verbose,
-                         extra_argv=args,
-                         doctests=options.doctests,
-                         coverage=options.coverage)
+result = bottleneck.test(
+    options.mode,
+    verbose=options.verbose,
+    extra_argv=args,
+    doctests=options.doctests,
+    coverage=options.coverage,
+)
 
 if result:
     sys.exit(0)

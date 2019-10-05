@@ -5,9 +5,18 @@ import warnings
 import numpy as np
 
 
-__all__ = ['move_sum', 'move_mean', 'move_std', 'move_var', 'move_min',
-           'move_max', 'move_argmin', 'move_argmax', 'move_median',
-           'move_rank']
+__all__ = [
+    "move_sum",
+    "move_mean",
+    "move_std",
+    "move_var",
+    "move_min",
+    "move_max",
+    "move_argmin",
+    "move_argmax",
+    "move_median",
+    "move_rank",
+]
 
 
 def move_sum(a, window, min_count=None, axis=-1):
@@ -42,6 +51,7 @@ def move_max(a, window, min_count=None, axis=-1):
 
 def move_argmin(a, window, min_count=None, axis=-1):
     "Slow move_argmin for unaccelerated dtype"
+
     def argmin(a, axis):
         a = np.array(a, copy=False)
         flip = [slice(None)] * a.ndim
@@ -61,11 +71,13 @@ def move_argmin(a, window, min_count=None, axis=-1):
                 mask = np.all(mask, axis=axis)
                 idx[mask] = np.nan
         return idx
+
     return move_func(argmin, a, window, min_count, axis=axis)
 
 
 def move_argmax(a, window, min_count=None, axis=-1):
     "Slow move_argmax for unaccelerated dtype"
+
     def argmax(a, axis):
         a = np.array(a, copy=False)
         flip = [slice(None)] * a.ndim
@@ -85,6 +97,7 @@ def move_argmax(a, window, min_count=None, axis=-1):
                 mask = np.all(mask, axis=axis)
                 idx[mask] = np.nan
         return idx
+
     return move_func(argmax, a, window, min_count, axis=axis)
 
 
@@ -99,6 +112,7 @@ def move_rank(a, window, min_count=None, axis=-1):
 
 
 # magic utility functions ---------------------------------------------------
+
 
 def move_func(func, a, window, min_count=None, axis=-1, **kwargs):
     "Generic moving window function implemented with a python loop."
@@ -158,6 +172,7 @@ def _mask(a, window, min_count, axis):
 
 
 # ---------------------------------------------------------------------------
+
 
 def lastrank(a, axis=-1):
     """

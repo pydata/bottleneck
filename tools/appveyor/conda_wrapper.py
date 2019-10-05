@@ -7,9 +7,13 @@ from subprocess import check_output
 
 
 if sys.version_info[0] == 2:
+
     def decode(string):
         return string
+
+
 else:
+
     def decode(string):
         return string.decode()
 
@@ -24,10 +28,9 @@ class CondaWrapper(object):
 
     def __init__(self, version, home, venv, **kw_args):
         super(CondaWrapper, self).__init__(**kw_args)
-        self.logger = logging.getLogger("{}.{}".format(
-            __name__,
-            self.__class__.__name__
-        ))
+        self.logger = logging.getLogger(
+            "{}.{}".format(__name__, self.__class__.__name__)
+        )
         self.version = version
         self.home = home
         self.venv = venv
@@ -40,8 +43,16 @@ class CondaWrapper(object):
 
     def configure(self):
         self.logger.info("Configuring '%s'...", self.home)
-        cmd = ["conda", "config", "--set", "always_yes", "yes", "--set",
-               "changeps1", "no"]
+        cmd = [
+            "conda",
+            "config",
+            "--set",
+            "always_yes",
+            "yes",
+            "--set",
+            "changeps1",
+            "no",
+        ]
         msg = check_output(cmd, shell=True)
         self.logger.debug(decode(msg))
         self.logger.info("Done.")
@@ -55,8 +66,14 @@ class CondaWrapper(object):
 
     def create(self, *args):
         self.logger.info("Creating environment '%s'...", self.venv)
-        cmd = ["conda", "create", "-q", "-n", self.venv,
-               "python=" + self.version] + list(args)
+        cmd = [
+            "conda",
+            "create",
+            "-q",
+            "-n",
+            self.venv,
+            "python=" + self.version,
+        ] + list(args)
         msg = check_output(cmd, shell=True)
         self.logger.debug(decode(msg))
         cmd = ["activate", self.venv]
