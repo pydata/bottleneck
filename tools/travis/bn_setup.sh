@@ -4,6 +4,7 @@ set -ev # exit on first error, print commands
 
 if [ "${TEST_RUN}" = "style" ]; then
     flake8
+    black . --check --exclude "(build/|dist/|\.git/|\.mypy_cache/|\.tox/|\.venv/\.asv/|env|\.eggs)"
 else
     if [ "${TEST_RUN}" = "sdist" ]; then
         python setup.py sdist

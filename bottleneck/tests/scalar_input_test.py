@@ -5,15 +5,17 @@ import bottleneck as bn
 import pytest
 
 
-@pytest.mark.parametrize("func", bn.get_functions('reduce') +  # noqa: W504
-                         bn.get_functions('nonreduce_axis'),
-                         ids=lambda x: x.__name__)
+@pytest.mark.parametrize(
+    "func",
+    bn.get_functions("reduce") + bn.get_functions("nonreduce_axis"),  # noqa: W504
+    ids=lambda x: x.__name__,
+)
 def test_scalar_input(func, args=tuple()):
     "Test that bn.xxx gives the same output as bn.slow.xxx for scalar input."
-    if func.__name__ in ('partition', 'argpartition', 'push'):
+    if func.__name__ in ("partition", "argpartition", "push"):
         return
-    func0 = eval('bn.slow.%s' % func.__name__)
-    msg = '\nfunc %s | input %s\n'
+    func0 = eval("bn.slow.%s" % func.__name__)
+    msg = "\nfunc %s | input %s\n"
     a = -9
     argsi = [a] + list(args)
     actual = func(*argsi)

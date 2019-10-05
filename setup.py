@@ -39,8 +39,7 @@ class clean(Command):
                     self.delete_files.append(os.path.join(root, f))
 
                 if f.endswith(".c") and "template" in f:
-                    generated_file = os.path.join(root,
-                                                  f.replace("_template", ""))
+                    generated_file = os.path.join(root, f.replace("_template", ""))
                     if os.path.exists(generated_file):
                         self.delete_files.append(generated_file)
 
@@ -74,6 +73,7 @@ class build_ext(_build_ext):
             import builtins
         builtins.__NUMPY_SETUP__ = False
         import numpy
+
         # place numpy includes first, see gh #156
         self.include_dirs.insert(0, numpy.get_include())
         self.include_dirs.append("bottleneck/src")
@@ -88,79 +88,101 @@ class build_ext(_build_ext):
 
 
 cmdclass = versioneer.get_cmdclass()
-cmdclass['build_ext'] = build_ext
-cmdclass['clean'] = clean
-cmdclass['config'] = config
+cmdclass["build_ext"] = build_ext
+cmdclass["clean"] = clean
+cmdclass["config"] = config
 
 # Add our template path to the path so that we don't have a circular reference
 # of working install to be able to re-compile
-sys.path.append(os.path.join(os.path.dirname(__file__), 'bottleneck/src'))
+sys.path.append(os.path.join(os.path.dirname(__file__), "bottleneck/src"))
 
 
 def prepare_modules():
-    base_includes = ["bottleneck/src/bottleneck.h",
-                     "bottleneck/src/bn_config.h",
-                     "bottleneck/src/iterators.h"]
-    ext = [Extension("bottleneck.reduce",
-                     sources=["bottleneck/src/reduce.c"],
-                     depends=base_includes,
-                     extra_compile_args=['-O2'])]
-    ext += [Extension("bottleneck.move",
-                      sources=["bottleneck/src/move.c",
-                               "bottleneck/src/move_median/move_median.c"],
-                      depends=base_includes + [
-                          "bottleneck/src/move_median/move_median.h"
-                      ],
-                      extra_compile_args=['-O2'])]
-    ext += [Extension("bottleneck.nonreduce",
-                      sources=["bottleneck/src/nonreduce.c"],
-                      depends=base_includes,
-                      extra_compile_args=['-O2'])]
-    ext += [Extension("bottleneck.nonreduce_axis",
-                      sources=["bottleneck/src/nonreduce_axis.c"],
-                      depends=base_includes,
-                      extra_compile_args=['-O2'])]
+    base_includes = [
+        "bottleneck/src/bottleneck.h",
+        "bottleneck/src/bn_config.h",
+        "bottleneck/src/iterators.h",
+    ]
+    ext = [
+        Extension(
+            "bottleneck.reduce",
+            sources=["bottleneck/src/reduce.c"],
+            depends=base_includes,
+            extra_compile_args=["-O2"],
+        )
+    ]
+    ext += [
+        Extension(
+            "bottleneck.move",
+            sources=[
+                "bottleneck/src/move.c",
+                "bottleneck/src/move_median/move_median.c",
+            ],
+            depends=base_includes + ["bottleneck/src/move_median/move_median.h"],
+            extra_compile_args=["-O2"],
+        )
+    ]
+    ext += [
+        Extension(
+            "bottleneck.nonreduce",
+            sources=["bottleneck/src/nonreduce.c"],
+            depends=base_includes,
+            extra_compile_args=["-O2"],
+        )
+    ]
+    ext += [
+        Extension(
+            "bottleneck.nonreduce_axis",
+            sources=["bottleneck/src/nonreduce_axis.c"],
+            depends=base_includes,
+            extra_compile_args=["-O2"],
+        )
+    ]
     return ext
 
 
 def get_long_description():
-    with open('README.rst', 'r') as fid:
+    with open("README.rst", "r") as fid:
         long_description = fid.read()
     idx = max(0, long_description.find("Bottleneck is a collection"))
     long_description = long_description[idx:]
     return long_description
 
 
-CLASSIFIERS = ["Development Status :: 4 - Beta",
-               "Environment :: Console",
-               "Intended Audience :: Science/Research",
-               "License :: OSI Approved :: BSD License",
-               "Operating System :: OS Independent",
-               "Programming Language :: C",
-               "Programming Language :: Python",
-               "Programming Language :: Python :: 3",
-               "Topic :: Scientific/Engineering"]
+CLASSIFIERS = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: C",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+]
 
 
-metadata = dict(name='Bottleneck',
-                maintainer="Christopher Whelan",
-                maintainer_email="bottle-neck@googlegroups.com",
-                description="Fast NumPy array functions written in C",
-                long_description=get_long_description(),
-                url="https://github.com/pydata/bottleneck",
-                download_url="http://pypi.python.org/pypi/Bottleneck",
-                license="Simplified BSD",
-                classifiers=CLASSIFIERS,
-                platforms="OS Independent",
-                version=versioneer.get_version(),
-                packages=find_packages(),
-                package_data={'bottleneck': ['LICENSE']},
-                requires=['numpy'],
-                install_requires=['numpy'],
-                cmdclass=cmdclass,
-                setup_requires=['numpy'],
-                ext_modules=prepare_modules(),
-                zip_safe=False)
+metadata = dict(
+    name="Bottleneck",
+    maintainer="Christopher Whelan",
+    maintainer_email="bottle-neck@googlegroups.com",
+    description="Fast NumPy array functions written in C",
+    long_description=get_long_description(),
+    url="https://github.com/pydata/bottleneck",
+    download_url="http://pypi.python.org/pypi/Bottleneck",
+    license="Simplified BSD",
+    classifiers=CLASSIFIERS,
+    platforms="OS Independent",
+    version=versioneer.get_version(),
+    packages=find_packages(),
+    package_data={"bottleneck": ["LICENSE"]},
+    requires=["numpy"],
+    install_requires=["numpy"],
+    cmdclass=cmdclass,
+    setup_requires=["numpy"],
+    ext_modules=prepare_modules(),
+    zip_safe=False,
+)
 
 
 setup(**metadata)

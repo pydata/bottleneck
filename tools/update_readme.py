@@ -10,18 +10,18 @@ def update_readme():
     # run benchmark suite while capturing output; indent
     with Capturing() as bench_list:
         bn.bench()
-    bench_list = ['    ' + b for b in bench_list]
+    bench_list = ["    " + b for b in bench_list]
 
     # read readme
     cwd = os.path.dirname(__file__)
-    readme_path = os.path.join(cwd, '../README.rst')
+    readme_path = os.path.join(cwd, "../README.rst")
     with open(readme_path) as f:
         readme_list = f.readlines()
-    readme_list = [r.strip('\n') for r in readme_list]
+    readme_list = [r.strip("\n") for r in readme_list]
 
     # remove old benchmark result from readme
-    idx1 = readme_list.index('    Bottleneck performance benchmark')
-    idx2 = [i for i, line in enumerate(readme_list) if line == '']
+    idx1 = readme_list.index("    Bottleneck performance benchmark")
+    idx2 = [i for i, line in enumerate(readme_list) if line == ""]
     idx2 = [i for i in idx2 if i > idx1]
     idx2 = idx2[1]
     del readme_list[idx1:idx2]
@@ -32,8 +32,9 @@ def update_readme():
 
     # replace readme file
     os.remove(readme_path)
-    with open(readme_path, 'w') as f:
-        f.write('\n'.join(readme_list))
+    with open(readme_path, "w") as f:
+        f.write("\n".join(readme_list))
+
 
 # ---------------------------------------------------------------------------
 # Capturing class taken from
@@ -42,7 +43,6 @@ def update_readme():
 
 
 class Capturing(list):
-
     def __enter__(self):
         self._stdout = sys.stdout
         sys.stdout = self._stringio = StringIO()
@@ -53,5 +53,5 @@ class Capturing(list):
         sys.stdout = self._stdout
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     update_readme()

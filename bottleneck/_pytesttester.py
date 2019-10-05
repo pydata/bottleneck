@@ -10,7 +10,7 @@ import os
 import sys
 
 
-__all__ = ['PytestTester']
+__all__ = ["PytestTester"]
 
 
 class PytestTester(object):
@@ -21,14 +21,22 @@ class PytestTester(object):
     def __init__(self, module_name):
         self.module_name = module_name
 
-    def __call__(self, label="fast", verbose=1, extra_argv=None, doctests=False,
-                 coverage=False, tests=None, parallel=None):
+    def __call__(
+        self,
+        label="fast",
+        verbose=1,
+        extra_argv=None,
+        doctests=False,
+        coverage=False,
+        tests=None,
+        parallel=None,
+    ):
         import pytest
 
         module = sys.modules[self.module_name]
         module_path = os.path.abspath(module.__path__[0])
 
-        pytest_args = ['-l']
+        pytest_args = ["-l"]
 
         if doctests:
             raise ValueError("Doctests not supported")
@@ -52,20 +60,23 @@ class PytestTester(object):
 
         if parallel is not None and parallel > 1:
             if _pytest_has_xdist():
-                pytest_args += ['-n', str(parallel)]
+                pytest_args += ["-n", str(parallel)]
             else:
                 import warnings
-                warnings.warn('Could not run tests in parallel because '
-                              'pytest-xdist plugin is not available.')
 
-        pytest_args += ['--pyargs'] + list(tests)
+                warnings.warn(
+                    "Could not run tests in parallel because "
+                    "pytest-xdist plugin is not available."
+                )
+
+        pytest_args += ["--pyargs"] + list(tests)
 
         try:
             code = pytest.main(pytest_args)
         except SystemExit as exc:
             code = exc.code
 
-        return (code == 0)
+        return code == 0
 
 
 def _pytest_has_xdist():
@@ -74,4 +85,5 @@ def _pytest_has_xdist():
     """
     # Check xdist exists without importing, otherwise pytests emits warnings
     from importlib.util import find_spec
-    return find_spec('xdist') is not None
+
+    return find_spec("xdist") is not None
