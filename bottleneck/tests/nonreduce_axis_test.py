@@ -5,7 +5,7 @@ from numpy.testing import (assert_equal, assert_array_equal,
 import bottleneck as bn
 from .reduce_test import (unit_maker as reduce_unit_maker,
                           unit_maker_argparse as unit_maker_parse_rankdata)
-from .util import arrays, array_order
+from .util import arrays, array_order, DTYPES
 import pytest
 
 # ---------------------------------------------------------------------------
@@ -220,3 +220,16 @@ def unit_maker_raises(func):
     if func.__name__ in ('partition', 'argpartition'):
         assert_raises(TypeError, func, a, 0, 0, 0, 0, 0)
         assert_raises(TypeError, func, a, axis='0')
+
+
+@pytest.mark.parametrize("dtype", DTYPES)
+@pytest.mark.parametrize("func", (bn.partition, bn.argpartition),
+                         ids=lambda x: x.__name__)
+def test_out_of_bounds_raises(func, dtype):
+    array = np.ones((10, 10), dtype=dtype)
+    for axis in [None, 0, 1, -1]:
+        with pytest.raises(ValueError, match="must be between"):
+            func(array, 1000, axis=axis)
+
+        with pytest.raises(ValueError, match="must be between"):
+            func(array, -1, axis=axis)
