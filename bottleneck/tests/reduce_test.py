@@ -221,3 +221,13 @@ def test_nanvar_issue60():
     with np.errstate(invalid='ignore'):
         s = bn.slow.nanvar([[1, np.nan], [np.nan, 1]], axis=0, ddof=1)
     assert_equal(f, s, err_msg="issue #60 regression")
+
+
+@pytest.mark.parametrize("dtype", DTYPES)
+@pytest.mark.parametrize("func", (bn.nanstd, bn.nanvar),
+                         ids=lambda x: x.__name__)
+def test_ddof_nans(func, dtype):
+    array = np.ones((1, 1), dtype=dtype)
+    for axis in [None, 0, 1, -1]:
+        result = func(array, axis=axis, ddof=3)
+        assert np.isnan(result)
