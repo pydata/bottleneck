@@ -102,3 +102,10 @@ def test_replace_nan_int():
     bn.slow.replace(actual, np.nan, 0)
     msg = "slow.replace failed on int input looking for nans"
     assert_array_equal(actual, desired, err_msg=msg)
+
+
+@pytest.mark.parametrize("dtype", DTYPES)
+def test_replace_newaxis(dtype):
+    array = np.ones((2, 2), dtype=dtype)[..., np.newaxis]
+    result = bn.replace(array, 1, 2)
+    assert (result == 2).all().all()
