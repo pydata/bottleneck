@@ -5,7 +5,7 @@ import warnings
 import numpy as np
 from numpy.testing import assert_equal, assert_array_equal, assert_raises
 import bottleneck as bn
-from .util import arrays, array_order
+from .util import arrays, array_order, DTYPES, INT_DTYPES
 import pytest
 
 
@@ -68,7 +68,7 @@ def test_nonreduce(func):
 
 def test_replace_unsafe_cast():
     "Test replace for unsafe casts"
-    dtypes = ["int32", "int64"]
+    dtypes = INT_DTYPES
     for dtype in dtypes:
         a = np.zeros(3, dtype=dtype)
         assert_raises(ValueError, bn.replace, a.copy(), 0.1, 0)
@@ -90,9 +90,10 @@ def test_non_array():
 # user wants to replace nans
 
 
-def test_replace_nan_int():
+@pytest.mark.parametrize("dtype", INT_DTYPES)
+def test_replace_nan_int(dtype):
     "Test replace, int array, old=nan, new=0"
-    a = np.arange(2 * 3 * 4).reshape(2, 3, 4)
+    a = np.arange(2 * 3 * 4, dtype=dtype).reshape(2, 3, 4)
     actual = a.copy()
     bn.replace(actual, np.nan, 0)
     desired = a.copy()

@@ -1,7 +1,9 @@
 import numpy as np
 import bottleneck as bn
 
-DTYPES = [np.float64, np.float32, np.int64, np.int32]
+INT_DTYPES = [np.int64, np.int32]
+FLOAT_DTYPES = [np.float64, np.float32]
+DTYPES = FLOAT_DTYPES + INT_DTYPES
 
 
 def get_functions(module_name, as_string=False):
