@@ -105,6 +105,32 @@ def test_replace_nan_int(dtype):
     assert_array_equal(actual, desired, err_msg=msg)
 
 
+def test_replace_bad_args():
+    array = np.ones((10, 10))
+    bad_vals = [None, "", [0], "0"]
+    for bad_val in bad_vals:
+        with pytest.raises(TypeError, match="`old` must be a number"):
+            bn.replace(array, bad_val, 0)
+
+        with pytest.raises(TypeError, match="`new` must be a number"):
+            bn.replace(array, 0, bad_val)
+
+    with pytest.raises(TypeError, match="Cannot find `a` keyword input"):
+        bn.replace(foo=array)
+
+    with pytest.raises(TypeError, match="Cannot find `old` keyword input"):
+        bn.replace(a=array)
+
+    with pytest.raises(TypeError, match="Cannot find `new` keyword input"):
+        bn.replace(a=array, old=0)
+
+    with pytest.raises(TypeError, match="wrong number of arguments 4"):
+        bn.replace(array, 0)
+
+    with pytest.raises(TypeError, match="wrong number of arguments 4"):
+        bn.replace(array, 0, 0, 0)
+
+
 @pytest.mark.parametrize("dtype", DTYPES)
 def test_replace_newaxis(dtype):
     array = np.ones((2, 2), dtype=dtype)[..., np.newaxis]
