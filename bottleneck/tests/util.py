@@ -85,6 +85,8 @@ def array_iter(arrays_func, *args):
 def array_generator(func_name, dtypes):
     "Iterator that yields arrays to use for unit testing."
 
+    f_dtypes = list(set(dtypes) & set(FLOAT_DTYPES))
+
     # define nan and inf
     if func_name in ("partition", "argpartition"):
         nan = 0
@@ -97,12 +99,13 @@ def array_generator(func_name, dtypes):
         inf = np.inf
 
     # nan and inf
-    yield np.array([inf, nan])
-    yield np.array([inf, -inf])
-    yield np.array([nan, 2, 3])
-    yield np.array([-inf, 2, 3])
-    if func_name != "nanargmin":
-        yield np.array([nan, inf])
+    for dtype in f_dtypes:
+        yield np.array([inf, nan], dtype=dtype)
+        yield np.array([inf, -inf], dtype=dtype)
+        yield np.array([nan, 2, 3], dtype=dtype)
+        yield np.array([-inf, 2, 3], dtype=dtype)
+        if func_name != "nanargmin":
+            yield np.array([nan, inf], dtype=dtype)
 
     # byte swapped
     yield np.array([1, 2, 3], dtype=">f4")
@@ -112,28 +115,33 @@ def array_generator(func_name, dtypes):
     yield np.array([1, 2, 3], dtype=np.float16)
 
     # regression tests
-    yield np.array([1, 2, 3]) + 1e9  # check that move_std is robust
-    yield np.array([0, 0, 0])  # nanargmax/nanargmin
-    yield np.array([1, nan, nan, 2])  # nanmedian
+    for dtype in dtypes:
+        yield np.array([1, 2, 3], dtype=dtype) + 1e9  # check that move_std is robust
+        yield np.array([0, 0, 0], dtype=dtype)  # nanargmax/nanargmin
+
+    for dtype in f_dtypes:
+        yield np.array([1, nan, nan, 2], dtype=dtype)  # nanmedian
+
     yield np.array([2 ** 31], dtype=np.int64)  # overflows on windows
-    yield np.array([[1.0, 2], [3, 4]])[..., np.newaxis]  # issue #183
+
+    for dtype in dtypes:
+        yield np.array([[1, 2], [3, 4]], dtype=dtype)[..., np.newaxis]  # issue #183
 
     # ties
-    yield np.array([0, 0, 0])
-    yield np.array([0, 0, 0], dtype=np.float64)
-    yield np.array([1, 1, 1], dtype=np.float64)
+    for dtype in dtypes:
+        yield np.array([0, 0, 0], dtype=dtype)
+        yield np.array([1, 1, 1], dtype=dtype)
 
     # 0d input
     if not func_name.startswith("move"):
-        yield np.array(-9)
-        yield np.array(0)
-        yield np.array(9)
-        yield np.array(-9.0)
-        yield np.array(0.0)
-        yield np.array(9.0)
-        yield np.array(-inf)
-        yield np.array(inf)
-        yield np.array(nan)
+        for dtype in dtypes:
+            yield np.array(-9, dtype=dtype)
+            yield np.array(0, dtype=dtype)
+            yield np.array(9, dtype=dtype)
+            if dtype in f_dtypes:
+                yield np.array(-inf, dtype=dtype)
+                yield np.array(inf, dtype=dtype)
+                yield np.array(nan, dtype=dtype)
 
     # automate a bunch of arrays to test
     ss = {}
@@ -163,7 +171,9 @@ def array_generator(func_name, dtypes):
                     yield a.reshape(shape)
 
     # non-contiguous arrays
-    yield np.array([[1, 2], [3, 4]])[:, [1]]  # gh 161
+    for dtype in dtypes:
+        yield np.array([[1, 2], [3, 4]], dtype=dtype)[:, [1]]  # gh 161
+
     for dtype in dtypes:
         # 1d
         a = np.arange(12).astype(dtype)
