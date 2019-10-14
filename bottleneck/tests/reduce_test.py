@@ -3,12 +3,9 @@
 import warnings
 import traceback
 
-#  from itertools import permutations
-
 import numpy as np
 from numpy.testing import assert_equal, assert_raises, assert_array_almost_equal
 
-import bottleneck
 import bottleneck as bn
 from .util import arrays, array_order, DTYPES
 import pytest
