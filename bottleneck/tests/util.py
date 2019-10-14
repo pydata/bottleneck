@@ -3,7 +3,7 @@ import bottleneck as bn
 
 INT_DTYPES = [np.int64, np.int32]
 FLOAT_DTYPES = [np.float64, np.float32]
-DTYPES = FLOAT_DTYPES + INT_DTYPES
+DTYPES = tuple(FLOAT_DTYPES + INT_DTYPES)
 
 
 def get_functions(module_name, as_string=False):
