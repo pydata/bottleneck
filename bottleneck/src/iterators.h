@@ -1,3 +1,5 @@
+// Copyright 2010-2019 Keith Goodman
+// Copyright 2019 Bottleneck Developers
 #include <numpy/arrayobject.h>
 
 /*

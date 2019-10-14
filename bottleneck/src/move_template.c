@@ -1,3 +1,5 @@
+// Copyright 2010-2019 Keith Goodman
+// Copyright 2019 Bottleneck Developers
 #include "bottleneck.h"
 #include "iterators.h"
 #include "move_median/move_median.h"
