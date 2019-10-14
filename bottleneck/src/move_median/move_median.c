@@ -59,7 +59,6 @@ static inline void mm_swap_heap_heads(mm_node **s_heap, idx_t n_s,
  * heap). The handle, containing information about the heaps, is returned. */
 mm_handle *
 mm_new(const idx_t window, idx_t min_count) {
-
     mm_handle *mm = malloc(sizeof(mm_handle));
     mm->nodes = malloc(window * sizeof(mm_node*));
     mm->node_data = malloc(window * sizeof(mm_node));
@@ -82,7 +81,6 @@ mm_new(const idx_t window, idx_t min_count) {
  * Once there are window-1 nodes in the heap, switch to using mm_update. */
 ai_t
 mm_update_init(mm_handle *mm, ai_t ai) {
-
     mm_node *node;
     idx_t n_s = mm->n_s;
     idx_t n_l = mm->n_l;
@@ -101,8 +99,7 @@ mm_update_init(mm_handle *mm, ai_t ai) {
     } else {
         /* at least one node already exists in the heaps */
         mm->newest->next = node;
-        if (n_s > n_l)
-        {
+        if (n_s > n_l) {
             /* add new node to large heap */
             mm->l_heap[n_l] = node;
             node->region = LH;
@@ -170,7 +167,6 @@ mm_update(mm_handle *mm, ai_t ai) {
  * containing information about the heaps and the nan array is returned. */
 mm_handle *
 mm_new_nan(const idx_t window, idx_t min_count) {
-
     mm_handle *mm = malloc(sizeof(mm_handle));
     mm->nodes = malloc(2 * window * sizeof(mm_node*));
     mm->node_data = malloc(window * sizeof(mm_node));
@@ -194,7 +190,6 @@ mm_new_nan(const idx_t window, idx_t min_count) {
  * mm_update_nan. */
 ai_t
 mm_update_init_nan(mm_handle *mm, ai_t ai) {
-
     mm_node *node;
     idx_t n_s = mm->n_s;
     idx_t n_l = mm->n_l;
@@ -231,8 +226,7 @@ mm_update_init_nan(mm_handle *mm, ai_t ai) {
         } else {
             /* at least one node already exists in the heaps */
             mm->newest->next = node;
-            if (n_s > n_l)
-            {
+            if (n_s > n_l) {
                 /* add new node to large heap */
                 mm->l_heap[n_l] = node;
                 node->region = LH;
@@ -288,9 +282,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
     n_n = mm->n_n;
 
     if (ai != ai) {
-
         if (node->region == SH) {
-
             /* Oldest node is in the small heap and needs to be moved
              * to the nan array. Resulting hole in the small heap will be
              * filled with the rightmost leaf of the last row of the small
@@ -307,7 +299,6 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
             if (mm->n_s == 0) {
                 mm->s_first_leaf = 0;
                 if (n_l > 0) {
-
                     /* move head node from the large heap to the small heap */
                     node2 = mm->l_heap[0];
                     node2->region = SH;
@@ -316,7 +307,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
                     mm->s_first_leaf = 0;
 
                     /* plug hole in large heap */
-                    node2= mm->l_heap[mm->n_l - 1];
+                    node2 = mm->l_heap[mm->n_l - 1];
                     node2->idx = 0;
                     l_heap[0] = node2;
                     --mm->n_l;
@@ -326,7 +317,6 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
                         mm->l_first_leaf = FIRST_LEAF(mm->n_l);
                     }
                     heapify_large_node(mm, 0);
-
                 }
             } else {
                 if (idx != n_s - 1) {
@@ -335,7 +325,6 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
                     heapify_small_node(mm, idx);
                 }
                 if (mm->n_s < mm->n_l) {
-
                     /* move head node from the large heap to the small heap */
                     node2 = mm->l_heap[0];
                     node2->idx = mm->n_s;
@@ -346,7 +335,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
                     heapify_small_node(mm, node2->idx);
 
                     /* plug hole in large heap */
-                    node2= mm->l_heap[mm->n_l - 1];
+                    node2 = mm->l_heap[mm->n_l - 1];
                     node2->idx = 0;
                     l_heap[0] = node2;
                     --mm->n_l;
@@ -362,9 +351,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
                     heapify_small_node(mm, idx);
                 }
             }
-
         } else if (node->region == LH) {
-
             /* Oldest node is in the large heap and needs to be moved
              * to the nan array. Resulting hole in the large heap will be
              * filled with the rightmost leaf of the last row of the large
@@ -389,7 +376,6 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
                 mm->l_first_leaf = FIRST_LEAF(mm->n_l);
             }
             if (mm->n_l < mm->n_s - 1) {
-
                 /* move head node from the small heap to the large heap */
                 node2 = mm->s_heap[0];
                 node2->idx = mm->n_l;
@@ -412,30 +398,21 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
                     mm->s_first_leaf = FIRST_LEAF(mm->n_s);
                 }
                 heapify_small_node(mm, 0);
-
             }
-
             /* reorder large heap if needed */
             heapify_large_node(mm, idx);
-
         } else if (node->region == NA) {
-
             /* insert node into nan heap */
             n_array[idx] = node;
-
         }
     } else {
-
         if (node->region == SH) {
             heapify_small_node(mm, idx);
         } else if (node->region == LH) {
             heapify_large_node(mm, idx);
         } else {
-
             /* ai is not NaN but oldest node is in nan array */
-
             if (n_s > n_l) {
-
                 /* insert into large heap */
                 node->region = LH;
                 node->idx = n_l;
@@ -443,9 +420,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
                 ++mm->n_l;
                 mm->l_first_leaf = FIRST_LEAF(mm->n_l);
                 heapify_large_node(mm, n_l);
-
             } else {
-
                 /* insert into small heap */
                 node->region = SH;
                 node->idx = n_s;
@@ -453,9 +428,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
                 ++mm->n_s;
                 mm->s_first_leaf = FIRST_LEAF(mm->n_s);
                 heapify_small_node(mm, n_s);
-
             }
-
             /* plug nan array hole */
             if (idx != n_n - 1) {
                 n_array[idx] = n_array[n_n - 1];
@@ -463,9 +436,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
             }
             --mm->n_n;
         }
-
     }
-
     return mm_get_median(mm);
 }
 
