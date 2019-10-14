@@ -7,7 +7,7 @@ DTYPES = FLOAT_DTYPES + INT_DTYPES
 
 
 def get_functions(module_name, as_string=False):
-    "Returns a list of functions, optionally as string function names"
+    """Returns a list of functions, optionally as string function names"""
     if module_name == "all":
         funcs = []
         funcs_in_dict = func_dict()
@@ -83,7 +83,7 @@ def array_iter(arrays_func, *args):
 
 
 def array_generator(func_name, dtypes):
-    "Iterator that yields arrays to use for unit testing."
+    """Iterator that yields arrays to use for unit testing."""
 
     f_dtypes = list(set(dtypes) & set(FLOAT_DTYPES))
 

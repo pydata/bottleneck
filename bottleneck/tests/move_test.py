@@ -1,4 +1,4 @@
-"Test moving window functions."
+"""Test moving window functions."""
 
 import numpy as np
 from numpy.testing import assert_equal, assert_array_almost_equal, assert_raises
@@ -9,7 +9,7 @@ import pytest
 
 @pytest.mark.parametrize("func", bn.get_functions("move"), ids=lambda x: x.__name__)
 def test_move(func):
-    "Test that bn.xxx gives the same output as a reference function."
+    """Test that bn.xxx gives the same output as a reference function."""
     fmt = (
         "\nfunc %s | window %d | min_count %s | input %s (%s) | shape %s | "
         "axis %s | order %s\n"
@@ -56,7 +56,7 @@ def test_move(func):
 
 @pytest.mark.parametrize("func", bn.get_functions("move"), ids=lambda x: x.__name__)
 def test_arg_parsing(func, decimal=5):
-    "test argument parsing."
+    """test argument parsing."""
 
     name = func.__name__
     func0 = eval("bn.slow.%s" % name)
@@ -121,7 +121,7 @@ def test_arg_parsing(func, decimal=5):
 
 @pytest.mark.parametrize("func", bn.get_functions("move"), ids=lambda x: x.__name__)
 def test_arg_parse_raises(func):
-    "test argument parsing raises in move"
+    """test argument parsing raises in move"""
     a = np.array([1.0, 2, 3])
     assert_raises(TypeError, func)
     assert_raises(TypeError, func, axis=a)
@@ -144,7 +144,7 @@ def test_arg_parse_raises(func):
 
 
 def test_move_median_with_nans():
-    "test move_median.c with nans"
+    """test move_median.c with nans"""
     fmt = "\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n"
     aaae = assert_array_almost_equal
     min_count = 1
@@ -167,7 +167,7 @@ def test_move_median_with_nans():
 
 
 def test_move_median_without_nans():
-    "test move_median.c without nans"
+    """test move_median.c without nans"""
     fmt = "\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n"
     aaae = assert_array_almost_equal
     min_count = 1
@@ -190,7 +190,7 @@ def test_move_median_without_nans():
 
 
 def test_move_std_sqrt():
-    "Test move_std for neg sqrt."
+    """Test move_std for neg sqrt."""
 
     a = [
         0.0011448196318903589,

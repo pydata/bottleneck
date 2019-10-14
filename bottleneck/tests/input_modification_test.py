@@ -1,4 +1,4 @@
-"Test functions."
+"""Test functions."""
 
 import warnings
 
@@ -10,7 +10,7 @@ import pytest
 
 
 def arrays(dtypes):
-    "Iterator that yield arrays to use for unit testing."
+    """Iterator that yield arrays to use for unit testing."""
     ss = {}
     ss[1] = {"size": 4, "shapes": [(4,)]}
     ss[2] = {"size": 6, "shapes": [(2, 3)]}
@@ -35,7 +35,7 @@ def arrays(dtypes):
 
 @pytest.mark.parametrize("func", bn.get_functions("all"), ids=lambda x: x.__name__)
 def test_modification(func):
-    "Test that bn.xxx gives the same output as np.xxx."
+    """Test that bn.xxx gives the same output as np.xxx."""
     name = func.__name__
     if name == "replace":
         return

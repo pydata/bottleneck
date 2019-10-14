@@ -1,4 +1,4 @@
-"Check that functions can handle list input"
+"""Check that functions can handle list input"""
 
 import warnings
 
@@ -10,7 +10,7 @@ import pytest
 
 
 def lists(dtypes=DTYPES):
-    "Iterator that yields lists to use for unit testing."
+    """Iterator that yields lists to use for unit testing."""
     ss = {}
     ss[1] = {"size": 4, "shapes": [(4,)]}
     ss[2] = {"size": 6, "shapes": [(1, 6), (2, 3)]}
@@ -28,7 +28,7 @@ def lists(dtypes=DTYPES):
 
 @pytest.mark.parametrize("func", bn.get_functions("all"), ids=lambda x: x.__name__)
 def test_list_input(func):
-    "Test that bn.xxx gives the same output as bn.slow.xxx for list input."
+    """Test that bn.xxx gives the same output as bn.slow.xxx for list input."""
     msg = "\nfunc %s | input %s (%s) | shape %s\n"
     msg += "\nInput array:\n%s\n"
     name = func.__name__
