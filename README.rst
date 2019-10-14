@@ -104,7 +104,7 @@ Requirements:
 ======================== ====================================================
 Bottleneck               Python 2.7, 3.5, 3.6; NumPy 1.16.0
 Compile                  gcc, clang, MinGW or MSVC
-Unit tests               nose
+Unit tests               pytest
 Documentation            sphinx, numpydoc
 ======================== ====================================================
 
