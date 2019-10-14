@@ -1,7 +1,7 @@
 // Copyright 2010-2019 Keith Goodman
 // Copyright 2019 Bottleneck Developers
-#ifndef BOTTLENECK_H
-#define BOTTLENECK_H
+#ifndef BOTTLENECK_H_
+#define BOTTLENECK_H_
 
 #include <Python.h>
 #define NPY_NO_DEPRECATED_API NPY_1_11_API_VERSION
@@ -188,4 +188,4 @@ slow(char *name, PyObject *args, PyObject *kwds)
     return out;
 }
 
-#endif /* BOTTLENECK_H */
+#endif  // BOTTLENECK_H_

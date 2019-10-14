@@ -1,5 +1,8 @@
 // Copyright 2010-2019 Keith Goodman
 // Copyright 2019 Bottleneck Developers
+#ifndef ITERATORS_H_
+#define ITERATORS_H_
+
 #include <numpy/arrayobject.h>
 
 /*
@@ -379,3 +382,5 @@ init_iter3(iter3 *it, PyArrayObject *a, PyObject *y, PyObject *z, int axis)
     for (_i = 0; _i < size; _i++) { \
         YPP = value; \
     }
+
+#endif  // ITERATORS_H_
