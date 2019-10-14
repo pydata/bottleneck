@@ -20,7 +20,7 @@ def test_reduce(func):
     return unit_maker(func)
 
 
-def unit_maker(func, decimal=5, skip_dtype=["nansum", "ss"]):
+def unit_maker(func, decimal=5, skip_dtype=("nansum", "ss")):
     """Test that bn.xxx gives the same output as bn.slow.xxx."""
     fmt = "\nfunc %s | input %s (%s) | shape %s | axis %s | order %s\n"
     fmt += "\nInput array:\n%s\n"
