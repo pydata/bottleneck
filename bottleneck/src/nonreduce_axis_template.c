@@ -48,8 +48,7 @@ nonreducer_axis(char *name,
 #define B(dtype, i) AX(dtype, i) /* used by PARTITION */
 
 /* dtype = [['float64'], ['float32'], ['int64'], ['int32']] */
-NRA(partition, DTYPE0)
-{
+NRA(partition, DTYPE0) {
     npy_intp i;
     npy_intp j, l, r, k;
     iter it;
@@ -162,8 +161,7 @@ NRA_MAIN(partition, PARSE_PARTITION)
 
 /* dtype = [['float64', 'intp'], ['float32', 'intp'],
             ['int64',   'intp'], ['int32',   'intp']] */
-NRA(argpartition, DTYPE0)
-{
+NRA(argpartition, DTYPE0) {
     npy_intp i;
     PyObject *y = PyArray_EMPTY(PyArray_NDIM(a), PyArray_SHAPE(a),
                                 NPY_DTYPE1, 0);
@@ -199,8 +197,7 @@ NRA_MAIN(argpartition, PARSE_PARTITION)
 
 /* dtype = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp'],
             ['int64',   'float64', 'intp'], ['int32',   'float64', 'intp']] */
-NRA(rankdata, DTYPE0)
-{
+NRA(rankdata, DTYPE0) {
     Py_ssize_t j=0, k, idx, dupcount=0, i;
     npy_DTYPE1 old, new, averank, sumranks = 0;
 
@@ -262,8 +259,7 @@ NRA_MAIN(rankdata, PARSE_RANKDATA)
 /* nanrankdata ----------------------------------------------------------- */
 
 /* dtype = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp']] */
-NRA(nanrankdata, DTYPE0)
-{
+NRA(nanrankdata, DTYPE0) {
     Py_ssize_t j=0, k, idx, dupcount=0, i;
     npy_DTYPE1 old, new, averank, sumranks = 0;
 
@@ -330,8 +326,7 @@ NRA(nanrankdata, DTYPE0)
 /* dtype end */
 
 static PyObject *
-nanrankdata(PyObject *self, PyObject *args, PyObject *kwds)
-{
+nanrankdata(PyObject *self, PyObject *args, PyObject *kwds) {
     return nonreducer_axis("nanrankdata",
                            args,
                            kwds,
@@ -346,8 +341,7 @@ nanrankdata(PyObject *self, PyObject *args, PyObject *kwds)
 /* push ------------------------------------------------------------------ */
 
 /* dtype = [['float64'], ['float32']] */
-NRA(push, DTYPE0)
-{
+NRA(push, DTYPE0) {
     npy_intp index;
     npy_DTYPE0 ai, ai_last, n_float;
     PyObject *y = PyArray_Copy(a);
@@ -380,8 +374,7 @@ NRA(push, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64'], ['int32']] */
-NRA(push, DTYPE0)
-{
+NRA(push, DTYPE0) {
     PyObject *y = PyArray_Copy(a);
     return y;
 }
@@ -413,8 +406,7 @@ parse_partition(PyObject *args,
                 PyObject *kwds,
                 PyObject **a,
                 PyObject **n,
-                PyObject **axis)
-{
+                PyObject **axis) {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
     if (nkwds) {
@@ -484,8 +476,7 @@ static inline int
 parse_rankdata(PyObject *args,
                PyObject *kwds,
                PyObject **a,
-               PyObject **axis)
-{
+               PyObject **axis) {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
     if (nkwds) {
@@ -547,8 +538,7 @@ parse_push(PyObject *args,
            PyObject *kwds,
            PyObject **a,
            PyObject **n,
-           PyObject **axis)
-{
+           PyObject **axis) {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
     if (nkwds) {
@@ -622,8 +612,7 @@ nonreducer_axis(char *name,
                 nra_t nra_float32,
                 nra_t nra_int64,
                 nra_t nra_int32,
-                parse_type parse)
-{
+                parse_type parse) {
 
     int n;
     int axis;

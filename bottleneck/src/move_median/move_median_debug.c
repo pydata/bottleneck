@@ -13,15 +13,13 @@ void mm_print_line(void);
 void mm_print_node(mm_node *node);
 
 
-int main(void)
-{
+int main(void) {
     return mm_unit_test();
 }
 
 
 /* moving window median of 1d arrays returns output array */
-ai_t *mm_move_median(ai_t *a, idx_t length, idx_t window, idx_t min_count)
-{
+ai_t *mm_move_median(ai_t *a, idx_t length, idx_t window, idx_t min_count) {
     mm_handle *mm;
     ai_t *out;
     idx_t i;
@@ -53,8 +51,7 @@ ai_t *mm_move_median(ai_t *a, idx_t length, idx_t window, idx_t min_count)
 
 /* assert that two arrays are equal */
 int mm_assert_equal(ai_t *actual, ai_t *desired, ai_t *input, idx_t length,
-                 char *err_msg)
-{
+                 char *err_msg) {
     idx_t i;
     int failed = 0;
 
@@ -78,8 +75,7 @@ int mm_assert_equal(ai_t *actual, ai_t *desired, ai_t *input, idx_t length,
 }
 
 
-int mm_unit_test(void)
-{
+int mm_unit_test(void) {
     ai_t arr_input[] = {0,   3,   7,  NAN, 1,   5,   8,   9,   2,  NAN};
     ai_t desired[] =   {0 ,  1.5, 3,  5,   4,   3,   5,   8,   8,  5.5};
     ai_t *actual;
@@ -104,8 +100,7 @@ int mm_unit_test(void)
 }
 
 
-void mm_print_node(mm_node *node)
-{
+void mm_print_node(mm_node *node) {
     printf("\n\n%d small\n", node->region);
     printf("%d idx\n", node->idx);
     printf("%f ai\n", node->ai);
@@ -113,8 +108,7 @@ void mm_print_node(mm_node *node)
 }
 
 
-void mm_print_chain(mm_handle *mm)
-{
+void mm_print_chain(mm_handle *mm) {
     idx_t i;
     mm_node *node;
 
@@ -130,8 +124,7 @@ void mm_print_chain(mm_handle *mm)
 }
 
 
-void mm_check(mm_handle *mm)
-{
+void mm_check(mm_handle *mm) {
 
     int ndiff;
     idx_t i;
@@ -192,8 +185,7 @@ void mm_check(mm_handle *mm)
 
 
 /* Print the two heaps to the screen */
-void mm_dump(mm_handle *mm)
-{
+void mm_dump(mm_handle *mm) {
     int i;
     idx_t idx;
 
@@ -289,8 +281,7 @@ void mm_dump(mm_handle *mm)
  * Code modified for bottleneck's needs. */
 void
 mm_print_binary_heap(mm_node **heap, idx_t n_array, idx_t oldest_idx,
-                     idx_t newest_idx)
-{
+                     idx_t newest_idx) {
     const int line_width = 77;
     int print_pos[n_array];
     int i, j, k, pos, x=1, level=0;
@@ -320,8 +311,7 @@ mm_print_binary_heap(mm_node **heap, idx_t n_array, idx_t oldest_idx,
 }
 
 
-void mm_print_line(void)
-{
+void mm_print_line(void) {
     int i, width = 70;
     for (i=0; i < width; i++)
         printf("-");

@@ -72,8 +72,7 @@ mover(char *name,
 /* move_sum -------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-MOVE(move_sum, DTYPE0)
-{
+MOVE(move_sum, DTYPE0) {
     Py_ssize_t count;
     npy_DTYPE0 asum, ai, aold;
     INIT(NPY_DTYPE0)
@@ -123,8 +122,7 @@ MOVE(move_sum, DTYPE0)
 
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-MOVE(move_sum, DTYPE0)
-{
+MOVE(move_sum, DTYPE0) {
     npy_DTYPE1 asum;
     INIT(NPY_DTYPE1)
     BN_BEGIN_ALLOW_THREADS
@@ -156,8 +154,7 @@ MOVE_MAIN(move_sum, 0)
 /* move_mean -------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-MOVE(move_mean, DTYPE0)
-{
+MOVE(move_mean, DTYPE0) {
     Py_ssize_t count;
     npy_DTYPE0 asum, ai, aold, count_inv;
     INIT(NPY_DTYPE0)
@@ -210,8 +207,7 @@ MOVE(move_mean, DTYPE0)
 
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-MOVE(move_mean, DTYPE0)
-{
+MOVE(move_mean, DTYPE0) {
     npy_DTYPE1 asum, window_inv = 1.0 / window;
     INIT(NPY_DTYPE1)
     BN_BEGIN_ALLOW_THREADS
@@ -246,8 +242,7 @@ MOVE_MAIN(move_mean, 0)
 /* repeat = {'NAME': ['move_std', 'move_var'],
              'FUNC': ['sqrt',     '']} */
 /* dtype = [['float64'], ['float32']] */
-MOVE(NAME, DTYPE0)
-{
+MOVE(NAME, DTYPE0) {
     Py_ssize_t count;
     npy_DTYPE0 delta, amean, assqdm, ai, aold, yi, count_inv, ddof_inv;
     INIT(NPY_DTYPE0)
@@ -335,8 +330,7 @@ MOVE(NAME, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-MOVE(NAME, DTYPE0)
-{
+MOVE(NAME, DTYPE0) {
     int winddof = window - ddof;
     npy_DTYPE1 delta, amean, assqdm, yi, ai, aold;
     npy_DTYPE1 window_inv = 1.0 / window, winddof_inv = 1.0 / winddof;
@@ -450,8 +444,7 @@ MOVE_MAIN(NAME, 1)
              'INDEX-extreme_pair->death+window', 'INDEX-extreme_pair->death+window']
    } */
 /* dtype = [['float64'], ['float32']] */
-MOVE(NAME, DTYPE0)
-{
+MOVE(NAME, DTYPE0) {
     npy_DTYPE0 ai, aold, yi_tmp;
     Py_ssize_t count;
     pairs *extreme_pair;
@@ -497,8 +490,7 @@ MOVE(NAME, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-MOVE(NAME, DTYPE0)
-{
+MOVE(NAME, DTYPE0) {
     npy_DTYPE0 ai;
     npy_DTYPE1 yi_tmp;
     pairs *extreme_pair;
@@ -549,8 +541,7 @@ MOVE_MAIN(NAME, 0)
 /* move_median ----------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-MOVE(move_median, DTYPE0)
-{
+MOVE(move_median, DTYPE0) {
     npy_DTYPE0 ai;
     mm_handle *mm = mm_new_nan(window, min_count);
     INIT(NPY_DTYPE0)
@@ -585,8 +576,7 @@ MOVE(move_median, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-MOVE(move_median, DTYPE0)
-{
+MOVE(move_median, DTYPE0) {
     npy_DTYPE0 ai;
     mm_handle *mm = mm_new(window, min_count);
     INIT(NPY_DTYPE1)
@@ -662,8 +652,7 @@ MOVE_MAIN(move_median, 0)
     } \
 
 /* dtype = [['float64', 'float64'], ['float32', 'float32']] */
-MOVE(move_rank, DTYPE0)
-{
+MOVE(move_rank, DTYPE0) {
     INIT(NPY_DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
@@ -686,8 +675,7 @@ MOVE(move_rank, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-MOVE(move_rank, DTYPE0)
-{
+MOVE(move_rank, DTYPE0) {
     Py_ssize_t j;
     npy_DTYPE0 ai, aj;
     npy_DTYPE1 g, e, r, window_inv = 0.5 * 1.0 / (window - 1);
@@ -782,8 +770,7 @@ parse_args(PyObject *args,
            PyObject **window,
            PyObject **min_count,
            PyObject **axis,
-           PyObject **ddof)
-{
+           PyObject **ddof) {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
     if (nkwds) {
@@ -890,8 +877,7 @@ mover(char *name,
       move_t move_float32,
       move_t move_int64,
       move_t move_int32,
-      int has_ddof)
-{
+      int has_ddof) {
 
     int mc;
     int window;
