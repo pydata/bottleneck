@@ -34,26 +34,38 @@ def arrays(dtypes):
 
 
 @pytest.mark.parametrize("func", bn.get_functions("all"), ids=lambda x: x.__name__)
-def test_modification(func, nans=True):
+def test_modification(func):
     "Test that bn.xxx gives the same output as np.xxx."
+    name = func.__name__
+    if name == "replace":
+        return
     msg = "\nInput array modified by %s.\n\n"
     msg += "input array before:\n%s\nafter:\n%s\n"
     for i, a in enumerate(arrays(DTYPES)):
-        for axis in list(range(-a.ndim, a.ndim)) + [None]:
+        axes = list(range(-a.ndim, a.ndim))
+        if all(x not in name for x in ["push", "move", "sort", "partition"]):
+            axes += [None]
+
+        second_arg = 1
+        if "partition" in name:
+            second_arg = 0
+
+        for axis in axes:
             with np.errstate(invalid="ignore"):
                 a1 = a.copy()
                 a2 = a.copy()
-                if ("move_" in func.__name__) or ("sort" in func.__name__):
-                    if axis is None:
-                        continue
+                if any(x in name for x in ["move", "sort", "partition"]):
                     with warnings.catch_warnings():
                         warnings.simplefilter("ignore")
-                        func(a1, 1, axis=axis)
+                        func(a1, second_arg, axis=axis)
                 else:
                     try:
                         with warnings.catch_warnings():
                             warnings.simplefilter("ignore")
                             func(a1, axis=axis)
-                    except:  # noqa
-                        continue
-                assert_equal(a1, a2, msg % (func.__name__, a1, a2))
+                    except ValueError as e:
+                        if name.startswith(
+                            "nanarg"
+                        ) and "All-NaN slice encountered" in str(e):
+                            continue
+                assert_equal(a1, a2, msg % (name, a1, a2))
