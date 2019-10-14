@@ -22,8 +22,7 @@ nonreducer(char *name,
 
 /* dtype = [['float64'], ['float32']] */
 static BN_OPT_3 PyObject *
-replace_DTYPE0(PyArrayObject *a, double old, double new)
-{
+replace_DTYPE0(PyArrayObject *a, double old, double new) {
     iter it;
     init_iter_all(&it, a, 0, 1);
     BN_BEGIN_ALLOW_THREADS
@@ -55,8 +54,7 @@ replace_DTYPE0(PyArrayObject *a, double old, double new)
 
 /* dtype = [['int64'], ['int32']] */
 static BN_OPT_3 PyObject *
-replace_DTYPE0(PyArrayObject *a, double old, double new)
-{
+replace_DTYPE0(PyArrayObject *a, double old, double new) {
     iter it;
     init_iter_all(&it, a, 0, 1);
     if (old == old) {
@@ -88,8 +86,7 @@ replace_DTYPE0(PyArrayObject *a, double old, double new)
 /* dtype end */
 
 static PyObject *
-replace(PyObject *self, PyObject *args, PyObject *kwds)
-{
+replace(PyObject *self, PyObject *args, PyObject *kwds) {
     return nonreducer("replace",
                       args,
                       kwds,
@@ -122,8 +119,7 @@ parse_args(PyObject *args,
            PyObject *kwds,
            PyObject **a,
            PyObject **old,
-           PyObject **new)
-{
+           PyObject **new) {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
     if (nkwds) {
@@ -196,8 +192,7 @@ nonreducer(char *name,
            nr_t nr_float32,
            nr_t nr_int64,
            nr_t nr_int32,
-           int inplace)
-{
+           int inplace) {
     int dtype;
     double old, new;
 

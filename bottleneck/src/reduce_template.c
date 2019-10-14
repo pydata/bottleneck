@@ -84,8 +84,7 @@ reducer(char *name,
 /* nansum ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-REDUCE_ALL(nansum, DTYPE0)
-{
+REDUCE_ALL(nansum, DTYPE0) {
     npy_DTYPE0 ai, asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
@@ -100,8 +99,7 @@ REDUCE_ALL(nansum, DTYPE0)
     return PyFloat_FromDouble(asum);
 }
 
-REDUCE_ONE(nansum, DTYPE0)
-{
+REDUCE_ONE(nansum, DTYPE0) {
     npy_DTYPE0 ai, asum;
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
@@ -124,8 +122,7 @@ REDUCE_ONE(nansum, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64'], ['int32']] */
-REDUCE_ALL(nansum, DTYPE0)
-{
+REDUCE_ALL(nansum, DTYPE0) {
     npy_DTYPE0 asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
@@ -137,8 +134,7 @@ REDUCE_ALL(nansum, DTYPE0)
     return PyLong_FromLongLong(asum);
 }
 
-REDUCE_ONE(nansum, DTYPE0)
-{
+REDUCE_ONE(nansum, DTYPE0) {
     npy_DTYPE0 asum;
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
@@ -163,8 +159,7 @@ REDUCE_MAIN(nansum, 0)
 /* nanmean ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-REDUCE_ALL(nanmean, DTYPE0)
-{
+REDUCE_ALL(nanmean, DTYPE0) {
     Py_ssize_t count = 0;
     npy_DTYPE0 ai, asum = 0;
     INIT_ALL
@@ -187,8 +182,7 @@ REDUCE_ALL(nanmean, DTYPE0)
     }
 }
 
-REDUCE_ONE(nanmean, DTYPE0)
-{
+REDUCE_ONE(nanmean, DTYPE0) {
     Py_ssize_t count;
     npy_DTYPE0 ai, asum;
     INIT_ONE(DTYPE0, DTYPE0)
@@ -221,8 +215,7 @@ REDUCE_ONE(nanmean, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-REDUCE_ALL(nanmean, DTYPE0)
-{
+REDUCE_ALL(nanmean, DTYPE0) {
     Py_ssize_t total_length = 0;
     npy_DTYPE1 asum = 0;
     INIT_ALL
@@ -240,8 +233,7 @@ REDUCE_ALL(nanmean, DTYPE0)
     }
 }
 
-REDUCE_ONE(nanmean, DTYPE0)
-{
+REDUCE_ONE(nanmean, DTYPE0) {
     npy_DTYPE1 asum;
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
@@ -273,8 +265,7 @@ REDUCE_MAIN(nanmean, 0)
 /* repeat = {'NAME': ['nanstd', 'nanvar'],
              'FUNC': ['sqrt',   '']} */
 /* dtype = [['float64'], ['float32']] */
-REDUCE_ALL(NAME, DTYPE0)
-{
+REDUCE_ALL(NAME, DTYPE0) {
     Py_ssize_t count = 0;
     npy_DTYPE0 ai, amean, out, asum = 0;
     INIT_ALL
@@ -311,8 +302,7 @@ REDUCE_ALL(NAME, DTYPE0)
     return PyFloat_FromDouble(out);
 }
 
-REDUCE_ONE(NAME, DTYPE0)
-{
+REDUCE_ONE(NAME, DTYPE0) {
     Py_ssize_t count;
     npy_DTYPE0 ai, asum, amean;
     INIT_ONE(DTYPE0, DTYPE0)
@@ -354,8 +344,7 @@ REDUCE_ONE(NAME, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-REDUCE_ALL(NAME, DTYPE0)
-{
+REDUCE_ALL(NAME, DTYPE0) {
     npy_DTYPE1 out;
     Py_ssize_t size = 0;
     npy_DTYPE1 ai, amean, asum = 0;
@@ -385,8 +374,7 @@ REDUCE_ALL(NAME, DTYPE0)
     return PyFloat_FromDouble(out);
 }
 
-REDUCE_ONE(NAME, DTYPE0)
-{
+REDUCE_ONE(NAME, DTYPE0) {
     npy_DTYPE1 ai, asum, amean, length_inv, length_ddof_inv;
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
@@ -429,8 +417,7 @@ REDUCE_MAIN(NAME, 1)
              'BIG_FLOAT': ['BN_INFINITY',    '-BN_INFINITY'],
              'BIG_INT':   ['NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0']} */
 /* dtype = [['float64'], ['float32']] */
-REDUCE_ALL(NAME, DTYPE0)
-{
+REDUCE_ALL(NAME, DTYPE0) {
     npy_DTYPE0 ai, extreme = BIG_FLOAT;
     int allnan = 1;
     INIT_ALL
@@ -455,8 +442,7 @@ REDUCE_ALL(NAME, DTYPE0)
     return PyFloat_FromDouble(extreme);
 }
 
-REDUCE_ONE(NAME, DTYPE0)
-{
+REDUCE_ONE(NAME, DTYPE0) {
     npy_DTYPE0 ai, extreme;
     int allnan;
     INIT_ONE(DTYPE0, DTYPE0)
@@ -486,8 +472,7 @@ REDUCE_ONE(NAME, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64'], ['int32']] */
-REDUCE_ALL(NAME, DTYPE0)
-{
+REDUCE_ALL(NAME, DTYPE0) {
     npy_DTYPE0 ai, extreme = BIG_INT;
     INIT_ALL
     if (SIZE == 0) {
@@ -507,8 +492,7 @@ REDUCE_ALL(NAME, DTYPE0)
     return PyLong_FromLongLong(extreme);
 }
 
-REDUCE_ONE(NAME, DTYPE0)
-{
+REDUCE_ONE(NAME, DTYPE0) {
     npy_DTYPE0 ai, extreme;
     INIT_ONE(DTYPE0, DTYPE0)
     if (LENGTH == 0) {
@@ -542,8 +526,7 @@ REDUCE_MAIN(NAME, 0)
              'BIG_FLOAT': ['BN_INFINITY',    '-BN_INFINITY'],
              'BIG_INT':   ['NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0']} */
 /* dtype = [['float64'], ['float32']] */
-REDUCE_ALL(NAME, DTYPE0)
-{
+REDUCE_ALL(NAME, DTYPE0) {
     npy_DTYPE0 ai, extreme = BIG_FLOAT;
     int allnan = 1;
     Py_ssize_t idx = 0;
@@ -573,8 +556,7 @@ REDUCE_ALL(NAME, DTYPE0)
     }
 }
 
-REDUCE_ONE(NAME, DTYPE0)
-{
+REDUCE_ONE(NAME, DTYPE0) {
     int allnan, err_code = 0;
     Py_ssize_t idx = 0;
     npy_DTYPE0 ai, extreme;
@@ -613,8 +595,7 @@ REDUCE_ONE(NAME, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64', 'intp'], ['int32', 'intp']] */
-REDUCE_ALL(NAME, DTYPE0)
-{
+REDUCE_ALL(NAME, DTYPE0) {
     npy_DTYPE1 idx = 0;
     npy_DTYPE0 ai, extreme = BIG_INT;
     INIT_ALL_RAVEL
@@ -637,8 +618,7 @@ REDUCE_ALL(NAME, DTYPE0)
     return PyLong_FromLongLong(idx);
 }
 
-REDUCE_ONE(NAME, DTYPE0)
-{
+REDUCE_ONE(NAME, DTYPE0) {
     npy_DTYPE1 idx = 0;
     npy_DTYPE0 ai, extreme;
     INIT_ONE(DTYPE1, DTYPE1)
@@ -672,8 +652,7 @@ REDUCE_MAIN(NAME, 0)
 /* ss ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-REDUCE_ALL(ss, DTYPE0)
-{
+REDUCE_ALL(ss, DTYPE0) {
     npy_DTYPE0 ai, asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
@@ -688,8 +667,7 @@ REDUCE_ALL(ss, DTYPE0)
     return PyFloat_FromDouble(asum);
 }
 
-REDUCE_ONE(ss, DTYPE0)
-{
+REDUCE_ONE(ss, DTYPE0) {
     npy_DTYPE0 ai, asum;
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
@@ -712,8 +690,7 @@ REDUCE_ONE(ss, DTYPE0)
 /* dtype end */
 
 /* dtype = [['int64'], ['int32']] */
-REDUCE_ALL(ss, DTYPE0)
-{
+REDUCE_ALL(ss, DTYPE0) {
     npy_DTYPE0 ai, asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
@@ -728,8 +705,7 @@ REDUCE_ALL(ss, DTYPE0)
     return PyLong_FromLongLong(asum);
 }
 
-REDUCE_ONE(ss, DTYPE0)
-{
+REDUCE_ONE(ss, DTYPE0) {
     npy_DTYPE0 ai, asum;
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
@@ -834,8 +810,7 @@ REDUCE_MAIN(ss, 0)
              'FUNC': ['MEDIAN', 'NANMEDIAN']} */
 /* dtype = [['float64', 'float64'], ['float32', 'float32']] */
 
-REDUCE_ALL(NAME, DTYPE0)
-{
+REDUCE_ALL(NAME, DTYPE0) {
     npy_intp i;
     npy_DTYPE1 med;
     INIT_ALL_RAVEL_ANY_ORDER
@@ -852,8 +827,7 @@ REDUCE_ALL(NAME, DTYPE0)
     return PyFloat_FromDouble(med);
 }
 
-REDUCE_ONE(NAME, DTYPE0)
-{
+REDUCE_ONE(NAME, DTYPE0) {
     npy_intp i;
     npy_DTYPE1 med;
     INIT_ONE(DTYPE1, DTYPE1)
@@ -877,8 +851,7 @@ REDUCE_ONE(NAME, DTYPE0)
 /* repeat end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-REDUCE_ALL(median, DTYPE0)
-{
+REDUCE_ALL(median, DTYPE0) {
     npy_intp i;
     npy_DTYPE1 med;
     INIT_ALL_RAVEL_ANY_ORDER
@@ -894,8 +867,7 @@ REDUCE_ALL(median, DTYPE0)
     return PyFloat_FromDouble(med);
 }
 
-REDUCE_ONE(median, DTYPE0)
-{
+REDUCE_ONE(median, DTYPE0) {
     npy_intp i;
     npy_DTYPE1 med;
     INIT_ONE(DTYPE1, DTYPE1)
@@ -919,8 +891,7 @@ REDUCE_ONE(median, DTYPE0)
 REDUCE_MAIN(median, 0)
 
 static PyObject *
-nanmedian(PyObject *self, PyObject *args, PyObject *kwds)
-{
+nanmedian(PyObject *self, PyObject *args, PyObject *kwds) {
     return reducer("nanmedian",
                    args,
                    kwds,
@@ -938,8 +909,7 @@ nanmedian(PyObject *self, PyObject *args, PyObject *kwds)
 /* anynan ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-REDUCE_ALL(anynan, DTYPE0)
-{
+REDUCE_ALL(anynan, DTYPE0) {
     int f = 0;
     npy_DTYPE0 ai;
     INIT_ALL
@@ -960,8 +930,7 @@ REDUCE_ALL(anynan, DTYPE0)
     Py_RETURN_FALSE;
 }
 
-REDUCE_ONE(anynan, DTYPE0)
-{
+REDUCE_ONE(anynan, DTYPE0) {
     int f;
     npy_DTYPE0 ai;
     INIT_ONE(BOOL, uint8)
@@ -989,14 +958,12 @@ REDUCE_ONE(anynan, DTYPE0)
 
 /* dtype = [['int64'], ['int32']] */
 BN_OPT_3
-REDUCE_ALL(anynan, DTYPE0)
-{
+REDUCE_ALL(anynan, DTYPE0) {
     Py_RETURN_FALSE;
 }
 
 BN_OPT_3
-REDUCE_ONE(anynan, DTYPE0)
-{
+REDUCE_ONE(anynan, DTYPE0) {
     INIT_ONE(BOOL, uint8)
     BN_BEGIN_ALLOW_THREADS
     FILL_Y(0);
@@ -1011,8 +978,7 @@ REDUCE_MAIN(anynan, 0)
 /* allnan ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-REDUCE_ALL(allnan, DTYPE0)
-{
+REDUCE_ALL(allnan, DTYPE0) {
     int f = 0;
     npy_DTYPE0 ai;
     INIT_ALL
@@ -1033,8 +999,7 @@ REDUCE_ALL(allnan, DTYPE0)
     Py_RETURN_TRUE;
 }
 
-REDUCE_ONE(allnan, DTYPE0)
-{
+REDUCE_ONE(allnan, DTYPE0) {
     int f;
     npy_DTYPE0 ai;
     INIT_ONE(BOOL, uint8)
@@ -1062,15 +1027,13 @@ REDUCE_ONE(allnan, DTYPE0)
 
 /* dtype = [['int64'], ['int32']] */
 BN_OPT_3
-REDUCE_ALL(allnan, DTYPE0)
-{
+REDUCE_ALL(allnan, DTYPE0) {
     if (PyArray_SIZE(a) == 0) Py_RETURN_TRUE;
     Py_RETURN_FALSE;
 }
 
 BN_OPT_3
-REDUCE_ONE(allnan, DTYPE0)
-{
+REDUCE_ONE(allnan, DTYPE0) {
     INIT_ONE(BOOL, uint8)
     BN_BEGIN_ALLOW_THREADS
     if (SIZE == 0) {
@@ -1108,8 +1071,7 @@ parse_args(PyObject *args,
            int has_ddof,
            PyObject **a,
            PyObject **axis,
-           PyObject **ddof)
-{
+           PyObject **ddof) {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
     if (nkwds) {
@@ -1201,8 +1163,7 @@ reducer(char *name,
         fone_t fone_float32,
         fone_t fone_int64,
         fone_t fone_int32,
-        int has_ddof)
-{
+        int has_ddof) {
 
     int ndim;
     int axis = 0; /* initialize to avoid compiler error */
