@@ -1,4 +1,4 @@
-"Test replace()."
+"""Test replace()."""
 
 import warnings
 
@@ -13,7 +13,7 @@ import pytest
     "func", bn.get_functions("nonreduce"), ids=lambda x: x.__name__
 )
 def test_nonreduce(func):
-    "Test that bn.xxx gives the same output as np.xxx."
+    """Test that bn.xxx gives the same output as np.xxx."""
     msg = "\nfunc %s | input %s (%s) | shape %s | old %f | new %f | order %s\n"
     msg += "\nInput array:\n%s\n"
     name = func.__name__
@@ -67,7 +67,7 @@ def test_nonreduce(func):
 
 
 def test_replace_unsafe_cast():
-    "Test replace for unsafe casts"
+    """Test replace for unsafe casts"""
     dtypes = INT_DTYPES
     for dtype in dtypes:
         a = np.zeros(3, dtype=dtype)
@@ -78,7 +78,7 @@ def test_replace_unsafe_cast():
 
 
 def test_non_array():
-    "Test that non-array input raises"
+    """Test that non-array input raises"""
     a = [1, 2, 3]
     assert_raises(TypeError, bn.replace, a, 0, 1)
     a = (1, 2, 3)
@@ -92,7 +92,7 @@ def test_non_array():
 
 @pytest.mark.parametrize("dtype", INT_DTYPES)
 def test_replace_nan_int(dtype):
-    "Test replace, int array, old=nan, new=0"
+    """Test replace, int array, old=nan, new=0"""
     a = np.arange(2 * 3 * 4, dtype=dtype).reshape(2, 3, 4)
     actual = a.copy()
     bn.replace(actual, np.nan, 0)

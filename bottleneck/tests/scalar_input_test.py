@@ -1,4 +1,4 @@
-"Check that functions can handle scalar input"
+"""Check that functions can handle scalar input"""
 
 from numpy.testing import assert_array_almost_equal
 import bottleneck as bn
@@ -11,7 +11,7 @@ import pytest
     ids=lambda x: x.__name__,
 )
 def test_scalar_input(func, args=tuple()):
-    "Test that bn.xxx gives the same output as bn.slow.xxx for scalar input."
+    """Test that bn.xxx gives the same output as bn.slow.xxx for scalar input."""
     if func.__name__ in ("partition", "argpartition", "push"):
         return
     func0 = eval("bn.slow.%s" % func.__name__)

@@ -1,4 +1,4 @@
-"Test reduce functions."
+"""Test reduce functions."""
 
 import warnings
 import traceback
@@ -16,12 +16,12 @@ import pytest
 
 @pytest.mark.parametrize("func", bn.get_functions("reduce"), ids=lambda x: x.__name__)
 def test_reduce(func):
-    "test reduce functions"
+    """test reduce functions"""
     return unit_maker(func)
 
 
 def unit_maker(func, decimal=5, skip_dtype=["nansum", "ss"]):
-    "Test that bn.xxx gives the same output as bn.slow.xxx."
+    """Test that bn.xxx gives the same output as bn.slow.xxx."""
     fmt = "\nfunc %s | input %s (%s) | shape %s | axis %s | order %s\n"
     fmt += "\nInput array:\n%s\n"
     name = func.__name__
@@ -83,12 +83,12 @@ def unit_maker(func, decimal=5, skip_dtype=["nansum", "ss"]):
 
 @pytest.mark.parametrize("func", bn.get_functions("reduce"), ids=lambda x: x.__name__)
 def test_arg_parsing(func):
-    "test argument parsing"
+    """test argument parsing"""
     return unit_maker_argparse(func)
 
 
 def unit_maker_argparse(func, decimal=5):
-    "test argument parsing."
+    """test argument parsing."""
 
     name = func.__name__
     func0 = eval("bn.slow.%s" % name)
@@ -137,12 +137,12 @@ def unit_maker_argparse(func, decimal=5):
 
 @pytest.mark.parametrize("func", bn.get_functions("reduce"))
 def test_arg_parse_raises(func):
-    "test argument parsing raises in reduce"
+    """test argument parsing raises in reduce"""
     return unit_maker_argparse_raises(func)
 
 
 def unit_maker_argparse_raises(func):
-    "test argument parsing raises in reduce"
+    """test argument parsing raises in reduce"""
     a = np.array([1.0, 2, 3])
     assert_raises(TypeError, func)
     assert_raises(TypeError, func, axis=a)
@@ -161,7 +161,7 @@ def unit_maker_argparse_raises(func):
 
 
 def test_nanmax_size_zero(dtypes=DTYPES):
-    "Test nanmax for size zero input arrays."
+    """Test nanmax for size zero input arrays."""
     shapes = [(0,), (2, 0), (1, 2, 0)]
     for shape in shapes:
         for dtype in dtypes:
@@ -171,7 +171,7 @@ def test_nanmax_size_zero(dtypes=DTYPES):
 
 
 def test_nanmin_size_zero(dtypes=DTYPES):
-    "Test nanmin for size zero input arrays."
+    """Test nanmin for size zero input arrays."""
     shapes = [(0,), (2, 0), (1, 2, 0)]
     for shape in shapes:
         for dtype in dtypes:
@@ -185,7 +185,7 @@ def test_nanmin_size_zero(dtypes=DTYPES):
 
 
 def test_nanstd_issue60():
-    "nanstd regression test (issue #60)"
+    """nanstd regression test (issue #60)"""
 
     f = bn.nanstd([1.0], ddof=1)
     with np.errstate(invalid="ignore"):
@@ -209,7 +209,7 @@ def test_nanstd_issue60():
 
 
 def test_nanvar_issue60():
-    "nanvar regression test (issue #60)"
+    """nanvar regression test (issue #60)"""
 
     f = bn.nanvar([1.0], ddof=1)
     with np.errstate(invalid="ignore"):
