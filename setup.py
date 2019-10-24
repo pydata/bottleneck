@@ -176,7 +176,7 @@ metadata = dict(
     version=versioneer.get_version(),
     packages=find_packages(),
     package_data={"bottleneck": ["LICENSE"]},
-    requires=["numpy==1.16.*"],
+    requires=["numpy"],
     install_requires=["numpy==1.16.*"],
     cmdclass=cmdclass,
     setup_requires=["numpy==1.16.*"],
