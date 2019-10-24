@@ -176,10 +176,10 @@ metadata = dict(
     version=versioneer.get_version(),
     packages=find_packages(),
     package_data={"bottleneck": ["LICENSE"]},
-    requires=["numpy"],
-    install_requires=["numpy"],
+    requires=["numpy==1.16.*"],
+    install_requires=["numpy==1.16.*"],
     cmdclass=cmdclass,
-    setup_requires=["numpy"],
+    setup_requires=["numpy==1.16.*"],
     ext_modules=prepare_modules(),
     zip_safe=False,
 )
