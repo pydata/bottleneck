@@ -18,7 +18,8 @@ import sys, os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 # sys.path.append(os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath("../sphinxext"))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../.."))
+if "READTHEDOCS" not in os.environ or not os.environ["READTHEDOCS"]:
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../.."))
 import bottleneck
 
 # -- General configuration -----------------------------------------------------
