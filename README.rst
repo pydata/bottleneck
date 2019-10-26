@@ -102,13 +102,13 @@ Install
 Requirements:
 
 ======================== ====================================================
-Bottleneck               Python 2.7, 3.5, 3.6; NumPy 1.16.0
+Bottleneck               Python 2.7, 3.5, 3.6, 3.7; NumPy 1.16.0+
 Compile                  gcc, clang, MinGW or MSVC
 Unit tests               pytest
 Documentation            sphinx, numpydoc
 ======================== ====================================================
 
-To install Bottleneck on GNU/Linux, Mac OS X, et al.::
+To install Bottleneck on Linux, Mac OS X, et al.::
 
     $ sudo python setup.py install
 
