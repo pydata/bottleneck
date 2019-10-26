@@ -178,6 +178,7 @@ metadata = dict(
     package_data={"bottleneck": ["LICENSE"]},
     requires=["numpy"],
     install_requires=["numpy"],
+    extras_requires={"doc": ["numpydoc", "sphinx", "gitpython"]},
     cmdclass=cmdclass,
     setup_requires=["numpy"],
     ext_modules=prepare_modules(),
