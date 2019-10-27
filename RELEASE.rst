@@ -4,7 +4,7 @@ Release Notes
 =============
 
 These are the major changes made in each release. For details of the changes
-see the commit log at http://github.com/kwgoodman/bottleneck
+see the commit log at https://github.com/pydata/bottleneck
 
 Bottleneck 1.3.0
 ================
