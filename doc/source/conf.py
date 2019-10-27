@@ -48,7 +48,7 @@ master_doc = "index"
 
 # General information about the project.
 project = u"Bottleneck"
-copyright = u"2010-2019 Keith Goodman"
+copyright = u"2010-2019 Keith Goodman, 2019 Bottleneck Developers"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -199,7 +199,13 @@ htmlhelp_basename = "bottleneckdoc"
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ("index", "bottleneck.tex", u"bottleneck Documentation", u"Keith Goodman", "manual")
+    (
+        "index",
+        "bottleneck.tex",
+        u"bottleneck Documentation",
+        u"Keith Goodman and Bottleneck Developers",
+        "manual",
+    )
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
