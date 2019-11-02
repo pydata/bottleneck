@@ -30,6 +30,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.githubpages",
     "sphinx.ext.extlinks",
+    "sphinx.ext.intersphinx",
     "numpydoc",
     "contributors",
 ]
@@ -226,3 +227,7 @@ latex_documents = [
 # latex_use_modindex = True
 
 extlinks = {"issue": ("https://github.com/pydata/bottleneck/issues/%s", "#")}
+intersphinx_mapping = {
+    "numpy": ("https://docs.scipy.org/doc/numpy/", None),
+    "numpydoc": ("https://numpydoc.readthedocs.io/en/latest/", None),
+}
