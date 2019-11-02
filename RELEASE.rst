@@ -9,20 +9,22 @@ see the commit log at https://github.com/pydata/bottleneck
 Bottleneck 1.3.0
 ================
 
-*Release date: Not yet released; in development*
+*Release date: November, 2019*
 
-- Move documentation to https://kwgoodman.github.io/bottleneck-doc
-- Remove numpydoc package from Bottleneck source distribution
-- bn.slow.nansum and bn.slow.ss now longer coerce output to have the same
+- Bottleneck has a new maintainer, Christopher Whelan (@qwhelan on GitHub).
+- Move documentation to https://bottleneck.readthedocs.io
+- Remove ``numpydoc`` package from Bottleneck source distribution
+- :func:`bottleneck.slow.reduce.nansum` and :func:`bottleneck.slow.reduce.ss` now longer coerce output to have the same
   dtype as input
-- Test (tox, travis, appveyor) against latest numpy (in conda)
+- Test (tox, travis, appveyor) against latest ``numpy`` (in conda)
+- Performance benchmarking also available via ``asv``
 
 **Bug Fixes**
 
 - Documentation fails to build on Python 3 (:issue:`170`)
-- bn.bench() crashes on python 3.6.3, numpy 1.13.3 (:issue:`175`)
-- bn.push(a, n=None) raises when None is explicitly passed (:issue:`178`)
-- bn.nansum(a) wrong output when a = np.ones((2, 2))[..., np.newaxis]
+- :func:`bottleneck.benchmark.bench` crashes on python 3.6.3, numpy 1.13.3 (:issue:`175`)
+- :func:`bottleneck.nonreduce_axis.push` raises when :code:`n=None` is explicitly passed (:issue:`178`)
+- :func:`bottleneck.reduce.nansum` wrong output when :code:`a = np.ones((2, 2))[..., np.newaxis]`
   same issue of other reduce functions (:issue:`183`)
 - Silenced FutureWarning from NumPy in the slow version of move functions (:issue:`194`)
 - Installing bottleneck onto a system that does not already have Numpy (:issue:`195`)
@@ -44,8 +46,8 @@ fixes a few bugs.
 
 - Installing bottleneck when two versions of NumPy are present (:issue:`156`)
 - Compiling on Ubuntu 14.04 inside a Windows 7 WMware (:issue:`157`)
-- Occasional segmentation fault in nanargmin, nanargmax, median,
-  and nanmedian when all of the following conditions are met:
+- Occasional segmentation fault in :func:`bn.nanargmin`, :func:`nanargmax`, :func:`median`,
+  and :func:`nanmedian` when all of the following conditions are met:
   axis is None, input array is 2d or greater, and input array is not C
   contiguous. (:issue:`159`)
 - Reducing np.array([2**31], dtype=np.int64) overflows on Windows (:issue:`163`)
@@ -86,8 +88,8 @@ This release is a complete rewrite of Bottleneck.
 
 - Functions partsort and argpartsort have been renamed to partition and
   argpartition to match NumPy. Additionally the meaning of the input
-  arguments have changed: bn.partsort(a, n) is now equivalent to
-  bn.partition(a, kth=n-1). Similarly for bn.argpartition.
+  arguments have changed: :func:`bn.partsort(a, n)` is now equivalent to
+  :func:`bn.partition(a, kth=n-1)`. Similarly for bn.argpartition.
 - The keyword for array input has been changed from `arr` to `a` in all
   functions. It now matches NumPy.
 
@@ -112,8 +114,8 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 
 **More Robust**
 
-- move_median can now handle NaNs and `min_count` parameter
-- move_std is slower but numerically more stable
+- :func:`bn.move_median` can now handle NaNs and `min_count` parameter
+- :func:`bn.move_std` is slower but numerically more stable
 - Bottleneck no longer crashes on byte-swapped input arrays
 
 **Faster**
@@ -140,11 +142,11 @@ This release makes Bottleneck more robust, releases GIL, adds new functions.
 
 **Beware**
 
-- median now returns NaN for a slice that contains one or more NaNs
+- :func:`bn.median` now returns NaN for a slice that contains one or more NaNs
 - Instead of using the distutils default, the '-O2' C compiler flag is forced
-- move_std output changed when mean is large compared to standard deviation
+- :func:`bn.move_std` output changed when mean is large compared to standard deviation
 - Fixed: Non-accelerated moving window functions used min_count incorrectly
-- move_median is a bit slower for float input arrays that do not contain NaN
+- :func:`bn.move_median` is a bit slower for float input arrays that do not contain NaN
 
 **Thanks**
 
