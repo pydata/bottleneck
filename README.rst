@@ -102,7 +102,7 @@ Install
 Requirements:
 
 ======================== ====================================================
-Bottleneck               Python 2.7, 3.5, 3.6, 3.7; NumPy 1.16.0+
+Bottleneck               Python 2.7, 3.5, 3.6, 3.7, 3.8; NumPy 1.16.0+
 Compile                  gcc, clang, MinGW or MSVC
 Unit tests               pytest
 Documentation            sphinx, numpydoc

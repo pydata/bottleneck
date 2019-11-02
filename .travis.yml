@@ -46,16 +46,22 @@ matrix:
                PYTHON_VERSION="3.6"
                PYTHON_ARCH="64"
 
-         # python 3.7 conda numpy
+         # python 3.7
         - os: linux
           env: TEST_DEPS="numpy pytest"
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
 
-         # python 3.7 conda numpy + sdist
+         # python 3.8 conda numpy
         - os: linux
           env: TEST_DEPS="numpy pytest"
-               PYTHON_VERSION="3.7"
+               PYTHON_VERSION="3.8"
+               PYTHON_ARCH="64"
+
+         # python 3.8 conda numpy + sdist
+        - os: linux
+          env: TEST_DEPS="numpy pytest"
+               PYTHON_VERSION="3.8"
                PYTHON_ARCH="64"
                TEST_RUN="sdist"
 
@@ -83,6 +89,12 @@ matrix:
         - os: osx
           env: TEST_DEPS="numpy pytest"
                PYTHON_VERSION="3.7"
+               PYTHON_ARCH="64"
+
+        # python 3.8
+        - os: osx
+          env: TEST_DEPS="numpy pytest"
+               PYTHON_VERSION="3.8"
                PYTHON_ARCH="64"
 
 before_install:

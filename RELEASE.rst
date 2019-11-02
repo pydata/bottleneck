@@ -16,8 +16,7 @@ Project Updates
 - Bottleneck has a new maintainer, Christopher Whelan (``@qwhelan`` on GitHub).
 - Documentation now hosted at https://bottleneck.readthedocs.io
 - 1.3.x will be the last release to support Python 2.7
-- Bottleneck now supports and is tested against Python 3.7. (:issue:`211`)
-- It is believed to work on Python 3.8 but our testing infrastructure does not yet support 3.8.
+- Bottleneck now supports and is tested against Python 3.7 and 3.8. (:issue:`211`, :issue:`268`)
 - The ``LICENSE`` file has been restructured to only include the license for the Bottleneck project to aid license audit tools. There has been no change to the licensing of Bottleneck.
 
   - Licenses for other projects incorporated by Bottleneck are now reproduced in full in separate files in the ``LICENSES/`` directory (eg, ``LICENSES/NUMPY_LICENSE``)
