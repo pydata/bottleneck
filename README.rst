@@ -125,9 +125,28 @@ Unit tests
 
 After you have installed Bottleneck, run the suite of unit tests::
 
-    >>> import bottleneck as bn
-    >>> bn.test()
-    <snip>
-    Ran 169 tests in 57.205s
-    OK
-    <nose.result.TextTestResult run=169 errors=0 failures=0>
+In [1]: import bottleneck as bn
+
+In [2]: bn.test()
+============================= test session starts =============================
+platform linux -- Python 3.7.4, pytest-4.3.1, py-1.8.0, pluggy-0.12.0
+hypothesis profile 'default' -> database=DirectoryBasedExampleDatabase('/home/chris/code/bottleneck/.hypothesis/examples')
+rootdir: /home/chris/code/bottleneck, inifile: setup.cfg
+plugins: openfiles-0.3.2, remotedata-0.3.2, doctestplus-0.3.0, mock-1.10.4, forked-1.0.2, cov-2.7.1, hypothesis-4.32.2, xdist-1.26.1, arraydiff-0.3
+collected 190 items
+
+bottleneck/tests/input_modification_test.py ........................... [ 14%]
+..                                                                      [ 15%]
+bottleneck/tests/list_input_test.py .............................       [ 30%]
+bottleneck/tests/move_test.py .................................         [ 47%]
+bottleneck/tests/nonreduce_axis_test.py ....................            [ 58%]
+bottleneck/tests/nonreduce_test.py ..........                           [ 63%]
+bottleneck/tests/reduce_test.py ....................................... [ 84%]
+............                                                            [ 90%]
+bottleneck/tests/scalar_input_test.py ..................                [100%]
+
+========================= 190 passed in 46.42 seconds =========================
+Out[2]: True
+```
+
+If developing in the git repo, simply run ``py.test``
