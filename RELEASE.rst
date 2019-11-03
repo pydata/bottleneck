@@ -11,15 +11,44 @@ Bottleneck 1.3.0
 
 *Release date: November, 2019*
 
-- Bottleneck has a new maintainer, Christopher Whelan (@qwhelan on GitHub).
-- Move documentation to https://bottleneck.readthedocs.io
+Project Updates
+~~~~~~~~~~~~~~~
+- Bottleneck has a new maintainer, Christopher Whelan (``@qwhelan`` on GitHub).
+- Documentation now hosted at https://bottleneck.readthedocs.io
+- 1.3.x will be the last release to support Python 2.7
+- Bottleneck now supports and is tested against Python 3.7. (:issue:`211`)
+- It is believed to work on Python 3.8 but our testing infrastructure does not yet support 3.8.
+- The ``LICENSE`` file has been restructured to only include the license for the Bottleneck project to aid license audit tools. There has been no change to the licensing of Bottleneck.
+
+  - Licenses for other projects incorporated by Bottleneck are now reproduced in full in separate files in the ``LICENSES/`` directory (eg, ``LICENSES/NUMPY_LICENSE``)
+  - All licenses have been updated. Notably, setuptools is now MIT licensed and no longer under the ambiguous dual PSF/Zope license.
+- Bottleneck now uses :pep:`518` for specifying build dependencies, with per Python version specifications (:issue:`247`)
+
+
+Enhancements
+~~~~~~~~~~~~
 - Remove ``numpydoc`` package from Bottleneck source distribution
-- :func:`bottleneck.slow.reduce.nansum` and :func:`bottleneck.slow.reduce.ss` now longer coerce output to have the same
-  dtype as input
+- :func:`bottleneck.slow.reduce.nansum` and :func:`bottleneck.slow.reduce.ss` now longer coerce output to have the same dtype as input
 - Test (tox, travis, appveyor) against latest ``numpy`` (in conda)
 - Performance benchmarking also available via ``asv``
+- ``versioneer`` now used for versioning (:issue:`213`)
+- Test suite now uses ``pytest`` as ``nose`` is deprecated (:issue:`222`)
+- ``python setup.py build_ext --inplace`` is now incremental (:issue:`224`)
+- ``python setup.py clean`` now cleans all artifacts (:issue:`226`)
+- Compiler feature support now identified by testing rather than hardcoding (:issue:`227`)
+- The ``BN_OPT_3`` macro allows selective use of ``-O3`` at the function level (:issue:`223`)
+- Contributors are now automatically cited in the release notes (:issue:`244`)
 
-**Bug Fixes**
+Performance
+~~~~~~~~~~~
+- Speed up :func:`bottleneck.reduce.anynan` and :func:`bottleneck.reduce.allnan` by 2x via ``BN_OPT_3`` (:issue:`223`)
+- All functions covered by ``asv`` benchmarks
+- :func:`bottleneck.nonreduce.replace` speedup of 4x via more explicit typing (:issue:`239`)
+- :func:`bottleneck.reduce.median` up to 2x faster for Fortran-ordered arrays (:issue:`248`)
+
+
+Bug Fixes
+~~~~~~~~~
 
 - Documentation fails to build on Python 3 (:issue:`170`)
 - :func:`bottleneck.benchmark.bench` crashes on python 3.6.3, numpy 1.13.3 (:issue:`175`)
@@ -29,10 +58,23 @@ Bottleneck 1.3.0
 - Silenced FutureWarning from NumPy in the slow version of move functions (:issue:`194`)
 - Installing bottleneck onto a system that does not already have Numpy (:issue:`195`)
 - Memory leaked when input was not a NumPy array (:issue:`201`)
+- Tautological comparison in :func:`bottleneck.move.move_rank` removed (:issue:`207`, :issue:`212`)
 
-**Contributors**
+Cleanup
+~~~~~~~
+
+- The ``ez_setup.py`` module is no longer packaged (:issue:`211`)
+- Building documentation is now self-contained in ``make doc`` (:issue:`214`)
+- Codebase now ``flake8`` compliant and run on every commit
+- Codebase now uses ``black`` for autoformatting (:issue:`253`)
+
+Contributors
+~~~~~~~~~~~~
 
 .. contributors:: v1.2.1..HEAD
+
+Older Releases
+~~~~~~~~~~~~~~
 
 Bottleneck 1.2.1
 ----------------
