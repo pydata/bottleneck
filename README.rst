@@ -110,7 +110,7 @@ Documentation            sphinx, numpydoc
 
 To install Bottleneck on Linux, Mac OS X, et al.::
 
-    $ sudo python setup.py install
+    $ pip install .
 
 To install bottleneck on Windows, first install MinGW and add it to your
 system path. Then install Bottleneck with the command::
