@@ -10,6 +10,7 @@ exclude bottleneck/src/reduce.c
 exclude bottleneck/src/move.c
 exclude bottleneck/src/nonreduce.c
 exclude bottleneck/src/nonreduce_axis.c
+exclude bottleneck/src/bn_config.h
 
 recursive-include doc *
 recursive-exclude doc/build *
