@@ -9,7 +9,7 @@ see the commit log at https://github.com/pydata/bottleneck
 Bottleneck 1.3.0
 ================
 
-*Release date: November, 2019*
+*Release date: 2019-11-12*
 
 Project Updates
 ~~~~~~~~~~~~~~~
@@ -70,7 +70,7 @@ Cleanup
 Contributors
 ~~~~~~~~~~~~
 
-.. contributors:: v1.2.1..HEAD
+.. contributors:: v1.2.1..v1.3.0
 
 Older Releases
 ~~~~~~~~~~~~~~
