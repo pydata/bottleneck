@@ -824,6 +824,7 @@ REDUCE_ALL(NAME, DTYPE0) {
     done:
     BUFFER_DELETE
     BN_END_ALLOW_THREADS
+    DECREF_INIT_ALL_RAVEL
     return PyFloat_FromDouble(med);
 }
 
@@ -864,6 +865,7 @@ REDUCE_ALL(median, DTYPE0) {
         BUFFER_DELETE
     }
     BN_END_ALLOW_THREADS
+    DECREF_INIT_ALL_RAVEL
     return PyFloat_FromDouble(med);
 }
 
