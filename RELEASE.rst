@@ -6,8 +6,27 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at https://github.com/pydata/bottleneck
 
-Bottleneck 1.3.0
+Bottleneck 1.3.1
 ================
+
+*Release date: 2019-11-18*
+
+Bug Fixes
+~~~~~~~~~
+- Fix memory leak in :func:`bottleneck.nanmedian` with the default argument of ``axis=None``. Thanks to ``@jsmodic`` for reporting! (:issue:`276`, :issue:`278`)
+- Add regression test for memory leak case (:issue:`279`)
+
+Contributors
+~~~~~~~~~~~~
+
+.. contributors:: v1.3.0..v1.3.1
+
+
+Older Releases
+~~~~~~~~~~~~~~
+
+Bottleneck 1.3.0
+----------------
 
 *Release date: 2019-11-12*
 
@@ -72,8 +91,6 @@ Contributors
 
 .. contributors:: v1.2.1..v1.3.0
 
-Older Releases
-~~~~~~~~~~~~~~
 
 Bottleneck 1.2.1
 ----------------
