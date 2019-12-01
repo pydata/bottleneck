@@ -130,6 +130,8 @@ def benchsuite(shapes, dtype, nans, axes, order, functions):
 
     # non-moving window functions
     funcs = bn.get_functions("reduce", as_string=True)
+    # Handle all/any separately
+    funcs = sorted(set(funcs) - set(["allnan", "anynan"]))
     funcs += ["rankdata", "nanrankdata"]
     for func in funcs:
         if functions is not None and func not in functions:
@@ -150,6 +152,34 @@ def benchsuite(shapes, dtype, nans, axes, order, functions):
         )
         run["setups"] = getsetups(setup, shapes, nans, axes, dtype, order)
         suite.append(run)
+
+    for func in ["allnan", "anynan"]:
+        if functions is not None and func not in functions:
+            continue
+        for case in ["", "_fast", "_slow"]:
+            run = {}
+            run["name"] = func + case
+            run["statements"] = ["bn_func(a, axis)", "sl_func(a, axis)"]
+            setup = """
+            from bottleneck import %s as bn_func
+            try: from numpy import %s as sl_func
+            except ImportError: from bottleneck.slow import %s as sl_func
+            if "%s" == "median": from bottleneck.slow import median as sl_func
+        """ % (
+                func,
+                func,
+                func,
+                func,
+            )
+            if case:
+                if func == "allnan":
+                    new_nans = ["slow" in case] * len(nans)
+                else:
+                    new_nans = ["fast" in case] * len(nans)
+            else:
+                new_nans = nans
+            run["setups"] = getsetups(setup, shapes, new_nans, axes, dtype, order)
+            suite.append(run)
 
     # partition, argpartition
     funcs = ["partition", "argpartition"]
