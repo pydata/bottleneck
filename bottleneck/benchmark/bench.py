@@ -4,6 +4,8 @@ from .autotimeit import autotimeit
 
 __all__ = ["bench"]
 
+ARRAY_CACHE = {}
+
 
 def bench(
     shapes=[(100,), (1000, 1000), (1000, 1000), (1000, 1000), (1000, 1000)],
@@ -90,12 +92,16 @@ def timer(statements, setups):
 
 
 def getarray(shape, dtype, nans, order):
-    a = np.arange(np.prod(shape), dtype=dtype)
-    if nans and issubclass(a.dtype.type, np.inexact):
-        a[::5] = np.nan
-    rs = np.random.RandomState(shape)
-    rs.shuffle(a)
-    return np.array(a.reshape(*shape), order=order)
+    key = (tuple(shape), dtype, nans, order)
+    if key not in ARRAY_CACHE:
+        a = np.arange(np.prod(shape), dtype=dtype)
+        if nans and issubclass(a.dtype.type, np.inexact):
+            a[::5] = np.nan
+        rs = np.random.RandomState(shape)
+        rs.shuffle(a)
+        ARRAY_CACHE[key] = np.array(a.reshape(*shape), order=order)
+
+    return ARRAY_CACHE[key].copy(order=order)
 
 
 def benchsuite(shapes, dtype, nans, axes, order, functions):
