@@ -105,25 +105,35 @@ pygments_style = "sphinx"
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
 # Sphinx are currently 'default' and 'sphinxdoc'.
-html_theme = "default"
+html_theme = "alabaster"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
+# html_theme_options = {
+#     "headtextcolor": "#333333",
+#     "sidebarbgcolor": "#dddddd",
+#     "footerbgcolor": "#cccccc",
+#     "footertextcolor": "black",
+#     "headbgcolor": "#cccccc",
+#     "sidebartextcolor": "#333333",
+#     "sidebarlinkcolor": "default",
+#     "relbarbgcolor": "#cccccc",
+#     "relbartextcolor": "default",
+#     "relbarlinkcolor": "default",
+#     "codebgcolor": "#ffffff",
+#     "textcolor": "#333333",
+#     "bgcolor": "#f5f5f5",
+# }
+
 html_theme_options = {
-    "headtextcolor": "#333333",
-    "sidebarbgcolor": "#dddddd",
-    "footerbgcolor": "#cccccc",
-    "footertextcolor": "black",
-    "headbgcolor": "#cccccc",
-    "sidebartextcolor": "#333333",
-    "sidebarlinkcolor": "default",
-    "relbarbgcolor": "#cccccc",
-    "relbartextcolor": "default",
-    "relbarlinkcolor": "default",
-    "codebgcolor": "#ffffff",
-    "textcolor": "#333333",
-    "bgcolor": "#f5f5f5",
+    "show_powered_by": True,
+    "github_user": "pydata",
+    "github_repo": "bottleneck",
+    "github_banner": True,
+    "show_related": True,
+    "travis_button": True,
+    "codecov_button": True,
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
