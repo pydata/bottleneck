@@ -368,7 +368,8 @@ init_iter3(iter3 *it, PyArrayObject *a, PyObject *y, PyObject *z, int axis)
 #define  AX(dtype, x)   *(npy_##dtype *)(it.pa + (x) * it.astride)
 #define  AOLD(dtype)    *(npy_##dtype *)(it.pa + (it.i - window) * it.astride)
 
-#define  SI(pa)         pa[it.i * it.stride]    
+#define  SI(pa)         pa[it.i * it.stride]
+#define  SX(pa, x)      pa[x * it.stride]
 
 #define  YPP            *py++
 #define  YI(dtype)      *(npy_##dtype *)(it.py + it.i++ * it.ystride)
