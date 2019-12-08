@@ -6,8 +6,25 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at https://github.com/pydata/bottleneck
 
-Bottleneck 1.3.1
+Bottleneck 1.4.0
 ================
+
+*Release date: in development*
+
+Bug Fixes
+~~~~~~~~~
+
+Contributors
+~~~~~~~~~~~~
+
+.. contributors:: v1.3.1..HEAD
+
+
+Older Releases
+~~~~~~~~~~~~~~
+
+Bottleneck 1.3.1
+----------------
 
 *Release date: 2019-11-18*
 
@@ -21,9 +38,6 @@ Contributors
 
 .. contributors:: v1.3.0..v1.3.1
 
-
-Older Releases
-~~~~~~~~~~~~~~
 
 Bottleneck 1.3.0
 ----------------
