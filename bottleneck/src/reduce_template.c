@@ -754,7 +754,9 @@ REDUCE_MAIN(ss, 0)
         ai = AX(dtype, i); \
         if (ai == ai) { \
             B(dtype, l++) = ai; \
-        } \
+        } else { \
+            break; \
+        }\
     } \
     if (l != LENGTH) { \
         med = BN_NAN; \
