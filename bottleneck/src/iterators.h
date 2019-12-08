@@ -10,6 +10,10 @@
    and PyArray_ITER_NEXT.
 */
 
+#define C_CONTIGUOUS PyArray_IS_C_CONTIGUOUS
+#define F_CONTIGUOUS PyArray_IS_F_CONTIGUOUS
+
+
 /* one input array ------------------------------------------------------- */
 
 /* these iterators are used mainly by reduce functions such as nansum */
