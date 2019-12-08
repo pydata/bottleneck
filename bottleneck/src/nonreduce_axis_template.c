@@ -198,7 +198,7 @@ NRA_MAIN(argpartition, PARSE_PARTITION)
 /* dtype = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp'],
             ['int64',   'float64', 'intp'], ['int32',   'float64', 'intp']] */
 NRA(rankdata, DTYPE0) {
-    Py_ssize_t j=0, k, idx, dupcount=0, i;
+    Py_ssize_t j = 0, k, idx, dupcount = 0, i;
     npy_DTYPE1 old, new, averank, sumranks = 0;
 
     PyObject *z = PyArray_ArgSort(a, axis, NPY_QUICKSORT);
@@ -260,7 +260,7 @@ NRA_MAIN(rankdata, PARSE_RANKDATA)
 
 /* dtype = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp']] */
 NRA(nanrankdata, DTYPE0) {
-    Py_ssize_t j=0, k, idx, dupcount=0, i;
+    Py_ssize_t j = 0, k, idx, dupcount = 0, i;
     npy_DTYPE1 old, new, averank, sumranks = 0;
 
     PyObject *z = PyArray_ArgSort(a, axis, NPY_QUICKSORT);
@@ -1014,11 +1014,11 @@ nra_methods[] = {
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef
 nra_def = {
-   PyModuleDef_HEAD_INIT,
-   "nonreduce_axis",
-   nra_doc,
-   -1,
-   nra_methods
+    PyModuleDef_HEAD_INIT,
+    "nonreduce_axis",
+    nra_doc,
+    -1,
+    nra_methods
 };
 #endif
 

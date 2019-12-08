@@ -59,8 +59,7 @@ int mm_assert_equal(ai_t *actual, ai_t *desired, ai_t *input, idx_t length,
     printf("%s\n", err_msg);
     mm_print_line();
     printf("input     actual    desired\n");
-    for (i=0; i < length; i++)
-    {
+    for (i=0; i < length; i++) {
         if (isnan(actual[i]) && isnan(desired[i])) {
             printf("%9f %9f %9f\n", input[i], actual[i], desired[i]);
         } else if (actual[i] != desired[i]) {
@@ -125,14 +124,13 @@ void mm_print_chain(mm_handle *mm) {
 
 
 void mm_check(mm_handle *mm) {
-
     int ndiff;
     idx_t i;
     mm_node *child;
     mm_node *parent;
 
     // small heap
-    for (i=0; i<mm->n_s; i++) {
+    for (i=0; i < mm->n_s; i++) {
         assert(mm->s_heap[i]->idx == i);
         assert(mm->s_heap[i]->ai == mm->s_heap[i]->ai);
         if (i > 0) {

@@ -179,9 +179,7 @@ parse_args(PyObject *args,
                 return 0;
         }
     }
-
     return 1;
-
 }
 
 static PyObject *
@@ -261,11 +259,9 @@ nonreducer(char *name,
     Py_DECREF(a);
 
     return y;
-
 error:
     Py_DECREF(a);
     return NULL;
-
 }
 
 /* docstrings ------------------------------------------------------------- */
@@ -332,11 +328,11 @@ nonreduce_methods[] = {
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef
 nonreduce_def = {
-   PyModuleDef_HEAD_INIT,
-   "nonreduce",
-   nonreduce_doc,
-   -1,
-   nonreduce_methods
+    PyModuleDef_HEAD_INIT,
+    "nonreduce",
+    nonreduce_doc,
+    -1,
+    nonreduce_methods
 };
 #endif
 

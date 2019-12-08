@@ -387,7 +387,11 @@ MOVE_MAIN(NAME, 1)
 
 #define MACRO_FLOAT(dtype, yi, code) \
     ai = AI(dtype); \
-    if (ai == ai) count++; else ai = BIG_FLOAT; \
+    if (ai == ai) { \
+        count++; \
+    } else { \
+        ai = BIG_FLOAT; \
+    } \
     code; \
     if (ai COMPARE extreme_pair->value) { \
         extreme_pair->value = ai; \
@@ -1011,11 +1015,9 @@ mover(char *name,
     Py_DECREF(a);
 
     return y;
-
 error:
     Py_DECREF(a);
     return NULL;
-
 }
 
 /* docstrings ------------------------------------------------------------- */
@@ -1506,11 +1508,11 @@ move_methods[] = {
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef
 move_def = {
-   PyModuleDef_HEAD_INIT,
-   "move",
-   move_doc,
-   -1,
-   move_methods
+    PyModuleDef_HEAD_INIT,
+    "move",
+    move_doc,
+    -1,
+    move_methods
 };
 #endif
 
