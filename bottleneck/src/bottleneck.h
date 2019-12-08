@@ -95,14 +95,14 @@ static inline float __bn_nanf(void) {
 */
 
 #define WIRTH(dtype) \
-    x = B(dtype, k); \
+    npy_##dtype x = B(dtype, k); \
     i = l; \
     j = r; \
     do { \
         while (B(dtype, i) < x) i++; \
         while (x < B(dtype, j)) j--; \
         if (i <= j) { \
-            npy_##dtype atmp = B(dtype, i); \
+            const npy_##dtype atmp = B(dtype, i); \
             B(dtype, i) = B(dtype, j); \
             B(dtype, j) = atmp; \
             i++; \
@@ -116,10 +116,9 @@ static inline float __bn_nanf(void) {
 
 #define PARTITION(dtype) \
     while (l < r) { \
-        npy_##dtype x; \
-        npy_##dtype al = B(dtype, l); \
-        npy_##dtype ak = B(dtype, k); \
-        npy_##dtype ar = B(dtype, r); \
+        const npy_##dtype al = B(dtype, l); \
+        const npy_##dtype ak = B(dtype, k); \
+        const npy_##dtype ar = B(dtype, r); \
         if (al > ak) { \
             if (ak < ar) { \
                 if (al < ar) { \
