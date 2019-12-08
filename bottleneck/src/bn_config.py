@@ -120,3 +120,6 @@ def create_config_h(config):
             f.write("/* undef inline */\n")
         else:
             f.write("#define inline {}\n".format(inline_alias))
+
+        # ISO C requires every translation unit to have 1+ declarations
+        f.write("typedef int _make_iso_compilers_happy;\n")

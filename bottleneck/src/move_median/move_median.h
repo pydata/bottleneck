@@ -9,7 +9,7 @@
 typedef size_t idx_t;
 typedef double ai_t;
 
-#if BINARY_TREE==1
+#if BINARY_TREE == 1
     #define NUM_CHILDREN 2
 #else
     /* maximum of 8 due to the manual loop-unrolling used in the code */

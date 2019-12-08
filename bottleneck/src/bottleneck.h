@@ -57,15 +57,19 @@
  * NAN and INFINITY like macros (same behavior as glibc for NAN, same as C99
  * for INFINITY). Copied from NumPy.
  */
-static inline float __bn_inff(void)
-{
-    const union { npy_uint32 __i; float __f;} __bint = {0x7f800000UL};
+static inline float __bn_inff(void) {
+    const union {
+        npy_uint32 __i;
+        float __f;
+    } __bint = {0x7f800000UL};
     return __bint.__f;
 }
 
-static inline float __bn_nanf(void)
-{
-    const union { npy_uint32 __i; float __f;} __bint = {0x7fc00000UL};
+static inline float __bn_nanf(void) {
+    const union {
+        npy_uint32 __i;
+        float __f;
+    } __bint = {0x7fc00000UL};
     return __bint.__f;
 }
 
@@ -145,8 +149,7 @@ static inline float __bn_nanf(void)
 static PyObject *slow_module = NULL;
 
 static PyObject *
-slow(char *name, PyObject *args, PyObject *kwds)
-{
+slow(char *name, PyObject *args, PyObject *kwds) {
     PyObject *func = NULL;
     PyObject *out = NULL;
 

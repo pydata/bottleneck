@@ -578,7 +578,6 @@ heapify_large_node(mm_handle *mm, idx_t idx) {
             mm_move_up_large(l_heap, n_l, idx, node);
         }
     }
-
 }
 
 
