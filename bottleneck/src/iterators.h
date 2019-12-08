@@ -3,6 +3,7 @@
 #ifndef ITERATORS_H_
 #define ITERATORS_H_
 
+#define NPY_NO_DEPRECATED_API NPY_1_11_API_VERSION
 #include <numpy/arrayobject.h>
 
 /*
