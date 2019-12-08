@@ -824,14 +824,14 @@ REDUCE_ALL(NAME, DTYPE0) {
     npy_DTYPE1 med;
     INIT_ALL_RAVEL_ANY_ORDER
     BN_BEGIN_ALLOW_THREADS
-    BUFFER_NEW(DTYPE0, LENGTH)
     if (LENGTH == 0) {
         med = BN_NAN;
     } else {
+        BUFFER_NEW(DTYPE0, LENGTH)
         FUNC(DTYPE0)
+        done:
+        BUFFER_DELETE
     }
-    done:
-    BUFFER_DELETE
     BN_END_ALLOW_THREADS
     DECREF_INIT_ALL_RAVEL
     return PyFloat_FromDouble(med);
