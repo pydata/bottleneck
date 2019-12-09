@@ -3,9 +3,11 @@ import re
 import ast
 
 
-def make_c_files():
-    modules = ["reduce", "move", "nonreduce", "nonreduce_axis"]
-    dirpath = os.path.dirname(__file__)
+def make_c_files(dirpath=None, modules=None):
+    if modules is None:
+        modules = ["reduce", "move", "nonreduce", "nonreduce_axis"]
+    if dirpath is None:
+        dirpath = os.path.dirname(__file__)
     for module in modules:
         template_file = os.path.join(dirpath, module + "_template.c")
         target_file = os.path.join(dirpath, module + ".c")
