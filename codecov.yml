@@ -1,0 +1,12 @@
+coverage:
+  status:
+    project:
+      default:
+        target: '75'
+    patch:
+      default:
+        target: '50'
+
+ignore:
+  - "_version.py"
+  - "bottleneck/tests/data/"
