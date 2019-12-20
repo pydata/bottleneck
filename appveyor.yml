@@ -5,7 +5,7 @@ max_jobs: 100
 environment:
 
     global:
-        DEPS: "numpy pytest"
+        DEPS: "numpy pytest hypothesis"
         CONDA_VENV: "testy"
         # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
         # /E:ON and /V:ON options are not enabled in the batch script
@@ -25,14 +25,14 @@ environment:
 
         - PYTHON_VERSION: "3.5"
           PYTHON_ARCH: "32"
-          DEPS: "pytest"
+          DEPS: "pytest hypothesis"
           PIP_DEPS: "numpy>=1.16"
           platform: x86
           CONDA_HOME: "C:\\Miniconda3"
 
         - PYTHON_VERSION: "3.5"
           PYTHON_ARCH: "64"
-          DEPS: "pytest"
+          DEPS: "pytest hypothesis"
           PIP_DEPS: "numpy>=1.16"
           platform: x64
           CONDA_HOME: "C:\\Miniconda3-x64"

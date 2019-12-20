@@ -9,6 +9,64 @@ from numpy.testing import assert_equal, assert_raises, assert_array_almost_equal
 import bottleneck as bn
 from .util import arrays, array_order, DTYPES
 import pytest
+import hypothesis
+from hypothesis.strategies import one_of
+from hypothesis.extra.numpy import (
+    arrays as hy_arrays,
+    integer_dtypes,
+    floating_dtypes,
+    array_shapes,
+)
+
+
+def _hypothesis_helper(func, array, skip_all_nans=False):
+    slow_func = eval("bn.slow.%s" % func.__name__)
+    ndim = array.ndim
+    axes = [None] + list(range(-ndim, ndim))
+    for axis in axes:
+        if skip_all_nans:
+            if not np.isfinite(array).all(axis=axis).all():
+                # The documentation for numpy.nanargmin/max has the following errata:
+                #
+                # Warning: the results cannot be trusted if a slice contains only
+                # NaNs and Infs.
+                #
+                # So skip in that case, as it is definitely wrong
+                continue
+        try:
+            bn_result = func(array, axis=axis)
+        except ValueError:
+            try:
+                slow_result = slow_func(array, axis=axis)
+                assert False
+            except ValueError:
+                return
+
+        slow_result = slow_func(array, axis=axis)
+
+        assert_array_almost_equal(bn_result, slow_result)
+
+
+@pytest.mark.parametrize(
+    "func", (bn.nanmin, bn.nanmax, bn.anynan, bn.allnan), ids=lambda x: x.__name__
+)
+@hypothesis.given(
+    array=hy_arrays(
+        dtype=one_of(integer_dtypes(), floating_dtypes()), shape=array_shapes()
+    )
+)
+def test_reduce_hypothesis(func, array):
+    _hypothesis_helper(func, array)
+
+
+@pytest.mark.parametrize("func", (bn.nanargmin, bn.nanargmax), ids=lambda x: x.__name__)
+@hypothesis.given(
+    array=hy_arrays(
+        dtype=one_of(integer_dtypes(), floating_dtypes()), shape=array_shapes()
+    )
+)
+def test_reduce_hypothesis_errata(func, array):
+    _hypothesis_helper(func, array, skip_all_nans=True)
 
 
 @pytest.mark.parametrize("func", bn.get_functions("reduce"), ids=lambda x: x.__name__)
