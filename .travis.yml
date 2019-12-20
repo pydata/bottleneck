@@ -1,6 +1,5 @@
-
+os: linux
 language: generic
-sudo: false
 cache:
     directories:
       - $HOME/.cache/pip
@@ -9,7 +8,7 @@ cache:
 git:
     depth: false
 
-matrix:
+jobs:
     fast_finish: true
     include:
 
