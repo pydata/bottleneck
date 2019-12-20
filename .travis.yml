@@ -1,7 +1,10 @@
 
 language: generic
 sudo: false
-cache: pip
+cache:
+    directories:
+      - $HOME/.cache/pip
+      - .hypothesis
 
 git:
     depth: false
@@ -13,7 +16,7 @@ matrix:
         # test installing bottleneck tarball before installing numpy;
         # start this test first because it takes the longest
         - os: linux
-          env: TEST_DEPS="numpy pytest"
+          env: TEST_DEPS="numpy pytest hypothesis"
                PYTHON_VERSION="2.7"
                PYTHON_ARCH="64"
                TEST_RUN="sdist"
@@ -34,14 +37,14 @@ matrix:
 
         # coverage
         - os: linux
-          env: TEST_DEPS="numpy pytest pytest-cov"
+          env: TEST_DEPS="numpy pytest pytest-cov hypothesis"
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
                TEST_RUN="coverage"
 
         # python 3.5
         - os: linux
-          env: TEST_DEPS="pytest"
+          env: TEST_DEPS="pytest hypothesis"
                PIP_DEPS="numpy>=1.16"
                PYTHON_VERSION="3.5"
                PYTHON_ARCH="64"
@@ -49,58 +52,58 @@ matrix:
 
          # python 3.6
         - os: linux
-          env: TEST_DEPS="numpy pytest"
+          env: TEST_DEPS="numpy pytest hypothesis"
                PYTHON_VERSION="3.6"
                PYTHON_ARCH="64"
 
          # python 3.7
         - os: linux
-          env: TEST_DEPS="numpy pytest"
+          env: TEST_DEPS="numpy pytest hypothesis"
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
 
          # python 3.8 conda numpy
         - os: linux
-          env: TEST_DEPS="numpy pytest"
+          env: TEST_DEPS="numpy pytest hypothesis"
                PYTHON_VERSION="3.8"
                PYTHON_ARCH="64"
 
          # python 3.8 conda numpy + sdist
         - os: linux
-          env: TEST_DEPS="numpy pytest"
+          env: TEST_DEPS="numpy pytest hypothesis"
                PYTHON_VERSION="3.8"
                PYTHON_ARCH="64"
                TEST_RUN="sdist"
 
         # python 2.7
         - os: osx
-          env: TEST_DEPS="numpy pytest"
+          env: TEST_DEPS="numpy pytest hypothesis"
                PYTHON_VERSION="2.7"
                PYTHON_ARCH="64"
                TEST_RUN="sdist"
 
         # python 3.5
         - os: osx
-          env: TEST_DEPS="pytest"
+          env: TEST_DEPS="pytest hypothesis"
                PIP_DEPS="numpy>=1.16"
                PYTHON_VERSION="3.5"
                PYTHON_ARCH="64"
 
         # python 3.6
         - os: osx
-          env: TEST_DEPS="numpy pytest"
+          env: TEST_DEPS="numpy pytest hypothesis"
                PYTHON_VERSION="3.6"
                PYTHON_ARCH="64"
 
         # python 3.7
         - os: osx
-          env: TEST_DEPS="numpy pytest"
+          env: TEST_DEPS="numpy pytest hypothesis"
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
 
         # python 3.8
         - os: osx
-          env: TEST_DEPS="numpy pytest"
+          env: TEST_DEPS="numpy pytest hypothesis"
                PYTHON_VERSION="3.8"
                PYTHON_ARCH="64"
 
