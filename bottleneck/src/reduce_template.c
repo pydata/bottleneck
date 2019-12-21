@@ -413,13 +413,15 @@ REDUCE_MAIN(NAME, 1)
 /* nanmin, nanmax -------------------------------------------------------- */
 
 /* repeat = {'NAME':      ['nanmin',         'nanmax'],
+             'INTCOMP':   ['<',              '>'],
              'COMPARE':   ['<=',             '>='],
              'BIG_FLOAT': ['BN_INFINITY',    '-BN_INFINITY'],
              'BIG_INT':   ['NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0']} */
 /* dtype = [['float64'], ['float32']] */
+BN_OPT_3
 REDUCE_ALL(NAME, DTYPE0) {
-    npy_DTYPE0 ai, extreme = BIG_FLOAT;
-    int allnan = 1;
+    npy_DTYPE0 extreme = BIG_FLOAT;
+    npy_bool allnan = 1;
     INIT_ALL
     if (SIZE == 0) {
         VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
@@ -427,17 +429,35 @@ REDUCE_ALL(NAME, DTYPE0) {
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    WHILE {
-        FOR {
-            ai = AI(DTYPE0);
-            if (ai COMPARE extreme) {
-                extreme = ai;
-                allnan = 0;
+    const npy_DTYPE0* pa = PA(DTYPE0);
+    const npy_intp count = it.nits * it.length;
+    const npy_intp stride = it.stride;
+    if (it.stride == 1) {
+        for (npy_intp i=0; i < count; i++) {
+            if (allnan) {
+                if (pa[i] COMPARE extreme) {
+                    extreme = pa[i];
+                    allnan = 0;
+                }
+            } else {
+                extreme = pa[i] INTCOMP extreme ? pa[i] : extreme;
             }
         }
-        NEXT
+    } else {
+        for (npy_intp i=0; i < count; i++) {
+            if (allnan) {
+                if (pa[i * stride] COMPARE extreme) {
+                    extreme = pa[i * stride];
+                    allnan = 0;
+                }
+            } else {
+                extreme = pa[i * stride] INTCOMP extreme ? pa[i * stride] : extreme;
+            }
+        }
     }
-    if (allnan) extreme = BN_NAN;
+    if (allnan) {
+        extreme = BN_NAN;
+    }
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(extreme);
 }
@@ -472,8 +492,9 @@ REDUCE_ONE(NAME, DTYPE0) {
 /* dtype end */
 
 /* dtype = [['int64'], ['int32']] */
+BN_OPT_3
 REDUCE_ALL(NAME, DTYPE0) {
-    npy_DTYPE0 ai, extreme = BIG_INT;
+    npy_DTYPE0 extreme = BIG_INT;
     INIT_ALL
     if (SIZE == 0) {
         VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
@@ -481,12 +502,16 @@ REDUCE_ALL(NAME, DTYPE0) {
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    WHILE {
-        FOR {
-            ai = AI(DTYPE0);
-            if (ai COMPARE extreme) extreme = ai;
+    const npy_DTYPE0* pa = PA(DTYPE0);
+    const npy_intp count = it.nits * it.length;
+    if (it.stride == 1) {
+        for (npy_intp i=0; i<count; i++) {
+            extreme = pa[i] INTCOMP extreme ? pa[i] : extreme;
         }
-        NEXT
+    } else {
+        for (npy_intp i=0; i<count; i++) {
+            extreme = pa[i * it.stride] INTCOMP extreme ? pa[i * it.stride] : extreme;
+        }
     }
     BN_END_ALLOW_THREADS
     return PyLong_FromLongLong(extreme);

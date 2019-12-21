@@ -123,7 +123,11 @@ def unit_maker(func, decimal=5, skip_dtype=("nansum", "ss")):
                     msg = fmt2 % (name, name, traceback.format_exc())
                     err_msg += msg
                     assert False, err_msg
-                assert_array_almost_equal(actual, desired, decimal, err_msg)
+                try:
+                    assert_array_almost_equal(actual, desired, decimal, err_msg)
+                except AssertionError:
+                    print(a, axis, func(a, axis=axis), a.shape, a.flags, actual, desired)
+                    raise
                 err_msg += "\n dtype mismatch %s %s"
                 if name not in skip_dtype:
                     if hasattr(actual, "dtype") and hasattr(desired, "dtype"):
