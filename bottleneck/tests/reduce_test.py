@@ -23,28 +23,35 @@ def _hypothesis_helper(func, array, skip_all_nans=False):
     slow_func = eval("bn.slow.%s" % func.__name__)
     ndim = array.ndim
     axes = [None] + list(range(-ndim, ndim))
-    for axis in axes:
-        if skip_all_nans:
-            if not np.isfinite(array).all(axis=axis).all():
-                # The documentation for numpy.nanargmin/max has the following errata:
-                #
-                # Warning: the results cannot be trusted if a slice contains only
-                # NaNs and Infs.
-                #
-                # So skip in that case, as it is definitely wrong
-                continue
-        try:
-            bn_result = func(array, axis=axis)
-        except ValueError:
+    for order in ["C", "F"]:
+        if order == "F":
+            arr = np.asfortranarray(array)
+        else:
+            arr = np.ascontiguousarray(array)
+
+        for axis in axes:
+            if skip_all_nans:
+                if not np.isfinite(arr).all(axis=axis).all():
+                    # The documentation for numpy.nanargmin/max has the following
+                    # errata:
+                    #
+                    # Warning: the results cannot be trusted if a slice contains only
+                    # NaNs and Infs.
+                    #
+                    # So skip in that case, as it is definitely wrong
+                    continue
             try:
-                slow_result = slow_func(array, axis=axis)
-                assert False
+                bn_result = func(arr, axis=axis)
             except ValueError:
-                return
+                try:
+                    slow_result = slow_func(arr, axis=axis)
+                    assert False
+                except ValueError:
+                    return
 
-        slow_result = slow_func(array, axis=axis)
+            slow_result = slow_func(arr, axis=axis)
 
-        assert_array_almost_equal(bn_result, slow_result)
+            assert_array_almost_equal(bn_result, slow_result)
 
 
 @pytest.mark.parametrize(
@@ -52,7 +59,8 @@ def _hypothesis_helper(func, array, skip_all_nans=False):
 )
 @hypothesis.given(
     array=hy_arrays(
-        dtype=one_of(integer_dtypes(), floating_dtypes()), shape=array_shapes()
+        dtype=one_of(integer_dtypes(sizes=(32, 64)), floating_dtypes(sizes=(32, 64))),
+        shape=array_shapes(),
     )
 )
 def test_reduce_hypothesis(func, array):
@@ -62,7 +70,8 @@ def test_reduce_hypothesis(func, array):
 @pytest.mark.parametrize("func", (bn.nanargmin, bn.nanargmax), ids=lambda x: x.__name__)
 @hypothesis.given(
     array=hy_arrays(
-        dtype=one_of(integer_dtypes(), floating_dtypes()), shape=array_shapes()
+        dtype=one_of(integer_dtypes(sizes=(32, 64)), floating_dtypes(sizes=(32, 64))),
+        shape=array_shapes(),
     )
 )
 def test_reduce_hypothesis_errata(func, array):
