@@ -385,4 +385,13 @@ init_iter3(iter3 *it, PyArrayObject *a, PyObject *y, PyObject *z, int axis) {
         YPP = value; \
     }
 
+#define REDUCE_CONTIGUOUS (it.stride == 1 && ((it.ndim_m2 < 0) || (C_CONTIGUOUS(a) || F_CONTIGUOUS(a))))
+
+#define REDUCE_SPECIALIZE(code) { \
+    if (REDUCE_CONTIGUOUS) { \
+        code \
+    } else { \
+        code \
+    }
+
 #endif  // ITERATORS_H_
