@@ -1,5 +1,5 @@
-bottleneck package
-==================
+Bottleneck Package Structure
+============================
 
 Subpackages
 -----------
@@ -14,11 +14,3 @@ Subpackages
    bottleneck.slow
    bottleneck.src
    bottleneck.tests
-
-Module contents
----------------
-
-.. automodule:: bottleneck
-   :members:
-   :undoc-members:
-   :show-inheritance:
