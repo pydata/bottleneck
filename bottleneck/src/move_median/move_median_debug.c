@@ -141,7 +141,7 @@ void mm_check(mm_handle *mm) {
     }
 
     // large heap
-    for (i=0; i<mm->n_l; i++) {
+    for (i=0; i < mm->n_l; i++) {
         assert(mm->l_heap[i]->idx == i);
         assert(mm->l_heap[i]->ai == mm->l_heap[i]->ai);
         if (i > 0) {
@@ -152,7 +152,7 @@ void mm_check(mm_handle *mm) {
     }
 
     // nan array
-    for (i=0; i<mm->n_n; i++) {
+    for (i=0; i < mm->n_n; i++) {
          assert(mm->n_array[i]->idx == i);
          assert(mm->n_array[i]->ai != mm->n_array[i]->ai);
     }
@@ -202,9 +202,7 @@ void mm_dump(mm_handle *mm) {
     printf("\t%2d l_first_leaf\n", mm->l_first_leaf);
 
     if (NUM_CHILDREN == 2) {
-
         // binary heap
-
         int idx0;
         int idx1;
 
@@ -249,11 +247,8 @@ void mm_dump(mm_handle *mm) {
                 printf("\t%i  %f\n", idx, mm->n_array[i]->ai);
             }
         }
-
     } else {
-
         // not a binary heap
-
         if (mm->oldest)
             printf("\n\nFirst: %f\n", (double)mm->oldest->ai);
         if (mm->newest)
@@ -282,14 +277,14 @@ mm_print_binary_heap(mm_node **heap, idx_t n_array, idx_t oldest_idx,
                      idx_t newest_idx) {
     const int line_width = 77;
     int print_pos[n_array];
-    int i, j, k, pos, x=1, level=0;
+    int i, j, k, pos, x = 1, level = 0;
 
     print_pos[0] = 0;
-    for (i=0,j=1; i<(int)n_array; i++,j++) {
+    for (i=0, j=1; i < (int)n_array; i++, j++) {
         pos = print_pos[(i-1)/2];
-        pos +=  (i%2?-1:1)*(line_width/(pow(2,level+1))+1);
+        pos +=  (i%2 ? -1 : 1)*(line_width/(pow(2, level+1))+1);
 
-        for (k=0; k<pos-x; k++) printf("%c",i==0||i%2?' ':'-');
+        for (k=0; k < pos - x; k++) printf("%c", i == 0 || i % 2 ? ' ' : '-');
         if (i == (int)oldest_idx) {
             printf(">%.2f", heap[i]->ai);
         } else if (i == (int)newest_idx) {
@@ -299,7 +294,7 @@ mm_print_binary_heap(mm_node **heap, idx_t n_array, idx_t oldest_idx,
         }
 
         print_pos[i] = x = pos+1;
-        if (j==pow(2,level)) {
+        if (j == pow(2, level)) {
             printf("\n");
             level++;
             x = 1;
