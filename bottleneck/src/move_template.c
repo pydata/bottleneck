@@ -720,7 +720,7 @@ MOVE(move_rank, DTYPE0) {
             r = 0;
             for (j = INDEX - window + 1; j < INDEX; j++) {
                 aj = AX(DTYPE0, j);
-		if (ai > aj) {
+                if (ai > aj) {
                     g += 2;
                 } else if (ai == aj) {
                     e++;
@@ -867,9 +867,7 @@ parse_args(PyObject *args,
                 return 0;
         }
     }
-
     return 1;
-
 }
 
 
@@ -882,7 +880,6 @@ mover(char *name,
       move_t move_int64,
       move_t move_int32,
       int has_ddof) {
-
     int mc;
     int window;
     int axis;

@@ -467,9 +467,7 @@ parse_partition(PyObject *args,
                 return 0;
         }
     }
-
     return 1;
-
 }
 
 static inline int
@@ -528,9 +526,7 @@ parse_rankdata(PyObject *args,
                 return 0;
         }
     }
-
     return 1;
-
 }
 
 static inline int
@@ -599,9 +595,7 @@ parse_push(PyObject *args,
                 return 0;
         }
     }
-
     return 1;
-
 }
 
 static PyObject *
@@ -613,7 +607,6 @@ nonreducer_axis(char *name,
                 nra_t nra_int64,
                 nra_t nra_int32,
                 parse_type parse) {
-
     int n;
     int axis;
     int dtype;
@@ -731,7 +724,6 @@ nonreducer_axis(char *name,
 error:
     Py_DECREF(a);
     return NULL;
-
 }
 
 /* docstrings ------------------------------------------------------------- */

@@ -1161,7 +1161,6 @@ parse_args(PyObject *args,
     }
 
     return 1;
-
 }
 
 static PyObject *
@@ -1177,7 +1176,6 @@ reducer(char *name,
         fone_t fone_int64,
         fone_t fone_int32,
         int has_ddof) {
-
     int ndim;
     int axis = 0; /* initialize to avoid compiler error */
     int dtype;
@@ -1276,7 +1274,6 @@ reducer(char *name,
         } else {
             y = slow(name, args, kwds);
         }
-
     }
 
     Py_DECREF(a);
@@ -1286,7 +1283,6 @@ reducer(char *name,
 error:
     Py_DECREF(a);
     return NULL;
-
 }
 
 /* docstrings ------------------------------------------------------------- */
@@ -1964,11 +1960,11 @@ reduce_methods[] = {
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef
 reduce_def = {
-   PyModuleDef_HEAD_INIT,
-   "reduce",
-   reduce_doc,
-   -1,
-   reduce_methods
+    PyModuleDef_HEAD_INIT,
+    "reduce",
+    reduce_doc,
+    -1,
+    reduce_methods
 };
 #endif
 
