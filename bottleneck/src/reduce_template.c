@@ -122,13 +122,28 @@ REDUCE_ONE(nansum, DTYPE0) {
 /* dtype end */
 
 /* dtype = [['int64'], ['int32']] */
+BN_OPT_3
 REDUCE_ALL(nansum, DTYPE0) {
     npy_DTYPE0 asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
-    WHILE {
-        FOR asum += AI(DTYPE0);
-        NEXT
+    if (REDUCE_CONTIGUOUS) {
+        npy_DTYPE0* pa = PA(DTYPE0);
+        const npy_intp nits = it.nits;
+        const npy_intp length = it.length;
+        for (npy_intp i=0; i < nits; i++) {
+            for (npy_intp j=0; j < length; j++) {
+                asum += pa[i * length + j];
+            }
+        }
+    } else {
+        WHILE {
+            npy_DTYPE0* pa = PA(DTYPE0);
+            FOR {
+                asum += pa[it.i * it.stride];
+            }
+            NEXT
+        }
     }
     BN_END_ALLOW_THREADS
     return PyLong_FromLongLong(asum);
