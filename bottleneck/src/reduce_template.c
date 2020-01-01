@@ -432,7 +432,7 @@ REDUCE_MAIN(NAME, 1)
              'COMPARE':   ['<=',             '>='],
              'BIG_FLOAT': ['BN_INFINITY',    '-BN_INFINITY'],
              'BIG_INT':   ['NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0']} */
-/* dtype = [['float64'], ['float32']] */
+/* dtype = [['float64', '16'], ['float32', '32']] */
 BN_OPT_3
 REDUCE_ALL(NAME, DTYPE0) {
     npy_DTYPE0 extreme = BIG_FLOAT;
@@ -445,9 +445,9 @@ REDUCE_ALL(NAME, DTYPE0) {
     BN_BEGIN_ALLOW_THREADS
     npy_bool allnan = 1;
     if (REDUCE_CONTIGUOUS) {
-        const npy_intp LOOP_SIZE = 512 / sizeof(npy_DTYPE0);
+        const npy_intp LOOP_SIZE = DTYPE1;
         // Allow vectorization by keeping an array of extremums
-        npy_DTYPE0 extremes[LOOP_SIZE];
+        npy_DTYPE0 extremes[DTYPE1];
         for (npy_intp i=0; i < LOOP_SIZE; i++) {
             extremes[i] = BIG_FLOAT;
         }
@@ -455,22 +455,22 @@ REDUCE_ALL(NAME, DTYPE0) {
         const npy_intp residual = LENGTH % LOOP_SIZE;
         WHILE {
             const npy_DTYPE0* pa = PA(DTYPE0);
-            for (npy_intp i=0; i < loops; i++) {
-                if (allnan) {
-                    for (npy_intp j=0; j < LOOP_SIZE; j++) {
-                        const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
-                        // We only need <=/>= until we identify our first non-nan value
-                        if (ai COMPARE extremes[j]) {
-                            allnan = 0;
-                            extremes[j] = ai;
-                        }
+            npy_intp i = 0;
+            for (; i < loops && allnan; i++) {
+                for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                    const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
+                    // We only need <=/>= until we identify our first non-nan value
+                    if (ai COMPARE extremes[j]) {
+                        allnan = 0;
+                        extremes[j] = ai;
                     }
-                } else {
-                    // Fully vectorize since the result cannot be NaN now
-                    for (npy_intp j=0; j < LOOP_SIZE; j++) {
-                        const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
-                        extremes[j] = ai INTCOMP extremes[j] ? ai : extremes[j];
-                    }
+                }
+            }
+            for (; i < loops; i++) {
+                // Fully vectorize since the result cannot be NaN now
+                for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                    const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
+                    extremes[j] = ai INTCOMP extremes[j] ? ai : extremes[j];
                 }
             }
             for (npy_intp j=0; j < residual; j++) {
