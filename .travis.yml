@@ -20,7 +20,7 @@ jobs:
 
          # doc check
         - os: linux
-          env: TEST_DEPS="sphinx numpydoc gitpython"
+          env: TEST_DEPS="sphinx numpydoc gitpython pytest hypothesis"
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
                TEST_RUN="doc"
