@@ -8,9 +8,16 @@ ARRAY_CACHE = {}
 
 
 def bench(
-    shapes=[(100,), (1000, 1000), (1000, 1000), (1000, 1000), (1000, 1000)],
-    axes=[0, 0, 0, 1, 1],
-    nans=[False, False, True, False, True],
+    shapes=[
+        (100,),
+        (1000, 1000),
+        (1000, 1000),
+        (1000, 1000),
+        (1000, 1000),
+        (1000, 1000),
+    ],
+    axes=[0, None, 0, 0, 1, 1],
+    nans=[False, True, False, True, False, True],
     dtype="float64",
     order="C",
     functions=None,
