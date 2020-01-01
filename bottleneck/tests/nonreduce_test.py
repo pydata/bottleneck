@@ -136,3 +136,13 @@ def test_replace_newaxis(dtype):
     array = np.ones((2, 2), dtype=dtype)[..., np.newaxis]
     result = bn.replace(array, 1, 2)
     assert (result == 2).all().all()
+
+
+@pytest.mark.parametrize("dtype", DTYPES)
+def test_replace_view(dtype):
+    array = np.arange(20, dtype=dtype)
+    view = array[::2]
+
+    bn.replace(view, 5, -1)
+    assert view.min() == 0
+    assert array.min() == 0
