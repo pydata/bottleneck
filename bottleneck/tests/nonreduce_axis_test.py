@@ -178,6 +178,12 @@ def test_arg_parsing(func):
     else:
         fmt = "``%s` is an unknown nonreduce_axis function"
         raise ValueError(fmt % name)
+
+
+@pytest.mark.parametrize(
+    "func", bn.get_functions("nonreduce_axis"), ids=lambda x: x.__name__
+)
+def test_arg_raises(func):
     return unit_maker_raises(func)
 
 
