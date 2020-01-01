@@ -25,6 +25,10 @@ Table of Contents
 
 Indices and tables
 ==================
+.. toctree::
+   :maxdepth: 1
+
+   bottleneck
 
 * :ref:`genindex`
 * :ref:`modindex`
