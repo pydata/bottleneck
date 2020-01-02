@@ -98,12 +98,15 @@ def timer(statements, setups):
     return speed
 
 
-def getarray(shape, dtype, nans, order):
-    key = (tuple(shape), dtype, nans, order)
+def getarray(shape, dtype, nans, order, allnans=False):
+    key = (tuple(shape), dtype, nans, order, allnans)
     if key not in ARRAY_CACHE:
         a = np.arange(np.prod(shape), dtype=dtype)
-        if nans and issubclass(a.dtype.type, np.inexact):
-            a[::5] = np.nan
+        if issubclass(a.dtype.type, np.inexact):
+            if nans:
+                a[::5] = np.nan
+            if allnans:
+                a[:] = np.nan
         rs = np.random.RandomState(shape)
         rs.shuffle(a)
         ARRAY_CACHE[key] = np.array(a.reshape(*shape), order=order)
@@ -115,22 +118,14 @@ def benchsuite(shapes, dtype, nans, axes, order, functions):
 
     suite = []
 
-    def getsetups(setup, shapes, nans, axes, dtype, order):
-        template = """
-        from bottleneck.benchmark.bench import getarray
-        a = getarray(%s, '%s', %s, '%s')
-        axis=%s
-        %s"""
+    def getsetups(setup, shapes, nans, axes, dtype, order, allnan=False):
         setups = []
         for shape, axis, nan in zip(shapes, axes, nans):
-            s = template % (
-                str(shape),
-                str(dtype),
-                str(nan),
-                str(order),
-                str(axis),
-                setup,
-            )
+            s = f"""
+from bottleneck.benchmark.bench import getarray
+a = getarray({shape}, '{dtype}', {nan}, '{order}', allnans={allnan})
+axis={axis}
+{setup}"""
             s = "\n".join([line.strip() for line in s.split("\n")])
             setups.append(s)
         return setups
@@ -180,12 +175,17 @@ def benchsuite(shapes, dtype, nans, axes, order, functions):
             )
             if case:
                 if func == "allnan":
-                    new_nans = ["slow" in case] * len(nans)
+                    allnan_case = "slow" in case
                 else:
-                    new_nans = ["fast" in case] * len(nans)
+                    allnan_case = "fast" in case
+
+                new_nans = [allnan_case] * len(nans)
             else:
                 new_nans = nans
-            run["setups"] = getsetups(setup, shapes, new_nans, axes, dtype, order)
+                allnan_case = False
+            run["setups"] = getsetups(
+                setup, shapes, new_nans, axes, dtype, order, allnan=allnan_case
+            )
             suite.append(run)
 
     # partition, argpartition
