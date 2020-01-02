@@ -508,9 +508,8 @@ REDUCE_ALL(NAME, DTYPE0) {
     return PyFloat_FromDouble(extreme);
 }
 
+BN_OPT_3
 REDUCE_ONE(NAME, DTYPE0) {
-    npy_DTYPE0 ai, extreme;
-    int allnan;
     INIT_ONE(DTYPE0, DTYPE0)
     if (LENGTH == 0) {
         VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
@@ -519,16 +518,19 @@ REDUCE_ONE(NAME, DTYPE0) {
     }
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        extreme = BIG_FLOAT;
-        allnan = 1;
+        npy_DTYPE0 extreme = BIG_FLOAT;
+        npy_bool allnan = 1;
+        const npy_DTYPE0* pa = PA(DTYPE0);
         FOR {
-            ai = AI(DTYPE0);
+            const npy_DTYPE0 ai = pa[it.i * it.stride];
             if (ai COMPARE extreme) {
                 extreme = ai;
                 allnan = 0;
             }
         }
-        if (allnan) extreme = BN_NAN;
+        if (allnan) {
+            extreme = BN_NAN;
+        }
         YPP = extreme;
         NEXT
     }
