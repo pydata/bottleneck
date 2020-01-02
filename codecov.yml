@@ -8,5 +8,5 @@ coverage:
         target: '50'
 
 ignore:
-  - "_version.py"
+  - "bottleneck/_version.py"
   - "bottleneck/tests/data/"
