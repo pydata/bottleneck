@@ -604,6 +604,7 @@ REDUCE_MAIN(NAME, 0)
 
 /* repeat = {'NAME':      ['nanargmin',      'nanargmax'],
              'COMPARE':   ['<=',             '>='],
+             'INTCOMP':   ['<',              '>'],
              'BIG_FLOAT': ['BN_INFINITY',    '-BN_INFINITY'],
              'BIG_INT':   ['NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0']} */
 /* dtype = [['float64'], ['float32']] */
@@ -676,6 +677,7 @@ REDUCE_ONE(NAME, DTYPE0) {
 /* dtype end */
 
 /* dtype = [['int64', 'intp'], ['int32', 'intp']] */
+BN_OPT_3
 REDUCE_ALL(NAME, DTYPE0) {
     npy_DTYPE1 idx = 0;
     npy_DTYPE0 ai, extreme = BIG_INT;
@@ -687,9 +689,10 @@ REDUCE_ALL(NAME, DTYPE0) {
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    FOR_REVERSE {
-        ai = AI(DTYPE0);
-        if (ai COMPARE extreme) {
+    const npy_DTYPE0* pa = PA(DTYPE0);
+    FOR {
+        ai = SI(pa);
+        if (ai INTCOMP extreme) {
             extreme = ai;
             idx = INDEX;
         }
@@ -699,6 +702,7 @@ REDUCE_ALL(NAME, DTYPE0) {
     return PyLong_FromLongLong(idx);
 }
 
+BN_OPT_3
 REDUCE_ONE(NAME, DTYPE0) {
     npy_DTYPE1 idx = 0;
     npy_DTYPE0 ai, extreme;
@@ -711,9 +715,10 @@ REDUCE_ONE(NAME, DTYPE0) {
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         extreme = BIG_INT;
-        FOR_REVERSE {
-            ai = AI(DTYPE0);
-            if (ai COMPARE extreme) {
+        const npy_DTYPE0* pa = PA(DTYPE0);
+        FOR {
+            ai = SI(pa);
+            if (ai INTCOMP extreme) {
                 extreme = ai;
                 idx = INDEX;
             }
