@@ -573,6 +573,7 @@ REDUCE_ALL(NAME, DTYPE0) {
     return PyLong_FromLongLong(extreme);
 }
 
+BN_OPT_3
 REDUCE_ONE(NAME, DTYPE0) {
     npy_DTYPE0 ai, extreme;
     INIT_ONE(DTYPE0, DTYPE0)
@@ -584,8 +585,9 @@ REDUCE_ONE(NAME, DTYPE0) {
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         extreme = BIG_INT;
+        const npy_DTYPE0* pa = PA(DTYPE0);
         FOR {
-            ai = AI(DTYPE0);
+            ai = SI(pa);
             if (ai COMPARE extreme) extreme = ai;
         }
         YPP = extreme;
