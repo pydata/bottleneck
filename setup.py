@@ -189,6 +189,7 @@ metadata = dict(
     cmdclass=cmdclass,
     setup_requires=["numpy"],
     ext_modules=prepare_modules(),
+    python_requires=">=3.6",
     zip_safe=False,
 )
 
