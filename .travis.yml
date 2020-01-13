@@ -46,13 +46,13 @@ jobs:
 
          # python 3.8 conda numpy
         - os: linux
-          env: TEST_DEPS="numpy pytest hypothesis"
+          env: TEST_DEPS="pytest hypothesis"
                PYTHON_VERSION="3.8"
                PYTHON_ARCH="64"
 
          # python 3.8 conda numpy + sdist
         - os: linux
-          env: TEST_DEPS="numpy pytest hypothesis"
+          env: TEST_DEPS="pytest hypothesis"
                PYTHON_VERSION="3.8"
                PYTHON_ARCH="64"
                TEST_RUN="sdist"
@@ -71,7 +71,7 @@ jobs:
 
         # python 3.8
         - os: osx
-          env: TEST_DEPS="numpy pytest hypothesis"
+          env: TEST_DEPS="pytest hypothesis"
                PYTHON_VERSION="3.8"
                PYTHON_ARCH="64"
 
