@@ -510,6 +510,8 @@ REDUCE_ALL(NAME, DTYPE0) {
 
 BN_OPT_3
 REDUCE_ONE(NAME, DTYPE0) {
+    npy_DTYPE0 extreme;
+    int allnan;
     INIT_ONE(DTYPE0, DTYPE0)
     if (LENGTH == 0) {
         VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
@@ -517,22 +519,114 @@ REDUCE_ONE(NAME, DTYPE0) {
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    WHILE {
-        npy_DTYPE0 extreme = BIG_FLOAT;
-        npy_bool allnan = 1;
+    if (ONE_TRANSPOSE(npy_DTYPE0)) {
+        npy_intp LOOP_SIZE = it.nits;
+        npy_DTYPE0* extremes = malloc(LOOP_SIZE * sizeof(npy_DTYPE0));
+        npy_bool* allnans = malloc(LOOP_SIZE * sizeof(npy_bool));
+        for (npy_intp i=0; i < LOOP_SIZE; i++) {
+            extremes[i] = BIG_FLOAT;
+            allnans[i] = 1;
+        }
+
         const npy_DTYPE0* pa = PA(DTYPE0);
-        FOR {
-            const npy_DTYPE0 ai = pa[it.i * it.stride];
-            if (ai COMPARE extreme) {
-                extreme = ai;
-                allnan = 0;
+        npy_intp i=0;
+        for (; i < LENGTH; i++) {
+            for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
+                if (ai COMPARE extremes[j]) {
+                    allnans[j] = 0;
+                    extremes[j] = ai;
+                }
+            }
+            if (i % 8 == 0) {
+                npy_intp nan_count = 0;
+                for (npy_intp j = 0; j < LOOP_SIZE; j++) {
+                    nan_count += allnans[j];
+                }
+                if (nan_count == 0) {
+                    break;
+                }
             }
         }
-        if (allnan) {
-            extreme = BN_NAN;
+        for (; i < LENGTH; i++) {
+            for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
+                extremes[j] = ai INTCOMP extremes[j] ? ai : extremes[j];
+            }
         }
-        YPP = extreme;
-        NEXT
+        for (npy_intp i=0; i < LOOP_SIZE; i++) {
+            if (allnans[i]) {
+                py[i] = BN_NAN;
+            } else {
+                py[i] = extremes[i];
+            }
+        }
+        free(extremes);
+        free(allnans);
+    } else if (ONE_CONTIGUOUS) {
+        const npy_intp LOOP_SIZE = DTYPE1;
+        npy_DTYPE0 extremes[DTYPE1];
+        const npy_intp loops = LENGTH / LOOP_SIZE;
+        const npy_intp residual = LENGTH % LOOP_SIZE;
+        WHILE {
+            const npy_DTYPE0* pa = PA(DTYPE0);
+
+            for (npy_intp i=0; i < LOOP_SIZE; i++) {
+                extremes[i] = BIG_FLOAT;
+            }
+            allnan = 1;
+            extreme = BIG_FLOAT;
+
+            npy_intp i=0;
+            for (; i < loops && allnan; i++) {
+                for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                    const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
+                    if (ai COMPARE extremes[j]) {
+                        allnan = 0;
+                        extremes[j] = ai;
+                    }
+                }
+            }
+            for (; i < loops; i++) {
+                for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                    const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
+                    extremes[j] = ai INTCOMP extremes[j] ? ai : extremes[j];
+                }
+            }
+            for (npy_intp j=0; j < residual; j++) {
+                const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
+                if (ai COMPARE extremes[j]) {
+                    allnan = 0;
+                    extremes[j] = ai;
+                }
+            }
+            for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                if (extremes[j] COMPARE extreme) {
+                    extreme = extremes[j];
+                }
+            }
+
+            if (allnan) {
+                extreme = BN_NAN;
+            }
+            YPP = extreme;
+            NEXT
+        }
+    } else {
+        WHILE {
+            extreme = BIG_FLOAT;
+            allnan = 1;
+            FOR {
+                const npy_DTYPE0 ai = AI(DTYPE0);
+                if (ai COMPARE extreme) {
+                    extreme = ai;
+                    allnan = 0;
+                }
+            }
+            if (allnan) extreme = BN_NAN;
+            YPP = extreme;
+            NEXT
+        }
     }
     BN_END_ALLOW_THREADS
     return y;
@@ -575,7 +669,7 @@ REDUCE_ALL(NAME, DTYPE0) {
 
 BN_OPT_3
 REDUCE_ONE(NAME, DTYPE0) {
-    npy_DTYPE0 ai, extreme;
+    npy_DTYPE0 extreme;
     INIT_ONE(DTYPE0, DTYPE0)
     if (LENGTH == 0) {
         VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
@@ -583,15 +677,47 @@ REDUCE_ONE(NAME, DTYPE0) {
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    WHILE {
-        extreme = BIG_INT;
-        const npy_DTYPE0* pa = PA(DTYPE0);
-        FOR {
-            ai = SI(pa);
-            if (ai COMPARE extreme) extreme = ai;
+    if (ONE_TRANSPOSE(npy_DTYPE0)) {
+        npy_intp LOOP_SIZE = it.nits;
+        npy_DTYPE0* extremes = malloc(LOOP_SIZE * sizeof(npy_DTYPE0));
+        for (npy_intp i=0; i < LOOP_SIZE; i++) {
+            extremes[i] = BIG_INT;
         }
-        YPP = extreme;
-        NEXT
+
+        const npy_DTYPE0* pa = PA(DTYPE0);
+        for (npy_intp i=0; i<LENGTH; i++) {
+            for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
+                extremes[j] = ai INTCOMP extremes[j] ? ai : extremes[j];
+            }
+        }
+        for (npy_intp i=0; i < LOOP_SIZE; i++) {
+            py[i] = extremes[i];
+        }
+        free(extremes);
+    } else if (ONE_CONTIGUOUS) {
+        WHILE {
+            extreme = BIG_INT;
+            const npy_DTYPE0* pa = PA(DTYPE0);
+            FOR {
+                const npy_DTYPE0 ai = pa[it.i];
+                extreme = ai INTCOMP extreme ? ai : extreme;
+            }
+            YPP = extreme;
+            NEXT
+        }
+    } else {
+        WHILE {
+            extreme = BIG_INT;
+            FOR {
+                const npy_DTYPE0 ai = AI(DTYPE0);
+                if (ai INTCOMP extreme) {
+                    extreme = ai;
+                }
+            }
+            YPP = extreme;
+            NEXT
+        }
     }
     BN_END_ALLOW_THREADS
     return y;
