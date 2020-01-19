@@ -386,6 +386,8 @@ init_iter3(iter3 *it, PyArrayObject *a, PyObject *y, PyObject *z, int axis) {
     }
 
 #define REDUCE_CONTIGUOUS (it.stride == 1 && ((it.ndim_m2 < 0) || (C_CONTIGUOUS(a) || F_CONTIGUOUS(a))))
+#define ONE_CONTIGUOUS (it.stride == 1 && ((it.ndim_m2 >= 0) && ((C_CONTIGUOUS(a) || F_CONTIGUOUS(a)) && (it.axis == axis))))
+#define ONE_TRANSPOSE(dtype) ((it.ndim_m2 == 0) && it.astrides[it.ndim_m2] == sizeof(dtype) && ((C_CONTIGUOUS(a) && axis == 0) || (F_CONTIGUOUS(a) && axis == 1)))
 
 #define REDUCE_SPECIALIZE(code) \
     if (REDUCE_CONTIGUOUS) { \
