@@ -1136,25 +1136,58 @@ nanmedian(PyObject *self, PyObject *args, PyObject *kwds) {
 /* anynan ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
+BN_OPT_3
 REDUCE_ALL(anynan, DTYPE0) {
-    int f = 0;
-    npy_DTYPE0 ai;
+    npy_bool f = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
-    WHILE {
-        FOR {
-            ai = AI(DTYPE0);
-            if (ai != ai) {
-                f = 1;
-                goto done;
+    if (REDUCE_CONTIGUOUS) {
+        const npy_intp LOOP_SIZE = 512 / sizeof(npy_DTYPE0);
+        const npy_intp count = it.nits * it.length;
+        const npy_intp loop_count = count / LOOP_SIZE;
+        const npy_intp residual = count % LOOP_SIZE;
+        const npy_DTYPE0* pa = PA(DTYPE0);
+        npy_bool* f_arr = malloc(LOOP_SIZE * sizeof(npy_bool));
+        for (npy_intp j=0; j < LOOP_SIZE; j++) {
+            f_arr[j] = 0;
+        }
+
+        for (npy_intp i=0; (i < loop_count) && (f == 0); i++) {
+            for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                f_arr[j] = isnan(pa[i * LOOP_SIZE + j]);
+            }
+
+            for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                f += f_arr[j];
             }
         }
-        NEXT
+        for (npy_intp j=0; (j < residual) && (f == 0); j++) {
+            const npy_DTYPE0 ai = pa[loop_count * LOOP_SIZE + j];
+            if (ai != ai) {
+                f = 1;
+            }
+        }
+        free(f_arr);
+    } else {
+        WHILE {
+            const npy_DTYPE0* pa = PA(DTYPE0);
+            FOR {
+                const npy_DTYPE0 ai = pa[it.i * it.stride];
+                if (ai != ai) {
+                    f = 1;
+                    goto done;
+                }
+            }
+            NEXT
+        }
     }
     done:
     BN_END_ALLOW_THREADS
-    if (f) Py_RETURN_TRUE;
-    Py_RETURN_FALSE;
+    if (f) {
+        Py_RETURN_TRUE;
+    } else {
+        Py_RETURN_FALSE;
+    }
 }
 
 REDUCE_ONE(anynan, DTYPE0) {
