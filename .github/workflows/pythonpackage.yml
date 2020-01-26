@@ -10,9 +10,6 @@ jobs:
       matrix:
         python-version: [3.6, 3.7, 3.8]
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        exclude:
-          - os: windows-latest
-            python-version: 3.8
 
     steps:
     - uses: actions/checkout@v1
@@ -48,6 +45,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pytest flake8 hypothesis
+    - name: Install dependencies for Py38 on Windows
+      if: startswith(runner.os, 'Windows') && matrix.python-version == 3.8
+      run: pip install Cython numpy
     - name: Build
       run: |
         python setup.py build_ext --inplace

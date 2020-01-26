@@ -116,9 +116,9 @@ replace(PyObject *self, PyObject *args, PyObject *kwds) {
 
 /* python strings -------------------------------------------------------- */
 
-PyObject *pystr_a = NULL;
-PyObject *pystr_old = NULL;
-PyObject *pystr_new = NULL;
+static PyObject *pystr_a = NULL;
+static PyObject *pystr_old = NULL;
+static PyObject *pystr_new = NULL;
 
 static int
 intern_strings(void) {
@@ -217,7 +217,9 @@ nonreducer(char *name,
     PyObject *old_obj = NULL;
     PyObject *new_obj = NULL;
 
-    if (!parse_args(args, kwds, &a_obj, &old_obj, &new_obj)) return NULL;
+    if (!parse_args(args, kwds, &a_obj, &old_obj, &new_obj)) {
+        return NULL;
+    }
 
     /* convert to array if necessary */
     if (PyArray_Check(a_obj)) {
@@ -225,8 +227,7 @@ nonreducer(char *name,
         Py_INCREF(a);
     } else {
         if (inplace) {
-            TYPE_ERR("works in place so input must be an array, "
-                     "not (e.g.) a list");
+            TYPE_ERR("works in place so input must be an array, not (e.g.) a list");
             return NULL;
         }
         a = (PyArrayObject *)PyArray_FROM_O(a_obj);
@@ -266,15 +267,22 @@ nonreducer(char *name,
 
     dtype = PyArray_TYPE(a);
 
-    if      (dtype == NPY_float64) y = nr_float64(a, old, new);
-    else if (dtype == NPY_float32) y = nr_float32(a, old, new);
-    else if (dtype == NPY_int64)   y = nr_int64(a, old, new);
-    else if (dtype == NPY_int32)   y = nr_int32(a, old, new);
-    else                           y = slow(name, args, kwds);
+    if (dtype == NPY_float64) {
+        y = nr_float64(a, old, new);
+    } else if (dtype == NPY_float32) {
+        y = nr_float32(a, old, new);
+    } else if (dtype == NPY_int64) {
+        y = nr_int64(a, old, new);
+    } else if (dtype == NPY_int32) {
+        y = nr_int32(a, old, new);
+    } else {
+        y = slow(name, args, kwds);
+    }
 
     Py_DECREF(a);
 
     return y;
+
 error:
     Py_DECREF(a);
     return NULL;
@@ -282,8 +290,7 @@ error:
 
 /* docstrings ------------------------------------------------------------- */
 
-static char nonreduce_doc[] =
-"Bottleneck nonreducing functions.";
+static char nonreduce_doc[] = "Bottleneck nonreducing functions.";
 
 static char replace_doc[] =
 /* MULTILINE STRING BEGIN
