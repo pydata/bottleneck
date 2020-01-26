@@ -1,7 +1,13 @@
 import os
+import sys
 import re
 import ast
 from typing import List, Optional, Dict, Pattern, Tuple
+
+if sys.platform.startswith("win"):
+    import ntpath as path
+else:
+    import posixpath as path
 
 
 def make_c_files(
@@ -10,10 +16,10 @@ def make_c_files(
     if modules is None:
         modules = ["reduce", "move", "nonreduce", "nonreduce_axis"]
     if dirpath is None:
-        dirpath = os.path.dirname(__file__)
+        dirpath = path.dirname(__file__)
     for module in modules:
-        template_file = os.path.join(dirpath, module + "_template.c")
-        target_file = os.path.join(dirpath, module + ".c")
+        template_file = path.join(dirpath, module + "_template.c")
+        target_file = path.join(dirpath, module + ".c")
 
         if (
             os.path.exists(target_file)

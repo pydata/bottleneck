@@ -227,8 +227,7 @@ nonreducer(char *name,
         Py_INCREF(a);
     } else {
         if (inplace) {
-            TYPE_ERR("works in place so input must be an array, "
-                     "not (e.g.) a list");
+            TYPE_ERR("works in place so input must be an array, not (e.g.) a list");
             return NULL;
         }
         a = (PyArrayObject *)PyArray_FROM_O(a_obj);
