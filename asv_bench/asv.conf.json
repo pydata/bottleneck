@@ -89,8 +89,8 @@
 	    "numpy": ["1.16"],
 	},
 	"env": {
-	    "CC": ["gcc"],
-	    "CXX": ["g++"],
+	    "CC": ["gcc-9"],
+	    "CXX": ["g++-9"],
 	}
     },
 
@@ -133,8 +133,28 @@
 		"numpy": "1.16",
 	    },
 	    "env": {
-		"CC": "clang",
-		"CXX": "clang++",
+		"CC": "clang-9",
+		"CXX": "clang++-9",
+	    },
+	    "python": "3.7"
+	},
+        {
+	    "req": {
+		"numpy": "1.16",
+	    },
+	    "env": {
+		"CC": "gcc-7",
+		"CXX": "g++-7",
+	    },
+	    "python": "3.7"
+	},
+        {
+	    "req": {
+		"numpy": "1.16",
+	    },
+	    "env": {
+		"CC": "gcc-8",
+		"CXX": "g++-8",
 	    },
 	    "python": "3.7"
 	}
