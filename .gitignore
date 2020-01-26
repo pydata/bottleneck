@@ -9,3 +9,9 @@ MANIFEST
 .*.swp
 *~
 \#*#
+.eggs
+.hypothesis
+.mypy_cache
+**/env
+**/*results
+**/html
