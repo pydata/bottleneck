@@ -1,5 +1,6 @@
 from ..src.bn_template import make_c_files
 import os
+import posixpath as path
 
 
 def test_make_c_files():
@@ -16,7 +17,7 @@ def test_make_c_files():
 
     with open(os.path.join(dirpath, "test.c")) as f:
         test = f.read()
-    test = test.replace(dirpath, "{DIRPATH}/")
+    test = test.replace(path.relpath(dirpath), "{DIRPATH}")
 
     assert truth == test
 

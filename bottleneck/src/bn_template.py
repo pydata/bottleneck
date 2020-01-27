@@ -2,6 +2,7 @@ import os
 import re
 import ast
 from typing import List, Optional, Dict, Pattern, Tuple
+import posixpath as path
 
 
 def make_c_files(
@@ -13,6 +14,7 @@ def make_c_files(
         dirpath = os.path.dirname(__file__)
     for module in modules:
         template_file = os.path.join(dirpath, module + "_template.c")
+        posix_template = path.relpath(path.join(dirpath, module + "_template.c"))
         target_file = os.path.join(dirpath, module + ".c")
 
         if (
@@ -23,7 +25,7 @@ def make_c_files(
 
         with open(template_file, "r") as f:
             src_str = f.read()
-        src_str = '#line 1 "{}"\n'.format(template_file) + template(src_str)
+        src_str = '#line 1 "{}"\n'.format(posix_template) + template(src_str)
         if len(src_str) and src_str[-1] != "\n":
             src_str += "\n"
         with open(target_file, "w") as f:
