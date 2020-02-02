@@ -728,6 +728,31 @@ REDUCE_MAIN(NAME, 0)
 /* repeat end */
 
 
+static inline npy_intp c_to_f_index(npy_intp* shape, npy_intp n_dims, npy_intp c_index) {
+    npy_intp* index_arr = malloc(sizeof(npy_intp) * n_dims);
+    npy_intp* weight_arr = malloc(sizeof(npy_intp) * n_dims);
+
+    npy_intp prior = 1;
+    for (npy_intp i=0; i < n_dims; i++) {
+        index_arr[i] = (c_index / prior) % shape[i];
+        prior *= shape[i];
+        weight_arr[i] = 1;
+    }
+    for (npy_intp i=1; i < n_dims; i++) {
+        for (npy_intp j=0; j < i; j++) {
+            weight_arr[j] *= shape[i];
+        }
+    }
+    npy_intp result = 0;
+    for (npy_intp i=0; i < n_dims; i++) {
+        result += weight_arr[i] * index_arr[i];
+    }
+    free(index_arr);
+    free(weight_arr);
+    return result;
+}
+
+
 /* nanargmin, nanargmax -------------------------------------------------- */
 
 /* repeat = {'NAME':      ['nanargmin',      'nanargmax'],
@@ -736,13 +761,13 @@ REDUCE_MAIN(NAME, 0)
              'BIG_FLOAT': ['BN_INFINITY',    '-BN_INFINITY'],
              'BIG_INT':   ['NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0']} */
 /* dtype = [['float64'], ['float32']] */
+BN_OPT_3
 REDUCE_ALL(NAME, DTYPE0) {
     npy_DTYPE0 ai, extreme = BIG_FLOAT;
     int allnan = 1;
     Py_ssize_t idx = 0;
-    INIT_ALL_RAVEL
+    INIT_ALL
     if (SIZE == 0) {
-        DECREF_INIT_ALL_RAVEL
         VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
                   "So Bottleneck too.");
         return NULL;
@@ -757,15 +782,18 @@ REDUCE_ALL(NAME, DTYPE0) {
         }
     }
     BN_END_ALLOW_THREADS
-    DECREF_INIT_ALL_RAVEL
     if (allnan) {
         VALUE_ERR("All-NaN slice encountered");
         return NULL;
     } else {
+        if (F_CONTIGUOUS(a)) {
+            idx = c_to_f_index(PyArray_SHAPE(a), PyArray_NDIM(a), idx);
+        }
         return PyLong_FromLongLong(idx);
     }
 }
 
+BN_OPT_3
 REDUCE_ONE(NAME, DTYPE0) {
     int allnan, err_code = 0;
     Py_ssize_t idx = 0;
@@ -809,7 +837,7 @@ BN_OPT_3
 REDUCE_ALL(NAME, DTYPE0) {
     npy_DTYPE1 idx = 0;
     npy_DTYPE0 ai, extreme = BIG_INT;
-    INIT_ALL_RAVEL
+    INIT_ALL
     if (SIZE == 0) {
         DECREF_INIT_ALL_RAVEL
         VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
@@ -825,8 +853,10 @@ REDUCE_ALL(NAME, DTYPE0) {
             idx = INDEX;
         }
     }
+    if (F_CONTIGUOUS(a)) {
+        idx = c_to_f_index(PyArray_SHAPE(a), PyArray_NDIM(a), idx);
+    }
     BN_END_ALLOW_THREADS
-    DECREF_INIT_ALL_RAVEL
     return PyLong_FromLongLong(idx);
 }
 
