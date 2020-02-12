@@ -18,6 +18,13 @@ jobs:
                PYTHON_ARCH="64"
                TEST_RUN="style"
 
+        - os: linux
+          arch: arm64
+          env: TEST_DEPS="flake8 black"
+               PYTHON_VERSION="3.7"
+               PYTHON_ARCH="64"
+               TEST_RUN="style"
+
          # doc check
         - os: linux
           env: TEST_DEPS="sphinx numpydoc gitpython pytest hypothesis"
@@ -25,8 +32,22 @@ jobs:
                PYTHON_ARCH="64"
                TEST_RUN="doc"
 
+        - os: linux
+          arch: arm64
+          env: TEST_DEPS="sphinx numpy numpydoc gitpython pytest hypothesis"
+               PYTHON_VERSION="3.7"
+               PYTHON_ARCH="64"
+               TEST_RUN="doc"
+
         # coverage
         - os: linux
+          env: TEST_DEPS="numpy pytest pytest-cov hypothesis"
+               PYTHON_VERSION="3.7"
+               PYTHON_ARCH="64"
+               TEST_RUN="coverage"
+
+        - os: linux
+          arch: arm64
           env: TEST_DEPS="numpy pytest pytest-cov hypothesis"
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
@@ -40,6 +61,12 @@ jobs:
 
          # python 3.7
         - os: linux
+          env: TEST_DEPS="numpy pytest hypothesis"
+               PYTHON_VERSION="3.7"
+               PYTHON_ARCH="64"
+
+        - os: linux
+          arch: arm64
           env: TEST_DEPS="numpy pytest hypothesis"
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
