@@ -11,15 +11,9 @@ git:
 jobs:
     fast_finish: true
     include:
+        - stage: style
         # flake8 and black
-        - os: linux
-          env: TEST_DEPS="flake8 black"
-               PYTHON_VERSION="3.7"
-               PYTHON_ARCH="64"
-               TEST_RUN="style"
-
-        - os: linux
-          arch: arm64
+          os: linux
           env: TEST_DEPS="flake8 black"
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
@@ -32,26 +26,14 @@ jobs:
                PYTHON_ARCH="64"
                TEST_RUN="doc"
 
-        - os: linux
-          arch: arm64
-          env: TEST_DEPS="sphinx numpy numpydoc gitpython pytest hypothesis"
-               PYTHON_VERSION="3.7"
-               PYTHON_ARCH="64"
-               TEST_RUN="doc"
-
+        - stage: test
         # coverage
-        - os: linux
+          os: linux
           env: TEST_DEPS="numpy pytest pytest-cov hypothesis"
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
                TEST_RUN="coverage"
 
-        - os: linux
-          arch: arm64
-          env: TEST_DEPS="numpy pytest pytest-cov hypothesis"
-               PYTHON_VERSION="3.7"
-               PYTHON_ARCH="64"
-               TEST_RUN="coverage"
 
          # python 3.6
         - os: linux
