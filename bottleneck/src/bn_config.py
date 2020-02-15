@@ -5,6 +5,7 @@ import os
 import sys
 import textwrap
 from typing import List
+from distutils.command.config import config as Config
 
 
 OPTIONAL_FUNCTION_ATTRIBUTES = [
@@ -33,7 +34,7 @@ def get_python_header_include() -> List[str]:
     return results
 
 
-def _get_compiler_list(cmd):
+def _get_compiler_list(cmd: Config) -> str:
     """ Return the compiler command as a list of strings. Distutils provides a
     wildly inconsistent API here:
       - UnixCCompiler returns a list
@@ -49,17 +50,16 @@ def _get_compiler_list(cmd):
     return compiler
 
 
-def is_gcc(cmd):
+def is_gcc(cmd: Config) -> bool:
     return any("gcc" in x for x in _get_compiler_list(cmd))
 
 
-def is_clang(cmd):
+def is_clang(cmd: Config) -> bool:
     return any("clang" in x for x in _get_compiler_list(cmd))
 
 
-def check_inline(cmd):
+def check_inline(cmd: Config) -> str:
     """Return the inline identifier (may be empty)."""
-    cmd._check_compiler()
     body = textwrap.dedent(
         """
         #ifndef __cplusplus
@@ -88,9 +88,8 @@ def check_inline(cmd):
     return ""
 
 
-def check_gcc_function_attribute(cmd, attribute, name):
+def check_gcc_function_attribute(cmd: Config, attribute: str, name: str) -> bool:
     """Return True if the given function attribute is supported."""
-    cmd._check_compiler()
     if is_gcc(cmd):
         pragma = '#pragma GCC diagnostic error "-Wattributes"'
     elif is_clang(cmd):
@@ -119,11 +118,11 @@ def check_gcc_function_attribute(cmd, attribute, name):
         return False
 
 
-def check_gcc_header(cmd, header):
+def check_gcc_header(cmd: Config, header: str) -> bool:
     return cmd.check_header(header, include_dirs=get_python_header_include(),)
 
 
-def check_gcc_intrinsic(cmd, intrinsic, value) -> bool:
+def check_gcc_intrinsic(cmd: Config, intrinsic: str, value: str) -> bool:
     """Return True if the given intrinsic is supported."""
     body = (
         textwrap.dedent(
@@ -146,7 +145,7 @@ def check_gcc_intrinsic(cmd, intrinsic, value) -> bool:
         return False
 
 
-def create_config_h(config):
+def create_config_h(config: Config) -> None:
     dirname = os.path.dirname(__file__)
     config_h = os.path.join(dirname, "bn_config.h")
 
