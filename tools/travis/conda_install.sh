@@ -14,25 +14,15 @@ export TEST_NAME
 # split dependencies into separate packages
 IFS=" " TEST_DEPS=(${TEST_DEPS})
 echo "Creating environment '${TEST_NAME}'..."
-if [ `uname -m` == 'aarch64' ]; then
-    sudo conda create -q -n "${TEST_NAME}" python="${PYTHON_VERSION}" "${TEST_DEPS[@]}"
-else
-    conda create -q -n "${TEST_NAME}" python="${PYTHON_VERSION}" "${TEST_DEPS[@]}"
-fi
+conda create -q -n "${TEST_NAME}" python="${PYTHON_VERSION}" "${TEST_DEPS[@]}"
+
 
 set +v # we dont want to see commands in the conda script
 
-if [ `uname -m` == 'aarch64' ]; then
-    source activate "${TEST_NAME}"
-    sudo conda update pip
-    sudo conda info -a
-    sudo conda list
-else
-    source activate "${TEST_NAME}"
-    conda update pip
-    conda info -a
-    conda list
-fi
+source activate "${TEST_NAME}"
+conda update pip
+conda info -a
+conda list
 
 if [ -n "${PIP_DEPS}" ]; then
     pip install --upgrade pip
