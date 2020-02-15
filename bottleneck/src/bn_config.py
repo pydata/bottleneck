@@ -8,6 +8,12 @@ OPTIONAL_FUNCTION_ATTRIBUTES = [
     ("HAVE_ATTRIBUTE_OPTIMIZE_OPT_3", '__attribute__((optimize("O3")))')
 ]
 
+OPTIONAL_INTRINSICS = [
+    ("HAVE___BUILTIN_ISNAN", "__builtin_isnan", "0."),
+    ("HAVE_ISNAN", "isnan", "0."),
+    ("HAVE__ISNAN", "_isnan", "0."),
+]
+
 
 def _get_compiler_list(cmd):
     """ Return the compiler command as a list of strings. Distutils provides a
@@ -89,7 +95,33 @@ def check_gcc_function_attribute(cmd, attribute, name):
         )
         % (pragma, attribute, name)
     )
-    return cmd.try_compile(body, None, None) != 0
+    if cmd.try_compile(body, None, None):
+        return True
+    else:
+        return False
+
+
+def check_gcc_intrinsic(cmd, intrinsic, value) -> bool:
+    """Return True if the given intrinsic is supported."""
+    body = (
+        textwrap.dedent(
+            """
+        int check(void) {
+            return %s(%s);
+        }
+
+        int main(void)
+        {
+            return check();
+        }
+        """
+        )
+        % (intrinsic, value)
+    )
+    if cmd.try_link(body, headers=["math.h"]):
+        return True
+    else:
+        return False
 
 
 def create_config_h(config):
@@ -106,6 +138,12 @@ def create_config_h(config):
 
     for config_attr, func_attr in OPTIONAL_FUNCTION_ATTRIBUTES:
         if check_gcc_function_attribute(config, func_attr, config_attr.lower()):
+            output.append((config_attr, "1"))
+        else:
+            output.append((config_attr, "0"))
+
+    for config_attr, intrinsic, value in OPTIONAL_INTRINSICS:
+        if check_gcc_intrinsic(config, intrinsic, value):
             output.append((config_attr, "1"))
         else:
             output.append((config_attr, "0"))

@@ -91,7 +91,9 @@ REDUCE_ALL(nansum, DTYPE0) {
     WHILE {
         FOR {
             ai = AI(DTYPE0);
-            if (ai == ai) asum += ai;
+            if (!bn_isnan(ai)) {
+                asum += ai;
+            }
         }
         NEXT
     }
@@ -110,7 +112,9 @@ REDUCE_ONE(nansum, DTYPE0) {
             asum = 0;
             FOR {
                 ai = AI(DTYPE0);
-                if (ai == ai) asum += ai;
+                if (!bn_isnan(ai)) {
+                    asum += ai;
+                }
             }
             YPP = asum;
             NEXT
@@ -182,7 +186,7 @@ REDUCE_ALL(nanmean, DTYPE0) {
     WHILE {
         FOR {
             ai = AI(DTYPE0);
-            if (ai == ai) {
+            if (!bn_isnan(ai)) {
                 asum += ai;
                 count += 1;
             }
@@ -210,7 +214,7 @@ REDUCE_ONE(nanmean, DTYPE0) {
             asum = 0;
             FOR {
                 ai = AI(DTYPE0);
-                if (ai == ai) {
+                if (!bn_isnan(ai)) {
                     asum += ai;
                     count += 1;
                 }
@@ -288,7 +292,7 @@ REDUCE_ALL(NAME, DTYPE0) {
     WHILE {
         FOR {
             ai = AI(DTYPE0);
-            if (ai == ai) {
+            if (!bn_isnan(ai)) {
                 asum += ai;
                 count++;
             }
@@ -302,7 +306,7 @@ REDUCE_ALL(NAME, DTYPE0) {
         WHILE {
             FOR {
                 ai = AI(DTYPE0);
-                if (ai == ai) {
+                if (!bn_isnan(ai)) {
                     ai -= amean;
                     asum += ai * ai;
                 }
@@ -330,7 +334,7 @@ REDUCE_ONE(NAME, DTYPE0) {
             asum = 0;
             FOR {
                 ai = AI(DTYPE0);
-                if (ai == ai) {
+                if (!bn_isnan(ai)) {
                     asum += ai;
                     count++;
                 }
@@ -340,7 +344,7 @@ REDUCE_ONE(NAME, DTYPE0) {
                 asum = 0;
                 FOR {
                     ai = AI(DTYPE0);
-                    if (ai == ai) {
+                    if (!bn_isnan(ai)) {
                         ai -= amean;
                         asum += ai * ai;
                     }
@@ -966,7 +970,7 @@ REDUCE_MAIN(ss, 0)
     l = 0; \
     for (i = 0; i < LENGTH; i++) { \
         ai = AX(dtype, i); \
-        if (ai == ai) { \
+        if (!bn_isnan(ai)) { \
             B(dtype, l++) = ai; \
         } else { \
             break; \
@@ -1007,7 +1011,7 @@ REDUCE_MAIN(ss, 0)
     l = 0; \
     for (i = 0; i < LENGTH; i++) { \
         ai = AX(dtype, i); \
-        if (ai == ai) { \
+        if (!bn_isnan(ai)) { \
             B(dtype, l++) = ai; \
         } \
     } \
@@ -1154,7 +1158,7 @@ REDUCE_ALL(anynan, DTYPE0) {
 
         for (npy_intp i=0; (i < loop_count) && (f == 0); i++) {
             for (npy_intp j=0; j < LOOP_SIZE; j++) {
-                f_arr[j] = isnan(pa[i * LOOP_SIZE + j]);
+                f_arr[j] = bn_isnan(pa[i * LOOP_SIZE + j]);
             }
 
             for (npy_intp j=0; j < LOOP_SIZE; j++) {
@@ -1163,7 +1167,7 @@ REDUCE_ALL(anynan, DTYPE0) {
         }
         for (npy_intp j=0; (j < residual) && (f == 0); j++) {
             const npy_DTYPE0 ai = pa[loop_count * LOOP_SIZE + j];
-            if (ai != ai) {
+            if (bn_isnan(ai)) {
                 f = 1;
             }
         }
@@ -1173,7 +1177,7 @@ REDUCE_ALL(anynan, DTYPE0) {
             const npy_DTYPE0* pa = PA(DTYPE0);
             FOR {
                 const npy_DTYPE0 ai = pa[it.i * it.stride];
-                if (ai != ai) {
+                if (bn_isnan(ai)) {
                     f = 1;
                     goto done;
                 }
@@ -1202,7 +1206,7 @@ REDUCE_ONE(anynan, DTYPE0) {
             f = 0;
             FOR {
                 ai = AI(DTYPE0);
-                if (ai != ai) {
+                if (bn_isnan(ai)) {
                     f = 1;
                     break;
                 }
@@ -1257,7 +1261,7 @@ REDUCE_ALL(allnan, DTYPE0) {
 
         for (npy_intp i=0; (i < loop_count) && (f == 0); i++) {
             for (npy_intp j=0; j < LOOP_SIZE; j++) {
-                f_arr[j] = !isnan(pa[i * LOOP_SIZE + j]);
+                f_arr[j] = !bn_isnan(pa[i * LOOP_SIZE + j]);
             }
 
             for (npy_intp j=0; j < LOOP_SIZE; j++) {
@@ -1266,7 +1270,7 @@ REDUCE_ALL(allnan, DTYPE0) {
         }
         for (npy_intp j=0; (j < residual) && (f == 0); j++) {
             const npy_DTYPE0 ai = pa[loop_count * LOOP_SIZE + j];
-            if (ai == ai) {
+            if (!bn_isnan(ai)) {
                 f = 1;
             }
         }
@@ -1275,7 +1279,7 @@ REDUCE_ALL(allnan, DTYPE0) {
         WHILE {
             FOR {
                 ai = AI(DTYPE0);
-                if (ai == ai) {
+                if (!bn_isnan(ai)) {
                     f = 1;
                     goto done;
                 }
@@ -1304,7 +1308,7 @@ REDUCE_ONE(allnan, DTYPE0) {
             f = 1;
             FOR {
                 ai = AI(DTYPE0);
-                if (ai == ai) {
+                if (!bn_isnan(ai)) {
                     f = 0;
                     break;
                 }

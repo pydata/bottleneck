@@ -357,7 +357,7 @@ NRA(push, DTYPE0) {
         ai_last = BN_NAN;
         FOR {
             ai = AI(DTYPE0);
-            if (ai == ai) {
+            if (!bn_isnan(ai)) {
                 ai_last = ai;
                 index = INDEX;
             } else {

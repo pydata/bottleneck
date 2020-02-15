@@ -81,7 +81,7 @@ MOVE(move_sum, DTYPE0) {
         asum = count = 0;
         WHILE0 {
             ai = AI(DTYPE0);
-            if (ai == ai) {
+            if (!bn_isnan(ai)) {
                 asum += ai;
                 count += 1;
             }
@@ -89,7 +89,7 @@ MOVE(move_sum, DTYPE0) {
         }
         WHILE1 {
             ai = AI(DTYPE0);
-            if (ai == ai) {
+            if (!bn_isnan(ai)) {
                 asum += ai;
                 count += 1;
             }
@@ -98,7 +98,7 @@ MOVE(move_sum, DTYPE0) {
         WHILE2 {
             ai = AI(DTYPE0);
             aold = AOLD(DTYPE0);
-            if (ai == ai) {
+            if (!bn_isnan(ai)) {
                 if (aold == aold) {
                     asum += ai - aold;
                 } else {
@@ -163,7 +163,7 @@ MOVE(move_mean, DTYPE0) {
         asum = count = 0;
         WHILE0 {
             ai = AI(DTYPE0);
-            if (ai == ai) {
+            if (!bn_isnan(ai)) {
                 asum += ai;
                 count += 1;
             }
@@ -171,7 +171,7 @@ MOVE(move_mean, DTYPE0) {
         }
         WHILE1 {
             ai = AI(DTYPE0);
-            if (ai == ai) {
+            if (!bn_isnan(ai)) {
                 asum += ai;
                 count += 1;
             }
@@ -181,7 +181,7 @@ MOVE(move_mean, DTYPE0) {
         WHILE2 {
             ai = AI(DTYPE0);
             aold = AOLD(DTYPE0);
-            if (ai == ai) {
+            if (!bn_isnan(ai)) {
                 if (aold == aold) {
                     asum += ai - aold;
                 } else {
@@ -251,7 +251,7 @@ MOVE(NAME, DTYPE0) {
         amean = assqdm = count = 0;
         WHILE0 {
             ai = AI(DTYPE0);
-            if (ai == ai) {
+            if (!bn_isnan(ai)) {
                 count += 1;
                 delta = ai - amean;
                 amean += delta / count;
@@ -261,7 +261,7 @@ MOVE(NAME, DTYPE0) {
         }
         WHILE1 {
             ai = AI(DTYPE0);
-            if (ai == ai) {
+            if (!bn_isnan(ai)) {
                 count += 1;
                 delta = ai - amean;
                 amean += delta / count;
@@ -282,8 +282,8 @@ MOVE(NAME, DTYPE0) {
         WHILE2 {
             ai = AI(DTYPE0);
             aold = AOLD(DTYPE0);
-            if (ai == ai) {
-                if (aold == aold) {
+            if (!bn_isnan(ai)) {
+                if (!bn_isnan(aold)) {
                     delta = ai - aold;
                     aold -= amean;
                     amean += delta * count_inv;
@@ -298,7 +298,7 @@ MOVE(NAME, DTYPE0) {
                     assqdm += delta * (ai - amean);
                 }
             } else {
-                if (aold == aold) {
+                if (!bn_isnan(aold)) {
                     count--;
                     count_inv = 1.0 / count;
                     ddof_inv = 1.0 / (count - ddof);
@@ -387,7 +387,7 @@ MOVE_MAIN(NAME, 1)
 
 #define MACRO_FLOAT(dtype, yi, code) \
     ai = AI(dtype); \
-    if (ai == ai) { \
+    if (!bn_isnan(ai)) { \
         count++; \
     } else { \
         ai = BIG_FLOAT; \
@@ -463,7 +463,7 @@ MOVE(NAME, DTYPE0) {
         last = ring;
         extreme_pair = ring;
         ai = A0(DTYPE0);
-        extreme_pair->value = ai == ai ? ai : BIG_FLOAT;
+        extreme_pair->value = !bn_isnan(ai) ? ai : BIG_FLOAT;
         extreme_pair->death = window;
         WHILE0 {
             MACRO_FLOAT(DTYPE0,
@@ -626,14 +626,14 @@ MOVE_MAIN(move_median, 0)
     npy_##dtype0 ai, aj; \
     npy_##dtype1 g, e, n, r; \
     ai = AI(dtype0); \
-    if (ai == ai) { \
+    if (!bn_isnan(ai)) { \
         g = 0; \
         e = 1; \
         n = 1; \
         r = 0; \
         for (j = limit; j < INDEX; j++) { \
             aj = AX(dtype0, j); \
-            if (aj == aj) { \
+            if (!bn_isnan(aj)) { \
                 n++; \
                 if (ai > aj) { \
                     g += 2; \
