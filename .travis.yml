@@ -53,6 +53,12 @@ jobs:
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
 
+        - os: linux
+          arch: ppc64le
+          env: TEST_DEPS="numpy pytest hypothesis"
+               PYTHON_VERSION="3.7"
+               PYTHON_ARCH="64"
+
          # python 3.8 conda numpy
         - os: linux
           env: TEST_DEPS="pytest hypothesis"

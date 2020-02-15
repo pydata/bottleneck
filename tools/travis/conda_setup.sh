@@ -21,7 +21,12 @@ fi
 if [ `uname -m` == 'aarch64' ]; then
     URL="${ARCHICONDA_URL}/build-tools/releases/download/0.2.2/Archiconda3-0.2.2-Linux-aarch64.sh"
 elif [ "${PYTHON_ARCH}" == "64" ]; then
-    URL="${CONDA_URL}/${CONDA}-latest-${CONDA_OS}-x86_64.sh"
+    if [ "${TRAVIS_CPU_ARCH}" == "amd64" ]; then
+        ARCH="x86_64"
+    else
+        ARCH="${TRAVIS_CPU_ARCH}"
+    fi
+    URL="${CONDA_URL}/${CONDA}-latest-${CONDA_OS}-${ARCH}.sh"
 else
     URL="${CONDA_URL}/${CONDA}-latest-${CONDA_OS}-x86.sh"
 fi
