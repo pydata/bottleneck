@@ -46,11 +46,21 @@
 #define MEMORY_ERR(text)  PyErr_SetString(PyExc_MemoryError, text)
 #define RUNTIME_ERR(text) PyErr_SetString(PyExc_RuntimeError, text)
 
-/* `inline` and `opt_3` copied from NumPy. */
+/* `inline`, `opt_3`, and isnan copied from NumPy. */
 #if HAVE_ATTRIBUTE_OPTIMIZE_OPT_3
     #define BN_OPT_3 __attribute__((optimize("O3")))
 #else
     #define BN_OPT_3
+#endif
+
+#if HAVE___BUILTIN_ISNAN
+    #define bn_isnan(x) __builtin_isnan(x)
+#elif HAVE_ISNAN
+    #define bn_isnan(x) isnan(x)
+#elif HAVE__ISNAN
+    #define bn_isnan(x) _isnan(x)
+#else
+    #define bn_isnan(x) ((x) != (x))
 #endif
 
 /*
