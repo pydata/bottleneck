@@ -3,29 +3,38 @@
 set -ev # exit on first error, print commands
 
 CONDA_URL="http://repo.continuum.io/miniconda"
-ARCHICONDA_URL="https://github.com/Archiconda"
+MINIFORGE_URL="https://github.com/conda-forge/miniforge/"
+MINIFORGE_VERSION="4.8.2-1"
 
-if [ `uname -m` == 'aarch64' ]; then
-    MINICONDA_DIR="$HOME/archiconda3"
-    IS_SUDO="sudo"
-elif [ "${PYTHON_VERSION:0:1}" == "2" ]; then
-    CONDA="Miniconda2"
+if [ "${TRAVIS_CPU_ARCH}" == "amd64" ]; then
+    ARCH="x86_64"
+elif [ "${TRAVIS_CPU_ARCH}" == "arm64" ]; then
+    ARCH="aarch64"
 else
-    CONDA="Miniconda3"
+    ARCH="${TRAVIS_CPU_ARCH}"
 fi
+
+if [ "${ARCH}" == "aarch64" ]; then
+    CONDA="Miniforge"
+else
+    CONDA="Miniconda"
+fi
+
+if [ "${PYTHON_VERSION:0:1}" == "2" ]; then
+    CONDA="${CONDA}2"
+else
+    CONDA="${CONDA}3"
+fi
+
 if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
     CONDA_OS="MacOSX"
 else
     CONDA_OS="Linux"
 fi
-if [ `uname -m` == 'aarch64' ]; then
-    URL="${ARCHICONDA_URL}/build-tools/releases/download/0.2.2/Archiconda3-0.2.2-Linux-aarch64.sh"
+
+if [ "${ARCH}" == "aarch64" ]; then
+    URL="${MINIFORGE_URL}/releases/download/${MINIFORGE_VERSION}/${CONDA}-${MINIFORGE_VERSION}-${CONDA_OS}-${ARCH}.sh"
 elif [ "${PYTHON_ARCH}" == "64" ]; then
-    if [ "${TRAVIS_CPU_ARCH}" == "amd64" ]; then
-        ARCH="x86_64"
-    else
-        ARCH="${TRAVIS_CPU_ARCH}"
-    fi
     URL="${CONDA_URL}/${CONDA}-latest-${CONDA_OS}-${ARCH}.sh"
 else
     URL="${CONDA_URL}/${CONDA}-latest-${CONDA_OS}-x86.sh"
@@ -33,31 +42,15 @@ fi
 echo "Downloading '${URL}'..."
 
 set +e
-if [ `uname -m` == 'aarch64' ]; then
-    travis_retry wget "${URL}" -O archiconda.sh
-else
-    travis_retry wget "${URL}" -O miniconda.sh
-fi
+travis_retry wget "${URL}" -O installer.sh
 set -e
 
-if [ `uname -m` == 'aarch64' ]; then
-    chmod +x archiconda.sh
-    $IS_SUDO apt-get install python-dev
-    $IS_SUDO apt-get install python3-pip
-    bash archiconda.sh -b -p $HOME/miniconda;
-    $IS_SUDO chmod -R 777 /home/travis/.cache/pip
-    $IS_SUDO cp -r $HOME/miniconda/bin/* /usr/bin/;
-    $IS_SUDO rm /usr/bin/lsb_release
-else
-    chmod +x miniconda.sh
-    ./miniconda.sh -b -p "${HOME}/miniconda"
-fi
+
+chmod +x installer.sh
+./installer.sh -b -p "${HOME}/miniconda"
+
 export PATH="${HOME}/miniconda/bin:${PATH}"
 hash -r
-if [ `uname -m` == 'aarch64' ]; then
-    $IS_SUDO conda config --set always_yes yes --set changeps1 no
-    $IS_SUDO conda update -n base conda
-else
-    conda config --set always_yes yes --set changeps1 no
-    conda update -q conda
-fi
+
+conda config --set always_yes yes --set changeps1 no
+conda update -q conda
