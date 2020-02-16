@@ -19,6 +19,12 @@ from hypothesis.extra.numpy import (
 )
 
 
+hy_array_gen = hy_arrays(
+    dtype=one_of(integer_dtypes(sizes=(32, 64)), floating_dtypes(sizes=(32, 64))),
+    shape=array_shapes(),
+)
+
+
 def _hypothesis_helper(func, array, skip_all_nans=False):
     slow_func = eval("bn.slow.%s" % func.__name__)
     ndim = array.ndim
@@ -57,23 +63,15 @@ def _hypothesis_helper(func, array, skip_all_nans=False):
 @pytest.mark.parametrize(
     "func", (bn.nanmin, bn.nanmax, bn.anynan, bn.allnan), ids=lambda x: x.__name__
 )
-@hypothesis.given(
-    array=hy_arrays(
-        dtype=one_of(integer_dtypes(sizes=(32, 64)), floating_dtypes(sizes=(32, 64))),
-        shape=array_shapes(),
-    )
-)
+@hypothesis.given(array=hy_array_gen)
+@hypothesis.settings(max_examples=500)
 def test_reduce_hypothesis(func, array):
     _hypothesis_helper(func, array)
 
 
 @pytest.mark.parametrize("func", (bn.nanargmin, bn.nanargmax), ids=lambda x: x.__name__)
-@hypothesis.given(
-    array=hy_arrays(
-        dtype=one_of(integer_dtypes(sizes=(32, 64)), floating_dtypes(sizes=(32, 64))),
-        shape=array_shapes(),
-    )
-)
+@hypothesis.given(array=hy_array_gen)
+@hypothesis.settings(max_examples=500)
 def test_reduce_hypothesis_errata(func, array):
     _hypothesis_helper(func, array, skip_all_nans=True)
 
