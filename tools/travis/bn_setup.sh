@@ -19,10 +19,9 @@ else
         pip install "${ARCHIVE[0]}"
     elif [ "${TEST_RUN}" != "coverage" ]; then
         # CFLAGS gets ignored by PEP 518, so do coverage from inplace build
-        pip install --upgrade --user pip
-        pip install --user "."
+        pip install "."
     fi
-    python setup.py build_ext --user --inplace
+    python setup.py build_ext --inplace
     if [ "${TEST_RUN}" == "doc" ]; then
         make doc
     elif [ "${TEST_RUN}" == "coverage" ]; then

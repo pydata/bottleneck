@@ -3,6 +3,12 @@
 #include "bottleneck.h"
 #include "iterators.h"
 
+#ifdef _MSC_VER
+    #include "intrin.h"
+#elif HAVE_SSE2
+    #include "x86intrin.h"
+#endif
+
 /* init macros ----------------------------------------------------------- */
 
 #define INIT_ALL \
@@ -1137,6 +1143,40 @@ nanmedian(PyObject *self, PyObject *args, PyObject *kwds) {
                    0);
 }
 
+/* SSE2 anynan/allnan ---------------------------------------------------- */
+
+#if HAVE_SSE2
+
+int inline sse2_allnan_float64(const npy_float64* pa) {
+    __m128d values = _mm_load_pd(pa);
+    __m128d result = _mm_cmpneq_pd(values, values);
+    /* If a value is NaN, a bit gets set to 1. As 2 64-bit floats fit in a
+       128-bit vector, 11 = 3 */
+    return _mm_movemask_pd(result) != 3;
+}
+
+int inline sse2_allnan_float32(const npy_float32* pa) {
+    __m128 values = _mm_load_ps(pa);
+    __m128 result = _mm_cmpneq_ps(values, values);
+    /* If a value is NaN, a bit gets set to 1. As 4 32-bit floats fit in a
+       128-bit vector, 1111 = 15 */
+    return _mm_movemask_ps(result) != 15;
+}
+
+int inline sse2_anynan_float64(const npy_float64* pa) {
+    __m128d values = _mm_load_pd(pa);
+    __m128d result = _mm_cmpneq_pd(values, values);
+    return _mm_movemask_pd(result) > 0;
+}
+
+int inline sse2_anynan_float32(const npy_float32* pa) {
+    __m128 values = _mm_load_ps(pa);
+    __m128 result = _mm_cmpneq_ps(values, values);
+    return _mm_movemask_ps(result) > 0;
+}
+
+#endif
+
 /* anynan ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
@@ -1146,32 +1186,49 @@ REDUCE_ALL(anynan, DTYPE0) {
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     if (REDUCE_CONTIGUOUS) {
-        const npy_intp LOOP_SIZE = 512 / sizeof(npy_DTYPE0);
-        const npy_intp count = it.nits * it.length;
-        const npy_intp loop_count = count / LOOP_SIZE;
-        const npy_intp residual = count % LOOP_SIZE;
+        const int VECTOR_ALIGN = 16;
         const npy_DTYPE0* pa = PA(DTYPE0);
-        npy_bool* f_arr = malloc(LOOP_SIZE * sizeof(npy_bool));
-        for (npy_intp j=0; j < LOOP_SIZE; j++) {
-            f_arr[j] = 0;
-        }
+        const npy_intp count = it.nits * it.length;
+        npy_intp vector_offset = (((npy_intp) pa) % VECTOR_ALIGN);
+        vector_offset = vector_offset > 0 ? VECTOR_ALIGN - vector_offset : 0;
+        vector_offset /= sizeof(npy_DTYPE0);
+        vector_offset = vector_offset <= count ? vector_offset : count;
 
-        for (npy_intp i=0; (i < loop_count) && (f == 0); i++) {
-            for (npy_intp j=0; j < LOOP_SIZE; j++) {
-                f_arr[j] = bn_isnan(pa[i * LOOP_SIZE + j]);
-            }
+        const npy_intp LOOP_SIZE = 16 / sizeof(npy_DTYPE0);
+        const npy_intp loop_count = (count - vector_offset) / LOOP_SIZE;
+        const npy_intp residual = (count - vector_offset) % LOOP_SIZE;
 
-            for (npy_intp j=0; j < LOOP_SIZE; j++) {
-                f += f_arr[j];
-            }
-        }
-        for (npy_intp j=0; (j < residual) && (f == 0); j++) {
-            const npy_DTYPE0 ai = pa[loop_count * LOOP_SIZE + j];
+        for (npy_intp i=0; (i < vector_offset) && (f == 0); i++) {
+            const npy_DTYPE0 ai = pa[i];
             if (bn_isnan(ai)) {
                 f = 1;
             }
         }
-        free(f_arr);
+
+        #if HAVE_SSE2
+            for (npy_intp i=0; (i < loop_count) && (f == 0); i++) {
+                f = sse2_anynan_DTYPE0(&pa[vector_offset + i * LOOP_SIZE]);
+            }
+        #else
+            npy_bool* f_arr = malloc(LOOP_SIZE * sizeof(npy_bool));
+            for (npy_intp i=0; (i < loop_count) && (f == 0); i++) {
+                for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                    f_arr[j] = bn_isnan(pa[vector_offset + i * LOOP_SIZE + j]);
+                }
+
+                for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                    f += f_arr[j];
+                }
+            }
+            free(f_arr);
+        #endif
+
+        for (npy_intp j=0; (j < residual) && (f == 0); j++) {
+            const npy_DTYPE0 ai = pa[vector_offset + loop_count * LOOP_SIZE + j];
+            if (bn_isnan(ai)) {
+                f = 1;
+            }
+        }
     } else {
         WHILE {
             const npy_DTYPE0* pa = PA(DTYPE0);
@@ -1244,37 +1301,54 @@ REDUCE_MAIN(anynan, 0)
 /* dtype = [['float64'], ['float32']] */
 BN_OPT_3
 REDUCE_ALL(allnan, DTYPE0) {
-    npy_bool f = 0;
+    int f = 0;
     npy_DTYPE0 ai;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     if (REDUCE_CONTIGUOUS) {
-        const npy_intp LOOP_SIZE = 512 / sizeof(npy_DTYPE0);
-        const npy_intp count = it.nits * it.length;
-        const npy_intp loop_count = count / LOOP_SIZE;
-        const npy_intp residual = count % LOOP_SIZE;
+        const int VECTOR_ALIGN = 16;
         const npy_DTYPE0* pa = PA(DTYPE0);
-        npy_bool* f_arr = malloc(LOOP_SIZE * sizeof(npy_bool));
-        for (npy_intp j=0; j < LOOP_SIZE; j++) {
-            f_arr[j] = 0;
-        }
+        const npy_intp count = it.nits * it.length;
+        npy_intp vector_offset = (((npy_intp) pa) % VECTOR_ALIGN);
+        vector_offset = vector_offset > 0 ? VECTOR_ALIGN - vector_offset : 0;
+        vector_offset /= sizeof(npy_DTYPE0);
+        vector_offset = vector_offset <= count ? vector_offset : count;
 
-        for (npy_intp i=0; (i < loop_count) && (f == 0); i++) {
-            for (npy_intp j=0; j < LOOP_SIZE; j++) {
-                f_arr[j] = !bn_isnan(pa[i * LOOP_SIZE + j]);
-            }
+        const npy_intp LOOP_SIZE = 16 / sizeof(npy_DTYPE0);
+        const npy_intp loop_count = (count - vector_offset) / LOOP_SIZE;
+        const npy_intp residual = (count - vector_offset) % LOOP_SIZE;
 
-            for (npy_intp j=0; j < LOOP_SIZE; j++) {
-                f += f_arr[j];
-            }
-        }
-        for (npy_intp j=0; (j < residual) && (f == 0); j++) {
-            const npy_DTYPE0 ai = pa[loop_count * LOOP_SIZE + j];
+        for (npy_intp i=0; (i < vector_offset) && (f == 0); i++) {
+            const npy_DTYPE0 ai = pa[i];
             if (!bn_isnan(ai)) {
                 f = 1;
             }
         }
-        free(f_arr);
+
+        #if HAVE_SSE2
+            for (npy_intp i=0; (i < loop_count) && (f == 0); i++) {
+                f = sse2_allnan_DTYPE0(&pa[vector_offset + i * LOOP_SIZE]);
+            }
+        #else
+            npy_bool* f_arr = malloc(LOOP_SIZE * sizeof(npy_bool));
+            for (npy_intp i=0; (i < loop_count) && (f == 0); i++) {
+                for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                    f_arr[j] = !bn_isnan(pa[vector_offset + i * LOOP_SIZE + j]);
+                }
+
+                for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                    f += f_arr[j];
+                }
+            }
+            free(f_arr);
+        #endif
+
+        for (npy_intp j=0; (j < residual) && (f == 0); j++) {
+            const npy_DTYPE0 ai = pa[vector_offset + loop_count * LOOP_SIZE + j];
+            if (!bn_isnan(ai)) {
+                f = 1;
+            }
+        }
     } else {
         WHILE {
             FOR {
