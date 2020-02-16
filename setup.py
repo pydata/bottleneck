@@ -9,6 +9,7 @@ from setuptools.command.build_ext import build_ext as _build_ext
 from distutils.command.config import config as _config
 import versioneer
 import shutil
+import platform
 
 
 class config(_config):
@@ -97,18 +98,29 @@ cmdclass["config"] = config
 sys.path.append(os.path.join(os.path.dirname(__file__), "bottleneck/src"))
 
 
+def get_cpu_arch_flags():
+    if platform.processor() == "ppc64le":
+        # Needed to support SSE2 intrinsics
+        return ["-DNO_WARN_X86_INTRINSICS"]
+    else:
+        return []
+
+
 def prepare_modules():
     base_includes = [
         "bottleneck/src/bottleneck.h",
         "bottleneck/src/bn_config.h",
         "bottleneck/src/iterators.h",
     ]
+
+    arch_flags = get_cpu_arch_flags()
+
     ext = [
         Extension(
             "bottleneck.reduce",
             sources=["bottleneck/src/reduce.c"],
             depends=base_includes,
-            extra_compile_args=["-O2"],
+            extra_compile_args=["-O2"] + arch_flags,
         )
     ]
     ext += [
@@ -119,7 +131,7 @@ def prepare_modules():
                 "bottleneck/src/move_median/move_median.c",
             ],
             depends=base_includes + ["bottleneck/src/move_median/move_median.h"],
-            extra_compile_args=["-O2"],
+            extra_compile_args=["-O2"] + arch_flags,
         )
     ]
     ext += [
@@ -127,7 +139,7 @@ def prepare_modules():
             "bottleneck.nonreduce",
             sources=["bottleneck/src/nonreduce.c"],
             depends=base_includes,
-            extra_compile_args=["-O2"],
+            extra_compile_args=["-O2"] + arch_flags,
         )
     ]
     ext += [
@@ -135,7 +147,7 @@ def prepare_modules():
             "bottleneck.nonreduce_axis",
             sources=["bottleneck/src/nonreduce_axis.c"],
             depends=base_includes,
-            extra_compile_args=["-O2"],
+            extra_compile_args=["-O2"] + arch_flags,
         )
     ]
     return ext

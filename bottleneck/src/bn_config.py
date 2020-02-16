@@ -8,6 +8,8 @@ OPTIONAL_FUNCTION_ATTRIBUTES = [
     ("HAVE_ATTRIBUTE_OPTIMIZE_OPT_3", '__attribute__((optimize("O3")))')
 ]
 
+OPTIONAL_HEADERS = [("HAVE_SSE2", "emmintrin.h")]
+
 OPTIONAL_INTRINSICS = [
     ("HAVE___BUILTIN_ISNAN", "__builtin_isnan", "0."),
     ("HAVE_ISNAN", "isnan", "0."),
@@ -101,6 +103,10 @@ def check_gcc_function_attribute(cmd, attribute, name):
         return False
 
 
+def check_gcc_header(cmd, header):
+    return cmd.check_header(header)
+
+
 def check_gcc_intrinsic(cmd, intrinsic, value) -> bool:
     """Return True if the given intrinsic is supported."""
     body = (
@@ -138,6 +144,12 @@ def create_config_h(config):
 
     for config_attr, func_attr in OPTIONAL_FUNCTION_ATTRIBUTES:
         if check_gcc_function_attribute(config, func_attr, config_attr.lower()):
+            output.append((config_attr, "1"))
+        else:
+            output.append((config_attr, "0"))
+
+    for config_attr, header in OPTIONAL_HEADERS:
+        if check_gcc_header(config, header):
             output.append((config_attr, "1"))
         else:
             output.append((config_attr, "0"))

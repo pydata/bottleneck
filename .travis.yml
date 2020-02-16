@@ -55,7 +55,7 @@ jobs:
 
         - os: linux
           arch: ppc64le
-          env: TEST_DEPS="numpy pytest hypothesis"
+          env: TEST_DEPS="numpy pytest hypothesis gfortran_linux-ppc64le=8.2.0"
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
 
@@ -98,7 +98,7 @@ install:
     - source "tools/travis/conda_install.sh"
 
 script:
-    - source "tools/travis/bn_setup.sh"
+    - ./tools/travis/bn_setup.sh
 
 notifications:
     email:
