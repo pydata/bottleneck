@@ -6,8 +6,27 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at https://github.com/pydata/bottleneck
 
-Bottleneck 1.3.1
+Bottleneck 1.3.2
 ================
+
+*Release date: 2020-02-20*
+
+Bug Fixes
+~~~~~~~~~
+- Explicitly declare numpy version dependency in ``pyproject.toml`` for Python 3.8, fixing
+  certain cases where ``pip install`` would fail. Thanks to ``@goggle``, ``@astrofrog``,
+  and ``@0xb0b`` for reporting. (:issue:`277`)
+
+Contributors
+~~~~~~~~~~~~
+
+.. contributors:: v1.3.1..v1.3.2
+
+Older Releases
+~~~~~~~~~~~~~~
+
+Bottleneck 1.3.1
+----------------
 
 *Release date: 2019-11-18*
 
@@ -21,9 +40,6 @@ Contributors
 
 .. contributors:: v1.3.0..v1.3.1
 
-
-Older Releases
-~~~~~~~~~~~~~~
 
 Bottleneck 1.3.0
 ----------------
