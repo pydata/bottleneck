@@ -1280,25 +1280,73 @@ REDUCE_ALL(anynan, DTYPE0) {
     }
 }
 
+BN_OPT_3
 REDUCE_ONE(anynan, DTYPE0) {
-    int f;
+    npy_bool f;
     npy_DTYPE0 ai;
     INIT_ONE(BOOL, uint8)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
     } else {
-        WHILE {
-            f = 0;
-            FOR {
-                ai = AI(DTYPE0);
-                if (bn_isnan(ai)) {
-                    f = 1;
-                    break;
+        if (ONE_CONTIGUOUS) {
+            WHILE {
+                f = 0;
+                const int VECTOR_ALIGN = 16;
+                const npy_DTYPE0* pa = PA(DTYPE0);
+                const npy_intp count = LENGTH;
+                npy_intp vector_offset = (((npy_intp) pa) % VECTOR_ALIGN);
+                vector_offset = vector_offset > 0 ? VECTOR_ALIGN - vector_offset : 0;
+                vector_offset /= sizeof(npy_DTYPE0);
+                vector_offset = vector_offset <= count ? vector_offset : count;
+
+                const npy_intp LOOP_SIZE = 16 / sizeof(npy_DTYPE0);
+                const npy_intp loop_count = (count - vector_offset) / LOOP_SIZE;
+                const npy_intp residual = (count - vector_offset) % LOOP_SIZE;
+
+                
+                for (npy_intp i=0; (i < vector_offset) && (f == 0); i++) {
+                    const npy_DTYPE0 ai = pa[i];
+                    if (bn_isnan(ai)) {
+                        f = 1;
+                    }
                 }
+
+                #if HAVE_SSE2
+                    for (npy_intp i=0; (i < loop_count) && (f == 0); i++) {
+                        f = sse2_anynan_DTYPE0(&pa[vector_offset + i * LOOP_SIZE]);
+                    }
+                #else
+                    for (npy_intp i=0; (i < loop_count) && (f == 0); i++) {
+                        for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                            ai = pa[vector_offset + i * LOOP_SIZE + j];
+                            f += bn_isnan(ai);
+                        }
+                    }
+                #endif
+                for (npy_intp j=0; (j < residual) && (f == 0); j++) {
+                    const npy_DTYPE0 ai = pa[vector_offset + loop_count * LOOP_SIZE + j];
+                    if (bn_isnan(ai)) {
+                        f = 1;
+                    }
+                }
+                YPP = f;
+                NEXT
+           }
+        } else {
+            WHILE {
+                f = 0;
+                const npy_DTYPE0* pa = PA(DTYPE0);
+                FOR {
+                    ai = SI(pa);
+                    if (bn_isnan(ai)) {
+                        f = 1;
+                        break;
+                    }
+                }
+                YPP = f;
+                NEXT
             }
-            YPP = f;
-            NEXT
         }
     }
     BN_END_ALLOW_THREADS
@@ -1399,25 +1447,73 @@ REDUCE_ALL(allnan, DTYPE0) {
     }
 }
 
+BN_OPT_3
 REDUCE_ONE(allnan, DTYPE0) {
-    int f;
+    npy_bool f;
     npy_DTYPE0 ai;
     INIT_ONE(BOOL, uint8)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(1)
     } else {
-        WHILE {
-            f = 1;
-            FOR {
-                ai = AI(DTYPE0);
-                if (!bn_isnan(ai)) {
-                    f = 0;
-                    break;
+        if (ONE_CONTIGUOUS) {
+            WHILE {
+                f = 0;
+                const int VECTOR_ALIGN = 16;
+                const npy_DTYPE0* pa = PA(DTYPE0);
+                const npy_intp count = LENGTH;
+                npy_intp vector_offset = (((npy_intp) pa) % VECTOR_ALIGN);
+                vector_offset = vector_offset > 0 ? VECTOR_ALIGN - vector_offset : 0;
+                vector_offset /= sizeof(npy_DTYPE0);
+                vector_offset = vector_offset <= count ? vector_offset : count;
+
+                const npy_intp LOOP_SIZE = 16 / sizeof(npy_DTYPE0);
+                const npy_intp loop_count = (count - vector_offset) / LOOP_SIZE;
+                const npy_intp residual = (count - vector_offset) % LOOP_SIZE;
+
+                
+                for (npy_intp i=0; (i < vector_offset) && (f == 0); i++) {
+                    const npy_DTYPE0 ai = pa[i];
+                    if (!bn_isnan(ai)) {
+                        f = 1;
+                    }
                 }
+
+                #if HAVE_SSE2
+                    for (npy_intp i=0; (i < loop_count) && (f == 0); i++) {
+                        f = sse2_allnan_DTYPE0(&pa[vector_offset + i * LOOP_SIZE]);
+                    }
+                #else
+                    for (npy_intp i=0; (i < loop_count) && (f == 0); i++) {
+                        for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                            ai = pa[vector_offset + i * LOOP_SIZE + j];
+                            f += !bn_isnan(ai);
+                        }
+                    }
+                #endif
+                for (npy_intp j=0; (j < residual) && (f == 0); j++) {
+                    const npy_DTYPE0 ai = pa[vector_offset + loop_count * LOOP_SIZE + j];
+                    if (!bn_isnan(ai)) {
+                        f = 1;
+                    }
+                }
+                YPP = !f;
+                NEXT
+           }
+        } else {
+            WHILE {
+                f = 0;
+                const npy_DTYPE0* pa = PA(DTYPE0);
+                FOR {
+                    ai = SI(pa);
+                    if (!bn_isnan(ai)) {
+                        f = 1;
+                        break;
+                    }
+                }
+                YPP = !f;
+                NEXT
             }
-            YPP = f;
-            NEXT
         }
     }
     BN_END_ALLOW_THREADS
