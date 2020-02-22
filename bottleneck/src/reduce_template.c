@@ -159,6 +159,7 @@ REDUCE_ALL(nansum, DTYPE0) {
     return PyLong_FromLongLong(asum);
 }
 
+BN_OPT_3
 REDUCE_ONE(nansum, DTYPE0) {
     npy_DTYPE0 asum;
     INIT_ONE(DTYPE0, DTYPE0)
@@ -166,11 +167,39 @@ REDUCE_ONE(nansum, DTYPE0) {
     if (LENGTH == 0) {
         FILL_Y(0)
     } else {
-        WHILE {
-            asum = 0;
-            FOR asum += AI(DTYPE0);
-            YPP = asum;
-            NEXT
+        if (ONE_CONTIGUOUS) {
+            WHILE {
+                asum = 0;
+                const npy_DTYPE0* pa = PA(DTYPE0);
+                FOR {
+                    asum += SI(pa);
+                }
+                YPP = asum;
+                NEXT
+            }
+        } else if (ONE_TRANSPOSE(npy_DTYPE0)) {
+            const npy_intp LOOP_SIZE = it.nits;
+            const npy_DTYPE0* pa = PA(DTYPE0);
+
+            for (npy_intp i=0; i < LOOP_SIZE; i++) {
+                py[i] = 0;
+            }
+
+            for (npy_intp i=0; i < LENGTH; i++) {
+                for (npy_intp j=0; j < LOOP_SIZE; j++) {
+                    py[j] += pa[i * LOOP_SIZE + j];
+                }
+            }
+        } else {
+            WHILE {
+                asum = 0;
+                const npy_DTYPE0* pa = PA(DTYPE0);
+                FOR {
+                    asum += SI(pa);
+                }
+                YPP = asum;
+                NEXT
+            }
         }
     }
     BN_END_ALLOW_THREADS
