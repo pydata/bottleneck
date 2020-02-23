@@ -1333,6 +1333,47 @@ REDUCE_ONE(anynan, DTYPE0) {
                 YPP = f;
                 NEXT
            }
+        } else if (ONE_TRANSPOSE(npy_DTYPE0)) {
+            const npy_intp LOOP_SIZE = it.nits;
+            const npy_DTYPE0* pa = PA(DTYPE0);
+
+            for (npy_intp i=0; i < LOOP_SIZE; i++) {
+                py[i] = 0;
+            }
+
+            const npy_intp loop_count = LENGTH / 16;
+            const npy_intp residual = LENGTH % 16;
+            npy_intp min_k = 0;
+
+            for (npy_intp i=0; i < residual; i++) {
+                for (npy_intp k=min_k; k < LOOP_SIZE; k++) {
+                    ai = pa[i * LOOP_SIZE + k];
+                    py[k] = bn_isnan(ai) ? 1 : py[k];
+                    if ((k == min_k) && py[k]) {
+                        min_k++;
+                    }
+                }
+            }
+
+            for (npy_intp i=0; (i < loop_count) && (min_k < LOOP_SIZE - 1); i++) {
+                for (npy_intp j=0; j < 16; j++) {
+                    for (npy_intp k=min_k; k < LOOP_SIZE; k++) {
+                        ai = pa[(i * 16 + j + residual) * LOOP_SIZE + k];
+                        py[k] = bn_isnan(ai) ? 1 : py[k];
+                    }
+                }
+                for (npy_intp k=min_k; k < LOOP_SIZE; k++) {
+                    if (py[k] == 0) {
+                        min_k = k;
+                        break;
+                    } else if (k == LOOP_SIZE - 1) {
+                        min_k = k;
+                    }
+                }
+                if (min_k == LOOP_SIZE - 1) {
+                    break;
+                }
+            }
         } else {
             WHILE {
                 f = 0;
@@ -1500,6 +1541,51 @@ REDUCE_ONE(allnan, DTYPE0) {
                 YPP = !f;
                 NEXT
            }
+        } else if (ONE_TRANSPOSE(npy_DTYPE0)) {
+            const npy_intp LOOP_SIZE = it.nits;
+            const npy_DTYPE0* pa = PA(DTYPE0);
+
+            for (npy_intp i=0; i < LOOP_SIZE; i++) {
+                py[i] = 0;
+            }
+
+            const npy_intp loop_count = LENGTH / 16;
+            const npy_intp residual = LENGTH % 16;
+            npy_intp min_k = 0;
+
+            for (npy_intp i=0; i < residual; i++) {
+                for (npy_intp k=min_k; k < LOOP_SIZE; k++) {
+                    ai = pa[i * LOOP_SIZE + k];
+                    py[k] = !bn_isnan(ai) ? 1 : py[k];
+                    if ((k == min_k) && py[k]) {
+                        min_k++;
+                    }
+                }
+            }
+
+            for (npy_intp i=0; (i < loop_count) && (min_k < LOOP_SIZE - 1); i++) {
+                for (npy_intp j=0; j < 16; j++) {
+                    for (npy_intp k=min_k; k < LOOP_SIZE; k++) {
+                        ai = pa[(i * 16 + j + residual) * LOOP_SIZE + k];
+                        py[k] = !bn_isnan(ai) ? 1 : py[k];
+                    }
+                }
+                for (npy_intp k=min_k; k < LOOP_SIZE; k++) {
+                    if (py[k] == 0) {
+                        min_k = k;
+                        break;
+                    } else if (k == LOOP_SIZE - 1) {
+                        min_k = k;
+                    }
+                }
+                if (min_k == LOOP_SIZE - 1) {
+                    break;
+                }
+            }
+
+            for (npy_intp k=0; k < LOOP_SIZE; k++) {
+                py[k] = !py[k];
+            }
         } else {
             WHILE {
                 f = 0;
