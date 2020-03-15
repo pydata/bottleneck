@@ -19,6 +19,10 @@ from hypothesis.extra.numpy import (
 )
 
 
+hy_int_array_gen = hy_arrays(
+    dtype=integer_dtypes(sizes=(32, 64)), shape=array_shapes(),
+)
+
 hy_array_gen = hy_arrays(
     dtype=one_of(integer_dtypes(sizes=(32, 64)), floating_dtypes(sizes=(32, 64))),
     shape=array_shapes(),
@@ -66,6 +70,13 @@ def _hypothesis_helper(func, array, skip_all_nans=False):
 @hypothesis.given(array=hy_array_gen)
 @hypothesis.settings(max_examples=500)
 def test_reduce_hypothesis(func, array):
+    _hypothesis_helper(func, array)
+
+
+@pytest.mark.parametrize("func", (bn.ss,), ids=lambda x: x.__name__)
+@hypothesis.given(array=hy_int_array_gen)
+@hypothesis.settings(max_examples=500)
+def test_reduce_hypothesis_ints_only(func, array):
     _hypothesis_helper(func, array)
 
 
