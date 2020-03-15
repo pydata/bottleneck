@@ -942,25 +942,38 @@ REDUCE_ONE(ss, DTYPE0) {
 }
 /* dtype end */
 
-/* dtype = [['int64'], ['int32']] */
+/* dtype = [['int64', 'int64'], ['int32', 'long']] */
+BN_OPT_3
 REDUCE_ALL(ss, DTYPE0) {
-    npy_DTYPE0 ai, asum = 0;
+    npy_DTYPE0 ai;
+    npy_DTYPE1 asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
-    WHILE {
-        FOR {
-            ai = AI(DTYPE0);
+    if (REDUCE_CONTIGUOUS) {
+        const npy_intp count = it.nits * it.length;
+        const npy_DTYPE0* pa = PA(DTYPE0);
+        for (npy_intp i=0; i<count; i++) {
+            ai = pa[i];
             asum += ai * ai;
         }
-        NEXT
+    } else {
+        WHILE {
+            FOR {
+                ai = AI(DTYPE0);
+                asum += ai * ai;
+            }
+            NEXT
+        }
     }
     BN_END_ALLOW_THREADS
     return PyLong_FromLongLong(asum);
 }
 
+BN_OPT_3
 REDUCE_ONE(ss, DTYPE0) {
-    npy_DTYPE0 ai, asum;
-    INIT_ONE(DTYPE0, DTYPE0)
+    npy_DTYPE0 ai;
+    npy_DTYPE1 asum;
+    INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
