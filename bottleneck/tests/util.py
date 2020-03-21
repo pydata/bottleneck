@@ -1,9 +1,22 @@
 import numpy as np
 import bottleneck as bn
+from hypothesis.strategies import one_of
+from hypothesis.extra.numpy import (
+    arrays as hy_arrays,
+    integer_dtypes,
+    floating_dtypes,
+    array_shapes
+)
 
 INT_DTYPES = [np.int64, np.int32]
 FLOAT_DTYPES = [np.float64, np.float32]
 DTYPES = tuple(FLOAT_DTYPES + INT_DTYPES)
+
+
+hy_array_gen = hy_arrays(
+    dtype=one_of(integer_dtypes(sizes=(32, 64)), floating_dtypes(sizes=(32, 64))),
+    shape=array_shapes(),
+)
 
 
 def get_functions(module_name, as_string=False):

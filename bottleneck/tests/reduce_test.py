@@ -7,26 +7,9 @@ import numpy as np
 from numpy.testing import assert_equal, assert_raises, assert_array_almost_equal
 
 import bottleneck as bn
-from .util import arrays, array_order, DTYPES
+from .util import arrays, array_order, DTYPES, hy_array_gen
 import pytest
 import hypothesis
-from hypothesis.strategies import one_of
-from hypothesis.extra.numpy import (
-    arrays as hy_arrays,
-    integer_dtypes,
-    floating_dtypes,
-    array_shapes,
-)
-
-
-hy_int_array_gen = hy_arrays(
-    dtype=integer_dtypes(sizes=(32, 64)), shape=array_shapes(),
-)
-
-hy_array_gen = hy_arrays(
-    dtype=one_of(integer_dtypes(sizes=(32, 64)), floating_dtypes(sizes=(32, 64))),
-    shape=array_shapes(),
-)
 
 
 def _hypothesis_helper(func, array, skip_all_nans=False):
