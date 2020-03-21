@@ -51,5 +51,5 @@ test = PytestTester(__name__)
 del PytestTester
 
 
-__version__ = get_versions()["version"]
+__version__ = get_versions()["version"]  # type: ignore
 del get_versions
