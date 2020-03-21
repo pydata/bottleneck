@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 
 import os
-import sys
-
-from setuptools import setup, find_packages, Command
-from setuptools.extension import Extension
-from setuptools.command.build_ext import build_ext as _build_ext
-from distutils.command.config import config as _config
-import versioneer
-import shutil
 import platform
+import shutil
+import sys
+from distutils.command.config import config as _config
+
+from setuptools import Command, find_packages, setup
+from setuptools.command.build_ext import build_ext as _build_ext
+from setuptools.extension import Extension
+
+import versioneer
 
 
 class config(_config):

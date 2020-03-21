@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
-import sys
-import logging
-from subprocess import check_output
 
+import logging
+import sys
+from subprocess import check_output
 
 if sys.version_info[0] == 2:
 

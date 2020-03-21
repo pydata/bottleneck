@@ -1,6 +1,6 @@
-from io import StringIO
-import sys
 import os
+import sys
+from io import StringIO
 
 import bottleneck as bn
 

@@ -1,12 +1,12 @@
+from typing import Callable, List, Union
+
 import numpy as np
-import bottleneck as bn
+from hypothesis.extra.numpy import array_shapes
+from hypothesis.extra.numpy import arrays as hy_arrays
+from hypothesis.extra.numpy import floating_dtypes, integer_dtypes
 from hypothesis.strategies import one_of
-from hypothesis.extra.numpy import (
-    arrays as hy_arrays,
-    integer_dtypes,
-    floating_dtypes,
-    array_shapes
-)
+
+import bottleneck as bn
 
 INT_DTYPES = [np.int64, np.int32]
 FLOAT_DTYPES = [np.float64, np.float32]

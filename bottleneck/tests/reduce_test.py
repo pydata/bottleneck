@@ -1,15 +1,18 @@
 """Test reduce functions."""
 
-import warnings
 import traceback
+import warnings
+from typing import Callable, List, Optional, Union
 
+import hypothesis
 import numpy as np
-from numpy.testing import assert_equal, assert_raises, assert_array_almost_equal
+import pytest
+from numpy.testing import (assert_array_almost_equal, assert_equal,
+                           assert_raises)
 
 import bottleneck as bn
-from .util import arrays, array_order, DTYPES, hy_array_gen
-import pytest
-import hypothesis
+
+from .util import DTYPES, array_order, arrays, hy_array_gen
 
 
 def _hypothesis_helper(func, array, skip_all_nans=False):

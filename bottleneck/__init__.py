@@ -45,11 +45,11 @@ from bottleneck.benchmark.bench_detailed import bench_detailed
 from bottleneck.tests.util import get_functions
 
 from ._pytesttester import PytestTester
+from ._version import get_versions  # noqa: E402
 
 test = PytestTester(__name__)
 del PytestTester
 
-from ._version import get_versions  # noqa: E402
 
 __version__ = get_versions()["version"]
 del get_versions

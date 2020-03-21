@@ -3,10 +3,12 @@
 import warnings
 
 import numpy as np
-from numpy.testing import assert_equal, assert_array_equal, assert_raises
-import bottleneck as bn
-from .util import arrays, array_order, DTYPES, INT_DTYPES
 import pytest
+from numpy.testing import assert_array_equal, assert_equal, assert_raises
+
+import bottleneck as bn
+
+from .util import DTYPES, INT_DTYPES, array_order, arrays
 
 
 @pytest.mark.parametrize(

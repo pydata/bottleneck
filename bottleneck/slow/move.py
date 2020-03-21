@@ -4,7 +4,6 @@ import warnings
 
 import numpy as np
 
-
 __all__ = [
     "move_sum",
     "move_mean",

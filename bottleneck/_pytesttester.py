@@ -6,8 +6,7 @@ Based on scipy._libs._testutils
 
 import os
 import sys
-from typing import Optional, List
-
+from typing import List, Optional
 
 __all__ = ["PytestTester"]
 

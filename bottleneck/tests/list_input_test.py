@@ -3,10 +3,12 @@
 import warnings
 
 import numpy as np
-from numpy.testing import assert_array_almost_equal
-import bottleneck as bn
-from .util import DTYPES
 import pytest
+from numpy.testing import assert_array_almost_equal
+
+import bottleneck as bn
+
+from .util import DTYPES
 
 
 def lists(dtypes=DTYPES):
