@@ -1,9 +1,16 @@
 """Check that functions can handle scalar input"""
 
-from numpy.testing import assert_array_almost_equal
-import bottleneck as bn
-import pytest
+from typing import Callable, Union
 
+import hypothesis
+import numpy as np
+import pytest
+from hypothesis.strategies import floats, integers, one_of
+from numpy.testing import assert_array_almost_equal
+
+import bottleneck as bn  # noqa: F401
+
+from .util import get_functions
 
 @pytest.mark.parametrize(
     "func",

@@ -1,18 +1,17 @@
 import numpy as np
+import pytest
 from numpy.testing import (
-    assert_equal,
-    assert_array_equal,
     assert_array_almost_equal,
+    assert_array_equal,
+    assert_equal,
     assert_raises,
 )
 
 import bottleneck as bn
-from .reduce_test import (
-    unit_maker as reduce_unit_maker,
-    unit_maker_argparse as unit_maker_parse_rankdata,
-)
-from .util import arrays, array_order, DTYPES
-import pytest
+
+from .reduce_test import unit_maker as reduce_unit_maker
+from .reduce_test import unit_maker_argparse as unit_maker_parse_rankdata
+from .util import DTYPES, array_order, arrays
 
 # ---------------------------------------------------------------------------
 # partition, argpartition

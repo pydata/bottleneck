@@ -1,5 +1,5 @@
 import numpy as np
-from numpy import partition, argpartition
+from numpy import argpartition, partition
 
 __all__ = ["rankdata", "nanrankdata", "partition", "argpartition", "push"]
 

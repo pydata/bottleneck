@@ -1,7 +1,9 @@
-import numpy as np
 import sys
-import bottleneck as bn
+
+import numpy as np
 import pytest
+
+import bottleneck as bn
 
 
 @pytest.mark.skipif(

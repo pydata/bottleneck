@@ -1,11 +1,14 @@
 """Test functions."""
 
 import warnings
+from typing import List, Optional
 
+import hypothesis
 import numpy as np
+import pytest
 from numpy.testing import assert_equal
 
-from .util import hy_array_gen, get_functions
+from .util import get_functions, hy_array_gen
 
 
 @pytest.mark.parametrize("func", get_functions("all"), ids=lambda x: x.__name__)
