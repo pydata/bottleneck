@@ -7,18 +7,21 @@ from typing import Callable, List, Optional, Union
 import hypothesis
 import numpy as np
 import pytest
-from numpy.testing import (assert_array_almost_equal, assert_equal,
-                           assert_raises)
+from numpy.testing import assert_array_almost_equal, assert_equal, assert_raises
 
 import bottleneck as bn
 
-from .util import DTYPES, array_order, arrays, hy_array_gen
+from .util import DTYPES, array_order, arrays, hy_array_gen, hy_int_array_gen
 
 
-def _hypothesis_helper(func, array, skip_all_nans=False):
+def _hypothesis_helper(
+    func: Callable[[np.ndarray], Union[int, float, np.ndarray]],
+    array: np.ndarray,
+    skip_all_nans: bool = False,
+) -> None:
     slow_func = eval("bn.slow.%s" % func.__name__)
     ndim = array.ndim
-    axes = [None] + list(range(-ndim, ndim))
+    axes: List[Optional[int]] = list(range(-ndim, ndim)) + [None]
     for order in ["C", "F"]:
         if order == "F":
             arr = np.asfortranarray(array)
