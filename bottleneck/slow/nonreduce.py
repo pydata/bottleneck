@@ -5,7 +5,7 @@ import numpy as np
 __all__ = ["replace"]
 
 
-def replace(a, old, new):
+def replace(a: np.ndarray, old: Union[int, float], new: Union[int, float]) -> None:
     "Slow replace (inplace) used for unaccelerated dtypes."
     if type(a) is not np.ndarray:
         raise TypeError("`a` must be a numpy array.")
