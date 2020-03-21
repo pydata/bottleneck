@@ -61,6 +61,7 @@ def _hypothesis_helper(func, array, skip_all_nans=False):
 
             slow_result = slow_func(arr, axis=axis)
 
+            hypothesis.note(f"axis: {axis}")
             assert_array_almost_equal(bn_result, slow_result)
 
 
@@ -73,7 +74,7 @@ def test_reduce_hypothesis(func, array):
     _hypothesis_helper(func, array)
 
 
-@pytest.mark.parametrize("func", (bn.ss,), ids=lambda x: x.__name__)
+@pytest.mark.parametrize("func", (bn.ss, bn.nansum), ids=lambda x: x.__name__)
 @hypothesis.given(array=hy_int_array_gen)
 @hypothesis.settings(max_examples=500)
 def test_reduce_hypothesis_ints_only(func, array):

@@ -131,10 +131,10 @@ REDUCE_ONE(nansum, DTYPE0) {
 }
 /* dtype end */
 
-/* dtype = [['int64'], ['int32']] */
+/* dtype = [['int64', 'int64'], ['int32', 'long']] */
 BN_OPT_3
 REDUCE_ALL(nansum, DTYPE0) {
-    npy_DTYPE0 asum = 0;
+    npy_DTYPE1 asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     if (REDUCE_CONTIGUOUS) {
@@ -161,8 +161,8 @@ REDUCE_ALL(nansum, DTYPE0) {
 
 BN_OPT_3
 REDUCE_ONE(nansum, DTYPE0) {
-    npy_DTYPE0 asum;
-    INIT_ONE(DTYPE0, DTYPE0)
+    npy_DTYPE1 asum;
+    INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
