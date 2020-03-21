@@ -1,9 +1,8 @@
 from typing import Callable, List, Union
 
 import numpy as np
-from hypothesis.extra.numpy import array_shapes
+from hypothesis.extra.numpy import array_shapes, floating_dtypes, integer_dtypes
 from hypothesis.extra.numpy import arrays as hy_arrays
-from hypothesis.extra.numpy import floating_dtypes, integer_dtypes
 from hypothesis.strategies import one_of
 
 import bottleneck as bn
@@ -18,8 +17,14 @@ hy_array_gen = hy_arrays(
     shape=array_shapes(),
 )
 
+hy_int_array_gen = hy_arrays(
+    dtype=integer_dtypes(sizes=(32, 64)), shape=array_shapes(),
+)
 
-def get_functions(module_name, as_string=False):
+
+def get_functions(
+    module_name: str, as_string: bool = False
+) -> List[Union[str, Callable[[np.array], Union[int, float, np.array]]]]:
     """Returns a list of functions, optionally as string function names"""
     if module_name == "all":
         funcs = []
