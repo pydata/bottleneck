@@ -9,7 +9,7 @@ import bottleneck as bn
 @pytest.mark.skipif(
     sys.platform.startswith("win"), reason="resource module not available on windows"
 )
-def test_memory_leak():
+def test_memory_leak() -> None:
     import resource
 
     arr = np.arange(1).reshape((1, 1))
