@@ -4,10 +4,9 @@ Generic test utilities.
 Based on scipy._libs._testutils
 """
 
-from __future__ import division, print_function, absolute_import
-
 import os
 import sys
+from typing import Optional, List
 
 
 __all__ = ["PytestTester"]
@@ -18,19 +17,19 @@ class PytestTester(object):
     Pytest test runner entry point.
     """
 
-    def __init__(self, module_name):
+    def __init__(self, module_name: str) -> None:
         self.module_name = module_name
 
     def __call__(
         self,
-        label="fast",
-        verbose=1,
-        extra_argv=None,
-        doctests=False,
-        coverage=False,
-        tests=None,
-        parallel=None,
-    ):
+        label: str = "fast",
+        verbose: int = 1,
+        extra_argv: Optional[List[str]] = None,
+        doctests: bool = False,
+        coverage: bool = False,
+        tests: Optional[List[str]] = None,
+        parallel: Optional[int] = None,
+    ) -> bool:
         import pytest
 
         module = sys.modules[self.module_name]
@@ -79,7 +78,7 @@ class PytestTester(object):
         return code == 0
 
 
-def _pytest_has_xdist():
+def _pytest_has_xdist() -> bool:
     """
     Check if the pytest-xdist plugin is installed, providing parallel tests
     """
