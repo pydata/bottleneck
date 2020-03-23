@@ -2,7 +2,10 @@
 Unfortunately that file is not exposed, so re-implement the portions we need.
 """
 import os
+import sys
 import textwrap
+from typing import List
+
 
 OPTIONAL_FUNCTION_ATTRIBUTES = [
     ("HAVE_ATTRIBUTE_OPTIMIZE_OPT_3", '__attribute__((optimize("O3")))')
@@ -15,6 +18,19 @@ OPTIONAL_INTRINSICS = [
     ("HAVE_ISNAN", "isnan", "0."),
     ("HAVE__ISNAN", "_isnan", "0."),
 ]
+
+
+def get_python_header_include() -> List[str]:
+    if sys.platform == "win32":
+        suffix = ["include"]
+    else:
+        suffix = ["include", "python" + sys.version[:3] + sys.abiflags]
+
+    results = []
+    for prefix in [sys.prefix, sys.exec_prefix]:
+        results.append(os.path.join(prefix, *suffix))
+
+    return results
 
 
 def _get_compiler_list(cmd):
@@ -104,7 +120,7 @@ def check_gcc_function_attribute(cmd, attribute, name):
 
 
 def check_gcc_header(cmd, header):
-    return cmd.check_header(header)
+    return cmd.check_header(header, include_dirs=get_python_header_include(),)
 
 
 def check_gcc_intrinsic(cmd, intrinsic, value) -> bool:
@@ -139,6 +155,17 @@ def create_config_h(config):
         and os.stat(__file__).st_mtime < os.stat(config_h).st_mtime
     ):
         return
+
+    if not check_gcc_header(config, "Python.h"):
+        raise ValueError(
+            """Cannot compile a trivial program with Python.h! Please check the following:
+ - A supported compiler is installed
+ - Python development libraries are installed
+
+ For detailed installation instructions, please see:
+ https://bottleneck.readthedocs.io/en/latest/installing.html
+"""
+        )
 
     output = []
 
