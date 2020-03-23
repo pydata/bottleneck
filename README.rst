@@ -122,6 +122,8 @@ Unit tests               pytest, hypothesis
 Documentation            sphinx, numpydoc
 ======================== ====================================================
 
+Detailed installation instructions can be found at :ref:`installing`
+
 To install Bottleneck on Linux, Mac OS X, et al.::
 
     $ pip install .

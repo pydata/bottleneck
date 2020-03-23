@@ -19,6 +19,7 @@ Table of Contents
    :maxdepth: 3
    
    intro
+   installing
    reference
    release
    license
