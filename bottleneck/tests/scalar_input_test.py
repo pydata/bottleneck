@@ -5,11 +5,10 @@ from typing import Callable, Union
 import hypothesis
 import numpy as np
 import pytest
+from hypothesis.strategies import floats, integers, one_of
 from numpy.testing import assert_array_almost_equal
-from hypothesis.strategies import integers, floats, one_of
 
 import bottleneck as bn  # noqa: F401
-
 from .util import get_functions
 
 int64_iinfo = np.iinfo(np.int64)

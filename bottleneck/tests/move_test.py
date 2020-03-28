@@ -5,7 +5,6 @@ import pytest
 from numpy.testing import assert_array_almost_equal, assert_equal, assert_raises
 
 import bottleneck as bn
-
 from .util import array_order, arrays
 
 

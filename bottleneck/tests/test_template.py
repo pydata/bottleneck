@@ -1,5 +1,4 @@
 import os
-
 import posixpath as path
 
 from ..src.bn_template import make_c_files

@@ -12,9 +12,9 @@ jobs:
     fast_finish: true
     include:
         - stage: style
-        # flake8 and black
+          # flake8, black, and isort
           os: linux
-          env: TEST_DEPS="flake8 black"
+          env: TEST_DEPS="flake8 black isort"
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
                TEST_RUN="style"

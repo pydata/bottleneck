@@ -8,7 +8,6 @@ from numpy.testing import (
 )
 
 import bottleneck as bn
-
 from .reduce_test import unit_maker as reduce_unit_maker
 from .reduce_test import unit_maker_argparse as unit_maker_parse_rankdata
 from .util import DTYPES, array_order, arrays

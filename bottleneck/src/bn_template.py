@@ -1,8 +1,8 @@
-import os
-import re
 import ast
-from typing import List, Optional, Dict, Pattern, Tuple
+import os
 import posixpath as path
+import re
+from typing import Dict, List, Optional, Pattern, Tuple
 
 
 def make_c_files(

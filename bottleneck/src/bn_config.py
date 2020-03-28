@@ -4,9 +4,8 @@ Unfortunately that file is not exposed, so re-implement the portions we need.
 import os
 import sys
 import textwrap
-from typing import List
 from distutils.command.config import config as Config
-
+from typing import List
 
 OPTIONAL_FUNCTION_ATTRIBUTES = [
     ("HAVE_ATTRIBUTE_OPTIMIZE_OPT_3", '__attribute__((optimize("O3")))')
