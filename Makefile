@@ -7,11 +7,13 @@ srcdir := bottleneck
 help:
 	@echo "Available tasks:"
 	@echo "help    -->  This help page"
-	@echo "all     -->  clean, build, flake8, test"
+	@echo "all     -->  clean, flake8, isort, black, build, test"
 	@echo "build   -->  Build the Python C extensions"
 	@echo "clean   -->  Remove all the build files for a fresh start"
 	@echo "test    -->  Run unit tests"
 	@echo "flake8  -->  Check for pep8 errors"
+	@echo "isort   -->  Run isort to format imports"
+	@echo "black   -->  Run black formatting tool"
 	@echo "readme  -->  Update benchmark results in README.rst"
 	@echo "bench   -->  Run performance benchmark"
 	@echo "detail  -->  Detailed benchmarks for all functions"
@@ -19,7 +21,7 @@ help:
 	@echo "doc     -->  Build Sphinx manual"
 	@echo "pypi    -->  Upload to pypi"
 
-all: clean build test flake8
+all: clean flake8 isort black build test
 
 build:
 	${PYTHON} setup.py build_ext --inplace
@@ -29,6 +31,9 @@ test:
 
 flake8:
 	flake8
+
+isort:
+	isort -rc .
 
 black:
 	black . --exclude "(build/|dist/|\.git/|\.mypy_cache/|\.tox/|\.venv/\.asv/|env|\.eggs)"

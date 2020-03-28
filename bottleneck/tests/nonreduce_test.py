@@ -7,7 +7,6 @@ import pytest
 from numpy.testing import assert_array_equal, assert_equal, assert_raises
 
 import bottleneck as bn
-
 from .util import DTYPES, INT_DTYPES, array_order, arrays
 
 

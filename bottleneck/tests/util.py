@@ -1,8 +1,9 @@
 from typing import Callable, List, Union
 
 import numpy as np
-from hypothesis.extra.numpy import array_shapes, floating_dtypes, integer_dtypes
+from hypothesis.extra.numpy import array_shapes
 from hypothesis.extra.numpy import arrays as hy_arrays
+from hypothesis.extra.numpy import floating_dtypes, integer_dtypes
 from hypothesis.strategies import one_of
 
 import bottleneck as bn

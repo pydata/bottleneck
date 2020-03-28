@@ -58,6 +58,11 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --statistics
+    - name: Check import sorting with isort
+      if: matrix.python-version >= 3.6
+      run: |
+        pip install isort
+        isort -c -df -rc .
     - name: Check formatting with black
       if: matrix.python-version >= 3.6
       run: |
