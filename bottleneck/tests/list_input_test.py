@@ -2,12 +2,13 @@
 
 import warnings
 
+import hypothesis
 import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal
 
 import bottleneck as bn
-from .util import DTYPES
+from .util import DTYPES, get_functions, hy_lists
 
 
 def lists(dtypes=DTYPES):
@@ -27,8 +28,11 @@ def lists(dtypes=DTYPES):
                 yield a.astype(dtype).tolist()
 
 
-@pytest.mark.parametrize("func", bn.get_functions("all"), ids=lambda x: x.__name__)
-def test_list_input(func):
+@hypothesis.given(input_list=hy_lists())
+@pytest.mark.parametrize(
+    "func", get_functions("all"), ids=lambda x: x.__name__,
+)
+def test_list_input(func, input_list) -> None:
     """Test that bn.xxx gives the same output as bn.slow.xxx for list input."""
     msg = "\nfunc %s | input %s (%s) | shape %s\n"
     msg += "\nInput array:\n%s\n"
@@ -36,16 +40,34 @@ def test_list_input(func):
     if name == "replace":
         return
     func0 = eval("bn.slow.%s" % name)
-    for i, a in enumerate(lists()):
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            try:
-                actual = func(a)
-                desired = func0(a)
-            except TypeError:
-                actual = func(a, 2)
-                desired = func0(a, 2)
-        a = np.array(a)
-        tup = (name, "a" + str(i), str(a.dtype), str(a.shape), a)
-        err_msg = msg % tup
-        assert_array_almost_equal(actual, desired, err_msg=err_msg)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+
+        actual_raised = False
+        desired_raised = False
+
+        try:
+            if any(x in func.__name__ for x in ["move", "partition"]):
+                actual = func(input_list, 2)
+            else:
+                actual = func(input_list)
+        except ValueError:
+            actual_raised = True
+
+        try:
+            if any(x in func.__name__ for x in ["move", "partition"]):
+                desired = func0(input_list, 2)
+            else:
+                desired = func0(input_list)
+        except ValueError:
+            desired_raised = True
+
+    if actual_raised and desired_raised:
+        return
+
+    assert not (actual_raised or desired_raised)
+
+    a = np.array(input_list)
+    tup = (name, "a", str(a.dtype), str(a.shape), a)
+    err_msg = msg % tup
+    assert_array_almost_equal(actual, desired, err_msg=err_msg)

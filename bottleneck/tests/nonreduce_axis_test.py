@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+import hypothesis
 from numpy.testing import (
     assert_array_almost_equal,
     assert_array_equal,
@@ -10,7 +11,7 @@ from numpy.testing import (
 import bottleneck as bn
 from .reduce_test import unit_maker as reduce_unit_maker
 from .reduce_test import unit_maker_argparse as unit_maker_parse_rankdata
-from .util import DTYPES, array_order, arrays
+from .util import DTYPES, array_order, arrays, hy_array_gen
 
 # ---------------------------------------------------------------------------
 # partition, argpartition
@@ -62,8 +63,8 @@ def test_partition_and_argpartition(func) -> None:
             assert_array_equal(s1, s0, err_msg)
 
 
-def complete_the_partition(a, n, axis):
-    def func1d(a, n):
+def complete_the_partition(a: np.ndarray, n: int, axis: int) -> np.ndarray:
+    def func1d(a: np.ndarray, n: int) -> np.ndarray:
         a[:n] = np.sort(a[:n])
         a[n + 1 :] = np.sort(a[n + 1 :])
         return a
@@ -127,11 +128,14 @@ def complete_the_argpartition(index, a, n, axis):
     return a
 
 
-def test_transpose() -> None:
+@hypothesis.given(array=hy_array_gen)
+def test_transpose(array) -> None:
     """partition transpose test"""
-    a = np.arange(12).reshape(4, 3)
-    actual = bn.partition(a.T, 2, -1).T
-    desired = bn.slow.partition(a.T, 2, -1).T
+    if min(array.shape) < 3:
+        return
+
+    actual = bn.partition(array.T, 2, -1).T
+    desired = bn.slow.partition(array.T, 2, -1).T
     assert_equal(actual, desired, "partition transpose test")
 
 

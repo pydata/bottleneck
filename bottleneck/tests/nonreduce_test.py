@@ -80,10 +80,14 @@ def test_replace_unsafe_cast() -> None:
 
 def test_non_array() -> None:
     """Test that non-array input raises"""
-    a = [1, 2, 3]
-    assert_raises(TypeError, bn.replace, a, 0, 1)
-    a = (1, 2, 3)
-    assert_raises(TypeError, bn.replace, a, 0, 1)
+    list_input = [1, 2, 3]
+    assert_raises(TypeError, bn.replace, list_input, 0, 1)
+
+    tuple_input = (1, 2, 3)
+    assert_raises(TypeError, bn.replace, tuple_input, 0, 1)
+
+    integer_input = 1
+    assert_raises(TypeError, bn.replace, integer_input, 0, 1)
 
 
 # ---------------------------------------------------------------------------

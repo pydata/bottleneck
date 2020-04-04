@@ -83,7 +83,7 @@ MOVE(move_sum, DTYPE0) {
                 asum += ai;
                 count += 1;
             }
-            YI(DTYPE0) = BN_NAN;
+            YI(DTYPE0) = BN_NAN_DTYPE0;
         }
         WHILE1 {
             const npy_DTYPE0 ai = AI(DTYPE0);
@@ -91,7 +91,7 @@ MOVE(move_sum, DTYPE0) {
                 asum += ai;
                 count += 1;
             }
-            YI(DTYPE0) = count >= min_count ? asum : BN_NAN;
+            YI(DTYPE0) = count >= min_count ? asum : BN_NAN_DTYPE0;
         }
         WHILE2 {
             const npy_DTYPE0 ai = AI(DTYPE0);
@@ -109,7 +109,7 @@ MOVE(move_sum, DTYPE0) {
                     count--;
                 }
             }
-            YI(DTYPE0) = count >= min_count ? asum : BN_NAN;
+            YI(DTYPE0) = count >= min_count ? asum : BN_NAN_DTYPE0;
         }
         NEXT2
     }
@@ -127,7 +127,7 @@ MOVE(move_sum, DTYPE0) {
         asum = 0;
         WHILE0 {
             asum += AI(DTYPE0);
-            YI(DTYPE1) = BN_NAN;
+            YI(DTYPE1) = BN_NAN_DTYPE1;
         }
         WHILE1 {
             asum += AI(DTYPE0);
@@ -162,7 +162,7 @@ MOVE(move_mean, DTYPE0) {
                 asum += ai;
                 count += 1;
             }
-            YI(DTYPE0) = BN_NAN;
+            YI(DTYPE0) = BN_NAN_DTYPE0;
         }
         WHILE1 {
             const npy_DTYPE0 ai = AI(DTYPE0);
@@ -170,7 +170,7 @@ MOVE(move_mean, DTYPE0) {
                 asum += ai;
                 count += 1;
             }
-            YI(DTYPE0) = count >= min_count ? asum / count : BN_NAN;
+            YI(DTYPE0) = count >= min_count ? asum / count : BN_NAN_DTYPE0;
         }
         count_inv = 1.0 / count;
         WHILE2 {
@@ -191,7 +191,7 @@ MOVE(move_mean, DTYPE0) {
                     count_inv = 1.0 / count;
                 }
             }
-            YI(DTYPE0) = count >= min_count ? asum * count_inv : BN_NAN;
+            YI(DTYPE0) = count >= min_count ? asum * count_inv : BN_NAN_DTYPE0;
         }
         NEXT2
     }
@@ -209,7 +209,7 @@ MOVE(move_mean, DTYPE0) {
         asum = 0;
         WHILE0 {
             asum += AI(DTYPE0);
-            YI(DTYPE1) = BN_NAN;
+            YI(DTYPE1) = BN_NAN_DTYPE1;
         }
         WHILE1 {
             asum += AI(DTYPE0);
@@ -249,7 +249,7 @@ MOVE(NAME, DTYPE0) {
                 amean += delta / count;
                 assqdm += delta * (ai - amean);
             }
-            YI(DTYPE0) = BN_NAN;
+            YI(DTYPE0) = BN_NAN_DTYPE0;
         }
         WHILE1 {
             const npy_DTYPE0 ai = AI(DTYPE0);
@@ -265,7 +265,7 @@ MOVE(NAME, DTYPE0) {
                 }
                 yi = FUNC(assqdm / (count - ddof));
             } else {
-                yi = BN_NAN;
+                yi = BN_NAN_DTYPE0;
             }
             YI(DTYPE0) = yi;
         }
@@ -310,7 +310,7 @@ MOVE(NAME, DTYPE0) {
                 }
                 yi = FUNC(assqdm * ddof_inv);
             } else {
-                yi = BN_NAN;
+                yi = BN_NAN_DTYPE0;
             }
             YI(DTYPE0) = yi;
         }
@@ -335,7 +335,7 @@ MOVE(NAME, DTYPE0) {
             const npy_DTYPE1 delta = ai - amean;
             amean += delta / (INDEX + 1);
             assqdm += delta * (ai - amean);
-            YI(DTYPE1) = BN_NAN;
+            YI(DTYPE1) = BN_NAN_DTYPE1;
         }
         WHILE1 {
             const npy_DTYPE1 ai = AI(DTYPE0);
@@ -457,16 +457,16 @@ MOVE(NAME, DTYPE0) {
         extreme_pair->death = window;
         WHILE0 {
             MACRO_FLOAT(DTYPE0,
-                        BN_NAN, )
+                        BN_NAN_DTYPE0, )
         }
         WHILE1 {
             MACRO_FLOAT(DTYPE0,
-                        count >= min_count ? VALUE : BN_NAN, )
+                        count >= min_count ? VALUE : BN_NAN_DTYPE0, )
         }
         WHILE2 {
             MACRO_FLOAT(
                 DTYPE0,
-                count >= min_count ? VALUE : BN_NAN,
+                count >= min_count ? VALUE : BN_NAN_DTYPE0,
                 const npy_DTYPE0 aold = AOLD(DTYPE0);
                 if (!bn_isnan(aold)) count--;
                 if (extreme_pair->death == INDEX) {
@@ -501,7 +501,7 @@ MOVE(NAME, DTYPE0) {
         WHILE0 {
             MACRO_INT(DTYPE0,
                       DTYPE1,
-                      BN_NAN, )
+                      BN_NAN_DTYPE1, )
         }
         WHILE1 {
             MACRO_INT(DTYPE0,
@@ -625,7 +625,7 @@ MOVE_MAIN(move_median, 0)
             }                             \
         }                                 \
         if (n < min_count) {              \
-            r = BN_NAN;                   \
+            r = BN_NAN_##dtype1;          \
         } else if (n == 1) {              \
             r = 0.0;                      \
         } else {                          \
@@ -634,7 +634,7 @@ MOVE_MAIN(move_median, 0)
             r = 2.0 * (r - 0.5);          \
         }                                 \
     } else {                              \
-        r = BN_NAN;                       \
+        r = BN_NAN_##dtype1;              \
     }
 
 /* dtype = [['float64', 'float64'], ['float32', 'float32']] */
@@ -643,7 +643,7 @@ MOVE(move_rank, DTYPE0) {
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         WHILE0 {
-            YI(DTYPE1) = BN_NAN;
+            YI(DTYPE1) = BN_NAN_DTYPE1;
         }
         WHILE1 {
             MOVE_RANK(DTYPE0, DTYPE1, 0)
@@ -668,7 +668,7 @@ MOVE(move_rank, DTYPE0) {
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         WHILE0 {
-            YI(DTYPE1) = BN_NAN;
+            YI(DTYPE1) = BN_NAN_DTYPE1;
         }
         WHILE1 {
             const npy_DTYPE0 ai = AI(DTYPE0);
@@ -683,7 +683,7 @@ MOVE(move_rank, DTYPE0) {
                 }
             }
             if (INDEX < min_count - 1) {
-                r = BN_NAN;
+                r = BN_NAN_DTYPE1;
             } else if (INDEX == 0) {
                 r = 0.0;
             } else {
