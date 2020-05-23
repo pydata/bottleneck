@@ -725,16 +725,17 @@ nonreducer_axis(char *     name,
     }
 
     dtype = PyArray_TYPE(a);
-    if (dtype == NPY_float64)
+    if (dtype == NPY_float64) {
         y = nra_float64(a, axis, n);
-    else if (dtype == NPY_float32)
+    } else if (dtype == NPY_float32) {
         y = nra_float32(a, axis, n);
-    else if (dtype == NPY_int64)
+    } else if (dtype == NPY_int64) {
         y = nra_int64(a, axis, n);
-    else if (dtype == NPY_int32)
+    } else if (dtype == NPY_int32) {
         y = nra_int32(a, axis, n);
-    else
+    } else {
         y = slow(name, args, kwds);
+    }
 
     Py_DECREF(a);
 
