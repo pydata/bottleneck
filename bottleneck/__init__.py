@@ -1,35 +1,34 @@
 try:
-    from .reduce import (
-        nansum,
-        nanmean,
-        nanstd,
-        nanvar,
-        nanmin,
-        nanmax,
-        median,
-        nanmedian,
-        ss,
-        nanargmin,
-        nanargmax,
-        anynan,
-        allnan,
+    from . import slow
+    from .move import (
+        move_argmax,
+        move_argmin,
+        move_max,
+        move_mean,
+        move_median,
+        move_min,
+        move_rank,
+        move_std,
+        move_sum,
+        move_var,
     )
     from .nonreduce import replace
-    from .nonreduce_axis import partition, argpartition, rankdata, nanrankdata, push
-    from .move import (
-        move_sum,
-        move_mean,
-        move_std,
-        move_var,
-        move_min,
-        move_max,
-        move_argmin,
-        move_argmax,
-        move_median,
-        move_rank,
+    from .nonreduce_axis import argpartition, nanrankdata, partition, push, rankdata
+    from .reduce import (
+        allnan,
+        anynan,
+        median,
+        nanargmax,
+        nanargmin,
+        nanmax,
+        nanmean,
+        nanmedian,
+        nanmin,
+        nanstd,
+        nansum,
+        nanvar,
+        ss,
     )
-
-    from . import slow
 
 except ImportError:
     raise ImportError(

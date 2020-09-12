@@ -11,7 +11,7 @@ fi
 
 if [ "${TEST_RUN}" == "style" ]; then
     flake8
-    isort -rc -c -df .
+    isort -c --df .
     black . --check --exclude "(build/|dist/|\.git/|\.mypy_cache/|\.tox/|\.venv/\.asv/|env|\.eggs)"
 else
     if [ "${TEST_RUN}" == "sdist" ]; then

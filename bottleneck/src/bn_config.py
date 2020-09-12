@@ -34,7 +34,7 @@ def get_python_header_include() -> List[str]:
 
 
 def _get_compiler_list(cmd: Config) -> str:
-    """ Return the compiler command as a list of strings. Distutils provides a
+    """Return the compiler command as a list of strings. Distutils provides a
     wildly inconsistent API here:
       - UnixCCompiler returns a list
       - MSVCCompiler intentionally doesn't set this variable
@@ -118,7 +118,10 @@ def check_gcc_function_attribute(cmd: Config, attribute: str, name: str) -> bool
 
 
 def check_gcc_header(cmd: Config, header: str) -> bool:
-    return cmd.check_header(header, include_dirs=get_python_header_include(),)
+    return cmd.check_header(
+        header,
+        include_dirs=get_python_header_include(),
+    )
 
 
 def check_gcc_intrinsic(cmd: Config, intrinsic: str, value: str) -> bool:

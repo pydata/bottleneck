@@ -19,7 +19,8 @@ hy_array_gen = hy_arrays(
 )
 
 hy_int_array_gen = hy_arrays(
-    dtype=integer_dtypes(sizes=(32, 64)), shape=array_shapes(),
+    dtype=integer_dtypes(sizes=(32, 64)),
+    shape=array_shapes(),
 )
 
 

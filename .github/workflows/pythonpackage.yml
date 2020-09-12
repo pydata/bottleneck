@@ -61,8 +61,8 @@ jobs:
     - name: Check import sorting with isort
       if: matrix.python-version >= 3.6
       run: |
-        pip install isort
-        isort -c -df -rc .
+        pip install isort>=5
+        isort -c --df .
     - name: Check formatting with black
       if: matrix.python-version >= 3.6
       run: |
