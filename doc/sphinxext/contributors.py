@@ -11,10 +11,9 @@ code contributors and commits, and then list each contributor
 individually.
 """
 import git
+from announce import build_components
 from docutils import nodes
 from docutils.parsers.rst import Directive
-
-from announce import build_components
 
 
 class ContributorsDirective(Directive):
