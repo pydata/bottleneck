@@ -20,7 +20,11 @@ else
         pip install "${ARCHIVE[0]}"
     elif [ "${TEST_RUN}" != "coverage" ]; then
         # CFLAGS gets ignored by PEP 518, so do coverage from inplace build
-        pip install "."
+        EXTRAS="test"
+        if [ "${TEST_RUN}" == "doc" ]; then
+            EXTRAS="${EXTRAS},doc"
+        fi
+        pip install ".[${EXTRAS}]"
     fi
     python setup.py build_ext --inplace
     if [ "${TEST_RUN}" == "doc" ]; then

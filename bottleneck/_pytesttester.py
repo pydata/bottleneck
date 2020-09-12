@@ -69,6 +69,12 @@ class PytestTester(object):
 
         pytest_args += ["--pyargs"] + list(tests)
 
+        if not _have_test_extras():
+            warnings.warn(
+                "The pytest and/or hypothesis packages are not installed, install with "
+                "pip install bottleneck[test]"
+            )
+
         try:
             code = pytest.main(pytest_args)
         except SystemExit as exc:
@@ -85,3 +91,12 @@ def _pytest_has_xdist() -> bool:
     from importlib.util import find_spec
 
     return find_spec("xdist") is not None
+
+
+def _have_test_extras() -> bool:
+    """
+    Check if the test extra is installed
+    """
+    from importlib.util import find_spec
+
+    return all(find_spec(x) is not None for x in ["pytest", "hypothesis"])

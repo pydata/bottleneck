@@ -41,18 +41,17 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-py${{ matrix.python-version }}-pip-
 
-    - name: Install dependencies
+    - name: Install style dependencies
+      if: matrix.python-version >= 3.6
       run: |
         python -m pip install --upgrade pip
-        pip install pytest flake8 hypothesis
-    - name: Install dependencies for Py38 on Windows
-      if: startswith(runner.os, 'Windows') && matrix.python-version == 3.8
-      run: pip install Cython numpy
+        pip install flake8 isort>=5 black>=20.8b1
     - name: Build
       run: |
         python setup.py build_ext --inplace
-        pip install .
+        pip install .[test]
     - name: Lint with flake8
+      if: matrix.python-version >= 3.6
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
@@ -61,12 +60,10 @@ jobs:
     - name: Check import sorting with isort
       if: matrix.python-version >= 3.6
       run: |
-        pip install isort>=5
         isort -c --df .
     - name: Check formatting with black
       if: matrix.python-version >= 3.6
       run: |
-        pip install black
         black . --check --exclude "(build/|dist/|\.git/|\.mypy_cache/|\.tox/|\.venv/\.asv/|env|\.eggs)"
     - name: Test with pytest
       run: |

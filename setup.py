@@ -210,9 +210,11 @@ metadata = dict(
     version=versioneer.get_version(),
     packages=find_packages(),
     package_data={"bottleneck": ["LICENSE", "tests/data/**/*.c"]},
-    requires=["numpy"],
     install_requires=["numpy"],
-    extras_require={"doc": ["numpydoc", "sphinx", "gitpython"]},
+    extras_require={
+        "doc": ["numpydoc", "sphinx", "gitpython"],
+        "test": ["hypothesis", "pytest"],
+    },
     cmdclass=cmdclass,
     setup_requires=["numpy"],
     ext_modules=prepare_modules(),
