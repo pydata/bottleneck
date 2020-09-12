@@ -22,8 +22,7 @@ jobs:
 
          # doc check
         - os: linux
-          env: TEST_DEPS="sphinx numpydoc gitpython pytest hypothesis"
-               PYTHON_VERSION="3.7"
+          env: PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
                TEST_RUN="doc"
 
@@ -38,32 +37,31 @@ jobs:
 
          # python 3.6
         - os: linux
-          env: TEST_DEPS="numpy pytest hypothesis"
+          env: TEST_DEPS="numpy"
                PYTHON_VERSION="3.6"
                PYTHON_ARCH="64"
 
          # python 3.7
         - os: linux
-          env: TEST_DEPS="numpy pytest hypothesis"
+          env: TEST_DEPS="numpy"
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
 
         - os: linux
           arch: arm64
-          env: TEST_DEPS="numpy pytest hypothesis"
+          env: TEST_DEPS="numpy"
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
 
         - os: linux
           arch: ppc64le
-          env: TEST_DEPS="numpy pytest hypothesis gfortran_linux-ppc64le=8.2.0"
+          env: TEST_DEPS="numpy gfortran_linux-ppc64le=8.2.0"
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
 
          # python 3.8 conda numpy
         - os: linux
-          env: TEST_DEPS="pytest hypothesis"
-               PYTHON_VERSION="3.8"
+          env: PYTHON_VERSION="3.8"
                PYTHON_ARCH="64"
 
          # python 3.8 conda numpy + sdist
@@ -75,20 +73,17 @@ jobs:
 
         # python 3.6
         - os: osx
-          env: TEST_DEPS="numpy pytest hypothesis"
-               PYTHON_VERSION="3.6"
+          env: PYTHON_VERSION="3.6"
                PYTHON_ARCH="64"
 
         # python 3.7
         - os: osx
-          env: TEST_DEPS="numpy pytest hypothesis"
-               PYTHON_VERSION="3.7"
+          env: PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
 
         # python 3.8
         - os: osx
-          env: TEST_DEPS="pytest hypothesis"
-               PYTHON_VERSION="3.8"
+          env: PYTHON_VERSION="3.8"
                PYTHON_ARCH="64"
 
 before_install:

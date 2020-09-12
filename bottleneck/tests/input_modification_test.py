@@ -8,7 +8,8 @@ import numpy as np
 import pytest
 from numpy.testing import assert_equal
 
-from .util import get_functions, hy_array_gen
+from .common import hy_array_gen
+from .util import get_functions
 
 
 @pytest.mark.parametrize("func", get_functions("all"), ids=lambda x: x.__name__)

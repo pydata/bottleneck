@@ -139,6 +139,15 @@ http://www.lfd.uci.edu/~gohlke/pythonlibs/#bottleneck
 Unit tests
 ==========
 
+To keep the install dependencies light, test dependencies are made available
+via a setuptools "extra":
+
+    $ pip install bottleneck[test]
+
+Or, if working locally:
+
+    $ pip install .[test]
+
 After you have installed Bottleneck, run the suite of unit tests::
 
   In [1]: import bottleneck as bn

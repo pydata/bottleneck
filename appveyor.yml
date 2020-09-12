@@ -5,7 +5,7 @@ max_jobs: 100
 environment:
 
     global:
-        DEPS: "numpy pytest hypothesis"
+        DEPS: "numpy"
         CONDA_VENV: "testy"
         # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
         # /E:ON and /V:ON options are not enabled in the batch script
@@ -53,6 +53,6 @@ build: false
 test_script:
     - "activate %CONDA_VENV%"
     - "%CMD_IN_ENV% python.exe -m pip install --upgrade pip"
-    - "%CMD_IN_ENV% pip install ."
+    - "%CMD_IN_ENV% pip install .[test]"
     - "%CMD_IN_ENV% python setup.py build_ext --inplace"
     - "python tools\\test-installed-bottleneck.py"
