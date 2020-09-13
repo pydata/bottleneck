@@ -223,7 +223,7 @@ def unit_maker_argparse_raises(func):
 # Check that exceptions are raised
 
 
-def test_nanmax_size_zero(dtypes=DTYPES):
+def test_nanmax_size_zero(dtypes=DTYPES) -> None:
     """Test nanmax for size zero input arrays."""
     shapes = [(0,), (2, 0), (1, 2, 0)]
     for shape in shapes:
@@ -233,7 +233,7 @@ def test_nanmax_size_zero(dtypes=DTYPES):
             assert_raises(ValueError, bn.slow.nanmax, a)
 
 
-def test_nanmin_size_zero(dtypes=DTYPES):
+def test_nanmin_size_zero(dtypes=DTYPES) -> None:
     """Test nanmin for size zero input arrays."""
     shapes = [(0,), (2, 0), (1, 2, 0)]
     for shape in shapes:
@@ -247,7 +247,7 @@ def test_nanmin_size_zero(dtypes=DTYPES):
 # nanstd and nanvar regression test (issue #60)
 
 
-def test_nanstd_issue60():
+def test_nanstd_issue60() -> None:
     """nanstd regression test (issue #60)"""
 
     f = bn.nanstd([1.0], ddof=1)
@@ -271,7 +271,7 @@ def test_nanstd_issue60():
     assert_equal(f, s, err_msg="issue #60 regression")
 
 
-def test_nanvar_issue60():
+def test_nanvar_issue60() -> None:
     """nanvar regression test (issue #60)"""
 
     f = bn.nanvar([1.0], ddof=1)
@@ -297,7 +297,7 @@ def test_nanvar_issue60():
 
 @pytest.mark.parametrize("dtype", DTYPES)
 @pytest.mark.parametrize("func", (bn.nanstd, bn.nanvar), ids=lambda x: x.__name__)
-def test_ddof_nans(func, dtype):
+def test_ddof_nans(func, dtype) -> None:
     array = np.ones((1, 1), dtype=dtype)
     for axis in [None, 0, 1, -1]:
         result = func(array, axis=axis, ddof=3)
