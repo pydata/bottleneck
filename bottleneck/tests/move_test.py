@@ -56,7 +56,7 @@ def test_move(func):
 
 
 @pytest.mark.parametrize("func", bn.get_functions("move"), ids=lambda x: x.__name__)
-def test_arg_parsing(func, decimal=5):
+def test_arg_parsing(func, decimal=5) -> None:
     """test argument parsing."""
 
     name = func.__name__
@@ -121,7 +121,7 @@ def test_arg_parsing(func, decimal=5):
 
 
 @pytest.mark.parametrize("func", bn.get_functions("move"), ids=lambda x: x.__name__)
-def test_arg_parse_raises(func):
+def test_arg_parse_raises(func) -> None:
     """test argument parsing raises in move"""
     a = np.array([1.0, 2, 3])
     assert_raises(TypeError, func)
@@ -144,7 +144,7 @@ def test_arg_parse_raises(func):
 # LONG time to run.
 
 
-def test_move_median_with_nans():
+def test_move_median_with_nans() -> None:
     """test move_median.c with nans"""
     fmt = "\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n"
     aaae = assert_array_almost_equal
@@ -167,7 +167,7 @@ def test_move_median_with_nans():
             aaae(actual, desired, decimal=5, err_msg=err_msg)
 
 
-def test_move_median_without_nans():
+def test_move_median_without_nans() -> None:
     """test move_median.c without nans"""
     fmt = "\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n"
     aaae = assert_array_almost_equal
@@ -190,7 +190,7 @@ def test_move_median_without_nans():
 # Regression test for square roots of negative numbers
 
 
-def test_move_std_sqrt():
+def test_move_std_sqrt() -> None:
     """Test move_std for neg sqrt."""
 
     a = [

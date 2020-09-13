@@ -4,7 +4,7 @@ import posixpath as path
 from ..src.bn_template import make_c_files
 
 
-def test_make_c_files():
+def test_make_c_files() -> None:
     dirpath = os.path.join(os.path.dirname(__file__), "data/template_test/")
     modules = ["test"]
     test_input = os.path.join(dirpath, "test.c")
