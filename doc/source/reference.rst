@@ -46,56 +46,53 @@ Reduce
 
 Functions the reduce the input array along the specified axis.
 
-------------
-
 .. autofunction:: bottleneck.nansum
 
-------------
+|
 
 .. autofunction:: bottleneck.nanmean
 
-------------
+|
 
 .. autofunction:: bottleneck.nanstd
 
-------------
+|
 
 .. autofunction:: bottleneck.nanvar
 
-------------
+|
 
 .. autofunction:: bottleneck.nanmin
 
-------------
+|
 
 .. autofunction:: bottleneck.nanmax
 
-------------
+|
 
 .. autofunction:: bottleneck.median
 
-------------
+|
 
 .. autofunction:: bottleneck.nanmedian
 
-------------
+|
 
 .. autofunction:: bottleneck.ss
 
-------------
+|
 
 .. autofunction:: bottleneck.nanargmin
 
-------------
+|
 
 .. autofunction:: bottleneck.nanargmax
 
-
-------------
+|
 
 .. autofunction:: bottleneck.anynan
 
-------------
+|
 
 .. autofunction:: bottleneck.allnan
 
@@ -105,7 +102,7 @@ Non-reduce
 
 Functions that do not reduce the input array and do not take `axis` as input.
 
-------------
+|
 
 .. autofunction:: bottleneck.replace
 
@@ -116,23 +113,23 @@ Non-reduce with axis
 Functions that do not reduce the input array but operate along a specified
 axis.
 
-------------
+|
 
 .. autofunction:: bottleneck.rankdata
 
-------------
+|
 
 .. autofunction:: bottleneck.nanrankdata
 
-------------
+|
 
 .. autofunction:: bottleneck.partition
 
-------------
+|
 
 .. autofunction:: bottleneck.argpartition
 
-------------
+|
 
 .. autofunction:: bottleneck.push
 
@@ -142,43 +139,43 @@ Moving window functions
 
 Functions that operate along a (1d) moving window.
 
-------------
+|
 
 .. autofunction:: bottleneck.move_sum
 
-------------
+|
 
 .. autofunction:: bottleneck.move_mean
 
-------------
+|
 
 .. autofunction:: bottleneck.move_std
 
-------------
+|
 
 .. autofunction:: bottleneck.move_var
 
-------------
+|
 
 .. autofunction:: bottleneck.move_min
 
-------------
+|
 
 .. autofunction:: bottleneck.move_max
 
-------------
+|
 
 .. autofunction:: bottleneck.move_argmin
 
-------------
+|
 
 .. autofunction:: bottleneck.move_argmax
 
-------------
+|
 
 .. autofunction:: bottleneck.move_median
 
-------------
+|
 
 .. autofunction:: bottleneck.move_rank
 
