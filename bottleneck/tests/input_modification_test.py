@@ -13,6 +13,7 @@ from .util import get_functions
 
 
 @pytest.mark.parametrize("func", get_functions("all"), ids=lambda x: x.__name__)
+@hypothesis.settings(deadline=1000)
 @hypothesis.given(array=hy_array_gen)
 def test_modification(func, array):
     """Test that bn.xxx gives the same output as np.xxx."""
