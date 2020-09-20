@@ -4,28 +4,41 @@ Function reference
 
 Bottleneck provides the following functions:
 
-=================================  ==============================================================================================
-reduce                             :meth:`nansum <bottleneck.nansum>`, :meth:`nanmean <bottleneck.nanmean>`,
-                                   :meth:`nanstd <bottleneck.nanstd>`, :meth:`nanvar <bottleneck.nanvar>`,
-                                   :meth:`nanmin <bottleneck.nanmin>`, :meth:`nanmax <bottleneck.nanmax>`,
-                                   :meth:`median <bottleneck.median>`, :meth:`nanmedian <bottleneck.nanmedian>`,
-                                   :meth:`ss <bottleneck.ss>`, :meth:`nanargmin <bottleneck.nanargmin>`,
-                                   :meth:`nanargmax <bottleneck.nanargmax>`, :meth:`anynan <bottleneck.anynan>`,
-                                   :meth:`allnan <bottleneck.allnan>`
+====================    ===============================================
+reduce                  :meth:`nansum <bottleneck.nansum>`,
+                        :meth:`nanmean <bottleneck.nanmean>`,
+                        :meth:`nanstd <bottleneck.nanstd>`,
+                        :meth:`nanvar <bottleneck.nanvar>`,
+                        :meth:`nanmin <bottleneck.nanmin>`,
+                        :meth:`nanmax <bottleneck.nanmax>`,
+                        :meth:`median <bottleneck.median>`,
+                        :meth:`nanmedian <bottleneck.nanmedian>`,
+                        :meth:`ss <bottleneck.ss>`,
+                        :meth:`nanargmin <bottleneck.nanargmin>`,
+                        :meth:`nanargmax <bottleneck.nanargmax>`,
+                        :meth:`anynan <bottleneck.anynan>`,
+                        :meth:`allnan <bottleneck.allnan>`
 
-non-reduce                         :meth:`replace <bottleneck.replace>`
+non-reduce              :meth:`replace <bottleneck.replace>`
 
-non-reduce with axis               :meth:`rankdata <bottleneck.rankdata>`, :meth:`nanrankdata <bottleneck.nanrankdata>`,
-                                   :meth:`partition <bottleneck.partition>`, :meth:`argpartition <bottleneck.argpartition>`,
-                                   :meth:`push <bottleneck.push>`
+non-reduce with axis    :meth:`rankdata <bottleneck.rankdata>`,
+                        :meth:`nanrankdata <bottleneck.nanrankdata>`,
+                        :meth:`partition <bottleneck.partition>`,
+                        :meth:`argpartition <bottleneck.argpartition>`,
+                        :meth:`push <bottleneck.push>`
 
-moving window                      :meth:`move_sum <bottleneck.move_sum>`, :meth:`move_mean <bottleneck.move_mean>`,
-                                   :meth:`move_std <bottleneck.move_std>`, :meth:`move_var <bottleneck.move_var>`,
-                                   :meth:`move_min <bottleneck.move_min>`, :meth:`move_max <bottleneck.move_max>`,
-                                   :meth:`move_argmin <bottleneck.move_argmin>`, :meth:`move_argmax <bottleneck.move_argmax>`,
-                                   :meth:`move_median <bottleneck.move_median>`, :meth:`move_rank <bottleneck.move_rank>`
+moving window           :meth:`move_sum <bottleneck.move_sum>`,
+                        :meth:`move_mean <bottleneck.move_mean>`,
+                        :meth:`move_std <bottleneck.move_std>`,
+                        :meth:`move_var <bottleneck.move_var>`,
+                        :meth:`move_min <bottleneck.move_min>`,
+                        :meth:`move_max <bottleneck.move_max>`,
+                        :meth:`move_argmin <bottleneck.move_argmin>`,
+                        :meth:`move_argmax <bottleneck.move_argmax>`,
+                        :meth:`move_median <bottleneck.move_median>`,
+                        :meth:`move_rank <bottleneck.move_rank>`
 
-=================================  ==============================================================================================
+====================    ===============================================
 
 
 Reduce
