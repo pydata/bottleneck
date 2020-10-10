@@ -64,10 +64,15 @@ jobs:
           env: PYTHON_VERSION="3.8"
                PYTHON_ARCH="64"
 
-         # python 3.8 conda numpy + sdist
+         # python 3.9 conda numpy
+        - os: linux
+          env: PYTHON_VERSION="3.9"
+               PYTHON_ARCH="64"
+
+         # python 3.9 conda numpy + sdist
         - os: linux
           env: TEST_DEPS="pytest hypothesis"
-               PYTHON_VERSION="3.8"
+               PYTHON_VERSION="3.9"
                PYTHON_ARCH="64"
                TEST_RUN="sdist"
 
@@ -84,6 +89,11 @@ jobs:
         # python 3.8
         - os: osx
           env: PYTHON_VERSION="3.8"
+               PYTHON_ARCH="64"
+
+        # python 3.9
+        - os: osx
+          env: PYTHON_VERSION="3.9"
                PYTHON_ARCH="64"
 
 before_install:
