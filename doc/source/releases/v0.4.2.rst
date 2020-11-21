@@ -1,0 +1,14 @@
+Bottleneck 0.4.2
+================
+
+*Release date: 2011-03-08*
+
+This is a bug fix release.
+
+Same bug fixed in Bottleneck 0.4.1 for nanstd() was fixed for nanvar() in
+this release. Thanks again to Christoph Gohlke for finding the bug.
+
+Contributors
+~~~~~~~~~~~~
+
+.. contributors:: v0.4.1..v0.4.2

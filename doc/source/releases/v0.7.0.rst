@@ -1,0 +1,28 @@
+Bottleneck 0.7.0
+================
+
+*Release date: 2013-09-10*
+
+Enhancements
+~~~~~~~~~~~~
+
+- bn.rankdata() is twice as fast (with input a = np.random.rand(1000000))
+- C files now included in github repo; cython not needed to try latest
+- C files are now generated with Cython 0.19.1 instead of 0.16
+- Test bottleneck across multiple python/numpy versions using tox
+- Source tarball size cut in half
+
+Bug fixes
+~~~~~~~~~
+
+- move_std, move_nanstd return inappropriate NaNs (sqrt of negative #)
+  (:issue:`50`)
+- `make test` fails on some computers (:issue:`52`)
+- scipy optional yet some unit tests depend on scipy (:issue:`57`)
+- now works on Mac OS X 10.8 using clang compiler (:issue:`49`, :issue:`55`)
+- nanstd([1.0], ddof=1) and nanvar([1.0], ddof=1) crash (:issue:`60`)
+
+Contributors
+~~~~~~~~~~~~
+
+.. contributors:: v0.6.0..v0.7.0

@@ -1,0 +1,10 @@
+Bottleneck 0.1.0
+================
+
+*Release date: 2010-12-10*
+
+Initial release. The three categories of Bottleneck functions:
+
+- Faster replacement for NumPy and SciPy functions
+- Moving window functions
+- Group functions that bin calculations by like-labeled elements
