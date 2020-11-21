@@ -1,0 +1,48 @@
+Bottleneck 0.3.0
+================
+
+*Release date: 2010-01-19*
+
+The third release of Bottleneck is twice as fast for small input arrays and
+contains 10 new functions.
+
+Faster
+~~~~~~
+
+- All functions are faster (less overhead in selector functions)
+
+New functions
+~~~~~~~~~~~~~
+
+- nansum()
+- move_sum()
+- move_nansum()
+- move_mean()
+- move_std()
+- move_nanstd()
+- move_min()
+- move_nanmin()
+- move_max()
+- move_nanmax()
+
+Enhancements
+~~~~~~~~~~~~
+
+- You can now specify the dtype and axis to use in the benchmark timings
+- Improved documentation and more unit tests
+
+Breaks from 0.2.0
+~~~~~~~~~~~~~~~~~
+
+- Moving window functions now default to axis=-1 instead of axis=0
+- Low-level moving window selector functions no longer take window as input
+
+Bug fix
+~~~~~~~
+
+- int input array resulted in call to slow, non-cython version of move_nanmean
+
+Contributors
+~~~~~~~~~~~~
+
+.. contributors:: v0.2.0..v0.3.0

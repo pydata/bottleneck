@@ -1,0 +1,40 @@
+Bottleneck 0.5.0
+================
+
+*Release date: 2011-06-13*
+
+The fifth release of bottleneck adds four new functions, comes in a single
+source distribution instead of separate 32 and 64 bit versions, and contains
+bug fixes.
+
+J. David Lee wrote the C-code implementation of the double heap moving
+window median.
+
+New functions
+~~~~~~~~~~~~~
+
+- move_median(), moving window median
+- partsort(), partial sort
+- argpartsort()
+- ss(), sum of squares, faster version of scipy.stats.ss
+
+Changes
+~~~~~~~
+
+- Single source distribution instead of separate 32 and 64 bit versions
+- nanmax and nanmin now follow Numpy 1.6 (not 1.5.1) when input is all NaN
+
+Bug fixes
+~~~~~~~~~
+
+- Support python 2.5 by importing `with` statement (:issue:`14`)
+- nanmedian wrong for particular ordering of NaN and non-NaN elements
+  (:issue:`22`)
+- argpartsort, nanargmin, nanargmax returned wrong dtype on 64-bit Windows
+  (:issue:`26`)
+- rankdata and nanrankdata crashed on 64-bit Windows (:issue:`29`)
+
+Contributors
+~~~~~~~~~~~~
+
+.. contributors:: v0.4.3..v0.5.0

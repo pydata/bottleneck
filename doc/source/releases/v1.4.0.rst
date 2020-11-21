@@ -1,0 +1,13 @@
+Bottleneck 1.4.0
+================
+
+*Release date: in development*
+
+Bug Fixes
+~~~~~~~~~
+
+
+Contributors
+~~~~~~~~~~~~
+
+.. contributors:: v1.3.x..HEAD

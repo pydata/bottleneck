@@ -1,0 +1,54 @@
+Bottleneck 1.2.0
+================
+
+*Release date: 2016-10-20*
+
+This release is a complete rewrite of Bottleneck.
+
+Port to C
+~~~~~~~~~
+
+- Bottleneck is now written in C
+- Cython is no longer a dependency
+- Source tarball size reduced by 80%
+- Build time reduced by 66%
+- Install size reduced by 45%
+
+Redesign
+~~~~~~~~
+
+- Besides porting to C, much of bottleneck has been redesigned to be
+  simpler and faster. For example, bottleneck now uses its own N-dimensional
+  array iterators, reducing function call overhead.
+
+New features
+~~~~~~~~~~~~
+
+- The new function bench_detailed runs a detailed performance benchmark on
+  a single bottleneck function.
+- Bottleneck can be installed on systems that do not yet have NumPy
+  installed. Previously that only worked on some systems.
+
+Beware
+~~~~~~
+
+- Functions partsort and argpartsort have been renamed to partition and
+  argpartition to match NumPy. Additionally the meaning of the input
+  arguments have changed: :func:`bn.partsort(a, n)` is now equivalent to
+  :func:`bn.partition(a, kth=n-1)`. Similarly for bn.argpartition.
+- The keyword for array input has been changed from `arr` to `a` in all
+  functions. It now matches NumPy.
+
+Thanks
+~~~~~~
+
+- Moritz E. Beber: continuous integration with AppVeyor
+- Christoph Gohlke: Windows compatibility
+- Jennifer Olsen: comments and suggestions
+- A special thanks to the Cython developers. The quickest way to appreciate
+  their work is to remove Cython from your project. It is not easy.
+
+Contributors
+~~~~~~~~~~~~
+
+.. contributors:: v1.1.0..v1.2.0

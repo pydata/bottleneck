@@ -1,0 +1,65 @@
+Bottleneck 1.1.0
+================
+
+*Release date: 2016-06-22*
+
+This release makes Bottleneck more robust, releases GIL, adds new functions.
+
+More Robust
+~~~~~~~~~~~
+
+- :func:`bn.move_median` can now handle NaNs and `min_count` parameter
+- :func:`bn.move_std` is slower but numerically more stable
+- Bottleneck no longer crashes on byte-swapped input arrays
+
+Faster
+~~~~~~
+
+- All Bottleneck functions release the GIL
+- median is faster if the input array contains NaN
+- move_median is faster for input arrays that contain lots of NaNs
+- No speed penalty for median, nanmedian, nanargmin, nanargmax for Fortran
+  ordered input arrays when axis is None
+- Function call overhead cut in half for reduction along all axes (axis=None)
+  if the input array satisfies at least one of the following properties: 1d,
+  C contiguous, F contiguous
+- Reduction along all axes (axis=None) is more than twice as fast for long,
+  narrow input arrays such as a (1000000, 2) C contiguous array and a
+  (2, 1000000) F contiguous array
+
+New Functions
+~~~~~~~~~~~~~
+
+- move_var
+- move_argmin
+- move_argmax
+- move_rank
+- push
+
+Beware
+~~~~~~
+
+- :func:`bn.median` now returns NaN for a slice that contains one or more NaNs
+- Instead of using the distutils default, the '-O2' C compiler flag is forced
+- :func:`bn.move_std` output changed when mean is large compared to standard
+  deviation
+- Fixed: Non-accelerated moving window functions used min_count incorrectly
+- :func:`bn.move_median` is a bit slower for float input arrays that do not
+  contain NaN
+
+Thanks
+~~~~~~
+
+Alphabeticaly by last name
+
+- Alessandro Amici worked on setup.py
+- Pietro Battiston modernized bottleneck installation
+- Moritz E. Beber set up continuous integration with Travis CI
+- Jaime Frio improved the numerical stability of move_std
+- Christoph Gohlke revived Windows compatibility
+- Jennifer Olsen added NaN support to move_median
+
+Contributors
+~~~~~~~~~~~~
+
+.. contributors:: v1.0.0..v1.1.0

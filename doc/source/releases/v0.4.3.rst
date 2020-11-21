@@ -1,0 +1,23 @@
+Bottleneck 0.4.3
+================
+
+*Release date: 2011-03-17*
+
+This is a bug fix release.
+
+Bug fixes
+~~~~~~~~~
+
+- median and nanmedian modified (partial sort) input array (:issue:`11`)
+- nanmedian wrong when odd number of elements with all but last a NaN
+  (:issue:`12`)
+
+Enhancement
+~~~~~~~~~~~
+
+- Lazy import of SciPy (rarely used) speeds Bottleneck import 3x
+
+Contributors
+~~~~~~~~~~~~
+
+.. contributors:: v0.4.2..v0.4.3

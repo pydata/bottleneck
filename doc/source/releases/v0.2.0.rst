@@ -1,0 +1,36 @@
+Bottleneck 0.2.0
+================
+
+*Release date: 2010-12-27*
+
+The second release of Bottleneck is faster, contains more functions, and
+supports more dtypes.
+
+Faster
+~~~~~~
+
+- All functions faster (less overhead) when output is not a scalar
+- Faster nanmean() for 2d, 3d arrays containing NaNs when axis is not None
+
+New functions
+~~~~~~~~~~~~~
+
+- nanargmin()
+- nanargmax()
+- nanmedian()
+
+Enhancements
+~~~~~~~~~~~~
+
+- Added support for float32
+- Fallback to slower, non-Cython functions for unaccelerated ndim/dtype
+- Scipy is no longer a dependency
+- Added support for older versions of NumPy (1.4.1)
+- All functions are now templated for dtype and axis
+- Added a sandbox for prototyping of new Bottleneck functions
+- Rewrote benchmarking code
+
+Contributors
+~~~~~~~~~~~~
+
+.. contributors:: v0.2.0..v0.1.0

@@ -1,0 +1,24 @@
+Bottleneck 1.2.1
+================
+
+*Release date: 2017-05-15*
+
+This release adds support for NumPy's relaxed strides checking and
+fixes a few bugs.
+
+Bug Fixes
+~~~~~~~~~
+
+- Installing bottleneck when two versions of NumPy are present (:issue:`156`)
+- Compiling on Ubuntu 14.04 inside a Windows 7 WMware (:issue:`157`)
+- Occasional segmentation fault in :func:`bn.nanargmin`, :func:`nanargmax`,
+  :func:`median`, and :func:`nanmedian` when all of the following conditions
+  are met: axis is None, input array is 2d or greater, and input array is not C
+  contiguous. (:issue:`159`)
+- Reducing np.array([2**31], dtype=np.int64) overflows on Windows
+  (:issue:`163`)
+
+Contributors
+~~~~~~~~~~~~
+
+.. contributors:: v1.2.0..v1.2.1

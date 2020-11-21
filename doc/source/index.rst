@@ -29,8 +29,12 @@ Table of Contents
    intro
    installing
    reference
-   release
    license
+
+.. toctree::
+   :maxdepth: 2
+
+   releases/RELEASE
 
 Indices and tables
 ==================

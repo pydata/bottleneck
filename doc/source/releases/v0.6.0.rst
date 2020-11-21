@@ -1,0 +1,39 @@
+Bottleneck 0.6.0
+================
+
+*Release date: 2012-06-04*
+
+Thanks to Dougal Sutherland, Bottleneck now runs on Python 3.2.
+
+New functions
+~~~~~~~~~~~~~
+
+- replace(arr, old, new), e.g, replace(arr, np.nan, 0)
+- nn(arr, arr0, axis) nearest neighbor and its index of 1d arr0 in 2d arr
+- anynan(arr, axis) faster alternative to np.isnan(arr).any(axis)
+- allnan(arr, axis) faster alternative to np.isnan(arr).all(axis)
+
+Enhancements
+~~~~~~~~~~~~
+
+- Python 3.2 support (may work on earlier versions of Python 3)
+- C files are now generated with Cython 0.16 instead of 0.14.1
+- Upgrade numpydoc from 0.3.1 to 0.4 to support Sphinx 1.0.1
+
+Breaks from 0.5.0
+~~~~~~~~~~~~~~~~~
+
+- Support for Python 2.5 dropped
+- Default axis for benchmark suite is now axis=1 (was 0)
+
+Bug fixes
+~~~~~~~~~
+
+- Confusing error message in partsort and argpartsort (:issue:`31`)
+- Update path in MANIFEST.in (:issue:`32`)
+- Wrong output for very large (2**31) input arrays (:issue:`35`)
+
+Contributors
+~~~~~~~~~~~~
+
+.. contributors:: v0.5.0..v0.6.0

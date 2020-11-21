@@ -1,0 +1,40 @@
+Bottleneck 0.4.0
+================
+
+*Release date: 2011-03-08*
+
+The fourth release of Bottleneck contains new functions and bug fixes.
+Separate source code distributions are now made for 32 bit and 64 bit
+operating systems.
+
+New functions
+~~~~~~~~~~~~~
+
+- rankdata()
+- nanrankdata()
+
+Enhancements
+~~~~~~~~~~~~
+
+- Optionally specify the shapes of the arrays used in benchmark
+- Can specify which input arrays to fill with one-third NaNs in benchmark
+
+Breaks from 0.3.0
+~~~~~~~~~~~~~~~~~
+
+- Removed group_nanmean() function
+- Bump dependency from NumPy 1.4.1 to NumPy 1.5.1
+- C files are now generated with Cython 0.14.1 instead of 0.13
+
+Bug fixes
+~~~~~~~~~
+
+- Some functions gave wrong output dtype for some input dtypes on 32
+  bit OS (:issue:`6`)
+- Some functions choked on size zero input arrays (:issue:`7`)
+- Segmentation fault with Cython 0.14.1 (but not 0.13) (:issue:`8`)
+
+Contributors
+~~~~~~~~~~~~
+
+.. contributors:: v0.3.0..v0.4.0
