@@ -11,42 +11,6 @@ git:
 jobs:
     fast_finish: true
     include:
-        - stage: style
-          # flake8, black, and isort
-          os: linux
-          env: TEST_DEPS="flake8 isort>=5"
-               PIP_DEPS="black>=20.8b1"
-               PYTHON_VERSION="3.7"
-               PYTHON_ARCH="64"
-               TEST_RUN="style"
-
-         # doc check
-        - os: linux
-          env: PYTHON_VERSION="3.7"
-               PYTHON_ARCH="64"
-               TEST_RUN="doc"
-
-        - stage: test
-        # coverage
-          os: linux
-          env: TEST_DEPS="numpy pytest pytest-cov hypothesis"
-               PYTHON_VERSION="3.7"
-               PYTHON_ARCH="64"
-               TEST_RUN="coverage"
-
-
-         # python 3.6
-        - os: linux
-          env: TEST_DEPS="numpy"
-               PYTHON_VERSION="3.6"
-               PYTHON_ARCH="64"
-
-         # python 3.7
-        - os: linux
-          env: TEST_DEPS="numpy"
-               PYTHON_VERSION="3.7"
-               PYTHON_ARCH="64"
-
         - os: linux
           arch: arm64
           env: TEST_DEPS="numpy"
@@ -57,43 +21,6 @@ jobs:
           arch: ppc64le
           env: TEST_DEPS="numpy gfortran_linux-ppc64le=8.2.0"
                PYTHON_VERSION="3.7"
-               PYTHON_ARCH="64"
-
-         # python 3.8 conda numpy
-        - os: linux
-          env: PYTHON_VERSION="3.8"
-               PYTHON_ARCH="64"
-
-         # python 3.9 conda numpy
-        - os: linux
-          env: PYTHON_VERSION="3.9"
-               PYTHON_ARCH="64"
-
-         # python 3.9 conda numpy + sdist
-        - os: linux
-          env: TEST_DEPS="pytest hypothesis"
-               PYTHON_VERSION="3.9"
-               PYTHON_ARCH="64"
-               TEST_RUN="sdist"
-
-        # python 3.6
-        - os: osx
-          env: PYTHON_VERSION="3.6"
-               PYTHON_ARCH="64"
-
-        # python 3.7
-        - os: osx
-          env: PYTHON_VERSION="3.7"
-               PYTHON_ARCH="64"
-
-        # python 3.8
-        - os: osx
-          env: PYTHON_VERSION="3.8"
-               PYTHON_ARCH="64"
-
-        # python 3.9
-        - os: osx
-          env: PYTHON_VERSION="3.9"
                PYTHON_ARCH="64"
 
 before_install:
