@@ -13,16 +13,6 @@ environment:
         CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\tools\\appveyor\\windows_sdk.cmd"
 
     matrix:
-        - PYTHON_VERSION: "3.6"
-          PYTHON_ARCH: "32"
-          platform: x86
-          CONDA_HOME: "C:\\Miniconda3"
-
-        - PYTHON_VERSION: "3.6"
-          PYTHON_ARCH: "64"
-          platform: x64
-          CONDA_HOME: "C:\\Miniconda3-x64"
-
         - PYTHON_VERSION: "3.7"
           PYTHON_ARCH: "32"
           platform: x86
