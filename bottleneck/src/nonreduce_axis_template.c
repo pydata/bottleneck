@@ -50,7 +50,7 @@ nonreducer_axis(char *name,
 /* dtype = [['float64'], ['float32'], ['int64'], ['int32']] */
 NRA(partition, DTYPE0) {
     npy_intp i;
-    npy_intp j, l, r, k;
+    npy_intp j, k;
     iter it;
 
     a = (PyArrayObject *)PyArray_NewCopy(a, NPY_ANYORDER);
@@ -67,8 +67,8 @@ NRA(partition, DTYPE0) {
     BN_BEGIN_ALLOW_THREADS
     k = n;
     WHILE {
-        l = 0;
-        r = LENGTH - 1;
+        npy_intp l = 0;
+        npy_intp r = LENGTH - 1;
         PARTITION(DTYPE0)
         NEXT
     }
@@ -198,8 +198,8 @@ NRA_MAIN(argpartition, PARSE_PARTITION)
 /* dtype = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp'],
             ['int64',   'float64', 'intp'], ['int32',   'float64', 'intp']] */
 NRA(rankdata, DTYPE0) {
-    Py_ssize_t j = 0, k, idx, dupcount = 0, i;
-    npy_DTYPE1 old, new, averank, sumranks = 0;
+    Py_ssize_t j = 0, k, idx, i;
+    npy_DTYPE1 new, averank, sumranks = 0;
 
     PyObject *z = PyArray_ArgSort(a, axis, NPY_QUICKSORT);
     PyObject *y = PyArray_EMPTY(PyArray_NDIM(a),
@@ -216,9 +216,9 @@ NRA(rankdata, DTYPE0) {
     } else {
         WHILE {
             idx = ZX(DTYPE2, 0);
-            old = AX(DTYPE0, idx);
+            npy_DTYPE1 old = AX(DTYPE0, idx);
             sumranks = 0;
-            dupcount = 0;
+            Py_ssize_t dupcount = 0;
             for (i = 0; i < LENGTH - 1; i++) {
                 sumranks += i;
                 dupcount++;

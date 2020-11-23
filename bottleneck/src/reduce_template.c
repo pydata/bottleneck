@@ -91,12 +91,12 @@ reducer(char *name,
 
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(nansum, DTYPE0) {
-    npy_DTYPE0 ai, asum = 0;
+    npy_DTYPE0 asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR {
-            ai = AI(DTYPE0);
+            const npy_DTYPE0 ai = AI(DTYPE0);
             if (!bn_isnan(ai)) {
                 asum += ai;
             }
@@ -108,14 +108,14 @@ REDUCE_ALL(nansum, DTYPE0) {
 }
 
 REDUCE_ONE(nansum, DTYPE0) {
-    npy_DTYPE0 ai, asum;
+    npy_DTYPE0 ai;
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
     } else {
         WHILE {
-            asum = 0;
+            npy_DTYPE0 asum = 0;
             FOR {
                 ai = AI(DTYPE0);
                 if (!bn_isnan(ai)) {
@@ -237,15 +237,14 @@ REDUCE_ALL(nanmean, DTYPE0) {
 }
 
 REDUCE_ONE(nanmean, DTYPE0) {
-    Py_ssize_t count;
-    npy_DTYPE0 ai, asum;
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
+        npy_DTYPE0 ai, asum;
         WHILE {
-            count = 0;
+            Py_ssize_t count = 0;
             asum = 0;
             FOR {
                 ai = AI(DTYPE0);
@@ -288,12 +287,12 @@ REDUCE_ALL(nanmean, DTYPE0) {
 }
 
 REDUCE_ONE(nanmean, DTYPE0) {
-    npy_DTYPE1 asum;
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
+        npy_DTYPE1 asum;
         WHILE {
             asum = 0;
             FOR asum += AI(DTYPE0);
@@ -357,15 +356,14 @@ REDUCE_ALL(NAME, DTYPE0) {
 }
 
 REDUCE_ONE(NAME, DTYPE0) {
-    Py_ssize_t count;
-    npy_DTYPE0 ai, asum, amean;
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
+        npy_DTYPE0 ai, asum, amean;
         WHILE {
-            count = 0;
+            Py_ssize_t count = 0;
             asum = 0;
             FOR {
                 ai = AI(DTYPE0);
@@ -906,12 +904,12 @@ REDUCE_MAIN(NAME, 0)
 
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(ss, DTYPE0) {
-    npy_DTYPE0 ai, asum = 0;
+    npy_DTYPE0 asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR {
-            ai = AI(DTYPE0);
+            const npy_DTYPE0 ai = AI(DTYPE0);
             asum += ai * ai;
         }
         NEXT
@@ -921,16 +919,15 @@ REDUCE_ALL(ss, DTYPE0) {
 }
 
 REDUCE_ONE(ss, DTYPE0) {
-    npy_DTYPE0 ai, asum;
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
     } else {
         WHILE {
-            asum = 0;
+            npy_DTYPE0 asum = 0;
             FOR {
-                ai = AI(DTYPE0);
+                const npy_DTYPE0 ai = AI(DTYPE0);
                 asum += ai * ai;
             }
             YPP = asum;
@@ -945,7 +942,6 @@ REDUCE_ONE(ss, DTYPE0) {
 /* dtype = [['int64', 'int64'], ['int32', 'long']] */
 BN_OPT_3
 REDUCE_ALL(ss, DTYPE0) {
-    npy_DTYPE0 ai;
     npy_DTYPE1 asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
@@ -953,13 +949,13 @@ REDUCE_ALL(ss, DTYPE0) {
         const npy_intp count = it.nits * it.length;
         const npy_DTYPE0* pa = PA(DTYPE0);
         for (npy_intp i=0; i<count; i++) {
-            ai = pa[i];
+            const npy_DTYPE0 ai = pa[i];
             asum += ai * ai;
         }
     } else {
         WHILE {
             FOR {
-                ai = AI(DTYPE0);
+                const npy_DTYPE0 ai = AI(DTYPE0);
                 asum += ai * ai;
             }
             NEXT
@@ -971,17 +967,15 @@ REDUCE_ALL(ss, DTYPE0) {
 
 BN_OPT_3
 REDUCE_ONE(ss, DTYPE0) {
-    npy_DTYPE0 ai;
-    npy_DTYPE1 asum;
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
     } else {
         WHILE {
-            asum = 0;
+            npy_DTYPE1 asum = 0;
             FOR {
-                ai = AI(DTYPE0);
+                const npy_DTYPE0 ai = AI(DTYPE0);
                 asum += ai * ai;
             }
             YPP = asum;
@@ -1087,7 +1081,7 @@ REDUCE_MAIN(ss, 0)
 
 REDUCE_ALL(NAME, DTYPE0) {
     npy_intp i;
-    npy_DTYPE1 med;
+    npy_DTYPE1 med = BN_NAN;
     INIT_ALL_RAVEL_ANY_ORDER
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
@@ -1104,13 +1098,13 @@ REDUCE_ALL(NAME, DTYPE0) {
 }
 
 REDUCE_ONE(NAME, DTYPE0) {
-    npy_intp i;
-    npy_DTYPE1 med;
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
+        npy_intp i;
+        npy_DTYPE1 med = BN_NAN;
         BUFFER_NEW(DTYPE0, LENGTH)
         WHILE {
             FUNC(DTYPE0)
@@ -1147,13 +1141,13 @@ REDUCE_ALL(median, DTYPE0) {
 
 BN_OPT_3
 REDUCE_ONE(median, DTYPE0) {
-    npy_intp i;
-    npy_DTYPE1 med;
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
+        npy_intp i;
+        npy_DTYPE1 med;
         BUFFER_NEW(DTYPE0, LENGTH)
         WHILE {
             MEDIAN_INT(DTYPE0)
