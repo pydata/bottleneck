@@ -768,7 +768,7 @@ REDUCE_MAIN(NAME, 0)
              'BIG_INT':   ['NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0']} */
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(NAME, DTYPE0) {
-    npy_DTYPE0 ai, extreme = BIG_FLOAT;
+    npy_DTYPE0 extreme = BIG_FLOAT;
     npy_bool is_allnan = 1;
     Py_ssize_t idx = 0;
     INIT_ALL_RAVEL
@@ -780,7 +780,7 @@ REDUCE_ALL(NAME, DTYPE0) {
     }
     BN_BEGIN_ALLOW_THREADS
     FOR_REVERSE {
-        ai = AI(DTYPE0);
+        const npy_DTYPE0 ai = AI(DTYPE0);
         if (ai COMPARE extreme) {
             extreme = ai;
             is_allnan = 0;
@@ -799,8 +799,6 @@ REDUCE_ALL(NAME, DTYPE0) {
 
 REDUCE_ONE(NAME, DTYPE0) {
     int err_code = 0;
-    Py_ssize_t idx = 0;
-    npy_DTYPE0 ai, extreme;
     INIT_ONE(INTP, intp)
     if (LENGTH == 0) {
         VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
@@ -809,10 +807,11 @@ REDUCE_ONE(NAME, DTYPE0) {
     }
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        extreme = BIG_FLOAT;
+        npy_DTYPE0 extreme = BIG_FLOAT;
         npy_bool is_allnan = 1;
+        npy_intp idx = 0;
         FOR_REVERSE {
-            ai = AI(DTYPE0);
+            const npy_DTYPE0 ai = AI(DTYPE0);
             if (ai COMPARE extreme) {
                 extreme = ai;
                 is_allnan = 0;
@@ -839,7 +838,7 @@ REDUCE_ONE(NAME, DTYPE0) {
 BN_OPT_3
 REDUCE_ALL(NAME, DTYPE0) {
     npy_DTYPE1 idx = 0;
-    npy_DTYPE0 ai, extreme = BIG_INT;
+    npy_DTYPE0 extreme = BIG_INT;
     INIT_ALL_RAVEL
     if (SIZE == 0) {
         DECREF_INIT_ALL_RAVEL
@@ -850,7 +849,7 @@ REDUCE_ALL(NAME, DTYPE0) {
     BN_BEGIN_ALLOW_THREADS
     const npy_DTYPE0* pa = PA(DTYPE0);
     FOR {
-        ai = SI(pa);
+        const npy_DTYPE0 ai = SI(pa);
         if (ai INTCOMP extreme) {
             extreme = ai;
             idx = INDEX;
@@ -863,8 +862,6 @@ REDUCE_ALL(NAME, DTYPE0) {
 
 BN_OPT_3
 REDUCE_ONE(NAME, DTYPE0) {
-    npy_DTYPE1 idx = 0;
-    npy_DTYPE0 ai, extreme;
     INIT_ONE(DTYPE1, DTYPE1)
     if (LENGTH == 0) {
         VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
@@ -873,10 +870,11 @@ REDUCE_ONE(NAME, DTYPE0) {
     }
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        extreme = BIG_INT;
+        npy_DTYPE0 extreme = BIG_INT;
+        npy_DTYPE1 idx = 0;
         const npy_DTYPE0* pa = PA(DTYPE0);
         FOR {
-            ai = SI(pa);
+            const npy_DTYPE0 ai = SI(pa);
             if (ai INTCOMP extreme) {
                 extreme = ai;
                 idx = INDEX;
