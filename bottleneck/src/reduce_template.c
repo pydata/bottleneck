@@ -991,7 +991,7 @@ REDUCE_MAIN(ss, 0)
 #define EVEN_ODD(dtype, N) \
     if (N % 2 == 0) { \
         npy_##dtype amax = B(dtype, 0); \
-        for (i = 1; i < k; i++) { \
+        for (npy_intp i = 1; i < k; i++) { \
             ai = B(dtype, i); \
             if (ai > amax) amax = ai; \
         } \
@@ -1004,7 +1004,7 @@ REDUCE_MAIN(ss, 0)
     npy_intp j, l, r, k; \
     npy_##dtype ai; \
     l = 0; \
-    for (i = 0; i < LENGTH; i++) { \
+    for (npy_intp i = 0; i < LENGTH; i++) { \
         ai = AX(dtype, i); \
         if (!bn_isnan(ai)) { \
             B(dtype, l++) = ai; \
@@ -1027,11 +1027,11 @@ REDUCE_MAIN(ss, 0)
     npy_##dtype ai; \
     const npy_##dtype* pa = PA(dtype); \
     if (it.stride == 1) { \
-        for (i = 0; i < LENGTH; i++) { \
+        for (npy_intp i = 0; i < LENGTH; i++) { \
             B(dtype, i) = pa[i]; \
         } \
     } else { \
-        for (i = 0; i < LENGTH; i++) { \
+        for (npy_intp i = 0; i < LENGTH; i++) { \
             B(dtype, i) = SX(pa, i); \
         } \
     } \
@@ -1045,7 +1045,7 @@ REDUCE_MAIN(ss, 0)
     npy_intp j, l, r, k, n; \
     npy_##dtype ai; \
     l = 0; \
-    for (i = 0; i < LENGTH; i++) { \
+    for (npy_intp i = 0; i < LENGTH; i++) { \
         ai = AX(dtype, i); \
         if (!bn_isnan(ai)) { \
             B(dtype, l++) = ai; \
@@ -1074,7 +1074,6 @@ REDUCE_MAIN(ss, 0)
 /* dtype = [['float64', 'float64'], ['float32', 'float32']] */
 
 REDUCE_ALL(NAME, DTYPE0) {
-    npy_intp i;
     npy_DTYPE1 med = BN_NAN;
     INIT_ALL_RAVEL_ANY_ORDER
     BN_BEGIN_ALLOW_THREADS
@@ -1097,7 +1096,6 @@ REDUCE_ONE(NAME, DTYPE0) {
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
-        npy_intp i;
         npy_DTYPE1 med = BN_NAN;
         BUFFER_NEW(DTYPE0, LENGTH)
         WHILE {
@@ -1117,7 +1115,6 @@ REDUCE_ONE(NAME, DTYPE0) {
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 BN_OPT_3
 REDUCE_ALL(median, DTYPE0) {
-    npy_intp i;
     npy_DTYPE1 med;
     INIT_ALL_RAVEL_ANY_ORDER
     BN_BEGIN_ALLOW_THREADS
@@ -1140,7 +1137,6 @@ REDUCE_ONE(median, DTYPE0) {
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
-        npy_intp i;
         npy_DTYPE1 med;
         BUFFER_NEW(DTYPE0, LENGTH)
         WHILE {

@@ -49,7 +49,6 @@ nonreducer_axis(char *name,
 
 /* dtype = [['float64'], ['float32'], ['int64'], ['int32']] */
 NRA(partition, DTYPE0) {
-    npy_intp i;
     npy_intp j, k;
     iter it;
 
@@ -88,24 +87,24 @@ NRA_MAIN(partition, PARSE_PARTITION)
 
 #define ARGWIRTH(dtype0, dtype1) \
     x = B[k]; \
-    i = l; \
+    npy_intp m = l; \
     j = r; \
     do { \
-        while (B[i] < x) i++; \
+        while (B[m] < x) m++; \
         while (x < B[j]) j--; \
-        if (i <= j) { \
-            npy_##dtype0 atmp = B[i]; \
-            B[i] = B[j]; \
+        if (m <= j) { \
+            npy_##dtype0 atmp = B[m]; \
+            B[m] = B[j]; \
             B[j] = atmp; \
-            ytmp = YX(dtype1, i); \
-            YX(dtype1, i) = YX(dtype1, j); \
+            ytmp = YX(dtype1, m); \
+            YX(dtype1, m) = YX(dtype1, j); \
             YX(dtype1, j) = ytmp; \
-            i++; \
+            m++; \
             j--; \
         } \
-    } while (i <= j); \
-    if (j < k) l = i; \
-    if (k < i) r = j;
+    } while (m <= j); \
+    if (j < k) l = m; \
+    if (k < m) r = j;
 
 #define ARGPARTITION(dtype0, dtype1) \
     while (l < r) { \
@@ -151,7 +150,7 @@ NRA_MAIN(partition, PARSE_PARTITION)
     }
 
 #define ARGPARTSORT(dtype0, dtype1) \
-    for (i = 0; i < LENGTH; i++) { \
+    for (npy_intp i = 0; i < LENGTH; i++) { \
         B[i] = AX(dtype0, i); \
         YX(dtype1, i) = i; \
     } \
@@ -162,7 +161,6 @@ NRA_MAIN(partition, PARSE_PARTITION)
 /* dtype = [['float64', 'intp'], ['float32', 'intp'],
             ['int64',   'intp'], ['int32',   'intp']] */
 NRA(argpartition, DTYPE0) {
-    npy_intp i;
     PyObject *y = PyArray_EMPTY(PyArray_NDIM(a), PyArray_SHAPE(a),
                                 NPY_DTYPE1, 0);
     iter2 it;
@@ -198,7 +196,7 @@ NRA_MAIN(argpartition, PARSE_PARTITION)
 /* dtype = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp'],
             ['int64',   'float64', 'intp'], ['int32',   'float64', 'intp']] */
 NRA(rankdata, DTYPE0) {
-    Py_ssize_t j = 0, k, idx, i;
+    Py_ssize_t j = 0, k, idx;
     npy_DTYPE1 new, averank, sumranks = 0;
 
     PyObject *z = PyArray_ArgSort(a, axis, NPY_QUICKSORT);
@@ -212,14 +210,14 @@ NRA(rankdata, DTYPE0) {
     if (LENGTH == 0) {
         Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
         npy_DTYPE1 *py = (npy_DTYPE1 *)PyArray_DATA(a);
-        for (i = 0; i < size; i++) YPP = BN_NAN;
+        for (npy_intp i = 0; i < size; i++) YPP = BN_NAN;
     } else {
         WHILE {
             idx = ZX(DTYPE2, 0);
             npy_DTYPE1 old = AX(DTYPE0, idx);
             sumranks = 0;
             Py_ssize_t dupcount = 0;
-            for (i = 0; i < LENGTH - 1; i++) {
+            for (npy_intp i = 0; i < LENGTH - 1; i++) {
                 sumranks += i;
                 dupcount++;
                 k = i + 1;
@@ -260,7 +258,7 @@ NRA_MAIN(rankdata, PARSE_RANKDATA)
 
 /* dtype = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp']] */
 NRA(nanrankdata, DTYPE0) {
-    Py_ssize_t j = 0, k, idx, dupcount = 0, i;
+    Py_ssize_t j = 0, k, idx, dupcount = 0;
     npy_DTYPE1 old, new, averank, sumranks = 0;
 
     PyObject *z = PyArray_ArgSort(a, axis, NPY_QUICKSORT);
@@ -274,14 +272,14 @@ NRA(nanrankdata, DTYPE0) {
     if (LENGTH == 0) {
         Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
         npy_DTYPE1 *py = (npy_DTYPE1 *)PyArray_DATA(a);
-        for (i = 0; i < size; i++) YPP = BN_NAN;
+        for (npy_intp i = 0; i < size; i++) YPP = BN_NAN;
     } else {
         WHILE {
             idx = ZX(DTYPE2, 0);
             old = AX(DTYPE0, idx);
             sumranks = 0;
             dupcount = 0;
-            for (i = 0; i < LENGTH - 1; i++) {
+            for (npy_intp i = 0; i < LENGTH - 1; i++) {
                 sumranks += i;
                 dupcount++;
                 k = i + 1;

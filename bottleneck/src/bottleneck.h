@@ -107,21 +107,21 @@ static inline float __bn_nanf(void) {
 
 #define WIRTH(dtype) \
     npy_##dtype x = B(dtype, k); \
-    i = l; \
+    npy_intp m = l; \
     j = r; \
     do { \
-        while (B(dtype, i) < x) i++; \
+        while (B(dtype, m) < x) m++; \
         while (x < B(dtype, j)) j--; \
-        if (i <= j) { \
-            const npy_##dtype atmp = B(dtype, i); \
-            B(dtype, i) = B(dtype, j); \
+        if (m <= j) { \
+            const npy_##dtype atmp = B(dtype, m); \
+            B(dtype, m) = B(dtype, j); \
             B(dtype, j) = atmp; \
-            i++; \
+            m++; \
             j--; \
         } \
-    } while (i <= j); \
-    if (j < k) l = i; \
-    if (k < i) r = j;
+    } while (m <= j); \
+    if (j < k) l = m; \
+    if (k < m) r = j;
 
 /* partition ------------------------------------------------------------- */
 
