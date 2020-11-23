@@ -185,7 +185,6 @@ void mm_check(mm_handle *mm) {
 /* Print the two heaps to the screen */
 void mm_dump(mm_handle *mm) {
     int i;
-    idx_t idx;
 
     if (!mm) {
         printf("mm is empty");
@@ -236,7 +235,7 @@ void mm_dump(mm_handle *mm) {
             idx1 = mm->newest->idx;
         }
         for (i = 0; i < (int)mm->n_n; ++i) {
-            idx = mm->n_array[i]->idx;
+            idx_t idx = mm->n_array[i]->idx;
             if (i == idx0 && i == idx1) {
                 printf("\t%i >%f<\n", idx, mm->n_array[i]->ai);
             } else if (i == idx0) {

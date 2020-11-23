@@ -73,12 +73,12 @@ mover(char *name,
 
 /* dtype = [['float64'], ['float32']] */
 MOVE(move_sum, DTYPE0) {
-    Py_ssize_t count;
     npy_DTYPE0 asum, ai, aold;
     INIT(NPY_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        asum = count = 0;
+        Py_ssize_t count = 0;
+        asum = 0;
         WHILE0 {
             ai = AI(DTYPE0);
             if (!bn_isnan(ai)) {
@@ -155,12 +155,12 @@ MOVE_MAIN(move_sum, 0)
 
 /* dtype = [['float64'], ['float32']] */
 MOVE(move_mean, DTYPE0) {
-    Py_ssize_t count;
     npy_DTYPE0 asum, ai, aold, count_inv;
     INIT(NPY_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        asum = count = 0;
+        Py_ssize_t count = 0;
+        asum = 0;
         WHILE0 {
             ai = AI(DTYPE0);
             if (!bn_isnan(ai)) {
@@ -243,12 +243,12 @@ MOVE_MAIN(move_mean, 0)
              'FUNC': ['sqrt',     '']} */
 /* dtype = [['float64'], ['float32']] */
 MOVE(NAME, DTYPE0) {
-    Py_ssize_t count;
     npy_DTYPE0 delta, amean, assqdm, ai, aold, yi, count_inv, ddof_inv;
     INIT(NPY_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        amean = assqdm = count = 0;
+        Py_ssize_t count = 0;
+        amean = assqdm = 0;
         WHILE0 {
             ai = AI(DTYPE0);
             if (!bn_isnan(ai)) {
@@ -450,7 +450,6 @@ MOVE_MAIN(NAME, 1)
 /* dtype = [['float64'], ['float32']] */
 MOVE(NAME, DTYPE0) {
     npy_DTYPE0 ai, aold, yi_tmp;
-    Py_ssize_t count;
     pairs *extreme_pair;
     pairs *end;
     pairs *last;
@@ -458,7 +457,7 @@ MOVE(NAME, DTYPE0) {
     INIT(NPY_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        count = 0;
+        Py_ssize_t count = 0;
         end = ring + window;
         last = ring;
         extreme_pair = ring;

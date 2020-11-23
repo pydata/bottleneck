@@ -38,7 +38,6 @@ typedef struct _iter iter;
 
 static inline void
 init_iter_one(iter *it, PyArrayObject *a, int axis) {
-    int i, j = 0;
     const int ndim = PyArray_NDIM(a);
     const npy_intp *shape = PyArray_SHAPE(a);
     const npy_intp *strides = PyArray_STRIDES(a);
@@ -55,7 +54,8 @@ init_iter_one(iter *it, PyArrayObject *a, int axis) {
 
     if (ndim != 0) {
         it->ndim_m2 = ndim - 2;
-        for (i = 0; i < ndim; i++) {
+        int j = 0;
+        for (int i = 0; i < ndim; i++) {
             if (i == axis) {
                 it->astride = strides[i];
                 it->length = shape[i];
