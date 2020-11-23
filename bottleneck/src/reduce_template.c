@@ -480,7 +480,7 @@ REDUCE_ALL(NAME, DTYPE0) {
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    npy_bool allnan = 1;
+    npy_bool is_allnan = 1;
     if (REDUCE_CONTIGUOUS) {
         const npy_intp LOOP_SIZE = DTYPE1;
         // Allow vectorization by keeping an array of extremums
@@ -493,12 +493,12 @@ REDUCE_ALL(NAME, DTYPE0) {
         WHILE {
             const npy_DTYPE0* pa = PA(DTYPE0);
             npy_intp i = 0;
-            for (; i < loops && allnan; i++) {
+            for (; i < loops && is_allnan; i++) {
                 for (npy_intp j=0; j < LOOP_SIZE; j++) {
                     const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
                     // We only need <=/>= until we identify our first non-nan value
                     if (ai COMPARE extremes[j]) {
-                        allnan = 0;
+                        is_allnan = 0;
                         extremes[j] = ai;
                     }
                 }
@@ -513,7 +513,7 @@ REDUCE_ALL(NAME, DTYPE0) {
             for (npy_intp j=0; j < residual; j++) {
                 const npy_DTYPE0 ai = pa[loops * LOOP_SIZE + j];
                 if (ai COMPARE extremes[j]) {
-                    allnan = 0;
+                    is_allnan = 0;
                     extremes[j] = ai;
                 }
             }
@@ -532,13 +532,13 @@ REDUCE_ALL(NAME, DTYPE0) {
                 const npy_DTYPE0 ai = pa[it.i * it.stride];
                 if (ai COMPARE extreme) {
                     extreme = ai;
-                    allnan = 0;
+                    is_allnan = 0;
                 }
             }
             NEXT
         }
     }
-    if (allnan) {
+    if (is_allnan) {
         extreme = BN_NAN;
     }
     BN_END_ALLOW_THREADS
@@ -548,7 +548,7 @@ REDUCE_ALL(NAME, DTYPE0) {
 BN_OPT_3
 REDUCE_ONE(NAME, DTYPE0) {
     npy_DTYPE0 extreme;
-    int allnan;
+    npy_bool is_allnan;
     INIT_ONE(DTYPE0, DTYPE0)
     if (LENGTH == 0) {
         VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
@@ -591,11 +591,11 @@ REDUCE_ONE(NAME, DTYPE0) {
                 extremes[j] = ai INTCOMP extremes[j] ? ai : extremes[j];
             }
         }
-        for (npy_intp i=0; i < LOOP_SIZE; i++) {
-            if (allnans[i]) {
-                py[i] = BN_NAN;
+        for (npy_intp k=0; k < LOOP_SIZE; k++) {
+            if (allnans[k]) {
+                py[k] = BN_NAN;
             } else {
-                py[i] = extremes[i];
+                py[k] = extremes[k];
             }
         }
         free(extremes);
@@ -611,15 +611,15 @@ REDUCE_ONE(NAME, DTYPE0) {
             for (npy_intp i=0; i < LOOP_SIZE; i++) {
                 extremes[i] = BIG_FLOAT;
             }
-            allnan = 1;
+            is_allnan = 1;
             extreme = BIG_FLOAT;
 
             npy_intp i=0;
-            for (; i < loops && allnan; i++) {
+            for (; i < loops && is_allnan; i++) {
                 for (npy_intp j=0; j < LOOP_SIZE; j++) {
                     const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
                     if (ai COMPARE extremes[j]) {
-                        allnan = 0;
+                        is_allnan = 0;
                         extremes[j] = ai;
                     }
                 }
@@ -633,7 +633,7 @@ REDUCE_ONE(NAME, DTYPE0) {
             for (npy_intp j=0; j < residual; j++) {
                 const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
                 if (ai COMPARE extremes[j]) {
-                    allnan = 0;
+                    is_allnan = 0;
                     extremes[j] = ai;
                 }
             }
@@ -643,7 +643,7 @@ REDUCE_ONE(NAME, DTYPE0) {
                 }
             }
 
-            if (allnan) {
+            if (is_allnan) {
                 extreme = BN_NAN;
             }
             YPP = extreme;
@@ -652,15 +652,15 @@ REDUCE_ONE(NAME, DTYPE0) {
     } else {
         WHILE {
             extreme = BIG_FLOAT;
-            allnan = 1;
+            is_allnan = 1;
             FOR {
                 const npy_DTYPE0 ai = AI(DTYPE0);
                 if (ai COMPARE extreme) {
                     extreme = ai;
-                    allnan = 0;
+                    is_allnan = 0;
                 }
             }
-            if (allnan) extreme = BN_NAN;
+            if (is_allnan) extreme = BN_NAN;
             YPP = extreme;
             NEXT
         }
@@ -775,7 +775,7 @@ REDUCE_MAIN(NAME, 0)
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(NAME, DTYPE0) {
     npy_DTYPE0 ai, extreme = BIG_FLOAT;
-    int allnan = 1;
+    npy_bool is_allnan = 1;
     Py_ssize_t idx = 0;
     INIT_ALL_RAVEL
     if (SIZE == 0) {
@@ -789,13 +789,13 @@ REDUCE_ALL(NAME, DTYPE0) {
         ai = AI(DTYPE0);
         if (ai COMPARE extreme) {
             extreme = ai;
-            allnan = 0;
+            is_allnan = 0;
             idx = INDEX;
         }
     }
     BN_END_ALLOW_THREADS
     DECREF_INIT_ALL_RAVEL
-    if (allnan) {
+    if (is_allnan) {
         VALUE_ERR("All-NaN slice encountered");
         return NULL;
     } else {
@@ -804,7 +804,7 @@ REDUCE_ALL(NAME, DTYPE0) {
 }
 
 REDUCE_ONE(NAME, DTYPE0) {
-    int allnan, err_code = 0;
+    int err_code = 0;
     Py_ssize_t idx = 0;
     npy_DTYPE0 ai, extreme;
     INIT_ONE(INTP, intp)
@@ -816,16 +816,16 @@ REDUCE_ONE(NAME, DTYPE0) {
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         extreme = BIG_FLOAT;
-        allnan = 1;
+        npy_bool is_allnan = 1;
         FOR_REVERSE {
             ai = AI(DTYPE0);
             if (ai COMPARE extreme) {
                 extreme = ai;
-                allnan = 0;
+                is_allnan = 0;
                 idx = INDEX;
             }
         }
-        if (allnan == 0) {
+        if (is_allnan == 0) {
             YPP = idx;
         } else {
             err_code = 1;
