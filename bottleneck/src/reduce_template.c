@@ -108,7 +108,6 @@ REDUCE_ALL(nansum, DTYPE0) {
 }
 
 REDUCE_ONE(nansum, DTYPE0) {
-    npy_DTYPE0 ai;
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
@@ -117,7 +116,7 @@ REDUCE_ONE(nansum, DTYPE0) {
         WHILE {
             npy_DTYPE0 asum = 0;
             FOR {
-                ai = AI(DTYPE0);
+                const npy_DTYPE0 ai = AI(DTYPE0);
                 if (!bn_isnan(ai)) {
                     asum += ai;
                 }
@@ -161,7 +160,6 @@ REDUCE_ALL(nansum, DTYPE0) {
 
 BN_OPT_3
 REDUCE_ONE(nansum, DTYPE0) {
-    npy_DTYPE1 asum;
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
@@ -169,7 +167,7 @@ REDUCE_ONE(nansum, DTYPE0) {
     } else {
         if (ONE_CONTIGUOUS) {
             WHILE {
-                asum = 0;
+                npy_DTYPE1 asum = 0;
                 const npy_DTYPE0* pa = PA(DTYPE0);
                 FOR {
                     asum += SI(pa);
@@ -192,7 +190,7 @@ REDUCE_ONE(nansum, DTYPE0) {
             }
         } else {
             WHILE {
-                asum = 0;
+                npy_DTYPE1 asum = 0;
                 const npy_DTYPE0* pa = PA(DTYPE0);
                 FOR {
                     asum += SI(pa);
@@ -215,12 +213,12 @@ REDUCE_MAIN(nansum, 0)
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(nanmean, DTYPE0) {
     Py_ssize_t count = 0;
-    npy_DTYPE0 ai, asum = 0;
+    npy_DTYPE0 asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR {
-            ai = AI(DTYPE0);
+            const npy_DTYPE0 ai = AI(DTYPE0);
             if (!bn_isnan(ai)) {
                 asum += ai;
                 count += 1;
@@ -242,12 +240,11 @@ REDUCE_ONE(nanmean, DTYPE0) {
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
-        npy_DTYPE0 ai, asum;
         WHILE {
             Py_ssize_t count = 0;
-            asum = 0;
+            npy_DTYPE0 asum = 0;
             FOR {
-                ai = AI(DTYPE0);
+                const npy_DTYPE0 ai = AI(DTYPE0);
                 if (!bn_isnan(ai)) {
                     asum += ai;
                     count += 1;
@@ -292,9 +289,8 @@ REDUCE_ONE(nanmean, DTYPE0) {
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
-        npy_DTYPE1 asum;
         WHILE {
-            asum = 0;
+            npy_DTYPE1 asum = 0;
             FOR asum += AI(DTYPE0);
             if (LENGTH > 0) {
                 asum /= LENGTH;
@@ -320,12 +316,12 @@ REDUCE_MAIN(nanmean, 0)
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(NAME, DTYPE0) {
     Py_ssize_t count = 0;
-    npy_DTYPE0 ai, amean, out, asum = 0;
+    npy_DTYPE0 out, asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR {
-            ai = AI(DTYPE0);
+            const npy_DTYPE0 ai = AI(DTYPE0);
             if (!bn_isnan(ai)) {
                 asum += ai;
                 count++;
@@ -334,12 +330,12 @@ REDUCE_ALL(NAME, DTYPE0) {
         NEXT
     }
     if (count > ddof) {
-        amean = asum / count;
+        const npy_DTYPE0 amean = asum / count;
         asum = 0;
         RESET
         WHILE {
             FOR {
-                ai = AI(DTYPE0);
+                npy_DTYPE0 ai = AI(DTYPE0);
                 if (!bn_isnan(ai)) {
                     ai -= amean;
                     asum += ai * ai;
@@ -361,22 +357,21 @@ REDUCE_ONE(NAME, DTYPE0) {
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
-        npy_DTYPE0 ai, asum, amean;
         WHILE {
             Py_ssize_t count = 0;
-            asum = 0;
+            npy_DTYPE0 asum = 0;
             FOR {
-                ai = AI(DTYPE0);
+                const npy_DTYPE0 ai = AI(DTYPE0);
                 if (!bn_isnan(ai)) {
                     asum += ai;
                     count++;
                 }
             }
             if (count > ddof) {
-                amean = asum / count;
+                const npy_DTYPE0 amean = asum / count;
                 asum = 0;
                 FOR {
-                    ai = AI(DTYPE0);
+                    npy_DTYPE0 ai = AI(DTYPE0);
                     if (!bn_isnan(ai)) {
                         ai -= amean;
                         asum += ai * ai;
@@ -399,7 +394,7 @@ REDUCE_ONE(NAME, DTYPE0) {
 REDUCE_ALL(NAME, DTYPE0) {
     npy_DTYPE1 out;
     Py_ssize_t size = 0;
-    npy_DTYPE1 ai, amean, asum = 0;
+    npy_DTYPE1 asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
@@ -408,12 +403,12 @@ REDUCE_ALL(NAME, DTYPE0) {
         NEXT
     }
     if (size > ddof) {
-        amean = asum / size;
+        const npy_DTYPE1 amean = asum / size;
         asum = 0;
         RESET
         WHILE {
             FOR {
-                ai = AI(DTYPE0) - amean;
+                const npy_DTYPE1 ai = AI(DTYPE0) - amean;
                 asum += ai * ai;
             }
             NEXT
@@ -427,22 +422,21 @@ REDUCE_ALL(NAME, DTYPE0) {
 }
 
 REDUCE_ONE(NAME, DTYPE0) {
-    npy_DTYPE1 ai, asum, amean, length_inv, length_ddof_inv;
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
-    length_inv = 1.0 / LENGTH;
-    length_ddof_inv = 1.0 / (LENGTH - ddof);
+    const npy_DTYPE1 length_inv = 1.0 / LENGTH;
+    const npy_DTYPE1 length_ddof_inv = 1.0 / (LENGTH - ddof);
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
         WHILE {
-            asum = 0;
+            npy_DTYPE1 asum = 0;
             FOR asum += AI(DTYPE0);
             if (LENGTH > ddof) {
-                amean = asum * length_inv;
+                const npy_DTYPE1 amean = asum * length_inv;
                 asum = 0;
                 FOR {
-                    ai = AI(DTYPE0) - amean;
+                    const npy_DTYPE1 ai = AI(DTYPE0) - amean;
                     asum += ai * ai;
                 }
                 asum = FUNC(asum * length_ddof_inv);
@@ -1290,7 +1284,6 @@ REDUCE_ALL(anynan, DTYPE0) {
 BN_OPT_3
 REDUCE_ONE(anynan, DTYPE0) {
     npy_bool f;
-    npy_DTYPE0 ai;
     INIT_ONE(BOOL, uint8)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
@@ -1354,7 +1347,7 @@ REDUCE_ONE(anynan, DTYPE0) {
 
             for (npy_intp i=0; i < residual; i++) {
                 for (npy_intp k=min_k; k < LOOP_SIZE; k++) {
-                    ai = pa[i * LOOP_SIZE + k];
+                    const npy_DTYPE0 ai = pa[i * LOOP_SIZE + k];
                     py[k] = bn_isnan(ai) ? 1 : py[k];
                     if ((k == min_k) && py[k]) {
                         min_k++;
@@ -1365,7 +1358,7 @@ REDUCE_ONE(anynan, DTYPE0) {
             for (npy_intp i=0; (i < loop_count) && (min_k < LOOP_SIZE - 1); i++) {
                 for (npy_intp j=0; j < 16; j++) {
                     for (npy_intp k=min_k; k < LOOP_SIZE; k++) {
-                        ai = pa[(i * 16 + j + residual) * LOOP_SIZE + k];
+                        const npy_DTYPE0 ai = pa[(i * 16 + j + residual) * LOOP_SIZE + k];
                         py[k] = bn_isnan(ai) ? 1 : py[k];
                     }
                 }
@@ -1386,7 +1379,7 @@ REDUCE_ONE(anynan, DTYPE0) {
                 f = 0;
                 const npy_DTYPE0* pa = PA(DTYPE0);
                 FOR {
-                    ai = SI(pa);
+                    const npy_DTYPE0 ai = SI(pa);
                     if (bn_isnan(ai)) {
                         f = 1;
                         break;
@@ -1427,7 +1420,6 @@ REDUCE_MAIN(anynan, 0)
 BN_OPT_3
 REDUCE_ALL(allnan, DTYPE0) {
     int f = 0;
-    npy_DTYPE0 ai;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     if (REDUCE_CONTIGUOUS) {
@@ -1477,7 +1469,7 @@ REDUCE_ALL(allnan, DTYPE0) {
     } else {
         WHILE {
             FOR {
-                ai = AI(DTYPE0);
+                const npy_DTYPE0 ai = AI(DTYPE0);
                 if (!bn_isnan(ai)) {
                     f = 1;
                     goto done;
@@ -1498,7 +1490,6 @@ REDUCE_ALL(allnan, DTYPE0) {
 BN_OPT_3
 REDUCE_ONE(allnan, DTYPE0) {
     npy_bool f;
-    npy_DTYPE0 ai;
     INIT_ONE(BOOL, uint8)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
@@ -1562,7 +1553,7 @@ REDUCE_ONE(allnan, DTYPE0) {
 
             for (npy_intp i=0; i < residual; i++) {
                 for (npy_intp k=min_k; k < LOOP_SIZE; k++) {
-                    ai = pa[i * LOOP_SIZE + k];
+                    const npy_DTYPE0 ai = pa[i * LOOP_SIZE + k];
                     py[k] = !bn_isnan(ai) ? 1 : py[k];
                     if ((k == min_k) && py[k]) {
                         min_k++;
@@ -1573,7 +1564,7 @@ REDUCE_ONE(allnan, DTYPE0) {
             for (npy_intp i=0; (i < loop_count) && (min_k < LOOP_SIZE - 1); i++) {
                 for (npy_intp j=0; j < 16; j++) {
                     for (npy_intp k=min_k; k < LOOP_SIZE; k++) {
-                        ai = pa[(i * 16 + j + residual) * LOOP_SIZE + k];
+                        const npy_DTYPE0 ai = pa[(i * 16 + j + residual) * LOOP_SIZE + k];
                         py[k] = !bn_isnan(ai) ? 1 : py[k];
                     }
                 }
@@ -1598,7 +1589,7 @@ REDUCE_ONE(allnan, DTYPE0) {
                 f = 0;
                 const npy_DTYPE0* pa = PA(DTYPE0);
                 FOR {
-                    ai = SI(pa);
+                    const npy_DTYPE0 ai = SI(pa);
                     if (!bn_isnan(ai)) {
                         f = 1;
                         break;
