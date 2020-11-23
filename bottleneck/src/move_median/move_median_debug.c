@@ -101,7 +101,7 @@ int mm_unit_test(void) {
 
 void mm_print_node(mm_node *node) {
     printf("\n\n%d small\n", node->region);
-    printf("%d idx\n", node->idx);
+    printf("%zu idx\n", node->idx);
     printf("%f ai\n", node->ai);
     printf("%p next\n\n", node->next);
 }
@@ -113,11 +113,11 @@ void mm_print_chain(mm_handle *mm) {
 
     printf("\nchain\n");
     node = mm->oldest;
-    printf("\t%6.2f region %d idx %d addr %p\n", node->ai, node->region,
+    printf("\t%6.2f region %d idx %zu addr %p\n", node->ai, node->region,
            node->idx, node);
     for (i=1; i < mm->n_s + mm->n_l + mm->n_n; i++) {
         node = node->next;
-        printf("\t%6.2f region %d idx %d addr %p\n", node->ai, node->region,
+        printf("\t%6.2f region %d idx %zu addr %p\n", node->ai, node->region,
                node->idx, node);
     }
 }
@@ -192,13 +192,13 @@ void mm_dump(mm_handle *mm) {
     }
 
     printf("\nhandle\n");
-    printf("\t%2d window\n", mm->window);
-    printf("\t%2d n_s\n", mm->n_s);
-    printf("\t%2d n_l\n", mm->n_l);
-    printf("\t%2d n_n\n", mm->n_n);
-    printf("\t%2d min_count\n", mm->min_count);
-    printf("\t%2d s_first_leaf\n", mm->s_first_leaf);
-    printf("\t%2d l_first_leaf\n", mm->l_first_leaf);
+    printf("\t%zu window\n", mm->window);
+    printf("\t%zu n_s\n", mm->n_s);
+    printf("\t%zu n_l\n", mm->n_l);
+    printf("\t%zu n_n\n", mm->n_n);
+    printf("\t%zu min_count\n", mm->min_count);
+    printf("\t%zu s_first_leaf\n", mm->s_first_leaf);
+    printf("\t%zu l_first_leaf\n", mm->l_first_leaf);
 
     if (NUM_CHILDREN == 2) {
         // binary heap
@@ -237,13 +237,13 @@ void mm_dump(mm_handle *mm) {
         for (i = 0; i < (int)mm->n_n; ++i) {
             idx_t idx = mm->n_array[i]->idx;
             if (i == idx0 && i == idx1) {
-                printf("\t%i >%f<\n", idx, mm->n_array[i]->ai);
+                printf("\t%zu >%f<\n", idx, mm->n_array[i]->ai);
             } else if (i == idx0) {
-                printf("\t%i >%f\n", idx, mm->n_array[i]->ai);
+                printf("\t%zu >%f\n", idx, mm->n_array[i]->ai);
             } else if (i == idx1) {
-                printf("\t%i  %f<\n", idx, mm->n_array[i]->ai);
+                printf("\t%zu  %f<\n", idx, mm->n_array[i]->ai);
             } else {
-                printf("\t%i  %f\n", idx, mm->n_array[i]->ai);
+                printf("\t%zu  %f\n", idx, mm->n_array[i]->ai);
             }
         }
     } else {
