@@ -6,6 +6,7 @@ import shutil
 import sys
 from distutils.command.config import config as _config
 from subprocess import check_output
+from typing import List
 
 from setuptools import Command, find_packages, setup
 from setuptools.command.build_ext import build_ext as _build_ext
@@ -15,7 +16,7 @@ import versioneer
 
 
 class config(_config):
-    def run(self):
+    def run(self) -> None:
         from bn_config import create_config_h
 
         create_config_h(self)
@@ -24,7 +25,7 @@ class config(_config):
 class clean(Command):
     user_options = [("all", "a", "")]
 
-    def initialize_options(self):
+    def initialize_options(self) -> None:
         self.all = True
         self.delete_dirs = []
         self.delete_files = []
@@ -53,10 +54,10 @@ class clean(Command):
         if os.path.exists("build"):
             self.delete_dirs.append("build")
 
-    def finalize_options(self):
+    def finalize_options(self) -> None:
         pass
 
-    def run(self):
+    def run(self) -> None:
         for delete_dir in self.delete_dirs:
             shutil.rmtree(delete_dir)
         for delete_file in self.delete_files:
@@ -67,7 +68,7 @@ class clean(Command):
 class build_ext(_build_ext):
     # taken from: stackoverflow.com/questions/19919905/
     # how-to-bootstrap-numpy-installation-in-setup-py#21621689
-    def finalize_options(self):
+    def finalize_options(self) -> None:
         _build_ext.finalize_options(self)
         # prevent numpy from thinking it is still in its setup process
         if sys.version_info < (3,):
@@ -81,7 +82,7 @@ class build_ext(_build_ext):
         self.include_dirs.insert(0, numpy.get_include())
         self.include_dirs.append("bottleneck/src")
 
-    def build_extensions(self):
+    def build_extensions(self) -> None:
         from bn_template import make_c_files
 
         self.run_command("config")
@@ -114,7 +115,7 @@ if IS_OLD_GCC:
 sys.path.append(os.path.join(os.path.dirname(__file__), "bottleneck/src"))
 
 
-def get_cpu_arch_flags():
+def get_cpu_arch_flags() -> List[str]:
     if platform.processor() == "ppc64le":
         # Needed to support SSE2 intrinsics
         return ["-DNO_WARN_X86_INTRINSICS"]
@@ -122,7 +123,7 @@ def get_cpu_arch_flags():
         return []
 
 
-def prepare_modules():
+def prepare_modules() -> List[Extension]:
     base_includes = [
         "bottleneck/src/bottleneck.h",
         "bottleneck/src/bn_config.h",
@@ -169,7 +170,7 @@ def prepare_modules():
     return ext
 
 
-def get_long_description():
+def get_long_description() -> str:
     with open("README.rst", "r") as fid:
         long_description = fid.read()
     idx = max(0, long_description.find("Bottleneck is a collection"))
