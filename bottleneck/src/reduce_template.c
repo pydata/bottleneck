@@ -169,8 +169,8 @@ REDUCE_ONE(nansum, DTYPE0) {
             WHILE {
                 npy_DTYPE1 asum = 0;
                 const npy_DTYPE0* pa = PA(DTYPE0);
-                FOR {
-                    asum += SI(pa);
+                for(npy_intp i=0; i < LENGTH; i++) {
+                    asum += pa[i];
                 }
                 YPP = asum;
                 NEXT
