@@ -164,7 +164,7 @@ def _mask(a, window, min_count, axis):
     idx3 = tuple(idx3)
     nidx1 = n[idx1]
     nidx1 = nidx1 - n[idx2]
-    idx = np.empty(a.shape, dtype=np.bool)
+    idx = np.empty(a.shape, dtype=bool)
     idx[idx1] = nidx1 < min_count
     idx[idx3] = n[idx3] < min_count
     return idx
