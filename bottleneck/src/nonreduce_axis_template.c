@@ -7,34 +7,35 @@
 
 /* low-level functions such as move_sum_float64 */
 #define NRA(name, dtype) \
-    static PyObject * \
-    name##_##dtype(PyArrayObject *a, int axis, int n)
+    static PyObject *    \
+        name##_##dtype(PyArrayObject *a, int axis, int n)
 
 /* top-level functions such as move_sum */
-#define NRA_MAIN(name, parse) \
-    static PyObject * \
-    name(PyObject *self, PyObject *args, PyObject *kwds) \
-    { \
-        return nonreducer_axis(#name, \
-                               args, \
-                               kwds, \
-                               name##_float64, \
-                               name##_float32, \
-                               name##_int64, \
-                               name##_int32, \
-                               parse); \
+#define NRA_MAIN(name, parse)                              \
+    static PyObject *                                      \
+    name(PyObject *self, PyObject *args, PyObject *kwds) { \
+        return nonreducer_axis(#name,                      \
+                               args,                       \
+                               kwds,                       \
+                               name##_float64,             \
+                               name##_float32,             \
+                               name##_int64,               \
+                               name##_int32,               \
+                               parse);                     \
     }
 
 /* typedefs and prototypes ----------------------------------------------- */
 
 /* how should input be parsed? */
-typedef enum {PARSE_PARTITION, PARSE_RANKDATA, PARSE_PUSH} parse_type;
+typedef enum { PARSE_PARTITION,
+               PARSE_RANKDATA,
+               PARSE_PUSH } parse_type;
 
 /* function pointer for functions passed to nonreducer_axis */
 typedef PyObject *(*nra_t)(PyArrayObject *, int, int);
 
 static PyObject *
-nonreducer_axis(char *name,
+nonreducer_axis(char *    name,
                 PyObject *args,
                 PyObject *kwds,
                 nra_t,
@@ -50,7 +51,7 @@ nonreducer_axis(char *name,
 /* dtype = [['float64'], ['float32'], ['int64'], ['int32']] */
 NRA(partition, DTYPE0) {
     npy_intp j, k;
-    iter it;
+    iter     it;
 
     a = (PyArrayObject *)PyArray_NewCopy(a, NPY_ANYORDER);
     init_iter_one(&it, a, axis);
@@ -59,7 +60,8 @@ NRA(partition, DTYPE0) {
     if (n < 0 || n > LENGTH - 1) {
         PyErr_Format(PyExc_ValueError,
                      "`n` (=%d) must be between 0 and %zd, inclusive.",
-                     n, LENGTH - 1);
+                     n,
+                     LENGTH - 1);
         return NULL;
     }
 
@@ -79,97 +81,98 @@ NRA(partition, DTYPE0) {
 
 NRA_MAIN(partition, PARSE_PARTITION)
 
-
 /* argpartition ----------------------------------------------------------- */
 
 #define BUFFER_NEW(dtype) dtype *B = malloc(LENGTH * sizeof(dtype));
-#define BUFFER_DELETE free(B);
+#define BUFFER_DELETE     free(B);
 
-#define ARGWIRTH(dtype0, dtype1) \
-    x = B[k]; \
-    npy_intp m = l; \
-    j = r; \
-    do { \
-        while (B[m] < x) m++; \
-        while (x < B[j]) j--; \
-        if (m <= j) { \
-            npy_##dtype0 atmp = B[m]; \
-            B[m] = B[j]; \
-            B[j] = atmp; \
-            ytmp = YX(dtype1, m); \
+#define ARGWIRTH(dtype0, dtype1)           \
+    x = B[k];                              \
+    npy_intp m = l;                        \
+    j = r;                                 \
+    do {                                   \
+        while (B[m] < x)                   \
+            m++;                           \
+        while (x < B[j])                   \
+            j--;                           \
+        if (m <= j) {                      \
+            npy_##dtype0 atmp = B[m];      \
+            B[m] = B[j];                   \
+            B[j] = atmp;                   \
+            ytmp = YX(dtype1, m);          \
             YX(dtype1, m) = YX(dtype1, j); \
-            YX(dtype1, j) = ytmp; \
-            m++; \
-            j--; \
-        } \
-    } while (m <= j); \
-    if (j < k) l = m; \
+            YX(dtype1, j) = ytmp;          \
+            m++;                           \
+            j--;                           \
+        }                                  \
+    } while (m <= j);                      \
+    if (j < k) l = m;                      \
     if (k < m) r = j;
 
-#define ARGPARTITION(dtype0, dtype1) \
-    while (l < r) { \
-        npy_##dtype0 x; \
-        npy_##dtype0 al = B[l]; \
-        npy_##dtype0 ak = B[k]; \
-        npy_##dtype0 ar = B[r]; \
-        npy_##dtype1 ytmp; \
-        if (al > ak) { \
-            if (ak < ar) { \
-                if (al < ar) { \
-                    B[k] = al; \
-                    B[l] = ak; \
-                    ytmp = YX(dtype1, k); \
+#define ARGPARTITION(dtype0, dtype1)               \
+    while (l < r) {                                \
+        npy_##dtype0 x;                            \
+        npy_##dtype0 al = B[l];                    \
+        npy_##dtype0 ak = B[k];                    \
+        npy_##dtype0 ar = B[r];                    \
+        npy_##dtype1 ytmp;                         \
+        if (al > ak) {                             \
+            if (ak < ar) {                         \
+                if (al < ar) {                     \
+                    B[k] = al;                     \
+                    B[l] = ak;                     \
+                    ytmp = YX(dtype1, k);          \
                     YX(dtype1, k) = YX(dtype1, l); \
-                    YX(dtype1, l) = ytmp; \
-                } else { \
-                    B[k] = ar; \
-                    B[r] = ak; \
-                    ytmp = YX(dtype1, k); \
+                    YX(dtype1, l) = ytmp;          \
+                } else {                           \
+                    B[k] = ar;                     \
+                    B[r] = ak;                     \
+                    ytmp = YX(dtype1, k);          \
                     YX(dtype1, k) = YX(dtype1, r); \
-                    YX(dtype1, r) = ytmp; \
-                } \
-            } \
-        } else { \
-            if (ak > ar) { \
-                if (al > ar) { \
-                    B[k] = al; \
-                    B[l] = ak; \
-                    ytmp = YX(dtype1, k); \
+                    YX(dtype1, r) = ytmp;          \
+                }                                  \
+            }                                      \
+        } else {                                   \
+            if (ak > ar) {                         \
+                if (al > ar) {                     \
+                    B[k] = al;                     \
+                    B[l] = ak;                     \
+                    ytmp = YX(dtype1, k);          \
                     YX(dtype1, k) = YX(dtype1, l); \
-                    YX(dtype1, l) = ytmp; \
-                } else { \
-                    B[k] = ar; \
-                    B[r] = ak; \
-                    ytmp = YX(dtype1, k); \
+                    YX(dtype1, l) = ytmp;          \
+                } else {                           \
+                    B[k] = ar;                     \
+                    B[r] = ak;                     \
+                    ytmp = YX(dtype1, k);          \
                     YX(dtype1, k) = YX(dtype1, r); \
-                    YX(dtype1, r) = ytmp; \
-                } \
-            } \
-        } \
-        ARGWIRTH(dtype0, dtype1) \
+                    YX(dtype1, r) = ytmp;          \
+                }                                  \
+            }                                      \
+        }                                          \
+        ARGWIRTH(dtype0, dtype1)                   \
     }
 
-#define ARGPARTSORT(dtype0, dtype1) \
+#define ARGPARTSORT(dtype0, dtype1)         \
     for (npy_intp i = 0; i < LENGTH; i++) { \
-        B[i] = AX(dtype0, i); \
-        YX(dtype1, i) = i; \
-    } \
-    l = 0; \
-    r = LENGTH - 1; \
+        B[i] = AX(dtype0, i);               \
+        YX(dtype1, i) = i;                  \
+    }                                       \
+    l = 0;                                  \
+    r = LENGTH - 1;                         \
     ARGPARTITION(dtype0, dtype1)
 
 /* dtype = [['float64', 'intp'], ['float32', 'intp'],
             ['int64',   'intp'], ['int32',   'intp']] */
 NRA(argpartition, DTYPE0) {
-    PyObject *y = PyArray_EMPTY(PyArray_NDIM(a), PyArray_SHAPE(a),
-                                NPY_DTYPE1, 0);
-    iter2 it;
+    PyObject *y = PyArray_EMPTY(PyArray_NDIM(a), PyArray_SHAPE(a), NPY_DTYPE1, 0);
+    iter2     it;
     init_iter2(&it, a, y, axis);
     if (LENGTH == 0) return y;
     if (n < 0 || n > LENGTH - 1) {
         PyErr_Format(PyExc_ValueError,
                      "`n` (=%d) must be between 0 and %zd, inclusive.",
-                     n, LENGTH - 1);
+                     n,
+                     LENGTH - 1);
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
@@ -190,7 +193,6 @@ NRA(argpartition, DTYPE0) {
 
 NRA_MAIN(argpartition, PARSE_PARTITION)
 
-
 /* rankdata -------------------------------------------------------------- */
 
 /* dtype = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp'],
@@ -201,16 +203,19 @@ NRA(rankdata, DTYPE0) {
 
     PyObject *z = PyArray_ArgSort(a, axis, NPY_QUICKSORT);
     PyObject *y = PyArray_EMPTY(PyArray_NDIM(a),
-                                PyArray_SHAPE(a), NPY_DTYPE1, 0);
+                                PyArray_SHAPE(a),
+                                NPY_DTYPE1,
+                                0);
 
     iter3 it;
     init_iter3(&it, a, y, z, axis);
 
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
-        Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
+        Py_ssize_t  size = PyArray_SIZE((PyArrayObject *)y);
         npy_DTYPE1 *py = (npy_DTYPE1 *)PyArray_DATA(a);
-        for (npy_intp i = 0; i < size; i++) YPP = BN_NAN;
+        for (npy_intp i = 0; i < size; i++)
+            YPP = BN_NAN;
     } else {
         WHILE {
             idx = ZX(DTYPE2, 0);
@@ -253,7 +258,6 @@ NRA(rankdata, DTYPE0) {
 
 NRA_MAIN(rankdata, PARSE_RANKDATA)
 
-
 /* nanrankdata ----------------------------------------------------------- */
 
 /* dtype = [['float64', 'float64', 'intp'], ['float32', 'float64', 'intp']] */
@@ -263,16 +267,19 @@ NRA(nanrankdata, DTYPE0) {
 
     PyObject *z = PyArray_ArgSort(a, axis, NPY_QUICKSORT);
     PyObject *y = PyArray_EMPTY(PyArray_NDIM(a),
-                                PyArray_SHAPE(a), NPY_DTYPE1, 0);
+                                PyArray_SHAPE(a),
+                                NPY_DTYPE1,
+                                0);
 
     iter3 it;
     init_iter3(&it, a, y, z, axis);
 
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
-        Py_ssize_t size = PyArray_SIZE((PyArrayObject *)y);
+        Py_ssize_t  size = PyArray_SIZE((PyArrayObject *)y);
         npy_DTYPE1 *py = (npy_DTYPE1 *)PyArray_DATA(a);
-        for (npy_intp i = 0; i < size; i++) YPP = BN_NAN;
+        for (npy_intp i = 0; i < size; i++)
+            YPP = BN_NAN;
     } else {
         WHILE {
             idx = ZX(DTYPE2, 0);
@@ -335,15 +342,14 @@ nanrankdata(PyObject *self, PyObject *args, PyObject *kwds) {
                            PARSE_RANKDATA);
 }
 
-
 /* push ------------------------------------------------------------------ */
 
 /* dtype = [['float64'], ['float32']] */
 NRA(push, DTYPE0) {
-    npy_intp index;
+    npy_intp   index;
     npy_DTYPE0 ai, ai_last, n_float;
-    PyObject *y = PyArray_Copy(a);
-    iter it;
+    PyObject * y = PyArray_Copy(a);
+    iter       it;
     init_iter_one(&it, (PyArrayObject *)y, axis);
     if (LENGTH == 0 || NDIM == 0) {
         return y;
@@ -380,7 +386,6 @@ NRA(push, DTYPE0) {
 
 NRA_MAIN(push, PARSE_PUSH)
 
-
 /* python strings -------------------------------------------------------- */
 
 PyObject *pystr_a = NULL;
@@ -400,20 +405,23 @@ intern_strings(void) {
 /* nonreducer_axis ------------------------------------------------------- */
 
 static inline int
-parse_partition(PyObject *args,
-                PyObject *kwds,
+parse_partition(PyObject * args,
+                PyObject * kwds,
                 PyObject **a,
                 PyObject **n,
                 PyObject **axis) {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
     if (nkwds) {
-        int nkwds_found = 0;
+        int       nkwds_found = 0;
         PyObject *tmp;
         switch (nargs) {
-            case 2: *n = PyTuple_GET_ITEM(args, 1);
-            case 1: *a = PyTuple_GET_ITEM(args, 0);
-            case 0: break;
+            case 2:
+                *n = PyTuple_GET_ITEM(args, 1);
+            case 1:
+                *a = PyTuple_GET_ITEM(args, 0);
+            case 0:
+                break;
             default:
                 TYPE_ERR("wrong number of arguments");
                 return 0;
@@ -469,18 +477,20 @@ parse_partition(PyObject *args,
 }
 
 static inline int
-parse_rankdata(PyObject *args,
-               PyObject *kwds,
+parse_rankdata(PyObject * args,
+               PyObject * kwds,
                PyObject **a,
                PyObject **axis) {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
     if (nkwds) {
-        int nkwds_found = 0;
+        int       nkwds_found = 0;
         PyObject *tmp;
         switch (nargs) {
-            case 1: *a = PyTuple_GET_ITEM(args, 0);
-            case 0: break;
+            case 1:
+                *a = PyTuple_GET_ITEM(args, 0);
+            case 0:
+                break;
             default:
                 TYPE_ERR("wrong number of arguments");
                 return 0;
@@ -528,20 +538,23 @@ parse_rankdata(PyObject *args,
 }
 
 static inline int
-parse_push(PyObject *args,
-           PyObject *kwds,
+parse_push(PyObject * args,
+           PyObject * kwds,
            PyObject **a,
            PyObject **n,
            PyObject **axis) {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
     if (nkwds) {
-        int nkwds_found = 0;
+        int       nkwds_found = 0;
         PyObject *tmp;
         switch (nargs) {
-            case 2: *n = PyTuple_GET_ITEM(args, 1);
-            case 1: *a = PyTuple_GET_ITEM(args, 0);
-            case 0: break;
+            case 2:
+                *n = PyTuple_GET_ITEM(args, 1);
+            case 1:
+                *a = PyTuple_GET_ITEM(args, 0);
+            case 0:
+                break;
             default:
                 TYPE_ERR("wrong number of arguments");
                 return 0;
@@ -597,20 +610,20 @@ parse_push(PyObject *args,
 }
 
 static PyObject *
-nonreducer_axis(char *name,
-                PyObject *args,
-                PyObject *kwds,
-                nra_t nra_float64,
-                nra_t nra_float32,
-                nra_t nra_int64,
-                nra_t nra_int32,
+nonreducer_axis(char *     name,
+                PyObject * args,
+                PyObject * kwds,
+                nra_t      nra_float64,
+                nra_t      nra_float32,
+                nra_t      nra_int64,
+                nra_t      nra_int32,
                 parse_type parse) {
     int n;
     int axis;
     int dtype;
 
     PyArrayObject *a;
-    PyObject *y;
+    PyObject *     y;
 
     PyObject *a_obj = NULL;
     PyObject *n_obj = NULL;
@@ -655,7 +668,8 @@ nonreducer_axis(char *name,
             axis = PyArray_NDIM(a) - 1;
             if (axis < 0) {
                 PyErr_Format(PyExc_ValueError,
-                             "axis(=%d) out of bounds", axis);
+                             "axis(=%d) out of bounds",
+                             axis);
                 goto error;
             }
         } else {
@@ -683,7 +697,8 @@ nonreducer_axis(char *name,
             axis += PyArray_NDIM(a);
             if (axis < 0) {
                 PyErr_Format(PyExc_ValueError,
-                             "axis(=%d) out of bounds", axis);
+                             "axis(=%d) out of bounds",
+                             axis);
                 goto error;
             }
         } else if (axis >= PyArray_NDIM(a)) {
@@ -710,11 +725,16 @@ nonreducer_axis(char *name,
     }
 
     dtype = PyArray_TYPE(a);
-    if      (dtype == NPY_float64) y = nra_float64(a, axis, n);
-    else if (dtype == NPY_float32) y = nra_float32(a, axis, n);
-    else if (dtype == NPY_int64)   y = nra_int64(a, axis, n);
-    else if (dtype == NPY_int32)   y = nra_int32(a, axis, n);
-    else                           y = slow(name, args, kwds);
+    if (dtype == NPY_float64)
+        y = nra_float64(a, axis, n);
+    else if (dtype == NPY_float32)
+        y = nra_float32(a, axis, n);
+    else if (dtype == NPY_int64)
+        y = nra_int64(a, axis, n);
+    else if (dtype == NPY_int32)
+        y = nra_int32(a, axis, n);
+    else
+        y = slow(name, args, kwds);
 
     Py_DECREF(a);
 
