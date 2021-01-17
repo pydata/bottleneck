@@ -14,6 +14,7 @@ help:
 	@echo "flake8  -->  Check for pep8 errors"
 	@echo "isort   -->  Run isort to format imports"
 	@echo "black   -->  Run black formatting tool"
+	@echo "clang-format   -->  Run clang-format tool"
 	@echo "readme  -->  Update benchmark results in README.rst"
 	@echo "bench   -->  Run performance benchmark"
 	@echo "detail  -->  Detailed benchmarks for all functions"
@@ -37,6 +38,9 @@ isort:
 
 black:
 	black . --exclude "(build/|dist/|\.git/|\.mypy_cache/|\.tox/|\.venv/\.asv/|env|\.eggs)"
+
+clang-format:
+	clang-format --style=file -i bottleneck/**/*.c bottleneck/**/*.h
 
 readme:
 	PYTHONPATH=`pwd`:PYTHONPATH ${PYTHON} tools/update_readme.py

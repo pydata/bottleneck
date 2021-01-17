@@ -1013,9 +1013,8 @@ error:
 }
 
 /* docstrings ------------------------------------------------------------- */
-
-static char move_doc[] =
-"Bottleneck moving window functions.";
+// clang-format off
+static char move_doc[] = "Bottleneck moving window functions.";
 
 static char move_sum_doc[] =
 /* MULTILINE STRING BEGIN
@@ -1496,6 +1495,7 @@ move_methods[] = {
     {NULL, NULL, 0, NULL}
 };
 
+// clang-format on
 
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef
