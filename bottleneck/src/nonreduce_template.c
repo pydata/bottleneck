@@ -291,6 +291,8 @@ error:
 
 /* docstrings ------------------------------------------------------------- */
 
+// clang-format off
+
 static char nonreduce_doc[] = "Bottleneck nonreducing functions.";
 
 static char replace_doc[] =
@@ -348,6 +350,7 @@ nonreduce_methods[] = {
     {NULL, NULL, 0, NULL}
 };
 
+// clang-format on
 
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef

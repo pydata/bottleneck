@@ -727,6 +727,8 @@ error:
 
 /* docstrings ------------------------------------------------------------- */
 
+// clang-format off
+
 static char nra_doc[] =
 "Bottleneck non-reducing functions that operate along an axis.";
 
@@ -1001,6 +1003,7 @@ nra_methods[] = {
     {NULL, NULL, 0, NULL}
 };
 
+// clang-format off
 
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef
