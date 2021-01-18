@@ -42,7 +42,7 @@ jobs:
           ${{ runner.os }}-py${{ matrix.python-version }}-pip-
 
     - name: Install style dependencies
-      if: matrix.python-version >= 3.6
+      if: matrix.python-version == 3.9
       run: |
         python -m pip install --upgrade pip
         pip install flake8 isort>=5 black>=20.8b1
@@ -51,20 +51,25 @@ jobs:
         python setup.py build_ext --inplace
         pip install .[test]
     - name: Lint with flake8
-      if: matrix.python-version >= 3.6
+      if: matrix.python-version == 3.9
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --statistics
     - name: Check import sorting with isort
-      if: matrix.python-version >= 3.6
+      if: matrix.python-version == 3.9
       run: |
         isort -c --df .
     - name: Check formatting with black
-      if: matrix.python-version >= 3.6
+      if: matrix.python-version == 3.9
       run: |
         black . --check --exclude "(build/|dist/|\.git/|\.mypy_cache/|\.tox/|\.venv/\.asv/|env|\.eggs)"
+    - name: Check formatting with clang-format
+      if: (matrix.python-version == 3.9) && (startsWith(runner.os, 'Linux'))
+      run: |
+        clang-format --version -i --style=file bottleneck/**/*.c bottleneck/**/*.h
+        git diff --exit-code
     - name: Test with pytest
       run: |
         pytest
