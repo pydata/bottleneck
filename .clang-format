@@ -14,12 +14,10 @@ Language: Cpp
 DerivePointerAlignment: true
 PointerAlignment: Right
 AlignEscapedNewlines: Right
-AllowShortBlocksOnASingleLine: Empty
 AlignConsecutiveDeclarations: true
 ReflowComments: true
 SpacesBeforeTrailingComments: 2
 IndentPPDirectives: BeforeHash
-AllowShortBlocksOnASingleLine: Never
 AllowAllArgumentsOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
 BinPackParameters: false
@@ -27,5 +25,3 @@ BinPackArguments: false
 ForEachMacros: ['WHILE', 'FOR', 'WHILE0', 'WHILE1', 'WHILE2', 'REDUCE_SPECIALIZE']
 
 BreakBeforeBraces: Custom
-BraceWrapping:
-  AfterControlStatement: Never
