@@ -68,7 +68,7 @@ jobs:
     - name: Check formatting with clang-format
       if: (matrix.python-version == 3.9) && (startsWith(runner.os, 'Linux'))
       run: |
-        clang-format --version -i --style=file bottleneck/**/*.c bottleneck/**/*.h
+        clang-format -i --style=file bottleneck/**/*.c bottleneck/**/*.h
         git diff --exit-code
     - name: Test with pytest
       run: |
