@@ -38,10 +38,10 @@ static PyObject *
 nonreducer_axis(char *    name,
                 PyObject *args,
                 PyObject *kwds,
-                nra_t,
-                nra_t,
-                nra_t,
-                nra_t,
+                nra_t     nra_float64,
+                nra_t     nra_float32,
+                nra_t     nra_int64,
+                nra_t     nra_int32,
                 parse_type);
 
 /* partition ------------------------------------------------------------- */

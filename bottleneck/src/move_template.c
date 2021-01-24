@@ -62,11 +62,11 @@ static PyObject *
 mover(char *    name,
       PyObject *args,
       PyObject *kwds,
-      move_t,
-      move_t,
-      move_t,
-      move_t,
-      int has_ddof);
+      move_t    move_float64,
+      move_t    move_float32,
+      move_t    move_int64,
+      move_t    move_int32,
+      int       has_ddof);
 
 /* move_sum -------------------------------------------------------------- */
 
