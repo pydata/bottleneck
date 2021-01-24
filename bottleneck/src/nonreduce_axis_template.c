@@ -83,7 +83,7 @@ NRA_MAIN(partition, PARSE_PARTITION)
 
 /* argpartition ----------------------------------------------------------- */
 
-#define BUFFER_NEW(dtype) dtype *B = malloc(LENGTH * sizeof(dtype));
+#define BUFFER_NEW(dtype) dtype *B = calloc(LENGTH, sizeof(dtype));
 #define BUFFER_DELETE     free(B);
 
 #define ARGWIRTH(dtype0, dtype1)           \
