@@ -242,36 +242,34 @@ nonreducer(char *    name,
     if (old_obj == NULL) {
         RUNTIME_ERR("`old_obj` should never be NULL; please report this bug.");
         goto error;
-    } else {
-        old = PyFloat_AsDouble(old_obj);
-        if (error_converting(old)) {
-            TYPE_ERR("`old` must be a number");
-            goto error;
-        }
+    }
+    const double old_value = PyFloat_AsDouble(old_obj);
+    if (error_converting(old_value)) {
+        TYPE_ERR("`old` must be a number");
+        goto error;
     }
 
     /* new */
     if (new_obj == NULL) {
         RUNTIME_ERR("`new_obj` should never be NULL; please report this bug.");
         goto error;
-    } else {
-        new = PyFloat_AsDouble(new_obj);
-        if (error_converting(new)) {
-            TYPE_ERR("`new` must be a number");
-            goto error;
-        }
+    }
+    const double new_value = PyFloat_AsDouble(new_obj);
+    if (error_converting(new_value)) {
+        TYPE_ERR("`new` must be a number");
+        goto error;
     }
 
-    dtype = PyArray_TYPE(a);
+    const int dtype = PyArray_TYPE(a);
 
     if (dtype == NPY_float64) {
-        y = nr_float64(a, old, new);
+        y = nr_float64(a, old_value, new_value);
     } else if (dtype == NPY_float32) {
-        y = nr_float32(a, old, new);
+        y = nr_float32(a, old_value, new_value);
     } else if (dtype == NPY_int64) {
-        y = nr_int64(a, old, new);
+        y = nr_int64(a, old_value, new_value);
     } else if (dtype == NPY_int32) {
-        y = nr_int32(a, old, new);
+        y = nr_int32(a, old_value, new_value);
     } else {
         y = slow(name, args, kwds);
     }
@@ -372,7 +370,9 @@ initnonreduce(void)
 #else
     PyObject *m = Py_InitModule3("nonreduce", nonreduce_methods, nonreduce_doc);
 #endif
-    if (m == NULL) return RETVAL;
+    if (m == NULL) {
+        return RETVAL;
+    }
     import_array();
     if (!intern_strings()) {
         return RETVAL;
