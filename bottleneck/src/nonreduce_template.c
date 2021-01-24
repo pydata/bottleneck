@@ -12,11 +12,11 @@ static PyObject *
 nonreducer(char *    name,
            PyObject *args,
            PyObject *kwds,
-           nr_t,
-           nr_t,
-           nr_t,
-           nr_t,
-           int inplace);
+           nr_t      nr_float64,
+           nr_t      nr_float32,
+           nr_t      nr_int64,
+           nr_t      nr_int32,
+           int       inplace);
 
 /* replace --------------------------------------------------------------- */
 
