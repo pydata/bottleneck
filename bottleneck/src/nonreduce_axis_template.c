@@ -393,13 +393,12 @@ NRA_MAIN(push, PARSE_PUSH)
 
 /* python strings -------------------------------------------------------- */
 
-PyObject *pystr_a = NULL;
-PyObject *pystr_n = NULL;
-PyObject *pystr_kth = NULL;
-PyObject *pystr_axis = NULL;
+static PyObject *pystr_a = NULL;
+static PyObject *pystr_n = NULL;
+static PyObject *pystr_kth = NULL;
+static PyObject *pystr_axis = NULL;
 
-static int
-intern_strings(void) {
+static int intern_strings(void) {
     pystr_a = PyString_InternFromString("a");
     pystr_n = PyString_InternFromString("n");
     pystr_kth = PyString_InternFromString("kth");
