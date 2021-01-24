@@ -56,7 +56,9 @@ NRA(partition, DTYPE0) {
     a = (PyArrayObject *)PyArray_NewCopy(a, NPY_ANYORDER);
     init_iter_one(&it, a, axis);
 
-    if (LENGTH == 0) return (PyObject *)a;
+    if (LENGTH == 0) {
+        return (PyObject *)a;
+    }
     if (n < 0 || n > LENGTH - 1) {
         PyErr_Format(PyExc_ValueError,
                      "`n` (=%d) must be between 0 and %zd, inclusive.",
@@ -106,8 +108,10 @@ NRA_MAIN(partition, PARSE_PARTITION)
             j--;                           \
         }                                  \
     } while (m <= j);                      \
-    if (j < k) l = m;                      \
-    if (k < m) r = j;
+    if (j < k)                             \
+        l = m;                             \
+    if (k < m)                             \
+        r = j;
 
 #define ARGPARTITION(dtype0, dtype1)               \
     while (l < r) {                                \
@@ -168,7 +172,9 @@ NRA(argpartition, DTYPE0) {
     PyObject *y = PyArray_EMPTY(PyArray_NDIM(a), PyArray_SHAPE(a), NPY_DTYPE1, 0);
     iter2     it;
     init_iter2(&it, a, y, axis);
-    if (LENGTH == 0) return y;
+    if (LENGTH == 0) {
+        return y;
+    }
     if (n < 0 || n > LENGTH - 1) {
         PyErr_Format(PyExc_ValueError,
                      "`n` (=%d) must be between 0 and %zd, inclusive.",
