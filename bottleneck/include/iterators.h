@@ -74,9 +74,9 @@ static inline void init_iter_one(iter *it, PyArrayObject *a, int axis) {
  * calling Py_DECREF(it.a_ravel) after you are done with the iterator.
  * See nanargmin for an example.
  */
-static inline void
-init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder) {
-    int             i, j = 0;
+static inline void init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder) {
+    int             i = 0;
+    int             j = 0;
     const int       ndim = PyArray_NDIM(a);
     const npy_intp *shape = PyArray_SHAPE(a);
     const npy_intp *strides = PyArray_STRIDES(a);
@@ -208,9 +208,9 @@ struct _iter2 {
 };
 typedef struct _iter2 iter2;
 
-static inline void
-init_iter2(iter2 *it, PyArrayObject *a, PyObject *y, int axis) {
-    int             i, j = 0;
+static inline void init_iter2(iter2 *it, PyArrayObject *a, PyObject *y, int axis) {
+    int             i = 0;
+    int             j = 0;
     const int       ndim = PyArray_NDIM(a);
     const npy_intp *shape = PyArray_SHAPE(a);
     const npy_intp *astrides = PyArray_STRIDES(a);
@@ -283,9 +283,9 @@ struct _iter3 {
 };
 typedef struct _iter3 iter3;
 
-static inline void
-init_iter3(iter3 *it, PyArrayObject *a, PyObject *y, PyObject *z, int axis) {
-    int             i, j = 0;
+static inline void init_iter3(iter3 *it, PyArrayObject *a, PyObject *y, PyObject *z, int axis) {
+    int             i = 0;
+    int             j = 0;
     const int       ndim = PyArray_NDIM(a);
     const npy_intp *shape = PyArray_SHAPE(a);
     const npy_intp *astrides = PyArray_STRIDES(a);

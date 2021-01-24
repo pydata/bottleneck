@@ -613,7 +613,6 @@ MOVE_MAIN(move_median, 0)
         g = 0;                            \
         e = 1;                            \
         n = 1;                            \
-        r = 0;                            \
         for (j = limit; j < INDEX; j++) { \
             aj = AX(dtype0, j);           \
             if (!bn_isnan(aj)) {          \
@@ -675,7 +674,6 @@ MOVE(move_rank, DTYPE0) {
             const npy_DTYPE0 ai = AI(DTYPE0);
             g = 0;
             e = 1;
-            r = 0;
             for (j = 0; j < INDEX; j++) {
                 const npy_DTYPE0 aj = AX(DTYPE0, j);
                 if (ai > aj) {
@@ -699,7 +697,6 @@ MOVE(move_rank, DTYPE0) {
             const npy_DTYPE0 ai = AI(DTYPE0);
             g = 0;
             e = 1;
-            r = 0;
             for (j = INDEX - window + 1; j < INDEX; j++) {
                 const npy_DTYPE0 aj = AX(DTYPE0, j);
                 if (ai > aj) {
@@ -863,13 +860,6 @@ mover(char *    name,
       move_t    move_int64,
       move_t    move_int32,
       int       has_ddof) {
-    int mc;
-    int window;
-    int axis;
-    int ddof;
-    int dtype;
-    int ndim;
-
     Py_ssize_t length;
 
     PyArrayObject *a;
@@ -903,13 +893,14 @@ mover(char *    name,
     }
 
     /* window */
-    window = PyArray_PyIntAsInt(window_obj);
+    int window = PyArray_PyIntAsInt(window_obj);
     if (error_converting(window)) {
         TYPE_ERR("`window` must be an integer");
         goto error;
     }
 
     /* min_count */
+    int mc;
     if (min_count_obj == Py_None) {
         mc = window;
     } else {
@@ -930,7 +921,7 @@ mover(char *    name,
         }
     }
 
-    ndim = PyArray_NDIM(a);
+    int ndim = PyArray_NDIM(a);
 
     /* defend against 0d beings */
     if (ndim == 0) {
@@ -939,6 +930,7 @@ mover(char *    name,
     }
 
     /* defend against the axis of negativity */
+    int axis;
     if (axis_obj == NULL) {
         axis = ndim - 1;
     } else {
@@ -962,6 +954,7 @@ mover(char *    name,
     }
 
     /* ddof */
+    int ddof;
     if (ddof_obj == NULL) {
         ddof = 0;
     } else {
@@ -981,7 +974,7 @@ mover(char *    name,
         goto error;
     }
 
-    dtype = PyArray_TYPE(a);
+    int dtype = PyArray_TYPE(a);
 
     if (dtype == NPY_float64) {
         y = move_float64(a, window, mc, axis, ddof);
