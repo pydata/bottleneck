@@ -1062,7 +1062,7 @@ REDUCE_MAIN(ss, 0)
     EVEN_ODD(dtype, n)
 
 #define BUFFER_NEW(dtype, length) \
-    npy_##dtype *buffer = malloc(length * sizeof(npy_##dtype));
+    npy_##dtype *buffer = calloc(length, sizeof(npy_##dtype));
 
 #define BUFFER_DELETE free(buffer);
 

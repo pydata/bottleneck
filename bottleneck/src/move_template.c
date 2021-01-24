@@ -444,7 +444,7 @@ MOVE(NAME, DTYPE0) {
     pairs *    extreme_pair;
     pairs *    end;
     pairs *    last;
-    pairs *    ring = (pairs *)malloc(window * sizeof(pairs));
+    pairs *    ring = (pairs *)calloc(sizeof(pairs), window);
     INIT(NPY_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
@@ -488,7 +488,7 @@ MOVE(NAME, DTYPE0) {
     pairs *    extreme_pair;
     pairs *    end;
     pairs *    last;
-    pairs *    ring = (pairs *)malloc(window * sizeof(pairs));
+    pairs *    ring = (pairs *)calloc(sizeof(pairs), window);
     INIT(NPY_DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
