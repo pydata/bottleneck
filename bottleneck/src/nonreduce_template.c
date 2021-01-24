@@ -206,11 +206,8 @@ nonreducer(char *    name,
            nr_t      nr_int64,
            nr_t      nr_int32,
            int       inplace) {
-    int    dtype;
-    double old, new;
-
-    PyArrayObject *a;
-    PyObject *     y;
+    PyArrayObject *a = NULL;
+    PyObject *     y = NULL;
 
     PyObject *a_obj = NULL;
     PyObject *old_obj = NULL;

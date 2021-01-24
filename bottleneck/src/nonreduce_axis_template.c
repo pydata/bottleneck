@@ -50,7 +50,7 @@ nonreducer_axis(char *    name,
 
 /* dtype = [['float64'], ['float32'], ['int64'], ['int32']] */
 NRA(partition, DTYPE0) {
-    npy_intp j, k;
+    npy_intp j = 0, k = 0;
     iter     it;
 
     a = (PyArrayObject *)PyArray_NewCopy(a, NPY_ANYORDER);
@@ -164,6 +164,7 @@ NRA_MAIN(partition, PARSE_PARTITION)
 /* dtype = [['float64', 'intp'], ['float32', 'intp'],
             ['int64',   'intp'], ['int32',   'intp']] */
 NRA(argpartition, DTYPE0) {
+    npy_intp  i;
     PyObject *y = PyArray_EMPTY(PyArray_NDIM(a), PyArray_SHAPE(a), NPY_DTYPE1, 0);
     iter2     it;
     init_iter2(&it, a, y, axis);
@@ -180,8 +181,6 @@ NRA(argpartition, DTYPE0) {
     npy_intp j, l, r, k;
     k = n;
     WHILE {
-        l = 0;
-        r = LENGTH - 1;
         ARGPARTSORT(DTYPE0, DTYPE1)
         NEXT2
     }
@@ -414,7 +413,7 @@ parse_partition(PyObject * args,
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
     if (nkwds) {
         int       nkwds_found = 0;
-        PyObject *tmp;
+        PyObject *tmp = NULL;
         switch (nargs) {
             case 2:
                 *n = PyTuple_GET_ITEM(args, 1);
@@ -485,7 +484,7 @@ parse_rankdata(PyObject * args,
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
     if (nkwds) {
         int       nkwds_found = 0;
-        PyObject *tmp;
+        PyObject *tmp = NULL;
         switch (nargs) {
             case 1:
                 *a = PyTuple_GET_ITEM(args, 0);
@@ -547,7 +546,7 @@ parse_push(PyObject * args,
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
     if (nkwds) {
         int       nkwds_found = 0;
-        PyObject *tmp;
+        PyObject *tmp = NULL;
         switch (nargs) {
             case 2:
                 *n = PyTuple_GET_ITEM(args, 1);
@@ -618,12 +617,11 @@ nonreducer_axis(char *     name,
                 nra_t      nra_int64,
                 nra_t      nra_int32,
                 parse_type parse) {
-    int n;
+    int n = -1;
     int axis;
-    int dtype;
 
     PyArrayObject *a;
-    PyObject *     y;
+    PyObject *     y = NULL;
 
     PyObject *a_obj = NULL;
     PyObject *n_obj = NULL;
@@ -724,7 +722,7 @@ nonreducer_axis(char *     name,
         }
     }
 
-    dtype = PyArray_TYPE(a);
+    int dtype = PyArray_TYPE(a);
     if (dtype == NPY_float64) {
         y = nra_float64(a, axis, n);
     } else if (dtype == NPY_float32) {
