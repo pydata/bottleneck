@@ -149,7 +149,7 @@ def check_gcc_intrinsic(cmd: Config, intrinsic: str, value: str) -> bool:
 
 def create_config_h(config: Config) -> None:
     dirname = os.path.dirname(__file__)
-    config_h = os.path.join(dirname, "bn_config.h")
+    config_h = os.path.join(dirname, "../include", "bn_config.h")
 
     if (
         os.path.exists(config_h)

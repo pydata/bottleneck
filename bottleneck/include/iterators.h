@@ -35,8 +35,7 @@ struct _iter {
 };
 typedef struct _iter iter;
 
-static inline void
-init_iter_one(iter *it, PyArrayObject *a, int axis) {
+static inline void init_iter_one(iter *it, PyArrayObject *a, int axis) {
     const int       ndim = PyArray_NDIM(a);
     const npy_intp *shape = PyArray_SHAPE(a);
     const npy_intp *strides = PyArray_STRIDES(a);
@@ -89,8 +88,8 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder) {
     it->a_ravel = NULL;
 
     /* The fix for relaxed strides checking in numpy and the fix for
-     * issue #183 has left this if..else tree in need of a refactor from the
-     * the ground up */
+   * issue #183 has left this if..else tree in need of a refactor from the
+   * the ground up */
     if (ndim == 1) {
         it->ndim_m2 = -1;
         it->length = shape[0];
@@ -101,14 +100,14 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder) {
         it->astride = 0;
     } else if (C_CONTIGUOUS(a) && !F_CONTIGUOUS(a)) {
         /* The &&! in the next two else ifs is to deal with relaxed
-         * stride checking introduced in numpy 1.12.0; see gh #161 */
+     * stride checking introduced in numpy 1.12.0; see gh #161 */
         it->ndim_m2 = -1;
         it->axis = ndim - 1;
         it->length = PyArray_SIZE(a);
         it->astride = 0;
         for (i = ndim - 1; i > -1; i--) {
             /* protect against length zero  strides such as in
-             * np.ones((2, 2))[..., np.newaxis] */
+       * np.ones((2, 2))[..., np.newaxis] */
             if (strides[i] == 0) {
                 continue;
             }
@@ -122,7 +121,7 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder) {
             it->astride = 0;
             for (i = 0; i < ndim; i++) {
                 /* protect against length zero  strides such as in
-                 * np.ones((2, 2), order='F')[np.newaxis, ...] */
+         * np.ones((2, 2), order='F')[np.newaxis, ...] */
                 if (strides[i] == 0) {
                     continue;
                 }

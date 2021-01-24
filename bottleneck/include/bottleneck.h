@@ -42,7 +42,7 @@
     #define PyString_InternFromString PyUnicode_InternFromString
 #endif
 
-#define VARKEY              METH_VARARGS | METH_KEYWORDS
+#define VARKEY              (((unsigned)METH_VARARGS) | ((unsigned)METH_KEYWORDS))
 #define error_converting(x) (((x) == -1) && PyErr_Occurred())
 
 #define VALUE_ERR(text)   PyErr_SetString(PyExc_ValueError, text)

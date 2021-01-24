@@ -47,7 +47,7 @@ class clean(Command):
                     if os.path.exists(generated_file):
                         self.delete_files.append(generated_file)
 
-        config_h = "bottleneck/src/bn_config.h"
+        config_h = "bottleneck/include/bn_config.h"
         if os.path.exists(config_h):
             self.delete_files.append(config_h)
 
@@ -81,6 +81,7 @@ class build_ext(_build_ext):
         # place numpy includes first, see gh #156
         self.include_dirs.insert(0, numpy.get_include())
         self.include_dirs.append("bottleneck/src")
+        self.include_dirs.append("bottleneck/include")
 
     def build_extensions(self) -> None:
         from bn_template import make_c_files
@@ -125,9 +126,9 @@ def get_cpu_arch_flags() -> List[str]:
 
 def prepare_modules() -> List[Extension]:
     base_includes = [
-        "bottleneck/src/bottleneck.h",
-        "bottleneck/src/bn_config.h",
-        "bottleneck/src/iterators.h",
+        "bottleneck/include/bottleneck.h",
+        "bottleneck/include/bn_config.h",
+        "bottleneck/include/iterators.h",
     ]
 
     arch_flags = get_cpu_arch_flags()
