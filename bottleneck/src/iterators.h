@@ -345,9 +345,9 @@ init_iter3(iter3 *it, PyArrayObject *a, PyObject *y, PyObject *z, int axis) {
 
 /* most of these macros assume iterator is named `it` */
 
-#define NDIM   it.ndim_m2 + 2
+#define NDIM   (it.ndim_m2 + 2)
 #define SHAPE  it.shape
-#define SIZE   it.nits *it.length
+#define SIZE   (it.nits * it.length)
 #define LENGTH it.length
 #define INDEX  it.i
 
@@ -370,8 +370,8 @@ init_iter3(iter3 *it, PyArrayObject *a, PyObject *y, PyObject *z, int axis) {
 #define AX(dtype, x) *(npy_##dtype *)(it.pa + (x)*it.astride)
 #define AOLD(dtype)  *(npy_##dtype *)(it.pa + (it.i - window) * it.astride)
 
-#define SI(pa)    pa[it.i * it.stride]
-#define SX(pa, x) pa[x * it.stride]
+#define SI(pa)    pa[(it.i * it.stride)]
+#define SX(pa, x) pa[(x)*it.stride]
 
 #define YPP          *py++
 #define YI(dtype)    *(npy_##dtype *)(it.py + it.i++ * it.ystride)
@@ -386,9 +386,15 @@ init_iter3(iter3 *it, PyArrayObject *a, PyObject *y, PyObject *z, int axis) {
         YPP = value;                                  \
     }
 
-#define REDUCE_CONTIGUOUS    (it.stride == 1 && ((it.ndim_m2 < 0) || (C_CONTIGUOUS(a) || F_CONTIGUOUS(a))))
-#define ONE_CONTIGUOUS       (it.stride == 1 && ((it.ndim_m2 >= 0) && ((C_CONTIGUOUS(a) || F_CONTIGUOUS(a)) && (it.axis == axis))))
-#define ONE_TRANSPOSE(dtype) ((it.ndim_m2 == 0) && it.astrides[it.ndim_m2] == sizeof(dtype) && ((C_CONTIGUOUS(a) && axis == 0) || (F_CONTIGUOUS(a) && axis == 1)))
+#define REDUCE_CONTIGUOUS \
+    (it.stride == 1 && ((it.ndim_m2 < 0) || (C_CONTIGUOUS(a) || F_CONTIGUOUS(a))))
+#define ONE_CONTIGUOUS     \
+    (it.stride == 1 &&     \
+     ((it.ndim_m2 >= 0) && \
+      ((C_CONTIGUOUS(a) || F_CONTIGUOUS(a)) && (it.axis == axis))))
+#define ONE_TRANSPOSE(dtype)                                          \
+    ((it.ndim_m2 == 0) && it.astrides[it.ndim_m2] == sizeof(dtype) && \
+     ((C_CONTIGUOUS(a) && axis == 0) || (F_CONTIGUOUS(a) && axis == 1)))
 
 #define REDUCE_SPECIALIZE(code) \
     if (REDUCE_CONTIGUOUS) {    \
