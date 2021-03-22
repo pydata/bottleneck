@@ -24,7 +24,8 @@ def get_python_header_include() -> List[str]:
     if sys.platform == "win32":
         suffix = ["include"]
     else:
-        suffix = ["include", "python" + sys.version[:3] + sys.abiflags]
+        python_ver = "python{0.major}.{0.minor}".format(sys.version_info)
+        suffix = ["include", python_ver + sys.abiflags]
 
     results = []
     for prefix in [sys.prefix, sys.exec_prefix]:
