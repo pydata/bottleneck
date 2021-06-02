@@ -98,37 +98,59 @@ static inline void init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyo
         it->ndim_m2 = -1;
         it->length = 1;
         it->astride = 0;
-    } else if (C_CONTIGUOUS(a) && !F_CONTIGUOUS(a)) {
-        /* The &&! in the next two else ifs is to deal with relaxed
-     * stride checking introduced in numpy 1.12.0; see gh #161 */
-        it->ndim_m2 = -1;
-        it->axis = ndim - 1;
-        it->length = PyArray_SIZE(a);
-        it->astride = 0;
-        for (i = ndim - 1; i > -1; i--) {
-            /* protect against length zero  strides such as in
-       * np.ones((2, 2))[..., np.newaxis] */
-            if (strides[i] == 0) {
-                continue;
+    } else {
+        /* If strides aren't in descending order, some of the assumptions for C_CONTIGUOUS don't hold */
+        int strides_descending = 1;
+        for (i = 1; i < ndim; i++) {
+            if (strides[i] > strides[i-1]) {
+                strides_descending = 0;
+                break;
             }
-            it->astride = strides[i];
-            break;
         }
-    } else if (F_CONTIGUOUS(a) && !C_CONTIGUOUS(a)) {
-        if (anyorder || !ravel) {
+
+        if (strides_descending && C_CONTIGUOUS(a) && !F_CONTIGUOUS(a)) {
+
+            /* The &&! in the next two else ifs is to deal with relaxed
+         * stride checking introduced in numpy 1.12.0; see gh #161 */
             it->ndim_m2 = -1;
+            it->axis = ndim - 1;
             it->length = PyArray_SIZE(a);
             it->astride = 0;
-            for (i = 0; i < ndim; i++) {
+            for (i = ndim - 1; i > -1; i--) {
                 /* protect against length zero  strides such as in
-         * np.ones((2, 2), order='F')[np.newaxis, ...] */
+           * np.ones((2, 2))[..., np.newaxis] */
                 if (strides[i] == 0) {
                     continue;
                 }
                 it->astride = strides[i];
                 break;
             }
-        } else {
+        } else if (F_CONTIGUOUS(a) && !C_CONTIGUOUS(a)) {
+            if (anyorder || !ravel) {
+                it->ndim_m2 = -1;
+                it->length = PyArray_SIZE(a);
+                it->astride = 0;
+                for (i = 0; i < ndim; i++) {
+                    /* protect against length zero  strides such as in
+             * np.ones((2, 2), order='F')[np.newaxis, ...] */
+                    if (strides[i] == 0) {
+                        continue;
+                    }
+                    it->astride = strides[i];
+                    break;
+                }
+            } else {
+                it->ndim_m2 = -1;
+                if (anyorder) {
+                    a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
+                } else {
+                    a = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
+                }
+                it->a_ravel = a;
+                it->length = PyArray_DIM(a, 0);
+                it->astride = PyArray_STRIDE(a, 0);
+            }
+        } else if (ravel) {
             it->ndim_m2 = -1;
             if (anyorder) {
                 a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
@@ -138,34 +160,24 @@ static inline void init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyo
             it->a_ravel = a;
             it->length = PyArray_DIM(a, 0);
             it->astride = PyArray_STRIDE(a, 0);
-        }
-    } else if (ravel) {
-        it->ndim_m2 = -1;
-        if (anyorder) {
-            a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
         } else {
-            a = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
-        }
-        it->a_ravel = a;
-        it->length = PyArray_DIM(a, 0);
-        it->astride = PyArray_STRIDE(a, 0);
-    } else {
-        it->ndim_m2 = ndim - 2;
-        it->astride = strides[0];
-        for (i = 1; i < ndim; i++) {
-            if (strides[i] < it->astride) {
-                it->astride = strides[i];
-                it->axis = i;
+            it->ndim_m2 = ndim - 2;
+            it->astride = strides[0];
+            for (i = 1; i < ndim; i++) {
+                if (strides[i] < it->astride) {
+                    it->astride = strides[i];
+                    it->axis = i;
+                }
             }
-        }
-        it->length = shape[it->axis];
-        for (i = 0; i < ndim; i++) {
-            if (i != it->axis) {
-                it->indices[j] = 0;
-                it->astrides[j] = strides[i];
-                it->shape[j] = shape[i];
-                it->nits *= shape[i];
-                j++;
+            it->length = shape[it->axis];
+            for (i = 0; i < ndim; i++) {
+                if (i != it->axis) {
+                    it->indices[j] = 0;
+                    it->astrides[j] = strides[i];
+                    it->shape[j] = shape[i];
+                    it->nits *= shape[i];
+                    j++;
+                }
             }
         }
     }
