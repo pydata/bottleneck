@@ -98,13 +98,7 @@ static inline void init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyo
         it->ndim_m2 = -1;
         it->length = 1;
         it->astride = 0;
-    } else if (F_CONTIGUOUS(a) && !C_CONTIGUOUS(a) && ravel && !anyorder) {
-        it->ndim_m2 = -1;
-        a = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
-        it->a_ravel = a;
-        it->length = PyArray_DIM(a, 0);
-        it->astride = PyArray_STRIDE(a, 0);
-    } else if (C_CONTIGUOUS(a) || F_CONTIGUOUS(a)) {
+    } else if (C_CONTIGUOUS(a) || (anyorder && F_CONTIGUOUS(a))) {
         /* If continguous then we just need the itemsize */
         it->ndim_m2 = -1;
         // it->axis does not matter

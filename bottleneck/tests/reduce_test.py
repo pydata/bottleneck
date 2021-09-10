@@ -239,16 +239,28 @@ def test_ddof_nans(func, dtype):
 
 
 @pytest.mark.parametrize("dtype", DTYPES)
-@pytest.mark.parametrize("func", (bn.nanmean, bn.nanmax), ids=lambda x: x.__name__)
-def test_reduce_with_unordered_strides_ccontig(func, dtype) -> None:
+@pytest.mark.parametrize(
+    ("func", "expected"),
+    [(bn.nansum, 1000),
+     (bn.nanmean, 1),
+     (bn.nanmax, 1)],
+    ids=lambda x: x.__name__ if not isinstance(x, int) else x
+)
+def test_reduce_with_unordered_strides_ccontig(func, expected, dtype) -> None:
     array = np.ones((1, 500, 2), dtype=dtype).transpose((1,2,0))
     result = func(array)
-    assert result == 1000
+    assert result == expected
 
 @pytest.mark.parametrize("dtype", DTYPES)
-@pytest.mark.parametrize("func", (bn.nanmean, bn.nanmax), ids=lambda x: x.__name__)
-def test_reduce_with_unordered_strides_fcontig(func, dtype) -> None:
+@pytest.mark.parametrize(
+    ("func", "expected"),
+    [(bn.nansum, 1000),
+     (bn.nanmean, 1),
+     (bn.nanmax, 1)],
+    ids=lambda x: x.__name__ if not isinstance(x, int) else x
+)
+def test_reduce_with_unordered_strides_fcontig(func, expected, dtype) -> None:
     array = np.ones((1, 500, 2), dtype=dtype).transpose((0,2,1))
     result = func(array)
-    assert result == 1000
+    assert result == expected
 
