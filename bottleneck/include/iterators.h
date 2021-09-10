@@ -87,9 +87,6 @@ static inline void init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyo
     it->nits = 1;
     it->a_ravel = NULL;
 
-    /* The fix for relaxed strides checking in numpy and the fix for
-   * issue #183 has left this if..else tree in need of a refactor from the
-   * the ground up */
     if (ndim == 1) {
         it->ndim_m2 = -1;
         it->length = shape[0];
