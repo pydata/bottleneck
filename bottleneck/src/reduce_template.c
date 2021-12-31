@@ -1313,7 +1313,7 @@ REDUCE_ONE(anynan, DTYPE0) {
 #else
                 for (npy_intp i = 0; (i < loop_count) && (f == 0); i++) {
                     for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                        ai = pa[vector_offset + i * LOOP_SIZE + j];
+                        const npy_DTYPE0 ai = pa[vector_offset + i * LOOP_SIZE + j];
                         f += bn_isnan(ai);
                     }
                 }
@@ -1517,7 +1517,7 @@ REDUCE_ONE(allnan, DTYPE0) {
 #else
                 for (npy_intp i = 0; (i < loop_count) && (f == 0); i++) {
                     for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                        ai = pa[vector_offset + i * LOOP_SIZE + j];
+                        const npy_DTYPE0 ai = pa[vector_offset + i * LOOP_SIZE + j];
                         f += !bn_isnan(ai);
                     }
                 }
