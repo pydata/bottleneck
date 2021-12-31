@@ -3,6 +3,7 @@ Unfortunately that file is not exposed, so re-implement the portions we need.
 """
 import os
 import sys
+import platform
 import textwrap
 from distutils.command.config import config as Config
 from typing import List
@@ -11,7 +12,9 @@ OPTIONAL_FUNCTION_ATTRIBUTES = [
     ("HAVE_ATTRIBUTE_OPTIMIZE_OPT_3", '__attribute__((optimize("O3")))')
 ]
 
-OPTIONAL_HEADERS = []
+OPTIONAL_HEADERS = (
+    [] if platform.machine() == "arm64" else [("HAVE_SSE2", "emmintrin.h")]
+)
 
 OPTIONAL_INTRINSICS = [
     ("HAVE___BUILTIN_ISNAN", "__builtin_isnan", "0."),
