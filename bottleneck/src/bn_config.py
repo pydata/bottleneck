@@ -11,7 +11,7 @@ OPTIONAL_FUNCTION_ATTRIBUTES = [
     ("HAVE_ATTRIBUTE_OPTIMIZE_OPT_3", '__attribute__((optimize("O3")))')
 ]
 
-OPTIONAL_HEADERS = [("HAVE_SSE2", "emmintrin.h")]
+OPTIONAL_HEADERS = []
 
 OPTIONAL_INTRINSICS = [
     ("HAVE___BUILTIN_ISNAN", "__builtin_isnan", "0."),
