@@ -363,7 +363,7 @@ NRA(push, DTYPE0) {
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         index = 0;
-        ai_last = BN_NAN;
+        ai_last = BN_NAN_DTYPE0;
         FOR {
             ai = AI(DTYPE0);
             if (!bn_isnan(ai)) {

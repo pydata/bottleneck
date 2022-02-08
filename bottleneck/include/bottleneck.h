@@ -87,10 +87,12 @@ static inline float __bn_nanf(void) {
     return __bint.__f;
 }
 
-#define BN_INFINITYF __bn_inff()
-#define BN_NANF      __bn_nanf()
-#define BN_INFINITY  ((npy_double)BN_INFINITYF)
-#define BN_NAN       ((npy_double)BN_NANF)
+#define BN_INFINITYF   __bn_inff()
+#define BN_NANF        __bn_nanf()
+#define BN_INFINITY    ((npy_double)BN_INFINITYF)
+#define BN_NAN         ((npy_double)BN_NANF)
+#define BN_NAN_float32 BN_NANF
+#define BN_NAN_float64 BN_NAN
 
 /* WIRTH ----------------------------------------------------------------- */
 

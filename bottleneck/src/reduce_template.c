@@ -228,7 +228,7 @@ REDUCE_ALL(nanmean, DTYPE0) {
     if (count > 0) {
         return PyFloat_FromDouble(asum / count);
     } else {
-        return PyFloat_FromDouble(BN_NAN);
+        return PyFloat_FromDouble(BN_NAN_DTYPE0);
     }
 }
 
@@ -236,7 +236,7 @@ REDUCE_ONE(nanmean, DTYPE0) {
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
-        FILL_Y(BN_NAN)
+        FILL_Y(BN_NAN_DTYPE0)
     } else {
         WHILE {
             Py_ssize_t count = 0;
@@ -251,7 +251,7 @@ REDUCE_ONE(nanmean, DTYPE0) {
             if (count > 0) {
                 asum /= count;
             } else {
-                asum = BN_NAN;
+                asum = BN_NAN_DTYPE0;
             }
             YPP = asum;
             NEXT
@@ -279,7 +279,7 @@ REDUCE_ALL(nanmean, DTYPE0) {
     if (total_length > 0) {
         return PyFloat_FromDouble(asum / total_length);
     } else {
-        return PyFloat_FromDouble(BN_NAN);
+        return PyFloat_FromDouble(BN_NAN_DTYPE1);
     }
 }
 
@@ -287,7 +287,7 @@ REDUCE_ONE(nanmean, DTYPE0) {
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
-        FILL_Y(BN_NAN)
+        FILL_Y(BN_NAN_DTYPE1)
     } else {
         WHILE {
             npy_DTYPE1 asum = 0;
@@ -297,7 +297,7 @@ REDUCE_ONE(nanmean, DTYPE0) {
             if (LENGTH > 0) {
                 asum /= LENGTH;
             } else {
-                asum = BN_NAN;
+                asum = BN_NAN_DTYPE1;
             }
             YPP = asum;
             NEXT
@@ -346,7 +346,7 @@ REDUCE_ALL(NAME, DTYPE0) {
         }
         out = FUNC(asum / (count - ddof));
     } else {
-        out = BN_NAN;
+        out = BN_NAN_DTYPE0;
     }
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(out);
@@ -356,7 +356,7 @@ REDUCE_ONE(NAME, DTYPE0) {
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
-        FILL_Y(BN_NAN)
+        FILL_Y(BN_NAN_DTYPE0)
     } else {
         WHILE {
             Py_ssize_t count = 0;
@@ -380,7 +380,7 @@ REDUCE_ONE(NAME, DTYPE0) {
                 }
                 asum = FUNC(asum / (count - ddof));
             } else {
-                asum = BN_NAN;
+                asum = BN_NAN_DTYPE0;
             }
             YPP = asum;
             NEXT
@@ -418,7 +418,7 @@ REDUCE_ALL(NAME, DTYPE0) {
         }
         out = FUNC(asum / (size - ddof));
     } else {
-        out = BN_NAN;
+        out = BN_NAN_DTYPE1;
     }
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(out);
@@ -430,7 +430,7 @@ REDUCE_ONE(NAME, DTYPE0) {
     const npy_DTYPE1 length_inv = 1.0 / LENGTH;
     const npy_DTYPE1 length_ddof_inv = 1.0 / (LENGTH - ddof);
     if (LENGTH == 0) {
-        FILL_Y(BN_NAN)
+        FILL_Y(BN_NAN_DTYPE1)
     } else {
         WHILE {
             npy_DTYPE1 asum = 0;
@@ -446,7 +446,7 @@ REDUCE_ONE(NAME, DTYPE0) {
                 }
                 asum = FUNC(asum * length_ddof_inv);
             } else {
-                asum = BN_NAN;
+                asum = BN_NAN_DTYPE1;
             }
             YPP = asum;
             NEXT
@@ -537,7 +537,7 @@ REDUCE_ALL(NAME, DTYPE0) {
         }
     }
     if (is_allnan) {
-        extreme = BN_NAN;
+        extreme = BN_NAN_DTYPE0;
     }
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(extreme);
@@ -591,9 +591,9 @@ REDUCE_ONE(NAME, DTYPE0) {
         }
         for (npy_intp k = 0; k < LOOP_SIZE; k++) {
             if (allnans[k]) {
-                py[k] = BN_NAN;
+                py[k] = BN_NAN_DTYPE0;
             } else {
-                py[k] = extremes[k];
+                py[k] = extremes[i];
             }
         }
         free(extremes);
@@ -642,7 +642,7 @@ REDUCE_ONE(NAME, DTYPE0) {
             }
 
             if (is_allnan) {
-                extreme = BN_NAN;
+                extreme = BN_NAN_DTYPE0;
             }
             YPP = extreme;
             NEXT
@@ -658,7 +658,9 @@ REDUCE_ONE(NAME, DTYPE0) {
                     is_allnan = 0;
                 }
             }
-            if (is_allnan) extreme = BN_NAN;
+            if (is_allnan) {
+                extreme = BN_NAN_DTYPE0;
+            }
             YPP = extreme;
             NEXT
         }
@@ -1012,7 +1014,7 @@ REDUCE_MAIN(ss, 0)
         }                                   \
     }                                       \
     if (l != LENGTH) {                      \
-        med = BN_NAN;                       \
+        med = BN_NAN_##dtype;               \
         goto done;                          \
     }                                       \
     k = LENGTH >> 1;                        \
@@ -1055,7 +1057,7 @@ REDUCE_MAIN(ss, 0)
     l = 0;                                  \
     r = n - 1;                              \
     if (n == 0) {                           \
-        med = BN_NAN;                       \
+        med = BN_NAN_##dtype;               \
         goto done;                          \
     }                                       \
     PARTITION(dtype)                        \
@@ -1077,7 +1079,7 @@ REDUCE_ALL(NAME, DTYPE0) {
     INIT_ALL_RAVEL_ANY_ORDER
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
-        med = BN_NAN;
+        med = BN_NAN_DTYPE1;
     } else {
         BUFFER_NEW(DTYPE0, LENGTH)
         FUNC(DTYPE0)
@@ -1093,7 +1095,7 @@ REDUCE_ONE(NAME, DTYPE0) {
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
-        FILL_Y(BN_NAN)
+        FILL_Y(BN_NAN_DTYPE1)
     } else {
         npy_DTYPE1 med = BN_NAN;
         BUFFER_NEW(DTYPE0, LENGTH)
@@ -1118,7 +1120,7 @@ REDUCE_ALL(median, DTYPE0) {
     INIT_ALL_RAVEL_ANY_ORDER
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
-        med = BN_NAN;
+        med = BN_NAN_DTYPE1;
     } else {
         BUFFER_NEW(DTYPE0, LENGTH)
         MEDIAN_INT(DTYPE0)
@@ -1134,7 +1136,7 @@ REDUCE_ONE(median, DTYPE0) {
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
-        FILL_Y(BN_NAN)
+        FILL_Y(BN_NAN_DTYPE1)
     } else {
         npy_DTYPE1 med;
         BUFFER_NEW(DTYPE0, LENGTH)
