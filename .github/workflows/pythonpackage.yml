@@ -23,7 +23,7 @@ jobs:
         python -m build
 
     - name: Install wheel
-      run: pip install dist/*
+      run: pip install dist/*.whl
 
     - name: Test with pytest
       run: |
