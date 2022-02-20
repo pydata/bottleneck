@@ -27,6 +27,7 @@ jobs:
     - name: Install wheel
       run: | 
         pip install dist/*.whl
+        pip install pytest
         pytest
 
     - name: Test with pytest
