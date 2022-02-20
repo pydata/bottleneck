@@ -3,7 +3,7 @@ name: Github Actions
 on: [push, pull_request]
 
 jobs:
-  build:
+  build_test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -30,13 +30,8 @@ jobs:
       run: | 
         pip install dist/*.whl
     
-    - name: Debug
-      run: | 
-        cd 
-        python -c "import bottleneck"
-# 
-#     - name: Test with pytest
-#       run: |
-#         pip install pytest
-#         pytest
-# 
+
+    - name: Test with pytest
+      run: |
+        pip install pytest
+        pytest
