@@ -47,6 +47,9 @@ jobs:
     - name: Install build 
       run: | 
         pip install build
+
+    - name: Build wheel
+      run: |
         python -m build 
     
     - name: Store wheel artifacts
@@ -72,7 +75,7 @@ jobs:
     - name: Store wheel artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: linux-${{ matrix.python-version }}-dist
+        name: linux-dist
         path: dist/
   
   release:
@@ -87,7 +90,7 @@ jobs:
         shell: bash
         run: | 
           mkdir dist
-          find . -type f -iname "*-manylinux*.whl" -iname "*.tar.gz" -exec mv -t dist/ {} +
+          find . -type f -iname "*-manylinux*.whl" -or -iname "*.tar.gz" -exec mv -t dist/ {} +
     
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
