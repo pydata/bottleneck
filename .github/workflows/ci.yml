@@ -3,7 +3,7 @@ name: Github Actions
 on: [push, pull_request]
 
 jobs:
-  build_test:
+  test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -13,25 +13,51 @@ jobs:
         os: [ubuntu-latest]
     steps:
     - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
     
-    - name: Build wheel
+    - name: Install as develop
       run: | 
-        pip install build
-        python -m build
-
-    - name: Install wheel
-      run: | 
-        pip install dist/*.whl
-    
+        pip install -e .
 
     - name: Test with pytest
       run: |
         pip install pytest
         pytest
+
+  # upload:
+  #   needs: test
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       # python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+  #       python-version: ["3.10"]
+  #       # os: [ubuntu-18.94, ubuntu-latest, macOS-latest, windows-latest, windows-2022, macos-10.15]
+  #       os: [ubuntu-latest]
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #     with:
+  #       fetch-depth: 0
+
+  #   - name: Set up Python ${{ matrix.python-version }}
+  #     uses: actions/setup-python@v2
+  #     with:
+  #       python-version: ${{ matrix.python-version }}
+  #   
+  #   - name: Build wheel
+  #     run: | 
+  #       pip install build
+  #       python -m build
+
+  #   - name: Install wheel
+  #     run: | 
+  #       pip install dist/*.whl
+  #   
+
+  #   - name: Test with pytest
+  #     run: |
+  #       pip install pytest
+  #       pytest
