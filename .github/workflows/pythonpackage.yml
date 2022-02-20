@@ -11,13 +11,21 @@ jobs:
         os: [ubuntu-18.94, ubuntu-latest, macOS-latest, windows-latest, windows-2022, macos-10.15]
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install 
+
+    - name: Build wheel
       run: | 
-        pip install .
+        pip install build
+        python -m build
+
+    - name: Install wheel
+      run: pip install dist/*
+
     - name: Test with pytest
       run: |
+        pip install pytest
         pytest
