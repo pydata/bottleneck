@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 
 import os
-import sys
-
-from setuptools import setup, find_packages, Command
-from setuptools.extension import Extension
-from setuptools.command.build_ext import build_ext as _build_ext
-from distutils.command.config import config as _config
-import versioneer
 import shutil
+import sys
+from distutils.command.config import config as _config
+
+from setuptools import Command, find_packages, setup
+from setuptools.command.build_ext import build_ext as _build_ext
+from setuptools.extension import Extension
+
+import versioneer
 
 
 class config(_config):
@@ -82,7 +83,9 @@ class build_ext(_build_ext):
         from bn_template import make_c_files
 
         self.run_command("config")
-        make_c_files()
+        dirpath = "bottleneck/src"
+        modules = ["reduce", "move", "nonreduce", "nonreduce_axis"]
+        make_c_files(dirpath, modules)
 
         _build_ext.build_extensions(self)
 
