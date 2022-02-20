@@ -7,26 +7,7 @@
 Bottleneck
 ==========
 
-Bottleneck is a collection of fast, NaN-aware NumPy array functions
-written in C.
-
-As one example, to check if a ``np.array`` has any NaNs using numpy,
-one must call ``np.any(np.isnan(array))``. The :meth:`bottleneck.anynan`
-function interleaves the :meth:`np.isnan` check with :meth:`np.any`
-pre-exit, enabling up to an ``O(N)`` speedup relative to numpy.
-
-Bottleneck strives to be a drop-in accelerator for NumPy functions.
-When using the following libraries, Bottleneck support is automatically
-enabled and utilized:
-
- - `pandas <https://pandas.pydata.org/pandas-docs/stable/install.html#recommended-dependencies>`_
- - `xarray <http://xarray.pydata.org/en/stable/installing.html#instructions>`_
- - `astropy <https://docs.astropy.org/en/stable/install.html>`_
-
-Details on the performance benefits can be found in :ref:`benchmarking`
-
-Example
-=======
+Bottleneck is a collection of fast NumPy array functions written in C.
 
 Let's give it a try. Create a NumPy array::
 
@@ -43,8 +24,6 @@ Moving window mean::
 
     >>> bn.move_mean(a, window=2, min_count=1)
     array([ 1. ,  1.5,  2. ,  4. ,  4.5])
-
-.. _benchmarking:
 
 Benchmark
 =========
@@ -123,13 +102,11 @@ Install
 Requirements:
 
 ======================== ====================================================
-Bottleneck               Python 3.6, 3.7, 3.8; NumPy 1.15.0+ (follows NEP 29)
+Bottleneck               Python 2.7, 3.5, 3.6, 3.7, 3.8; NumPy 1.16.0+
 Compile                  gcc, clang, MinGW or MSVC
-Unit tests               pytest, hypothesis
+Unit tests               pytest
 Documentation            sphinx, numpydoc
 ======================== ====================================================
-
-Detailed installation instructions can be found at :ref:`installing`
 
 To install Bottleneck on Linux, Mac OS X, et al.::
 
@@ -146,15 +123,6 @@ http://www.lfd.uci.edu/~gohlke/pythonlibs/#bottleneck
 Unit tests
 ==========
 
-To keep the install dependencies light, test dependencies are made available
-via a setuptools "extra":
-
-    $ pip install bottleneck[test]
-
-Or, if working locally:
-
-    $ pip install .[test]
-
 After you have installed Bottleneck, run the suite of unit tests::
 
   In [1]: import bottleneck as bn
@@ -166,7 +134,7 @@ After you have installed Bottleneck, run the suite of unit tests::
   rootdir: /home/chris/code/bottleneck, inifile: setup.cfg
   plugins: openfiles-0.3.2, remotedata-0.3.2, doctestplus-0.3.0, mock-1.10.4, forked-1.0.2, cov-2.7.1, hypothesis-4.32.2, xdist-1.26.1, arraydiff-0.3
   collected 190 items
-
+  
   bottleneck/tests/input_modification_test.py ........................... [ 14%]
   ..                                                                      [ 15%]
   bottleneck/tests/list_input_test.py .............................       [ 30%]
@@ -176,7 +144,7 @@ After you have installed Bottleneck, run the suite of unit tests::
   bottleneck/tests/reduce_test.py ....................................... [ 84%]
   ............                                                            [ 90%]
   bottleneck/tests/scalar_input_test.py ..................                [100%]
-
+  
   ========================= 190 passed in 46.42 seconds =========================
   Out[2]: True
 

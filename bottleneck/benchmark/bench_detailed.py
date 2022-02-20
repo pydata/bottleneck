@@ -1,5 +1,4 @@
 import numpy as np
-
 import bottleneck as bn
 from .autotimeit import autotimeit
 

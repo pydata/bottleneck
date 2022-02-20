@@ -1,80 +1,14 @@
 """Test reduce functions."""
 
-import traceback
 import warnings
-from typing import Callable, List, Optional, Union
+import traceback
 
-import hypothesis
 import numpy as np
-import pytest
-from numpy.testing import assert_array_almost_equal, assert_equal, assert_raises
+from numpy.testing import assert_equal, assert_raises, assert_array_almost_equal
 
 import bottleneck as bn
-from .common import hy_array_gen, hy_int_array_gen
-from .util import DTYPES, array_order, arrays
-
-
-def _hypothesis_helper(
-    func: Callable[[np.ndarray], Union[int, float, np.ndarray]],
-    array: np.ndarray,
-    skip_all_nans: bool = False,
-) -> None:
-    slow_func = eval("bn.slow.%s" % func.__name__)
-    ndim = array.ndim
-    axes: List[Optional[int]] = list(range(-ndim, ndim)) + [None]
-    for order in ["C", "F"]:
-        if order == "F":
-            arr = np.asfortranarray(array)
-        else:
-            arr = np.ascontiguousarray(array)
-
-        for axis in axes:
-            if skip_all_nans:
-                if not np.isfinite(arr).all(axis=axis).all():
-                    # The documentation for numpy.nanargmin/max has the following
-                    # errata:
-                    #
-                    # Warning: the results cannot be trusted if a slice contains only
-                    # NaNs and Infs.
-                    #
-                    # So skip in that case, as it is definitely wrong
-                    continue
-            try:
-                bn_result = func(arr, axis=axis)
-            except ValueError:
-                try:
-                    slow_result = slow_func(arr, axis=axis)
-                    assert False
-                except ValueError:
-                    return
-
-            slow_result = slow_func(arr, axis=axis)
-
-            hypothesis.note(f"axis: {axis}")
-            assert_array_almost_equal(bn_result, slow_result)
-
-
-@pytest.mark.parametrize(
-    "func", (bn.nanmin, bn.nanmax, bn.anynan, bn.allnan), ids=lambda x: x.__name__
-)
-@hypothesis.given(array=hy_array_gen)
-@hypothesis.settings(max_examples=500)
-def test_reduce_hypothesis(func, array):
-    _hypothesis_helper(func, array)
-
-
-@pytest.mark.parametrize("func", (bn.ss, bn.nansum), ids=lambda x: x.__name__)
-@hypothesis.given(array=hy_int_array_gen)
-@hypothesis.settings(max_examples=500)
-def test_reduce_hypothesis_ints_only(func, array):
-    _hypothesis_helper(func, array)
-
-
-@pytest.mark.parametrize("func", (bn.nanargmin, bn.nanargmax), ids=lambda x: x.__name__)
-@hypothesis.given(array=hy_array_gen)
-@hypothesis.settings(max_examples=500)
-def test_reduce_hypothesis_errata(func, array):
-    _hypothesis_helper(func, array, skip_all_nans=True)
+from .util import arrays, array_order, DTYPES
+import pytest
 
 
 @pytest.mark.parametrize("func", bn.get_functions("reduce"), ids=lambda x: x.__name__)
@@ -223,7 +157,7 @@ def unit_maker_argparse_raises(func):
 # Check that exceptions are raised
 
 
-def test_nanmax_size_zero(dtypes=DTYPES) -> None:
+def test_nanmax_size_zero(dtypes=DTYPES):
     """Test nanmax for size zero input arrays."""
     shapes = [(0,), (2, 0), (1, 2, 0)]
     for shape in shapes:
@@ -233,7 +167,7 @@ def test_nanmax_size_zero(dtypes=DTYPES) -> None:
             assert_raises(ValueError, bn.slow.nanmax, a)
 
 
-def test_nanmin_size_zero(dtypes=DTYPES) -> None:
+def test_nanmin_size_zero(dtypes=DTYPES):
     """Test nanmin for size zero input arrays."""
     shapes = [(0,), (2, 0), (1, 2, 0)]
     for shape in shapes:
@@ -247,7 +181,7 @@ def test_nanmin_size_zero(dtypes=DTYPES) -> None:
 # nanstd and nanvar regression test (issue #60)
 
 
-def test_nanstd_issue60() -> None:
+def test_nanstd_issue60():
     """nanstd regression test (issue #60)"""
 
     f = bn.nanstd([1.0], ddof=1)
@@ -271,7 +205,7 @@ def test_nanstd_issue60() -> None:
     assert_equal(f, s, err_msg="issue #60 regression")
 
 
-def test_nanvar_issue60() -> None:
+def test_nanvar_issue60():
     """nanvar regression test (issue #60)"""
 
     f = bn.nanvar([1.0], ddof=1)
@@ -297,7 +231,7 @@ def test_nanvar_issue60() -> None:
 
 @pytest.mark.parametrize("dtype", DTYPES)
 @pytest.mark.parametrize("func", (bn.nanstd, bn.nanvar), ids=lambda x: x.__name__)
-def test_ddof_nans(func, dtype) -> None:
+def test_ddof_nans(func, dtype):
     array = np.ones((1, 1), dtype=dtype)
     for axis in [None, 0, 1, -1]:
         result = func(array, axis=axis, ddof=3)

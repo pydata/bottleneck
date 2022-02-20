@@ -16,7 +16,6 @@ IFS=" " TEST_DEPS=(${TEST_DEPS})
 echo "Creating environment '${TEST_NAME}'..."
 conda create -q -n "${TEST_NAME}" python="${PYTHON_VERSION}" "${TEST_DEPS[@]}"
 
-
 set +v # we dont want to see commands in the conda script
 
 source activate "${TEST_NAME}"

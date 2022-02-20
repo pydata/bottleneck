@@ -11,8 +11,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import os
-import sys
+import sys, os
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -21,8 +20,7 @@ import sys
 sys.path.insert(0, os.path.abspath("../sphinxext"))
 if "READTHEDOCS" not in os.environ or not os.environ["READTHEDOCS"]:
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../.."))
-
-import bottleneck  # isort:skip
+import bottleneck
 
 # -- General configuration -----------------------------------------------------
 
@@ -107,35 +105,25 @@ pygments_style = "sphinx"
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
 # Sphinx are currently 'default' and 'sphinxdoc'.
-html_theme = "alabaster"
+html_theme = "default"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-# html_theme_options = {
-#     "headtextcolor": "#333333",
-#     "sidebarbgcolor": "#dddddd",
-#     "footerbgcolor": "#cccccc",
-#     "footertextcolor": "black",
-#     "headbgcolor": "#cccccc",
-#     "sidebartextcolor": "#333333",
-#     "sidebarlinkcolor": "default",
-#     "relbarbgcolor": "#cccccc",
-#     "relbartextcolor": "default",
-#     "relbarlinkcolor": "default",
-#     "codebgcolor": "#ffffff",
-#     "textcolor": "#333333",
-#     "bgcolor": "#f5f5f5",
-# }
-
 html_theme_options = {
-    "show_powered_by": True,
-    "github_user": "pydata",
-    "github_repo": "bottleneck",
-    "github_banner": True,
-    "show_related": True,
-    "travis_button": True,
-    "codecov_button": True,
+    "headtextcolor": "#333333",
+    "sidebarbgcolor": "#dddddd",
+    "footerbgcolor": "#cccccc",
+    "footertextcolor": "black",
+    "headbgcolor": "#cccccc",
+    "sidebartextcolor": "#333333",
+    "sidebarlinkcolor": "default",
+    "relbarbgcolor": "#cccccc",
+    "relbartextcolor": "default",
+    "relbarlinkcolor": "default",
+    "codebgcolor": "#ffffff",
+    "textcolor": "#333333",
+    "bgcolor": "#f5f5f5",
 }
 
 # Add any paths that contain custom themes here, relative to this directory.

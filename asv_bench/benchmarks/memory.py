@@ -1,6 +1,5 @@
-import numpy as np
-
 import bottleneck as bn
+import numpy as np
 
 
 class Memory:

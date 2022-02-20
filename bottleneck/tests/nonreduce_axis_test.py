@@ -1,16 +1,18 @@
 import numpy as np
-import pytest
 from numpy.testing import (
-    assert_array_almost_equal,
-    assert_array_equal,
     assert_equal,
+    assert_array_equal,
+    assert_array_almost_equal,
     assert_raises,
 )
 
 import bottleneck as bn
-from .reduce_test import unit_maker as reduce_unit_maker
-from .reduce_test import unit_maker_argparse as unit_maker_parse_rankdata
-from .util import DTYPES, array_order, arrays
+from .reduce_test import (
+    unit_maker as reduce_unit_maker,
+    unit_maker_argparse as unit_maker_parse_rankdata,
+)
+from .util import arrays, array_order, DTYPES
+import pytest
 
 # ---------------------------------------------------------------------------
 # partition, argpartition
@@ -19,7 +21,7 @@ from .util import DTYPES, array_order, arrays
 @pytest.mark.parametrize(
     "func", (bn.partition, bn.argpartition), ids=lambda x: x.__name__
 )
-def test_partition_and_argpartition(func) -> None:
+def test_partition_and_argpartition(func):
     """test partition or argpartition"""
 
     msg = "\nfunc %s | input %s (%s) | shape %s | n %d | axis %s | order %s\n"
@@ -127,7 +129,7 @@ def complete_the_argpartition(index, a, n, axis):
     return a
 
 
-def test_transpose() -> None:
+def test_transpose():
     """partition transpose test"""
     a = np.arange(12).reshape(4, 3)
     actual = bn.partition(a.T, 2, -1).T
@@ -147,7 +149,7 @@ def test_nonreduce_axis(func):
     return reduce_unit_maker(func)
 
 
-def test_push() -> None:
+def test_push():
     """Test push"""
     ns = (0, 1, 2, 3, 4, 5, None)
     a = np.array([np.nan, 1, 2, np.nan, np.nan, np.nan, np.nan, 3, np.nan])
@@ -176,16 +178,10 @@ def test_arg_parsing(func):
     else:
         fmt = "``%s` is an unknown nonreduce_axis function"
         raise ValueError(fmt % name)
-
-
-@pytest.mark.parametrize(
-    "func", bn.get_functions("nonreduce_axis"), ids=lambda x: x.__name__
-)
-def test_arg_raises(func):
     return unit_maker_raises(func)
 
 
-def unit_maker_parse(func, decimal=5) -> None:
+def unit_maker_parse(func, decimal=5):
     """test argument parsing."""
 
     name = func.__name__
@@ -232,7 +228,7 @@ def unit_maker_parse(func, decimal=5) -> None:
         func(*args, **kwargs)
 
 
-def unit_maker_raises(func) -> None:
+def unit_maker_raises(func):
     """test argument parsing raises in nonreduce_axis"""
     a = np.array([1.0, 2, 3])
     assert_raises(TypeError, func)
@@ -248,7 +244,7 @@ def unit_maker_raises(func) -> None:
 @pytest.mark.parametrize(
     "func", (bn.partition, bn.argpartition), ids=lambda x: x.__name__
 )
-def test_out_of_bounds_raises(func, dtype) -> None:
+def test_out_of_bounds_raises(func, dtype):
     array = np.ones((10, 10), dtype=dtype)
     for axis in [None, 0, 1, -1]:
         with pytest.raises(ValueError, match="must be between"):

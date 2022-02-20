@@ -18,32 +18,33 @@
 
 /* macros ---------------------------------------------------------------- */
 
-#define INIT(dtype)                                                           \
+#define INIT(dtype) \
     PyObject *y = PyArray_EMPTY(PyArray_NDIM(a), PyArray_SHAPE(a), dtype, 0); \
-    iter2     it;                                                             \
+    iter2 it; \
     init_iter2(&it, a, y, axis);
 
 /* low-level functions such as move_sum_float64 */
-#define MOVE(name, dtype)                        \
-    static PyObject *                            \
-        name##_##dtype(PyArrayObject *a,         \
-                       int            window,    \
-                       int            min_count, \
-                       int            axis,      \
-                       int            ddof)
+#define MOVE(name, dtype) \
+    static PyObject * \
+    name##_##dtype(PyArrayObject *a, \
+                   int           window, \
+                   int           min_count, \
+                   int           axis, \
+                   int           ddof)
 
 /* top-level functions such as move_sum */
-#define MOVE_MAIN(name, ddof)                              \
-    static PyObject *                                      \
-    name(PyObject *self, PyObject *args, PyObject *kwds) { \
-        return mover(#name,                                \
-                     args,                                 \
-                     kwds,                                 \
-                     name##_float64,                       \
-                     name##_float32,                       \
-                     name##_int64,                         \
-                     name##_int32,                         \
-                     ddof);                                \
+#define MOVE_MAIN(name, ddof) \
+    static PyObject * \
+    name(PyObject *self, PyObject *args, PyObject *kwds) \
+    { \
+        return mover(#name, \
+                     args, \
+                     kwds, \
+                     name##_float64, \
+                     name##_float32, \
+                     name##_int64, \
+                     name##_int32, \
+                     ddof); \
     }
 
 /* typedefs and prototypes ----------------------------------------------- */
@@ -51,7 +52,7 @@
 /* used by move_min and move_max */
 struct _pairs {
     double value;
-    int    death;
+    int death;
 };
 typedef struct _pairs pairs;
 
@@ -59,52 +60,53 @@ typedef struct _pairs pairs;
 typedef PyObject *(*move_t)(PyArrayObject *, int, int, int, int);
 
 static PyObject *
-mover(char *    name,
+mover(char *name,
       PyObject *args,
       PyObject *kwds,
-      move_t    move_float64,
-      move_t    move_float32,
-      move_t    move_int64,
-      move_t    move_int32,
-      int       has_ddof);
+      move_t,
+      move_t,
+      move_t,
+      move_t,
+      int has_ddof);
 
 /* move_sum -------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
 MOVE(move_sum, DTYPE0) {
+    Py_ssize_t count;
+    npy_DTYPE0 asum, ai, aold;
     INIT(NPY_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        Py_ssize_t count = 0;
-        npy_DTYPE0 asum = 0;
+        asum = count = 0;
         WHILE0 {
-            const npy_DTYPE0 ai = AI(DTYPE0);
-            if (!bn_isnan(ai)) {
+            ai = AI(DTYPE0);
+            if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
             YI(DTYPE0) = BN_NAN;
         }
         WHILE1 {
-            const npy_DTYPE0 ai = AI(DTYPE0);
-            if (!bn_isnan(ai)) {
+            ai = AI(DTYPE0);
+            if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
             YI(DTYPE0) = count >= min_count ? asum : BN_NAN;
         }
         WHILE2 {
-            const npy_DTYPE0 ai = AI(DTYPE0);
-            const npy_DTYPE0 aold = AOLD(DTYPE0);
-            if (!bn_isnan(ai)) {
-                if (!bn_isnan(aold)) {
+            ai = AI(DTYPE0);
+            aold = AOLD(DTYPE0);
+            if (ai == ai) {
+                if (aold == aold) {
                     asum += ai - aold;
                 } else {
                     asum += ai;
                     count++;
                 }
             } else {
-                if (!bn_isnan(aold)) {
+                if (aold == aold) {
                     asum -= aold;
                     count--;
                 }
@@ -117,6 +119,7 @@ MOVE(move_sum, DTYPE0) {
     return y;
 }
 /* dtype end */
+
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(move_sum, DTYPE0) {
@@ -144,29 +147,31 @@ MOVE(move_sum, DTYPE0) {
 }
 /* dtype end */
 
+
 MOVE_MAIN(move_sum, 0)
+
 
 /* move_mean -------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
 MOVE(move_mean, DTYPE0) {
-    npy_DTYPE0 asum, count_inv;
+    Py_ssize_t count;
+    npy_DTYPE0 asum, ai, aold, count_inv;
     INIT(NPY_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        Py_ssize_t count = 0;
-        asum = 0;
+        asum = count = 0;
         WHILE0 {
-            const npy_DTYPE0 ai = AI(DTYPE0);
-            if (!bn_isnan(ai)) {
+            ai = AI(DTYPE0);
+            if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
             YI(DTYPE0) = BN_NAN;
         }
         WHILE1 {
-            const npy_DTYPE0 ai = AI(DTYPE0);
-            if (!bn_isnan(ai)) {
+            ai = AI(DTYPE0);
+            if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
@@ -174,10 +179,10 @@ MOVE(move_mean, DTYPE0) {
         }
         count_inv = 1.0 / count;
         WHILE2 {
-            const npy_DTYPE0 ai = AI(DTYPE0);
-            const npy_DTYPE0 aold = AOLD(DTYPE0);
-            if (!bn_isnan(ai)) {
-                if (!bn_isnan(aold)) {
+            ai = AI(DTYPE0);
+            aold = AOLD(DTYPE0);
+            if (ai == ai) {
+                if (aold == aold) {
                     asum += ai - aold;
                 } else {
                     asum += ai;
@@ -185,7 +190,7 @@ MOVE(move_mean, DTYPE0) {
                     count_inv = 1.0 / count;
                 }
             } else {
-                if (!bn_isnan(aold)) {
+                if (aold == aold) {
                     asum -= aold;
                     count--;
                     count_inv = 1.0 / count;
@@ -200,6 +205,7 @@ MOVE(move_mean, DTYPE0) {
 }
 /* dtype end */
 
+
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(move_mean, DTYPE0) {
     npy_DTYPE1 asum, window_inv = 1.0 / window;
@@ -213,7 +219,7 @@ MOVE(move_mean, DTYPE0) {
         }
         WHILE1 {
             asum += AI(DTYPE0);
-            *(npy_DTYPE1 *)(it.py + it.i * it.ystride) = (npy_DTYPE1)asum / (it.i + 1);
+            *(npy_DTYPE1*)(it.py + it.i * it.ystride) = (npy_DTYPE1)asum / (it.i + 1);
             it.i++;
         }
         WHILE2 {
@@ -227,7 +233,9 @@ MOVE(move_mean, DTYPE0) {
 }
 /* dtype end */
 
+
 MOVE_MAIN(move_mean, 0)
+
 
 /* move_std, move_var ---------------------------------------------------- */
 
@@ -235,27 +243,27 @@ MOVE_MAIN(move_mean, 0)
              'FUNC': ['sqrt',     '']} */
 /* dtype = [['float64'], ['float32']] */
 MOVE(NAME, DTYPE0) {
-    npy_DTYPE0 amean, assqdm, yi, count_inv, ddof_inv;
+    Py_ssize_t count;
+    npy_DTYPE0 delta, amean, assqdm, ai, aold, yi, count_inv, ddof_inv;
     INIT(NPY_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        Py_ssize_t count = 0;
-        amean = assqdm = 0;
+        amean = assqdm = count = 0;
         WHILE0 {
-            const npy_DTYPE0 ai = AI(DTYPE0);
-            if (!bn_isnan(ai)) {
+            ai = AI(DTYPE0);
+            if (ai == ai) {
                 count += 1;
-                const npy_DTYPE0 delta = ai - amean;
+                delta = ai - amean;
                 amean += delta / count;
                 assqdm += delta * (ai - amean);
             }
             YI(DTYPE0) = BN_NAN;
         }
         WHILE1 {
-            const npy_DTYPE0 ai = AI(DTYPE0);
-            if (!bn_isnan(ai)) {
+            ai = AI(DTYPE0);
+            if (ai == ai) {
                 count += 1;
-                const npy_DTYPE0 delta = ai - amean;
+                delta = ai - amean;
                 amean += delta / count;
                 assqdm += delta * (ai - amean);
             }
@@ -272,11 +280,11 @@ MOVE(NAME, DTYPE0) {
         count_inv = 1.0 / count;
         ddof_inv = 1.0 / (count - ddof);
         WHILE2 {
-            npy_DTYPE0 ai = AI(DTYPE0);
-            npy_DTYPE0 aold = AOLD(DTYPE0);
-            if (!bn_isnan(ai)) {
-                if (!bn_isnan(aold)) {
-                    const npy_DTYPE0 delta = ai - aold;
+            ai = AI(DTYPE0);
+            aold = AOLD(DTYPE0);
+            if (ai == ai) {
+                if (aold == aold) {
+                    delta = ai - aold;
                     aold -= amean;
                     amean += delta * count_inv;
                     ai -= amean;
@@ -285,17 +293,17 @@ MOVE(NAME, DTYPE0) {
                     count++;
                     count_inv = 1.0 / count;
                     ddof_inv = 1.0 / (count - ddof);
-                    const npy_DTYPE0 delta = ai - amean;
+                    delta = ai - amean;
                     amean += delta * count_inv;
                     assqdm += delta * (ai - amean);
                 }
             } else {
-                if (!bn_isnan(aold)) {
+                if (aold == aold) {
                     count--;
                     count_inv = 1.0 / count;
                     ddof_inv = 1.0 / (count - ddof);
                     if (count > 0) {
-                        const npy_DTYPE0 delta = aold - amean;
+                        delta = aold - amean;
                         amean -= delta * count_inv;
                         assqdm -= delta * (aold - amean);
                     } else {
@@ -323,32 +331,32 @@ MOVE(NAME, DTYPE0) {
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(NAME, DTYPE0) {
-    const int        winddof = window - ddof;
-    npy_DTYPE1       amean, assqdm, yi;
-    const npy_DTYPE1 window_inv = 1.0 / window, winddof_inv = 1.0 / winddof;
+    int winddof = window - ddof;
+    npy_DTYPE1 delta, amean, assqdm, yi, ai, aold;
+    npy_DTYPE1 window_inv = 1.0 / window, winddof_inv = 1.0 / winddof;
     INIT(NPY_DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         amean = assqdm = 0;
         WHILE0 {
-            const npy_DTYPE1 ai = AI(DTYPE0);
-            const npy_DTYPE1 delta = ai - amean;
+            ai = AI(DTYPE0);
+            delta = ai - amean;
             amean += delta / (INDEX + 1);
             assqdm += delta * (ai - amean);
             YI(DTYPE1) = BN_NAN;
         }
         WHILE1 {
-            const npy_DTYPE1 ai = AI(DTYPE0);
-            const npy_DTYPE1 delta = ai - amean;
+            ai = AI(DTYPE0);
+            delta = ai - amean;
             amean += delta / (INDEX + 1);
             assqdm += delta * (ai - amean);
             yi = FUNC(assqdm / (INDEX + 1 - ddof));
             YI(DTYPE1) = yi;
         }
         WHILE2 {
-            npy_DTYPE1       ai = AI(DTYPE0);
-            npy_DTYPE1       aold = AOLD(DTYPE0);
-            const npy_DTYPE1 delta = ai - aold;
+            ai = AI(DTYPE0);
+            aold = AOLD(DTYPE0);
+            delta = ai - aold;
             aold -= amean;
             amean += delta * window_inv;
             ai -= amean;
@@ -368,6 +376,7 @@ MOVE(NAME, DTYPE0) {
 MOVE_MAIN(NAME, 1)
 /* repeat end */
 
+
 /* move_min, move_max, move_argmin, move_argmax -------------------------- */
 
 /* repeat = {'MACRO_FLOAT': ['MOVE_NANMIN', 'MOVE_NANMAX'],
@@ -376,49 +385,45 @@ MOVE_MAIN(NAME, 1)
              'FLIP':        ['>=',          '<='],
              'BIG_FLOAT':   ['BN_INFINITY', '-BN_INFINITY']} */
 
-#define MACRO_FLOAT(dtype, yi, code)                          \
-    ai = AI(dtype);                                           \
-    if (!bn_isnan(ai)) {                                      \
-        count++;                                              \
-    } else {                                                  \
-        ai = BIG_FLOAT;                                       \
-    }                                                         \
-    code;                                                     \
-    if (ai COMPARE extreme_pair->value) {                     \
-        extreme_pair->value = ai;                             \
-        extreme_pair->death = INDEX + window;                 \
-        last = extreme_pair;                                  \
-    } else {                                                  \
-        while (last->value FLIP ai) {                         \
-            if (last == ring) last = end;                     \
-            last--;                                           \
-        }                                                     \
-        last++;                                               \
-        if (last == end) last = ring;                         \
-        last->value = ai;                                     \
-        last->death = INDEX + window;                         \
-    }                                                         \
+#define MACRO_FLOAT(dtype, yi, code) \
+    ai = AI(dtype); \
+    if (ai == ai) count++; else ai = BIG_FLOAT; \
+    code; \
+    if (ai COMPARE extreme_pair->value) { \
+        extreme_pair->value = ai; \
+        extreme_pair->death = INDEX + window; \
+        last = extreme_pair; \
+    } else { \
+        while (last->value FLIP ai) { \
+            if (last == ring) last = end; \
+            last--; \
+        } \
+        last++; \
+        if (last == end) last = ring; \
+        last->value = ai; \
+        last->death = INDEX + window; \
+    } \
     yi_tmp = yi; /* yi might contain i and YI contains i++ */ \
     YI(dtype) = yi_tmp;
 
 #define MACRO_INT(a_dtype, y_dtype, yi, code) \
-    ai = AI(a_dtype);                         \
-    code;                                     \
-    if (ai COMPARE extreme_pair->value) {     \
-        extreme_pair->value = ai;             \
+    ai = AI(a_dtype); \
+    code; \
+    if (ai COMPARE extreme_pair->value) { \
+        extreme_pair->value = ai; \
         extreme_pair->death = INDEX + window; \
-        last = extreme_pair;                  \
-    } else {                                  \
-        while (last->value FLIP ai) {         \
-            if (last == ring) last = end;     \
-            last--;                           \
-        }                                     \
-        last++;                               \
-        if (last == end) last = ring;         \
-        last->value = ai;                     \
-        last->death = INDEX + window;         \
-    }                                         \
-    yi_tmp = yi;                              \
+        last = extreme_pair; \
+    } else { \
+        while (last->value FLIP ai) { \
+            if (last == ring) last = end; \
+            last--; \
+        } \
+        last++; \
+        if (last == end) last = ring; \
+        last->value = ai; \
+        last->death = INDEX + window; \
+    } \
+    yi_tmp = yi; \
     YI(y_dtype) = yi_tmp;
 /* repeat end */
 
@@ -440,39 +445,41 @@ MOVE_MAIN(NAME, 1)
    } */
 /* dtype = [['float64'], ['float32']] */
 MOVE(NAME, DTYPE0) {
-    npy_DTYPE0 yi_tmp;
-    pairs *    extreme_pair;
-    pairs *    end;
-    pairs *    last;
-    pairs *    ring = (pairs *)calloc(sizeof(pairs), window);
+    npy_DTYPE0 ai, aold, yi_tmp;
+    Py_ssize_t count;
+    pairs *extreme_pair;
+    pairs *end;
+    pairs *last;
+    pairs *ring = (pairs *)malloc(window * sizeof(pairs));
     INIT(NPY_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        Py_ssize_t count = 0;
+        count = 0;
         end = ring + window;
         last = ring;
         extreme_pair = ring;
-        npy_DTYPE0 ai = A0(DTYPE0);
-        extreme_pair->value = !bn_isnan(ai) ? ai : BIG_FLOAT;
+        ai = A0(DTYPE0);
+        extreme_pair->value = ai == ai ? ai : BIG_FLOAT;
         extreme_pair->death = window;
         WHILE0 {
             MACRO_FLOAT(DTYPE0,
-                        BN_NAN, )
+                        BN_NAN,
+                        )
         }
         WHILE1 {
             MACRO_FLOAT(DTYPE0,
-                        count >= min_count ? VALUE : BN_NAN, )
+                        count >= min_count ? VALUE : BN_NAN,
+                        )
         }
         WHILE2 {
-            MACRO_FLOAT(
-                DTYPE0,
-                count >= min_count ? VALUE : BN_NAN,
-                const npy_DTYPE0 aold = AOLD(DTYPE0);
-                if (!bn_isnan(aold)) count--;
-                if (extreme_pair->death == INDEX) {
-                    extreme_pair++;
-                    if (extreme_pair >= end) extreme_pair = ring;
-                })
+            MACRO_FLOAT(DTYPE0,
+                        count >= min_count ? VALUE : BN_NAN,
+                        aold = AOLD(DTYPE0);
+                        if (aold == aold) count--;
+                        if (extreme_pair->death == INDEX) {
+                            extreme_pair++;
+                            if (extreme_pair >= end) extreme_pair = ring;
+                        })
         }
         NEXT2
     }
@@ -484,39 +491,41 @@ MOVE(NAME, DTYPE0) {
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(NAME, DTYPE0) {
+    npy_DTYPE0 ai;
     npy_DTYPE1 yi_tmp;
-    pairs *    extreme_pair;
-    pairs *    end;
-    pairs *    last;
-    pairs *    ring = (pairs *)calloc(sizeof(pairs), window);
+    pairs *extreme_pair;
+    pairs *end;
+    pairs *last;
+    pairs *ring = (pairs *)malloc(window * sizeof(pairs));
     INIT(NPY_DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         end = ring + window;
         last = ring;
         extreme_pair = ring;
-        npy_DTYPE0 ai = A0(DTYPE0);
+        ai = A0(DTYPE0);
         extreme_pair->value = ai;
         extreme_pair->death = window;
         WHILE0 {
             MACRO_INT(DTYPE0,
                       DTYPE1,
-                      BN_NAN, )
+                      BN_NAN,
+                      )
         }
         WHILE1 {
             MACRO_INT(DTYPE0,
                       DTYPE1,
-                      VALUE, )
+                      VALUE,
+                      )
         }
         WHILE2 {
-            MACRO_INT(
-                DTYPE0,
-                DTYPE1,
-                VALUE,
-                if (extreme_pair->death == INDEX) {
-                    extreme_pair++;
-                    if (extreme_pair >= end) extreme_pair = ring;
-                })
+            MACRO_INT(DTYPE0,
+                      DTYPE1,
+                      VALUE,
+                      if (extreme_pair->death == INDEX) {
+                          extreme_pair++;
+                          if (extreme_pair >= end) extreme_pair = ring;
+                      })
         }
         NEXT2
     }
@@ -533,6 +542,7 @@ MOVE_MAIN(NAME, 0)
 
 /* dtype = [['float64'], ['float32']] */
 MOVE(move_median, DTYPE0) {
+    npy_DTYPE0 ai;
     mm_handle *mm = mm_new_nan(window, min_count);
     INIT(NPY_DTYPE0)
     if (window == 1) {
@@ -545,15 +555,15 @@ MOVE(move_median, DTYPE0) {
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         WHILE0 {
-            const npy_DTYPE0 ai = AI(DTYPE0);
+            ai = AI(DTYPE0);
             YI(DTYPE0) = mm_update_init_nan(mm, ai);
         }
         WHILE1 {
-            const npy_DTYPE0 ai = AI(DTYPE0);
+            ai = AI(DTYPE0);
             YI(DTYPE0) = mm_update_init_nan(mm, ai);
         }
         WHILE2 {
-            const npy_DTYPE0 ai = AI(DTYPE0);
+            ai = AI(DTYPE0);
             YI(DTYPE0) = mm_update_nan(mm, ai);
         }
         mm_reset(mm);
@@ -567,6 +577,7 @@ MOVE(move_median, DTYPE0) {
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(move_median, DTYPE0) {
+    npy_DTYPE0 ai;
     mm_handle *mm = mm_new(window, min_count);
     INIT(NPY_DTYPE1)
     if (window == 1) {
@@ -580,15 +591,15 @@ MOVE(move_median, DTYPE0) {
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         WHILE0 {
-            const npy_DTYPE0 ai = AI(DTYPE0);
+            ai = AI(DTYPE0);
             YI(DTYPE1) = mm_update_init(mm, ai);
         }
         WHILE1 {
-            const npy_DTYPE0 ai = AI(DTYPE0);
+            ai = AI(DTYPE0);
             YI(DTYPE1) = mm_update_init(mm, ai);
         }
         WHILE2 {
-            const npy_DTYPE0 ai = AI(DTYPE0);
+            ai = AI(DTYPE0);
             YI(DTYPE1) = mm_update(mm, ai);
         }
         mm_reset(mm);
@@ -600,42 +611,45 @@ MOVE(move_median, DTYPE0) {
 }
 /* dtype end */
 
+
 MOVE_MAIN(move_median, 0)
+
 
 /* move_rank-------------------------------------------------------------- */
 
-#define MOVE_RANK(dtype0, dtype1, limit)  \
-    Py_ssize_t   j;                       \
-    npy_##dtype0 ai, aj;                  \
-    npy_##dtype1 g, e, n, r;              \
-    ai = AI(dtype0);                      \
-    if (!bn_isnan(ai)) {                  \
-        g = 0;                            \
-        e = 1;                            \
-        n = 1;                            \
+#define MOVE_RANK(dtype0, dtype1, limit) \
+    Py_ssize_t j; \
+    npy_##dtype0 ai, aj; \
+    npy_##dtype1 g, e, n, r; \
+    ai = AI(dtype0); \
+    if (ai == ai) { \
+        g = 0; \
+        e = 1; \
+        n = 1; \
+        r = 0; \
         for (j = limit; j < INDEX; j++) { \
-            aj = AX(dtype0, j);           \
-            if (!bn_isnan(aj)) {          \
-                n++;                      \
-                if (ai > aj) {            \
-                    g += 2;               \
-                } else if (ai == aj) {    \
-                    e++;                  \
-                }                         \
-            }                             \
-        }                                 \
-        if (n < min_count) {              \
-            r = BN_NAN;                   \
-        } else if (n == 1) {              \
-            r = 0.0;                      \
-        } else {                          \
-            r = 0.5 * (g + e - 1.0);      \
-            r = r / (n - 1.0);            \
-            r = 2.0 * (r - 0.5);          \
-        }                                 \
-    } else {                              \
-        r = BN_NAN;                       \
-    }
+            aj = AX(dtype0, j); \
+            if (aj == aj) { \
+                n++; \
+                if (ai > aj) { \
+                    g += 2; \
+                } else if (ai == aj) { \
+                    e++; \
+                } \
+            } \
+        } \
+        if (n < min_count) { \
+            r = BN_NAN; \
+        } else if (n == 1) { \
+            r = 0.0; \
+        } else { \
+            r = 0.5 * (g + e - 1.0); \
+            r = r / (n - 1.0); \
+            r = 2.0 * (r - 0.5); \
+        } \
+    } else { \
+        r = BN_NAN; \
+    } \
 
 /* dtype = [['float64', 'float64'], ['float32', 'float32']] */
 MOVE(move_rank, DTYPE0) {
@@ -663,6 +677,7 @@ MOVE(move_rank, DTYPE0) {
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(move_rank, DTYPE0) {
     Py_ssize_t j;
+    npy_DTYPE0 ai, aj;
     npy_DTYPE1 g, e, r, window_inv = 0.5 * 1.0 / (window - 1);
     INIT(NPY_DTYPE1)
     BN_BEGIN_ALLOW_THREADS
@@ -671,11 +686,12 @@ MOVE(move_rank, DTYPE0) {
             YI(DTYPE1) = BN_NAN;
         }
         WHILE1 {
-            const npy_DTYPE0 ai = AI(DTYPE0);
+            ai = AI(DTYPE0);
             g = 0;
             e = 1;
+            r = 0;
             for (j = 0; j < INDEX; j++) {
-                const npy_DTYPE0 aj = AX(DTYPE0, j);
+                aj = AX(DTYPE0, j);
                 if (ai > aj) {
                     g += 2;
                 } else if (ai == aj) {
@@ -694,12 +710,13 @@ MOVE(move_rank, DTYPE0) {
             YI(DTYPE1) = r;
         }
         WHILE2 {
-            const npy_DTYPE0 ai = AI(DTYPE0);
+            ai = AI(DTYPE0);
             g = 0;
             e = 1;
+            r = 0;
             for (j = INDEX - window + 1; j < INDEX; j++) {
-                const npy_DTYPE0 aj = AX(DTYPE0, j);
-                if (ai > aj) {
+                aj = AX(DTYPE0, j);
+		if (ai > aj) {
                     g += 2;
                 } else if (ai == aj) {
                     e++;
@@ -720,7 +737,9 @@ MOVE(move_rank, DTYPE0) {
 }
 /* dtype end */
 
+
 MOVE_MAIN(move_rank, 0)
+
 
 /* python strings -------------------------------------------------------- */
 
@@ -744,9 +763,9 @@ intern_strings(void) {
 /* mover ----------------------------------------------------------------- */
 
 static inline int
-parse_args(PyObject * args,
-           PyObject * kwds,
-           int        has_ddof,
+parse_args(PyObject *args,
+           PyObject *kwds,
+           int has_ddof,
            PyObject **a,
            PyObject **window,
            PyObject **min_count,
@@ -755,7 +774,7 @@ parse_args(PyObject * args,
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
     if (nkwds) {
-        int       nkwds_found = 0;
+        int nkwds_found = 0;
         PyObject *tmp;
         switch (nargs) {
             case 4:
@@ -765,14 +784,10 @@ parse_args(PyObject * args,
                     TYPE_ERR("wrong number of arguments");
                     return 0;
                 }
-            case 3:
-                *min_count = PyTuple_GET_ITEM(args, 2);
-            case 2:
-                *window = PyTuple_GET_ITEM(args, 1);
-            case 1:
-                *a = PyTuple_GET_ITEM(args, 0);
-            case 0:
-                break;
+            case 3: *min_count = PyTuple_GET_ITEM(args, 2);
+            case 2: *window = PyTuple_GET_ITEM(args, 1);
+            case 1: *a = PyTuple_GET_ITEM(args, 0);
+            case 0: break;
             default:
                 TYPE_ERR("wrong number of arguments");
                 return 0;
@@ -848,22 +863,33 @@ parse_args(PyObject * args,
                 return 0;
         }
     }
+
     return 1;
+
 }
 
+
 static PyObject *
-mover(char *    name,
+mover(char *name,
       PyObject *args,
       PyObject *kwds,
-      move_t    move_float64,
-      move_t    move_float32,
-      move_t    move_int64,
-      move_t    move_int32,
-      int       has_ddof) {
+      move_t move_float64,
+      move_t move_float32,
+      move_t move_int64,
+      move_t move_int32,
+      int has_ddof) {
+
+    int mc;
+    int window;
+    int axis;
+    int ddof;
+    int dtype;
+    int ndim;
+
     Py_ssize_t length;
 
     PyArrayObject *a;
-    PyObject *     y;
+    PyObject *y;
 
     PyObject *a_obj = NULL;
     PyObject *window_obj = NULL;
@@ -871,7 +897,8 @@ mover(char *    name,
     PyObject *axis_obj = NULL;
     PyObject *ddof_obj = NULL;
 
-    if (!parse_args(args, kwds, has_ddof, &a_obj, &window_obj, &min_count_obj, &axis_obj, &ddof_obj)) {
+    if (!parse_args(args, kwds, has_ddof, &a_obj, &window_obj,
+                    &min_count_obj, &axis_obj, &ddof_obj)) {
         return NULL;
     }
 
@@ -888,19 +915,17 @@ mover(char *    name,
 
     /* check for byte swapped input array */
     if (PyArray_ISBYTESWAPPED(a)) {
-        Py_DECREF(a);
         return slow(name, args, kwds);
     }
 
     /* window */
-    int window = PyArray_PyIntAsInt(window_obj);
+    window = PyArray_PyIntAsInt(window_obj);
     if (error_converting(window)) {
         TYPE_ERR("`window` must be an integer");
         goto error;
     }
 
     /* min_count */
-    int mc;
     if (min_count_obj == Py_None) {
         mc = window;
     } else {
@@ -912,8 +937,7 @@ mover(char *    name,
         if (mc > window) {
             PyErr_Format(PyExc_ValueError,
                          "min_count (%d) cannot be greater than window (%d)",
-                         mc,
-                         window);
+                         mc, window);
             goto error;
         } else if (mc <= 0) {
             VALUE_ERR("`min_count` must be greater than zero.");
@@ -921,7 +945,7 @@ mover(char *    name,
         }
     }
 
-    int ndim = PyArray_NDIM(a);
+    ndim = PyArray_NDIM(a);
 
     /* defend against 0d beings */
     if (ndim == 0) {
@@ -930,7 +954,6 @@ mover(char *    name,
     }
 
     /* defend against the axis of negativity */
-    int axis;
     if (axis_obj == NULL) {
         axis = ndim - 1;
     } else {
@@ -943,8 +966,7 @@ mover(char *    name,
             axis += ndim;
             if (axis < 0) {
                 PyErr_Format(PyExc_ValueError,
-                             "axis(=%d) out of bounds",
-                             axis);
+                             "axis(=%d) out of bounds", axis);
                 goto error;
             }
         } else if (axis >= ndim) {
@@ -954,7 +976,6 @@ mover(char *    name,
     }
 
     /* ddof */
-    int ddof;
     if (ddof_obj == NULL) {
         ddof = 0;
     } else {
@@ -969,12 +990,11 @@ mover(char *    name,
     if ((window < 1) || (window > length)) {
         PyErr_Format(PyExc_ValueError,
                      "Moving window (=%d) must between 1 and %zu, inclusive",
-                     window,
-                     length);
+                     window, length);
         goto error;
     }
 
-    int dtype = PyArray_TYPE(a);
+    dtype = PyArray_TYPE(a);
 
     if (dtype == NPY_float64) {
         y = move_float64(a, window, mc, axis, ddof);
@@ -991,14 +1011,17 @@ mover(char *    name,
     Py_DECREF(a);
 
     return y;
+
 error:
     Py_DECREF(a);
     return NULL;
+
 }
 
 /* docstrings ------------------------------------------------------------- */
-// clang-format off
-static char move_doc[] = "Bottleneck moving window functions.";
+
+static char move_doc[] =
+"Bottleneck moving window functions.";
 
 static char move_sum_doc[] =
 /* MULTILINE STRING BEGIN
@@ -1479,32 +1502,33 @@ move_methods[] = {
     {NULL, NULL, 0, NULL}
 };
 
-// clang-format on
 
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef
-    move_def = {
-        PyModuleDef_HEAD_INIT,
-        "move",
-        move_doc,
-        -1,
-        move_methods};
+move_def = {
+   PyModuleDef_HEAD_INIT,
+   "move",
+   move_doc,
+   -1,
+   move_methods
+};
 #endif
+
 
 PyMODINIT_FUNC
 #if PY_MAJOR_VERSION >= 3
-    #define RETVAL m
+#define RETVAL m
 PyInit_move(void)
 #else
-    #define RETVAL
+#define RETVAL
 initmove(void)
 #endif
 {
-#if PY_MAJOR_VERSION >= 3
-    PyObject *m = PyModule_Create(&move_def);
-#else
-    PyObject *m = Py_InitModule3("move", move_methods, move_doc);
-#endif
+    #if PY_MAJOR_VERSION >=3
+        PyObject *m = PyModule_Create(&move_def);
+    #else
+        PyObject *m = Py_InitModule3("move", move_methods, move_doc);
+    #endif
     if (m == NULL) return RETVAL;
     import_array();
     if (!intern_strings()) {
