@@ -46,19 +46,13 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Debug
+    - name: Install build 
+      run: | 
+        pip install build
+
+    - name: Build wheel
       run: |
-        python setup.py version
-        git tag
-
-    
-    # - name: Install build 
-    #   run: | 
-    #     pip install build
-
-    # - name: Build wheel
-    #   run: |
-    #     python -m build 
+        python -m build 
     
     # - name: Store wheel artifacts
     #   uses: actions/upload-artifact@v2
