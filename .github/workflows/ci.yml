@@ -39,10 +39,14 @@ jobs:
       with:
         fetch-depth: 0
 
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+
+    - name: Fetch tags 
+      run: git fetch --prune --tags
     
     - name: Install build 
       run: | 
