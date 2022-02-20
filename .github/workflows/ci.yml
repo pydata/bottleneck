@@ -45,8 +45,6 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Fetch tags 
-      run: git fetch --prune --tags
     
     - name: Install build 
       run: | 
