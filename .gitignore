@@ -9,3 +9,4 @@ MANIFEST
 .*.swp
 *~
 \#*#
+bottleneck/src/bn_config.h
