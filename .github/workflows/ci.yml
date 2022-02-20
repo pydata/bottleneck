@@ -41,6 +41,8 @@ jobs:
     steps:
 
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -58,19 +60,17 @@ jobs:
         name: python${{ matrix.python-version }}-dist
         path: dist/
 
-    
-
   release:
     needs: build
-    runs-on: ubuntu-latest
+    
     steps:
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v2
 
-      - name: ls
+      - name: Aggregate wheels
         shell: bash
         run: | 
-          mkdir dist/
+          mkdir dist
           find . -type f -name "*.whl" -exec mv -t dist/ {} +
     
       - name: Set up Python ${{ matrix.python-version }}
