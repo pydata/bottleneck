@@ -16,8 +16,6 @@ recursive-include doc *
 recursive-exclude doc/build *
 include versioneer.py
 include bottleneck/_version.py
-include bottleneck/tests/data/template_test/truth.c
-include bottleneck/tests/data/template_test/test_template.c
 
 global-exclude __pycache__
 global-exclude *.pyc

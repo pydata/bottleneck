@@ -1,8 +1,7 @@
 Licenses
 ========
 Bottleneck is distributed under a Simplified BSD license. Parts of NumPy and
-SciPy, which have BSD licenses, are included in Bottleneck. The setuptools
-project has a MIT license and is used for configuration and installation.
+SciPy, which have BSD licenses, are included in Bottleneck. The setuptools project has a MIT license and is used for configuration and installation.
 
 Bottleneck License
 ~~~~~~~~~~~~~~~~~~

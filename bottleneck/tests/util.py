@@ -1,7 +1,4 @@
-from typing import Callable, List, Union
-
 import numpy as np
-
 import bottleneck as bn
 
 INT_DTYPES = [np.int64, np.int32]
@@ -9,9 +6,7 @@ FLOAT_DTYPES = [np.float64, np.float32]
 DTYPES = tuple(FLOAT_DTYPES + INT_DTYPES)
 
 
-def get_functions(
-    module_name: str, as_string: bool = False
-) -> List[Union[str, Callable[[np.array], Union[int, float, np.array]]]]:
+def get_functions(module_name, as_string=False):
     """Returns a list of functions, optionally as string function names"""
     if module_name == "all":
         funcs = []

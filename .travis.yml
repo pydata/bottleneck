@@ -1,26 +1,100 @@
-os: linux
+
 language: generic
-cache:
-    directories:
-      - $HOME/.cache/pip
-      - .hypothesis
+sudo: false
+cache: pip
 
 git:
     depth: false
 
-jobs:
+matrix:
     fast_finish: true
     include:
+
+        # test installing bottleneck tarball before installing numpy;
+        # start this test first because it takes the longest
         - os: linux
-          arch: arm64
-          env: TEST_DEPS="numpy"
+          env: TEST_DEPS="numpy pytest"
+               PYTHON_VERSION="2.7"
+               PYTHON_ARCH="64"
+               TEST_RUN="sdist"
+
+         # flake8 and black
+        - os: linux
+          env: TEST_DEPS="flake8 black"
+               PYTHON_VERSION="3.7"
+               PYTHON_ARCH="64"
+               TEST_RUN="style"
+
+         # doc check
+        - os: linux
+          env: TEST_DEPS="sphinx numpydoc gitpython"
+               PYTHON_VERSION="3.7"
+               PYTHON_ARCH="64"
+               TEST_RUN="doc"
+
+        # python 3.5
+        - os: linux
+          env: TEST_DEPS="pytest"
+               PIP_DEPS="numpy>=1.16"
+               PYTHON_VERSION="3.5"
+               PYTHON_ARCH="64"
+               TEST_RUN="sdist"
+
+         # python 3.6
+        - os: linux
+          env: TEST_DEPS="numpy pytest"
+               PYTHON_VERSION="3.6"
+               PYTHON_ARCH="64"
+
+         # python 3.7
+        - os: linux
+          env: TEST_DEPS="numpy pytest"
                PYTHON_VERSION="3.7"
                PYTHON_ARCH="64"
 
+         # python 3.8 conda numpy
         - os: linux
-          arch: ppc64le
-          env: TEST_DEPS="numpy gfortran_linux-ppc64le=8.2.0"
+          env: TEST_DEPS="numpy pytest"
+               PYTHON_VERSION="3.8"
+               PYTHON_ARCH="64"
+
+         # python 3.8 conda numpy + sdist
+        - os: linux
+          env: TEST_DEPS="numpy pytest"
+               PYTHON_VERSION="3.8"
+               PYTHON_ARCH="64"
+               TEST_RUN="sdist"
+
+        # python 2.7
+        - os: osx
+          env: TEST_DEPS="numpy pytest"
+               PYTHON_VERSION="2.7"
+               PYTHON_ARCH="64"
+               TEST_RUN="sdist"
+
+        # python 3.5
+        - os: osx
+          env: TEST_DEPS="pytest"
+               PIP_DEPS="numpy>=1.16"
+               PYTHON_VERSION="3.5"
+               PYTHON_ARCH="64"
+
+        # python 3.6
+        - os: osx
+          env: TEST_DEPS="numpy pytest"
+               PYTHON_VERSION="3.6"
+               PYTHON_ARCH="64"
+
+        # python 3.7
+        - os: osx
+          env: TEST_DEPS="numpy pytest"
                PYTHON_VERSION="3.7"
+               PYTHON_ARCH="64"
+
+        # python 3.8
+        - os: osx
+          env: TEST_DEPS="numpy pytest"
+               PYTHON_VERSION="3.8"
                PYTHON_ARCH="64"
 
 before_install:
@@ -31,7 +105,7 @@ install:
     - source "tools/travis/conda_install.sh"
 
 script:
-    - ./tools/travis/bn_setup.sh
+    - source "tools/travis/bn_setup.sh"
 
 notifications:
     email:

@@ -10,10 +10,10 @@ This will be replaced with a message indicating the number of
 code contributors and commits, and then list each contributor
 individually.
 """
-import git
 from announce import build_components
 from docutils import nodes
 from docutils.parsers.rst import Directive
+import git
 
 
 class ContributorsDirective(Directive):

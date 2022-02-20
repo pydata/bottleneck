@@ -1,6 +1,6 @@
+import bottleneck as bn
 import numpy as np
 
-import bottleneck as bn
 
 RAND_ARRAY_CACHE = {}
 
