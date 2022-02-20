@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        fetch-depth: 50
+        fetch-depth: 0
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -25,11 +25,11 @@ jobs:
       run: | 
         pip install build
         python -m build
-        unzip dist/*.whl
 
     - name: Install wheel
       run: | 
         pip install dist/*.whl
+        python -c "import bottleneck"
 
     - name: Test with pytest
       run: |
