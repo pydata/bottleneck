@@ -31,14 +31,8 @@ jobs:
 
   build:
     needs: test
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags')    
-    strategy:
-      matrix:
-        # python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
-        python-version: ["cp310-cp310"]
-        # os: [ubuntu-18.94, ubuntu-latest, macOS-latest, windows-latest, windows-2022, macos-10.15]
-        os: [ubuntu-latest]
     steps:
 
     - uses: actions/checkout@v2
@@ -47,7 +41,7 @@ jobs:
 
     - uses: RalfG/python-wheels-manylinux-build@v0.4.2
       with:
-        python-versions: 'cp36-cp36m cp37-cp37m'
+        python-versions: "cp310-cp310"
 
     - name: Store wheel artifacts
       uses: actions/upload-artifact@v2
@@ -67,7 +61,7 @@ jobs:
         shell: bash
         run: | 
           mkdir dist
-          find . -type f -name "*.whl" -exec mv -t dist/ {} +
+          find . -type f -iname "*-manylinux*.whl" -exec mv -t dist/ {} +
     
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
