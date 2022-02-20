@@ -1,9 +1,12 @@
 
-Sphinx doc generation
-=====================
+Upload Sphinx docs to web server
+================================
 
-To generate docs locally, run:
+Godaddy doesn't allow rsyc. So to upload Sphinx docs to
+http://berkeleyanalytics.com/bottleneck:
 
 $ make doc
 
-Docs are automatically build by ReadTheDocs directly from the Github repo.
+Then to upload (it will ask for the password):
+
+$ scp -r build/sphinx/html/* username@berkeleyanalytics.com:html/bottleneck/

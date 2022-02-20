@@ -1,24 +1,14 @@
 import numpy as np
-
 import bottleneck as bn
 from .autotimeit import autotimeit
 
 __all__ = ["bench"]
 
-ARRAY_CACHE = {}
-
 
 def bench(
-    shapes=[
-        (100,),
-        (1000, 1000),
-        (1000, 1000),
-        (1000, 1000),
-        (1000, 1000),
-        (1000, 1000),
-    ],
-    axes=[0, None, 0, 0, 1, 1],
-    nans=[False, True, False, True, False, True],
+    shapes=[(100,), (1000, 1000), (1000, 1000), (1000, 1000), (1000, 1000)],
+    axes=[0, 0, 0, 1, 1],
+    nans=[False, False, True, False, True],
     dtype="float64",
     order="C",
     functions=None,
@@ -99,42 +89,41 @@ def timer(statements, setups):
     return speed
 
 
-def getarray(shape, dtype, nans, order, allnans=False):
-    key = (tuple(shape), dtype, nans, order, allnans)
-    if key not in ARRAY_CACHE:
-        a = np.arange(np.prod(shape), dtype=dtype)
-        if issubclass(a.dtype.type, np.inexact):
-            if nans:
-                a[::5] = np.nan
-            if allnans:
-                a[:] = np.nan
-        rs = np.random.RandomState(shape)
-        rs.shuffle(a)
-        ARRAY_CACHE[key] = np.array(a.reshape(*shape), order=order)
-
-    return ARRAY_CACHE[key].copy(order=order)
+def getarray(shape, dtype, nans, order):
+    a = np.arange(np.prod(shape), dtype=dtype)
+    if nans and issubclass(a.dtype.type, np.inexact):
+        a[::5] = np.nan
+    rs = np.random.RandomState(shape)
+    rs.shuffle(a)
+    return np.array(a.reshape(*shape), order=order)
 
 
 def benchsuite(shapes, dtype, nans, axes, order, functions):
 
     suite = []
 
-    def getsetups(setup, shapes, nans, axes, dtype, order, allnan=False):
+    def getsetups(setup, shapes, nans, axes, dtype, order):
+        template = """
+        from bottleneck.benchmark.bench import getarray
+        a = getarray(%s, '%s', %s, '%s')
+        axis=%s
+        %s"""
         setups = []
         for shape, axis, nan in zip(shapes, axes, nans):
-            s = f"""
-from bottleneck.benchmark.bench import getarray
-a = getarray({shape}, '{dtype}', {nan}, '{order}', allnans={allnan})
-axis={axis}
-{setup}"""
+            s = template % (
+                str(shape),
+                str(dtype),
+                str(nan),
+                str(order),
+                str(axis),
+                setup,
+            )
             s = "\n".join([line.strip() for line in s.split("\n")])
             setups.append(s)
         return setups
 
     # non-moving window functions
     funcs = bn.get_functions("reduce", as_string=True)
-    # Handle all/any separately
-    funcs = sorted(set(funcs) - set(["allnan", "anynan"]))
     funcs += ["rankdata", "nanrankdata"]
     for func in funcs:
         if functions is not None and func not in functions:
@@ -155,39 +144,6 @@ axis={axis}
         )
         run["setups"] = getsetups(setup, shapes, nans, axes, dtype, order)
         suite.append(run)
-
-    for func in ["allnan", "anynan"]:
-        if functions is not None and func not in functions:
-            continue
-        for case in ["", "_fast", "_slow"]:
-            run = {}
-            run["name"] = func + case
-            run["statements"] = ["bn_func(a, axis)", "sl_func(a, axis)"]
-            setup = """
-            from bottleneck import %s as bn_func
-            try: from numpy import %s as sl_func
-            except ImportError: from bottleneck.slow import %s as sl_func
-            if "%s" == "median": from bottleneck.slow import median as sl_func
-        """ % (
-                func,
-                func,
-                func,
-                func,
-            )
-            if case:
-                if func == "allnan":
-                    allnan_case = "slow" in case
-                else:
-                    allnan_case = "fast" in case
-
-                new_nans = [allnan_case] * len(nans)
-            else:
-                new_nans = nans
-                allnan_case = False
-            run["setups"] = getsetups(
-                setup, shapes, new_nans, axes, dtype, order, allnan=allnan_case
-            )
-            suite.append(run)
 
     # partition, argpartition
     funcs = ["partition", "argpartition"]

@@ -4,9 +4,11 @@ Generic test utilities.
 Based on scipy._libs._testutils
 """
 
+from __future__ import division, print_function, absolute_import
+
 import os
 import sys
-from typing import List, Optional
+
 
 __all__ = ["PytestTester"]
 
@@ -16,19 +18,19 @@ class PytestTester(object):
     Pytest test runner entry point.
     """
 
-    def __init__(self, module_name: str) -> None:
+    def __init__(self, module_name):
         self.module_name = module_name
 
     def __call__(
         self,
-        label: str = "fast",
-        verbose: int = 1,
-        extra_argv: Optional[List[str]] = None,
-        doctests: bool = False,
-        coverage: bool = False,
-        tests: Optional[List[str]] = None,
-        parallel: Optional[int] = None,
-    ) -> bool:
+        label="fast",
+        verbose=1,
+        extra_argv=None,
+        doctests=False,
+        coverage=False,
+        tests=None,
+        parallel=None,
+    ):
         import pytest
 
         module = sys.modules[self.module_name]
@@ -69,12 +71,6 @@ class PytestTester(object):
 
         pytest_args += ["--pyargs"] + list(tests)
 
-        if not _have_test_extras():
-            warnings.warn(
-                "The pytest and/or hypothesis packages are not installed, install with "
-                "pip install bottleneck[test]"
-            )
-
         try:
             code = pytest.main(pytest_args)
         except SystemExit as exc:
@@ -83,7 +79,7 @@ class PytestTester(object):
         return code == 0
 
 
-def _pytest_has_xdist() -> bool:
+def _pytest_has_xdist():
     """
     Check if the pytest-xdist plugin is installed, providing parallel tests
     """
@@ -91,12 +87,3 @@ def _pytest_has_xdist() -> bool:
     from importlib.util import find_spec
 
     return find_spec("xdist") is not None
-
-
-def _have_test_extras() -> bool:
-    """
-    Check if the test extra is installed
-    """
-    from importlib.util import find_spec
-
-    return all(find_spec(x) is not None for x in ["pytest", "hypothesis"])

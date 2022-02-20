@@ -3,17 +3,16 @@
 import warnings
 
 import numpy as np
-import pytest
-from numpy.testing import assert_array_equal, assert_equal, assert_raises
-
+from numpy.testing import assert_equal, assert_array_equal, assert_raises
 import bottleneck as bn
-from .util import DTYPES, INT_DTYPES, array_order, arrays
+from .util import arrays, array_order, DTYPES, INT_DTYPES
+import pytest
 
 
 @pytest.mark.parametrize(
     "func", bn.get_functions("nonreduce"), ids=lambda x: x.__name__
 )
-def test_nonreduce(func) -> None:
+def test_nonreduce(func):
     """Test that bn.xxx gives the same output as np.xxx."""
     msg = "\nfunc %s | input %s (%s) | shape %s | old %f | new %f | order %s\n"
     msg += "\nInput array:\n%s\n"
@@ -67,7 +66,7 @@ def test_nonreduce(func) -> None:
 # Check that exceptions are raised
 
 
-def test_replace_unsafe_cast() -> None:
+def test_replace_unsafe_cast():
     """Test replace for unsafe casts"""
     dtypes = INT_DTYPES
     for dtype in dtypes:
@@ -78,7 +77,7 @@ def test_replace_unsafe_cast() -> None:
         assert_raises(ValueError, bn.slow.replace, a.copy(), 0, 0.1)
 
 
-def test_non_array() -> None:
+def test_non_array():
     """Test that non-array input raises"""
     a = [1, 2, 3]
     assert_raises(TypeError, bn.replace, a, 0, 1)
@@ -92,7 +91,7 @@ def test_non_array() -> None:
 
 
 @pytest.mark.parametrize("dtype", INT_DTYPES)
-def test_replace_nan_int(dtype) -> None:
+def test_replace_nan_int(dtype):
     """Test replace, int array, old=nan, new=0"""
     a = np.arange(2 * 3 * 4, dtype=dtype).reshape(2, 3, 4)
     actual = a.copy()
@@ -106,7 +105,7 @@ def test_replace_nan_int(dtype) -> None:
     assert_array_equal(actual, desired, err_msg=msg)
 
 
-def test_replace_bad_args() -> None:
+def test_replace_bad_args():
     array = np.ones((10, 10))
     bad_vals = [None, "", [0], "0"]
     for bad_val in bad_vals:
@@ -133,17 +132,7 @@ def test_replace_bad_args() -> None:
 
 
 @pytest.mark.parametrize("dtype", DTYPES)
-def test_replace_newaxis(dtype) -> None:
+def test_replace_newaxis(dtype):
     array = np.ones((2, 2), dtype=dtype)[..., np.newaxis]
     result = bn.replace(array, 1, 2)
     assert (result == 2).all().all()
-
-
-@pytest.mark.parametrize("dtype", DTYPES)
-def test_replace_view(dtype) -> None:
-    array = np.arange(20, dtype=dtype)
-    view = array[::2]
-
-    bn.replace(view, 5, -1)
-    assert view.min() == 0
-    assert array.min() == 0

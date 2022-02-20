@@ -489,6 +489,7 @@ mm_get_median(mm_handle *mm) {
 
 static inline void
 heapify_small_node(mm_handle *mm, idx_t idx) {
+    idx_t idx2;
     mm_node *node;
     mm_node *node2;
     mm_node **s_heap;
@@ -505,7 +506,7 @@ heapify_small_node(mm_handle *mm, idx_t idx) {
 
     /* Internal or leaf node */
     if (idx > 0) {
-        idx_t idx2 = P_IDX(idx);
+        idx2 = P_IDX(idx);
         node2 = s_heap[idx2];
 
         /* Move up */
@@ -577,6 +578,7 @@ heapify_large_node(mm_handle *mm, idx_t idx) {
             mm_move_up_large(l_heap, n_l, idx, node);
         }
     }
+
 }
 
 

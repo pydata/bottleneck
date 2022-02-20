@@ -9,14 +9,14 @@
 typedef PyObject *(*nr_t)(PyArrayObject *, double, double);
 
 static PyObject *
-nonreducer(char *    name,
+nonreducer(char *name,
            PyObject *args,
            PyObject *kwds,
-           nr_t      nr_float64,
-           nr_t      nr_float32,
-           nr_t      nr_int64,
-           nr_t      nr_int32,
-           int       inplace);
+           nr_t,
+           nr_t,
+           nr_t,
+           nr_t,
+           int inplace);
 
 /* replace --------------------------------------------------------------- */
 
@@ -27,31 +27,30 @@ replace_DTYPE0(PyArrayObject *a, double old, double new) {
     init_iter_all(&it, a, 0, 1);
     BN_BEGIN_ALLOW_THREADS
     const npy_DTYPE0 oldf = (npy_DTYPE0)old;
-    const npy_DTYPE0 newf = (npy_DTYPE0) new;
+    const npy_DTYPE0 newf = (npy_DTYPE0)new;
     if (old == old) {
-        REDUCE_SPECIALIZE (
-            WHILE {
-                npy_DTYPE0 *array = PA(DTYPE0);
-                FOR {
-                    array[it.i * it.stride] = array[it.i * it.stride] == oldf ? newf : array[it.i * it.stride];
-                }
-                NEXT
-            })
+        WHILE {
+            npy_DTYPE0* array = PA(DTYPE0);
+            FOR {
+                array[it.i] = array[it.i] == oldf ? newf : array[it.i];
+            }
+            NEXT
+        }
     } else {
-        REDUCE_SPECIALIZE (
-            WHILE {
-                npy_DTYPE0 *array = PA(DTYPE0);
-                FOR {
-                    array[it.i * it.stride] = array[it.i * it.stride] != array[it.i * it.stride] ? newf : array[it.i * it.stride];
-                }
-                NEXT
-            })
+        WHILE {
+            npy_DTYPE0* array = PA(DTYPE0);
+            FOR {
+                array[it.i] = array[it.i] != array[it.i] ? newf : array[it.i];
+            }
+            NEXT
+        }
     }
     BN_END_ALLOW_THREADS
     Py_INCREF(a);
     return (PyObject *)a;
 }
 /* dtype end */
+
 
 /* dtype = [['int64'], ['int32']] */
 static BN_OPT_3 PyObject *
@@ -60,7 +59,7 @@ replace_DTYPE0(PyArrayObject *a, double old, double new) {
     init_iter_all(&it, a, 0, 1);
     if (old == old) {
         const npy_DTYPE0 oldint = (npy_DTYPE0)old;
-        const npy_DTYPE0 newint = (npy_DTYPE0) new;
+        const npy_DTYPE0 newint = (npy_DTYPE0)new;
         if (oldint != old) {
             VALUE_ERR("Cannot safely cast `old` to int");
             return NULL;
@@ -70,26 +69,14 @@ replace_DTYPE0(PyArrayObject *a, double old, double new) {
             return NULL;
         }
         BN_BEGIN_ALLOW_THREADS
-        if (REDUCE_CONTIGUOUS) {
-            npy_DTYPE0 *   array = PA(DTYPE0);
-            const npy_intp nits = it.nits;
-            const npy_intp length = it.length;
-            for (npy_intp i = 0; i < nits; i++) {
-                // clang has a large perf regression when using the FOR macro here
-                for (npy_intp j = 0; j < length; j++) {
-                    array[i * nits + j] = array[i * nits + j] == oldint ? newint : array[i * nits + j];
-                }
+        WHILE {
+            npy_DTYPE0* array = (npy_DTYPE0 *)it.pa;
+            npy_intp i;
+            // clang has a large perf regression when using the FOR macro here
+            for (i=0; i < it.length; i++) {
+                array[i] = array[i] == oldint ? newint : array[i];
             }
-        } else {
-            WHILE {
-                const npy_intp stride = it.stride;
-                npy_DTYPE0 *   array = PA(DTYPE0);
-                // clang has a large perf regression when using the FOR macro here
-                for (npy_intp i = 0; i < it.length; i++) {
-                    array[i * stride] = array[i * stride] == oldint ? newint : array[i * stride];
-                }
-                NEXT
-            }
+            NEXT
         }
         BN_END_ALLOW_THREADS
     }
@@ -110,11 +97,12 @@ replace(PyObject *self, PyObject *args, PyObject *kwds) {
                       1);
 }
 
+
 /* python strings -------------------------------------------------------- */
 
-static PyObject *pystr_a = NULL;
-static PyObject *pystr_old = NULL;
-static PyObject *pystr_new = NULL;
+PyObject *pystr_a = NULL;
+PyObject *pystr_old = NULL;
+PyObject *pystr_new = NULL;
 
 static int
 intern_strings(void) {
@@ -127,8 +115,8 @@ intern_strings(void) {
 /* nonreduce ------------------------------------------------------------- */
 
 static inline int
-parse_args(PyObject * args,
-           PyObject * kwds,
+parse_args(PyObject *args,
+           PyObject *kwds,
            PyObject **a,
            PyObject **old,
            PyObject **new) {
@@ -137,12 +125,9 @@ parse_args(PyObject * args,
     if (nkwds) {
         int nkwds_found = 0;
         switch (nargs) {
-            case 2:
-                *old = PyTuple_GET_ITEM(args, 1);
-            case 1:
-                *a = PyTuple_GET_ITEM(args, 0);
-            case 0:
-                break;
+            case 2: *old = PyTuple_GET_ITEM(args, 1);
+            case 1: *a = PyTuple_GET_ITEM(args, 0);
+            case 0: break;
             default:
                 TYPE_ERR("wrong number of arguments 1");
                 return 0;
@@ -194,28 +179,31 @@ parse_args(PyObject * args,
                 return 0;
         }
     }
+
     return 1;
+
 }
 
 static PyObject *
-nonreducer(char *    name,
+nonreducer(char *name,
            PyObject *args,
            PyObject *kwds,
-           nr_t      nr_float64,
-           nr_t      nr_float32,
-           nr_t      nr_int64,
-           nr_t      nr_int32,
-           int       inplace) {
-    PyArrayObject *a = NULL;
-    PyObject *     y = NULL;
+           nr_t nr_float64,
+           nr_t nr_float32,
+           nr_t nr_int64,
+           nr_t nr_int32,
+           int inplace) {
+    int dtype;
+    double old, new;
+
+    PyArrayObject *a;
+    PyObject *y;
 
     PyObject *a_obj = NULL;
     PyObject *old_obj = NULL;
     PyObject *new_obj = NULL;
 
-    if (!parse_args(args, kwds, &a_obj, &old_obj, &new_obj)) {
-        return NULL;
-    }
+    if (!parse_args(args, kwds, &a_obj, &old_obj, &new_obj)) return NULL;
 
     /* convert to array if necessary */
     if (PyArray_Check(a_obj)) {
@@ -223,7 +211,8 @@ nonreducer(char *    name,
         Py_INCREF(a);
     } else {
         if (inplace) {
-            TYPE_ERR("works in place so input must be an array, not (e.g.) a list");
+            TYPE_ERR("works in place so input must be an array, "
+                     "not (e.g.) a list");
             return NULL;
         }
         a = (PyArrayObject *)PyArray_FROM_O(a_obj);
@@ -234,7 +223,6 @@ nonreducer(char *    name,
 
     /* check for byte swapped input array */
     if (PyArray_ISBYTESWAPPED(a)) {
-        Py_DECREF(a);
         return slow(name, args, kwds);
     }
 
@@ -242,37 +230,33 @@ nonreducer(char *    name,
     if (old_obj == NULL) {
         RUNTIME_ERR("`old_obj` should never be NULL; please report this bug.");
         goto error;
-    }
-    const double old_value = PyFloat_AsDouble(old_obj);
-    if (error_converting(old_value)) {
-        TYPE_ERR("`old` must be a number");
-        goto error;
+    } else {
+        old = PyFloat_AsDouble(old_obj);
+        if (error_converting(old)) {
+            TYPE_ERR("`old` must be a number");
+            goto error;
+        }
     }
 
     /* new */
     if (new_obj == NULL) {
         RUNTIME_ERR("`new_obj` should never be NULL; please report this bug.");
         goto error;
-    }
-    const double new_value = PyFloat_AsDouble(new_obj);
-    if (error_converting(new_value)) {
-        TYPE_ERR("`new` must be a number");
-        goto error;
-    }
-
-    const int dtype = PyArray_TYPE(a);
-
-    if (dtype == NPY_float64) {
-        y = nr_float64(a, old_value, new_value);
-    } else if (dtype == NPY_float32) {
-        y = nr_float32(a, old_value, new_value);
-    } else if (dtype == NPY_int64) {
-        y = nr_int64(a, old_value, new_value);
-    } else if (dtype == NPY_int32) {
-        y = nr_int32(a, old_value, new_value);
     } else {
-        y = slow(name, args, kwds);
+        new = PyFloat_AsDouble(new_obj);
+        if (error_converting(new)) {
+            TYPE_ERR("`new` must be a number");
+            goto error;
+        }
     }
+
+    dtype = PyArray_TYPE(a);
+
+    if      (dtype == NPY_float64) y = nr_float64(a, old, new);
+    else if (dtype == NPY_float32) y = nr_float32(a, old, new);
+    else if (dtype == NPY_int64)   y = nr_int64(a, old, new);
+    else if (dtype == NPY_int32)   y = nr_int32(a, old, new);
+    else                           y = slow(name, args, kwds);
 
     Py_DECREF(a);
 
@@ -281,13 +265,13 @@ nonreducer(char *    name,
 error:
     Py_DECREF(a);
     return NULL;
+
 }
 
 /* docstrings ------------------------------------------------------------- */
 
-// clang-format off
-
-static char nonreduce_doc[] = "Bottleneck nonreducing functions.";
+static char nonreduce_doc[] =
+"Bottleneck nonreducing functions.";
 
 static char replace_doc[] =
 /* MULTILINE STRING BEGIN
@@ -344,35 +328,35 @@ nonreduce_methods[] = {
     {NULL, NULL, 0, NULL}
 };
 
-// clang-format on
 
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef
-    nonreduce_def = {
-        PyModuleDef_HEAD_INIT,
-        "nonreduce",
-        nonreduce_doc,
-        -1,
-        nonreduce_methods};
+nonreduce_def = {
+   PyModuleDef_HEAD_INIT,
+   "nonreduce",
+   nonreduce_doc,
+   -1,
+   nonreduce_methods
+};
 #endif
+
 
 PyMODINIT_FUNC
 #if PY_MAJOR_VERSION >= 3
-    #define RETVAL m
+#define RETVAL m
 PyInit_nonreduce(void)
 #else
-    #define RETVAL
+#define RETVAL
 initnonreduce(void)
 #endif
 {
-#if PY_MAJOR_VERSION >= 3
-    PyObject *m = PyModule_Create(&nonreduce_def);
-#else
-    PyObject *m = Py_InitModule3("nonreduce", nonreduce_methods, nonreduce_doc);
-#endif
-    if (m == NULL) {
-        return RETVAL;
-    }
+    #if PY_MAJOR_VERSION >=3
+        PyObject *m = PyModule_Create(&nonreduce_def);
+    #else
+        PyObject *m = Py_InitModule3("nonreduce", nonreduce_methods,
+                                     nonreduce_doc);
+    #endif
+    if (m == NULL) return RETVAL;
     import_array();
     if (!intern_strings()) {
         return RETVAL;

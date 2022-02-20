@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
 from __future__ import division
-
 import sys
 from optparse import OptionParser
-
 import bottleneck
 
 # This file is a modified version of the original numpy file:

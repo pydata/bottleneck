@@ -3,37 +3,31 @@
 #include "bottleneck.h"
 #include "iterators.h"
 
-#ifdef _MSC_VER
-    #include "intrin.h"
-#elif HAVE_SSE2
-    #include "x86intrin.h"
-#endif
-
 /* init macros ----------------------------------------------------------- */
 
 #define INIT_ALL \
-    iter it;     \
+    iter it; \
     init_iter_all(&it, a, 0, 1);
 
 #define INIT_ALL_RAVEL \
-    iter it;           \
+    iter it; \
     init_iter_all(&it, a, 1, 0);
 
 #define INIT_ALL_RAVEL_ANY_ORDER \
-    iter it;                     \
+    iter it; \
     init_iter_all(&it, a, 1, 1);
 
 /* used with INIT_ALL_RAVEL */
-#define DECREF_INIT_ALL_RAVEL  \
-    if (it.a_ravel != NULL) {  \
+#define DECREF_INIT_ALL_RAVEL \
+    if (it.a_ravel != NULL) { \
         Py_DECREF(it.a_ravel); \
     }
 
-#define INIT_ONE(dtype0, dtype1)                         \
-    iter          it;                                    \
-    PyObject *    y;                                     \
-    npy_##dtype1 *py;                                    \
-    init_iter_one(&it, a, axis);                         \
+#define INIT_ONE(dtype0, dtype1) \
+    iter it; \
+    PyObject *y; \
+    npy_##dtype1 *py; \
+    init_iter_one(&it, a, axis); \
     y = PyArray_EMPTY(NDIM - 1, SHAPE, NPY_##dtype0, 0); \
     py = (npy_##dtype1 *)PyArray_DATA((PyArrayObject *)y);
 
@@ -41,30 +35,31 @@
 
 /* low-level functions such as nansum_all_float64 */
 #define REDUCE_ALL(name, dtype) \
-    static PyObject *           \
-        name##_all_##dtype(PyArrayObject *a, int ddof)
+    static PyObject * \
+    name##_all_##dtype(PyArrayObject *a, int ddof)
 
 /* low-level functions such as nansum_one_float64 */
 #define REDUCE_ONE(name, dtype) \
-    static PyObject *           \
-        name##_one_##dtype(PyArrayObject *a, int axis, int ddof)
+    static PyObject * \
+    name##_one_##dtype(PyArrayObject *a, int axis, int ddof)
 
 /* top-level functions such as nansum */
-#define REDUCE_MAIN(name, has_ddof)                        \
-    static PyObject *                                      \
-    name(PyObject *self, PyObject *args, PyObject *kwds) { \
-        return reducer(#name,                              \
-                       args,                               \
-                       kwds,                               \
-                       name##_all_float64,                 \
-                       name##_all_float32,                 \
-                       name##_all_int64,                   \
-                       name##_all_int32,                   \
-                       name##_one_float64,                 \
-                       name##_one_float32,                 \
-                       name##_one_int64,                   \
-                       name##_one_int32,                   \
-                       has_ddof);                          \
+#define REDUCE_MAIN(name, has_ddof) \
+    static PyObject * \
+    name(PyObject *self, PyObject *args, PyObject *kwds) \
+    { \
+        return reducer(#name, \
+                       args, \
+                       kwds, \
+                       name##_all_float64, \
+                       name##_all_float32, \
+                       name##_all_int64, \
+                       name##_all_int32, \
+                       name##_one_float64, \
+                       name##_one_float32, \
+                       name##_one_int64, \
+                       name##_one_int32, \
+                       has_ddof); \
     }
 
 /* typedefs and prototypes ----------------------------------------------- */
@@ -73,32 +68,30 @@ typedef PyObject *(*fall_t)(PyArrayObject *a, int ddof);
 typedef PyObject *(*fone_t)(PyArrayObject *a, int axis, int ddof);
 
 static PyObject *
-reducer(char *    name,
+reducer(char *name,
         PyObject *args,
         PyObject *kwds,
-        fall_t    fall_float64,
-        fall_t    fall_float32,
-        fall_t    fall_int64,
-        fall_t    fall_int32,
-        fone_t    fone_float64,
-        fone_t    fone_float32,
-        fone_t    fone_int64,
-        fone_t    fone_int32,
-        int       has_ddof);
+        fall_t fall_float64,
+        fall_t fall_float32,
+        fall_t fall_int64,
+        fall_t fall_int32,
+        fone_t fone_float64,
+        fone_t fone_float32,
+        fone_t fone_int64,
+        fone_t fone_int32,
+        int has_ddof);
 
 /* nansum ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(nansum, DTYPE0) {
-    npy_DTYPE0 asum = 0;
+    npy_DTYPE0 ai, asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR {
-            const npy_DTYPE0 ai = AI(DTYPE0);
-            if (!bn_isnan(ai)) {
-                asum += ai;
-            }
+            ai = AI(DTYPE0);
+            if (ai == ai) asum += ai;
         }
         NEXT
     }
@@ -107,18 +100,17 @@ REDUCE_ALL(nansum, DTYPE0) {
 }
 
 REDUCE_ONE(nansum, DTYPE0) {
+    npy_DTYPE0 ai, asum;
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
     } else {
         WHILE {
-            npy_DTYPE0 asum = 0;
+            asum = 0;
             FOR {
-                const npy_DTYPE0 ai = AI(DTYPE0);
-                if (!bn_isnan(ai)) {
-                    asum += ai;
-                }
+                ai = AI(DTYPE0);
+                if (ai == ai) asum += ai;
             }
             YPP = asum;
             NEXT
@@ -129,74 +121,31 @@ REDUCE_ONE(nansum, DTYPE0) {
 }
 /* dtype end */
 
-/* dtype = [['int64', 'int64'], ['int32', 'long']] */
-BN_OPT_3
+/* dtype = [['int64'], ['int32']] */
 REDUCE_ALL(nansum, DTYPE0) {
-    npy_DTYPE1 asum = 0;
+    npy_DTYPE0 asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
-    if (REDUCE_CONTIGUOUS) {
-        npy_DTYPE0 *   pa = PA(DTYPE0);
-        const npy_intp nits = it.nits;
-        const npy_intp length = it.length;
-        for (npy_intp i = 0; i < nits; i++) {
-            for (npy_intp j = 0; j < length; j++) {
-                asum += pa[i * length + j];
-            }
-        }
-    } else {
-        WHILE {
-            npy_DTYPE0 *pa = PA(DTYPE0);
-            FOR {
-                asum += pa[it.i * it.stride];
-            }
-            NEXT
-        }
+    WHILE {
+        FOR asum += AI(DTYPE0);
+        NEXT
     }
     BN_END_ALLOW_THREADS
     return PyLong_FromLongLong(asum);
 }
 
-BN_OPT_3
 REDUCE_ONE(nansum, DTYPE0) {
-    INIT_ONE(DTYPE1, DTYPE1)
+    npy_DTYPE0 asum;
+    INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
     } else {
-        if (ONE_CONTIGUOUS) {
-            WHILE {
-                npy_DTYPE1        asum = 0;
-                const npy_DTYPE0 *pa = PA(DTYPE0);
-                for (npy_intp i = 0; i < LENGTH; i++) {
-                    asum += pa[i];
-                }
-                YPP = asum;
-                NEXT
-            }
-        } else if (ONE_TRANSPOSE(npy_DTYPE0)) {
-            const npy_intp    LOOP_SIZE = it.nits;
-            const npy_DTYPE0 *pa = PA(DTYPE0);
-
-            for (npy_intp i = 0; i < LOOP_SIZE; i++) {
-                py[i] = 0;
-            }
-
-            for (npy_intp i = 0; i < LENGTH; i++) {
-                for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                    py[j] += pa[i * LOOP_SIZE + j];
-                }
-            }
-        } else {
-            WHILE {
-                npy_DTYPE1        asum = 0;
-                const npy_DTYPE0 *pa = PA(DTYPE0);
-                FOR {
-                    asum += SI(pa);
-                }
-                YPP = asum;
-                NEXT
-            }
+        WHILE {
+            asum = 0;
+            FOR asum += AI(DTYPE0);
+            YPP = asum;
+            NEXT
         }
     }
     BN_END_ALLOW_THREADS
@@ -206,18 +155,19 @@ REDUCE_ONE(nansum, DTYPE0) {
 
 REDUCE_MAIN(nansum, 0)
 
+
 /* nanmean ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(nanmean, DTYPE0) {
     Py_ssize_t count = 0;
-    npy_DTYPE0 asum = 0;
+    npy_DTYPE0 ai, asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR {
-            const npy_DTYPE0 ai = AI(DTYPE0);
-            if (!bn_isnan(ai)) {
+            ai = AI(DTYPE0);
+            if (ai == ai) {
                 asum += ai;
                 count += 1;
             }
@@ -233,17 +183,19 @@ REDUCE_ALL(nanmean, DTYPE0) {
 }
 
 REDUCE_ONE(nanmean, DTYPE0) {
+    Py_ssize_t count;
+    npy_DTYPE0 ai, asum;
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
         WHILE {
-            Py_ssize_t count = 0;
-            npy_DTYPE0 asum = 0;
+            count = 0;
+            asum = 0;
             FOR {
-                const npy_DTYPE0 ai = AI(DTYPE0);
-                if (!bn_isnan(ai)) {
+                ai = AI(DTYPE0);
+                if (ai == ai) {
                     asum += ai;
                     count += 1;
                 }
@@ -269,9 +221,7 @@ REDUCE_ALL(nanmean, DTYPE0) {
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        FOR {
-            asum += AI(DTYPE0);
-        }
+        FOR asum += AI(DTYPE0);
         total_length += LENGTH;
         NEXT
     }
@@ -284,16 +234,15 @@ REDUCE_ALL(nanmean, DTYPE0) {
 }
 
 REDUCE_ONE(nanmean, DTYPE0) {
+    npy_DTYPE1 asum;
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
         WHILE {
-            npy_DTYPE1 asum = 0;
-            FOR {
-                asum += AI(DTYPE0);
-            }
+            asum = 0;
+            FOR asum += AI(DTYPE0);
             if (LENGTH > 0) {
                 asum /= LENGTH;
             } else {
@@ -310,6 +259,7 @@ REDUCE_ONE(nanmean, DTYPE0) {
 
 REDUCE_MAIN(nanmean, 0)
 
+
 /* nanstd, nanvar- ------------------------------------------------------- */
 
 /* repeat = {'NAME': ['nanstd', 'nanvar'],
@@ -317,13 +267,13 @@ REDUCE_MAIN(nanmean, 0)
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(NAME, DTYPE0) {
     Py_ssize_t count = 0;
-    npy_DTYPE0 out, asum = 0;
+    npy_DTYPE0 ai, amean, out, asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR {
-            const npy_DTYPE0 ai = AI(DTYPE0);
-            if (!bn_isnan(ai)) {
+            ai = AI(DTYPE0);
+            if (ai == ai) {
                 asum += ai;
                 count++;
             }
@@ -331,13 +281,13 @@ REDUCE_ALL(NAME, DTYPE0) {
         NEXT
     }
     if (count > ddof) {
-        const npy_DTYPE0 amean = asum / count;
+        amean = asum / count;
         asum = 0;
         RESET
         WHILE {
             FOR {
-                npy_DTYPE0 ai = AI(DTYPE0);
-                if (!bn_isnan(ai)) {
+                ai = AI(DTYPE0);
+                if (ai == ai) {
                     ai -= amean;
                     asum += ai * ai;
                 }
@@ -353,27 +303,29 @@ REDUCE_ALL(NAME, DTYPE0) {
 }
 
 REDUCE_ONE(NAME, DTYPE0) {
+    Py_ssize_t count;
+    npy_DTYPE0 ai, asum, amean;
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
         WHILE {
-            Py_ssize_t count = 0;
-            npy_DTYPE0 asum = 0;
+            count = 0;
+            asum = 0;
             FOR {
-                const npy_DTYPE0 ai = AI(DTYPE0);
-                if (!bn_isnan(ai)) {
+                ai = AI(DTYPE0);
+                if (ai == ai) {
                     asum += ai;
                     count++;
                 }
             }
             if (count > ddof) {
-                const npy_DTYPE0 amean = asum / count;
+                amean = asum / count;
                 asum = 0;
                 FOR {
-                    npy_DTYPE0 ai = AI(DTYPE0);
-                    if (!bn_isnan(ai)) {
+                    ai = AI(DTYPE0);
+                    if (ai == ai) {
                         ai -= amean;
                         asum += ai * ai;
                     }
@@ -395,23 +347,21 @@ REDUCE_ONE(NAME, DTYPE0) {
 REDUCE_ALL(NAME, DTYPE0) {
     npy_DTYPE1 out;
     Py_ssize_t size = 0;
-    npy_DTYPE1 asum = 0;
+    npy_DTYPE1 ai, amean, asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        FOR {
-            asum += AI(DTYPE0);
-        }
+        FOR asum += AI(DTYPE0);
         size += LENGTH;
         NEXT
     }
     if (size > ddof) {
-        const npy_DTYPE1 amean = asum / size;
+        amean = asum / size;
         asum = 0;
         RESET
         WHILE {
             FOR {
-                const npy_DTYPE1 ai = AI(DTYPE0) - amean;
+                ai = AI(DTYPE0) - amean;
                 asum += ai * ai;
             }
             NEXT
@@ -425,23 +375,22 @@ REDUCE_ALL(NAME, DTYPE0) {
 }
 
 REDUCE_ONE(NAME, DTYPE0) {
+    npy_DTYPE1 ai, asum, amean, length_inv, length_ddof_inv;
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
-    const npy_DTYPE1 length_inv = 1.0 / LENGTH;
-    const npy_DTYPE1 length_ddof_inv = 1.0 / (LENGTH - ddof);
+    length_inv = 1.0 / LENGTH;
+    length_ddof_inv = 1.0 / (LENGTH - ddof);
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
         WHILE {
-            npy_DTYPE1 asum = 0;
-            FOR {
-                asum += AI(DTYPE0);
-            }
+            asum = 0;
+            FOR asum += AI(DTYPE0);
             if (LENGTH > ddof) {
-                const npy_DTYPE1 amean = asum * length_inv;
+                amean = asum * length_inv;
                 asum = 0;
                 FOR {
-                    const npy_DTYPE1 ai = AI(DTYPE0) - amean;
+                    ai = AI(DTYPE0) - amean;
                     asum += ai * ai;
                 }
                 asum = FUNC(asum * length_ddof_inv);
@@ -460,17 +409,17 @@ REDUCE_ONE(NAME, DTYPE0) {
 REDUCE_MAIN(NAME, 1)
 /* repeat end */
 
+
 /* nanmin, nanmax -------------------------------------------------------- */
 
 /* repeat = {'NAME':      ['nanmin',         'nanmax'],
-             'INTCOMP':   ['<',              '>'],
              'COMPARE':   ['<=',             '>='],
              'BIG_FLOAT': ['BN_INFINITY',    '-BN_INFINITY'],
              'BIG_INT':   ['NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0']} */
-/* dtype = [['float64', '16'], ['float32', '32']] */
-BN_OPT_3
+/* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(NAME, DTYPE0) {
-    npy_DTYPE0 extreme = BIG_FLOAT;
+    npy_DTYPE0 ai, extreme = BIG_FLOAT;
+    int allnan = 1;
     INIT_ALL
     if (SIZE == 0) {
         VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
@@ -478,75 +427,24 @@ REDUCE_ALL(NAME, DTYPE0) {
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    npy_bool is_allnan = 1;
-    if (REDUCE_CONTIGUOUS) {
-        const npy_intp LOOP_SIZE = DTYPE1;
-        // Allow vectorization by keeping an array of extremums
-        npy_DTYPE0 extremes[DTYPE1];
-        for (npy_intp i = 0; i < LOOP_SIZE; i++) {
-            extremes[i] = BIG_FLOAT;
-        }
-        const npy_intp loops = LENGTH / LOOP_SIZE;
-        const npy_intp residual = LENGTH % LOOP_SIZE;
-        WHILE {
-            const npy_DTYPE0 *pa = PA(DTYPE0);
-            npy_intp          i = 0;
-            for (; i < loops && is_allnan; i++) {
-                for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                    const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
-                    // We only need <=/>= until we identify our first non-nan value
-                    if (ai COMPARE extremes[j]) {
-                        is_allnan = 0;
-                        extremes[j] = ai;
-                    }
-                }
-            }
-            for (; i < loops; i++) {
-                // Fully vectorize since the result cannot be NaN now
-                for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                    const npy_DTYPE0         ai = pa[i * LOOP_SIZE + j];
-                    extremes[j] = ai INTCOMP extremes[j] ? ai : extremes[j];
-                }
-            }
-            for (npy_intp j = 0; j < residual; j++) {
-                const npy_DTYPE0 ai = pa[loops * LOOP_SIZE + j];
-                if (ai COMPARE extremes[j]) {
-                    is_allnan = 0;
-                    extremes[j] = ai;
-                }
-            }
-            NEXT
-        }
-        // Reduce our array to find the global max/min
-        for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-            if (extremes[j] COMPARE extreme) {
-                extreme = extremes[j];
+    WHILE {
+        FOR {
+            ai = AI(DTYPE0);
+            if (ai COMPARE extreme) {
+                extreme = ai;
+                allnan = 0;
             }
         }
-    } else {
-        WHILE {
-            const npy_DTYPE0 *pa = PA(DTYPE0);
-            FOR {
-                const npy_DTYPE0 ai = pa[it.i * it.stride];
-                if (ai COMPARE extreme) {
-                    extreme = ai;
-                    is_allnan = 0;
-                }
-            }
-            NEXT
-        }
+        NEXT
     }
-    if (is_allnan) {
-        extreme = BN_NAN;
-    }
+    if (allnan) extreme = BN_NAN;
     BN_END_ALLOW_THREADS
     return PyFloat_FromDouble(extreme);
 }
 
-BN_OPT_3
 REDUCE_ONE(NAME, DTYPE0) {
-    npy_DTYPE0 extreme;
-    npy_bool   is_allnan;
+    npy_DTYPE0 ai, extreme;
+    int allnan;
     INIT_ONE(DTYPE0, DTYPE0)
     if (LENGTH == 0) {
         VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
@@ -554,114 +452,19 @@ REDUCE_ONE(NAME, DTYPE0) {
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    if (ONE_TRANSPOSE(npy_DTYPE0)) {
-        npy_intp    LOOP_SIZE = it.nits;
-        npy_DTYPE0 *extremes = malloc(LOOP_SIZE * sizeof(npy_DTYPE0));
-        npy_bool *  allnans = malloc(LOOP_SIZE * sizeof(npy_bool));
-        for (npy_intp i = 0; i < LOOP_SIZE; i++) {
-            extremes[i] = BIG_FLOAT;
-            allnans[i] = 1;
-        }
-
-        const npy_DTYPE0 *pa = PA(DTYPE0);
-        npy_intp          i = 0;
-        for (; i < LENGTH; i++) {
-            for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
-                if (ai COMPARE extremes[j]) {
-                    allnans[j] = 0;
-                    extremes[j] = ai;
-                }
-            }
-            if (i % 8 == 0) {
-                npy_intp nan_count = 0;
-                for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                    nan_count += allnans[j];
-                }
-                if (nan_count == 0) {
-                    break;
-                }
+    WHILE {
+        extreme = BIG_FLOAT;
+        allnan = 1;
+        FOR {
+            ai = AI(DTYPE0);
+            if (ai COMPARE extreme) {
+                extreme = ai;
+                allnan = 0;
             }
         }
-        for (; i < LENGTH; i++) {
-            for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                const npy_DTYPE0         ai = pa[i * LOOP_SIZE + j];
-                extremes[j] = ai INTCOMP extremes[j] ? ai : extremes[j];
-            }
-        }
-        for (npy_intp k = 0; k < LOOP_SIZE; k++) {
-            if (allnans[k]) {
-                py[k] = BN_NAN;
-            } else {
-                py[k] = extremes[k];
-            }
-        }
-        free(extremes);
-        free(allnans);
-    } else if (ONE_CONTIGUOUS) {
-        const npy_intp LOOP_SIZE = DTYPE1;
-        npy_DTYPE0     extremes[DTYPE1];
-        const npy_intp loops = LENGTH / LOOP_SIZE;
-        const npy_intp residual = LENGTH % LOOP_SIZE;
-        WHILE {
-            const npy_DTYPE0 *pa = PA(DTYPE0);
-
-            for (npy_intp i = 0; i < LOOP_SIZE; i++) {
-                extremes[i] = BIG_FLOAT;
-            }
-            is_allnan = 1;
-            extreme = BIG_FLOAT;
-
-            npy_intp i = 0;
-            for (; i < loops && is_allnan; i++) {
-                for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                    const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
-                    if (ai COMPARE extremes[j]) {
-                        is_allnan = 0;
-                        extremes[j] = ai;
-                    }
-                }
-            }
-            for (; i < loops; i++) {
-                for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                    const npy_DTYPE0         ai = pa[i * LOOP_SIZE + j];
-                    extremes[j] = ai INTCOMP extremes[j] ? ai : extremes[j];
-                }
-            }
-            for (npy_intp j = 0; j < residual; j++) {
-                const npy_DTYPE0 ai = pa[i * LOOP_SIZE + j];
-                if (ai COMPARE extremes[j]) {
-                    is_allnan = 0;
-                    extremes[j] = ai;
-                }
-            }
-            for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                if (extremes[j] COMPARE extreme) {
-                    extreme = extremes[j];
-                }
-            }
-
-            if (is_allnan) {
-                extreme = BN_NAN;
-            }
-            YPP = extreme;
-            NEXT
-        }
-    } else {
-        WHILE {
-            extreme = BIG_FLOAT;
-            is_allnan = 1;
-            FOR {
-                const npy_DTYPE0 ai = AI(DTYPE0);
-                if (ai COMPARE extreme) {
-                    extreme = ai;
-                    is_allnan = 0;
-                }
-            }
-            if (is_allnan) extreme = BN_NAN;
-            YPP = extreme;
-            NEXT
-        }
+        if (allnan) extreme = BN_NAN;
+        YPP = extreme;
+        NEXT
     }
     BN_END_ALLOW_THREADS
     return y;
@@ -669,9 +472,8 @@ REDUCE_ONE(NAME, DTYPE0) {
 /* dtype end */
 
 /* dtype = [['int64'], ['int32']] */
-BN_OPT_3
 REDUCE_ALL(NAME, DTYPE0) {
-    npy_DTYPE0 extreme = BIG_INT;
+    npy_DTYPE0 ai, extreme = BIG_INT;
     INIT_ALL
     if (SIZE == 0) {
         VALUE_ERR("numpy.NAME raises on a.size==0 and axis=None; "
@@ -679,32 +481,19 @@ REDUCE_ALL(NAME, DTYPE0) {
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    if (REDUCE_CONTIGUOUS) {
-        WHILE {
-            const npy_DTYPE0 *pa = PA(DTYPE0);
-            FOR {
-                const npy_DTYPE0     ai = pa[it.i];
-                extreme = ai INTCOMP extreme ? ai : extreme;
-            }
-            NEXT
+    WHILE {
+        FOR {
+            ai = AI(DTYPE0);
+            if (ai COMPARE extreme) extreme = ai;
         }
-    } else {
-        WHILE {
-            const npy_DTYPE0 *pa = PA(DTYPE0);
-            FOR {
-                const npy_DTYPE0     ai = pa[it.i * it.stride];
-                extreme = ai INTCOMP extreme ? ai : extreme;
-            }
-            NEXT
-        }
+        NEXT
     }
     BN_END_ALLOW_THREADS
     return PyLong_FromLongLong(extreme);
 }
 
-BN_OPT_3
 REDUCE_ONE(NAME, DTYPE0) {
-    npy_DTYPE0 extreme;
+    npy_DTYPE0 ai, extreme;
     INIT_ONE(DTYPE0, DTYPE0)
     if (LENGTH == 0) {
         VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
@@ -712,47 +501,14 @@ REDUCE_ONE(NAME, DTYPE0) {
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    if (ONE_TRANSPOSE(npy_DTYPE0)) {
-        npy_intp    LOOP_SIZE = it.nits;
-        npy_DTYPE0 *extremes = malloc(LOOP_SIZE * sizeof(npy_DTYPE0));
-        for (npy_intp i = 0; i < LOOP_SIZE; i++) {
-            extremes[i] = BIG_INT;
+    WHILE {
+        extreme = BIG_INT;
+        FOR {
+            ai = AI(DTYPE0);
+            if (ai COMPARE extreme) extreme = ai;
         }
-
-        const npy_DTYPE0 *pa = PA(DTYPE0);
-        for (npy_intp i = 0; i < LENGTH; i++) {
-            for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                const npy_DTYPE0         ai = pa[i * LOOP_SIZE + j];
-                extremes[j] = ai INTCOMP extremes[j] ? ai : extremes[j];
-            }
-        }
-        for (npy_intp i = 0; i < LOOP_SIZE; i++) {
-            py[i] = extremes[i];
-        }
-        free(extremes);
-    } else if (ONE_CONTIGUOUS) {
-        WHILE {
-            extreme = BIG_INT;
-            const npy_DTYPE0 *pa = PA(DTYPE0);
-            FOR {
-                const npy_DTYPE0     ai = pa[it.i];
-                extreme = ai INTCOMP extreme ? ai : extreme;
-            }
-            YPP = extreme;
-            NEXT
-        }
-    } else {
-        WHILE {
-            extreme = BIG_INT;
-            FOR {
-                const npy_DTYPE0 ai = AI(DTYPE0);
-                if (ai INTCOMP extreme) {
-                    extreme = ai;
-                }
-            }
-            YPP = extreme;
-            NEXT
-        }
+        YPP = extreme;
+        NEXT
     }
     BN_END_ALLOW_THREADS
     return y;
@@ -762,17 +518,17 @@ REDUCE_ONE(NAME, DTYPE0) {
 REDUCE_MAIN(NAME, 0)
 /* repeat end */
 
+
 /* nanargmin, nanargmax -------------------------------------------------- */
 
 /* repeat = {'NAME':      ['nanargmin',      'nanargmax'],
              'COMPARE':   ['<=',             '>='],
-             'INTCOMP':   ['<',              '>'],
              'BIG_FLOAT': ['BN_INFINITY',    '-BN_INFINITY'],
              'BIG_INT':   ['NPY_MAX_DTYPE0', 'NPY_MIN_DTYPE0']} */
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(NAME, DTYPE0) {
-    npy_DTYPE0 extreme = BIG_FLOAT;
-    npy_bool   is_allnan = 1;
+    npy_DTYPE0 ai, extreme = BIG_FLOAT;
+    int allnan = 1;
     Py_ssize_t idx = 0;
     INIT_ALL_RAVEL
     if (SIZE == 0) {
@@ -783,16 +539,16 @@ REDUCE_ALL(NAME, DTYPE0) {
     }
     BN_BEGIN_ALLOW_THREADS
     FOR_REVERSE {
-        const npy_DTYPE0 ai = AI(DTYPE0);
+        ai = AI(DTYPE0);
         if (ai COMPARE extreme) {
             extreme = ai;
-            is_allnan = 0;
+            allnan = 0;
             idx = INDEX;
         }
     }
     BN_END_ALLOW_THREADS
     DECREF_INIT_ALL_RAVEL
-    if (is_allnan) {
+    if (allnan) {
         VALUE_ERR("All-NaN slice encountered");
         return NULL;
     } else {
@@ -801,7 +557,9 @@ REDUCE_ALL(NAME, DTYPE0) {
 }
 
 REDUCE_ONE(NAME, DTYPE0) {
-    int err_code = 0;
+    int allnan, err_code = 0;
+    Py_ssize_t idx = 0;
+    npy_DTYPE0 ai, extreme;
     INIT_ONE(INTP, intp)
     if (LENGTH == 0) {
         VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
@@ -810,18 +568,17 @@ REDUCE_ONE(NAME, DTYPE0) {
     }
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        npy_DTYPE0 extreme = BIG_FLOAT;
-        npy_bool   is_allnan = 1;
-        npy_intp   idx = 0;
+        extreme = BIG_FLOAT;
+        allnan = 1;
         FOR_REVERSE {
-            const npy_DTYPE0 ai = AI(DTYPE0);
+            ai = AI(DTYPE0);
             if (ai COMPARE extreme) {
                 extreme = ai;
-                is_allnan = 0;
+                allnan = 0;
                 idx = INDEX;
             }
         }
-        if (is_allnan == 0) {
+        if (allnan == 0) {
             YPP = idx;
         } else {
             err_code = 1;
@@ -838,10 +595,9 @@ REDUCE_ONE(NAME, DTYPE0) {
 /* dtype end */
 
 /* dtype = [['int64', 'intp'], ['int32', 'intp']] */
-BN_OPT_3
 REDUCE_ALL(NAME, DTYPE0) {
     npy_DTYPE1 idx = 0;
-    npy_DTYPE0 extreme = BIG_INT;
+    npy_DTYPE0 ai, extreme = BIG_INT;
     INIT_ALL_RAVEL
     if (SIZE == 0) {
         DECREF_INIT_ALL_RAVEL
@@ -850,10 +606,9 @@ REDUCE_ALL(NAME, DTYPE0) {
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
-    const npy_DTYPE0 *pa = PA(DTYPE0);
-    FOR {
-        const npy_DTYPE0 ai = SI(pa);
-        if (ai INTCOMP extreme) {
+    FOR_REVERSE {
+        ai = AI(DTYPE0);
+        if (ai COMPARE extreme) {
             extreme = ai;
             idx = INDEX;
         }
@@ -863,8 +618,9 @@ REDUCE_ALL(NAME, DTYPE0) {
     return PyLong_FromLongLong(idx);
 }
 
-BN_OPT_3
 REDUCE_ONE(NAME, DTYPE0) {
+    npy_DTYPE1 idx = 0;
+    npy_DTYPE0 ai, extreme;
     INIT_ONE(DTYPE1, DTYPE1)
     if (LENGTH == 0) {
         VALUE_ERR("numpy.NAME raises on a.shape[axis]==0; "
@@ -873,12 +629,10 @@ REDUCE_ONE(NAME, DTYPE0) {
     }
     BN_BEGIN_ALLOW_THREADS
     WHILE {
-        npy_DTYPE0        extreme = BIG_INT;
-        npy_DTYPE1        idx = 0;
-        const npy_DTYPE0 *pa = PA(DTYPE0);
-        FOR {
-            const npy_DTYPE0 ai = SI(pa);
-            if (ai INTCOMP extreme) {
+        extreme = BIG_INT;
+        FOR_REVERSE {
+            ai = AI(DTYPE0);
+            if (ai COMPARE extreme) {
                 extreme = ai;
                 idx = INDEX;
             }
@@ -894,16 +648,17 @@ REDUCE_ONE(NAME, DTYPE0) {
 REDUCE_MAIN(NAME, 0)
 /* repeat end */
 
+
 /* ss ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(ss, DTYPE0) {
-    npy_DTYPE0 asum = 0;
+    npy_DTYPE0 ai, asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR {
-            const npy_DTYPE0 ai = AI(DTYPE0);
+            ai = AI(DTYPE0);
             asum += ai * ai;
         }
         NEXT
@@ -913,15 +668,16 @@ REDUCE_ALL(ss, DTYPE0) {
 }
 
 REDUCE_ONE(ss, DTYPE0) {
+    npy_DTYPE0 ai, asum;
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
     } else {
         WHILE {
-            npy_DTYPE0 asum = 0;
+            asum = 0;
             FOR {
-                const npy_DTYPE0 ai = AI(DTYPE0);
+                ai = AI(DTYPE0);
                 asum += ai * ai;
             }
             YPP = asum;
@@ -933,43 +689,33 @@ REDUCE_ONE(ss, DTYPE0) {
 }
 /* dtype end */
 
-/* dtype = [['int64', 'int64'], ['int32', 'long']] */
-BN_OPT_3
+/* dtype = [['int64'], ['int32']] */
 REDUCE_ALL(ss, DTYPE0) {
-    npy_DTYPE1 asum = 0;
+    npy_DTYPE0 ai, asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
-    if (REDUCE_CONTIGUOUS) {
-        const npy_intp    count = it.nits * it.length;
-        const npy_DTYPE0 *pa = PA(DTYPE0);
-        for (npy_intp i = 0; i < count; i++) {
-            const npy_DTYPE0 ai = pa[i];
+    WHILE {
+        FOR {
+            ai = AI(DTYPE0);
             asum += ai * ai;
         }
-    } else {
-        WHILE {
-            FOR {
-                const npy_DTYPE0 ai = AI(DTYPE0);
-                asum += ai * ai;
-            }
-            NEXT
-        }
+        NEXT
     }
     BN_END_ALLOW_THREADS
     return PyLong_FromLongLong(asum);
 }
 
-BN_OPT_3
 REDUCE_ONE(ss, DTYPE0) {
-    INIT_ONE(DTYPE1, DTYPE1)
+    npy_DTYPE0 ai, asum;
+    INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
     } else {
         WHILE {
-            npy_DTYPE1 asum = 0;
+            asum = 0;
             FOR {
-                const npy_DTYPE0 ai = AI(DTYPE0);
+                ai = AI(DTYPE0);
                 asum += ai * ai;
             }
             YPP = asum;
@@ -983,86 +729,78 @@ REDUCE_ONE(ss, DTYPE0) {
 
 REDUCE_MAIN(ss, 0)
 
+
 /* median, nanmedian MACROS ---------------------------------------------- */
 
 #define B(dtype, i) buffer[i] /* used by PARTITION */
 
-#define EVEN_ODD(dtype, N)                 \
-    if (N % 2 == 0) {                      \
-        npy_##dtype amax = B(dtype, 0);    \
-        for (npy_intp i = 1; i < k; i++) { \
-            ai = B(dtype, i);              \
-            if (ai > amax) amax = ai;      \
-        }                                  \
-        med = 0.5 * (B(dtype, k) + amax);  \
-    } else {                               \
-        med = B(dtype, k);                 \
-    }
+#define EVEN_ODD(dtype, N) \
+    if (N % 2 == 0) { \
+        npy_##dtype amax = B(dtype, 0); \
+        for (i = 1; i < k; i++) { \
+            ai = B(dtype, i); \
+            if (ai > amax) amax = ai; \
+        } \
+        med = 0.5 * (B(dtype, k) + amax); \
+    } else { \
+        med =  B(dtype, k); \
+    } \
 
-#define MEDIAN(dtype)                       \
-    npy_intp    j, l, r, k;                 \
-    npy_##dtype ai;                         \
-    l = 0;                                  \
-    for (npy_intp i = 0; i < LENGTH; i++) { \
-        ai = AX(dtype, i);                  \
-        if (!bn_isnan(ai)) {                \
-            B(dtype, l++) = ai;             \
-        } else {                            \
-            break;                          \
-        }                                   \
-    }                                       \
-    if (l != LENGTH) {                      \
-        med = BN_NAN;                       \
-        goto done;                          \
-    }                                       \
-    k = LENGTH >> 1;                        \
-    l = 0;                                  \
-    r = LENGTH - 1;                         \
-    PARTITION(dtype)                        \
+#define MEDIAN(dtype) \
+    npy_intp j, l, r, k; \
+    npy_##dtype ai; \
+    l = 0; \
+    for (i = 0; i < LENGTH; i++) { \
+        ai = AX(dtype, i); \
+        if (ai == ai) { \
+            B(dtype, l++) = ai; \
+        } \
+    } \
+    if (l != LENGTH) { \
+        med = BN_NAN; \
+        goto done; \
+    } \
+    k = LENGTH >> 1; \
+    l = 0; \
+    r = LENGTH - 1; \
+    PARTITION(dtype) \
     EVEN_ODD(dtype, LENGTH)
 
-#define MEDIAN_INT(dtype)                       \
-    npy_intp           j, l, r, k;              \
-    npy_##dtype        ai;                      \
-    const npy_##dtype *pa = PA(dtype);          \
-    if (it.stride == 1) {                       \
-        for (npy_intp i = 0; i < LENGTH; i++) { \
-            B(dtype, i) = pa[i];                \
-        }                                       \
-    } else {                                    \
-        for (npy_intp i = 0; i < LENGTH; i++) { \
-            B(dtype, i) = SX(pa, i);            \
-        }                                       \
-    }                                           \
-    k = LENGTH >> 1;                            \
-    l = 0;                                      \
-    r = LENGTH - 1;                             \
-    PARTITION(dtype)                            \
+#define MEDIAN_INT(dtype) \
+    npy_intp j, l, r, k; \
+    npy_##dtype ai; \
+    for (i = 0; i < LENGTH; i++) { \
+        B(dtype, i) = AX(dtype, i); \
+    } \
+    k = LENGTH >> 1; \
+    l = 0; \
+    r = LENGTH - 1; \
+    PARTITION(dtype) \
     EVEN_ODD(dtype, LENGTH)
 
-#define NANMEDIAN(dtype)                    \
-    npy_intp    j, l, r, k, n;              \
-    npy_##dtype ai;                         \
-    l = 0;                                  \
-    for (npy_intp i = 0; i < LENGTH; i++) { \
-        ai = AX(dtype, i);                  \
-        if (!bn_isnan(ai)) {                \
-            B(dtype, l++) = ai;             \
-        }                                   \
-    }                                       \
-    n = l;                                  \
-    k = n >> 1;                             \
-    l = 0;                                  \
-    r = n - 1;                              \
-    if (n == 0) {                           \
-        med = BN_NAN;                       \
-        goto done;                          \
-    }                                       \
-    PARTITION(dtype)                        \
+#define NANMEDIAN(dtype) \
+    npy_intp j, l, r, k, n; \
+    npy_##dtype ai; \
+    l = 0; \
+    for (i = 0; i < LENGTH; i++) { \
+        ai = AX(dtype, i); \
+        if (ai == ai) { \
+            B(dtype, l++) = ai; \
+        } \
+    } \
+    n = l; \
+    k = n >> 1; \
+    l = 0; \
+    r = n - 1; \
+    if (n == 0) { \
+        med = BN_NAN; \
+        goto done; \
+    } \
+    PARTITION(dtype) \
     EVEN_ODD(dtype, n)
 
 #define BUFFER_NEW(dtype, length) \
-    npy_##dtype *buffer = calloc(length, sizeof(npy_##dtype));
+        npy_##dtype *buffer = malloc(length * sizeof(npy_##dtype));
 
 #define BUFFER_DELETE free(buffer);
 
@@ -1073,33 +811,35 @@ REDUCE_MAIN(ss, 0)
 /* dtype = [['float64', 'float64'], ['float32', 'float32']] */
 
 REDUCE_ALL(NAME, DTYPE0) {
-    npy_DTYPE1 med = BN_NAN;
+    npy_intp i;
+    npy_DTYPE1 med;
     INIT_ALL_RAVEL_ANY_ORDER
     BN_BEGIN_ALLOW_THREADS
+    BUFFER_NEW(DTYPE0, LENGTH)
     if (LENGTH == 0) {
         med = BN_NAN;
     } else {
-        BUFFER_NEW(DTYPE0, LENGTH)
         FUNC(DTYPE0)
-    done:
-        BUFFER_DELETE
     }
+    done:
+    BUFFER_DELETE
     BN_END_ALLOW_THREADS
     DECREF_INIT_ALL_RAVEL
     return PyFloat_FromDouble(med);
 }
 
 REDUCE_ONE(NAME, DTYPE0) {
+    npy_intp i;
+    npy_DTYPE1 med;
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
-        npy_DTYPE1 med = BN_NAN;
         BUFFER_NEW(DTYPE0, LENGTH)
         WHILE {
             FUNC(DTYPE0)
-        done:
+            done:
             YPP = med;
             NEXT
         }
@@ -1112,8 +852,8 @@ REDUCE_ONE(NAME, DTYPE0) {
 /* repeat end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-BN_OPT_3
 REDUCE_ALL(median, DTYPE0) {
+    npy_intp i;
     npy_DTYPE1 med;
     INIT_ALL_RAVEL_ANY_ORDER
     BN_BEGIN_ALLOW_THREADS
@@ -1129,14 +869,14 @@ REDUCE_ALL(median, DTYPE0) {
     return PyFloat_FromDouble(med);
 }
 
-BN_OPT_3
 REDUCE_ONE(median, DTYPE0) {
+    npy_intp i;
+    npy_DTYPE1 med;
     INIT_ONE(DTYPE1, DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(BN_NAN)
     } else {
-        npy_DTYPE1 med;
         BUFFER_NEW(DTYPE0, LENGTH)
         WHILE {
             MEDIAN_INT(DTYPE0)
@@ -1168,220 +908,49 @@ nanmedian(PyObject *self, PyObject *args, PyObject *kwds) {
                    0);
 }
 
-/* SSE2 anynan/allnan ---------------------------------------------------- */
-
-#if HAVE_SSE2
-
-int inline sse2_allnan_float64(const npy_float64 *pa) {
-    __m128d values = _mm_load_pd(pa);
-    __m128d result = _mm_cmpneq_pd(values, values);
-    /* If a value is NaN, a bit gets set to 1. As 2 64-bit floats fit in a
-       128-bit vector, 11 = 3 */
-    return _mm_movemask_pd(result) != 3;
-}
-
-int inline sse2_allnan_float32(const npy_float32 *pa) {
-    __m128 values = _mm_load_ps(pa);
-    __m128 result = _mm_cmpneq_ps(values, values);
-    /* If a value is NaN, a bit gets set to 1. As 4 32-bit floats fit in a
-       128-bit vector, 1111 = 15 */
-    return _mm_movemask_ps(result) != 15;
-}
-
-int inline sse2_anynan_float64(const npy_float64 *pa) {
-    __m128d values = _mm_load_pd(pa);
-    __m128d result = _mm_cmpneq_pd(values, values);
-    return _mm_movemask_pd(result) > 0;
-}
-
-int inline sse2_anynan_float32(const npy_float32 *pa) {
-    __m128 values = _mm_load_ps(pa);
-    __m128 result = _mm_cmpneq_ps(values, values);
-    return _mm_movemask_ps(result) > 0;
-}
-
-#endif
-
 /* anynan ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-BN_OPT_3
 REDUCE_ALL(anynan, DTYPE0) {
-    npy_bool f = 0;
+    int f = 0;
+    npy_DTYPE0 ai;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
-    if (REDUCE_CONTIGUOUS) {
-        const int         VECTOR_ALIGN = 16;
-        const npy_DTYPE0 *pa = PA(DTYPE0);
-        const npy_intp    count = it.nits * it.length;
-        npy_intp          vector_offset = (((npy_intp)pa) % VECTOR_ALIGN);
-        vector_offset = vector_offset > 0 ? VECTOR_ALIGN - vector_offset : 0;
-        vector_offset /= sizeof(npy_DTYPE0);
-        vector_offset = vector_offset <= count ? vector_offset : count;
-
-        const npy_intp LOOP_SIZE = 16 / sizeof(npy_DTYPE0);
-        const npy_intp loop_count = (count - vector_offset) / LOOP_SIZE;
-        const npy_intp residual = (count - vector_offset) % LOOP_SIZE;
-
-        for (npy_intp i = 0; (i < vector_offset) && (f == 0); i++) {
-            const npy_DTYPE0 ai = pa[i];
-            if (bn_isnan(ai)) {
+    WHILE {
+        FOR {
+            ai = AI(DTYPE0);
+            if (ai != ai) {
                 f = 1;
+                goto done;
             }
         }
-
-#if HAVE_SSE2
-        for (npy_intp i = 0; (i < loop_count) && (f == 0); i++) {
-            f = sse2_anynan_DTYPE0(&pa[vector_offset + i * LOOP_SIZE]);
-        }
-#else
-        npy_bool *f_arr = malloc(LOOP_SIZE * sizeof(npy_bool));
-        for (npy_intp i = 0; (i < loop_count) && (f == 0); i++) {
-            for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                f_arr[j] = bn_isnan(pa[vector_offset + i * LOOP_SIZE + j]);
-            }
-
-            for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                f += f_arr[j];
-            }
-        }
-        free(f_arr);
-#endif
-
-        for (npy_intp j = 0; (j < residual) && (f == 0); j++) {
-            const npy_DTYPE0 ai = pa[vector_offset + loop_count * LOOP_SIZE + j];
-            if (bn_isnan(ai)) {
-                f = 1;
-            }
-        }
-    } else {
-        WHILE {
-            const npy_DTYPE0 *pa = PA(DTYPE0);
-            FOR {
-                const npy_DTYPE0 ai = pa[it.i * it.stride];
-                if (bn_isnan(ai)) {
-                    f = 1;
-                    goto done;
-                }
-            }
-            NEXT
-        }
+        NEXT
     }
-done:
+    done:
     BN_END_ALLOW_THREADS
-    if (f) {
-        Py_RETURN_TRUE;
-    } else {
-        Py_RETURN_FALSE;
-    }
+    if (f) Py_RETURN_TRUE;
+    Py_RETURN_FALSE;
 }
 
-BN_OPT_3
 REDUCE_ONE(anynan, DTYPE0) {
-    npy_bool f;
+    int f;
+    npy_DTYPE0 ai;
     INIT_ONE(BOOL, uint8)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(0)
     } else {
-        if (ONE_CONTIGUOUS) {
-            WHILE {
-                f = 0;
-                const int         VECTOR_ALIGN = 16;
-                const npy_DTYPE0 *pa = PA(DTYPE0);
-                const npy_intp    count = LENGTH;
-                npy_intp          vector_offset = (((npy_intp)pa) % VECTOR_ALIGN);
-                vector_offset = vector_offset > 0 ? VECTOR_ALIGN - vector_offset : 0;
-                vector_offset /= sizeof(npy_DTYPE0);
-                vector_offset = vector_offset <= count ? vector_offset : count;
-
-                const npy_intp LOOP_SIZE = 16 / sizeof(npy_DTYPE0);
-                const npy_intp loop_count = (count - vector_offset) / LOOP_SIZE;
-                const npy_intp residual = (count - vector_offset) % LOOP_SIZE;
-
-                for (npy_intp i = 0; (i < vector_offset) && (f == 0); i++) {
-                    const npy_DTYPE0 ai = pa[i];
-                    if (bn_isnan(ai)) {
-                        f = 1;
-                    }
-                }
-
-#if HAVE_SSE2
-                for (npy_intp i = 0; (i < loop_count) && (f == 0); i++) {
-                    f = sse2_anynan_DTYPE0(&pa[vector_offset + i * LOOP_SIZE]);
-                }
-#else
-                for (npy_intp i = 0; (i < loop_count) && (f == 0); i++) {
-                    for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                        ai = pa[vector_offset + i * LOOP_SIZE + j];
-                        f += bn_isnan(ai);
-                    }
-                }
-#endif
-                for (npy_intp j = 0; (j < residual) && (f == 0); j++) {
-                    const npy_DTYPE0 ai = pa[vector_offset + loop_count * LOOP_SIZE + j];
-                    if (bn_isnan(ai)) {
-                        f = 1;
-                    }
-                }
-                YPP = f;
-                NEXT
-            }
-        } else if (ONE_TRANSPOSE(npy_DTYPE0)) {
-            const npy_intp    LOOP_SIZE = it.nits;
-            const npy_DTYPE0 *pa = PA(DTYPE0);
-
-            for (npy_intp i = 0; i < LOOP_SIZE; i++) {
-                py[i] = 0;
-            }
-
-            const npy_intp loop_count = LENGTH / 16;
-            const npy_intp residual = LENGTH % 16;
-            npy_intp       min_k = 0;
-
-            for (npy_intp i = 0; i < residual; i++) {
-                for (npy_intp k = min_k; k < LOOP_SIZE; k++) {
-                    const npy_DTYPE0 ai = pa[i * LOOP_SIZE + k];
-                    py[k] = bn_isnan(ai) ? 1 : py[k];
-                    if ((k == min_k) && py[k]) {
-                        min_k++;
-                    }
-                }
-            }
-
-            for (npy_intp i = 0; (i < loop_count) && (min_k < LOOP_SIZE - 1); i++) {
-                for (npy_intp j = 0; j < 16; j++) {
-                    for (npy_intp k = min_k; k < LOOP_SIZE; k++) {
-                        const npy_DTYPE0 ai = pa[(i * 16 + j + residual) * LOOP_SIZE + k];
-                        py[k] = bn_isnan(ai) ? 1 : py[k];
-                    }
-                }
-                for (npy_intp k = min_k; k < LOOP_SIZE; k++) {
-                    if (py[k] == 0) {
-                        min_k = k;
-                        break;
-                    } else if (k == LOOP_SIZE - 1) {
-                        min_k = k;
-                    }
-                }
-                if (min_k == LOOP_SIZE - 1) {
+        WHILE {
+            f = 0;
+            FOR {
+                ai = AI(DTYPE0);
+                if (ai != ai) {
+                    f = 1;
                     break;
                 }
             }
-        } else {
-            WHILE {
-                f = 0;
-                const npy_DTYPE0 *pa = PA(DTYPE0);
-                FOR {
-                    const npy_DTYPE0 ai = SI(pa);
-                    if (bn_isnan(ai)) {
-                        f = 1;
-                        break;
-                    }
-                }
-                YPP = f;
-                NEXT
-            }
+            YPP = f;
+            NEXT
         }
     }
     BN_END_ALLOW_THREADS
@@ -1407,189 +976,50 @@ REDUCE_ONE(anynan, DTYPE0) {
 
 REDUCE_MAIN(anynan, 0)
 
+
 /* allnan ---------------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-BN_OPT_3
 REDUCE_ALL(allnan, DTYPE0) {
     int f = 0;
+    npy_DTYPE0 ai;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
-    if (REDUCE_CONTIGUOUS) {
-        const int         VECTOR_ALIGN = 16;
-        const npy_DTYPE0 *pa = PA(DTYPE0);
-        const npy_intp    count = it.nits * it.length;
-        npy_intp          vector_offset = (((npy_intp)pa) % VECTOR_ALIGN);
-        vector_offset = vector_offset > 0 ? VECTOR_ALIGN - vector_offset : 0;
-        vector_offset /= sizeof(npy_DTYPE0);
-        vector_offset = vector_offset <= count ? vector_offset : count;
-
-        const npy_intp LOOP_SIZE = 16 / sizeof(npy_DTYPE0);
-        const npy_intp loop_count = (count - vector_offset) / LOOP_SIZE;
-        const npy_intp residual = (count - vector_offset) % LOOP_SIZE;
-
-        for (npy_intp i = 0; (i < vector_offset) && (f == 0); i++) {
-            const npy_DTYPE0 ai = pa[i];
-            if (!bn_isnan(ai)) {
+    WHILE {
+        FOR {
+            ai = AI(DTYPE0);
+            if (ai == ai) {
                 f = 1;
+                goto done;
             }
         }
-
-#if HAVE_SSE2
-        for (npy_intp i = 0; (i < loop_count) && (f == 0); i++) {
-            f = sse2_allnan_DTYPE0(&pa[vector_offset + i * LOOP_SIZE]);
-        }
-#else
-        npy_bool *f_arr = malloc(LOOP_SIZE * sizeof(npy_bool));
-        for (npy_intp i = 0; (i < loop_count) && (f == 0); i++) {
-            for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                f_arr[j] = !bn_isnan(pa[vector_offset + i * LOOP_SIZE + j]);
-            }
-
-            for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                f += f_arr[j];
-            }
-        }
-        free(f_arr);
-#endif
-
-        for (npy_intp j = 0; (j < residual) && (f == 0); j++) {
-            const npy_DTYPE0 ai = pa[vector_offset + loop_count * LOOP_SIZE + j];
-            if (!bn_isnan(ai)) {
-                f = 1;
-            }
-        }
-    } else {
-        WHILE {
-            FOR {
-                const npy_DTYPE0 ai = AI(DTYPE0);
-                if (!bn_isnan(ai)) {
-                    f = 1;
-                    goto done;
-                }
-            }
-            NEXT
-        }
+        NEXT
     }
-done:
+    done:
     BN_END_ALLOW_THREADS
-    if (f) {
-        Py_RETURN_FALSE;
-    } else {
-        Py_RETURN_TRUE;
-    }
+    if (f) Py_RETURN_FALSE;
+    Py_RETURN_TRUE;
 }
 
-BN_OPT_3
 REDUCE_ONE(allnan, DTYPE0) {
-    npy_bool f;
+    int f;
+    npy_DTYPE0 ai;
     INIT_ONE(BOOL, uint8)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
         FILL_Y(1)
     } else {
-        if (ONE_CONTIGUOUS) {
-            WHILE {
-                f = 0;
-                const int         VECTOR_ALIGN = 16;
-                const npy_DTYPE0 *pa = PA(DTYPE0);
-                const npy_intp    count = LENGTH;
-                npy_intp          vector_offset = (((npy_intp)pa) % VECTOR_ALIGN);
-                vector_offset = vector_offset > 0 ? VECTOR_ALIGN - vector_offset : 0;
-                vector_offset /= sizeof(npy_DTYPE0);
-                vector_offset = vector_offset <= count ? vector_offset : count;
-
-                const npy_intp LOOP_SIZE = 16 / sizeof(npy_DTYPE0);
-                const npy_intp loop_count = (count - vector_offset) / LOOP_SIZE;
-                const npy_intp residual = (count - vector_offset) % LOOP_SIZE;
-
-                for (npy_intp i = 0; (i < vector_offset) && (f == 0); i++) {
-                    const npy_DTYPE0 ai = pa[i];
-                    if (!bn_isnan(ai)) {
-                        f = 1;
-                    }
-                }
-
-#if HAVE_SSE2
-                for (npy_intp i = 0; (i < loop_count) && (f == 0); i++) {
-                    f = sse2_allnan_DTYPE0(&pa[vector_offset + i * LOOP_SIZE]);
-                }
-#else
-                for (npy_intp i = 0; (i < loop_count) && (f == 0); i++) {
-                    for (npy_intp j = 0; j < LOOP_SIZE; j++) {
-                        ai = pa[vector_offset + i * LOOP_SIZE + j];
-                        f += !bn_isnan(ai);
-                    }
-                }
-#endif
-                for (npy_intp j = 0; (j < residual) && (f == 0); j++) {
-                    const npy_DTYPE0 ai = pa[vector_offset + loop_count * LOOP_SIZE + j];
-                    if (!bn_isnan(ai)) {
-                        f = 1;
-                    }
-                }
-                YPP = !f;
-                NEXT
-            }
-        } else if (ONE_TRANSPOSE(npy_DTYPE0)) {
-            const npy_intp    LOOP_SIZE = it.nits;
-            const npy_DTYPE0 *pa = PA(DTYPE0);
-
-            for (npy_intp i = 0; i < LOOP_SIZE; i++) {
-                py[i] = 0;
-            }
-
-            const npy_intp loop_count = LENGTH / 16;
-            const npy_intp residual = LENGTH % 16;
-            npy_intp       min_k = 0;
-
-            for (npy_intp i = 0; i < residual; i++) {
-                for (npy_intp k = min_k; k < LOOP_SIZE; k++) {
-                    const npy_DTYPE0 ai = pa[i * LOOP_SIZE + k];
-                    py[k] = !bn_isnan(ai) ? 1 : py[k];
-                    if ((k == min_k) && py[k]) {
-                        min_k++;
-                    }
-                }
-            }
-
-            for (npy_intp i = 0; (i < loop_count) && (min_k < LOOP_SIZE - 1); i++) {
-                for (npy_intp j = 0; j < 16; j++) {
-                    for (npy_intp k = min_k; k < LOOP_SIZE; k++) {
-                        const npy_DTYPE0 ai = pa[(i * 16 + j + residual) * LOOP_SIZE + k];
-                        py[k] = !bn_isnan(ai) ? 1 : py[k];
-                    }
-                }
-                for (npy_intp k = min_k; k < LOOP_SIZE; k++) {
-                    if (py[k] == 0) {
-                        min_k = k;
-                        break;
-                    } else if (k == LOOP_SIZE - 1) {
-                        min_k = k;
-                    }
-                }
-                if (min_k == LOOP_SIZE - 1) {
+        WHILE {
+            f = 1;
+            FOR {
+                ai = AI(DTYPE0);
+                if (ai == ai) {
+                    f = 0;
                     break;
                 }
             }
-
-            for (npy_intp k = 0; k < LOOP_SIZE; k++) {
-                py[k] = !py[k];
-            }
-        } else {
-            WHILE {
-                f = 0;
-                const npy_DTYPE0 *pa = PA(DTYPE0);
-                FOR {
-                    const npy_DTYPE0 ai = SI(pa);
-                    if (!bn_isnan(ai)) {
-                        f = 1;
-                        break;
-                    }
-                }
-                YPP = !f;
-                NEXT
-            }
+            YPP = f;
+            NEXT
         }
     }
     BN_END_ALLOW_THREADS
@@ -1620,6 +1050,7 @@ REDUCE_ONE(allnan, DTYPE0) {
 
 REDUCE_MAIN(allnan, 0)
 
+
 /* python strings -------------------------------------------------------- */
 
 PyObject *pystr_a = NULL;
@@ -1637,16 +1068,16 @@ intern_strings(void) {
 /* reducer --------------------------------------------------------------- */
 
 static inline int
-parse_args(PyObject * args,
-           PyObject * kwds,
-           int        has_ddof,
+parse_args(PyObject *args,
+           PyObject *kwds,
+           int has_ddof,
            PyObject **a,
            PyObject **axis,
            PyObject **ddof) {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
     if (nkwds) {
-        int       nkwds_found = 0;
+        int nkwds_found = 0;
         PyObject *tmp;
         switch (nargs) {
             case 2:
@@ -1656,10 +1087,8 @@ parse_args(PyObject * args,
                     TYPE_ERR("wrong number of arguments");
                     return 0;
                 }
-            case 1:
-                *a = PyTuple_GET_ITEM(args, 0);
-            case 0:
-                break;
+            case 1: *a = PyTuple_GET_ITEM(args, 0);
+            case 0: break;
             default:
                 TYPE_ERR("wrong number of arguments");
                 return 0;
@@ -1721,21 +1150,23 @@ parse_args(PyObject * args,
     }
 
     return 1;
+
 }
 
 static PyObject *
-reducer(char *    name,
+reducer(char *name,
         PyObject *args,
         PyObject *kwds,
-        fall_t    fall_float64,
-        fall_t    fall_float32,
-        fall_t    fall_int64,
-        fall_t    fall_int32,
-        fone_t    fone_float64,
-        fone_t    fone_float32,
-        fone_t    fone_int64,
-        fone_t    fone_int32,
-        int       has_ddof) {
+        fall_t fall_float64,
+        fall_t fall_float32,
+        fall_t fall_int64,
+        fall_t fall_int32,
+        fone_t fone_float64,
+        fone_t fone_float32,
+        fone_t fone_int64,
+        fone_t fone_int32,
+        int has_ddof) {
+
     int ndim;
     int axis = 0; /* initialize to avoid compiler error */
     int dtype;
@@ -1743,7 +1174,7 @@ reducer(char *    name,
     int reduce_all = 0;
 
     PyArrayObject *a;
-    PyObject *     y;
+    PyObject *y;
 
     PyObject *a_obj = NULL;
     PyObject *axis_obj = Py_None;
@@ -1766,7 +1197,6 @@ reducer(char *    name,
 
     /* check for byte swapped input array */
     if (PyArray_ISBYTESWAPPED(a)) {
-        Py_DECREF(a);
         return slow(name, args, kwds);
     }
 
@@ -1784,8 +1214,7 @@ reducer(char *    name,
             axis += ndim;
             if (axis < 0) {
                 PyErr_Format(PyExc_ValueError,
-                             "axis(=%d) out of bounds",
-                             axis);
+                             "axis(=%d) out of bounds", axis);
                 goto error;
             }
         } else if (axis >= ndim) {
@@ -1836,6 +1265,7 @@ reducer(char *    name,
         } else {
             y = slow(name, args, kwds);
         }
+
     }
 
     Py_DECREF(a);
@@ -1845,11 +1275,10 @@ reducer(char *    name,
 error:
     Py_DECREF(a);
     return NULL;
+
 }
 
 /* docstrings ------------------------------------------------------------- */
-
-// clang-format off
 
 static char reduce_doc[] =
 "Bottleneck functions that reduce the input array along a specified axis.";
@@ -2520,32 +1949,33 @@ reduce_methods[] = {
     {NULL, NULL, 0, NULL}
 };
 
-// clang-format on
 
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef
-    reduce_def = {
-        PyModuleDef_HEAD_INIT,
-        "reduce",
-        reduce_doc,
-        -1,
-        reduce_methods};
+reduce_def = {
+   PyModuleDef_HEAD_INIT,
+   "reduce",
+   reduce_doc,
+   -1,
+   reduce_methods
+};
 #endif
+
 
 PyMODINIT_FUNC
 #if PY_MAJOR_VERSION >= 3
-    #define RETVAL m
+#define RETVAL m
 PyInit_reduce(void)
 #else
-    #define RETVAL
+#define RETVAL
 initreduce(void)
 #endif
 {
-#if PY_MAJOR_VERSION >= 3
-    PyObject *m = PyModule_Create(&reduce_def);
-#else
-    PyObject *m = Py_InitModule3("reduce", reduce_methods, reduce_doc);
-#endif
+    #if PY_MAJOR_VERSION >=3
+        PyObject *m = PyModule_Create(&reduce_def);
+    #else
+        PyObject *m = Py_InitModule3("reduce", reduce_methods, reduce_doc);
+    #endif
     if (m == NULL) return RETVAL;
     import_array();
     if (!intern_strings()) {

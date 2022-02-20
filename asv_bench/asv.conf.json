@@ -55,7 +55,7 @@
 
     // The Pythons you'd like to test against.  If not provided, defaults
     // to the current version of Python used to run `asv`.
-    "pythons": ["3.7"],
+    "pythons": ["2.7", "3.7"],
 
     // The list of conda channel names to be searched for benchmark
     // dependency packages in the specified order
@@ -89,8 +89,8 @@
 	    "numpy": ["1.16"],
 	},
 	"env": {
-	    "CC": ["gcc-9"],
-	    "CXX": ["g++-9"],
+	    "CC": ["gcc"],
+	    "CXX": ["g++"],
 	}
     },
 
@@ -133,28 +133,8 @@
 		"numpy": "1.16",
 	    },
 	    "env": {
-		"CC": "clang-9",
-		"CXX": "clang++-9",
-	    },
-	    "python": "3.7"
-	},
-        {
-	    "req": {
-		"numpy": "1.16",
-	    },
-	    "env": {
-		"CC": "gcc-7",
-		"CXX": "g++-7",
-	    },
-	    "python": "3.7"
-	},
-        {
-	    "req": {
-		"numpy": "1.16",
-	    },
-	    "env": {
-		"CC": "gcc-8",
-		"CXX": "g++-8",
+		"CC": "clang",
+		"CXX": "clang++",
 	    },
 	    "python": "3.7"
 	}
