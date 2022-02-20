@@ -23,12 +23,11 @@ jobs:
       run: | 
         pip install build
         python -m build
+        unzip dist/*.whl
 
     - name: Install wheel
       run: | 
         pip install dist/*.whl
-        pip install pytest
-        pytest
 
     - name: Test with pytest
       run: |
