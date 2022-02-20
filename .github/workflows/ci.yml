@@ -62,7 +62,7 @@ jobs:
 
   release:
     needs: build
-    
+    runs-on: ubuntu-latest
     steps:
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v2
