@@ -20,7 +20,7 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-
+    
     - name: Build wheel
       run: | 
         pip install build
@@ -29,9 +29,14 @@ jobs:
     - name: Install wheel
       run: | 
         pip install dist/*.whl
+    
+    - name: Debug
+      run: | 
+        cd 
         python -c "import bottleneck"
-
-    - name: Test with pytest
-      run: |
-        pip install pytest
-        pytest
+# 
+#     - name: Test with pytest
+#       run: |
+#         pip install pytest
+#         pytest
+# 
