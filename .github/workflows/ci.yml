@@ -83,11 +83,11 @@ jobs:
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v2
 
-      - name: Aggregate wheels
+      - name: Aggregate artifacts
         shell: bash
         run: | 
           mkdir dist
-          find . -type f -iname "*-manylinux*.whl" -exec mv -t dist/ {} +
+          find . -type f -iname "*-manylinux*.whl" -iname "*.tar.gz" -exec mv -t dist/ {} +
     
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
