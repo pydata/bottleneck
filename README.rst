@@ -1,5 +1,3 @@
-.. image:: https://travis-ci.org/pydata/bottleneck.svg?branch=master
-    :target: https://travis-ci.org/pydata/bottleneck
 .. image:: https://github.com/pydata/bottleneck/workflows/Github%20Actions/badge.svg
     :target: https://github.com/pydata/bottleneck/actions
 
