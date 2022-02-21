@@ -6,6 +6,30 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at https://github.com/pydata/bottleneck
 
+Bottleneck 1.3.3
+================
+
+*Release date: 2022-02-21*
+
+Bug Fixes
+~~~~~~~~~
+- Fix Python 3.10 build
+
+Enhancements
+~~~~~~~~~~~~
+- Provide pre-compiled wheels for most x86_64 architectures
+
+Project Updates
+~~~~~~~~~~~~~~~
+- The project has two new maintainers: Ruben Di Battista (``@rdbisme`` on Github) and
+  Steven Troxler (``@stroxler`` on Github)
+
+Contributors
+~~~~~~~~~~~~
+
+.. contributors:: v1.3.2..v1.3.3
+
+
 Bottleneck 1.3.2
 ================
 
