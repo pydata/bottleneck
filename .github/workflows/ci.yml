@@ -110,7 +110,7 @@ jobs:
         shell: bash
         run: |
           mkdir dist
-          find . -type f -iname "*-manylinux*.whl" -or -iname "*-win*.whl" -or -iname "*-macosx*.whl" -or -iname "*.tar.gz" -exec mv -t dist/ {} +
+          find . '(' -type f -iname "*-manylinux*.whl" -or -iname "*-win*.whl" -or -iname "*-macosx*.whl" -or -iname "*.tar.gz" ')' -exec mv -t dist/ {} +
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
