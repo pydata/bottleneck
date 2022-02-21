@@ -99,7 +99,7 @@ jobs:
           path: dist/
 
   release:
-    needs: [build_manylinux, build_win_mac]
+    needs: [build_manylinux, build_win_mac, build_sdist]
     # if: startsWith(github.ref, 'refs/tags')
     runs-on: ubuntu-latest
     steps:
