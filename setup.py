@@ -185,7 +185,10 @@ metadata = dict(
     platforms="OS Independent",
     version=versioneer.get_version(),
     packages=find_packages(),
-    package_data={"bottleneck": ["LICENSE"]},
+    package_data={
+        "bottleneck": ["LICENSE"],
+        "bottleneck.tests": ["data/*/*"],
+    },
     requires=["numpy"],
     install_requires=["numpy"],
     extras_require={"doc": ["numpydoc", "sphinx", "gitpython"]},
