@@ -6,6 +6,15 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at https://github.com/pydata/bottleneck
 
+Bottleneck 1.3.4
+================
+
+*Release date: 2022-02-22*
+
+Bug Fixes
+~~~~~~~~~
+- Fix Memory leak with big-endian data
+
 Bottleneck 1.3.3
 ================
 
