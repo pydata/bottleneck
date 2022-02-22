@@ -39,7 +39,15 @@ jobs:
           pip install pytest
           pytest
 
+  check:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder for CI checks in PRs
+        run: echo "Done"
+
   build_win_mac:
+    needs: test
     runs-on: ${{ matrix.os }}
     if: startsWith(github.ref, 'refs/tags')
     strategy:
@@ -71,6 +79,7 @@ jobs:
           path: dist/
 
   build_manylinux:
+    needs: test
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags')
     steps:
@@ -89,6 +98,7 @@ jobs:
           path: dist/
 
   build_sdist:
+    needs: test
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags')
     steps:
