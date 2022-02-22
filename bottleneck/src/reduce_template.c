@@ -1197,6 +1197,7 @@ reducer(char *name,
 
     /* check for byte swapped input array */
     if (PyArray_ISBYTESWAPPED(a)) {
+        Py_DECREF(a);
         return slow(name, args, kwds);
     }
 
