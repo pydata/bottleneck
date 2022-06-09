@@ -7,6 +7,7 @@ on:
     tags: 
       - "*"
   pull_request:
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -87,7 +88,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: RalfG/python-wheels-manylinux-build@v0.4.2
+      - uses: RalfG/python-wheels-manylinux-build@v0.4.2-manylinux2014_x86_64
         with:
           python-versions: "cp36-cp36m cp37-cp37m cp38-cp38 cp39-cp39 cp310-cp310"
 
