@@ -4,7 +4,6 @@ import warnings
 
 import numpy as np
 
-
 __all__ = [
     "move_sum",
     "move_mean",
@@ -56,7 +55,7 @@ def move_argmin(a, window, min_count=None, axis=-1):
         a = np.array(a, copy=False)
         flip = [slice(None)] * a.ndim
         flip[axis] = slice(None, None, -1)
-        a = a[flip]  # if tie, pick index of rightmost tie
+        a = a[tuple(flip)]  # if tie, pick index of rightmost tie
         try:
             idx = np.nanargmin(a, axis=axis)
         except ValueError:
@@ -82,7 +81,7 @@ def move_argmax(a, window, min_count=None, axis=-1):
         a = np.array(a, copy=False)
         flip = [slice(None)] * a.ndim
         flip[axis] = slice(None, None, -1)
-        a = a[flip]  # if tie, pick index of rightmost tie
+        a = a[tuple(flip)]  # if tie, pick index of rightmost tie
         try:
             idx = np.nanargmax(a, axis=axis)
         except ValueError:
