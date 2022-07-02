@@ -6,6 +6,20 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at https://github.com/pydata/bottleneck
 
+Bottleneck 1.3.5
+================
+
+*Release date: 2022-07-02*
+
+Bug Fixes
+~~~~~~~~~
+- Fix numpy deprecation of non-tuple indices
+
+
+Enhancements
+~~~~~~~~~~~~
+- Switch build to manylinux_2_24_x86_64 using cibuildwheel
+
 Bottleneck 1.3.4
 ================
 
