@@ -32,6 +32,16 @@
                    int           axis, \
                    int           ddof)
 
+/* low-level functions with double argument for move_quantile */
+#define MOVE_QUANTILE(name, dtype) \
+    static PyObject * \
+    name##_##dtype(PyArrayObject *a, \
+                   int           window, \
+                   int           min_count, \
+                   int           axis, \
+                   int           ddof, \
+                   double        quantile)
+
 /* top-level functions such as move_sum */
 #define MOVE_MAIN(name, ddof) \
     static PyObject * \
@@ -538,19 +548,19 @@ MOVE(NAME, DTYPE0) {
 MOVE_MAIN(NAME, 0)
 /* repeat end */
 
-/* move_median ----------------------------------------------------------- */
+/* move_quantile ----------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-MOVE(move_median, DTYPE0) {
+MOVE_QUANTILE(move_quantile, DTYPE0) {
     npy_DTYPE0 ai;
-    mm_handle *mm = mm_new_nan(window, min_count);
+    mm_handle *mm = mm_new_nan(window, min_count, quantile);
     INIT(NPY_DTYPE0)
     if (window == 1) {
         mm_free(mm);
         return PyArray_Copy(a);
     }
     if (mm == NULL) {
-        MEMORY_ERR("Could not allocate memory for move_median");
+        MEMORY_ERR("Could not allocate memory for move_quantile");
     }
     BN_BEGIN_ALLOW_THREADS
     WHILE {
@@ -576,9 +586,9 @@ MOVE(move_median, DTYPE0) {
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-MOVE(move_median, DTYPE0) {
+MOVE_QUANTILE(move_quantile, DTYPE0) {
     npy_DTYPE0 ai;
-    mm_handle *mm = mm_new(window, min_count);
+    mm_handle *mm = mm_new(window, min_count, quantile);
     INIT(NPY_DTYPE1)
     if (window == 1) {
         return PyArray_CastToType(a,
@@ -586,7 +596,7 @@ MOVE(move_median, DTYPE0) {
                                   PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS));
     }
     if (mm == NULL) {
-        MEMORY_ERR("Could not allocate memory for move_median");
+        MEMORY_ERR("Could not allocate memory for move_quantile");
     }
     BN_BEGIN_ALLOW_THREADS
     WHILE {
@@ -612,7 +622,7 @@ MOVE(move_median, DTYPE0) {
 /* dtype end */
 
 
-MOVE_MAIN(move_median, 0)
+MOVE_MAIN(move_quantile, 0)
 
 
 /* move_rank-------------------------------------------------------------- */
@@ -1389,7 +1399,7 @@ array([ nan,  nan,   0.,   1.,   0.,   1.,   2.])
 
 MULTILINE STRING END */
 
-static char move_median_doc[] =
+static char move_quantile_doc[] =
 /* MULTILINE STRING BEGIN
 move_median(a, window, min_count=None, axis=-1)
 
@@ -1498,7 +1508,7 @@ move_methods[] = {
     {"move_max",    (PyCFunction)move_max,    VARKEY, move_max_doc},
     {"move_argmin", (PyCFunction)move_argmin, VARKEY, move_argmin_doc},
     {"move_argmax", (PyCFunction)move_argmax, VARKEY, move_argmax_doc},
-    {"move_median", (PyCFunction)move_median, VARKEY, move_median_doc},
+    {"move_quantile", (PyCFunction)move_quantile, VARKEY, move_quantile_doc},
     {"move_rank",   (PyCFunction)move_rank,   VARKEY, move_rank_doc},
     {NULL, NULL, 0, NULL}
 };

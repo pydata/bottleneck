@@ -4,7 +4,7 @@ from bottleneck.tests.util import get_functions
 
 from . import slow
 from ._pytesttester import PytestTester
-from .move import (move_argmax, move_argmin, move_max, move_mean, move_median,
+from .move import (move_argmax, move_argmin, move_max, move_mean, move_quantile,
                    move_min, move_rank, move_std, move_sum, move_var)
 from .nonreduce import replace
 from .nonreduce_axis import (argpartition, nanrankdata, partition, push,

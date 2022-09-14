@@ -28,7 +28,9 @@ idx1       = idx2
 */
 
 /* helper functions */
-static inline ai_t mm_get_median(mm_handle *mm);
+static inline ai_t mm_get_quantile(mm_handle *mm);
+idx_t mm_k_stat(mm_handle *mm, idx_t idx);
+int mm_stat_exact(mm_handle *mm, idx_t idx);
 static inline void heapify_small_node(mm_handle *mm, idx_t idx);
 static inline void heapify_large_node(mm_handle *mm, idx_t idx);
 static inline idx_t mm_get_smallest_child(mm_node **heap, idx_t window,
@@ -50,15 +52,7 @@ static inline void mm_swap_heap_heads(mm_node **s_heap, idx_t n_s,
                                          mm_node *s_node, mm_node *l_node);
 
 
-/* function to find current number of statistic */
-idx_t mm_k_stat(idx_t n_total_nonnan) {
-    return (idx_t) floor((n_total_nonnan - 1) * QUANTILE) + 1;
-}
 
-/* function to check if  */
-int mm_stat_exact(idx_t n_total_nonnan) {
-    return ((n_total_nonnan - 1) * QUANTILE) == floor((n_total_nonnan - 1) * QUANTILE);
-}
 
 
 /*
@@ -71,7 +65,7 @@ int mm_stat_exact(idx_t n_total_nonnan) {
  * small values (a max heap); the other heap contains the large values (a min
  * heap). The handle, containing information about the heaps, is returned. */
 mm_handle *
-mm_new(const idx_t window, idx_t min_count) {
+mm_new(const idx_t window, idx_t min_count, double quantile) {
     mm_handle *mm = malloc(sizeof(mm_handle));
     mm->nodes = malloc(window * sizeof(mm_node*));
     mm->node_data = malloc(window * sizeof(mm_node));
@@ -83,6 +77,8 @@ mm_new(const idx_t window, idx_t min_count) {
     mm->window = window;
     mm->odd = window % 2;
     mm->min_count = min_count;
+
+    mm->quantile = quantile;
 
     mm_reset(mm);
 
@@ -137,7 +133,7 @@ mm_update_init(mm_handle *mm, ai_t ai) {
 
     mm->newest = node;
 
-    return mm_get_median(mm);
+    return mm_get_quantile(mm);
 }
 
 
@@ -164,7 +160,7 @@ mm_update(mm_handle *mm, ai_t ai) {
     }
 
     /* return the median */
-    return mm_get_median(mm);
+    return mm_get_quantile(mm);
 }
 
 
@@ -179,7 +175,7 @@ mm_update(mm_handle *mm, ai_t ai) {
  * large values (a min heap); the nan array contains the NaNs. The handle,
  * containing information about the heaps and the nan array is returned. */
 mm_handle *
-mm_new_nan(const idx_t window, idx_t min_count) {
+mm_new_nan(const idx_t window, idx_t min_count, double quantile) {
     mm_handle *mm = malloc(sizeof(mm_handle));
     mm->nodes = malloc(2 * window * sizeof(mm_node*));
     mm->node_data = malloc(window * sizeof(mm_node));
@@ -191,6 +187,8 @@ mm_new_nan(const idx_t window, idx_t min_count) {
 
     mm->window = window;
     mm->min_count = min_count;
+
+    mm->quantile = quantile;
 
     mm_reset(mm);
 
@@ -264,7 +262,7 @@ mm_update_init_nan(mm_handle *mm, ai_t ai) {
     }
     mm->newest = node;
 
-    return mm_get_median(mm);
+    return mm_get_quantile(mm);
 }
 
 
@@ -460,7 +458,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
             --mm->n_n;
         }
     }
-    return mm_get_median(mm);
+    return mm_get_quantile(mm);
 }
 
 
@@ -498,9 +496,21 @@ mm_free(mm_handle *mm) {
 -----------------------------------------------------------------------------
 */
 
-/* Return the current median */
+/* function to find the current index of element correspodning to the quantile */
+idx_t mm_k_stat(mm_handle *mm, idx_t idx) {
+    return (idx_t) floor((idx - 1) * mm->quantile) + 1;
+}
+
+/* function to check if the current index of the quantile is integer, and so
+ * the quantile is the element at the top of the heap. Otherwise take midpoint */
+int mm_stat_exact(mm_handle *mm, idx_t idx) {
+    return ((idx - 1) * mm->quantile) == floor((idx - 1) * mm->quantile);
+}
+
+
+/* Return the current quantile */
 static inline ai_t
-mm_get_median(mm_handle *mm) {
+mm_get_quantile(mm_handle *mm) {
     idx_t n_total = mm->n_l + mm->n_s;
     if (n_total < mm->min_count)
         return MM_NAN();
