@@ -32,6 +32,16 @@
                    int           axis, \
                    int           ddof)
 
+/* low-level functions with double argument for move_quantile */
+#define MOVE_QUANTILE(name, dtype) \
+    static PyObject * \
+    name##_##dtype(PyArrayObject *a, \
+                   int           window, \
+                   int           min_count, \
+                   int           axis, \
+                   int           ddof, \
+                   double        quantile)
+
 /* top-level functions such as move_sum */
 #define MOVE_MAIN(name, ddof) \
     static PyObject * \
@@ -541,9 +551,9 @@ MOVE_MAIN(NAME, 0)
 /* move_median ----------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-MOVE(move_median, DTYPE0) {
+MOVE_QUANTILE(move_quantile, DTYPE0) {
     npy_DTYPE0 ai;
-    mm_handle *mm = mm_new_nan(window, min_count);
+    mm_handle *mm = mm_new_nan(window, min_count, quantile);
     INIT(NPY_DTYPE0)
     if (window == 1) {
         mm_free(mm);
@@ -576,9 +586,9 @@ MOVE(move_median, DTYPE0) {
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-MOVE(move_median, DTYPE0) {
+MOVE_QUANTILE(move_quantile, DTYPE0) {
     npy_DTYPE0 ai;
-    mm_handle *mm = mm_new(window, min_count);
+    mm_handle *mm = mm_new(window, min_count, quantile);
     INIT(NPY_DTYPE1)
     if (window == 1) {
         return PyArray_CastToType(a,
@@ -612,7 +622,7 @@ MOVE(move_median, DTYPE0) {
 /* dtype end */
 
 
-MOVE_MAIN(move_median, 0)
+MOVE_MAIN(move_quantile, 0)
 
 
 /* move_rank-------------------------------------------------------------- */

@@ -51,16 +51,17 @@ struct _mm_handle {
     mm_node  *newest;    /* The newest node (most recent insert) */
     idx_t s_first_leaf;  /* All nodes this index or greater are leaf nodes */
     idx_t l_first_leaf;  /* All nodes this index or greater are leaf nodes */
+    double    quantile;   /* Value between 0 <= quantile <= 1, the quantile to compute */
 };
 typedef struct _mm_handle mm_handle;
 
 /* non-nan functions */
-mm_handle *mm_new(const idx_t window, idx_t min_count);
+mm_handle *mm_new(const idx_t window, idx_t min_count, double quantile);
 ai_t mm_update_init(mm_handle *mm, ai_t ai);
 ai_t mm_update(mm_handle *mm, ai_t ai);
 
 /* nan functions */
-mm_handle *mm_new_nan(const idx_t window, idx_t min_count);
+mm_handle *mm_new_nan(const idx_t window, idx_t min_count, double quantile);
 ai_t mm_update_init_nan(mm_handle *mm, ai_t ai);
 ai_t mm_update_nan(mm_handle *mm, ai_t ai);
 
