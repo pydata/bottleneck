@@ -149,7 +149,7 @@ def test_move_median_with_nans():
     aaae = assert_array_almost_equal
     min_count = 1
     size = 10
-    func = bn.move_quantile
+    func = bn.move_median
     func0 = bn.slow.move_median
     rs = np.random.RandomState([1, 2, 3])
     for i in range(100):

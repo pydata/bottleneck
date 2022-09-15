@@ -49,6 +49,21 @@
                      has_quantile); \
     }
 
+#define MOVE_MAIN_SUBSTITUTE(name, func_name, has_ddof, has_quantile) \
+    static PyObject * \
+    name(PyObject *self, PyObject *args, PyObject *kwds) \
+    { \
+        return mover(#name, \
+                     args, \
+                     kwds, \
+                     func_name##_float64, \
+                     func_name##_float32, \
+                     func_name##_int64, \
+                     func_name##_int32, \
+                     has_ddof, \
+                     has_quantile); \
+    }
+
 /* typedefs and prototypes ----------------------------------------------- */
 
 /* used by move_min and move_max */
@@ -616,6 +631,8 @@ MOVE(move_quantile, DTYPE0) {
 
 
 MOVE_MAIN(move_quantile, 0, 1)
+MOVE_MAIN_SUBSTITUTE(move_median, move_quantile, 0, 0)
+
 
 
 /* move_rank-------------------------------------------------------------- */
@@ -1417,9 +1434,49 @@ array([ nan,  nan,   0.,   1.,   0.,   1.,   2.])
 
 MULTILINE STRING END */
 
-static char move_quantile_doc[] =
+static char move_median_doc[] =
 /* MULTILINE STRING BEGIN
 move_median(a, window, min_count=None, axis=-1)
+
+Moving window median along the specified axis, optionally ignoring NaNs.
+
+float64 output is returned for all input data types.
+
+Parameters
+----------
+a : ndarray
+    Input array. If `a` is not an array, a conversion is attempted.
+window : int
+    The number of elements in the moving window.
+min_count: {int, None}, optional
+    If the number of non-NaN values in a window is less than `min_count`,
+    then a value of NaN is assigned to the window. By default `min_count`
+    is None, which is equivalent to setting `min_count` equal to `window`.
+axis : int, optional
+    The axis over which the window is moved. By default the last axis
+    (axis=-1) is used. An axis of None is not allowed.
+
+Returns
+-------
+y : ndarray
+    The moving median of the input array along the specified axis. The
+    output has the same shape as the input.
+
+Examples
+--------
+>>> a = np.array([1.0, 2.0, 3.0, 4.0])
+>>> bn.move_median(a, window=2)
+array([ nan,  1.5,  2.5,  3.5])
+>>> bn.move_median(a, window=2, min_count=1)
+array([ 1. ,  1.5,  2.5,  3.5])
+
+MULTILINE STRING END */
+
+static char move_quantile_doc[] =
+/* MULTILINE STRING BEGIN
+move_quantile(a, window, min_count=None, axis=-1, quantile=0.5)
+
+TODO: right docs, change var name to q, might need to change order as well, so that quantile can be passes as non-keyword
 
 Moving window median along the specified axis, optionally ignoring NaNs.
 
@@ -1526,6 +1583,7 @@ move_methods[] = {
     {"move_max",    (PyCFunction)move_max,    VARKEY, move_max_doc},
     {"move_argmin", (PyCFunction)move_argmin, VARKEY, move_argmin_doc},
     {"move_argmax", (PyCFunction)move_argmax, VARKEY, move_argmax_doc},
+    {"move_median", (PyCFunction)move_median, VARKEY, move_median_doc},
     {"move_quantile", (PyCFunction)move_quantile, VARKEY, move_quantile_doc},
     {"move_rank",   (PyCFunction)move_rank,   VARKEY, move_rank_doc},
     {NULL, NULL, 0, NULL}
