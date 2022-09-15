@@ -30,20 +30,11 @@
                    int           window, \
                    int           min_count, \
                    int           axis, \
-                   int           ddof)
-
-/* low-level functions with double argument for move_quantile */
-#define MOVE_QUANTILE(name, dtype) \
-    static PyObject * \
-    name##_##dtype(PyArrayObject *a, \
-                   int           window, \
-                   int           min_count, \
-                   int           axis, \
                    int           ddof, \
                    double        quantile)
 
 /* top-level functions such as move_sum */
-#define MOVE_MAIN(name, ddof) \
+#define MOVE_MAIN(name, has_ddof, has_quantile) \
     static PyObject * \
     name(PyObject *self, PyObject *args, PyObject *kwds) \
     { \
@@ -54,7 +45,8 @@
                      name##_float32, \
                      name##_int64, \
                      name##_int32, \
-                     ddof); \
+                     has_ddof, \
+                     has_quantile); \
     }
 
 /* typedefs and prototypes ----------------------------------------------- */
@@ -67,7 +59,7 @@ struct _pairs {
 typedef struct _pairs pairs;
 
 /* function pointer for functions passed to mover */
-typedef PyObject *(*move_t)(PyArrayObject *, int, int, int, int);
+typedef PyObject *(*move_t)(PyArrayObject *, int, int, int, int, double);
 
 static PyObject *
 mover(char *name,
@@ -77,7 +69,8 @@ mover(char *name,
       move_t,
       move_t,
       move_t,
-      int has_ddof);
+      int has_ddof,
+      int has_quantile);
 
 /* move_sum -------------------------------------------------------------- */
 
@@ -158,7 +151,7 @@ MOVE(move_sum, DTYPE0) {
 /* dtype end */
 
 
-MOVE_MAIN(move_sum, 0)
+MOVE_MAIN(move_sum, 0, 0)
 
 
 /* move_mean -------------------------------------------------------------- */
@@ -244,7 +237,7 @@ MOVE(move_mean, DTYPE0) {
 /* dtype end */
 
 
-MOVE_MAIN(move_mean, 0)
+MOVE_MAIN(move_mean, 0, 0)
 
 
 /* move_std, move_var ---------------------------------------------------- */
@@ -383,7 +376,7 @@ MOVE(NAME, DTYPE0) {
 }
 /* dtype end */
 
-MOVE_MAIN(NAME, 1)
+MOVE_MAIN(NAME, 1, 0)
 /* repeat end */
 
 
@@ -545,13 +538,13 @@ MOVE(NAME, DTYPE0) {
 }
 /* dtype end */
 
-MOVE_MAIN(NAME, 0)
+MOVE_MAIN(NAME, 0, 0)
 /* repeat end */
 
 /* move_quantile ----------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-MOVE_QUANTILE(move_quantile, DTYPE0) {
+MOVE(move_quantile, DTYPE0) {
     npy_DTYPE0 ai;
     mm_handle *mm = mm_new_nan(window, min_count, quantile);
     INIT(NPY_DTYPE0)
@@ -586,7 +579,7 @@ MOVE_QUANTILE(move_quantile, DTYPE0) {
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-MOVE_QUANTILE(move_quantile, DTYPE0) {
+MOVE(move_quantile, DTYPE0) {
     npy_DTYPE0 ai;
     mm_handle *mm = mm_new(window, min_count, quantile);
     INIT(NPY_DTYPE1)
@@ -622,7 +615,7 @@ MOVE_QUANTILE(move_quantile, DTYPE0) {
 /* dtype end */
 
 
-MOVE_MAIN(move_quantile, 0)
+MOVE_MAIN(move_quantile, 0, 1)
 
 
 /* move_rank-------------------------------------------------------------- */
@@ -748,7 +741,7 @@ MOVE(move_rank, DTYPE0) {
 /* dtype end */
 
 
-MOVE_MAIN(move_rank, 0)
+MOVE_MAIN(move_rank, 0, 0)
 
 
 /* python strings -------------------------------------------------------- */
@@ -758,6 +751,7 @@ PyObject *pystr_window = NULL;
 PyObject *pystr_min_count = NULL;
 PyObject *pystr_axis = NULL;
 PyObject *pystr_ddof = NULL;
+PyObject *pystr_quantile = NULL;
 
 static int
 intern_strings(void) {
@@ -766,8 +760,9 @@ intern_strings(void) {
     pystr_min_count = PyString_InternFromString("min_count");
     pystr_axis = PyString_InternFromString("axis");
     pystr_ddof = PyString_InternFromString("ddof");
+    pystr_quantile = PyString_InternFromString("quantile");
     return pystr_a && pystr_window && pystr_min_count &&
-           pystr_axis && pystr_ddof;
+           pystr_axis && pystr_ddof && pystr_quantile;
 }
 
 /* mover ----------------------------------------------------------------- */
@@ -776,11 +771,13 @@ static inline int
 parse_args(PyObject *args,
            PyObject *kwds,
            int has_ddof,
+           int has_quantile,
            PyObject **a,
            PyObject **window,
            PyObject **min_count,
            PyObject **axis,
-           PyObject **ddof) {
+           PyObject **ddof,
+           PyObject **quantile) {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
     if (nkwds) {
@@ -788,7 +785,7 @@ parse_args(PyObject *args,
         PyObject *tmp;
         switch (nargs) {
             case 4:
-                if (has_ddof) {
+                if (has_ddof | has_quantile) {
                     *axis = PyTuple_GET_ITEM(args, 3);
                 } else {
                     TYPE_ERR("wrong number of arguments");
@@ -837,6 +834,13 @@ parse_args(PyObject *args,
                         nkwds_found++;
                     }
                     break;
+                } else if (has_quantile) {
+                    tmp = PyDict_GetItem(kwds, pystr_quantile);
+                    if (tmp != NULL) {
+                        *quantile = tmp;
+                        nkwds_found++;
+                    }
+                    break;
                 }
                 break;
             default:
@@ -847,7 +851,7 @@ parse_args(PyObject *args,
             TYPE_ERR("wrong number of keyword arguments");
             return 0;
         }
-        if (nargs + nkwds_found > 4 + has_ddof) {
+        if (nargs + nkwds_found > 4 + has_ddof + has_quantile) {
             TYPE_ERR("too many arguments");
             return 0;
         }
@@ -856,6 +860,8 @@ parse_args(PyObject *args,
             case 5:
                 if (has_ddof) {
                     *ddof = PyTuple_GET_ITEM(args, 4);
+                } else if (has_quantile) {
+                    *quantile = PyTuple_GET_ITEM(args, 4);
                 } else {
                     TYPE_ERR("wrong number of arguments");
                     return 0;
@@ -887,10 +893,12 @@ mover(char *name,
       move_t move_float32,
       move_t move_int64,
       move_t move_int32,
-      int has_ddof) {
+      int has_ddof,
+      int has_quantile) {
 
     int mc;
     int window;
+    double quantile;
     int axis;
     int ddof;
     int dtype;
@@ -904,11 +912,12 @@ mover(char *name,
     PyObject *a_obj = NULL;
     PyObject *window_obj = NULL;
     PyObject *min_count_obj = Py_None;
+    PyObject *quantile_obj = Py_None;
     PyObject *axis_obj = NULL;
     PyObject *ddof_obj = NULL;
 
-    if (!parse_args(args, kwds, has_ddof, &a_obj, &window_obj,
-                    &min_count_obj, &axis_obj, &ddof_obj)) {
+    if (!parse_args(args, kwds, has_ddof, has_quantile, &a_obj, &window_obj,
+                    &min_count_obj, &axis_obj, &ddof_obj, &quantile_obj)) {
         return NULL;
     }
 
@@ -954,6 +963,15 @@ mover(char *name,
             VALUE_ERR("`min_count` must be greater than zero.");
             goto error;
         }
+    }
+
+    /* quantile */
+    if (quantile_obj == Py_None){
+        /* take median by default   */
+        quantile = (double) 0.5;
+    } else {
+        /* QUANTILE TODO: add checks here*/
+        quantile = PyFloat_AsDouble(quantile_obj);
     }
 
     ndim = PyArray_NDIM(a);
@@ -1008,13 +1026,13 @@ mover(char *name,
     dtype = PyArray_TYPE(a);
 
     if (dtype == NPY_float64) {
-        y = move_float64(a, window, mc, axis, ddof);
+        y = move_float64(a, window, mc, axis, ddof, quantile);
     } else if (dtype == NPY_float32) {
-        y = move_float32(a, window, mc, axis, ddof);
+        y = move_float32(a, window, mc, axis, ddof, quantile);
     } else if (dtype == NPY_int64) {
-        y = move_int64(a, window, mc, axis, ddof);
+        y = move_int64(a, window, mc, axis, ddof, quantile);
     } else if (dtype == NPY_int32) {
-        y = move_int32(a, window, mc, axis, ddof);
+        y = move_int32(a, window, mc, axis, ddof, quantile);
     } else {
         y = slow(name, args, kwds);
     }

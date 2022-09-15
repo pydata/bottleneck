@@ -10,3 +10,5 @@ MANIFEST
 *~
 \#*#
 bottleneck/src/bn_config.h
+# TODO : change gitignore back
+.vscode/c_cpp_properties.json

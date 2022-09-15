@@ -71,7 +71,7 @@ mm_new(const idx_t window, idx_t min_count, double quantile) {
     mm->node_data = malloc(window * sizeof(mm_node));
 
     mm->s_heap = mm->nodes;
-    idx_t k_stat = mm_k_stat(window);
+    idx_t k_stat = mm_k_stat(mm, window);
     mm->l_heap = &mm->nodes[k_stat];
 
     mm->window = window;
@@ -109,7 +109,7 @@ mm_update_init(mm_handle *mm, ai_t ai) {
     } else {
         /* at least one node already exists in the heaps */
 
-        idx_t k_stat = mm_k_stat(n_s + n_l + 1);
+        idx_t k_stat = mm_k_stat(mm, n_s + n_l + 1);
 
         mm->newest->next = node;
         if (n_s >= k_stat) {
@@ -181,7 +181,7 @@ mm_new_nan(const idx_t window, idx_t min_count, double quantile) {
     mm->node_data = malloc(window * sizeof(mm_node));
 
     mm->s_heap = mm->nodes;
-    idx_t k_stat = mm_k_stat(window);
+    idx_t k_stat = mm_k_stat(mm, window);
     mm->l_heap = &mm->nodes[k_stat];
     mm->n_array = &mm->nodes[window];
 
@@ -238,7 +238,7 @@ mm_update_init_nan(mm_handle *mm, ai_t ai) {
         } else {
             /* at least one node already exists in the heaps */
             /* number of non-nan nodes including the new node is n_s + n_l + 1 */
-            idx_t k_stat = mm_k_stat(n_s + n_l + 1);
+            idx_t k_stat = mm_k_stat(mm, n_s + n_l + 1);
 
             mm->newest->next = node;
             if (n_s >= k_stat) {
@@ -304,7 +304,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
              * to the nan array. Resulting hole in the small heap will be
              * filled with the rightmost leaf of the last row of the small
              * heap. */
-            k_stat = mm_k_stat(n_s + n_l - 1);
+            k_stat = mm_k_stat(mm, n_s + n_l - 1);
 
             /* insert node into nan array */
             node->region = NA;
@@ -375,7 +375,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
              * filled with the rightmost leaf of the last row of the large
              * heap. */
 
-            k_stat = mm_k_stat(n_s + n_l - 1);
+            k_stat = mm_k_stat(mm, n_s + n_l - 1);
             /* insert node into nan array */
             node->region = NA;
             node->idx = n_n;
@@ -431,7 +431,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
             heapify_large_node(mm, idx);
         } else {
             /* ai is not NaN but oldest node is in nan array */
-            k_stat = mm_k_stat(n_s + n_l + 1);
+            k_stat = mm_k_stat(mm, n_s + n_l + 1);
 
             if (n_s == k_stat) {
                 /* insert into large heap */
@@ -514,7 +514,7 @@ mm_get_quantile(mm_handle *mm) {
     idx_t n_total = mm->n_l + mm->n_s;
     if (n_total < mm->min_count)
         return MM_NAN();
-    if (mm_stat_exact(n_total))
+    if (mm_stat_exact(mm, n_total))
         return mm->s_heap[0]->ai;
     return (mm->s_heap[0]->ai + mm->l_heap[0]->ai) / 2.0;
 }
