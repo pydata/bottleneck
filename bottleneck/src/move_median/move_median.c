@@ -18,9 +18,6 @@ node1->idx = idx2;                                 \
 node2->idx = idx1;                                 \
 idx1       = idx2
 
-
-#define QUANTILE 0.25
-
 /*
 -----------------------------------------------------------------------------
   Prototypes
@@ -52,9 +49,6 @@ static inline void mm_swap_heap_heads(mm_node **s_heap, idx_t n_s,
                                          mm_node *s_node, mm_node *l_node);
 
 
-
-
-
 /*
 -----------------------------------------------------------------------------
   Top-level non-nan functions
@@ -70,6 +64,8 @@ mm_new(const idx_t window, idx_t min_count, double quantile) {
     mm->nodes = malloc(window * sizeof(mm_node*));
     mm->node_data = malloc(window * sizeof(mm_node));
 
+    mm->quantile = quantile;
+
     mm->s_heap = mm->nodes;
     idx_t k_stat = mm_k_stat(mm, window);
     mm->l_heap = &mm->nodes[k_stat];
@@ -77,8 +73,6 @@ mm_new(const idx_t window, idx_t min_count, double quantile) {
     mm->window = window;
     mm->odd = window % 2;
     mm->min_count = min_count;
-
-    mm->quantile = quantile;
 
     mm_reset(mm);
 
@@ -180,6 +174,8 @@ mm_new_nan(const idx_t window, idx_t min_count, double quantile) {
     mm->nodes = malloc(2 * window * sizeof(mm_node*));
     mm->node_data = malloc(window * sizeof(mm_node));
 
+    mm->quantile = quantile;
+
     mm->s_heap = mm->nodes;
     idx_t k_stat = mm_k_stat(mm, window);
     mm->l_heap = &mm->nodes[k_stat];
@@ -187,8 +183,6 @@ mm_new_nan(const idx_t window, idx_t min_count, double quantile) {
 
     mm->window = window;
     mm->min_count = min_count;
-
-    mm->quantile = quantile;
 
     mm_reset(mm);
 

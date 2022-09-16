@@ -631,6 +631,8 @@ MOVE(move_quantile, DTYPE0) {
 
 
 MOVE_MAIN(move_quantile, 0, 1)
+/* move_median is move_quantile but doesn't take the quantile argument,
+ * which defaults to 0.5, giving the desired median                        */
 MOVE_MAIN_SUBSTITUTE(move_median, move_quantile, 0, 0)
 
 
@@ -1051,6 +1053,7 @@ mover(char *name,
     } else if (dtype == NPY_int32) {
         y = move_int32(a, window, mc, axis, ddof, quantile);
     } else {
+        /* TODO: add slow for quantile */
         y = slow(name, args, kwds);
     }
 
