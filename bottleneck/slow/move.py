@@ -120,18 +120,20 @@ if version.parse(np.__version__) > version.parse("1.22.0"):
 else:
     METHOD_KEYWORD = "interpolation"
     
-def np_nanquantile_infs(a, **kwargs):
-    if not np.isinf(a).any():
-        kwargs[METHOD_KEYWORD] = 'midpoint'
-        return np.nanquantile(a, **kwargs)
-    else:
-        kwargs[METHOD_KEYWORD] = 'lower'
-        lower_nanquantile = np.nanquantile(a, **kwargs)
-        kwargs[METHOD_KEYWORD] = 'higher'
-        higher_nanquantile = np.nanquantile(a, **kwargs)
-        
-        midpoint_nanquantile = (lower_nanquantile + higher_nanquantile) / 2
-        return midpoint_nanquantile
+def np_nanquantile_infs(a, **kwargs):                
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        if not np.isinf(a).any():
+            kwargs[METHOD_KEYWORD] = 'midpoint'
+            return np.nanquantile(a, **kwargs)
+        else:
+            kwargs[METHOD_KEYWORD] = 'lower'
+            lower_nanquantile = np.nanquantile(a, **kwargs)
+            kwargs[METHOD_KEYWORD] = 'higher'
+            higher_nanquantile = np.nanquantile(a, **kwargs)
+            
+            midpoint_nanquantile = (lower_nanquantile + higher_nanquantile) / 2
+            return midpoint_nanquantile
 
 # magic utility functions ---------------------------------------------------
 
