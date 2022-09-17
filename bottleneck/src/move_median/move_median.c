@@ -26,8 +26,8 @@ idx1       = idx2
 
 /* helper functions */
 static inline ai_t mm_get_quantile(mm_handle *mm);
-idx_t mm_k_stat(mm_handle *mm, idx_t idx);
-int mm_stat_exact(mm_handle *mm, idx_t idx);
+static inline idx_t mm_k_stat(mm_handle *mm, idx_t idx);
+static inline short mm_stat_exact(mm_handle *mm, idx_t idx);
 static inline void heapify_small_node(mm_handle *mm, idx_t idx);
 static inline void heapify_large_node(mm_handle *mm, idx_t idx);
 static inline idx_t mm_get_smallest_child(mm_node **heap, idx_t window,
@@ -61,7 +61,7 @@ static inline void mm_swap_heap_heads(mm_node **s_heap, idx_t n_s,
 mm_handle *
 mm_new(const idx_t window, idx_t min_count, double quantile) {
     mm_handle *mm = malloc(sizeof(mm_handle));
-    mm->nodes = malloc(window * sizeof(mm_node*));
+    mm->nodes = malloc(window  * sizeof(mm_node*));
     mm->node_data = malloc(window * sizeof(mm_node));
 
     mm->quantile = quantile;
@@ -491,13 +491,13 @@ mm_free(mm_handle *mm) {
 */
 
 /* function to find the current index of element correspodning to the quantile */
-idx_t mm_k_stat(mm_handle *mm, idx_t idx) {
+static inline idx_t mm_k_stat(mm_handle *mm, idx_t idx) {
     return (idx_t) floor((idx - 1) * mm->quantile) + 1;
 }
 
 /* function to check if the current index of the quantile is integer, and so
  * the quantile is the element at the top of the heap. Otherwise take midpoint */
-int mm_stat_exact(mm_handle *mm, idx_t idx) {
+static inline short mm_stat_exact(mm_handle *mm, idx_t idx) {
     return ((idx - 1) * mm->quantile) == floor((idx - 1) * mm->quantile);
 }
 

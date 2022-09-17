@@ -5,6 +5,7 @@ from numpy.testing import assert_equal, assert_array_almost_equal, assert_raises
 import bottleneck as bn
 from .util import arrays, array_order
 import pytest
+import itertools
 
 
 @pytest.mark.parametrize("func", bn.get_functions("move"), ids=lambda x: x.__name__)
@@ -142,6 +143,7 @@ def test_arg_parse_raises(func):
 # increase size to 30. With those two changes the unit tests will take a
 # LONG time to run.
 
+REPEAT = 20
 
 def test_move_median_with_nans():
     """test move_median.c with nans"""
@@ -152,18 +154,19 @@ def test_move_median_with_nans():
     func = bn.move_median
     func0 = bn.slow.move_median
     rs = np.random.RandomState([1, 2, 3])
-    for i in range(100):
-        a = np.arange(size, dtype=np.float64)
-        idx = rs.rand(*a.shape) < 0.1
-        a[idx] = np.inf
-        idx = rs.rand(*a.shape) < 0.2
-        a[idx] = np.nan
-        rs.shuffle(a)
-        for window in range(2, size + 1):
-            actual = func(a, window=window, min_count=min_count)
-            desired = func0(a, window=window, min_count=min_count)
-            err_msg = fmt % (func.__name__, window, min_count, a)
-            aaae(actual, desired, decimal=5, err_msg=err_msg)
+    for size in [1, 2, 3, 4, 5, 9, 10, 19, 20, 21]:
+        for i in range(REPEAT):
+            a = np.arange(size, dtype=np.float64)
+            idx = rs.rand(*a.shape) < 0.1
+            a[idx] = np.inf
+            idx = rs.rand(*a.shape) < 0.2
+            a[idx] = np.nan
+            rs.shuffle(a) 
+            for window in range(2, size + 1):
+                actual = func(a, window=window, min_count=min_count)
+                desired = func0(a, window=window, min_count=min_count)
+                err_msg = fmt % (func.__name__, window, min_count, a)
+                aaae(actual, desired, decimal=5, err_msg=err_msg)
 
 
 def test_move_median_without_nans():
@@ -172,17 +175,139 @@ def test_move_median_without_nans():
     aaae = assert_array_almost_equal
     min_count = 1
     size = 10
-    func = bn.move_quantile
+    func = bn.move_median
     func0 = bn.slow.move_median
     rs = np.random.RandomState([1, 2, 3])
-    for i in range(100):
-        a = np.arange(size, dtype=np.int64)
-        rs.shuffle(a)
-        for window in range(2, size + 1):
-            actual = func(a, window=window, min_count=min_count)
-            desired = func0(a, window=window, min_count=min_count)
-            err_msg = fmt % (func.__name__, window, min_count, a)
-            aaae(actual, desired, decimal=5, err_msg=err_msg)
+    for size in [1, 2, 3, 4, 5, 9, 10, 19, 20, 21]:
+        for i in range(REPEAT):
+            a = np.arange(size, dtype=np.int64)
+            rs.shuffle(a)
+            for window in range(2, size + 1):
+                actual = func(a, window=window, min_count=min_count)
+                desired = func0(a, window=window, min_count=min_count)
+                err_msg = fmt % (func.__name__, window, min_count, a)
+                aaae(actual, desired, decimal=5, err_msg=err_msg)
+
+
+# ---------------------------------------------------------------------------
+# move_quantile.c is newly added. So let's do extensive testing
+#
+# Unfortunately, np.nanmedian(a) and np.nanquantile(a, q=0.5) don't always agree
+# when a contains inf or -inf values. See for instance:
+# https://github.com/numpy/numpy/issues/21932
+# https://github.com/numpy/numpy/issues/21091
+# 
+# Let's first test without inf and -inf
+
+def test_move_quantile_with_nans():
+    """test move_quantile.c with nans"""
+    fmt = "\nfunc %s | window %d | min_count %s | q %f\n\nInput array:\n%s\n"
+    aaae = assert_array_almost_equal
+    min_count = 1
+    size = 10
+    func = bn.move_quantile
+    func0 = bn.slow.move_quantile
+    rs = np.random.RandomState([1, 2, 3])
+    for size in [1, 2, 3, 5, 9, 10, 20, 21]:
+        for _ in range(REPEAT):
+            # 0 and 1 are important edge cases
+            for q in [0., 1., rs.rand()]:
+                for inf_frac in [0.2, 0.5, 0.7]:
+                    a = np.arange(size, dtype=np.float64)
+                    idx = rs.rand(*a.shape) < inf_frac
+                    a[idx] = np.nan
+                    rs.shuffle(a) 
+                    for window in range(2, size + 1):
+                        actual = func(a, window=window, min_count=min_count, q=q)
+                        desired = func0(a, window=window, min_count=min_count, q=q)
+                        err_msg = fmt % (func.__name__, window, min_count, q, a)
+                        aaae(actual, desired, decimal=5, err_msg=err_msg)
+
+def test_move_quantile_without_nans():
+    """test move_quantile.c without nans"""
+    fmt = "\nfunc %s | window %d | min_count %s | q %f\n\nInput array:\n%s\n"
+    aaae = assert_array_almost_equal
+    min_count = 1
+    size = 10
+    func = bn.move_quantile
+    func0 = bn.slow.move_quantile_no_infs
+    rs = np.random.RandomState([1, 2, 3])
+    for size in [1, 2, 3, 5, 9, 10, 20, 21]:
+        for _ in range(REPEAT):
+            for q in [0., 1., rs.rand()]:
+                a = np.arange(size, dtype=np.float64)
+                rs.shuffle(a) 
+                for window in range(2, size + 1):
+                    actual = func(a, window=window, min_count=min_count, q=q)
+                    desired = func0(a, window=window, min_count=min_count, q=q)
+                    err_msg = fmt % (func.__name__, window, min_count, q, a)
+                    aaae(actual, desired, decimal=5, err_msg=err_msg)
+
+
+# Now let's deal with inf ans -infs
+# TODO explain what's happening there
+
+def test_numpy_nanquantile_infs():
+    """test move_median.c with nans"""
+    fmt = "\nfunc %s \n\nInput array:\n%s\n"
+    aaae = assert_array_almost_equal
+    min_count = 1
+    func = np.nanmedian
+    func0 = bn.slow.np_nanquantile_infs
+    rs = np.random.RandomState([1, 2, 3])
+    sizes = [1, 2, 3, 4, 5, 9, 10, 20, 31, 50]
+    fracs = [0., 0.2, 0.4, 0.6, 0.8, 1.]
+    for size in sizes:
+        for _ in range(REPEAT):
+            for inf_frac, minus_inf_frac, nan_frac in itertools.product(fracs, fracs, fracs):
+                a = np.arange(size, dtype=np.float64)
+                idx = rs.rand(*a.shape) < inf_frac
+                a[idx] = np.inf
+                idx = rs.rand(*a.shape) < minus_inf_frac
+                a[idx] = -np.inf
+                idx = rs.rand(*a.shape) < nan_frac
+                a[idx] = np.nan
+                rs.shuffle(a)
+                actual = func(a)
+                desired = func0(a, q=0.5)
+                err_msg = fmt % (func.__name__, a)
+                aaae(actual, desired, decimal=5, err_msg=err_msg)
+
+# This should convince us TODO finish
+
+
+def test_move_quantile_with_infs_and_nans():
+    """test move_quantile.c with infs and nans"""
+    fmt = "\nfunc %s | window %d | min_count %s | q %f\n\nInput array:\n%s\n"
+    aaae = assert_array_almost_equal
+    min_count = 1
+    func = bn.move_quantile
+    func0 = bn.slow.move_quantile
+    rs = np.random.RandomState([1, 2, 3])
+    fracs = [0., 0.2, 0.4, 0.6, 0.8, 1.]
+    for size in [1, 2, 3, 5, 9, 10, 20, 21, 47, 48]:
+        print(size)
+        for min_count in [1, 2, 3, size//2, size - 1, size]:
+            if min_count < 1 or min_count > size:
+                continue
+            for _ in range(REPEAT):
+                for q in [0., 1., rs.rand()]:
+                    for inf_frac, minus_inf_frac, nan_frac in itertools.product(fracs, fracs, fracs):
+                        a = np.arange(size, dtype=np.float64)
+                        idx = rs.rand(*a.shape) < inf_frac
+                        a[idx] = np.inf
+                        idx = rs.rand(*a.shape) < minus_inf_frac
+                        a[idx] = -np.inf
+                        idx = rs.rand(*a.shape) < nan_frac
+                        a[idx] = np.nan
+                        rs.shuffle(a)
+                        for window in range(min_count, size + 1):
+                            actual = func(a, window=window, min_count=min_count, q=q)
+                            desired = func0(a, window=window, min_count=min_count, q=q)
+                            err_msg = fmt % (func.__name__, window, min_count, q, a)
+                            aaae(actual, desired, decimal=5, err_msg=err_msg)
+
+
 
 
 # ----------------------------------------------------------------------------

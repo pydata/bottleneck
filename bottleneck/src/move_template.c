@@ -631,7 +631,7 @@ MOVE(move_quantile, DTYPE0) {
 
 
 MOVE_MAIN(move_quantile, 0, 1)
-/* move_median is move_quantile but doesn't take the quantile argument,
+/* move_median uses move_quantile but doesn't take the quantile argument,
  * which defaults to 0.5, giving the desired median                        */
 MOVE_MAIN_SUBSTITUTE(move_median, move_quantile, 0, 0)
 
@@ -779,7 +779,7 @@ intern_strings(void) {
     pystr_min_count = PyString_InternFromString("min_count");
     pystr_axis = PyString_InternFromString("axis");
     pystr_ddof = PyString_InternFromString("ddof");
-    pystr_quantile = PyString_InternFromString("quantile");
+    pystr_quantile = PyString_InternFromString("q");
     return pystr_a && pystr_window && pystr_min_count &&
            pystr_axis && pystr_ddof && pystr_quantile;
 }
@@ -1477,9 +1477,9 @@ MULTILINE STRING END */
 
 static char move_quantile_doc[] =
 /* MULTILINE STRING BEGIN
-move_quantile(a, window, min_count=None, axis=-1, quantile=0.5)
+move_quantile(a, window, min_count=None, axis=-1, q=0.5)
 
-TODO: right docs, change var name to q, might need to change order as well, so that quantile can be passes as non-keyword
+TODO: right docs, change var name to q, might need to change order as well, so that quantile can be passes as non-keyword third argument (hard)
 
 Moving window median along the specified axis, optionally ignoring NaNs.
 
@@ -1578,17 +1578,17 @@ MULTILINE STRING END */
 
 static PyMethodDef
 move_methods[] = {
-    {"move_sum",    (PyCFunction)move_sum,    VARKEY, move_sum_doc},
-    {"move_mean",   (PyCFunction)move_mean,   VARKEY, move_mean_doc},
-    {"move_std",    (PyCFunction)move_std,    VARKEY, move_std_doc},
-    {"move_var",    (PyCFunction)move_var,    VARKEY, move_var_doc},
-    {"move_min",    (PyCFunction)move_min,    VARKEY, move_min_doc},
-    {"move_max",    (PyCFunction)move_max,    VARKEY, move_max_doc},
-    {"move_argmin", (PyCFunction)move_argmin, VARKEY, move_argmin_doc},
-    {"move_argmax", (PyCFunction)move_argmax, VARKEY, move_argmax_doc},
-    {"move_median", (PyCFunction)move_median, VARKEY, move_median_doc},
-    {"move_quantile", (PyCFunction)move_quantile, VARKEY, move_quantile_doc},
-    {"move_rank",   (PyCFunction)move_rank,   VARKEY, move_rank_doc},
+    {"move_sum",        (PyCFunction)move_sum,      VARKEY, move_sum_doc},
+    {"move_mean",       (PyCFunction)move_mean,     VARKEY, move_mean_doc},
+    {"move_std",        (PyCFunction)move_std,      VARKEY, move_std_doc},
+    {"move_var",        (PyCFunction)move_var,      VARKEY, move_var_doc},
+    {"move_min",        (PyCFunction)move_min,      VARKEY, move_min_doc},
+    {"move_max",        (PyCFunction)move_max,      VARKEY, move_max_doc},
+    {"move_argmin",     (PyCFunction)move_argmin,   VARKEY, move_argmin_doc},
+    {"move_argmax",     (PyCFunction)move_argmax,   VARKEY, move_argmax_doc},
+    {"move_median",     (PyCFunction)move_median,   VARKEY, move_median_doc},
+    {"move_quantile",   (PyCFunction)move_quantile, VARKEY, move_quantile_doc},
+    {"move_rank",       (PyCFunction)move_rank,     VARKEY, move_rank_doc},
     {NULL, NULL, 0, NULL}
 };
 

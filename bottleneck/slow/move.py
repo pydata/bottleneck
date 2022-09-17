@@ -14,6 +14,7 @@ __all__ = [
     "move_argmin",
     "move_argmax",
     "move_median",
+    "move_quantile",
     "move_rank",
 ]
 
@@ -104,11 +105,20 @@ def move_median(a, window, min_count=None, axis=-1):
     "Slow move_median for unaccelerated dtype"
     return move_func(np.nanmedian, a, window, min_count, axis=axis)
 
+def move_quantile(a, window, min_count=None, axis=-1, q=0.5):
+    "Slow move_quantile for unaccelerated dtype"
+    return move_func(np_nanquantile_infs, a, window, min_count, axis=axis, q=q)
 
 def move_rank(a, window, min_count=None, axis=-1):
     "Slow move_rank for unaccelerated dtype"
     return move_func(lastrank, a, window, min_count, axis=axis)
 
+# function for handling infs in np.nanquantile
+def np_nanquantile_infs(a, **kwargs):
+    if not np.isinf(a).any():
+        return np.nanquantile(a, method='midpoint', **kwargs)
+    else:
+        return ((np.nanquantile(a, method='lower', **kwargs) + np.nanquantile(a, method='higher', **kwargs)) / 2)
 
 # magic utility functions ---------------------------------------------------
 
