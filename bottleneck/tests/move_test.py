@@ -143,7 +143,7 @@ def test_arg_parse_raises(func):
 # increase size to 30. With those two changes the unit tests will take a
 # LONG time to run.
 
-REPEAT = 20
+REPEAT_MEDIAN = 10
 
 def test_move_median_with_nans():
     """test move_median.c with nans"""
@@ -155,7 +155,7 @@ def test_move_median_with_nans():
     func0 = bn.slow.move_median
     rs = np.random.RandomState([1, 2, 3])
     for size in [1, 2, 3, 4, 5, 9, 10, 19, 20, 21]:
-        for i in range(REPEAT):
+        for i in range(REPEAT_MEDIAN):
             a = np.arange(size, dtype=np.float64)
             idx = rs.rand(*a.shape) < 0.1
             a[idx] = np.inf
@@ -179,7 +179,7 @@ def test_move_median_without_nans():
     func0 = bn.slow.move_median
     rs = np.random.RandomState([1, 2, 3])
     for size in [1, 2, 3, 4, 5, 9, 10, 19, 20, 21]:
-        for i in range(REPEAT):
+        for i in range(REPEAT_MEDIAN):
             a = np.arange(size, dtype=np.int64)
             rs.shuffle(a)
             for window in range(2, size + 1):
@@ -199,6 +199,8 @@ def test_move_median_without_nans():
 # 
 # Let's first test without inf and -inf
 
+REPEAT_QUANTILE = 10
+
 def test_move_quantile_with_nans():
     """test move_quantile.c with nans"""
     fmt = "\nfunc %s | window %d | min_count %s | q %f\n\nInput array:\n%s\n"
@@ -209,7 +211,7 @@ def test_move_quantile_with_nans():
     func0 = bn.slow.move_quantile
     rs = np.random.RandomState([1, 2, 3])
     for size in [1, 2, 3, 5, 9, 10, 20, 21]:
-        for _ in range(REPEAT):
+        for _ in range(REPEAT_QUANTILE):
             # 0 and 1 are important edge cases
             for q in [0., 1., rs.rand()]:
                 for inf_frac in [0.2, 0.5, 0.7]:
@@ -230,10 +232,10 @@ def test_move_quantile_without_nans():
     min_count = 1
     size = 10
     func = bn.move_quantile
-    func0 = bn.slow.move_quantile_no_infs
+    func0 = bn.slow.move_quantile
     rs = np.random.RandomState([1, 2, 3])
     for size in [1, 2, 3, 5, 9, 10, 20, 21]:
-        for _ in range(REPEAT):
+        for _ in range(REPEAT_QUANTILE):
             for q in [0., 1., rs.rand()]:
                 a = np.arange(size, dtype=np.float64)
                 rs.shuffle(a) 
@@ -247,18 +249,23 @@ def test_move_quantile_without_nans():
 # Now let's deal with inf ans -infs
 # TODO explain what's happening there
 
+
+from ..slow.move import np_nanquantile_infs
+
+REPEAT_NUMPY_QUANTILE = 10
+
 def test_numpy_nanquantile_infs():
     """test move_median.c with nans"""
     fmt = "\nfunc %s \n\nInput array:\n%s\n"
     aaae = assert_array_almost_equal
     min_count = 1
     func = np.nanmedian
-    func0 = bn.slow.np_nanquantile_infs
+    func0 = np_nanquantile_infs
     rs = np.random.RandomState([1, 2, 3])
     sizes = [1, 2, 3, 4, 5, 9, 10, 20, 31, 50]
     fracs = [0., 0.2, 0.4, 0.6, 0.8, 1.]
     for size in sizes:
-        for _ in range(REPEAT):
+        for _ in range(REPEAT_NUMPY_QUANTILE):
             for inf_frac, minus_inf_frac, nan_frac in itertools.product(fracs, fracs, fracs):
                 a = np.arange(size, dtype=np.float64)
                 idx = rs.rand(*a.shape) < inf_frac
@@ -275,33 +282,39 @@ def test_numpy_nanquantile_infs():
 
 # This should convince us TODO finish
 
+REPEAT_FULL_QUANTILE = 1
 
 def test_move_quantile_with_infs_and_nans():
     """test move_quantile.c with infs and nans"""
     fmt = "\nfunc %s | window %d | min_count %s | q %f\n\nInput array:\n%s\n"
     aaae = assert_array_almost_equal
-    min_count = 1
     func = bn.move_quantile
     func0 = bn.slow.move_quantile
     rs = np.random.RandomState([1, 2, 3])
     fracs = [0., 0.2, 0.4, 0.6, 0.8, 1.]
-    for size in [1, 2, 3, 5, 9, 10, 20, 21, 47, 48]:
+    fracs = [0., 0.3, 0.65, 1.]
+    inf_minf_nan_fracs = [triple for triple in itertools.product(fracs, fracs, fracs) if np.sum(triple) <= 1]
+    total = 0
+    # for size in [1, 2, 3, 5, 9, 10, 20, 21, 47, 48]:
+    for size in [1, 2, 3, 5, 9, 10, 20, 21]:
         print(size)
         for min_count in [1, 2, 3, size//2, size - 1, size]:
             if min_count < 1 or min_count > size:
                 continue
-            for _ in range(REPEAT):
-                for q in [0., 1., rs.rand()]:
-                    for inf_frac, minus_inf_frac, nan_frac in itertools.product(fracs, fracs, fracs):
-                        a = np.arange(size, dtype=np.float64)
-                        idx = rs.rand(*a.shape) < inf_frac
-                        a[idx] = np.inf
-                        idx = rs.rand(*a.shape) < minus_inf_frac
-                        a[idx] = -np.inf
-                        idx = rs.rand(*a.shape) < nan_frac
-                        a[idx] = np.nan
-                        rs.shuffle(a)
-                        for window in range(min_count, size + 1):
+            for (inf_frac, minus_inf_frac, nan_frac) in inf_minf_nan_fracs:
+                for window in range(min_count, size + 1):
+                    for _ in range(REPEAT_FULL_QUANTILE):
+                        # for q in [0., 1., 0.25, 0.75, rs.rand()]:
+                        for q in [0.25, 0.75, rs.rand()]:
+                            a = np.arange(size, dtype=np.float64)
+                            randoms = rs.rand(*a.shape)
+                            idx_nans = randoms < inf_frac + minus_inf_frac + nan_frac
+                            a[idx_nans] = np.nan
+                            idx_minfs = randoms < inf_frac + minus_inf_frac
+                            a[idx_minfs] = -np.inf
+                            idx_infs = randoms < inf_frac
+                            a[idx_infs] = np.inf
+                            rs.shuffle(a)
                             actual = func(a, window=window, min_count=min_count, q=q)
                             desired = func0(a, window=window, min_count=min_count, q=q)
                             err_msg = fmt % (func.__name__, window, min_count, q, a)

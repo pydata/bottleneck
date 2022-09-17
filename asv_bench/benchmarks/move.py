@@ -38,6 +38,9 @@ class Time1DMove:
         bn.move_argmax(self.arr, window)
 
     def time_move_median(self, dtype, shape, window):
+        bn.move_median(self.arr, window)
+
+    def time_move_quantile(self, dtype, shape, window):
         bn.move_quantile(self.arr, window)
 
     def time_move_rank(self, dtype, shape, window):
@@ -82,6 +85,9 @@ class Time2DMove:
         bn.move_argmax(self.arr, window, axis=axis)
 
     def time_move_median(self, dtype, shape, order, axis, window):
+        bn.move_median(self.arr, window, axis=axis)
+        
+    def time_move_quantile(self, dtype, shape, order, axis, window):
         bn.move_quantile(self.arr, window, axis=axis)
 
     def time_move_rank(self, dtype, shape, order, axis, window):

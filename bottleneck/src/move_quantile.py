@@ -12,3 +12,5 @@ def move_quantile(*args, **kwargs):
     else:
         del kwargs['q']
         return move_min(*args, **kwargs)
+    
+move_quantile.__doc__ = move_quantile_c.__doc__

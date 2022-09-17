@@ -114,11 +114,24 @@ def move_rank(a, window, min_count=None, axis=-1):
     return move_func(lastrank, a, window, min_count, axis=axis)
 
 # function for handling infs in np.nanquantile
+from packaging import version
+if version.parse(np.__version__) > version.parse("1.22.0"):
+    METHOD_KEYWORD = "method"
+else:
+    METHOD_KEYWORD = "interpolation"
+    
 def np_nanquantile_infs(a, **kwargs):
     if not np.isinf(a).any():
-        return np.nanquantile(a, method='midpoint', **kwargs)
+        kwargs[METHOD_KEYWORD] = 'midpoint'
+        return np.nanquantile(a, **kwargs)
     else:
-        return ((np.nanquantile(a, method='lower', **kwargs) + np.nanquantile(a, method='higher', **kwargs)) / 2)
+        kwargs[METHOD_KEYWORD] = 'lower'
+        lower_nanquantile = np.nanquantile(a, **kwargs)
+        kwargs[METHOD_KEYWORD] = 'higher'
+        higher_nanquantile = np.nanquantile(a, **kwargs)
+        
+        midpoint_nanquantile = (lower_nanquantile + higher_nanquantile) / 2
+        return midpoint_nanquantile
 
 # magic utility functions ---------------------------------------------------
 
