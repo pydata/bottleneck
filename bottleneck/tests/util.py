@@ -49,7 +49,6 @@ def func_dict():
         bn.move_argmax,
         bn.move_median,
         bn.move_quantile,
-        bn.move_min_via_quantile,
         bn.move_rank,
     ]
     d["nonreduce"] = [bn.replace]
