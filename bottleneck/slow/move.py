@@ -114,6 +114,7 @@ def move_rank(a, window, min_count=None, axis=-1):
     return move_func(lastrank, a, window, min_count, axis=axis)
 
 # function for handling infs in np.nanquantile
+# keyword argument for interpolation method in np.nanquantile changed in 1.22.0
 from packaging import version
 if version.parse(np.__version__) > version.parse("1.22.0"):
     METHOD_KEYWORD = "method"

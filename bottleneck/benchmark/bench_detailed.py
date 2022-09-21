@@ -79,6 +79,7 @@ def benchsuite(function, fraction_nan):
         # avoid all-nan slice warnings from np.median and np.nanmedian
         if "%s" == "median": from bottleneck.slow import median as sl_fn
         if "%s" == "nanmedian": from bottleneck.slow import nanmedian as sl_fn
+        if "%s" == "move_quantile": from bottleneck.slow import move_median as sl_fn
 
         from numpy import array, nan
         from numpy.random import RandomState
@@ -116,7 +117,7 @@ def benchsuite(function, fraction_nan):
         run = {}
         run["name"] = [f + signature, array]
         run["statements"] = ["bn_fn" + signature, "sl_fn" + signature]
-        run["setup"] = setup % (f, f, f, f, f, array, fraction_nan, fraction_nan)
+        run["setup"] = setup % (f, f, f, f, f, f, array, fraction_nan, fraction_nan)
         run["repeat"] = repeat
         suite.append(run)
 
