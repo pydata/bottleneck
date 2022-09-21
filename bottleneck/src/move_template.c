@@ -49,21 +49,6 @@
                      has_quantile); \
     }
 
-#define MOVE_MAIN_SUBSTITUTE(name, func_name, has_ddof, has_quantile) \
-    static PyObject * \
-    name(PyObject *self, PyObject *args, PyObject *kwds) \
-    { \
-        return mover(#name, \
-                     args, \
-                     kwds, \
-                     func_name##_float64, \
-                     func_name##_float32, \
-                     func_name##_int64, \
-                     func_name##_int32, \
-                     has_ddof, \
-                     has_quantile); \
-    }
-
 /* typedefs and prototypes ----------------------------------------------- */
 
 /* used by move_min and move_max */
@@ -556,19 +541,19 @@ MOVE(NAME, DTYPE0) {
 MOVE_MAIN(NAME, 0, 0)
 /* repeat end */
 
-/* move_quantile ----------------------------------------------------------- */
+/* move_median ----------------------------------------------------------- */
 
 /* dtype = [['float64'], ['float32']] */
-MOVE(move_quantile, DTYPE0) {
+MOVE(move_median, DTYPE0) {
     npy_DTYPE0 ai;
-    mm_handle *mm = mm_new_nan(window, min_count, quantile);
+    mm_handle *mm = mm_new_nan(window, min_count);
     INIT(NPY_DTYPE0)
     if (window == 1) {
         mm_free(mm);
         return PyArray_Copy(a);
     }
     if (mm == NULL) {
-        MEMORY_ERR("Could not allocate memory for move_quantile");
+        MEMORY_ERR("Could not allocate memory for move_median");
     }
     BN_BEGIN_ALLOW_THREADS
     WHILE {
@@ -594,9 +579,9 @@ MOVE(move_quantile, DTYPE0) {
 /* dtype end */
 
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
-MOVE(move_quantile, DTYPE0) {
+MOVE(move_median, DTYPE0) {
     npy_DTYPE0 ai;
-    mm_handle *mm = mm_new(window, min_count, quantile);
+    mm_handle *mm = mm_new(window, min_count);
     INIT(NPY_DTYPE1)
     if (window == 1) {
         return PyArray_CastToType(a,
@@ -604,7 +589,7 @@ MOVE(move_quantile, DTYPE0) {
                                   PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS));
     }
     if (mm == NULL) {
-        MEMORY_ERR("Could not allocate memory for move_quantile");
+        MEMORY_ERR("Could not allocate memory for move_median");
     }
     BN_BEGIN_ALLOW_THREADS
     WHILE {
@@ -630,11 +615,83 @@ MOVE(move_quantile, DTYPE0) {
 /* dtype end */
 
 
-MOVE_MAIN(move_quantile, 0, 1)
-/* move_median uses move_quantile but doesn't take the quantile argument,
- * which defaults to 0.5, giving the desired median                        */
-MOVE_MAIN_SUBSTITUTE(move_median, move_quantile, 0, 0)
+MOVE_MAIN(move_median, 0, 0)
 
+/* move_quantile ----------------------------------------------------------- */
+
+/* dtype = [['float64'], ['float32']] */
+MOVE(move_quantile, DTYPE0) {
+    npy_DTYPE0 ai;
+    mq_handle *mq = mq_new_nan(window, min_count, quantile);
+    INIT(NPY_DTYPE0)
+    if (window == 1) {
+        mq_free(mq);
+        return PyArray_Copy(a);
+    }
+    if (mq == NULL) {
+        MEMORY_ERR("Could not allocate memory for move_quantile");
+    }
+    BN_BEGIN_ALLOW_THREADS
+    WHILE {
+        WHILE0 {
+            ai = AI(DTYPE0);
+            YI(DTYPE0) = mq_update_init_nan(mq, ai);
+        }
+        WHILE1 {
+            ai = AI(DTYPE0);
+            YI(DTYPE0) = mq_update_init_nan(mq, ai);
+        }
+        WHILE2 {
+            ai = AI(DTYPE0);
+            YI(DTYPE0) = mq_update_nan(mq, ai);
+        }
+        mq_reset(mq);
+        NEXT2
+    }
+    mq_free(mq);
+    BN_END_ALLOW_THREADS
+    return y;
+}
+/* dtype end */
+
+/* dtype = [['int64', 'float64'], ['int32', 'float64']] */
+MOVE(move_quantile, DTYPE0) {
+    npy_DTYPE0 ai;
+    mq_handle *mq = mq_new(window, min_count, quantile);
+    INIT(NPY_DTYPE1)
+    if (window == 1) {
+        return PyArray_CastToType(a,
+                                  PyArray_DescrFromType(NPY_DTYPE1),
+                                  PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS));
+    }
+    if (mq == NULL) {
+        MEMORY_ERR("Could not allocate memory for move_quantile");
+    }
+    BN_BEGIN_ALLOW_THREADS
+    WHILE {
+        WHILE0 {
+            ai = AI(DTYPE0);
+            YI(DTYPE1) = mq_update_init(mq, ai);
+        }
+        WHILE1 {
+            ai = AI(DTYPE0);
+            YI(DTYPE1) = mq_update_init(mq, ai);
+        }
+        WHILE2 {
+            ai = AI(DTYPE0);
+            YI(DTYPE1) = mq_update(mq, ai);
+        }
+        mq_reset(mq);
+        NEXT2
+    }
+    mq_free(mq);
+    BN_END_ALLOW_THREADS
+    return y;
+}
+/* dtype end */
+
+
+MOVE_MAIN(move_quantile, 0, 1)
 
 
 /* move_rank-------------------------------------------------------------- */

@@ -51,23 +51,53 @@ struct _mm_handle {
     mm_node  *newest;    /* The newest node (most recent insert) */
     idx_t s_first_leaf;  /* All nodes this index or greater are leaf nodes */
     idx_t l_first_leaf;  /* All nodes this index or greater are leaf nodes */
-    double    quantile;   /* Value between 0 <= quantile <= 1, the quantile to compute */
 };
 typedef struct _mm_handle mm_handle;
 
+struct _mq_handle {
+    idx_t     window;    /* window size */
+    int       odd;       /* is window even (0) or odd (1) */
+    idx_t     min_count; /* Same meaning as in bn.move_median */
+    idx_t     n_s;       /* Number of nodes in the small heap */
+    idx_t     n_l;       /* Number of nodes in the large heap */
+    idx_t     n_n;       /* Number of nodes in the nan array */
+    mm_node **s_heap;    /* The max heap of small ai */
+    mm_node **l_heap;    /* The min heap of large ai */
+    mm_node **n_array;   /* The nan array */
+    mm_node **nodes;     /* s_heap and l_heap point into this array */
+    mm_node  *node_data; /* Pointer to memory location where nodes live */
+    mm_node  *oldest;    /* The oldest node */
+    mm_node  *newest;    /* The newest node (most recent insert) */
+    idx_t s_first_leaf;  /* All nodes this index or greater are leaf nodes */
+    idx_t l_first_leaf;  /* All nodes this index or greater are leaf nodes */
+    double    quantile;   /* Value between 0 <= quantile <= 1, the quantile to compute */
+};
+typedef struct _mq_handle mq_handle;
+
 /* non-nan functions */
-mm_handle *mm_new(const idx_t window, idx_t min_count, double quantile);
+mm_handle *mm_new(const idx_t window, idx_t min_count);
 ai_t mm_update_init(mm_handle *mm, ai_t ai);
 ai_t mm_update(mm_handle *mm, ai_t ai);
 
+mq_handle *mq_new(const idx_t window, idx_t min_count, double quantile);
+ai_t mq_update_init(mq_handle *mq, ai_t ai);
+ai_t mq_update(mq_handle *mq, ai_t ai);
+
 /* nan functions */
-mm_handle *mm_new_nan(const idx_t window, idx_t min_count, double quantile);
+mm_handle *mm_new_nan(const idx_t window, idx_t min_count);
 ai_t mm_update_init_nan(mm_handle *mm, ai_t ai);
 ai_t mm_update_nan(mm_handle *mm, ai_t ai);
+
+mq_handle *mq_new_nan(const idx_t window, idx_t min_count, double quantile);
+ai_t mq_update_init_nan(mq_handle *mq, ai_t ai);
+ai_t mq_update_nan(mq_handle *mq, ai_t ai);
 
 /* functions common to non-nan and nan cases */
 void mm_reset(mm_handle *mm);
 void mm_free(mm_handle *mm);
+
+void mq_reset(mq_handle *mq);
+void mq_free(mq_handle *mq);
 
 /* Copied from Cython ---------------------------------------------------- */
 
