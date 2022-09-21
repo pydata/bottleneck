@@ -14,3 +14,9 @@ def move_quantile(*args, **kwargs):
         return move_min(*args, **kwargs)
     
 move_quantile.__doc__ = move_quantile_c.__doc__
+
+
+
+def move_min_via_quantile(*args, **kwargs):
+    kwargs['q'] = 0.
+    return move_quantile_c(*args, **kwargs)

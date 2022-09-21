@@ -9,6 +9,8 @@ from .move import (move_argmax, move_argmin, move_max, move_mean, move_median,
 
 from .move import move_quantile as move_quantile_c 
 from .src.move_quantile import move_quantile as move_quantile
+from .src.move_quantile import move_min_via_quantile
+
 
 from .nonreduce import replace
 from .nonreduce_axis import (argpartition, nanrankdata, partition, push,
