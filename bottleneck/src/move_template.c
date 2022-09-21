@@ -39,15 +39,28 @@
     name(PyObject *self, PyObject *args, PyObject *kwds) \
     { \
         return mover(#name, \
-                     args, \
-                     kwds, \
-                     name##_float64, \
-                     name##_float32, \
-                     name##_int64, \
-                     name##_int32, \
-                     has_ddof, \
-                     has_quantile); \
+                args, \
+                kwds, \
+                name##_float64, \
+                name##_float32, \
+                name##_int64, \
+                name##_int32, \
+                has_ddof, \
+                has_quantile); \
     }
+
+/* Mover function     */
+#define MOVER(name, args, kwds, has_ddof, has_quantile) \
+    return mover(#name, \
+                args, \
+                kwds, \
+                name##_float64, \
+                name##_float32, \
+                name##_int64, \
+                name##_int32, \
+                has_ddof, \
+                has_quantile);
+
 
 /* typedefs and prototypes ----------------------------------------------- */
 
@@ -997,6 +1010,40 @@ mover(char *name,
         return NULL;
     }
 
+    /* quantile 
+     * Checking quantile first because if q in {0, 0.5, 1} then
+     * another `mover` function is called. Check the quantile
+     * first to avoid converting (if needed) `a` to an array twice  
+    */
+
+    quantile = (double) 0.5;
+    
+    if ((has_quantile) && (!strcmp(name, "move_quantile"))) {
+        if (quantile_obj != Py_None) {
+            quantile = PyFloat_AsDouble(quantile_obj);
+            if (error_converting(quantile)) {
+                TYPE_ERR("`q` must be a float");
+                return NULL;
+            }
+            if ((quantile < 0.0) || (quantile > 1.0)) {
+                /* Float/double specifiers %f and %lf don't work here for some reason*/
+                PyErr_Format(PyExc_ValueError,
+                            "`q` must be between 0. and 1.");
+                return NULL;
+            }
+
+            if (quantile == 1.0) {
+                MOVER(move_max, args, kwds, has_ddof, 1)
+            } else if (quantile == 0.0) {
+                MOVER(move_min, args, kwds, has_ddof, 1)
+            }
+        }
+
+        if (quantile == 0.5) {
+            MOVER(move_median, args, kwds, has_ddof, 1)
+        }
+    }
+
     /* convert to array if necessary */
     if (PyArray_Check(a_obj)) {
         a = (PyArrayObject *)a_obj;
@@ -1039,15 +1086,6 @@ mover(char *name,
             VALUE_ERR("`min_count` must be greater than zero.");
             goto error;
         }
-    }
-
-    /* quantile */
-    if (quantile_obj == Py_None){
-        /* take median by default   */
-        quantile = (double) 0.5;
-    } else {
-        /* QUANTILE TODO: add checks here*/
-        quantile = PyFloat_AsDouble(quantile_obj);
     }
 
     ndim = PyArray_NDIM(a);
@@ -1110,7 +1148,6 @@ mover(char *name,
     } else if (dtype == NPY_int32) {
         y = move_int32(a, window, mc, axis, ddof, quantile);
     } else {
-        /* TODO: add slow for quantile */
         y = slow(name, args, kwds);
     }
 

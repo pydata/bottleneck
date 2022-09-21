@@ -6,6 +6,7 @@ import bottleneck as bn
 from .util import arrays, array_order
 import pytest
 import itertools
+import warnings
 
 
 @pytest.mark.parametrize("func", bn.get_functions("move"), ids=lambda x: x.__name__)
@@ -210,8 +211,8 @@ def test_move_quantile_with_nans():
     func = bn.move_quantile
     func0 = bn.slow.move_quantile
     rs = np.random.RandomState([1, 2, 3])
-    for size in [1, 2, 3, 5, 9]:
-    # for size in [1, 2, 3, 5, 9, 10, 20, 21]:
+    # for size in [1, 2, 3, 5, 9]:
+    for size in [1, 2, 3, 5, 9, 10, 20, 21]:
         for _ in range(REPEAT_QUANTILE):
             # 0 and 1 are important edge cases
             for q in [0., 1., rs.rand()]:
@@ -235,8 +236,8 @@ def test_move_quantile_without_nans():
     func = bn.move_quantile
     func0 = bn.slow.move_quantile
     rs = np.random.RandomState([1, 2, 3])
-    for size in [1, 2, 3, 5, 9]:
-    # for size in [1, 2, 3, 5, 9, 10, 20, 21]:
+    # for size in [1, 2, 3, 5, 9]:
+    for size in [1, 2, 3, 5, 9, 10, 20, 21]:
         for _ in range(REPEAT_QUANTILE):
             for q in [0., 1., rs.rand()]:
                 a = np.arange(size, dtype=np.float64)
@@ -266,21 +267,23 @@ def test_numpy_nanquantile_infs():
     rs = np.random.RandomState([1, 2, 3])
     sizes = [1, 2, 3, 4, 5, 9, 10, 20, 31, 50]
     fracs = [0., 0.2, 0.4, 0.6, 0.8, 1.]
-    for size in sizes:
-        for _ in range(REPEAT_NUMPY_QUANTILE):
-            for inf_frac, minus_inf_frac, nan_frac in itertools.product(fracs, fracs, fracs):
-                a = np.arange(size, dtype=np.float64)
-                idx = rs.rand(*a.shape) < inf_frac
-                a[idx] = np.inf
-                idx = rs.rand(*a.shape) < minus_inf_frac
-                a[idx] = -np.inf
-                idx = rs.rand(*a.shape) < nan_frac
-                a[idx] = np.nan
-                rs.shuffle(a)
-                actual = func(a)
-                desired = func0(a, q=0.5)
-                err_msg = fmt % (func.__name__, a)
-                aaae(actual, desired, decimal=5, err_msg=err_msg)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        for size in sizes:
+            for _ in range(REPEAT_NUMPY_QUANTILE):
+                for inf_frac, minus_inf_frac, nan_frac in itertools.product(fracs, fracs, fracs):
+                    a = np.arange(size, dtype=np.float64)
+                    idx = rs.rand(*a.shape) < inf_frac
+                    a[idx] = np.inf
+                    idx = rs.rand(*a.shape) < minus_inf_frac
+                    a[idx] = -np.inf
+                    idx = rs.rand(*a.shape) < nan_frac
+                    a[idx] = np.nan
+                    rs.shuffle(a)
+                    actual = func(a)
+                    desired = func0(a, q=0.5)
+                    err_msg = fmt % (func.__name__, a)
+                    aaae(actual, desired, decimal=5, err_msg=err_msg)
 
 # This should convince us TODO finish
 
@@ -298,8 +301,7 @@ def test_move_quantile_with_infs_and_nans():
     inf_minf_nan_fracs = [triple for triple in itertools.product(fracs, fracs, fracs) if np.sum(triple) <= 1]
     total = 0
     # for size in [1, 2, 3, 5, 9, 10, 20, 21, 47, 48]:
-    # for size in [1, 2, 3, 5, 9, 10, 20, 21]:
-    for size in [1, 2, 3, 5, 9]:
+    for size in [1, 2, 3, 5, 9, 10, 20, 21]:
         print(size)
         for min_count in [1, 2, 3, size//2, size - 1, size]:
             if min_count < 1 or min_count > size:
