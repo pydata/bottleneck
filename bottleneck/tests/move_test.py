@@ -210,7 +210,8 @@ def test_move_quantile_with_nans():
     func = bn.move_quantile
     func0 = bn.slow.move_quantile
     rs = np.random.RandomState([1, 2, 3])
-    for size in [1, 2, 3, 5, 9, 10, 20, 21]:
+    for size in [1, 2, 3, 5, 9]:
+    # for size in [1, 2, 3, 5, 9, 10, 20, 21]:
         for _ in range(REPEAT_QUANTILE):
             # 0 and 1 are important edge cases
             for q in [0., 1., rs.rand()]:
@@ -234,7 +235,8 @@ def test_move_quantile_without_nans():
     func = bn.move_quantile
     func0 = bn.slow.move_quantile
     rs = np.random.RandomState([1, 2, 3])
-    for size in [1, 2, 3, 5, 9, 10, 20, 21]:
+    for size in [1, 2, 3, 5, 9]:
+    # for size in [1, 2, 3, 5, 9, 10, 20, 21]:
         for _ in range(REPEAT_QUANTILE):
             for q in [0., 1., rs.rand()]:
                 a = np.arange(size, dtype=np.float64)
@@ -296,7 +298,8 @@ def test_move_quantile_with_infs_and_nans():
     inf_minf_nan_fracs = [triple for triple in itertools.product(fracs, fracs, fracs) if np.sum(triple) <= 1]
     total = 0
     # for size in [1, 2, 3, 5, 9, 10, 20, 21, 47, 48]:
-    for size in [1, 2, 3, 5, 9, 10, 20, 21]:
+    # for size in [1, 2, 3, 5, 9, 10, 20, 21]:
+    for size in [1, 2, 3, 5, 9]:
         print(size)
         for min_count in [1, 2, 3, size//2, size - 1, size]:
             if min_count < 1 or min_count > size:

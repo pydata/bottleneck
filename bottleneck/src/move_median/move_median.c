@@ -131,7 +131,7 @@ mm_update_init(mm_handle *mm, ai_t ai) {
             node->idx = n_l;
             ++mm->n_l;
             mm->l_first_leaf = FIRST_LEAF(mm->n_l);
-            heapify_large_node(mm, n_l);
+            heapify_large_node_mm(mm, n_l);
         } else {
             /* add new node to small heap */
             mm->s_heap[n_s] = node;
@@ -179,7 +179,7 @@ mq_update_init(mq_handle *mq, ai_t ai) {
             node->idx = n_l;
             ++mq->n_l;
             mq->l_first_leaf = FIRST_LEAF(mq->n_l);
-            heapify_large_node(mq, n_l);
+            heapify_large_node_mq(mq, n_l);
         } else {
             /* add new node to small heap */
             mq->s_heap[n_s] = node;
@@ -216,7 +216,7 @@ mm_update(mm_handle *mm, ai_t ai) {
     if (node->region == SH) {
         heapify_small_node_mm(mm, node->idx);
     } else {
-        heapify_large_node(mm, node->idx);
+        heapify_large_node_mm(mm, node->idx);
     }
 
     /* return the median */
@@ -242,7 +242,7 @@ mq_update(mq_handle *mq, ai_t ai) {
     if (node->region == SH) {
         heapify_small_node_mq(mq, node->idx);
     } else {
-        heapify_large_node(mq, node->idx);
+        heapify_large_node_mq(mq, node->idx);
     }
 
     /* return the median */
@@ -350,7 +350,7 @@ mm_update_init_nan(mm_handle *mm, ai_t ai) {
                 node->idx = n_l;
                 ++mm->n_l;
                 mm->l_first_leaf = FIRST_LEAF(mm->n_l);
-                heapify_large_node(mm, n_l);
+                heapify_large_node_mm(mm, n_l);
             } else {
                 /* add new node to small heap */
                 mm->s_heap[n_s] = node;
@@ -416,7 +416,7 @@ mq_update_init_nan(mq_handle *mq, ai_t ai) {
                 node->idx = n_l;
                 ++mq->n_l;
                 mq->l_first_leaf = FIRST_LEAF(mq->n_l);
-                heapify_large_node(mq, n_l);
+                heapify_large_node_mq(mq, n_l);
             } else {
                 /* add new node to small heap */
                 mq->s_heap[n_s] = node;
@@ -499,7 +499,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
                     } else {
                         mm->l_first_leaf = FIRST_LEAF(mm->n_l);
                     }
-                    heapify_large_node(mm, 0);
+                    heapify_large_node_mm(mm, 0);
                 }
             } else {
                 if (idx != n_s - 1) {
@@ -527,7 +527,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
                     } else {
                         mm->l_first_leaf = FIRST_LEAF(mm->n_l);
                     }
-                    heapify_large_node(mm, 0);
+                    heapify_large_node_mm(mm, 0);
 
                 } else {
                     mm->s_first_leaf = FIRST_LEAF(mm->n_s);
@@ -550,7 +550,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
             if (idx != n_l - 1) {
                 l_heap[idx] = l_heap[n_l - 1];
                 l_heap[idx]->idx = idx;
-                heapify_large_node(mm, idx);
+                heapify_large_node_mm(mm, idx);
             }
             --mm->n_l;
             if (mm->n_l == 0) {
@@ -566,7 +566,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
                 l_heap[mm->n_l] = node2;
                 ++mm->n_l;
                 mm->l_first_leaf = FIRST_LEAF(mm->n_l);
-                heapify_large_node(mm, node2->idx);
+                heapify_large_node_mm(mm, node2->idx);
 
                 /* plug hole in small heap */
                 if (n_s != 1) {
@@ -583,7 +583,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
                 heapify_small_node_mm(mm, 0);
             }
             /* reorder large heap if needed */
-            heapify_large_node(mm, idx);
+            heapify_large_node_mm(mm, idx);
         } else if (node->region == NA) {
             /* insert node into nan heap */
             n_array[idx] = node;
@@ -592,7 +592,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
         if (node->region == SH) {
             heapify_small_node_mm(mm, idx);
         } else if (node->region == LH) {
-            heapify_large_node(mm, idx);
+            heapify_large_node_mm(mm, idx);
         } else {
             /* ai is not NaN but oldest node is in nan array */
             if (n_s > n_l) {
@@ -602,7 +602,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
                 l_heap[n_l] = node;
                 ++mm->n_l;
                 mm->l_first_leaf = FIRST_LEAF(mm->n_l);
-                heapify_large_node(mm, n_l);
+                heapify_large_node_mm(mm, n_l);
             } else {
                 /* insert into small heap */
                 node->region = SH;
@@ -689,7 +689,7 @@ mq_update_nan(mq_handle *mq, ai_t ai) {
                     } else {
                         mq->l_first_leaf = FIRST_LEAF(mq->n_l);
                     }
-                    heapify_large_node(mq, 0);
+                    heapify_large_node_mq(mq, 0);
                 }
             } else {
                 if (idx != n_s - 1) {
@@ -717,7 +717,7 @@ mq_update_nan(mq_handle *mq, ai_t ai) {
                     } else {
                         mq->l_first_leaf = FIRST_LEAF(mq->n_l);
                     }
-                    heapify_large_node(mq, 0);
+                    heapify_large_node_mq(mq, 0);
 
                 } else {
                     mq->s_first_leaf = FIRST_LEAF(mq->n_s);
@@ -741,7 +741,7 @@ mq_update_nan(mq_handle *mq, ai_t ai) {
             if (idx != n_l - 1) {
                 l_heap[idx] = l_heap[n_l - 1];
                 l_heap[idx]->idx = idx;
-                heapify_large_node(mq, idx);
+                heapify_large_node_mq(mq, idx);
             }
             --mq->n_l;
             if (mq->n_l == 0) {
@@ -757,7 +757,7 @@ mq_update_nan(mq_handle *mq, ai_t ai) {
                 l_heap[mq->n_l] = node2;
                 ++mq->n_l;
                 mq->l_first_leaf = FIRST_LEAF(mq->n_l);
-                heapify_large_node(mq, node2->idx);
+                heapify_large_node_mq(mq, node2->idx);
 
                 /* plug hole in small heap */
                 if (n_s != 1) {
@@ -774,7 +774,7 @@ mq_update_nan(mq_handle *mq, ai_t ai) {
                 heapify_small_node_mq(mq, 0);
             }
             /* reorder large heap if needed */
-            heapify_large_node(mq, idx);
+            heapify_large_node_mq(mq, idx);
         } else if (node->region == NA) {
             /* insert node into nan heap */
             n_array[idx] = node;
@@ -783,7 +783,7 @@ mq_update_nan(mq_handle *mq, ai_t ai) {
         if (node->region == SH) {
             heapify_small_node_mq(mq, idx);
         } else if (node->region == LH) {
-            heapify_large_node(mq, idx);
+            heapify_large_node_mq(mq, idx);
         } else {
             /* ai is not NaN but oldest node is in nan array */
             k_stat = mq_k_stat(mq, n_s + n_l + 1);
@@ -795,7 +795,7 @@ mq_update_nan(mq_handle *mq, ai_t ai) {
                 l_heap[n_l] = node;
                 ++mq->n_l;
                 mq->l_first_leaf = FIRST_LEAF(mq->n_l);
-                heapify_large_node(mq, n_l);
+                heapify_large_node_mq(mq, n_l);
             } else {
                 /* insert into small heap */
                 node->region = SH;
@@ -865,6 +865,18 @@ mq_free(mq_handle *mq) {
   Utility functions
 -----------------------------------------------------------------------------
 */
+
+/* Return the current median */
+static inline ai_t
+mm_get_median(mm_handle *mm) {
+    idx_t n_total = mm->n_l + mm->n_s;
+    if (n_total < mm->min_count)
+        return MM_NAN();
+    if (min(mm->window, n_total) % 2 == 1)
+        return mm->s_heap[0]->ai;
+    return (mm->s_heap[0]->ai + mm->l_heap[0]->ai) / 2.0;
+}
+
 
 /* function to find the current index of element correspodning to the quantile */
 static inline idx_t mq_k_stat(mq_handle *mq, idx_t idx) {
@@ -943,7 +955,7 @@ HEAPIFY_SMALL_NODE(mq)
 /* mtype is mm (move_median) or mq (move_quantile)   */
 #define HEAPIFY_LARGE_NODE(mtype) \
     static inline void \
-    heapify_large_node##mtype(mtype##_handle *mtype, idx_t idx) { \
+    heapify_large_node_##mtype(mtype##_handle *mtype, idx_t idx) { \
         idx_t idx2; \
         mm_node *node; \
         mm_node *node2; \

@@ -25,7 +25,7 @@ ai_t *mm_move_median(ai_t *a, idx_t length, idx_t window, idx_t min_count, doubl
     idx_t i;
 
     out = malloc(length * sizeof(ai_t));
-    mm = mm_new_nan(window, min_count, quantile);
+    mm = mm_new_nan(window, min_count);
     for (i=0; i < length; i++) {
         if (i < window) {
             out[i] = mm_update_init_nan(mm, a[i]);
