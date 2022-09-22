@@ -1,6 +1,5 @@
 """Test moving window functions."""
 
-from errno import EUNATCH
 import numpy as np
 from numpy.testing import assert_equal, assert_array_almost_equal, assert_raises
 import bottleneck as bn
