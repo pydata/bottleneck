@@ -1,5 +1,6 @@
 """Test moving window functions."""
 
+from errno import EUNATCH
 import numpy as np
 from numpy.testing import assert_equal, assert_array_almost_equal, assert_raises
 import bottleneck as bn
@@ -24,6 +25,9 @@ def test_move(func):
         decimal = 3
     else:
         decimal = 5
+    quantiles = [1.]
+    if func_name == "move_quantile":
+        quantiles = [0., 0.25, 0.5, 0.75, 1.]
     for i, a in enumerate(arrays(func_name)):
         axes = range(-1, a.ndim)
         for axis in axes:
@@ -31,25 +35,29 @@ def test_move(func):
             for window in windows:
                 min_counts = list(range(1, window + 1)) + [None]
                 for min_count in min_counts:
-                    actual = func(a, window, min_count, axis=axis)
-                    desired = func0(a, window, min_count, axis=axis)
-                    tup = (
-                        func_name,
-                        window,
-                        str(min_count),
-                        "a" + str(i),
-                        str(a.dtype),
-                        str(a.shape),
-                        str(axis),
-                        array_order(a),
-                        a,
-                    )
-                    err_msg = fmt % tup
-                    aaae(actual, desired, decimal, err_msg)
-                    err_msg += "\n dtype mismatch %s %s"
-                    da = actual.dtype
-                    dd = desired.dtype
-                    assert_equal(da, dd, err_msg % (da, dd))
+                    for q in quantiles:
+                        kwargs = {}
+                        if func_name == "move_quantile":
+                            kwargs = {"q" : q}
+                        actual = func(a, window, min_count, axis=axis, **kwargs)
+                        desired = func0(a, window, min_count, axis=axis, **kwargs)
+                        tup = (
+                            func_name,
+                            window,
+                            str(min_count),
+                            "a" + str(i),
+                            str(a.dtype),
+                            str(a.shape),
+                            str(axis),
+                            array_order(a),
+                            a,
+                        )
+                        err_msg = fmt % tup
+                        aaae(actual, desired, decimal, err_msg)
+                        err_msg += "\n dtype mismatch %s %s"
+                        da = actual.dtype
+                        dd = desired.dtype
+                        assert_equal(da, dd, err_msg % (da, dd))
 
 
 # ---------------------------------------------------------------------------
@@ -109,10 +117,32 @@ def test_arg_parsing(func, decimal=5):
     err_msg = fmt % "(a=a, axis=-1, min_count=None, window=2)"
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
+    actual = func(a=a, axis=-1, min_count=None, window=2)
+    desired = func0(a=a, axis=-1, min_count=None, window=2)
+    err_msg = fmt % "(a=a, axis=-1, min_count=None, window=2)"
+    assert_array_almost_equal(actual, desired, decimal, err_msg)
+
     if name in ("move_std", "move_var"):
         actual = func(a, 2, 1, -1, ddof=1)
         desired = func0(a, 2, 1, -1, ddof=1)
         err_msg = fmt % "(a, 2, 1, -1, ddof=1)"
+        assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+    if name == "move_quantile":
+        q = 0.3
+        actual = func(q=q, axis=-1, a=a, min_count=None, window=2)
+        desired = func0(q=q, axis=-1, a=a, min_count=None, window=2)
+        err_msg = fmt % "(q=q, axis=-1, a=a, min_count=None, window=2)"
+        assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+        actual = func(a, axis=-1, q=q, window=2, min_count=None)
+        desired = func0(a, axis=-1, q=q, window=2, min_count=None)
+        err_msg = fmt % "(a, axis=-1, q=q, window=2, min_count=None)"
+        assert_array_almost_equal(actual, desired, decimal, err_msg)
+
+        actual = func(axis=-1, a=a, q=q, window=2)
+        desired = func0(axis=-1, a=a, q=q, window=2)
+        err_msg = fmt % "(axis=-1, a=a, q=q, window=2)"
         assert_array_almost_equal(actual, desired, decimal, err_msg)
 
     # regression test: make sure len(kwargs) == 0 doesn't raise
@@ -151,12 +181,11 @@ def test_move_median_with_nans():
     fmt = "\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n"
     aaae = assert_array_almost_equal
     min_count = 1
-    size = 10
     func = bn.move_median
     func0 = bn.slow.move_median
     rs = np.random.RandomState([1, 2, 3])
     for size in [1, 2, 3, 4, 5, 9, 10, 19, 20, 21]:
-        for i in range(REPEAT_MEDIAN):
+        for _ in range(REPEAT_MEDIAN):
             a = np.arange(size, dtype=np.float64)
             idx = rs.rand(*a.shape) < 0.1
             a[idx] = np.inf
@@ -175,12 +204,11 @@ def test_move_median_without_nans():
     fmt = "\nfunc %s | window %d | min_count %s\n\nInput array:\n%s\n"
     aaae = assert_array_almost_equal
     min_count = 1
-    size = 10
     func = bn.move_median
     func0 = bn.slow.move_median
     rs = np.random.RandomState([1, 2, 3])
     for size in [1, 2, 3, 4, 5, 9, 10, 19, 20, 21]:
-        for i in range(REPEAT_MEDIAN):
+        for _ in range(REPEAT_MEDIAN):
             a = np.arange(size, dtype=np.int64)
             rs.shuffle(a)
             for window in range(2, size + 1):
@@ -211,7 +239,6 @@ def test_move_quantile_with_nans():
     func = bn.move_quantile
     func0 = bn.slow.move_quantile
     rs = np.random.RandomState([1, 2, 3])
-    # for size in [1, 2, 3, 5, 9]:
     for size in [1, 2, 3, 5, 9, 10, 20, 21]:
         for _ in range(REPEAT_QUANTILE):
             # 0 and 1 are important edge cases
@@ -236,7 +263,6 @@ def test_move_quantile_without_nans():
     func = bn.move_quantile
     func0 = bn.slow.move_quantile
     rs = np.random.RandomState([1, 2, 3])
-    # for size in [1, 2, 3, 5, 9]:
     for size in [1, 2, 3, 5, 9, 10, 20, 21]:
         for _ in range(REPEAT_QUANTILE):
             for q in [0., 1., rs.rand()]:
@@ -302,7 +328,6 @@ def test_move_quantile_with_infs_and_nans():
     total = 0
     # for size in [1, 2, 3, 5, 9, 10, 20, 21, 47, 48]:
     for size in [1, 2, 3, 5, 9, 10, 20, 21]:
-        print(size)
         for min_count in [1, 2, 3, size//2, size - 1, size]:
             if min_count < 1 or min_count > size:
                 continue

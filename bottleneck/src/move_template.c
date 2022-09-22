@@ -840,7 +840,7 @@ PyObject *pystr_window = NULL;
 PyObject *pystr_min_count = NULL;
 PyObject *pystr_axis = NULL;
 PyObject *pystr_ddof = NULL;
-PyObject *pystr_quantile = NULL;
+PyObject *pystr_q = NULL;
 
 static int
 intern_strings(void) {
@@ -849,12 +849,24 @@ intern_strings(void) {
     pystr_min_count = PyString_InternFromString("min_count");
     pystr_axis = PyString_InternFromString("axis");
     pystr_ddof = PyString_InternFromString("ddof");
-    pystr_quantile = PyString_InternFromString("q");
+    pystr_q = PyString_InternFromString("q");
     return pystr_a && pystr_window && pystr_min_count &&
-           pystr_axis && pystr_ddof && pystr_quantile;
+           pystr_axis && pystr_ddof && pystr_q;
 }
 
 /* mover ----------------------------------------------------------------- */
+#define COMPARE_AND_SET(var_name, key, value) \
+    if (PyObject_RichCompareBool(key, pystr_##var_name, Py_EQ)) { \
+                *var_name = value; \
+                continue; \
+            }
+
+static inline void get_argument(PyObject **var, PyObject *args, short condition, int nargs, short *counter) {
+    if (*counter && condition) {
+        *var = PyTuple_GET_ITEM(args, nargs - *counter);
+        *counter -= 1;
+    }
+}
 
 static inline int
 parse_args(PyObject *args,
@@ -866,111 +878,57 @@ parse_args(PyObject *args,
            PyObject **min_count,
            PyObject **axis,
            PyObject **ddof,
-           PyObject **quantile) {
+           PyObject **q) {
     const Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     const Py_ssize_t nkwds = kwds == NULL ? 0 : PyDict_Size(kwds);
+    
+    if (nargs + nkwds > 4 + has_ddof + has_quantile) {
+        TYPE_ERR("Too many arguments");
+        return 0;
+    }
+
+    PyObject *key;
+    PyObject *value;
+    Py_ssize_t pos = 0;
+
     if (nkwds) {
-        int nkwds_found = 0;
-        PyObject *tmp;
-        switch (nargs) {
-            case 4:
-                if (has_ddof | has_quantile) {
-                    *axis = PyTuple_GET_ITEM(args, 3);
-                } else {
-                    TYPE_ERR("wrong number of arguments");
-                    return 0;
-                }
-            case 3: *min_count = PyTuple_GET_ITEM(args, 2);
-            case 2: *window = PyTuple_GET_ITEM(args, 1);
-            case 1: *a = PyTuple_GET_ITEM(args, 0);
-            case 0: break;
-            default:
-                TYPE_ERR("wrong number of arguments");
-                return 0;
-        }
-        switch (nargs) {
-            case 0:
-                *a = PyDict_GetItem(kwds, pystr_a);
-                if (*a == NULL) {
-                    TYPE_ERR("Cannot find `a` keyword input");
-                    return 0;
-                }
-                nkwds_found += 1;
-            case 1:
-                *window = PyDict_GetItem(kwds, pystr_window);
-                if (*window == NULL) {
-                    TYPE_ERR("Cannot find `window` keyword input");
-                    return 0;
-                }
-                nkwds_found++;
-            case 2:
-                tmp = PyDict_GetItem(kwds, pystr_min_count);
-                if (tmp != NULL) {
-                    *min_count = tmp;
-                    nkwds_found++;
-                }
-            case 3:
-                tmp = PyDict_GetItem(kwds, pystr_axis);
-                if (tmp != NULL) {
-                    *axis = tmp;
-                    nkwds_found++;
-                }
-            case 4:
-                if (has_ddof) {
-                    tmp = PyDict_GetItem(kwds, pystr_ddof);
-                    if (tmp != NULL) {
-                        *ddof = tmp;
-                        nkwds_found++;
-                    }
-                    break;
-                } else if (has_quantile) {
-                    tmp = PyDict_GetItem(kwds, pystr_quantile);
-                    if (tmp != NULL) {
-                        *quantile = tmp;
-                        nkwds_found++;
-                    }
-                    break;
-                }
-                break;
-            default:
-                TYPE_ERR("wrong number of arguments");
-                return 0;
-        }
-        if (nkwds_found != nkwds) {
-            TYPE_ERR("wrong number of keyword arguments");
+        while (PyDict_Next(kwds, &pos, &key, &value)) {
+            COMPARE_AND_SET(a, key, value)
+            COMPARE_AND_SET(window, key, value)
+            COMPARE_AND_SET(min_count, key, value)
+            COMPARE_AND_SET(axis, key, value)
+            COMPARE_AND_SET(ddof, key, value)
+            COMPARE_AND_SET(q, key, value)
+            TYPE_ERR("Unsupported keyword argument");
             return 0;
-        }
-        if (nargs + nkwds_found > 4 + has_ddof + has_quantile) {
-            TYPE_ERR("too many arguments");
-            return 0;
-        }
-    } else {
-        switch (nargs) {
-            case 5:
-                if (has_ddof) {
-                    *ddof = PyTuple_GET_ITEM(args, 4);
-                } else if (has_quantile) {
-                    *quantile = PyTuple_GET_ITEM(args, 4);
-                } else {
-                    TYPE_ERR("wrong number of arguments");
-                    return 0;
-                }
-            case 4:
-                *axis = PyTuple_GET_ITEM(args, 3);
-            case 3:
-                *min_count = PyTuple_GET_ITEM(args, 2);
-            case 2:
-                *window = PyTuple_GET_ITEM(args, 1);
-                *a = PyTuple_GET_ITEM(args, 0);
-                break;
-            default:
-                TYPE_ERR("wrong number of arguments");
-                return 0;
         }
     }
 
-    return 1;
+    short args_not_found = nargs;
 
+    get_argument(a, args, 1, nargs, &args_not_found);
+    get_argument(window, args, 1, nargs, &args_not_found);
+    get_argument(min_count, args, 1, nargs, &args_not_found);
+    get_argument(axis, args, 1, nargs, &args_not_found);
+    get_argument(ddof, args, has_ddof, nargs, &args_not_found);
+    get_argument(q, args, has_quantile, nargs, &args_not_found);
+
+    if (args_not_found) {
+        TYPE_ERR("wrong number of arguments");
+        return 0;
+    }
+
+    if (*a == NULL) {
+        TYPE_ERR("Cannot find `a` argument");
+        return 0;
+    }
+
+    if (*window == NULL) {
+        TYPE_ERR("Cannot find `window` argument");
+        return 0;
+    }
+
+    return 1;
 }
 
 

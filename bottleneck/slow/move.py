@@ -38,13 +38,15 @@ def move_var(a, window, min_count=None, axis=-1, ddof=0):
     "Slow move_var for unaccelerated dtype"
     return move_func(np.nanvar, a, window, min_count, axis=axis, ddof=ddof)
 
-
-def move_min(a, window, min_count=None, axis=-1):
+# move_min, move_max, and move_median from bn.slow can be called
+# from bn.move_quantile in case of byte swapped input array,
+# and so can take `q` argument, hence add **kwargs to these functions
+def move_min(a, window, min_count=None, axis=-1, **kwargs):
     "Slow move_min for unaccelerated dtype"
     return move_func(np.nanmin, a, window, min_count, axis=axis)
 
 
-def move_max(a, window, min_count=None, axis=-1):
+def move_max(a, window, min_count=None, axis=-1, **kwargs):
     "Slow move_max for unaccelerated dtype"
     return move_func(np.nanmax, a, window, min_count, axis=axis)
 
@@ -101,7 +103,7 @@ def move_argmax(a, window, min_count=None, axis=-1):
     return move_func(argmax, a, window, min_count, axis=axis)
 
 
-def move_median(a, window, min_count=None, axis=-1):
+def move_median(a, window, min_count=None, axis=-1, **kwargs):
     "Slow move_median for unaccelerated dtype"
     return move_func(np.nanmedian, a, window, min_count, axis=axis)
 
@@ -114,7 +116,7 @@ def move_rank(a, window, min_count=None, axis=-1):
     return move_func(lastrank, a, window, min_count, axis=axis)
 
 # function for handling infs in np.nanquantile
-# keyword argument for interpolation method in np.nanquantile changed in 1.22.0
+# keyword argument for interpolation method in np.nanquantile was changed in 1.22.0
 from packaging import version
 if version.parse(np.__version__) > version.parse("1.22.0"):
     METHOD_KEYWORD = "method"
