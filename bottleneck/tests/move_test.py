@@ -284,7 +284,7 @@ from ..slow.move import np_nanquantile_infs
 REPEAT_NUMPY_QUANTILE = 10
 
 def test_numpy_nanquantile_infs():
-    """test move_median.c with nans"""
+    """test move_quantile.c with nans"""
     fmt = "\nfunc %s \n\nInput array:\n%s\n"
     aaae = assert_array_almost_equal
     min_count = 1
