@@ -855,17 +855,53 @@ intern_strings(void) {
 }
 
 /* mover ----------------------------------------------------------------- */
-#define COMPARE_AND_SET(var_name, key, value) \
-    if (PyObject_RichCompareBool(key, pystr_##var_name, Py_EQ)) { \
-                *var_name = value; \
-                continue; \
-            }
 
-static inline void get_argument(PyObject **var, PyObject *args, short condition, int nargs, short *counter) {
+/* helper function to set a keyword argument             */
+static inline short 
+set_kw_argument(PyObject **var,
+                PyObject **key_ptr,
+                PyObject **value_ptr,
+                PyObject **string_ptr,
+                short *set_var,
+                short condition) {
+    if (PyObject_RichCompareBool(*key_ptr, *string_ptr, Py_EQ)) { 
+        if (*set_var) { 
+            TYPE_ERR("Repeated argument was passed!"); 
+            return 0;
+        } else if (!condition) {
+            TYPE_ERR("Keyword argument not supported!"); 
+            return 0;
+        }
+        *var = *value_ptr; 
+        *set_var = 1; 
+        return 1;
+    }
+    return 2;
+
+}
+
+#define CHECK_STATUS(status) \
+    if (!status) { return 0; } else if (status == 1) { continue; }
+
+/* helper function to set a non-keyword argument             */
+static inline short 
+set_argument(PyObject **var, 
+             PyObject *args, 
+             short *set_var,
+             short condition, 
+             int nargs, 
+             short *counter) {
     if (*counter && condition) {
+        if (*set_var) {
+            TYPE_ERR("Repeated argument was passed!");
+            return 0;
+        }
         *var = PyTuple_GET_ITEM(args, nargs - *counter);
         *counter -= 1;
+        *set_var = 1;
+        return 1;
     }
+    return 1;
 }
 
 static inline int
@@ -891,14 +927,28 @@ parse_args(PyObject *args,
     PyObject *value;
     Py_ssize_t pos = 0;
 
+    short   set_a = 0, 
+            set_window = 0, 
+            set_min_count = 0,
+            set_axis = 0,
+            set_ddof = 0,
+            set_q = 0;
+
     if (nkwds) {
+        short status;
         while (PyDict_Next(kwds, &pos, &key, &value)) {
-            COMPARE_AND_SET(a, key, value)
-            COMPARE_AND_SET(window, key, value)
-            COMPARE_AND_SET(min_count, key, value)
-            COMPARE_AND_SET(axis, key, value)
-            COMPARE_AND_SET(ddof, key, value)
-            COMPARE_AND_SET(q, key, value)
+            status = set_kw_argument(a, &key, &value, &pystr_a, &set_a, 1);
+            CHECK_STATUS(status)
+            status = set_kw_argument(window, &key, &value, &pystr_window, &set_window, 1);
+            CHECK_STATUS(status)
+            status = set_kw_argument(min_count, &key, &value, &pystr_min_count, &set_min_count, 1);
+            CHECK_STATUS(status)
+            status = set_kw_argument(axis, &key, &value, &pystr_axis, &set_axis, 1);
+            CHECK_STATUS(status)
+            status = set_kw_argument(ddof, &key, &value, &pystr_ddof, &set_ddof, has_ddof);
+            CHECK_STATUS(status)
+            status = set_kw_argument(q, &key, &value, &pystr_q, &set_q, has_quantile);
+            CHECK_STATUS(status)
             TYPE_ERR("Unsupported keyword argument");
             return 0;
         }
@@ -906,12 +956,12 @@ parse_args(PyObject *args,
 
     short args_not_found = nargs;
 
-    get_argument(a, args, 1, nargs, &args_not_found);
-    get_argument(window, args, 1, nargs, &args_not_found);
-    get_argument(min_count, args, 1, nargs, &args_not_found);
-    get_argument(axis, args, 1, nargs, &args_not_found);
-    get_argument(ddof, args, has_ddof, nargs, &args_not_found);
-    get_argument(q, args, has_quantile, nargs, &args_not_found);
+    if (!set_argument(a, args, &set_a, 1, nargs, &args_not_found)) return 0;
+    if (!set_argument(window, args, &set_window, 1, nargs, &args_not_found)) return 0;
+    if (!set_argument(min_count, args, &set_min_count, 1, nargs, &args_not_found)) return 0;
+    if (!set_argument(axis, args, &set_axis, 1, nargs, &args_not_found)) return 0;
+    if (!set_argument(ddof, args, &set_ddof, has_ddof, nargs, &args_not_found)) return 0;
+    if (!set_argument(q, args, &set_q, has_quantile, nargs, &args_not_found)) return 0;
 
     if (args_not_found) {
         TYPE_ERR("wrong number of arguments");
