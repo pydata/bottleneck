@@ -26,7 +26,7 @@ def test_move(func):
         decimal = 5
     quantiles = [1.]
     if func_name == "move_quantile":
-        quantiles = [0., 0.25, 0.5, 0.75, 1.]
+        quantiles = [0.33, 0.67]
     for i, a in enumerate(arrays(func_name)):
         axes = range(-1, a.ndim)
         for axis in axes:
@@ -241,7 +241,7 @@ def test_move_quantile_with_nans():
     func = bn.move_quantile
     func0 = bn.slow.move_quantile
     rs = np.random.RandomState([1, 2, 3])
-    for size in [1, 2, 3, 5, 9, 10, 20, 21]:
+    for size in [1, 2, 3, 5, 9, 10, 13, 16]:
         for _ in range(REPEAT_QUANTILE):
             for nan_frac in [0.2, 0.5, 0.7, 1.]:
                 # test more variants of arrays (ints, floats, diff values)
@@ -271,7 +271,7 @@ def test_move_quantile_without_nans():
     func = bn.move_quantile
     func0 = bn.slow.move_quantile
     rs = np.random.RandomState([1, 2, 3])
-    for size in [1, 2, 3, 5, 9, 10, 20, 21]:
+    for size in [1, 2, 3, 5, 9, 10, 13, 16]:        
         for _ in range(REPEAT_QUANTILE):
             # test more variants of arrays (ints, floats, diff values)
             arrays = [np.arange(size, dtype=np.float64),
@@ -316,7 +316,7 @@ def test_numpy_nanquantile_infs():
     func = np.nanmedian
     func0 = np_nanquantile_infs
     rs = np.random.RandomState([1, 2, 3])
-    sizes = [1, 2, 3, 4, 5, 9, 10, 20, 31, 50]
+    sizes = [1, 2, 3, 4, 5, 9, 10, 20, 31]
     fracs = [0., 0.2, 0.4, 0.6, 0.8, 1.]
     inf_minf_nan_fracs = [triple for triple in itertools.product(fracs, fracs, fracs) if np.sum(triple) <= 1]
     with warnings.catch_warnings():
@@ -345,7 +345,6 @@ def test_numpy_nanquantile_infs():
 # behaviour of np.nanquantile, while correclty handling infs in data.
 # So we use np_nanquantile_infs in our bn.slow.move_quantile for testing
 
-
 REPEAT_FULL_QUANTILE = 1
 
 def test_move_quantile_with_infs_and_nans():
@@ -357,9 +356,7 @@ def test_move_quantile_with_infs_and_nans():
     rs = np.random.RandomState([1, 2, 3])
     fracs = [0., 0.2, 0.4, 0.6, 0.8, 1.]
     inf_minf_nan_fracs = [triple for triple in itertools.product(fracs, fracs, fracs) if np.sum(triple) <= 1]
-    total = 0
-    for size in [1, 2, 3, 5, 9, 10, 20, 21, 47, 48]:
-    # for size in [1, 2, 3, 5, 9, 10, 20, 21]:
+    for size in [1, 2, 3, 5, 9, 10, 17, 20, 31]:
         for min_count in [1, 2, 3, size//2, size - 1, size]:
             if min_count < 1 or min_count > size:
                 continue
@@ -371,7 +368,6 @@ def test_move_quantile_with_infs_and_nans():
                                     (rs.random(size) - 0.5) * rs.randint(0, 100_000),
                                     (rs.random(size) - 0.5) / rs.randint(0, 100_000)]
                             for a in arrays:
-                                total += 1
                                 a = np.arange(size, dtype=np.float64)
                                 randoms = rs.rand(*a.shape)
                                 idx_nans = randoms < inf_frac + minus_inf_frac + nan_frac
@@ -385,7 +381,6 @@ def test_move_quantile_with_infs_and_nans():
                                 desired = func0(a, window=window, min_count=min_count, q=q)
                                 err_msg = fmt % (func.__name__, window, min_count, q, a)
                                 aaae(actual, desired, decimal=5, err_msg=err_msg)
-    print(total)
 
 
 
