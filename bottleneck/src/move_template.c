@@ -1535,7 +1535,7 @@ Moving window quantile along the specified axis, ignoring NaNs.
 
 float64 output is returned for all input data types.
 
-Interpolation method for the quantile is "midpoint".
+Interpolation method for the quantile is `midpoint`.
 
 Parameters
 ----------
