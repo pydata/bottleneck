@@ -1,6 +1,6 @@
 #include "move_median.h"
 
-ai_t *mm_move_median(ai_t *a, idx_t length, idx_t window, idx_t min_count, double quantile);
+ai_t *mm_move_median(ai_t *a, idx_t length, idx_t window, idx_t min_count);
 int mm_assert_equal(ai_t *actual, ai_t *desired, ai_t *input, idx_t length,
                     char *err_msg);
 int mm_unit_test(void);
@@ -19,7 +19,7 @@ int main(void) {
 
 
 /* moving window median of 1d arrays returns output array */
-ai_t *mm_move_median(ai_t *a, idx_t length, idx_t window, idx_t min_count, double quantile) {
+ai_t *mm_move_median(ai_t *a, idx_t length, idx_t window, idx_t min_count) {
     mm_handle *mm;
     ai_t *out;
     idx_t i;
@@ -84,14 +84,13 @@ int mm_unit_test(void) {
     int length;
     char *err_msg;
     int failed;
-    double quantile = 0.5;
 
     length = sizeof(arr_input) / sizeof(*arr_input);
     err_msg = malloc(1024 * sizeof *err_msg);
     sprintf(err_msg, "move_median failed with window=%d, min_count=%d",
             window, min_count);
 
-    actual = mm_move_median(arr_input, length, window, min_count, quantile);
+    actual = mm_move_median(arr_input, length, window, min_count);
     failed = mm_assert_equal(actual, desired, arr_input, length, err_msg);
 
     free(actual);
