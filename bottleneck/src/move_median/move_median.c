@@ -79,6 +79,7 @@ mm_new(const idx_t window, idx_t min_count) {
     return mm;
 }
 
+/* Same as mm_new, but the heaps have different sizes */
 mq_handle *
 mq_new(const idx_t window, idx_t min_count, double quantile) {
     mq_handle *mq = malloc(sizeof(mq_handle));
@@ -148,7 +149,7 @@ mm_update_init(mm_handle *mm, ai_t ai) {
     return mm_get_median(mm);
 }
 
-
+/* Same as mm_update_init, but returns the current quantile. */
 ai_t
 mq_update_init(mq_handle *mq, ai_t ai) {
     mm_node *node;
@@ -227,6 +228,7 @@ mm_update(mm_handle *mm, ai_t ai) {
     }
 }
 
+/* Same as mm_update, but returns the current quantile. */
 ai_t
 mq_update(mq_handle *mq, ai_t ai) {
     /* node is oldest node with ai of newest node */
@@ -278,7 +280,7 @@ mm_new_nan(const idx_t window, idx_t min_count) {
     return mm;
 }
 
-
+/* Same as mm_new_nan, but the heaps have different sizes */
 mq_handle *
 mq_new_nan(const idx_t window, idx_t min_count, double quantile) {
     mq_handle *mq = malloc(sizeof(mq_handle));
@@ -367,7 +369,7 @@ mm_update_init_nan(mm_handle *mm, ai_t ai) {
     return mm_get_median(mm);
 }
 
-
+/* Same as mm_update_init_nan, but returns the current quantile. */
 ai_t
 mq_update_init_nan(mq_handle *mq, ai_t ai) {
     mm_node *node;
@@ -623,7 +625,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
     return mm_get_median(mm);
 }
 
-
+/* Same as mm_update_nan, but returns the current quantile. */
 ai_t
 mq_update_nan(mq_handle *mq, ai_t ai) {
     idx_t n_s, n_l, n_n;
@@ -878,17 +880,16 @@ mm_get_median(mm_handle *mm) {
 }
 
 
-/* function to find the current index of element correspodning to the quantile */
+/* function to find the index of element correspodning to the current quantile */
 static inline idx_t mq_k_stat(mq_handle *mq, idx_t idx) {
     return (idx_t) floor((idx - 1) * mq->quantile) + 1;
 }
 
-/* function to check if the current index of the quantile is integer, and so
- * the quantile is the element at the top of the heap. Otherwise take midpoint */
+/* function to check if the current index of the quantile is integer. If so,
+ * then the quantile is the element at the top of the heap. Otherwise take a midpoint */
 static inline short mq_stat_exact(mq_handle *mq, idx_t idx) {
     return ((idx - 1) * mq->quantile) == floor((idx - 1) * mq->quantile);
 }
-
 
 /* Return the current quantile */
 static inline ai_t

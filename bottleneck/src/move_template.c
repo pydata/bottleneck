@@ -1531,11 +1531,11 @@ static char move_quantile_doc[] =
 /* MULTILINE STRING BEGIN
 move_quantile(a, window, min_count=None, axis=-1, q=0.5)
 
-TODO: right docs, change var name to q, might need to change order as well, so that quantile can be passes as non-keyword third argument (hard)
-
-Moving window median along the specified axis, optionally ignoring NaNs.
+Moving window quantile along the specified axis, ignoring NaNs.
 
 float64 output is returned for all input data types.
+
+Interpolation method for the quantile is "midpoint".
 
 Parameters
 ----------
@@ -1550,20 +1550,23 @@ min_count: {int, None}, optional
 axis : int, optional
     The axis over which the window is moved. By default the last axis
     (axis=-1) is used. An axis of None is not allowed.
+q : float, optional
+    Quantile to compute, which must be between 0 and 1 inclusive.
+    By default q=0.5 is used, computing a moving median.
 
 Returns
 -------
 y : ndarray
-    The moving median of the input array along the specified axis. The
+    The moving quantile of the input array along the specified axis. The
     output has the same shape as the input.
 
 Examples
 --------
->>> a = np.array([1.0, 2.0, 3.0, 4.0])
->>> bn.move_median(a, window=2)
-array([ nan,  1.5,  2.5,  3.5])
->>> bn.move_median(a, window=2, min_count=1)
-array([ 1. ,  1.5,  2.5,  3.5])
+>>> a = np.array([1.0, np.nan, 3.0, 4.0, 5.0, 6.0, 7.0])
+>>> bn.move_quantile(a, window=4, q=0.3)
+array([nan, nan, nan, nan, nan, 3.5, 4.5])
+>>> bn.move_quantile(a, window=4, q=0.3, min_count=3)
+array([nan, nan, nan, 2. , 3.5, 3.5, 4.5])
 
 MULTILINE STRING END */
 

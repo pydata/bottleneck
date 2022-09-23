@@ -57,7 +57,7 @@ typedef struct _mm_handle mm_handle;
 struct _mq_handle {
     idx_t     window;    /* window size */
     int       odd;       /* is window even (0) or odd (1) */
-    idx_t     min_count; /* Same meaning as in bn.move_median */
+    idx_t     min_count; /* Same meaning as in bn.move_quantile */
     idx_t     n_s;       /* Number of nodes in the small heap */
     idx_t     n_l;       /* Number of nodes in the large heap */
     idx_t     n_n;       /* Number of nodes in the nan array */
