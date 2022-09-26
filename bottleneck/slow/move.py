@@ -109,8 +109,8 @@ def move_median(a, window, min_count=None, axis=-1, **kwargs):
 
 
 # keyword argument for interpolation method in np.nanquantile was changed in 1.22.0
-from packaging import version
-if version.parse(np.__version__) > version.parse("1.22.0"):
+import pkg_resources
+if pkg_resources.parse_version(np.__version__) >= pkg_resources.parse_version("1.22.0"):
     METHOD_KEYWORD = "method"
 else:
     METHOD_KEYWORD = "interpolation"
