@@ -41,7 +41,7 @@ class Time1DMove:
         bn.move_median(self.arr, window)
 
     def time_move_quantile(self, dtype, shape, window):
-        bn.move_quantile(self.arr, window)
+        bn.move_quantile(self.arr, window, q=0.25)
 
     def time_move_rank(self, dtype, shape, window):
         bn.move_rank(self.arr, window)
@@ -88,7 +88,7 @@ class Time2DMove:
         bn.move_median(self.arr, window, axis=axis)
         
     def time_move_quantile(self, dtype, shape, order, axis, window):
-        bn.move_quantile(self.arr, window, axis=axis)
+        bn.move_quantile(self.arr, window, axis=axis, q=0.25)
 
     def time_move_rank(self, dtype, shape, order, axis, window):
         bn.move_rank(self.arr, window, axis=axis)
