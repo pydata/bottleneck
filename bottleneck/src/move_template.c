@@ -635,10 +635,10 @@ MOVE_MAIN(move_median, 0, 0)
 /* dtype = [['float64'], ['float32']] */
 MOVE(move_quantile, DTYPE0) {
     npy_DTYPE0 ai;
-    mq_handle *mq = mq_new_nan(window, min_count, quantile);
+    mm_handle *mq = mq_new_nan(window, min_count, quantile);
     INIT(NPY_DTYPE0)
     if (window == 1) {
-        mq_free(mq);
+        mm_free(mq);
         return PyArray_Copy(a);
     }
     if (mq == NULL) {
@@ -658,10 +658,10 @@ MOVE(move_quantile, DTYPE0) {
             ai = AI(DTYPE0);
             YI(DTYPE0) = mq_update_nan(mq, ai);
         }
-        mq_reset(mq);
+        mm_reset(mq);
         NEXT2
     }
-    mq_free(mq);
+    mm_free(mq);
     BN_END_ALLOW_THREADS
     return y;
 }
@@ -670,7 +670,7 @@ MOVE(move_quantile, DTYPE0) {
 /* dtype = [['int64', 'float64'], ['int32', 'float64']] */
 MOVE(move_quantile, DTYPE0) {
     npy_DTYPE0 ai;
-    mq_handle *mq = mq_new(window, min_count, quantile);
+    mm_handle *mq = mq_new(window, min_count, quantile);
     INIT(NPY_DTYPE1)
     if (window == 1) {
         return PyArray_CastToType(a,
@@ -694,10 +694,10 @@ MOVE(move_quantile, DTYPE0) {
             ai = AI(DTYPE0);
             YI(DTYPE1) = mq_update(mq, ai);
         }
-        mq_reset(mq);
+        mm_reset(mq);
         NEXT2
     }
-    mq_free(mq);
+    mm_free(mq);
     BN_END_ALLOW_THREADS
     return y;
 }
