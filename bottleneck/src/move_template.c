@@ -614,11 +614,13 @@ MOVE(move_median, DTYPE0) {
             ai = AI(DTYPE0);
             YI(DTYPE1) = mm_update_init(mm, ai);
         }
+        mm_update_statistic_function(mm);
         WHILE2 {
             ai = AI(DTYPE0);
             YI(DTYPE1) = mm_update(mm, ai);
         }
         mm_reset(mm);
+        mm_reset_statistic_function(mm);
         NEXT2
     }
     mm_free(mm);
@@ -648,15 +650,15 @@ MOVE(move_quantile, DTYPE0) {
     WHILE {
         WHILE0 {
             ai = AI(DTYPE0);
-            YI(DTYPE0) = mq_update_init_nan(mq, ai);
+            YI(DTYPE0) = mm_update_init_nan(mq, ai);
         }
         WHILE1 {
             ai = AI(DTYPE0);
-            YI(DTYPE0) = mq_update_init_nan(mq, ai);
+            YI(DTYPE0) = mm_update_init_nan(mq, ai);
         }
         WHILE2 {
             ai = AI(DTYPE0);
-            YI(DTYPE0) = mq_update_nan(mq, ai);
+            YI(DTYPE0) = mm_update_nan(mq, ai);
         }
         mm_reset(mq);
         NEXT2
@@ -684,15 +686,15 @@ MOVE(move_quantile, DTYPE0) {
     WHILE {
         WHILE0 {
             ai = AI(DTYPE0);
-            YI(DTYPE1) = mq_update_init(mq, ai);
+            YI(DTYPE1) = mm_update_init(mq, ai);
         }
         WHILE1 {
             ai = AI(DTYPE0);
-            YI(DTYPE1) = mq_update_init(mq, ai);
+            YI(DTYPE1) = mm_update_init(mq, ai);
         }
         WHILE2 {
             ai = AI(DTYPE0);
-            YI(DTYPE1) = mq_update(mq, ai);
+            YI(DTYPE1) = mm_update(mq, ai);
         }
         mm_reset(mq);
         NEXT2
@@ -967,12 +969,10 @@ parse_args(PyObject *args,
         TYPE_ERR("wrong number of arguments");
         return 0;
     }
-
     if (*a == NULL) {
         TYPE_ERR("Cannot find `a` argument");
         return 0;
     }
-
     if (*window == NULL) {
         TYPE_ERR("Cannot find `window` argument");
         return 0;

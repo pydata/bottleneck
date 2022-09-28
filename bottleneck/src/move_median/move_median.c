@@ -27,8 +27,11 @@ idx1       = idx2
 
 /* helper functions */
 static inline ai_t mm_get_median(mm_handle *mm);
+static inline ai_t mm_get_median_no_nans_full_window_odd(mm_handle *mm);
+static inline ai_t mm_get_median_no_nans_full_window_even(mm_handle *mm);
+static inline idx_t mm_get_nl(mm_handle *mm, idx_t idx, short adjustment);
 static inline ai_t mq_get_quantile(mm_handle *mq);
-static inline idx_t mq_k_stat(mm_handle *mq, idx_t idx);
+static inline idx_t mq_k_stat(mm_handle *mq, idx_t idx, short adjustment);
 static inline short mq_stat_exact(mm_handle *mq, idx_t idx);
 static inline void heapify_small_node(mm_handle *mm, idx_t idx);
 static inline void heapify_large_node(mm_handle *mm, idx_t idx);
@@ -72,6 +75,8 @@ mm_new(const idx_t window, idx_t min_count) {
     mm->window = window;
     mm->odd = window % 2;
     mm->min_count = min_count;
+    mm->get_statistic = mm_get_median;
+    mm->get_index = mm_get_nl;
 
     mm_reset(mm);
 
@@ -88,12 +93,14 @@ mq_new(const idx_t window, idx_t min_count, double quantile) {
     mq->quantile = quantile;
 
     mq->s_heap = mq->nodes;
-    idx_t k_stat = mq_k_stat(mq, window);
+    idx_t k_stat = mq_k_stat(mq, window, 0) + 1;
     mq->l_heap = &mq->nodes[k_stat];
 
     mq->window = window;
     mq->odd = window % 2;
     mq->min_count = min_count;
+    mq->get_statistic = mq_get_quantile;
+    mq->get_index = mq_k_stat;
 
     mm_reset(mq);
 
@@ -103,7 +110,8 @@ mq_new(const idx_t window, idx_t min_count, double quantile) {
 
 /* Insert a new value, ai, into one of the heaps. Use this function when
  * the heaps contain less than window-1 nodes. Returns the median value.
- * Once there are window-1 nodes in the heap, switch to using mm_update. */
+ * Once there are window-1 nodes in the heap, switch to using mm_update. 
+ * Used by both mm and mq */
 ai_t
 mm_update_init(mm_handle *mm, ai_t ai) {
     mm_node *node;
@@ -124,7 +132,8 @@ mm_update_init(mm_handle *mm, ai_t ai) {
     } else {
         /* at least one node already exists in the heaps */
         mm->newest->next = node;
-        if (n_s > n_l) {
+        idx_t k_stat = mm->get_index(mm, n_s + n_l + 1, 0);
+        if (n_s > k_stat) {
             /* add new node to large heap */
             mm->l_heap[n_l] = node;
             node->region = LH;
@@ -145,60 +154,27 @@ mm_update_init(mm_handle *mm, ai_t ai) {
 
     mm->newest = node;
 
-    return mm_get_median(mm);
+    return mm->get_statistic(mm);
 }
 
-/* Same as mm_update_init, but returns the current quantile. */
-ai_t
-mq_update_init(mm_handle *mq, ai_t ai) {
-    mm_node *node;
-    idx_t n_s = mq->n_s;
-    idx_t n_l = mq->n_l;
-
-    node = &mq->node_data[n_s + n_l];
-    node->ai = ai;
-
-    if (n_s == 0) {
-        /* the first node to appear in a heap */
-        mq->s_heap[0] = node;
-        node->region = SH;
-        node->idx = 0;
-        mq->oldest = node; /* only need to set the oldest node once */
-        mq->n_s = 1;
-        mq->s_first_leaf = 0;
+/* For non-nan move_median, as soon as heap has window nodes, switch to
+ * more explicit median functions, to avoid redundant calculations*/
+void 
+mm_update_statistic_function(mm_handle *mm) {
+    if (mm->odd) {
+        mm->get_statistic = mm_get_median_no_nans_full_window_odd;
     } else {
-        /* at least one node already exists in the heaps */
-        mq->newest->next = node;
-        idx_t k_stat = mq_k_stat(mq, n_s + n_l + 1);
-        if (n_s >= k_stat) {
-            /* add new node to large heap */
-            mq->l_heap[n_l] = node;
-            node->region = LH;
-            node->idx = n_l;
-            ++mq->n_l;
-            mq->l_first_leaf = FIRST_LEAF(mq->n_l);
-            heapify_large_node(mq, n_l);
-        } else {
-            /* add new node to small heap */
-            mq->s_heap[n_s] = node;
-            node->region = SH;
-            node->idx = n_s;
-            ++mq->n_s;
-            mq->s_first_leaf = FIRST_LEAF(mq->n_s);
-            heapify_small_node(mq, n_s);
-        }
+        mm->get_statistic = mm_get_median_no_nans_full_window_even;
     }
-
-    mq->newest = node;
-
-    return mq_get_quantile(mq);
+    return;
 }
 
 
 /* Insert a new value, ai, into the double heap structure. Use this function
  * when the double heap contains at least window-1 nodes. Returns the median
  * value. If there are less than window-1 nodes in the heap, use
- * mm_update_init. */
+ * mm_update_init.
+ * Used by both mm and mq */
 ai_t
 mm_update(mm_handle *mm, ai_t ai) {
     /* node is oldest node with ai of newest node */
@@ -218,34 +194,7 @@ mm_update(mm_handle *mm, ai_t ai) {
     }
 
     /* return the median */
-    if (mm->odd) {
-        return mm->s_heap[0]->ai;
-    } else {
-        return (mm->s_heap[0]->ai + mm->l_heap[0]->ai) / 2.0;
-    }
-}
-
-/* Same as mm_update, but returns the current quantile. */
-ai_t
-mq_update(mm_handle *mq, ai_t ai) {
-    /* node is oldest node with ai of newest node */
-    mm_node *node = mq->oldest;
-    node->ai = ai;
-
-    /* update oldest, newest */
-    mq->oldest = mq->oldest->next;
-    mq->newest->next = node;
-    mq->newest = node;
-
-    /* adjust position of new node in heap if needed */
-    if (node->region == SH) {
-        heapify_small_node(mq, node->idx);
-    } else {
-        heapify_large_node(mq, node->idx);
-    }
-
-    /* return the median */
-    return mq_get_quantile(mq);
+    return mm->get_statistic(mm);
 }
 
 
@@ -271,6 +220,8 @@ mm_new_nan(const idx_t window, idx_t min_count) {
 
     mm->window = window;
     mm->min_count = min_count;
+    mm->get_statistic = mm_get_median;
+    mm->get_index = mm_get_nl;
 
     mm_reset(mm);
 
@@ -287,12 +238,14 @@ mq_new_nan(const idx_t window, idx_t min_count, double quantile) {
     mq->quantile = quantile;
 
     mq->s_heap = mq->nodes;
-    idx_t k_stat = mq_k_stat(mq, window);
+    idx_t k_stat = mq_k_stat(mq, window, 0) + 1;
     mq->l_heap = &mq->nodes[k_stat];
     mq->n_array = &mq->nodes[window];
 
     mq->window = window;
     mq->min_count = min_count;
+    mq->get_statistic = mq_get_quantile;
+    mq->get_index = mq_k_stat;
 
     mm_reset(mq);
 
@@ -303,7 +256,8 @@ mq_new_nan(const idx_t window, idx_t min_count, double quantile) {
 /* Insert a new value, ai, into one of the heaps or the nan array. Use this
  * function when there are less than window-1 nodes. Returns the median
  * value. Once there are window-1 nodes in the heap, switch to using
- * mm_update_nan. */
+ * mm_update_nan. 
+ * Used by both mm and mq*/
 ai_t
 mm_update_init_nan(mm_handle *mm, ai_t ai) {
     mm_node *node;
@@ -342,7 +296,9 @@ mm_update_init_nan(mm_handle *mm, ai_t ai) {
         } else {
             /* at least one node already exists in the heaps */
             mm->newest->next = node;
-            if (n_s > n_l) {
+            /* number of non-nan nodes including the new node is n_s + n_l + 1 */
+            idx_t k_stat = mm->get_index(mm, n_s + n_l + 1, 0);
+            if (n_s > k_stat) {
                 /* add new node to large heap */
                 mm->l_heap[n_l] = node;
                 node->region = LH;
@@ -363,79 +319,14 @@ mm_update_init_nan(mm_handle *mm, ai_t ai) {
     }
     mm->newest = node;
 
-    return mm_get_median(mm);
-}
-
-/* Same as mm_update_init_nan, but returns the current quantile. */
-ai_t
-mq_update_init_nan(mm_handle *mq, ai_t ai) {
-    mm_node *node;
-    idx_t n_s = mq->n_s;
-    idx_t n_l = mq->n_l;
-    idx_t n_n = mq->n_n;
-
-    node = &mq->node_data[n_s + n_l + n_n];
-    node->ai = ai;
-
-    if (ai != ai) {
-        mq->n_array[n_n] = node;
-        node->region = NA;
-        node->idx = n_n;
-        if (n_s + n_l + n_n == 0) {
-            /* only need to set the oldest node once */
-            mq->oldest = node;
-        } else {
-            mq->newest->next = node;
-        }
-        ++mq->n_n;
-    } else {
-        if (n_s == 0) {
-            /* the first node to appear in a heap */
-            mq->s_heap[0] = node;
-            node->region = SH;
-            node->idx = 0;
-            if (n_s + n_l + n_n == 0) {
-                /* only need to set the oldest node once */
-                mq->oldest = node;
-            } else {
-                mq->newest->next = node;
-            }
-            mq->n_s = 1;
-            mq->s_first_leaf = 0;
-        } else {
-            /* at least one node already exists in the heaps */
-            /* number of non-nan nodes including the new node is n_s + n_l + 1 */
-            idx_t k_stat = mq_k_stat(mq, n_s + n_l + 1);
-
-            mq->newest->next = node;
-            if (n_s >= k_stat) {
-                /* add new node to large heap */
-                mq->l_heap[n_l] = node;
-                node->region = LH;
-                node->idx = n_l;
-                ++mq->n_l;
-                mq->l_first_leaf = FIRST_LEAF(mq->n_l);
-                heapify_large_node(mq, n_l);
-            } else {
-                /* add new node to small heap */
-                mq->s_heap[n_s] = node;
-                node->region = SH;
-                node->idx = n_s;
-                ++mq->n_s;
-                mq->s_first_leaf = FIRST_LEAF(mq->n_s);
-                heapify_small_node(mq, n_s);
-            }
-        }
-    }
-    mq->newest = node;
-
-    return mq_get_quantile(mq);
+    return mm->get_statistic(mm);
 }
 
 
 /* Insert a new value, ai, into one of the heaps or the nan array. Use this
  * function when there are at least window-1 nodes. Returns the median value.
- * If there are less than window-1 nodes, use mm_update_init_nan. */
+ * If there are less than window-1 nodes, use mm_update_init_nan. 
+ * Used by both mm and mq */
 ai_t
 mm_update_nan(mm_handle *mm, ai_t ai) {
     idx_t n_s, n_l, n_n;
@@ -506,7 +397,8 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
                     s_heap[idx]->idx = idx;
                     heapify_small_node(mm, idx);
                 }
-                if (mm->n_s < mm->n_l) {
+                idx_t k_stat = mm->get_index(mm, mm->n_s + mm->n_l, 1); 
+                if (mm->n_s < k_stat) {
                     /* move head node from the large heap to the small heap */
                     node2 = mm->l_heap[0];
                     node2->idx = mm->n_s;
@@ -557,7 +449,8 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
             } else {
                 mm->l_first_leaf = FIRST_LEAF(mm->n_l);
             }
-            if (mm->n_l < mm->n_s - 1) {
+            idx_t k_stat = mm->get_index(mm, mm->n_s + mm->n_l, 0);
+            if (mm->n_s > k_stat + 1) {
                 /* move head node from the small heap to the large heap */
                 node2 = mm->s_heap[0];
                 node2->idx = mm->n_l;
@@ -594,7 +487,9 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
             heapify_large_node(mm, idx);
         } else {
             /* ai is not NaN but oldest node is in nan array */
-            if (n_s > n_l) {
+            // k_stat = mm_k_stat(mm, n_s + n_l + 1);
+            idx_t k_stat = mm->get_index(mm, n_s + n_l + 1, 0);
+            if (n_s > k_stat) {
                 /* insert into large heap */
                 node->region = LH;
                 node->idx = n_l;
@@ -619,200 +514,7 @@ mm_update_nan(mm_handle *mm, ai_t ai) {
             --mm->n_n;
         }
     }
-    return mm_get_median(mm);
-}
-
-/* Same as mm_update_nan, but returns the current quantile. */
-ai_t
-mq_update_nan(mm_handle *mq, ai_t ai) {
-    idx_t n_s, n_l, n_n;
-
-    mm_node **l_heap;
-    mm_node **s_heap;
-    mm_node **n_array;
-    mm_node *node2;
-
-    /* node is oldest node with ai of newest node */
-    mm_node *node = mq->oldest;
-    idx_t idx = node->idx;
-    node->ai = ai;
-
-    /* update oldest, newest */
-    mq->oldest = mq->oldest->next;
-    mq->newest->next = node;
-    mq->newest = node;
-
-    l_heap = mq->l_heap;
-    s_heap = mq->s_heap;
-    n_array = mq->n_array;
-
-    n_s = mq->n_s;
-    n_l = mq->n_l;
-    n_n = mq->n_n;
-
-    idx_t k_stat;
-
-    if (ai != ai) {
-        if (node->region == SH) {
-            /* Oldest node is in the small heap and needs to be moved
-             * to the nan array. Resulting hole in the small heap will be
-             * filled with the rightmost leaf of the last row of the small
-             * heap. */
-            k_stat = mq_k_stat(mq, n_s + n_l - 1);
-
-            /* insert node into nan array */
-            node->region = NA;
-            node->idx = n_n;
-            n_array[n_n] = node;
-            ++mq->n_n;
-
-            /* plug small heap hole */
-            --mq->n_s;
-            if (mq->n_s == 0) {
-                mq->s_first_leaf = 0;
-                if (n_l > 0) {
-                    /* move head node from the large heap to the small heap */
-                    node2 = mq->l_heap[0];
-                    node2->region = SH;
-                    s_heap[0] = node2;
-                    mq->n_s = 1;
-                    mq->s_first_leaf = 0;
-
-                    /* plug hole in large heap */
-                    node2 = mq->l_heap[mq->n_l - 1];
-                    node2->idx = 0;
-                    l_heap[0] = node2;
-                    --mq->n_l;
-                    if (mq->n_l == 0) {
-                        mq->l_first_leaf = 0;
-                    } else {
-                        mq->l_first_leaf = FIRST_LEAF(mq->n_l);
-                    }
-                    heapify_large_node(mq, 0);
-                }
-            } else {
-                if (idx != n_s - 1) {
-                    s_heap[idx] = s_heap[n_s - 1];
-                    s_heap[idx]->idx = idx;
-                    heapify_small_node(mq, idx);
-                }
-                if (mq->n_s < k_stat) {
-                    /* move head node from the large heap to the small heap */
-                    node2 = mq->l_heap[0];
-                    node2->idx = mq->n_s;
-                    node2->region = SH;
-                    s_heap[mq->n_s] = node2;
-                    ++mq->n_s;
-                    mq->l_first_leaf = FIRST_LEAF(mq->n_s);
-                    heapify_small_node(mq, node2->idx);
-
-                    /* plug hole in large heap */
-                    node2 = mq->l_heap[mq->n_l - 1];
-                    node2->idx = 0;
-                    l_heap[0] = node2;
-                    --mq->n_l;
-                    if (mq->n_l == 0) {
-                        mq->l_first_leaf = 0;
-                    } else {
-                        mq->l_first_leaf = FIRST_LEAF(mq->n_l);
-                    }
-                    heapify_large_node(mq, 0);
-
-                } else {
-                    mq->s_first_leaf = FIRST_LEAF(mq->n_s);
-                    heapify_small_node(mq, idx);
-                }
-            }
-        } else if (node->region == LH) {
-            /* Oldest node is in the large heap and needs to be moved
-             * to the nan array. Resulting hole in the large heap will be
-             * filled with the rightmost leaf of the last row of the large
-             * heap. */
-
-            k_stat = mq_k_stat(mq, n_s + n_l - 1);
-            /* insert node into nan array */
-            node->region = NA;
-            node->idx = n_n;
-            n_array[n_n] = node;
-            ++mq->n_n;
-
-            /* plug large heap hole */
-            if (idx != n_l - 1) {
-                l_heap[idx] = l_heap[n_l - 1];
-                l_heap[idx]->idx = idx;
-                heapify_large_node(mq, idx);
-            }
-            --mq->n_l;
-            if (mq->n_l == 0) {
-                mq->l_first_leaf = 0;
-            } else {
-                mq->l_first_leaf = FIRST_LEAF(mq->n_l);
-            }
-            if (mq->n_s > k_stat) {
-                /* move head node from the small heap to the large heap */
-                node2 = mq->s_heap[0];
-                node2->idx = mq->n_l;
-                node2->region = LH;
-                l_heap[mq->n_l] = node2;
-                ++mq->n_l;
-                mq->l_first_leaf = FIRST_LEAF(mq->n_l);
-                heapify_large_node(mq, node2->idx);
-
-                /* plug hole in small heap */
-                if (n_s != 1) {
-                    node2 = mq->s_heap[mq->n_s - 1];
-                    node2->idx = 0;
-                    s_heap[0] = node2;
-                }
-                --mq->n_s;
-                if (mq->n_s == 0) {
-                    mq->s_first_leaf = 0;
-                } else {
-                    mq->s_first_leaf = FIRST_LEAF(mq->n_s);
-                }
-                heapify_small_node(mq, 0);
-            }
-            /* reorder large heap if needed */
-            heapify_large_node(mq, idx);
-        } else if (node->region == NA) {
-            /* insert node into nan heap */
-            n_array[idx] = node;
-        }
-    } else {
-        if (node->region == SH) {
-            heapify_small_node(mq, idx);
-        } else if (node->region == LH) {
-            heapify_large_node(mq, idx);
-        } else {
-            /* ai is not NaN but oldest node is in nan array */
-            k_stat = mq_k_stat(mq, n_s + n_l + 1);
-
-            if (n_s == k_stat) {
-                /* insert into large heap */
-                node->region = LH;
-                node->idx = n_l;
-                l_heap[n_l] = node;
-                ++mq->n_l;
-                mq->l_first_leaf = FIRST_LEAF(mq->n_l);
-                heapify_large_node(mq, n_l);
-            } else {
-                /* insert into small heap */
-                node->region = SH;
-                node->idx = n_s;
-                s_heap[n_s] = node;
-                ++mq->n_s;
-                mq->s_first_leaf = FIRST_LEAF(mq->n_s);
-                heapify_small_node(mq, n_s);
-            }
-            /* plug nan array hole */
-            if (idx != n_n - 1) {
-                n_array[idx] = n_array[n_n - 1];
-                n_array[idx]->idx = idx;
-            }
-            --mq->n_n;
-        }
-    }
-    return mq_get_quantile(mq);
+    return mm->get_statistic(mm);
 }
 
 
@@ -834,6 +536,12 @@ mm_reset(mm_handle *mm) {
     mm->l_first_leaf = 0;
 }
 
+/* For non-nan move_median, need to reset the statistic function as well */
+void 
+mm_reset_statistic_function(mm_handle *mm) {
+    mm->get_statistic = mm_get_median;
+    return;
+}
 
 /* After bn.move_median is done, free the memory */
 void
@@ -861,16 +569,14 @@ mm_get_median(mm_handle *mm) {
     return (mm->s_heap[0]->ai + mm->l_heap[0]->ai) / 2.0;
 }
 
-
-/* function to find the index of element correspodning to the current quantile */
-static inline idx_t mq_k_stat(mm_handle *mq, idx_t idx) {
-    return (idx_t) floor((idx - 1) * mq->quantile) + 1;
+static inline ai_t
+mm_get_median_no_nans_full_window_odd(mm_handle *mm) {
+    return mm->s_heap[0]->ai;
 }
 
-/* function to check if the current index of the quantile is integer. If so,
- * then the quantile is the element at the top of the heap. Otherwise take a midpoint */
-static inline short mq_stat_exact(mm_handle *mq, idx_t idx) {
-    return ((idx - 1) * mq->quantile) == floor((idx - 1) * mq->quantile);
+static inline ai_t
+mm_get_median_no_nans_full_window_even(mm_handle *mm) {
+    return (mm->s_heap[0]->ai + mm->l_heap[0]->ai) / 2.0;
 }
 
 /* Return the current quantile */
@@ -883,6 +589,27 @@ mq_get_quantile(mm_handle *mq) {
         return mq->s_heap[0]->ai;
     return (mq->s_heap[0]->ai + mq->l_heap[0]->ai) / 2.0;
 }
+
+/* function to check if the current index of the quantile is integer. If so,
+ * then the quantile is the element at the top of the heap. Otherwise take a midpoint */
+static inline short mq_stat_exact(mm_handle *mq, idx_t idx) {
+    return ((idx - 1) * mq->quantile) == floor((idx - 1) * mq->quantile);
+}
+
+/* helper function to get mm->n_l while having same functions for mm and mq
+ * This will be assigned to mm->get_index */
+static inline idx_t mm_get_nl(mm_handle *mm, idx_t idx, short adjustment) {
+    return mm->n_l;
+}
+
+/* function to find the index of element correspodning to the current quantile  
+ * Due some some off-by-one nuances, one place in mm_update_nan requires 
+ * this to return index + 1 (to be consistent with mm). Hence use adjustment arg 
+ * This will be assigned to mq->get_index */
+static inline idx_t mq_k_stat(mm_handle *mq, idx_t idx, short adjustment) {
+    return (idx_t) (floor((idx - 1) * mq->quantile) + adjustment);
+}
+
 
 /*heapify_small/large_node is same for mm and mq */
 static inline void
