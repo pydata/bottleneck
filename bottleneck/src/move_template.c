@@ -1030,13 +1030,13 @@ mover(char *name,
         if (quantile_obj != Py_None) {
             quantile = PyFloat_AsDouble(quantile_obj);
             if (error_converting(quantile)) {
-                TYPE_ERR("`q` must be a float");
+                TYPE_ERR("Value(s) in `q` must be float");
                 return NULL;
             }
             if ((quantile < 0.0) || (quantile > 1.0)) {
                 /* Float/double specifiers %f and %lf don't work here for some reason*/
                 PyErr_Format(PyExc_ValueError,
-                            "`q` must be between 0. and 1.");
+                            "Value(s) in `q` must be between 0. and 1.");
                 return NULL;
             }
 
@@ -1579,7 +1579,7 @@ MULTILINE STRING END */
 
 static char move_quantile_doc[] =
 /* MULTILINE STRING BEGIN
-move_quantile(a, window, min_count=None, axis=-1, q=0.5)
+move_quantile(a, window, q, min_count=None, axis=-1)
 
 Moving window quantile along the specified axis, ignoring NaNs.
 
@@ -1593,6 +1593,8 @@ a : ndarray
     Input array. If `a` is not an array, a conversion is attempted.
 window : int
     The number of elements in the moving window.
+q : float or list of floats
+    Quantile(s) to compute, all values must be between 0 and 1 inclusive.
 min_count: {int, None}, optional
     If the number of non-NaN values in a window is less than `min_count`,
     then a value of NaN is assigned to the window. By default `min_count`
@@ -1600,9 +1602,6 @@ min_count: {int, None}, optional
 axis : int, optional
     The axis over which the window is moved. By default the last axis
     (axis=-1) is used. An axis of None is not allowed.
-q : float, optional
-    Quantile to compute, which must be between 0 and 1 inclusive.
-    By default q=0.5 is used, computing a moving median.
 
 Returns
 -------
