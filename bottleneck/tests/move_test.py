@@ -38,8 +38,8 @@ def test_move(func):
                         kwargs = {}
                         if func_name == "move_quantile":
                             kwargs = {"q" : q}
-                        actual = func(a, window, min_count, axis=axis, **kwargs)
-                        desired = func0(a, window, min_count, axis=axis, **kwargs)
+                        actual = func(a, window=window, min_count=min_count, axis=axis, **kwargs)
+                        desired = func0(a, window=window, min_count=min_count, axis=axis, **kwargs)
                         tup = (
                             func_name,
                             window,
@@ -68,6 +68,11 @@ def test_arg_parsing(func, decimal=5):
     """test argument parsing."""
 
     name = func.__name__
+
+    if name == "move_quantile":
+        from ..move import move_quantile as move_quantile_c
+        func = move_quantile_c
+
     func0 = eval("bn.slow.%s" % name)
 
     a = np.array([1.0, 2, 3])
