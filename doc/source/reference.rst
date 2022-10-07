@@ -31,7 +31,7 @@ moving window                      :meth:`move_sum <bottleneck.move_sum>`, :meth
 Reduce
 ------
 
-Functions the reduce the input array along the specified axis.
+Functions that reduce the input array along the specified axis.
 
 ------------
 
