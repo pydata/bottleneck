@@ -57,6 +57,7 @@ jobs:
         uses: pypa/cibuildwheel@v2.7.0
         env:
           CIBW_SKIP: pp*
+          CIBW_ARCHS_MACOS: "x86_64 arm64"
 
       - name: Store wheel artifacts
         uses: actions/upload-artifact@v3
