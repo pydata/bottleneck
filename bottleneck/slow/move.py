@@ -262,8 +262,9 @@ def lastrank(a, axis=-1):
         # At least one dimension has length 0
         shape = list(a.shape)
         shape.pop(axis)
-        r = np.empty(shape, dtype=a.dtype)
+        r = np.empty(shape, dtype=float)
         r.fill(np.nan)
+        r = r.astype(a.dtype)
         if (r.ndim == 0) and (r.size == 1):
             r = np.nan
         return r
