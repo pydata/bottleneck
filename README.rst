@@ -7,18 +7,24 @@ Bottleneck
 
 Bottleneck is a collection of fast NumPy array functions written in C.
 
-Let's give it a try. Create a NumPy array::
+Let's give it a try. Create a NumPy array:
+
+.. code-block:: pycon
 
     >>> import numpy as np
     >>> a = np.array([1, 2, np.nan, 4, 5])
 
-Find the nanmean::
+Find the nanmean:
+
+.. code-block:: pycon
 
     >>> import bottleneck as bn
     >>> bn.nanmean(a)
     3.0
 
-Moving window mean::
+Moving window mean:
+
+.. code-block:: pycon
 
     >>> bn.move_mean(a, window=2, min_count=1)
     array([ 1. ,  1.5,  2. ,  4. ,  4.5])
@@ -26,7 +32,9 @@ Moving window mean::
 Benchmark
 =========
 
-Bottleneck comes with a benchmark suite::
+Bottleneck comes with a benchmark suite:
+
+.. code-block:: pycon
 
     >>> bn.bench()
     Bottleneck performance benchmark
@@ -68,7 +76,9 @@ Bottleneck comes with a benchmark suite::
     move_rank     847.1        1.2        1.4        2.3        2.6
 
 You can also run a detailed benchmark for a single function using, for
-example, the command::
+example, the command:
+
+.. code-block:: pycon
 
     >>> bn.bench_detailed("move_median", fraction_nan=0.3)
 
@@ -106,14 +116,18 @@ Unit tests               pytest
 Documentation            sphinx, numpydoc
 ======================== ============================================================================
 
-To install Bottleneck on Linux, Mac OS X, et al.::
+To install Bottleneck on Linux, Mac OS X, et al.:
+
+.. code-block:: console
 
     $ pip install .
 
 To install bottleneck on Windows, first install MinGW and add it to your
-system path. Then install Bottleneck with the command::
+system path. Then install Bottleneck with the command:
 
-    python setup.py install --compiler=mingw32
+.. code-block:: console
+
+    $ python setup.py install --compiler=mingw32
 
 Alternatively, you can use the Windows binaries created by Christoph Gohlke:
 http://www.lfd.uci.edu/~gohlke/pythonlibs/#bottleneck
@@ -121,7 +135,9 @@ http://www.lfd.uci.edu/~gohlke/pythonlibs/#bottleneck
 Unit tests
 ==========
 
-After you have installed Bottleneck, run the suite of unit tests::
+After you have installed Bottleneck, run the suite of unit tests:
+
+.. code-block:: pycon
 
   In [1]: import bottleneck as bn
 
