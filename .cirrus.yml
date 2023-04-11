@@ -1,0 +1,22 @@
+macos_arm64_wheel_task:
+  only_if: $CIRRUS_TAG =~ 'v.*'
+  macos_instance:
+    image: ghcr.io/cirruslabs/macos-monterey-xcode
+  env:
+    CIBW_TEST_COMMAND: pytest --pyargs bottleneck
+    CIBW_TEST_REQUIRES: pytest
+    CIBW_BUILD_VERBOSITY: 1
+    PATH: /opt/homebrew/opt/python@3.10/libexec/bin:$PATH
+  matrix:
+    - env:
+        CIBW_BUILD: cp{39,310,311}-macosx_arm64
+
+  prerequisites_script:
+    - brew install python@3.10
+    - python -m pip install cibuildwheel
+
+  cibuildwheel_script:
+    - python -m cibuildwheel ./
+
+  wheels_artifacts:
+    path: "wheelhouse/*"
