@@ -130,7 +130,7 @@ system path. Then install Bottleneck with the command:
     $ python setup.py install --compiler=mingw32
 
 Alternatively, you can use the Windows binaries created by Christoph Gohlke:
-http://www.lfd.uci.edu/~gohlke/pythonlibs/#bottleneck
+https://github.com/cgohlke/numpy-mkl-wheels/
 
 Unit tests
 ==========
