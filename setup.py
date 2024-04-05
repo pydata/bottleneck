@@ -196,7 +196,10 @@ metadata = dict(
     install_requires=["numpy"],
     extras_require={"doc": ["numpydoc", "sphinx", "gitpython"]},
     cmdclass=cmdclass,
-    setup_requires=["numpy"],
+    setup_requires=[
+        "oldest-supported-numpy ; python_version < '3.9'",
+        "numpy>=2.0.0rc1 ; python_version >= '3.9'"
+    ],
     ext_modules=prepare_modules(),
     zip_safe=False,
 )
