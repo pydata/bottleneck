@@ -3,5 +3,15 @@ requires = [
     "setuptools",
     "versioneer", 
     "wheel",
-    "oldest-supported-numpy"
+    # Comments on numpy build requirement range:
+    #
+    #   1. >=2.0.x is the numpy requirement for wheel builds for distribution
+    #      on PyPI - building against 2.x yields wheels that are also
+    #      ABI-compatible with numpy 1.x at runtime.
+    #   2. Note that building against numpy 1.x works fine too - users and
+    #      redistributors can do this by installing the numpy version they like
+    #      and disabling build isolation.
+    #   3. The <2.3 upper bound is for matching the numpy deprecation policy,
+    #      it should not be loosened.
+    "numpy>=2.0.0rc1,<2.3",
 ]
