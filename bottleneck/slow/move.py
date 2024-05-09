@@ -52,7 +52,7 @@ def move_argmin(a, window, min_count=None, axis=-1):
     "Slow move_argmin for unaccelerated dtype"
 
     def argmin(a, axis):
-        a = np.array(a, copy=False)
+        a = np.asarray(a)
         flip = [slice(None)] * a.ndim
         flip[axis] = slice(None, None, -1)
         a = a[tuple(flip)]  # if tie, pick index of rightmost tie
@@ -78,7 +78,7 @@ def move_argmax(a, window, min_count=None, axis=-1):
     "Slow move_argmax for unaccelerated dtype"
 
     def argmax(a, axis):
-        a = np.array(a, copy=False)
+        a = np.asarray(a)
         flip = [slice(None)] * a.ndim
         flip[axis] = slice(None, None, -1)
         a = a[tuple(flip)]  # if tie, pick index of rightmost tie
@@ -115,7 +115,7 @@ def move_rank(a, window, min_count=None, axis=-1):
 
 def move_func(func, a, window, min_count=None, axis=-1, **kwargs):
     "Generic moving window function implemented with a python loop."
-    a = np.array(a, copy=False)
+    a = np.asarray(a)
     if min_count is None:
         mc = window
     else:
@@ -226,7 +226,7 @@ def lastrank(a, axis=-1):
     -0.5
 
     """
-    a = np.array(a, copy=False)
+    a = np.asarray(a)
     ndim = a.ndim
     if a.size == 0:
         # At least one dimension has length 0

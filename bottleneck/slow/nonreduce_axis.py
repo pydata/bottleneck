@@ -15,7 +15,7 @@ def nanrankdata(a, axis=None):
 
 
 def _rank(func1d, a, axis):
-    a = np.array(a, copy=False)
+    a = np.asarray(a)
     if axis is None:
         a = a.ravel()
         axis = 0
