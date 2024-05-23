@@ -14,5 +14,5 @@ requires = [
     #      and disabling build isolation.
     #   3. The <2.3 upper bound is for matching the numpy deprecation policy,
     #      it should not be loosened
-    "numpy>=2.0.0rc1<2.3 ; python_version >= '3.9'",
+    "numpy>=2.0.0rc1,<2.3 ; python_version >= '3.9'",
 ]

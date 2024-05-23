@@ -8,6 +8,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
+        numpy-version: [""]
         architecture: [x86, x64]
         os:
           [
@@ -27,6 +28,12 @@ jobs:
             architecture: x86
           - os: macos-12
             architecture: x86
+        include:
+          - python-version: "3.12"
+            numpy-version: ">=2.0.0rc1"
+            architecture: x64
+            os: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -42,7 +49,7 @@ jobs:
 
       - name: Test with pytest
         run: |
-          pip install pytest
+          pip install pytest "numpy${{ matrix.numpy-version }}"
           pytest --pyargs bottleneck
 
   check:
