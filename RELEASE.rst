@@ -9,11 +9,11 @@ see the commit log at https://github.com/pydata/bottleneck
 Bottleneck 1.4.0
 ================
 
-*Release date: 2024-05-xx
+*Release date: 2024-06-17
 
 Enhancements
 ~~~~~~~~~~~~
-- Building against numpy 2.0rc1, which ships new backwards compatible ABI
+- Building against numpy 2.0, which ships new backwards compatible ABI
 - Update CI config
 
 Bottleneck 1.3.8
