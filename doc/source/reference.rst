@@ -23,7 +23,8 @@ moving window                      :meth:`move_sum <bottleneck.move_sum>`, :meth
                                    :meth:`move_std <bottleneck.move_std>`, :meth:`move_var <bottleneck.move_var>`,
                                    :meth:`move_min <bottleneck.move_min>`, :meth:`move_max <bottleneck.move_max>`,
                                    :meth:`move_argmin <bottleneck.move_argmin>`, :meth:`move_argmax <bottleneck.move_argmax>`,
-                                   :meth:`move_median <bottleneck.move_median>`, :meth:`move_rank <bottleneck.move_rank>`
+                                   :meth:`move_median <bottleneck.move_median>`, :meth:`move_quantile <bottleneck.move_quantile>`,
+                                   :meth:`move_rank <bottleneck.move_rank>`
 
 =================================  ==============================================================================================
 
@@ -164,6 +165,10 @@ Functions that operate along a (1d) moving window.
 ------------
 
 .. autofunction:: bottleneck.move_median
+
+------------
+
+.. autofunction:: bottleneck.move_quantile
 
 ------------
 
