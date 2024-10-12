@@ -8,7 +8,6 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
-        numpy-version: [""]
         architecture: [x86, x64]
         os:
           [
@@ -28,11 +27,6 @@ jobs:
             architecture: x86
           - os: macos-12
             architecture: x86
-        include:
-          - python-version: "3.12"
-            numpy-version: ">=2.0.0rc1"
-            architecture: x64
-            os: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -49,7 +43,7 @@ jobs:
 
       - name: Test with pytest
         run: |
-          pip install pytest "numpy${{ matrix.numpy-version }}"
+          pip install pytest
           pytest --pyargs bottleneck
 
   check:
@@ -72,7 +66,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.16.5
+        uses: pypa/cibuildwheel@v2.21.3
         env:
           CIBW_SKIP: pp* cp36-*
 
