@@ -6,6 +6,15 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at https://github.com/pydata/bottleneck
 
+Bottleneck 1.4.1
+================
+
+*Release date: 2024-10-12
+
+Enhancements
+~~~~~~~~~~~~
+- Add python 3.13 build
+
 Bottleneck 1.4.0
 ================
 
