@@ -13,6 +13,7 @@ Bottleneck 1.4.1
 
 Enhancements
 ~~~~~~~~~~~~
+- Deprecate Python 3.7 and 3.8 
 - Add python 3.13 build
 
 Bottleneck 1.4.0
