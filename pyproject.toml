@@ -1,7 +1,5 @@
 [build-system]
 requires = [
-    # Setuptools has removed support for msvccompiler
-    # this is needed to build old versions of bottleneck
     "setuptools",
     "versioneer", 
     "wheel",
