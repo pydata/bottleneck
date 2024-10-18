@@ -14,6 +14,7 @@ Bottleneck 1.4.2
 Maintenance
 ~~~~~~~~~~~
 - Add `python_requires` to `setup.py` to limit build to 3.9+
+- Update the classifiers
 
 Bottleneck 1.4.1
 ================
