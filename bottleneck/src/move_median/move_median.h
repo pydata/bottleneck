@@ -35,6 +35,8 @@ struct _mm_node {
 };
 typedef struct _mm_node mm_node;
 
+/* this struct is used by both move_median(mm) and move_quantile(mq)  */
+typedef struct _mm_handle mm_handle;
 struct _mm_handle {
     idx_t     window;    /* window size */
     int       odd;       /* is window even (0) or odd (1) */
@@ -51,20 +53,34 @@ struct _mm_handle {
     mm_node  *newest;    /* The newest node (most recent insert) */
     idx_t s_first_leaf;  /* All nodes this index or greater are leaf nodes */
     idx_t l_first_leaf;  /* All nodes this index or greater are leaf nodes */
+    double    quantile;  /* Value between 0 and 1, the quantile to compute */
+
+    /* get_median for move_median, get_quantile for move_quantile  */
+    ai_t (*get_statistic)(mm_handle *);
+    /* returns n_l for median, returns index before quantile for quantile */
+    idx_t (*get_index)(mm_handle *, idx_t, short);
 };
-typedef struct _mm_handle mm_handle;
 
 /* non-nan functions */
 mm_handle *mm_new(const idx_t window, idx_t min_count);
+mm_handle *mq_new(const idx_t window, idx_t min_count, double quantile);
+/* used by both mm and mq */
 ai_t mm_update_init(mm_handle *mm, ai_t ai);
 ai_t mm_update(mm_handle *mm, ai_t ai);
 
+/* helper functions for non-nan move_median */
+void mm_update_statistic_function(mm_handle *mm);
+void mm_reset_statistic_function(mm_handle *mm);
+
 /* nan functions */
 mm_handle *mm_new_nan(const idx_t window, idx_t min_count);
+mm_handle *mq_new_nan(const idx_t window, idx_t min_count, double quantile);
+/* used by both mm and mq */
 ai_t mm_update_init_nan(mm_handle *mm, ai_t ai);
 ai_t mm_update_nan(mm_handle *mm, ai_t ai);
 
 /* functions common to non-nan and nan cases */
+/* used by both mm and mq */
 void mm_reset(mm_handle *mm);
 void mm_free(mm_handle *mm);
 

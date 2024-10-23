@@ -34,6 +34,9 @@ def test_list_input(func):
     name = func.__name__
     if name == "replace":
         return
+    kwargs = {}
+    if name == "move_quantile":
+        kwargs['q'] = 0.5
     func0 = eval("bn.slow.%s" % name)
     for i, a in enumerate(lists()):
         with warnings.catch_warnings():
@@ -42,8 +45,8 @@ def test_list_input(func):
                 actual = func(a)
                 desired = func0(a)
             except TypeError:
-                actual = func(a, 2)
-                desired = func0(a, 2)
+                actual = func(a, 2, **kwargs)
+                desired = func0(a, 2, **kwargs)
         a = np.array(a)
         tup = (name, "a" + str(i), str(a.dtype), str(a.shape), a)
         err_msg = msg % tup

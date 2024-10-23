@@ -50,6 +50,10 @@ def test_modification(func):
         if "partition" in name:
             second_arg = 0
 
+        kwargs = {}
+        if name == "move_quantile":
+            kwargs['q'] = 0.5
+
         for axis in axes:
             with np.errstate(invalid="ignore"):
                 a1 = a.copy()
@@ -57,7 +61,7 @@ def test_modification(func):
                 if any(x in name for x in ["move", "sort", "partition"]):
                     with warnings.catch_warnings():
                         warnings.simplefilter("ignore")
-                        func(a1, second_arg, axis=axis)
+                        func(a1, second_arg, axis=axis, **kwargs)
                 else:
                     try:
                         with warnings.catch_warnings():

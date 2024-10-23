@@ -198,6 +198,8 @@ def benchsuite(shapes, dtype, nans, axes, order, functions):
         run = {}
         run["name"] = func
         run["statements"] = ["bn_func(a, w, 1, axis)", "sw_func(a, w, 1, axis)"]
+        if func == "move_quantile":
+            run["statements"] = ["bn_func(a, w, 1, axis, q=0.25)", "sw_func(a, w, 1, axis, q=0.25)"]   
         setup = """
             from bottleneck.slow.move import %s as sw_func
             from bottleneck import %s as bn_func

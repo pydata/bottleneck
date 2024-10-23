@@ -94,12 +94,14 @@ def benchsuite(function, fraction_nan):
         index = 0
     elif function in ["rankdata", "nanrankdata"]:
         index = 0
-    elif function in bn.get_functions("move", as_string=True):
+    elif function in bn.get_functions("move", as_string=True) and function != "move_quantile":
         index = 1
     elif function in ["partition", "argpartition", "push"]:
         index = 2
     elif function == "replace":
         index = 3
+    elif function == "move_quantile":
+        index = 4
     else:
         raise ValueError("`function` (%s) not recognized" % function)
 
@@ -133,23 +135,24 @@ def get_instructions():
             "(a, 1)",  # move
             "(a, 0)",  # (arg)partition
             "(a, np.nan, 0)",  # replace
+            "(a, 1, q=0.25)",  # move_quantile
             10,
         ),
-        ("rand(10)", "(a)", "(a, 2)", "(a, 2)", "(a, np.nan, 0)", 10),
-        ("rand(100)", "(a)", "(a, 20)", "(a, 20)", "(a, np.nan, 0)", 6),
-        ("rand(1000)", "(a)", "(a, 200)", "(a, 200)", "(a, np.nan, 0)", 3),
-        ("rand(1000000)", "(a)", "(a, 200)", "(a, 200)", "(a, np.nan, 0)", 2),
+        ("rand(10)", "(a)", "(a, 2)", "(a, 2)", "(a, np.nan, 0)", "(a, 2, q=0.25)", 10),
+        ("rand(100)", "(a)", "(a, 20)", "(a, 20)", "(a, np.nan, 0)", "(a, 20, q=0.25)", 6),
+        ("rand(1000)", "(a)", "(a, 200)", "(a, 200)", "(a, np.nan, 0)", "(a, 200, q=0.25)", 3),
+        ("rand(1000000)", "(a)", "(a, 200)", "(a, 200)", "(a, np.nan, 0)", None, 2),
         # 2d input array
-        ("rand(10, 10)", "(a)", "(a, 2)", "(a, 2)", "(a, np.nan, 0)", 6),
-        ("rand(100, 100)", "(a)", "(a, 20)", "(a, 20)", "(a, np.nan, 0)", 3),
-        ("rand(1000, 1000)", "(a)", "(a, 200)", "(a, 200)", "(a, np.nan, 0)", 2),
-        ("rand(10, 10)", "(a, 1)", None, None, None, 6),
-        ("rand(100, 100)", "(a, 1)", None, None, None, 3),
-        ("rand(1000, 1000)", "(a, 1)", None, None, None, 2),
-        ("rand(100000, 2)", "(a, 1)", "(a, 1)", "(a, 1)", None, 2),
-        ("rand(10, 10)", "(a, 0)", None, None, None, 6),
-        ("rand(100, 100)", "(a, 0)", "(a, 20, axis=0)", None, None, 3),
-        ("rand(1000, 1000)", "(a, 0)", "(a, 200, axis=0)", None, None, 2),
+        ("rand(10, 10)", "(a)", "(a, 2)", "(a, 2)", "(a, np.nan, 0)", "(a, 2, q=0.25)", 6),
+        ("rand(100, 100)", "(a)", "(a, 20)", "(a, 20)", "(a, np.nan, 0)", "(a, 20, q=0.25)", 3),
+        ("rand(1000, 1000)", "(a)", "(a, 200)", "(a, 200)", "(a, np.nan, 0)", None ,2),
+        ("rand(10, 10)", "(a, 1)", None, None, None, None, 6),
+        ("rand(100, 100)", "(a, 1)", None, None, None, None, 3),
+        ("rand(1000, 1000)", "(a, 1)", None, None, None, None, 2),
+        ("rand(100000, 2)", "(a, 1)", "(a, 1)", "(a, 1)", None, None, 2),
+        ("rand(10, 10)", "(a, 0)", None, None, None, None, 6),
+        ("rand(100, 100)", "(a, 0)", "(a, 20, axis=0)", None, None, None, 3),
+        ("rand(1000, 1000)", "(a, 0)", "(a, 200, axis=0)", None, None, None, 2),
         # 3d input array
         (
             "rand(100, 100, 100)",
@@ -157,6 +160,7 @@ def get_instructions():
             "(a, 20, axis=0)",
             "(a, 20, axis=0)",
             None,
+            "(a, 20, axis=0, q=0.25)",
             2,
         ),
         (
@@ -165,6 +169,7 @@ def get_instructions():
             "(a, 20, axis=1)",
             "(a, 20, axis=1)",
             None,
+            "(a, 20, axis=1, q=0.25)",
             2,
         ),
         (
@@ -173,10 +178,11 @@ def get_instructions():
             "(a, 20, axis=2)",
             "(a, 20, axis=2)",
             "(a, np.nan, 0)",
+            "(a, 20, axis=2, q=0.25)",
             2,
         ),
         # 0d input array
-        ("array(1.0)", "(a)", None, None, "(a, 0, 2)", 10),
+        ("array(1.0)", "(a)", None, None, "(a, 0, 2)", None, 10),
     ]
 
     return instructions
