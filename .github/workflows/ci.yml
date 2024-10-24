@@ -65,10 +65,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up QEMU (Linux Only)
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
+
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.21.3
         env:
           CIBW_SKIP: pp*
+          CIBW_ARCHS_LINUX: auto aarch64
 
       - name: Store wheel artifacts
         uses: actions/upload-artifact@v4
