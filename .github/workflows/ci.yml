@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
-        architecture: [x86, x64, arm64]
+        architecture: [x86, x64]
         os:
           [
             ubuntu-latest,
@@ -27,9 +27,18 @@ jobs:
             architecture: x86
           - os: macos-12
             architecture: x86
+        include:
+          - os: ubuntu-latest
+            architecture: arm64
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set up QEMU (Linux/arm64 Only)
+        if: runner.os == 'Linux' && matrix.architecture == "arm64"
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
