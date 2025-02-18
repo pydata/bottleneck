@@ -7,7 +7,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.13t"]
         architecture: [x86, x64]
         os:
           [
@@ -29,10 +29,25 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
+        if: ${{ matrix.python-version != '3.13t' }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           architecture: ${{ matrix.architecture }}
+
+      - name: Set up free-threaded Python ${{ matrix.python-version }}
+        if: ${{ matrix.python-version == '3.13t' }}
+        uses: astral-sh/setup-uv@b5f58b2abc5763ade55e4e9d0fe52cd1ff7979ca
+        with:
+          python-version: ${{ matrix.python-version }}
+          enable-cache: false
+
+      - if: ${{ matrix.python-version == '3.13t' }}
+        run:
+          uv pip install --python=${{ matrix.python-version }} pip
+          uv pip install --python=${{ matrix.python-version }} --pre -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple numpy
+          uv pip install --python=${{ matrix.python-version }} pytest-run-parallel
+          echo "PARALLEL_THREADS=4" >> "$GITHUB_ENV"
 
       - name: Install
         run: |

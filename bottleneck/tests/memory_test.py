@@ -4,6 +4,7 @@ import bottleneck as bn
 import pytest
 
 
+@pytest.mark.thread_unsafe
 @pytest.mark.skipif(
     sys.platform.startswith("win"), reason="resource module not available on windows"
 )
