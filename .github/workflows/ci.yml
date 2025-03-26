@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@9e62be81b28222addecf85e47571213eb7680449
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           architecture: ${{ matrix.architecture }}
@@ -37,9 +37,8 @@ jobs:
 
       - if: ${{ endsWith(matrix.python-version, 't') }}
         run:
-          pip install --pre -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple numpy
           pip install pytest-run-parallel
-          echo "PARALLEL_THREADS=4" >> "$GITHUB_ENV"
+          echo "PYTEST_ADDOPTS=--parallel-threads=4" >> "$GITHUB_ENV"
 
       - name: Install
         run: |
