@@ -106,9 +106,9 @@ PyObject *pystr_new = NULL;
 
 static int
 intern_strings(void) {
-    pystr_a = PyString_InternFromString("a");
-    pystr_old = PyString_InternFromString("old");
-    pystr_new = PyString_InternFromString("new");
+    pystr_a = PyUnicode_InternFromString("a");
+    pystr_old = PyUnicode_InternFromString("old");
+    pystr_new = PyUnicode_InternFromString("new");
     return pystr_a && pystr_old && pystr_new;
 }
 
@@ -330,7 +330,6 @@ nonreduce_methods[] = {
 };
 
 
-#if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef
 nonreduce_def = {
    PyModuleDef_HEAD_INIT,
@@ -339,24 +338,13 @@ nonreduce_def = {
    -1,
    nonreduce_methods
 };
-#endif
 
 
 PyMODINIT_FUNC
-#if PY_MAJOR_VERSION >= 3
 #define RETVAL m
 PyInit_nonreduce(void)
-#else
-#define RETVAL
-initnonreduce(void)
-#endif
 {
-    #if PY_MAJOR_VERSION >=3
-        PyObject *m = PyModule_Create(&nonreduce_def);
-    #else
-        PyObject *m = Py_InitModule3("nonreduce", nonreduce_methods,
-                                     nonreduce_doc);
-    #endif
+    PyObject *m = PyModule_Create(&nonreduce_def);
     if (m == NULL) return RETVAL;
     import_array();
     if (!intern_strings()) {

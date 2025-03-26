@@ -1059,9 +1059,9 @@ PyObject *pystr_ddof = NULL;
 
 static int
 intern_strings(void) {
-    pystr_a = PyString_InternFromString("a");
-    pystr_axis = PyString_InternFromString("axis");
-    pystr_ddof = PyString_InternFromString("ddof");
+    pystr_a = PyUnicode_InternFromString("a");
+    pystr_axis = PyUnicode_InternFromString("axis");
+    pystr_ddof = PyUnicode_InternFromString("ddof");
     return pystr_a && pystr_axis && pystr_ddof;
 }
 
@@ -1951,7 +1951,6 @@ reduce_methods[] = {
 };
 
 
-#if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef
 reduce_def = {
    PyModuleDef_HEAD_INIT,
@@ -1960,23 +1959,13 @@ reduce_def = {
    -1,
    reduce_methods
 };
-#endif
 
 
 PyMODINIT_FUNC
-#if PY_MAJOR_VERSION >= 3
 #define RETVAL m
 PyInit_reduce(void)
-#else
-#define RETVAL
-initreduce(void)
-#endif
 {
-    #if PY_MAJOR_VERSION >=3
-        PyObject *m = PyModule_Create(&reduce_def);
-    #else
-        PyObject *m = Py_InitModule3("reduce", reduce_methods, reduce_doc);
-    #endif
+    PyObject *m = PyModule_Create(&reduce_def);
     if (m == NULL) return RETVAL;
     import_array();
     if (!intern_strings()) {

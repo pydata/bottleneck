@@ -751,11 +751,11 @@ PyObject *pystr_ddof = NULL;
 
 static int
 intern_strings(void) {
-    pystr_a = PyString_InternFromString("a");
-    pystr_window = PyString_InternFromString("window");
-    pystr_min_count = PyString_InternFromString("min_count");
-    pystr_axis = PyString_InternFromString("axis");
-    pystr_ddof = PyString_InternFromString("ddof");
+    pystr_a = PyUnicode_InternFromString("a");
+    pystr_window = PyUnicode_InternFromString("window");
+    pystr_min_count = PyUnicode_InternFromString("min_count");
+    pystr_axis = PyUnicode_InternFromString("axis");
+    pystr_ddof = PyUnicode_InternFromString("ddof");
     return pystr_a && pystr_window && pystr_min_count &&
            pystr_axis && pystr_ddof;
 }
@@ -1504,7 +1504,6 @@ move_methods[] = {
 };
 
 
-#if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef
 move_def = {
    PyModuleDef_HEAD_INIT,
@@ -1513,23 +1512,13 @@ move_def = {
    -1,
    move_methods
 };
-#endif
 
 
 PyMODINIT_FUNC
-#if PY_MAJOR_VERSION >= 3
 #define RETVAL m
 PyInit_move(void)
-#else
-#define RETVAL
-initmove(void)
-#endif
 {
-    #if PY_MAJOR_VERSION >=3
-        PyObject *m = PyModule_Create(&move_def);
-    #else
-        PyObject *m = Py_InitModule3("move", move_methods, move_doc);
-    #endif
+    PyObject *m = PyModule_Create(&move_def);
     if (m == NULL) return RETVAL;
     import_array();
     if (!intern_strings()) {
