@@ -107,10 +107,18 @@ and LICENSES directory for details.
 Install
 =======
 
+Bottleneck provides binary wheels on PyPI for all the most common platforms.
+Binary packages are also available in conda-forge. We recommend installing binaries
+with ``pip``, ``uv``, ``conda`` or similar - it's faster and easier than building
+from source.
+
+Installing from source
+----------------------
+
 Requirements:
 
 ======================== ============================================================================
-Bottleneck               Python 2.7, 3.5, 3.6, 3.7, 3.8, 3.9, 3.10, 3.11; NumPy 1.16.0+
+Bottleneck               Python >=3.9; NumPy 1.16.0+
 Compile                  gcc, clang, MinGW or MSVC
 Unit tests               pytest
 Documentation            sphinx, numpydoc
@@ -128,9 +136,6 @@ system path. Then install Bottleneck with the command:
 .. code-block:: console
 
     $ python setup.py install --compiler=mingw32
-
-Alternatively, you can use the Windows binaries created by Christoph Gohlke:
-http://www.lfd.uci.edu/~gohlke/pythonlibs/#bottleneck
 
 Unit tests
 ==========
