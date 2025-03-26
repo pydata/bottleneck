@@ -341,14 +341,13 @@ nonreduce_def = {
 
 
 PyMODINIT_FUNC
-#define RETVAL m
 PyInit_nonreduce(void)
 {
     PyObject *m = PyModule_Create(&nonreduce_def);
-    if (m == NULL) return RETVAL;
+    if (m == NULL) return NULL;
     import_array();
     if (!intern_strings()) {
-        return RETVAL;
+        return NULL;
     }
-    return RETVAL;
+    return m;
 }
