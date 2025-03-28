@@ -14,7 +14,6 @@ jobs:
             ubuntu-latest,
             ubuntu-20.04,
             macos-13,
-            macos-12,
             windows-latest,
             windows-2019,
           ]
@@ -24,8 +23,6 @@ jobs:
           - os: ubuntu-20.04
             architecture: x86
           - os: macos-13
-            architecture: x86
-          - os: macos-12
             architecture: x86
 
     steps:
@@ -39,14 +36,18 @@ jobs:
 
       - name: Install
         run: |
-          pip install .
+          pip install . -v
 
       - name: Test with pytest
         run: |
           pip install pytest
+          cd doc  # avoid picking up bottleneck from the source dir
           pytest --pyargs bottleneck
 
   check:
+    # This job is here is the "Required" one for merging PRs, and
+    # it only runs after all the `test` jobs above have run. Hence
+    # it serves as a check that CI actually ran before a PR gets merged.
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -66,7 +67,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.21.3
+        uses: pypa/cibuildwheel@v2.23.2
         env:
           CIBW_SKIP: pp*
 
