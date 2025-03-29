@@ -392,10 +392,10 @@ PyObject *pystr_axis = NULL;
 
 static int
 intern_strings(void) {
-    pystr_a = PyString_InternFromString("a");
-    pystr_n = PyString_InternFromString("n");
-    pystr_kth = PyString_InternFromString("kth");
-    pystr_axis = PyString_InternFromString("axis");
+    pystr_a = PyUnicode_InternFromString("a");
+    pystr_n = PyUnicode_InternFromString("n");
+    pystr_kth = PyUnicode_InternFromString("kth");
+    pystr_axis = PyUnicode_InternFromString("axis");
     return pystr_a && pystr_n && pystr_axis;
 }
 
@@ -1012,7 +1012,6 @@ nra_methods[] = {
 };
 
 
-#if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef
 nra_def = {
    PyModuleDef_HEAD_INIT,
@@ -1021,27 +1020,16 @@ nra_def = {
    -1,
    nra_methods
 };
-#endif
 
 
 PyMODINIT_FUNC
-#if PY_MAJOR_VERSION >= 3
-#define RETVAL m
 PyInit_nonreduce_axis(void)
-#else
-#define RETVAL
-initnonreduce_axis(void)
-#endif
 {
-    #if PY_MAJOR_VERSION >=3
-        PyObject *m = PyModule_Create(&nra_def);
-    #else
-        PyObject *m = Py_InitModule3("nonreduce_axis", nra_methods, nra_doc);
-    #endif
-    if (m == NULL) return RETVAL;
+    PyObject *m = PyModule_Create(&nra_def);
+    if (m == NULL) return NULL;
     import_array();
     if (!intern_strings()) {
-        return RETVAL;
+        return NULL;
     }
-    return RETVAL;
+    return m;
 }

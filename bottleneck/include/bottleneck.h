@@ -36,12 +36,6 @@
 #define NPY_MIN_int64 NPY_MIN_INT64
 #define NPY_MIN_int32 NPY_MIN_INT32
 
-#if PY_MAJOR_VERSION >= 3
-    #define PyString_FromString       PyBytes_FromString
-    #define PyInt_AsLong              PyLong_AsLong
-    #define PyString_InternFromString PyUnicode_InternFromString
-#endif
-
 #define VARKEY              (((unsigned)METH_VARARGS) | ((unsigned)METH_KEYWORDS))
 #define error_converting(x) (((x) == -1) && PyErr_Occurred())
 
