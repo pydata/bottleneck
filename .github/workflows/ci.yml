@@ -76,6 +76,7 @@ jobs:
         uses: pypa/cibuildwheel@v2.23.2
         env:
           CIBW_SKIP: pp*
+          CIBW_ENABLE: cpython-freethreading
 
       - name: Store wheel artifacts
         uses: actions/upload-artifact@v4
