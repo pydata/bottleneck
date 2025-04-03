@@ -1,9 +1,11 @@
 import os
 import posixpath as path
+import pytest
 
 from ..src.bn_template import make_c_files
 
 
+@pytest.mark.thread_unsafe
 def test_make_c_files() -> None:
     dirpath = os.path.join(os.path.dirname(__file__), "data/template_test/")
     modules = ["test"]
