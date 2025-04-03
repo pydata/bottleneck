@@ -75,7 +75,7 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.23.2
         env:
-          CIBW_SKIP: pp*
+          CIBW_SKIP: "pp* *t-manylinux_i686 *t-musllinux_i686"
           CIBW_ENABLE: cpython-freethreading
 
       - name: Store wheel artifacts
