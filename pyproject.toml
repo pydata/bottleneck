@@ -11,7 +11,12 @@ requires = [
     #   2. Note that building against numpy 1.x works fine too - users and
     #      redistributors can do this by installing the numpy version they like
     #      and disabling build isolation.
-    #   3. The <2.3 upper bound is for matching the numpy deprecation policy,
-    #      it should not be loosened
-    "numpy>=2,<2.3"
+    #   3. The <2.(N+3) upper bound is for matching the numpy deprecation policy,
+    #      it should not be loosened more than that.
+    "numpy>=2,<2.5"
 ]
+
+
+[tool.pytest.ini_options]
+addopts = "-l"
+filterwarnings = ["error"]
