@@ -7,7 +7,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.13t"]
         architecture: [x86, x64]
         os:
           [
@@ -33,6 +33,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           architecture: ${{ matrix.architecture }}
+
+
+      - if: ${{ endsWith(matrix.python-version, 't') }}
+        run: |
+          pip install pytest-run-parallel
+          echo "PYTEST_ADDOPTS=--parallel-threads=4" >> "$GITHUB_ENV"
 
       - name: Install
         run: |
@@ -69,7 +75,8 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.23.2
         env:
-          CIBW_SKIP: pp*
+          CIBW_SKIP: "pp* *t-manylinux_i686 *t-musllinux_i686"
+          CIBW_ENABLE: cpython-freethreading
 
       - name: Store wheel artifacts
         uses: actions/upload-artifact@v4
