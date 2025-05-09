@@ -3,28 +3,40 @@ name: Github Actions
 on: ["push", "pull_request"]
 
 jobs:
-  test:
+  test-linux-macos:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.13t"]
-        architecture: [x86, x64]
+        python-version: ["3.9", "3.13", "3.13t"]
         os:
-          [
-            ubuntu-latest,
-            ubuntu-22.04,
-            macos-13,
-            windows-latest,
-            windows-2019,
-          ]
-        exclude:
-          - os: ubuntu-latest
-            architecture: x86
-          - os: ubuntu-22.04
-            architecture: x86
-          - os: macos-13
-            architecture: x86
+          # Note that macos-13 is x86-64 (deprecated already),
+          # and macos-latest is arm64.
+          [ubuntu-22.04, ubuntu-24.04-arm, macos-13, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
 
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install
+        run: |
+          pip install . -v
+
+      - name: Test with pytest
+        run: |
+          pip install pytest
+          cd doc  # avoid picking up bottleneck from the source dir
+          pytest --pyargs bottleneck
+
+  test-windows:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.13", "3.13t"]
+        architecture: [x86, x64]
+        os: [windows-latest, windows-2019]
     steps:
       - uses: actions/checkout@v4
 
@@ -47,26 +59,26 @@ jobs:
       - name: Test with pytest
         run: |
           pip install pytest
-          cd doc  # avoid picking up bottleneck from the source dir
+          cd doc
           pytest --pyargs bottleneck
 
   check:
     # This job is here is the "Required" one for merging PRs, and
-    # it only runs after all the `test` jobs above have run. Hence
+    # it only runs after all the `test-*` jobs above have run. Hence
     # it serves as a check that CI actually ran before a PR gets merged.
-    needs: test
+    needs: [test-linux-macos, test-windows]
     runs-on: ubuntu-latest
     steps:
       - name: Placeholder for CI checks in PRs
         run: echo "Done"
 
   build_wheels:
-    needs: test
+    needs: [test-linux-macos, test-windows]
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        os: [macos-latest, windows-latest, ubuntu-latest, ubuntu-24.04-arm]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -85,7 +97,7 @@ jobs:
           path: ./wheelhouse/*.whl
 
   build_sdist:
-    needs: test
+    needs: [test-linux-macos, test-windows]
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
@@ -102,7 +114,6 @@ jobs:
 
   release:
     needs: [build_wheels, build_sdist]
-    # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
