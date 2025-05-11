@@ -7,28 +7,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ["3.9", "3.13", "3.13t"]
+        python-version: ["3.9", "3.13"]
         os:
           # Note that macos-13 is x86-64 (deprecated already),
           # and macos-latest is arm64.
           [ubuntu-22.04, ubuntu-24.04-arm, macos-13, macos-latest]
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install
-        run: |
-          pip install . -v
-
-      - name: Test with pytest
-        run: |
-          pip install pytest
-          cd doc  # avoid picking up bottleneck from the source dir
-          pytest --pyargs bottleneck
+      - uses: ./.github/bottleneck-action
 
   test-windows:
     runs-on: ${{ matrix.os }}
@@ -39,28 +25,16 @@ jobs:
         os: [windows-latest, windows-2019]
     steps:
       - uses: actions/checkout@v4
+      - uses: ./.github/bottleneck-action
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-          architecture: ${{ matrix.architecture }}
-
-
-      - if: ${{ endsWith(matrix.python-version, 't') }}
-        run: |
-          pip install pytest-run-parallel
-          echo "PYTEST_ADDOPTS=--parallel-threads=4" >> "$GITHUB_ENV"
-
-      - name: Install
-        run: |
-          pip install . -v
-
-      - name: Test with pytest
-        run: |
-          pip install pytest
-          cd doc
-          pytest --pyargs bottleneck
+  test-pyversions:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.13t"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/bottleneck-action
 
   check:
     # This job is here is the "Required" one for merging PRs, and
