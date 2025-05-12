@@ -6,10 +6,28 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at https://github.com/pydata/bottleneck
 
+Bottleneck 1.5.0
+================
+
+*Release date: 2025-05-12*
+
+Maintenance
+~~~~~~~~~~~
+- Drop unnecessary build dependency on `wheel`
+- Remove 32-bit Linux wheels, because NumPy no longer provides them
+- Some code cleanups: removed Python 2.x-specific code paths, fixes for
+  deprecation warnings coming from `setuptools`
+
+Enhancements
+~~~~~~~~~~~~
+- Support for free-threaded CPython
+- Improved platform support: wheels for Linux aarch64, macOS x86-64 and arm64,
+  and free-threaded CPython
+
 Bottleneck 1.4.2
 ================
 
-*Release date: 2024-10-18
+*Release date: 2024-10-18*
 
 Maintenance
 ~~~~~~~~~~~
@@ -19,7 +37,7 @@ Maintenance
 Bottleneck 1.4.1
 ================
 
-*Release date: 2024-10-12
+*Release date: 2024-10-12*
 
 Maintenance
 ~~~~~~~~~~~~
@@ -29,7 +47,7 @@ Maintenance
 Bottleneck 1.4.0
 ================
 
-*Release date: 2024-06-17
+*Release date: 2024-06-17*
 
 Maintenance
 ~~~~~~~~~~~~
