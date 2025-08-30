@@ -12,7 +12,7 @@ requires = [
     #      and disabling build isolation.
     #   3. The <2.(N+3) upper bound is for matching the numpy deprecation policy,
     #      it should not be loosened more than that.
-    "numpy>=2,<2.5"
+    "numpy>=2,<2.6"
 ]
 build-backend = "setuptools.build_meta"
 
