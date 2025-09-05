@@ -6,6 +6,17 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at https://github.com/pydata/bottleneck
 
+Bottleneck 1.6.0
+================
+*Release date 2025-09-05*
+
+Maintenance
+~~~~~~~~~~~
+- Add Python 3.14 support, drop Python 3.9 
+- Add free-threading trove classifier
+- Bump upper bound on numpy to account for numpy 2.3.x 
+
+
 Bottleneck 1.5.0
 ================
 
