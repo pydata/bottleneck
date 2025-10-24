@@ -118,7 +118,7 @@ Installing from source
 Requirements:
 
 ======================== ============================================================================
-Bottleneck               Python >=3.9; NumPy 1.16.0+
+Bottleneck               Python >3.9; NumPy 1.16.0+
 Compile                  gcc, clang, MinGW or MSVC
 Unit tests               pytest
 Documentation            sphinx, numpydoc
