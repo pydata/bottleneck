@@ -32,7 +32,7 @@ jobs:
             python-version: "3.14"
           - os: windows-11-arm
             architecture: arm64
-            python-version: "3.14t-dev"
+            python-version: "3.14t"
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/bottleneck-action
