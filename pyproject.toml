@@ -85,3 +85,14 @@ parentdir_prefix = "bottleneck-"
 [tool.pytest.ini_options]
 addopts = "-l"
 filterwarnings = ["error"]
+
+[tool.cibuildwheel]
+skip = [
+    "*_i686",
+    "cp310-win_arm64", # no numpy wheels for this target
+]
+enable = [
+    # enable cp313t wheels
+    # note that cp314t and later are already enabled by default
+    "cpython-freethreading",
+]
