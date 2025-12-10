@@ -29,7 +29,7 @@ jobs:
             python-version: "3.11"
           - os: windows-11-arm
             architecture: arm64
-            python-version: "3.14-dev"
+            python-version: "3.14"
           - os: windows-11-arm
             architecture: arm64
             python-version: "3.14t-dev"
