@@ -7,11 +7,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ["3.10", "3.14-dev"]
+        python-version:
+          - "3.10"
+          - "3.14"
         os:
-          # Note that macos-13 is x86-64 (deprecated already),
-          # and macos-latest is arm64.
-          [ubuntu-22.04, ubuntu-24.04-arm, macos-13, macos-latest]
+          - ubuntu-22.04
+          - ubuntu-24.04-arm
+          - macos-15-intel
+          - macos-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/bottleneck-action
@@ -20,9 +23,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ["3.10", "3.14-dev", "3.14t-dev"]
-        architecture: [x86, x64]
-        os: [windows-latest, windows-2022]
+        python-version:
+          - "3.10"
+          - "3.14"
+          - "3.14t"
+        architecture:
+          - x86
+          - x64
+        os:
+          - windows-latest
+          - windows-2022
         include:
           - os: windows-11-arm
             architecture: arm64
@@ -41,7 +51,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13", "3.13t", "3.14-dev", "3.14t-dev"]
+        python-version:
+         - "3.10"
+         - "3.11"
+         - "3.12"
+         - "3.13"
+         - "3.13t"
+         - "3.14"
+         - "3.14t"
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/bottleneck-action
@@ -50,14 +67,18 @@ jobs:
     # This job is here is the "Required" one for merging PRs, and
     # it only runs after all the `test-*` jobs above have run. Hence
     # it serves as a check that CI actually ran before a PR gets merged.
-    needs: [test-linux-macos, test-windows]
+    needs:
+      - test-linux-macos
+      - test-windows
     runs-on: ubuntu-latest
     steps:
       - name: Placeholder for CI checks in PRs
         run: echo "Done"
 
   build_wheels:
-    needs: [test-linux-macos, test-windows]
+    needs:
+      - test-linux-macos
+      - test-windows
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ${{ matrix.os }}
     strategy:
@@ -87,7 +108,9 @@ jobs:
           path: ./wheelhouse/*.whl
 
   build_sdist:
-    needs: [test-linux-macos, test-windows]
+    needs:
+     - test-linux-macos
+     - test-windows
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
@@ -103,7 +126,9 @@ jobs:
           path: dist/*.tar.gz
 
   release:
-    needs: [build_wheels, build_sdist]
+    needs:
+      - build_wheels
+      - build_sdist
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
