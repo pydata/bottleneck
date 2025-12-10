@@ -6,10 +6,8 @@ sphinx:
 formats: all
 
 python:
-   version: 3.7
-   install:
-      - method: pip
-        path: .
-        extra_requirements:
-           - doc
-
+  version: '3.10'
+  install:
+    # Since the install step is overridden, pip is no longer updated automatically.
+    - pip install --upgrade pip
+    - pip install --group doc .
