@@ -10,11 +10,11 @@ runs:
     - name: Install
       shell: bash
       run: |
-        pip install . -v
+        pip install --upgrade pip
+        pip install . -v --group test
 
     - name: Test with pytest
       shell: bash
       run: |
-        pip install pytest
         cd doc  # avoid picking up bottleneck from the source dir
         pytest --pyargs bottleneck

@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools",
+    "setuptools>=77.0.1",
     "versioneer", 
     # Comments on numpy build requirement range:
     #
@@ -16,6 +16,62 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "Bottleneck"
+description = "Fast NumPy array functions written in C"
+maintainers = [
+    { name = "Christopher Whelan" , email = "bottle-neck@googlegroups.com" },
+]
+readme = { file = "README.rst" , content-type = "text/x-rst" }
+license = "BSD-2-Clause"
+license-files = [
+    "LICENSE",
+    "LICENSES/NUMPY_LICENSE",
+    "LICENSES/PANDAS_LICENSE",
+    "LICENSES/SCIPY_LICENSE",
+    "LICENSES/SETUPTOOLS_LICENSE",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Operating System :: OS Independent",
+    "Programming Language :: C",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Free Threading :: 2 - Beta",
+    "Topic :: Scientific/Engineering",
+]
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.21.3"]
+dynamic = ["version"]
+
+[project.urls]
+Repository = "https://github.com/pydata/bottleneck"
+Changelog = "https://github.com/pydata/bottleneck/blob/master/RELEASE.rst"
+
+[dependency-groups]
+doc = [
+    "numpydoc",
+    "sphinx",
+    "gitpython",
+]
+test = [
+    "pytest>=8.0.0",
+]
+
+[tool.setuptools]
+include-package-data = false
+zip-safe = false
+
+[tool.setuptools.packages.find]
+namespaces = false
 
 [tool.pytest.ini_options]
 addopts = "-l"
