@@ -2,6 +2,8 @@ name: Github Actions
 
 on: ["push", "pull_request"]
 
+permissions: {}
+
 jobs:
   test-linux-macos:
     runs-on: ${{ matrix.os }}
