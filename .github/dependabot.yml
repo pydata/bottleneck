@@ -1,0 +1,17 @@
+version: 2
+updates:
+- package-ecosystem: github-actions
+  directory: /.github/workflows
+  schedule:
+    interval: quarterly
+  cooldown:
+    default-days: 7
+  groups:
+    # major upgrades get a dedicated PR each
+    # other upgrades are grouped by level
+    gha-minors:
+      update-types:
+      - minor
+    gha-patches:
+      update-types:
+      - patch
