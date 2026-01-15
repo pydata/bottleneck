@@ -5,19 +5,6 @@ import sys
 import logging
 from subprocess import check_output
 
-
-if sys.version_info[0] == 2:
-
-    def decode(string):
-        return string
-
-
-else:
-
-    def decode(string):
-        return string.decode()
-
-
 class CondaWrapper(object):
     """Manage the AppVeyor Miniconda installation through Python.
 
@@ -54,14 +41,14 @@ class CondaWrapper(object):
             "no",
         ]
         msg = check_output(cmd, shell=True)
-        self.logger.debug(decode(msg))
+        self.logger.debug(msg.decode())
         self.logger.info("Done.")
 
     def update(self):
         self.logger.info("Updating '%s'...", self.home)
         cmd = ["conda", "update", "-q", "conda"]
         msg = check_output(cmd, shell=True)
-        self.logger.debug(decode(msg))
+        self.logger.debug(msg.decode())
         self.logger.info("Done.")
 
     def create(self, *args):
@@ -75,15 +62,15 @@ class CondaWrapper(object):
             "python=" + self.version,
         ] + list(args)
         msg = check_output(cmd, shell=True)
-        self.logger.debug(decode(msg))
+        self.logger.debug(msg.decode())
         cmd = ["activate", self.venv]
         msg = check_output(cmd, shell=True)
-        self.logger.debug(decode(msg))
+        self.logger.debug(msg.decode())
         # consider only for debugging
         cmd = ["conda", "info", "-a"]
         msg = check_output(cmd, shell=True)
-        self.logger.debug(decode(msg))
+        self.logger.debug(msg.decode())
         cmd = ["conda", "list"]
         msg = check_output(cmd, shell=True)
-        self.logger.debug(decode(msg))
+        self.logger.debug(msg.decode())
         self.logger.info("Done.")
