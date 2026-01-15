@@ -68,10 +68,7 @@ class build_ext(_build_ext):
     def finalize_options(self):
         _build_ext.finalize_options(self)
         # prevent numpy from thinking it is still in its setup process
-        if sys.version_info < (3,):
-            import __builtin__ as builtins
-        else:
-            import builtins
+        import builtins
         builtins.__NUMPY_SETUP__ = False
         import numpy
 
