@@ -1,5 +1,6 @@
-.. image:: https://github.com/pydata/bottleneck/workflows/Github%20Actions/badge.svg
-    :target: https://github.com/pydata/bottleneck/actions
+.. image:: https://github.com/pydata/bottleneck/actions/workflows/ci.yml/badge.svg?branch=master
+    :target: https://github.com/pydata/bottleneck/actions/workflows/ci.yml
+
 
 ==========
 Bottleneck
