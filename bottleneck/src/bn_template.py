@@ -36,19 +36,19 @@ def template(src_str: str) -> str:
     src_list = src_str.splitlines()
     line_numbers = []
     last_empty_ind = 0
-    for i, l in enumerate(src_list):
-        if l.strip().endswith("{") and not l.startswith(" "):
+    for i, L in enumerate(src_list):
+        if L.strip().endswith("{") and not L.startswith(" "):
             line_numbers.append(last_empty_ind)
 
-        if len(l.strip()) == 0 or "*/" in l:
+        if len(L.strip()) == 0 or "*/" in L:
             last_empty_ind = i + 1
 
     distinct_line_numbers = set(line_numbers)
     new_src_list = []
-    for i, l in enumerate(src_list):
+    for i, L in enumerate(src_list):
         if i in distinct_line_numbers:
             new_src_list.append("#line {}".format(i + 1))
-        new_src_list.append(l)
+        new_src_list.append(L)
 
     src_list = repeat_templating(new_src_list)
     src_list = dtype_templating(src_list)
