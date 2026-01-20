@@ -4,7 +4,6 @@ Generic test utilities.
 Based on scipy._libs._testutils
 """
 
-
 import os
 import sys
 

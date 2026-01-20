@@ -19,7 +19,7 @@ def test_move(func):
     fmt += "\nInput array:\n%s\n"
     aaae = assert_array_almost_equal
     func_name = func.__name__
-    func0 = eval("bn.slow.%s" % func_name)
+    func0 = eval(f"bn.slow.{func_name}")
     if func_name == "move_var":
         decimal = 3
     else:
@@ -61,13 +61,13 @@ def test_arg_parsing(func, decimal=5):
     """test argument parsing."""
 
     name = func.__name__
-    func0 = eval("bn.slow.%s" % name)
+    func0 = eval(f"bn.slow.{name}")
 
     a = np.array([1.0, 2, 3])
 
-    fmt = "\n%s" % func
+    fmt = f"\n{func}"
     fmt += "%s\n"
-    fmt += "\nInput array:\n%s\n" % a
+    fmt += f"\nInput array:\n{a}\n"
 
     actual = func(a, 2)
     desired = func0(a, 2)

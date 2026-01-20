@@ -5,9 +5,7 @@ import re
 from re import Pattern
 
 
-def make_c_files(
-    dirpath: str | None = None, modules: list[str] | None = None
-) -> None:
+def make_c_files(dirpath: str | None = None, modules: list[str] | None = None) -> None:
     if modules is None:
         modules = ["reduce", "move", "nonreduce", "nonreduce_axis"]
     if dirpath is None:

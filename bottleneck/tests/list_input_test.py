@@ -36,7 +36,7 @@ def test_list_input(func):
     name = func.__name__
     if name == "replace":
         return
-    func0 = eval("bn.slow.%s" % name)
+    func0 = eval(f"bn.slow.{name}")
     for i, a in enumerate(lists()):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")

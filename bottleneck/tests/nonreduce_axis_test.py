@@ -31,7 +31,7 @@ def test_partition_and_argpartition(func):
     msg += "\nInput array:\n%s\n"
 
     name = func.__name__
-    func0 = eval("bn.slow.%s" % name)
+    func0 = eval(f"bn.slow.{name}")
 
     rs = np.random.RandomState([1, 2, 3])
     for i, a in enumerate(arrays(name)):
@@ -159,7 +159,7 @@ def test_push():
     for n in ns:
         actual = bn.push(a.copy(), n=n)
         desired = bn.slow.push(a.copy(), n=n)
-        assert_array_equal(actual, desired, "failed on n=%s" % str(n))
+        assert_array_equal(actual, desired, f"failed on n={str(n)}")
 
 
 # ---------------------------------------------------------------------------
@@ -188,13 +188,13 @@ def unit_maker_parse(func, decimal=5):
     """test argument parsing."""
 
     name = func.__name__
-    func0 = eval("bn.slow.%s" % name)
+    func0 = eval(f"bn.slow.{name}")
 
     a = np.array([1.0, 2, 3])
 
-    fmt = "\n%s" % func
+    fmt = f"\n{func}"
     fmt += "%s\n"
-    fmt += "\nInput array:\n%s\n" % a
+    fmt += f"\nInput array:\n{a}\n"
 
     actual = func(a, 1)
     desired = func0(a, 1)

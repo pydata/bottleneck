@@ -52,9 +52,9 @@ def bench(
 
     # Header
     print("Bottleneck performance benchmark")
-    print("    Bottleneck %s; Numpy %s" % (bn.__version__, np.__version__))
+    print(f"    Bottleneck {bn.__version__}; Numpy {np.__version__}")
     print("    Speed is NumPy time divided by Bottleneck time")
-    print("    NaN means approx one-fifth NaNs; %s used" % str(dtype))
+    print(f"    NaN means approx one-fifth NaNs; {str(dtype)} used")
 
     print("")
     header = [" " * 11]
@@ -132,17 +132,12 @@ def benchsuite(shapes, dtype, nans, axes, order, functions):
         run = {}
         run["name"] = func
         run["statements"] = ["bn_func(a, axis)", "sl_func(a, axis)"]
-        setup = """
-            from bottleneck import %s as bn_func
-            try: from numpy import %s as sl_func
-            except ImportError: from bottleneck.slow import %s as sl_func
-            if "%s" == "median": from bottleneck.slow import median as sl_func
-        """ % (
-            func,
-            func,
-            func,
-            func,
-        )
+        setup = f"""
+            from bottleneck import {func} as bn_func
+            try: from numpy import {func} as sl_func
+            except ImportError: from bottleneck.slow import {func} as sl_func
+            if "{func}" == "median": from bottleneck.slow import median as sl_func
+        """
         run["setups"] = getsetups(setup, shapes, nans, axes, dtype, order)
         suite.append(run)
 
@@ -154,16 +149,13 @@ def benchsuite(shapes, dtype, nans, axes, order, functions):
         run = {}
         run["name"] = func
         run["statements"] = ["bn_func(a, n, axis)", "sl_func(a, n, axis)"]
-        setup = """
-            from bottleneck import %s as bn_func
-            from bottleneck.slow import %s as sl_func
+        setup = f"""
+            from bottleneck import {func} as bn_func
+            from bottleneck.slow import {func} as sl_func
             if axis is None: n = a.size
             else: n = a.shape[axis] - 1
             n = max(n // 2, 0)
-        """ % (
-            func,
-            func,
-        )
+        """
         run["setups"] = getsetups(setup, shapes, nans, axes, dtype, order)
         suite.append(run)
 
@@ -180,14 +172,11 @@ def benchsuite(shapes, dtype, nans, axes, order, functions):
             run["statements"] = ["bn_func(a, 5, axis)", "slow_func(a, 5, axis)"]
         else:
             raise ValueError("Unknow function name")
-        setup = """
+        setup = f"""
             from numpy import nan
-            from bottleneck import %s as bn_func
-            from bottleneck.slow import %s as slow_func
-        """ % (
-            func,
-            func,
-        )
+            from bottleneck import {func} as bn_func
+            from bottleneck.slow import {func} as slow_func
+        """
         run["setups"] = getsetups(setup, shapes, nans, axes, dtype, order)
         suite.append(run)
 
@@ -199,14 +188,11 @@ def benchsuite(shapes, dtype, nans, axes, order, functions):
         run = {}
         run["name"] = func
         run["statements"] = ["bn_func(a, w, 1, axis)", "sw_func(a, w, 1, axis)"]
-        setup = """
-            from bottleneck.slow.move import %s as sw_func
-            from bottleneck import %s as bn_func
+        setup = f"""
+            from bottleneck.slow.move import {func} as sw_func
+            from bottleneck import {func} as bn_func
             w = a.shape[axis] // 5
-        """ % (
-            func,
-            func,
-        )
+        """
         run["setups"] = getsetups(setup, shapes, nans, axes, dtype, order)
         suite.append(run)
 

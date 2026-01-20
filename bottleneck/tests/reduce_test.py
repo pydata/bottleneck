@@ -23,7 +23,7 @@ def unit_maker(func, decimal=5, skip_dtype=("nansum", "ss")):
     fmt = "\nfunc %s | input %s (%s) | shape %s | axis %s | order %s\n"
     fmt += "\nInput array:\n%s\n"
     name = func.__name__
-    func0 = eval("bn.slow.%s" % name)
+    func0 = eval(f"bn.slow.{name}")
     for i, a in enumerate(arrays(name)):
         if a.ndim == 0:
             axes = [None]  # numpy can't handle e.g. np.nanmean(9, axis=-1)
@@ -89,13 +89,13 @@ def unit_maker_argparse(func, decimal=5):
     """test argument parsing."""
 
     name = func.__name__
-    func0 = eval("bn.slow.%s" % name)
+    func0 = eval(f"bn.slow.{name}")
 
     a = np.array([1.0, 2, 3])
 
-    fmt = "\n%s" % func
+    fmt = f"\n{func}"
     fmt += "%s\n"
-    fmt += "\nInput array:\n%s\n" % a
+    fmt += f"\nInput array:\n{a}\n"
 
     actual = func(a)
     desired = func0(a)

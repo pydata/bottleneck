@@ -1,5 +1,3 @@
-
-
 import logging
 from subprocess import check_output
 
@@ -13,10 +11,8 @@ class CondaWrapper:
     """
 
     def __init__(self, version, home, venv, **kw_args):
-        super(CondaWrapper, self).__init__(**kw_args)
-        self.logger = logging.getLogger(
-            f"{__name__}.{self.__class__.__name__}"
-        )
+        super().__init__(**kw_args)
+        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
         self.version = version
         self.home = home
         self.venv = venv
