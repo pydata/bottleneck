@@ -10,7 +10,7 @@ def autotimeit(stmt, setup="pass", repeat=3, mintime=0.2):
 
 def autoscaler(timer, mintime):
     number = 1
-    for i in range(12):
+    for _ in range(12):
         time = timer.timeit(number)
         if time > mintime:
             return number, time

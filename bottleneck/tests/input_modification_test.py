@@ -41,7 +41,7 @@ def test_modification(func):
         return
     msg = "\nInput array modified by %s.\n\n"
     msg += "input array before:\n%s\nafter:\n%s\n"
-    for i, a in enumerate(arrays(DTYPES)):
+    for a in arrays(DTYPES):
         axes = list(range(-a.ndim, a.ndim))
         if all(x not in name for x in ["push", "move", "sort", "partition"]):
             axes += [None]

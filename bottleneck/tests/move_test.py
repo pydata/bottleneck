@@ -152,7 +152,7 @@ def test_move_median_with_nans():
     func = bn.move_median
     func0 = bn.slow.move_median
     rs = np.random.RandomState([1, 2, 3])
-    for i in range(100):
+    for _ in range(100):
         a = np.arange(size, dtype=np.float64)
         idx = rs.rand(*a.shape) < 0.1
         a[idx] = np.inf
@@ -175,7 +175,7 @@ def test_move_median_without_nans():
     func = bn.move_median
     func0 = bn.slow.move_median
     rs = np.random.RandomState([1, 2, 3])
-    for i in range(100):
+    for _ in range(100):
         a = np.arange(size, dtype=np.int64)
         rs.shuffle(a)
         for window in range(2, size + 1):

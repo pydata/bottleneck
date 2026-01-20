@@ -15,7 +15,7 @@ def test_memory_leak():
 
     starting = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
 
-    for i in range(1000):
+    for _ in range(1000):
         for axis in [None, 0, 1]:
             bn.nansum(arr, axis=axis)
             bn.nanargmax(arr, axis=axis)
