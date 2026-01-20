@@ -12,9 +12,9 @@ Bottleneck 1.6.0
 
 Maintenance
 ~~~~~~~~~~~
-- Add Python 3.14 support, drop Python 3.9 
+- Add Python 3.14 support, drop Python 3.9
 - Add free-threading trove classifier
-- Bump upper bound on numpy to account for numpy 2.3.x 
+- Bump upper bound on numpy to account for numpy 2.3.x
 
 
 Bottleneck 1.5.0
@@ -52,7 +52,7 @@ Bottleneck 1.4.1
 
 Maintenance
 ~~~~~~~~~~~~
-- Deprecate Python 3.7 and 3.8 
+- Deprecate Python 3.7 and 3.8
 - Add python 3.13 build
 
 Bottleneck 1.4.0
@@ -101,7 +101,7 @@ Maintenance
 Cleanup
 ~~~~~~~~
 - Python 3.6 won't be tested anymore because of the deprecation in the associated
-  Python Github action 
+  Python Github action
 
 
 Bottleneck 1.3.5

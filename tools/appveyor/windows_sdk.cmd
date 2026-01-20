@@ -64,4 +64,3 @@ IF "%PYTHON_ARCH%"=="64" (
     ECHO Executing: %COMMAND_TO_RUN%
     call %COMMAND_TO_RUN% || EXIT 1
 )
-

@@ -19,5 +19,3 @@ bottleneck.src.bn\_template module
    :members:
    :undoc-members:
    :show-inheritance:
-
-

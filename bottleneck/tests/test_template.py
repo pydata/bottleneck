@@ -1,5 +1,6 @@
 import os
 import posixpath as path
+
 import pytest
 
 from ..src.bn_template import make_c_files

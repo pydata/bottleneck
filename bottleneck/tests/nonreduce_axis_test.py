@@ -1,18 +1,21 @@
 import numpy as np
+import pytest
 from numpy.testing import (
-    assert_equal,
-    assert_array_equal,
     assert_array_almost_equal,
+    assert_array_equal,
+    assert_equal,
     assert_raises,
 )
 
 import bottleneck as bn
+
 from .reduce_test import (
     unit_maker as reduce_unit_maker,
+)
+from .reduce_test import (
     unit_maker_argparse as unit_maker_parse_rankdata,
 )
-from .util import arrays, array_order, DTYPES
-import pytest
+from .util import DTYPES, array_order, arrays
 
 # ---------------------------------------------------------------------------
 # partition, argpartition
@@ -28,7 +31,7 @@ def test_partition_and_argpartition(func):
     msg += "\nInput array:\n%s\n"
 
     name = func.__name__
-    func0 = eval("bn.slow.%s" % name)
+    func0 = eval(f"bn.slow.{name}")
 
     rs = np.random.RandomState([1, 2, 3])
     for i, a in enumerate(arrays(name)):
@@ -156,7 +159,7 @@ def test_push():
     for n in ns:
         actual = bn.push(a.copy(), n=n)
         desired = bn.slow.push(a.copy(), n=n)
-        assert_array_equal(actual, desired, "failed on n=%s" % str(n))
+        assert_array_equal(actual, desired, f"failed on n={str(n)}")
 
 
 # ---------------------------------------------------------------------------
@@ -185,13 +188,13 @@ def unit_maker_parse(func, decimal=5):
     """test argument parsing."""
 
     name = func.__name__
-    func0 = eval("bn.slow.%s" % name)
+    func0 = eval(f"bn.slow.{name}")
 
     a = np.array([1.0, 2, 3])
 
-    fmt = "\n%s" % func
+    fmt = f"\n{func}"
     fmt += "%s\n"
-    fmt += "\nInput array:\n%s\n" % a
+    fmt += f"\nInput array:\n{a}\n"
 
     actual = func(a, 1)
     desired = func0(a, 1)
@@ -204,7 +207,6 @@ def unit_maker_parse(func, decimal=5):
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
     if name != "push":
-
         actual = func(a, 2, None)
         desired = func0(a, 2, None)
         err_msg = fmt % "(a, 2, None)"
@@ -221,7 +223,6 @@ def unit_maker_parse(func, decimal=5):
         func(*args, **kwargs)
 
     else:
-
         # regression test: make sure len(kwargs) == 0 doesn't raise
         args = (a, 1)
         kwargs = {}

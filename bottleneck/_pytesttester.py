@@ -4,16 +4,13 @@ Generic test utilities.
 Based on scipy._libs._testutils
 """
 
-from __future__ import division, print_function, absolute_import
-
 import os
 import sys
-
 
 __all__ = ["PytestTester"]
 
 
-class PytestTester(object):
+class PytestTester:
     """
     Pytest test runner entry point.
     """
@@ -66,7 +63,8 @@ class PytestTester(object):
 
                 warnings.warn(
                     "Could not run tests in parallel because "
-                    "pytest-xdist plugin is not available."
+                    "pytest-xdist plugin is not available.",
+                    stacklevel=2,
                 )
 
         pytest_args += ["--pyargs"] + list(tests)

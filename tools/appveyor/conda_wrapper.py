@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import absolute_import
-import sys
 import logging
 from subprocess import check_output
 
-class CondaWrapper(object):
+
+class CondaWrapper:
     """Manage the AppVeyor Miniconda installation through Python.
 
     AppVeyor has pre-installed Python 2.7.x as well as Miniconda (2 and 3).
@@ -14,10 +11,8 @@ class CondaWrapper(object):
     """
 
     def __init__(self, version, home, venv, **kw_args):
-        super(CondaWrapper, self).__init__(**kw_args)
-        self.logger = logging.getLogger(
-            "{}.{}".format(__name__, self.__class__.__name__)
-        )
+        super().__init__(**kw_args)
+        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
         self.version = version
         self.home = home
         self.venv = venv

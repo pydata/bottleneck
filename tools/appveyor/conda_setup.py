@@ -1,12 +1,7 @@
-# -*- coding: utf-8 -*-
-
-
-from __future__ import absolute_import
 import logging
 from os import environ
 
 from conda_wrapper import CondaWrapper
-
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)

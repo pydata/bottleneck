@@ -1,11 +1,12 @@
 import bottleneck as bn
+
 from .reduce import get_cached_rand_array
 
 
 class Time1DNonreduceAxis:
     params = [
         ["int32", "int64", "float32", "float64"],
-        [(10 ** 3,), (10 ** 5,), (10 ** 7,)],
+        [(10**3,), (10**5,), (10**7,)],
     ]
     param_names = ["dtype", "shape"]
 

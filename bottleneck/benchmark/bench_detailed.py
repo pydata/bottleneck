@@ -1,5 +1,7 @@
 import numpy as np
+
 import bottleneck as bn
+
 from .autotimeit import autotimeit
 
 __all__ = ["bench_detailed"]
@@ -38,15 +40,14 @@ def bench_detailed(function="nansum", fraction_nan=0.0):
     tab = "    "
 
     # Header
-    print("%s benchmark" % function)
-    print("%sBottleneck %s; Numpy %s" % (tab, bn.__version__, np.__version__))
-    print("%sSpeed is NumPy time divided by Bottleneck time" % tab)
+    print(f"{function} benchmark")
+    print(f"{tab}Bottleneck {bn.__version__}; Numpy {np.__version__}")
+    print(f"{tab}Speed is NumPy time divided by Bottleneck time")
     if fraction_nan == 0:
-        print("%sNone of the array elements are NaN" % tab)
+        print(f"{tab}None of the array elements are NaN")
     else:
         print(
-            "%s%.1f%% of the array elements are NaN (on average)"
-            % (tab, fraction_nan * 100)
+            f"{tab}{fraction_nan * 100:.1f}% of the array elements are NaN (on average)"
         )
     print("")
 
@@ -55,7 +56,7 @@ def bench_detailed(function="nansum", fraction_nan=0.0):
     for test in suite:
         name = test["name"]
         speed = timer(test["statements"], test["setup"], test["repeat"])
-        print("%8.1f  %s   %s" % (speed, name[0].ljust(27), name[1]))
+        print(f"{speed:8.1f}  {name[0].ljust(27)}   {name[1]}")
 
 
 def timer(statements, setup, repeat):
@@ -69,7 +70,6 @@ def timer(statements, setup, repeat):
 
 
 def benchsuite(function, fraction_nan):
-
     # setup is called before each run of each function
     setup = """
         from bottleneck import %s as bn_fn
@@ -101,7 +101,7 @@ def benchsuite(function, fraction_nan):
     elif function == "replace":
         index = 3
     else:
-        raise ValueError("`function` (%s) not recognized" % function)
+        raise ValueError(f"`function` ({function}) not recognized")
 
     # create benchmark suite
     instructions = get_instructions()
@@ -124,7 +124,6 @@ def benchsuite(function, fraction_nan):
 
 
 def get_instructions():
-
     instructions = [
         # 1d input array
         (

@@ -3,10 +3,12 @@
 import warnings
 
 import numpy as np
-from numpy.testing import assert_array_almost_equal
-import bottleneck as bn
-from .util import DTYPES
 import pytest
+from numpy.testing import assert_array_almost_equal
+
+import bottleneck as bn
+
+from .util import DTYPES
 
 
 def lists(dtypes=DTYPES):
@@ -34,7 +36,7 @@ def test_list_input(func):
     name = func.__name__
     if name == "replace":
         return
-    func0 = eval("bn.slow.%s" % name)
+    func0 = eval(f"bn.slow.{name}")
     for i, a in enumerate(lists()):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")

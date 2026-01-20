@@ -1,6 +1,6 @@
-import bottleneck as bn
 import numpy as np
 
+import bottleneck as bn
 
 RAND_ARRAY_CACHE = {}
 
@@ -31,7 +31,7 @@ def get_cached_rand_array(shape, dtype, order):
 class Time1DReductions:
     params = [
         ["int32", "int64", "float32", "float64"],
-        [(10 ** 3,), (10 ** 5,), (10 ** 7,)],
+        [(10**3,), (10**5,), (10**7,)],
     ]
     param_names = ["dtype", "shape"]
 
@@ -75,7 +75,7 @@ class Time1DReductions:
 class Time2DReductions:
     params = [
         ["int32", "int64", "float32", "float64"],
-        [(10 ** 3, 10 ** 3)],
+        [(10**3, 10**3)],
         ["C", "F"],
         [None, 0, 1],
     ]
@@ -121,7 +121,7 @@ class Time2DReductions:
 class TimeAnyNan2D:
     params = [
         ["int32", "int64", "float32", "float64"],
-        [(10 ** 3, 10 ** 3)],
+        [(10**3, 10**3)],
         ["C", "F"],
         [None, 0, 1],
         ["fast", "slow"],
@@ -144,7 +144,7 @@ class TimeAnyNan2D:
 class TimeAllNan2D:
     params = [
         ["int32", "int64", "float32", "float64"],
-        [(10 ** 3, 10 ** 3)],
+        [(10**3, 10**3)],
         ["C", "F"],
         [None, 0, 1],
         ["fast", "slow"],

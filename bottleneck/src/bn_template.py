@@ -2,12 +2,10 @@ import ast
 import os
 import posixpath as path
 import re
-from typing import Dict, List, Optional, Pattern, Tuple
+from re import Pattern
 
 
-def make_c_files(
-    dirpath: Optional[str] = None, modules: Optional[List[str]] = None
-) -> None:
+def make_c_files(dirpath: str | None = None, modules: list[str] | None = None) -> None:
     if modules is None:
         modules = ["reduce", "move", "nonreduce", "nonreduce_axis"]
     if dirpath is None:
@@ -23,9 +21,9 @@ def make_c_files(
         ):
             continue
 
-        with open(template_file, "r") as f:
+        with open(template_file) as f:
             src_str = f.read()
-        src_str = '#line 1 "{}"\n'.format(posix_template) + template(src_str)
+        src_str = f'#line 1 "{posix_template}"\n' + template(src_str)
         if len(src_str) and src_str[-1] != "\n":
             src_str += "\n"
         with open(target_file, "w") as f:
@@ -36,19 +34,19 @@ def template(src_str: str) -> str:
     src_list = src_str.splitlines()
     line_numbers = []
     last_empty_ind = 0
-    for i, l in enumerate(src_list):
-        if l.strip().endswith("{") and not l.startswith(" "):
+    for i, L in enumerate(src_list):
+        if L.strip().endswith("{") and not L.startswith(" "):
             line_numbers.append(last_empty_ind)
 
-        if len(l.strip()) == 0 or "*/" in l:
+        if len(L.strip()) == 0 or "*/" in L:
             last_empty_ind = i + 1
 
     distinct_line_numbers = set(line_numbers)
     new_src_list = []
-    for i, l in enumerate(src_list):
+    for i, L in enumerate(src_list):
         if i in distinct_line_numbers:
-            new_src_list.append("#line {}".format(i + 1))
-        new_src_list.append(l)
+            new_src_list.append(f"#line {i + 1}")
+        new_src_list.append(L)
 
     src_list = repeat_templating(new_src_list)
     src_list = dtype_templating(src_list)
@@ -65,7 +63,7 @@ REPEAT_END = re.compile(r"^/\*\s*repeat end")
 COMMENT_END = re.compile(r".*\*\/.*")
 
 
-def repeat_templating(lines: List[str]) -> List[str]:
+def repeat_templating(lines: list[str]) -> list[str]:
     index = 0
     while True:
         idx0, idx1 = next_block(lines, index, REPEAT_BEGIN, REPEAT_END)
@@ -79,7 +77,7 @@ def repeat_templating(lines: List[str]) -> List[str]:
     return lines
 
 
-def expand_functions_repeat(lines: List[str]) -> List[str]:
+def expand_functions_repeat(lines: list[str]) -> list[str]:
     idx = first_occurence(COMMENT_END, lines)
     repeat_dict = repeat_info(lines[: idx + 1])
     lines = lines[idx + 1 :]
@@ -88,14 +86,14 @@ def expand_functions_repeat(lines: List[str]) -> List[str]:
     return func_list
 
 
-def repeat_info(lines: List[str]) -> Dict[str, str]:
+def repeat_info(lines: list[str]) -> dict[str, str]:
     line = "".join(lines)
     repeat = re.findall(r"\{.*\}", line)
-    repeat_dict: Dict[str, str] = ast.literal_eval(repeat[0])
+    repeat_dict: dict[str, str] = ast.literal_eval(repeat[0])
     return repeat_dict
 
 
-def expand_repeat(func_str: str, repeat_dict: Dict[str, str]) -> List[str]:
+def expand_repeat(func_str: str, repeat_dict: dict[str, str]) -> list[str]:
     nrepeats = [len(repeat_dict[key]) for key in repeat_dict]
     if len(set(nrepeats)) != 1:
         raise ValueError("All repeat lists must be the same length")
@@ -116,7 +114,7 @@ DTYPE_BEGIN = re.compile(r"^/\*\s*dtype\s*=\s*")
 DTYPE_END = re.compile(r"^/\*\s*dtype end")
 
 
-def dtype_templating(lines: List[str]) -> List[str]:
+def dtype_templating(lines: list[str]) -> list[str]:
     index = 0
     while True:
         idx0, idx1 = next_block(lines, index, DTYPE_BEGIN, DTYPE_END)
@@ -130,7 +128,7 @@ def dtype_templating(lines: List[str]) -> List[str]:
     return lines
 
 
-def expand_functions_dtype(lines: List[str]) -> List[str]:
+def expand_functions_dtype(lines: list[str]) -> list[str]:
     idx = first_occurence(COMMENT_END, lines)
     dtypes = dtype_info(lines[: idx + 1])
     lines = lines[idx + 1 :]
@@ -139,7 +137,7 @@ def expand_functions_dtype(lines: List[str]) -> List[str]:
     return func_list
 
 
-def dtype_info(lines: List[str]) -> List[str]:
+def dtype_info(lines: list[str]) -> list[str]:
     line = "".join(lines)
     dtypes = re.findall(r"\[.*\]", line)
     if len(dtypes) != 1:
@@ -148,14 +146,14 @@ def dtype_info(lines: List[str]) -> List[str]:
     return dtypes
 
 
-def expand_dtypes(func_str: str, dtypes: List[str]) -> List[str]:
+def expand_dtypes(func_str: str, dtypes: list[str]) -> list[str]:
     if "DTYPE" not in func_str:
         raise ValueError("cannot find dtype marker")
     func_list = []
     for dtype in dtypes:
         f = func_str[:]
         for i, dt in enumerate(dtype):
-            f = f.replace("DTYPE%d" % i, dt)
+            f = f.replace(f"DTYPE{i}", dt)
             if i > 0:
                 f = f + "\n"
         func_list.append("\n\n" + f)
@@ -168,7 +166,7 @@ STRING_BEGIN = re.compile(r".*MULTILINE STRING BEGIN.*")
 STRING_END = re.compile(r".*MULTILINE STRING END.*")
 
 
-def string_templating(lines: List[str]) -> List[str]:
+def string_templating(lines: list[str]) -> list[str]:
     index = 0
     while True:
         idx0, idx1 = next_block(lines, index, STRING_BEGIN, STRING_END)
@@ -181,7 +179,7 @@ def string_templating(lines: List[str]) -> List[str]:
     return lines
 
 
-def quote_string(lines: List[str]) -> List[str]:
+def quote_string(lines: list[str]) -> list[str]:
     for i in range(len(lines)):
         lines[i] = '"' + lines[i] + r"\n" + '"'
     lines[-1] = lines[-1] + ";"
@@ -191,7 +189,7 @@ def quote_string(lines: List[str]) -> List[str]:
 # utility -------------------------------------------------------------------
 
 
-def first_occurence(pattern: Pattern[str], lines: List[str]) -> int:
+def first_occurence(pattern: Pattern[str], lines: list[str]) -> int:
     for i in range(len(lines)):
         if re.match(pattern, lines[i]):
             return i
@@ -199,8 +197,8 @@ def first_occurence(pattern: Pattern[str], lines: List[str]) -> int:
 
 
 def next_block(
-    lines: List[str], index: int, begin_pattern: Pattern[str], end_pattern: Pattern[str]
-) -> Tuple[Optional[int], Optional[int]]:
+    lines: list[str], index: int, begin_pattern: Pattern[str], end_pattern: Pattern[str]
+) -> tuple[int | None, int | None]:
     idx = None
     for i in range(index, len(lines)):
         line = lines[i]

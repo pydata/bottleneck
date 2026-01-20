@@ -69,6 +69,7 @@ class build_ext(_build_ext):
         _build_ext.finalize_options(self)
         # prevent numpy from thinking it is still in its setup process
         import builtins
+
         builtins.__NUMPY_SETUP__ = False
         import numpy
 

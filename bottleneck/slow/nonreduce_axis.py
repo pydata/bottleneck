@@ -1,5 +1,5 @@
 import numpy as np
-from numpy import partition, argpartition
+from numpy import argpartition, partition
 
 __all__ = ["rankdata", "nanrankdata", "partition", "argpartition", "push"]
 
@@ -133,7 +133,7 @@ def scipy_rankdata(a, method="average"):
     array([ 1,  2,  4,  3])
     """
     if method not in ("average", "min", "max", "dense", "ordinal"):
-        raise ValueError('unknown method "{0}"'.format(method))
+        raise ValueError(f'unknown method "{method}"')
 
     a = np.ravel(np.asarray(a))
     algo = "mergesort" if method == "ordinal" else "quicksort"

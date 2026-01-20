@@ -1,11 +1,12 @@
-import bottleneck as bn
 import numpy as np
+
+import bottleneck as bn
 
 
 class TimeReplace2D:
     params = [
         ["int32", "int64", "float32", "float64"],
-        [(10 ** 3, 10 ** 3)],
+        [(10**3, 10**3)],
         ["C", "F"],
     ]
     param_names = ["dtype", "shape", "order"]

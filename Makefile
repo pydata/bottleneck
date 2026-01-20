@@ -27,11 +27,11 @@ build:
 test:
 	${PYTHON} -c "import bottleneck;bottleneck.test()"
 
-flake8:
-	flake8
+lint:
+	ruff check
 
-black:
-	black . --exclude "(build/|dist/|\.git/|\.mypy_cache/|\.tox/|\.venv/\.asv/|env|\.eggs)"
+format:
+	ruff format . --exclude "(build/|dist/|\.git/|\.mypy_cache/|\.tox/|\.venv/\.asv/|env|\.eggs)"
 
 readme:
 	PYTHONPATH=`pwd`:PYTHONPATH ${PYTHON} tools/update_readme.py

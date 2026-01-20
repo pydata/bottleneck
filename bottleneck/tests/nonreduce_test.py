@@ -3,10 +3,12 @@
 import warnings
 
 import numpy as np
-from numpy.testing import assert_equal, assert_array_equal, assert_raises
-import bottleneck as bn
-from .util import arrays, array_order, DTYPES, INT_DTYPES
 import pytest
+from numpy.testing import assert_array_equal, assert_equal, assert_raises
+
+import bottleneck as bn
+
+from .util import DTYPES, INT_DTYPES, array_order, arrays
 
 
 @pytest.mark.parametrize(
@@ -17,7 +19,7 @@ def test_nonreduce(func):
     msg = "\nfunc %s | input %s (%s) | shape %s | old %f | new %f | order %s\n"
     msg += "\nInput array:\n%s\n"
     name = func.__name__
-    func0 = eval("bn.slow.%s" % name)
+    func0 = eval(f"bn.slow.{name}")
     rs = np.random.RandomState([1, 2, 3])
     news = [1, 0, np.nan, -np.inf]
     for i, arr in enumerate(arrays(name)):

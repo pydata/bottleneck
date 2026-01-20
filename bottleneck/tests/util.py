@@ -1,4 +1,5 @@
 import numpy as np
+
 import bottleneck as bn
 
 INT_DTYPES = [np.int64, np.int32]
@@ -122,7 +123,7 @@ def array_generator(func_name, dtypes):
     for dtype in f_dtypes:
         yield np.array([1, nan, nan, 2], dtype=dtype)  # nanmedian
 
-    yield np.array([2 ** 31], dtype=np.int64)  # overflows on windows
+    yield np.array([2**31], dtype=np.int64)  # overflows on windows
 
     for dtype in dtypes:
         yield np.array([[1, 2], [3, 4]], dtype=dtype)[..., np.newaxis]  # issue #183
