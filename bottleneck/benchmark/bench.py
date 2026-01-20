@@ -8,9 +8,9 @@ __all__ = ["bench"]
 
 
 def bench(
-    shapes=[(100,), (1000, 1000), (1000, 1000), (1000, 1000), (1000, 1000)],
-    axes=[0, 0, 0, 1, 1],
-    nans=[False, False, True, False, True],
+    shapes=None,
+    axes=None,
+    nans=None,
     dtype="float64",
     order="C",
     functions=None,
@@ -45,6 +45,12 @@ def bench(
 
     """
 
+    if nans is None:
+        nans = [False, False, True, False, True]
+    if axes is None:
+        axes = [0, 0, 0, 1, 1]
+    if shapes is None:
+        shapes = [(100,), (1000, 1000), (1000, 1000), (1000, 1000), (1000, 1000)]
     if len(shapes) != len(nans):
         raise ValueError("`shapes` and `nans` must have the same length")
     if len(shapes) != len(axes):

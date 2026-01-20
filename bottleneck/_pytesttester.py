@@ -63,7 +63,8 @@ class PytestTester:
 
                 warnings.warn(
                     "Could not run tests in parallel because "
-                    "pytest-xdist plugin is not available."
+                    "pytest-xdist plugin is not available.",
+                    stacklevel=2,
                 )
 
         pytest_args += ["--pyargs"] + list(tests)
