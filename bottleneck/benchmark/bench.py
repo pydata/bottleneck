@@ -109,7 +109,7 @@ def benchsuite(shapes, dtype, nans, axes, order, functions):
         axis=%s
         %s"""
         setups = []
-        for shape, axis, nan in zip(shapes, axes, nans):
+        for shape, axis, nan in zip(shapes, axes, nans, strict=True):
             s = template % (
                 str(shape),
                 str(dtype),
