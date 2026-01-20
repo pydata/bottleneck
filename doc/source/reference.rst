@@ -168,4 +168,3 @@ Functions that operate along a (1d) moving window.
 ------------
 
 .. autofunction:: bottleneck.move_rank
-

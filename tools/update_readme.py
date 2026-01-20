@@ -1,12 +1,11 @@
-from io import StringIO
-import sys
 import os
+import sys
+from io import StringIO
 
 import bottleneck as bn
 
 
 def update_readme():
-
     # run benchmark suite while capturing output; indent
     with Capturing() as bench_list:
         bn.bench()

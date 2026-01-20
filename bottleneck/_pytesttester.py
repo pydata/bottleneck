@@ -4,16 +4,14 @@ Generic test utilities.
 Based on scipy._libs._testutils
 """
 
-from __future__ import division, print_function, absolute_import
 
 import os
 import sys
 
-
 __all__ = ["PytestTester"]
 
 
-class PytestTester(object):
+class PytestTester:
     """
     Pytest test runner entry point.
     """

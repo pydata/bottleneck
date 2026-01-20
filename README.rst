@@ -154,7 +154,7 @@ After you have installed Bottleneck, run the suite of unit tests:
   rootdir: /home/chris/code/bottleneck, inifile: setup.cfg
   plugins: openfiles-0.3.2, remotedata-0.3.2, doctestplus-0.3.0, mock-1.10.4, forked-1.0.2, cov-2.7.1, hypothesis-4.32.2, xdist-1.26.1, arraydiff-0.3
   collected 190 items
-  
+
   bottleneck/tests/input_modification_test.py ........................... [ 14%]
   ..                                                                      [ 15%]
   bottleneck/tests/list_input_test.py .............................       [ 30%]
@@ -164,7 +164,7 @@ After you have installed Bottleneck, run the suite of unit tests:
   bottleneck/tests/reduce_test.py ....................................... [ 84%]
   ............                                                            [ 90%]
   bottleneck/tests/scalar_input_test.py ..................                [100%]
-  
+
   ========================= 190 passed in 46.42 seconds =========================
   Out[2]: True
 

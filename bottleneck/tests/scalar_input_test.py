@@ -1,8 +1,9 @@
 """Check that functions can handle scalar input"""
 
-from numpy.testing import assert_array_almost_equal
-import bottleneck as bn
 import pytest
+from numpy.testing import assert_array_almost_equal
+
+import bottleneck as bn
 
 
 @pytest.mark.parametrize(

@@ -1,18 +1,21 @@
 import numpy as np
+import pytest
 from numpy.testing import (
-    assert_equal,
-    assert_array_equal,
     assert_array_almost_equal,
+    assert_array_equal,
+    assert_equal,
     assert_raises,
 )
 
 import bottleneck as bn
+
 from .reduce_test import (
     unit_maker as reduce_unit_maker,
+)
+from .reduce_test import (
     unit_maker_argparse as unit_maker_parse_rankdata,
 )
-from .util import arrays, array_order, DTYPES
-import pytest
+from .util import DTYPES, array_order, arrays
 
 # ---------------------------------------------------------------------------
 # partition, argpartition
@@ -204,7 +207,6 @@ def unit_maker_parse(func, decimal=5):
     assert_array_almost_equal(actual, desired, decimal, err_msg)
 
     if name != "push":
-
         actual = func(a, 2, None)
         desired = func0(a, 2, None)
         err_msg = fmt % "(a, 2, None)"
@@ -221,7 +223,6 @@ def unit_maker_parse(func, decimal=5):
         func(*args, **kwargs)
 
     else:
-
         # regression test: make sure len(kwargs) == 0 doesn't raise
         args = (a, 1)
         kwargs = {}

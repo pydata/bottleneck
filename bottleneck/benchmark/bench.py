@@ -1,5 +1,7 @@
 import numpy as np
+
 import bottleneck as bn
+
 from .autotimeit import autotimeit
 
 __all__ = ["bench"]
@@ -99,7 +101,6 @@ def getarray(shape, dtype, nans, order):
 
 
 def benchsuite(shapes, dtype, nans, axes, order, functions):
-
     suite = []
 
     def getsetups(setup, shapes, nans, axes, dtype, order):

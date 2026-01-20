@@ -1,10 +1,12 @@
 """Test moving window functions."""
 
 import numpy as np
-from numpy.testing import assert_equal, assert_array_almost_equal, assert_raises
-import bottleneck as bn
-from .util import arrays, array_order
 import pytest
+from numpy.testing import assert_array_almost_equal, assert_equal, assert_raises
+
+import bottleneck as bn
+
+from .util import array_order, arrays
 
 
 @pytest.mark.parametrize("func", bn.get_functions("move"), ids=lambda x: x.__name__)

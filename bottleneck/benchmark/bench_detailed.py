@@ -1,5 +1,7 @@
 import numpy as np
+
 import bottleneck as bn
+
 from .autotimeit import autotimeit
 
 __all__ = ["bench_detailed"]
@@ -69,7 +71,6 @@ def timer(statements, setup, repeat):
 
 
 def benchsuite(function, fraction_nan):
-
     # setup is called before each run of each function
     setup = """
         from bottleneck import %s as bn_fn
@@ -124,7 +125,6 @@ def benchsuite(function, fraction_nan):
 
 
 def get_instructions():
-
     instructions = [
         # 1d input array
         (

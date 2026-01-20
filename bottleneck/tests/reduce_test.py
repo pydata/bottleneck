@@ -1,14 +1,15 @@
 """Test reduce functions."""
 
-import warnings
 import traceback
+import warnings
 
 import numpy as np
-from numpy.testing import assert_equal, assert_raises, assert_array_almost_equal
+import pytest
+from numpy.testing import assert_array_almost_equal, assert_equal, assert_raises
 
 import bottleneck as bn
-from .util import arrays, array_order, DTYPES
-import pytest
+
+from .util import DTYPES, array_order, arrays
 
 
 @pytest.mark.parametrize("func", bn.get_functions("reduce"), ids=lambda x: x.__name__)
@@ -64,7 +65,7 @@ def unit_maker(func, decimal=5, skip_dtype=("nansum", "ss")):
                         fmt2 = "\nbn.%s ran\nbn.slow.%s raised\n\n%s"
                     msg = fmt2 % (name, name, traceback.format_exc())
                     err_msg += msg
-                    assert False, err_msg
+                    assert False, err_msg  # noqa: B011
                 assert_array_almost_equal(actual, desired, decimal, err_msg)
                 err_msg += "\n dtype mismatch %s %s"
                 if name not in skip_dtype:

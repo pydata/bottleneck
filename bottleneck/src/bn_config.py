@@ -1,6 +1,7 @@
-""" Based on numpy's approach to exposing compiler features via a config header.
+"""Based on numpy's approach to exposing compiler features via a config header.
 Unfortunately that file is not exposed, so re-implement the portions we need.
 """
+
 import os
 import textwrap
 
@@ -10,7 +11,7 @@ OPTIONAL_FUNCTION_ATTRIBUTES = [
 
 
 def _get_compiler_list(cmd):
-    """ Return the compiler command as a list of strings. Distutils provides a
+    """Return the compiler command as a list of strings. Distutils provides a
     wildly inconsistent API here:
       - UnixCCompiler returns a list
       - MSVCCompiler intentionally doesn't set this variable
@@ -74,9 +75,8 @@ def check_gcc_function_attribute(cmd, attribute, name):
     else:
         pragma = ""
 
-    body = (
-        textwrap.dedent(
-            """
+    body = textwrap.dedent(
+        """
         %s
 
         int %s %s(void*);
@@ -86,9 +86,7 @@ def check_gcc_function_attribute(cmd, attribute, name):
             return 0;
         }
         """
-        )
-        % (pragma, attribute, name)
-    )
+    ) % (pragma, attribute, name)
     return cmd.try_compile(body, None, None) != 0
 
 
@@ -119,4 +117,4 @@ def create_config_h(config):
         if inline_alias == "inline":
             f.write("/* undef inline */\n")
         else:
-            f.write("#define inline {}\n".format(inline_alias))
+            f.write(f"#define inline {inline_alias}\n")
