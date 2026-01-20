@@ -1,5 +1,26 @@
+ci:
+  autofix_prs: false
+  autoupdate_schedule: quarterly
+
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+    - id: no-commit-to-branch
+    - id: debug-statements
+    - id: check-merge-conflict
+    - id: trailing-whitespace
+    - id: end-of-file-fixer
+    - id: check-toml
+
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
     rev: v1.22.0
     hooks:
     - id: zizmor
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.13
+    hooks:
+    - id: ruff-format
+    - id: ruff-check
+      args: [--fix, --show-fixes]

@@ -20,5 +20,5 @@ from ._version import get_versions  # noqa: E402
 __version__ = get_versions()["version"]
 del get_versions
 
-from . import _version
+from . import _version  # noqa: E402
 __version__ = _version.get_versions()['version']

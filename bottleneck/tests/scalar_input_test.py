@@ -7,7 +7,7 @@ import pytest
 
 @pytest.mark.parametrize(
     "func",
-    bn.get_functions("reduce") + bn.get_functions("nonreduce_axis"),  # noqa: W504
+    bn.get_functions("reduce") + bn.get_functions("nonreduce_axis"),
     ids=lambda x: x.__name__,
 )
 def test_scalar_input(func, args=tuple()):
