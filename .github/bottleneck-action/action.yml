@@ -9,9 +9,7 @@ runs:
         python-version: ${{ matrix.python-version }}
     - name: Install
       shell: bash
-      run: |
-        pip install --upgrade pip
-        pip install . -v --group test
+      run: pip install . -v --group test
 
     - name: Test with pytest
       shell: bash
