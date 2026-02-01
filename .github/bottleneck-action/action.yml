@@ -4,15 +4,16 @@ runs:
   using: composite
   steps:
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      uses: astral-sh/setup-uv@803947b9bd8e9f986429fa0c5a41c367cd732b41 # v7.2.1
       with:
         python-version: ${{ matrix.python-version }}
+        prune-cache: false
     - name: Install
       shell: bash
-      run: pip install . -v --group test
+      run: uv sync --no-editable --group test
 
     - name: Test with pytest
       shell: bash
       run: |
         cd doc  # avoid picking up bottleneck from the source dir
-        pytest --pyargs bottleneck
+        uv run --no-sync pytest --pyargs bottleneck

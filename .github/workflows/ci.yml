@@ -109,6 +109,8 @@ jobs:
 
       - name: Build wheels
         uses: pypa/cibuildwheel@298ed2fb2c105540f5ed055e8a6ad78d82dd3a7e # v3.3.1
+        with:
+          extras: uv
 
       - name: Store wheel artifacts
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -128,8 +130,13 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: astral-sh/setup-uv@803947b9bd8e9f986429fa0c5a41c367cd732b41 # v7.2.1
+        with:
+          enable-cache: false
+
       - name: Build sdist
-        run: pipx run build --sdist
+        run: uv build --sdist
 
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:

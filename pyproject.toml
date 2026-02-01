@@ -87,6 +87,7 @@ addopts = "-l"
 filterwarnings = ["error"]
 
 [tool.cibuildwheel]
+build-frontend = "build[uv]"
 skip = [
     "*_i686",
     "cp310-win_arm64", # no numpy wheels for this target
