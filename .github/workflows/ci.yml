@@ -89,8 +89,8 @@ jobs:
   build_wheels:
     needs:
       - test-linux-macos
-      - test-windows
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+      #- test-windows
+    #if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
