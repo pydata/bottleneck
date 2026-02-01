@@ -99,6 +99,7 @@ enable = [
     # note that cp314t and later are already enabled by default
     "cpython-freethreading",
 ]
+environment = { "BN_LIMITED_API" = "1" }
 
 [tool.ruff]
 exclude = [
