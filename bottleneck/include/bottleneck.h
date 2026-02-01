@@ -4,7 +4,6 @@
 #define BOTTLENECK_H_
 
 #include <Python.h>
-#define NPY_NO_DEPRECATED_API NPY_1_11_API_VERSION
 #include <bn_config.h>
 #include <numpy/arrayobject.h>
 
