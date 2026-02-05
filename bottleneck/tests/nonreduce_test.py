@@ -143,18 +143,26 @@ def test_replace_newaxis(dtype):
 @pytest.mark.parametrize("dtype", DTYPES)
 def test_replace_view(dtype):
     """Test replace on non-contiguous view"""
+    expected_array = np.arange(20, dtype=dtype)
+    expected_view = expected_array[::2]
+    bn.slow.replace(expected_view, 10, -1)
     array = np.arange(20, dtype=dtype)
     view = array[::2]
-    bn.replace(view, 6, -1)
-    assert view[3] == -1
-    assert array[6] == -1
+    bn.replace(view, 10, -1)
+    assert_array_equal(view, expected_view)
+    assert_array_equal(array, expected_array)
 
 
 @pytest.mark.parametrize("dtype", FLOAT_DTYPES)
 def test_replace_nan_view(dtype):
     """Test replace NaN on non-contiguous view"""
-    x = np.ones((4, 3, 2), dtype=dtype)
-    x[::2, :, 0] = np.nan
-    y = x[:, :, 0]
-    bn.replace(y, np.nan, 0)
-    assert np.isnan(y).sum() == 0
+    expected_array = np.ones((4, 3, 2), dtype=dtype)
+    expected_array[::2, :, 0] = np.nan
+    expected_view = expected_array[:, :, 0]
+    bn.slow.replace(expected_view, np.nan, 0)
+    array = np.ones((4, 3, 2), dtype=dtype)
+    array[::2, :, 0] = np.nan
+    view = array[:, :, 0]
+    bn.replace(view, np.nan, 0)
+    assert_array_equal(view, expected_view)
+    assert_array_equal(array, expected_array)
