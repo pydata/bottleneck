@@ -220,19 +220,19 @@ def test_move_std_sqrt():
 
 def test_move_mean_window_1():
     """Test move_mean with window=1, min_count=1 (issue #437).
-    
+
     When window=1 and min_count=1, move_mean should return the input array
     unchanged, since a moving average with window size 1 is the identity
-    function. However, the current implementation introduces small floating
-    point errors.
-    
+    function. However a previous, general purpose implementation introduced small
+    floating point errors.
+
     See: https://github.com/pydata/bottleneck/issues/437
     """
     # Minimal test case from issue #437 (simplified from 119 to 3 elements)
     a = [0.008196721311475436, -0.01626016260162607, 0.012396694214876205]
-    
+
     b = bn.move_mean(a, window=1, min_count=1)
-    
+
     # With window=1, the result should be exactly equal to the input
     err_msg = (
         "move_mean with window=1 and min_count=1 should return the input array "

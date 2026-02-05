@@ -182,8 +182,7 @@ MOVE(move_mean, DTYPE0) {
            floating-point errors from unnecessary arithmetic */
         if (window == 1) {
             WHILE2 {
-                ai = AI(DTYPE0);
-                YI(DTYPE0) = ai;
+                YI(DTYPE0) = AI(DTYPE0);
             }
         } else {
             WHILE2 {
