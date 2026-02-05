@@ -178,25 +178,33 @@ MOVE(move_mean, DTYPE0) {
             YI(DTYPE0) = count >= min_count ? asum / count : BN_NAN;
         }
         count_inv = 1.0 / count;
-        WHILE2 {
-            ai = AI(DTYPE0);
-            aold = AOLD(DTYPE0);
-            if (ai == ai) {
-                if (aold == aold) {
-                    asum += ai - aold;
-                } else {
-                    asum += ai;
-                    count++;
-                    count_inv = 1.0 / count;
-                }
-            } else {
-                if (aold == aold) {
-                    asum -= aold;
-                    count--;
-                    count_inv = 1.0 / count;
-                }
+        /* Special case for window=1: just copy the input value to avoid
+           floating-point errors from unnecessary arithmetic */
+        if (window == 1) {
+            WHILE2 {
+                YI(DTYPE0) = AI(DTYPE0);
             }
-            YI(DTYPE0) = count >= min_count ? asum * count_inv : BN_NAN;
+        } else {
+            WHILE2 {
+                ai = AI(DTYPE0);
+                aold = AOLD(DTYPE0);
+                if (ai == ai) {
+                    if (aold == aold) {
+                        asum += ai - aold;
+                    } else {
+                        asum += ai;
+                        count++;
+                        count_inv = 1.0 / count;
+                    }
+                } else {
+                    if (aold == aold) {
+                        asum -= aold;
+                        count--;
+                        count_inv = 1.0 / count;
+                    }
+                }
+                YI(DTYPE0) = count >= min_count ? asum * count_inv : BN_NAN;
+            }
         }
         NEXT2
     }
@@ -222,9 +230,17 @@ MOVE(move_mean, DTYPE0) {
             *(npy_DTYPE1*)(it.py + it.i * it.ystride) = (npy_DTYPE1)asum / (it.i + 1);
             it.i++;
         }
-        WHILE2 {
-            asum += AI(DTYPE0) - AOLD(DTYPE0);
-            YI(DTYPE1) = (npy_DTYPE1)asum * window_inv;
+        /* Special case for window=1: just copy the input value to avoid
+           floating-point errors from unnecessary arithmetic */
+        if (window == 1) {
+            WHILE2 {
+                YI(DTYPE1) = (npy_DTYPE1)AI(DTYPE0);
+            }
+        } else {
+            WHILE2 {
+                asum += AI(DTYPE0) - AOLD(DTYPE0);
+                YI(DTYPE1) = (npy_DTYPE1)asum * window_inv;
+            }
         }
         NEXT2
     }
