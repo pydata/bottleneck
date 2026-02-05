@@ -8,7 +8,7 @@ from numpy.testing import assert_array_equal, assert_equal, assert_raises
 
 import bottleneck as bn
 
-from .util import DTYPES, INT_DTYPES, array_order, arrays
+from .util import DTYPES, FLOAT_DTYPES, INT_DTYPES, array_order, arrays
 
 
 @pytest.mark.parametrize(
@@ -138,3 +138,23 @@ def test_replace_newaxis(dtype):
     array = np.ones((2, 2), dtype=dtype)[..., np.newaxis]
     result = bn.replace(array, 1, 2)
     assert (result == 2).all().all()
+
+
+@pytest.mark.parametrize("dtype", DTYPES)
+def test_replace_view(dtype):
+    """Test replace on non-contiguous view"""
+    array = np.arange(20, dtype=dtype)
+    view = array[::2]
+    bn.replace(view, 6, -1)
+    assert view[3] == -1
+    assert array[6] == -1
+
+
+@pytest.mark.parametrize("dtype", FLOAT_DTYPES)
+def test_replace_nan_view(dtype):
+    """Test replace NaN on non-contiguous view"""
+    x = np.ones((4, 3, 2), dtype=dtype)
+    x[::2, :, 0] = np.nan
+    y = x[:, :, 0]
+    bn.replace(y, np.nan, 0)
+    assert np.isnan(y).sum() == 0
