@@ -28,11 +28,12 @@ replace_DTYPE0(PyArrayObject *a, double old, double new) {
     BN_BEGIN_ALLOW_THREADS
     const npy_DTYPE0 oldf = (npy_DTYPE0)old;
     const npy_DTYPE0 newf = (npy_DTYPE0)new;
+    const npy_intp stride = it.stride;
     if (old == old) {
         WHILE {
             npy_DTYPE0* array = PA(DTYPE0);
             FOR {
-                array[it.i] = array[it.i] == oldf ? newf : array[it.i];
+                array[it.i * stride] = array[it.i * stride] == oldf ? newf : array[it.i * stride];
             }
             NEXT
         }
@@ -40,7 +41,7 @@ replace_DTYPE0(PyArrayObject *a, double old, double new) {
         WHILE {
             npy_DTYPE0* array = PA(DTYPE0);
             FOR {
-                array[it.i] = array[it.i] != array[it.i] ? newf : array[it.i];
+                array[it.i * stride] = array[it.i * stride] != array[it.i * stride] ? newf : array[it.i * stride];
             }
             NEXT
         }
@@ -69,12 +70,13 @@ replace_DTYPE0(PyArrayObject *a, double old, double new) {
             return NULL;
         }
         BN_BEGIN_ALLOW_THREADS
+        const npy_intp stride = it.stride;
         WHILE {
             npy_DTYPE0* array = (npy_DTYPE0 *)it.pa;
             npy_intp i;
             // clang has a large perf regression when using the FOR macro here
             for (i=0; i < it.length; i++) {
-                array[i] = array[i] == oldint ? newint : array[i];
+                array[i * stride] = array[i * stride] == oldint ? newint : array[i * stride];
             }
             NEXT
         }
