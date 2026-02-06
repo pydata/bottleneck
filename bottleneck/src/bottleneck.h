@@ -4,9 +4,13 @@
 #define BOTTLENECK_H_
 
 #include <Python.h>
-#define NPY_NO_DEPRECATED_API NPY_1_11_API_VERSION
 #include <numpy/arrayobject.h>
 #include <bn_config.h>
+
+#ifdef Py_LIMITED_API
+    #define PyTuple_GET_ITEM PyTuple_GetItem
+    #define PyTuple_GET_SIZE PyTuple_Size
+#endif
 
 /* THREADS=1 releases the GIL but increases function call
  * overhead. THREADS=0 does not release the GIL but keeps
