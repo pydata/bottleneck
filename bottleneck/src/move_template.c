@@ -1005,6 +1005,8 @@ mover(char *name,
 
     length = PyArray_DIM(a, axis);
     if ((window < 1) || (window > length)) {
+        return a;
+        
         PyErr_Format(PyExc_ValueError,
                      "Moving window (=%d) must between 1 and %zu, inclusive",
                      window, length);
