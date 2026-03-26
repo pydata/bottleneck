@@ -74,7 +74,9 @@ mover(char *name,
 /* dtype = [['float64'], ['float32']] */
 MOVE(move_sum, DTYPE0) {
     Py_ssize_t count;
-    npy_DTYPE0 asum, ai, aold;
+    // Keep the intermediate values in float64 to reduce precision error.
+    // See issue pydata/bottleneck#164.
+    npy_float64 asum, ai, aold;
     INIT(NPY_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
@@ -156,7 +158,9 @@ MOVE_MAIN(move_sum, 0)
 /* dtype = [['float64'], ['float32']] */
 MOVE(move_mean, DTYPE0) {
     Py_ssize_t count;
-    npy_DTYPE0 asum, ai, aold, count_inv;
+    // Keep the intermediate values in float64 to reduce precision error.
+    // See issue pydata/bottleneck#164.
+    npy_float64 asum, ai, aold, count_inv;
     INIT(NPY_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
@@ -260,7 +264,9 @@ MOVE_MAIN(move_mean, 0)
 /* dtype = [['float64'], ['float32']] */
 MOVE(NAME, DTYPE0) {
     Py_ssize_t count;
-    npy_DTYPE0 delta, amean, assqdm, ai, aold, yi, count_inv, ddof_inv;
+    // Keep the intermediate values in float64 to reduce precision error.
+    // See issue pydata/bottleneck#164.
+    npy_float64 delta, amean, assqdm, ai, aold, yi, count_inv, ddof_inv;
     INIT(NPY_DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
