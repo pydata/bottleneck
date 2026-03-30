@@ -61,6 +61,7 @@ NRA(partition, DTYPE0) {
         PyErr_Format(PyExc_ValueError,
                      "`n` (=%d) must be between 0 and %zd, inclusive.",
                      n, LENGTH - 1);
+        Py_DECREF(a);
         return NULL;
     }
 
@@ -172,6 +173,7 @@ NRA(argpartition, DTYPE0) {
         PyErr_Format(PyExc_ValueError,
                      "`n` (=%d) must be between 0 and %zd, inclusive.",
                      n, LENGTH - 1);
+        Py_DECREF(y);
         return NULL;
     }
     BN_BEGIN_ALLOW_THREADS
