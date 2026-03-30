@@ -683,7 +683,10 @@ nonreducer_axis(char *name,
             }
         } else {
             if (PyArray_NDIM(a) != 1) {
-                a = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
+                PyArrayObject *tmp = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
+                Py_DECREF(a);
+                if (tmp == NULL) return NULL;
+                a = tmp;
             }
             axis = 0;
         }
@@ -693,7 +696,10 @@ nonreducer_axis(char *name,
             goto error;
         }
         if (PyArray_NDIM(a) != 1) {
-            a = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
+            PyArrayObject *tmp = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
+            Py_DECREF(a);
+            if (tmp == NULL) return NULL;
+            a = tmp;
         }
         axis = 0;
     } else {

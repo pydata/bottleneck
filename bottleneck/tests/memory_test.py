@@ -36,3 +36,15 @@ def test_memory_leak():
     print(diff_bytes)
     # For 1.3.0 release, this had value of ~100kB
     assert diff_bytes == 0
+
+
+def test_refcount_leak():
+    # see https://github.com/pydata/bottleneck/issues/521
+    rs = np.random.RandomState(0)
+    arr = np.asfortranarray(rs.rand(8, 8))
+    start_rc = sys.getrefcount(arr)
+
+    for _ in range(1000):
+        bn.rankdata(arr)
+
+    assert sys.getrefcount(arr) == start_rc
