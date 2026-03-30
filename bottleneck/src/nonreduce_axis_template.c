@@ -639,6 +639,7 @@ nonreducer_axis(char *name,
         }
     } else {
         RUNTIME_ERR("Unknown parse type; please report error.");
+        return NULL;
     }
 
     /* convert to array if necessary */
