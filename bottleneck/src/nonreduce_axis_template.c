@@ -202,8 +202,13 @@ NRA(rankdata, DTYPE0) {
     npy_DTYPE1 old, new, averank, sumranks = 0;
 
     PyObject *z = PyArray_ArgSort(a, axis, NPY_QUICKSORT);
+    if (z == NULL) return NULL;
     PyObject *y = PyArray_EMPTY(PyArray_NDIM(a),
                                 PyArray_SHAPE(a), NPY_DTYPE1, 0);
+    if (y == NULL) {
+        Py_DECREF(z);
+        return NULL;
+    }
 
     iter3 it;
     init_iter3(&it, a, y, z, axis);
@@ -264,8 +269,13 @@ NRA(nanrankdata, DTYPE0) {
     npy_DTYPE1 old, new, averank, sumranks = 0;
 
     PyObject *z = PyArray_ArgSort(a, axis, NPY_QUICKSORT);
+    if (z == NULL) return NULL;
     PyObject *y = PyArray_EMPTY(PyArray_NDIM(a),
                                 PyArray_SHAPE(a), NPY_DTYPE1, 0);
+    if (y == NULL) {
+        Py_DECREF(z);
+        return NULL;
+    }
 
     iter3 it;
     init_iter3(&it, a, y, z, axis);
