@@ -345,6 +345,7 @@ NRA(push, DTYPE0) {
     npy_intp index;
     npy_DTYPE0 ai, ai_last, n_float;
     PyObject *y = PyArray_Copy(a);
+    if (y == NULL) return NULL;
     iter it;
     init_iter_one(&it, (PyArrayObject *)y, axis);
     if (LENGTH == 0 || NDIM == 0) {
