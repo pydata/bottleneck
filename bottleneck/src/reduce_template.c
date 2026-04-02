@@ -29,6 +29,7 @@
     npy_##dtype1 *py; \
     init_iter_one(&it, a, axis); \
     y = PyArray_EMPTY(NDIM - 1, SHAPE, NPY_##dtype0, 0); \
+    if (y == NULL) return NULL; \
     py = (npy_##dtype1 *)PyArray_DATA((PyArrayObject *)y);
 
 /* function signatures --------------------------------------------------- */
