@@ -409,7 +409,7 @@ intern_strings(void) {
     pystr_n = PyUnicode_InternFromString("n");
     pystr_kth = PyUnicode_InternFromString("kth");
     pystr_axis = PyUnicode_InternFromString("axis");
-    return pystr_a && pystr_n && pystr_axis;
+    return pystr_a && pystr_n && pystr_kth && pystr_axis;
 }
 
 /* nonreducer_axis ------------------------------------------------------- */
