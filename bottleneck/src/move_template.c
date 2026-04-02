@@ -20,6 +20,7 @@
 
 #define INIT(dtype) \
     PyObject *y = PyArray_EMPTY(PyArray_NDIM(a), PyArray_SHAPE(a), dtype, 0); \
+    if (y == NULL) return NULL; \
     iter2 it; \
     init_iter2(&it, a, y, axis);
 
