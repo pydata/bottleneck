@@ -72,7 +72,7 @@ init_iter_one(iter *it, PyArrayObject *a, int axis)
  * calling Py_DECREF(it.a_ravel) after you are done with the iterator.
  * See nanargmin for an example.
  */
-static inline void
+static inline int
 init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
 {
     int i, j = 0;
@@ -129,22 +129,30 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
            }
         } else {
             it->ndim_m2 = -1;
+            PyArrayObject *tmp = NULL;
             if (anyorder) {
-                a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
+                tmp = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
             } else {
-                a = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
+                tmp = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
             }
+            Py_DECREF(a);
+            if (tmp == NULL) return -1;
+            a = tmp;
             it->a_ravel = a;
             it->length = PyArray_DIM(a, 0);
             it->astride = PyArray_STRIDE(a, 0);
         }
     } else if (ravel) {
         it->ndim_m2 = -1;
+        PyArrayObject *tmp = NULL;
         if (anyorder) {
-            a = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
+            tmp = (PyArrayObject *)PyArray_Ravel(a, NPY_ANYORDER);
         } else {
-            a = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
+            tmp = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
         }
+        Py_DECREF(a);
+        if (tmp == NULL) return -1;
+        a = tmp;
         it->a_ravel = a;
         it->length = PyArray_DIM(a, 0);
         it->astride = PyArray_STRIDE(a, 0);
@@ -171,6 +179,7 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
 
     it->stride = it->astride / item_size;
     it->pa = PyArray_BYTES(a);
+    return 0;
 }
 
 #define NEXT \
