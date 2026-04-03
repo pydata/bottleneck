@@ -135,7 +135,7 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
             } else {
                 tmp = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
             }
-            Py_DECREF(a);
+            //Py_DECREF(a);
             if (tmp == NULL) return -1;
             a = tmp;
             it->a_ravel = a;
@@ -150,7 +150,7 @@ init_iter_all(iter *it, PyArrayObject *a, int ravel, int anyorder)
         } else {
             tmp = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
         }
-        Py_DECREF(a);
+        //Py_DECREF(a);
         if (tmp == NULL) return -1;
         a = tmp;
         it->a_ravel = a;
