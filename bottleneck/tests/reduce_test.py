@@ -237,3 +237,31 @@ def test_ddof_nans(func, dtype):
     for axis in [None, 0, 1, -1]:
         result = func(array, axis=axis, ddof=3)
         assert np.isnan(result)
+
+
+@pytest.mark.parametrize("dtype", DTYPES)
+@pytest.mark.parametrize(
+    ("func", "expected"),
+    [(bn.nansum, 1000),
+     (bn.nanmean, 1),
+     (bn.nanmax, 1)],
+    ids=lambda x: x.__name__ if not isinstance(x, int) else x
+)
+def test_reduce_with_unordered_strides_ccontig(func, expected, dtype) -> None:
+    array = np.ones((1, 500, 2), dtype=dtype).transpose((1,2,0))
+    result = func(array)
+    assert result == expected
+
+@pytest.mark.parametrize("dtype", DTYPES)
+@pytest.mark.parametrize(
+    ("func", "expected"),
+    [(bn.nansum, 1000),
+     (bn.nanmean, 1),
+     (bn.nanmax, 1)],
+    ids=lambda x: x.__name__ if not isinstance(x, int) else x
+)
+def test_reduce_with_unordered_strides_fcontig(func, expected, dtype) -> None:
+    array = np.ones((1, 500, 2), dtype=dtype).transpose((0,2,1))
+    result = func(array)
+    assert result == expected
+
