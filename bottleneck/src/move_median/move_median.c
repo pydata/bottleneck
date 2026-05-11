@@ -59,9 +59,16 @@ static inline void mm_swap_heap_heads(mm_node **s_heap, idx_t n_s,
  * heap). The handle, containing information about the heaps, is returned. */
 mm_handle *
 mm_new(const idx_t window, idx_t min_count) {
-    mm_handle *mm = malloc(sizeof(mm_handle));
+mm_handle *mm = malloc(sizeof(mm_handle));
+    if (mm == NULL) return NULL;
     mm->nodes = malloc(window * sizeof(mm_node*));
     mm->node_data = malloc(window * sizeof(mm_node));
+    if (mm->nodes == NULL || mm->node_data == NULL) {
+        free(mm->node_data);
+        free(mm->nodes);
+        free(mm);
+        return NULL;
+    }
 
     mm->s_heap = mm->nodes;
     mm->l_heap = &mm->nodes[window / 2 + window % 2];
@@ -168,8 +175,15 @@ mm_update(mm_handle *mm, ai_t ai) {
 mm_handle *
 mm_new_nan(const idx_t window, idx_t min_count) {
     mm_handle *mm = malloc(sizeof(mm_handle));
+    if (mm == NULL) return NULL;
     mm->nodes = malloc(2 * window * sizeof(mm_node*));
     mm->node_data = malloc(window * sizeof(mm_node));
+    if (mm->nodes == NULL || mm->node_data == NULL) {
+        free(mm->node_data);
+        free(mm->nodes);
+        free(mm);
+        return NULL;
+    }
 
     mm->s_heap = mm->nodes;
     mm->l_heap = &mm->nodes[window / 2 + window % 2];
