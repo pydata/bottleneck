@@ -3,6 +3,7 @@
 import os
 import shutil
 import sys
+import sysconfig
 from distutils.command.config import config as _config
 
 from setuptools import Command, setup
@@ -10,6 +11,23 @@ from setuptools.command.build_ext import build_ext as _build_ext
 from setuptools.extension import Extension
 
 import versioneer
+
+# restrict LIMITED_API usage:
+# - require BN_LIMITED_API=1
+# - LIMITED_API is not compatible with free-threading (as of CPython 3.14)
+USE_PY_LIMITED_API = os.getenv(
+    "BN_LIMITED_API", "0"
+) == "1" and not sysconfig.get_config_var("Py_GIL_DISABLED")
+ABI3_TARGET_VERSION = "".join(str(_) for _ in sys.version_info[:2])
+ABI3_TARGET_HEX = hex(sys.hexversion & 0xFFFF00F0)
+
+
+define_macros = [
+    # keep in sync with runtime requirements (pyproject.toml)
+    ("NPY_NO_DEPRECATED_API", "NPY_1_21_API_VERSION"),
+]
+if USE_PY_LIMITED_API:
+    define_macros.append(("Py_LIMITED_API", ABI3_TARGET_HEX))
 
 
 class config(_config):
@@ -109,6 +127,7 @@ def prepare_modules():
             "bottleneck.reduce",
             sources=["bottleneck/src/reduce.c"],
             depends=base_includes,
+            define_macros=define_macros,
             extra_compile_args=["-O2"],
         )
     ]
@@ -120,6 +139,7 @@ def prepare_modules():
                 "bottleneck/src/move_median/move_median.c",
             ],
             depends=base_includes + ["bottleneck/src/move_median/move_median.h"],
+            define_macros=define_macros,
             extra_compile_args=["-O2"],
         )
     ]
@@ -128,6 +148,7 @@ def prepare_modules():
             "bottleneck.nonreduce",
             sources=["bottleneck/src/nonreduce.c"],
             depends=base_includes,
+            define_macros=define_macros,
             extra_compile_args=["-O2"],
         )
     ]
@@ -136,11 +157,17 @@ def prepare_modules():
             "bottleneck.nonreduce_axis",
             sources=["bottleneck/src/nonreduce_axis.c"],
             depends=base_includes,
+            define_macros=define_macros,
             extra_compile_args=["-O2"],
         )
     ]
     return ext
 
+
+if USE_PY_LIMITED_API:
+    options = {"bdist_wheel": {"py_limited_api": f"cp{ABI3_TARGET_VERSION}"}}
+else:
+    options = {}
 
 setup(
     version=versioneer.get_version(),
@@ -149,4 +176,5 @@ setup(
     },
     cmdclass=cmdclass,
     ext_modules=prepare_modules(),
+    options=options,
 )
