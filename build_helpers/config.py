@@ -1,9 +1,10 @@
+#!/usr/bin/env python3
 """Based on numpy's approach to exposing compiler features via a config header.
 Unfortunately that file is not exposed, so re-implement the portions we need.
 """
 
-import os
 import textwrap
+from pathlib import Path
 
 OPTIONAL_FUNCTION_ATTRIBUTES = [
     ("HAVE_ATTRIBUTE_OPTIMIZE_OPT_3", '__attribute__((optimize("O3")))')
@@ -90,25 +91,27 @@ def check_gcc_function_attribute(cmd, attribute, name):
     return cmd.try_compile(body, None, None) != 0
 
 
-def create_config_h(config):
-    dirname = os.path.dirname(__file__)
-    config_h = os.path.join(dirname, "bn_config.h")
-
-    if (
-        os.path.exists(config_h)
-        and os.stat(__file__).st_mtime < os.stat(config_h).st_mtime
-    ):
-        return
+def create_config_h(config, output_dir: Path):
+    config_h = output_dir / "bn_config.h"
+    # this_script = Path(__file__)
+    # if (
+    #     config_h.exists()
+    #     and this_script.stat().st_mtime < config_h.stat().st_mtime
+    # ):
+    #     return
 
     output = []
 
-    for config_attr, func_attr in OPTIONAL_FUNCTION_ATTRIBUTES:
-        if check_gcc_function_attribute(config, func_attr, config_attr.lower()):
-            output.append((config_attr, "1"))
-        else:
-            output.append((config_attr, "0"))
+    if config is not None:
+        for config_attr, func_attr in OPTIONAL_FUNCTION_ATTRIBUTES:
+            if check_gcc_function_attribute(config, func_attr, config_attr.lower()):
+                output.append((config_attr, "1"))
+            else:
+                output.append((config_attr, "0"))
 
-    inline_alias = check_inline(config)
+        inline_alias = check_inline(config)
+    else:
+        inline_alias = ""
 
     with open(config_h, "w") as f:
         for setting in output:
@@ -118,3 +121,25 @@ def create_config_h(config):
             f.write("/* undef inline */\n")
         else:
             f.write(f"#define inline {inline_alias}\n")
+    print(f"wrote {config_h}")
+
+
+def main(argv: list[str] | None = None) -> int:
+    from argparse import ArgumentParser
+
+    parser = ArgumentParser()
+    parser.add_argument(
+        "-o",
+        dest="output_dir",
+        help="output directory",
+    )
+    args = parser.parse_args(argv)
+    create_config_h(
+        config=None,
+        output_dir=Path(args.output_dir),
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
