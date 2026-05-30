@@ -125,18 +125,12 @@ Unit tests               pytest
 Documentation            sphinx, numpydoc
 ======================== ============================================================================
 
-To install Bottleneck on Linux, Mac OS X, et al.:
+To install Bottleneck:
 
 .. code-block:: console
 
     $ pip install .
 
-To install bottleneck on Windows, first install MinGW and add it to your
-system path. Then install Bottleneck with the command:
-
-.. code-block:: console
-
-    $ python setup.py install --compiler=mingw32
 
 Unit tests
 ==========
