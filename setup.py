@@ -144,6 +144,7 @@ def prepare_modules():
             "bottleneck.nonreduce_axis",
             sources=["bottleneck/src/nonreduce_axis.c"],
             depends=base_includes,
+            define_macros=define_macros,
             extra_compile_args=["-O2"],
         )
     ]
