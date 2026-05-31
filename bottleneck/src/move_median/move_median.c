@@ -7,6 +7,7 @@
    Released under the Bottleneck license
 */
 
+#include <stdlib.h>
 #include "move_median.h"
 
 #define min(a, b) (((a) < (b)) ? (a) : (b))
