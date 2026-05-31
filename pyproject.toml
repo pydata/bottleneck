@@ -50,7 +50,10 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 requires-python = ">=3.10"
-dependencies = ["numpy>=1.21.3"]
+dependencies = [
+    # keep in sync with NPY_* macros (setup.py)
+    "numpy>=1.21.3",
+]
 dynamic = ["version"]
 
 [project.urls]
