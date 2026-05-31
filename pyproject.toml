@@ -92,14 +92,6 @@ concurrency = [
 limited-api = true
 args.setup = ['-Dpython.allow_limited_api=false']
 
-[tool.versioneer]
-VCS = "git"
-style = "pep440-pre"
-versionfile_source = "bottleneck/_version.py"
-versionfile_build = "bottleneck/_version.py"
-tag_prefix = "v"
-parentdir_prefix = "bottleneck-"
-
 [tool.uv]
 no-build-isolation-package = ["bottleneck"]
 no-build-package = ["numpy"]
@@ -143,8 +135,6 @@ config-settings = { setup-args = ["--vsenv", "-Dpython.allow_limited_api=false"]
 [tool.ruff]
 exclude = [
     "doc",
-    "versioneer.py",
-    "bottleneck/_version.py",
     "build",
 ]
 
