@@ -34,6 +34,10 @@ dependencies = [
 ]
 
 [package.dev-dependencies]
+concurrency = [
+    { name = "pytest" },
+    { name = "pytest-run-parallel" },
+]
 doc = [
     { name = "gitpython" },
     { name = "numpydoc" },
@@ -49,6 +53,10 @@ test = [
 requires-dist = [{ name = "numpy", specifier = ">=1.21.3" }]
 
 [package.metadata.requires-dev]
+concurrency = [
+    { name = "pytest", specifier = ">=8.0.0" },
+    { name = "pytest-run-parallel", specifier = ">=0.9.0" },
+]
 doc = [
     { name = "gitpython" },
     { name = "numpydoc" },
@@ -554,6 +562,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/7d/0d/549bd94f1a0a402dc8cf64563a117c0f3765662e2e668477624baeec44d5/pytest-9.0.3.tar.gz", hash = "sha256:b86ada508af81d19edeb213c681b1d48246c1a91d304c6c81a427674c17eb91c", size = 1572165, upload-time = "2026-04-07T17:16:18.027Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d4/24/a372aaf5c9b7208e7112038812994107bc65a84cd00e0354a88c2c77a617/pytest-9.0.3-py3-none-any.whl", hash = "sha256:2c5efc453d45394fdd706ade797c0a81091eccd1d6e4bccfcd476e2b8e0ab5d9", size = 375249, upload-time = "2026-04-07T17:16:16.13Z" },
+]
+
+[[package]]
+name = "pytest-run-parallel"
+version = "0.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/6e/30/93e117c777ff035affc62f7693a8265cd092ffd4e3179df2a29269e6e924/pytest_run_parallel-0.9.0.tar.gz", hash = "sha256:653b1f946d4c525588c3bde1a9ba56ec3176bf96c5df5649e57bfa3173534247", size = 65939, upload-time = "2026-05-27T15:33:37.136Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4c/a1/b80c7db9830cc02019bcc4e54f72ba52248c0169892d83c5a8dfa782c125/pytest_run_parallel-0.9.0-py3-none-any.whl", hash = "sha256:ada1021b87895be857a8b181601dbfea24e460c7b5a5622ea040ea777f52740f", size = 19476, upload-time = "2026-05-27T15:33:35.834Z" },
 ]
 
 [[package]]

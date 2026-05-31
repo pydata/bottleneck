@@ -69,6 +69,10 @@ doc = [
 test = [
     "pytest>=8.0.0",
 ]
+concurrency = [
+    { include-group = "test" },
+    "pytest-run-parallel>=0.9.0",
+]
 
 [tool.setuptools]
 include-package-data = false
