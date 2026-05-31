@@ -10,7 +10,8 @@ runs:
         prune-cache: false
     - name: Install
       shell: bash
-      run: uv sync --no-editable --group test
+      run: |
+        uv sync --no-editable --group test ${{ case( endsWith(matrix.python-version, 't'), '--group concurrency', '' ) }}
 
     - name: Test with pytest
       shell: bash
