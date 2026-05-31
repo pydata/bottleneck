@@ -93,13 +93,34 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os:
-          - macos-15-intel
-          - macos-latest
-          - windows-latest
-          - windows-11-arm
-          - ubuntu-latest
-          - ubuntu-24.04-arm
+        include:
+        - os: ubuntu-latest
+          archs: x86_64
+          select: '*manylinux*'
+        - os: ubuntu-latest
+          archs: x86_64
+          select: '*musllinux*'
+        - os: ubuntu-24.04-arm
+          archs: aarch64
+          select: '*manylinux*'
+        - os: ubuntu-24.04-arm
+          archs: aarch64
+          select: '*musllinux*'
+        - os: macos-15-intel
+          archs: x86_64
+          select: '*'
+        - os: macos-latest
+          archs: arm64
+          select: '*'
+        - os: windows-latest
+          archs: x86
+          select: '*'
+        - os: windows-latest
+          archs: AMD64
+          select: '*'
+        - os: windows-11-arm
+          archs: ARM64
+          select: '*'
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -108,6 +129,9 @@ jobs:
 
       - name: Build wheels
         uses: pypa/cibuildwheel@ee02a1537ce3071a004a6b08c41e72f0fdc42d9a # v3.4.0
+        env:
+          CIBW_ARCHS: ${{ matrix.archs }}
+          CIBW_BUILD: ${{ matrix.select }}
         with:
           extras: uv
           output-dir: dist
