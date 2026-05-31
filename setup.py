@@ -11,6 +11,11 @@ from setuptools.extension import Extension
 
 import versioneer
 
+define_macros = [
+    # keep in sync with runtime requirements (pyproject.toml)
+    ("NPY_NO_DEPRECATED_API", "NPY_1_21_API_VERSION"),
+]
+
 
 class config(_config):
     def run(self):
@@ -109,6 +114,7 @@ def prepare_modules():
             "bottleneck.reduce",
             sources=["bottleneck/src/reduce.c"],
             depends=base_includes,
+            define_macros=define_macros,
             extra_compile_args=["-O2"],
         )
     ]
@@ -120,6 +126,7 @@ def prepare_modules():
                 "bottleneck/src/move_median/move_median.c",
             ],
             depends=base_includes + ["bottleneck/src/move_median/move_median.h"],
+            define_macros=define_macros,
             extra_compile_args=["-O2"],
         )
     ]
@@ -128,6 +135,7 @@ def prepare_modules():
             "bottleneck.nonreduce",
             sources=["bottleneck/src/nonreduce.c"],
             depends=base_includes,
+            define_macros=define_macros,
             extra_compile_args=["-O2"],
         )
     ]
