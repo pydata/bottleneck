@@ -206,6 +206,25 @@ def test_nanstd_issue60():
     assert_equal(f, s, err_msg="issue #60 regression")
 
 
+def test_reduce_all_size_one_stride():
+    """reduce-all regression test (issues #381, #393)
+
+    A transposed view whose size-1 axis carries a large stride used to make
+    init_iter_all pick that stride as the flat element stride and iterate off
+    the buffer (garbage on the C-contiguous branch, segfault on the
+    F-contiguous branch).
+    """
+
+    # issue #381 (C-contiguous branch)
+    a = np.zeros((1, 500, 2)).transpose(1, 2, 0)
+    assert_equal(bn.nanmax(a), bn.slow.nanmax(a))
+
+    # issue #393 (F-contiguous branch)
+    b = np.arange(1 * 192 * 121, dtype=np.float64).reshape(1, 192, 121)
+    b = b.transpose(0, 2, 1)
+    assert_equal(bn.nanmax(b), bn.slow.nanmax(b))
+
+
 def test_nanvar_issue60():
     """nanvar regression test (issue #60)"""
 
