@@ -214,7 +214,7 @@ def test_nanstd_issue60():
         # issue #393 (F-contiguous branch)
         np.arange(1 * 192 * 121, dtype=np.float64).reshape(1, 192, 121).transpose(0, 2, 1),
     ),
-    ids=("issue381", "issue393"),
+    ids=("C-contiguous", "F-contiguous"),
 )
 def test_reduce_all_size_one_stride(a):
     """reduce-all regression test (issues #381, #393)
