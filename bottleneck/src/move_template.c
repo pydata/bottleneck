@@ -564,6 +564,7 @@ MOVE(move_median, DTYPE0) {
     mm_handle *mm = mm_new_nan(window, min_count);
     INIT(NPY_DTYPE0)
     if (window == 1) {
+        Py_DECREF(y);
         mm_free(mm);
         return PyArray_Copy(a);
     }
@@ -599,6 +600,8 @@ MOVE(move_median, DTYPE0) {
     mm_handle *mm = mm_new(window, min_count);
     INIT(NPY_DTYPE1)
     if (window == 1) {
+        Py_DECREF(y);
+        mm_free(mm);
         return PyArray_CastToType(a,
                                   PyArray_DescrFromType(NPY_DTYPE1),
                                   PyArray_CHKFLAGS(a, NPY_ARRAY_F_CONTIGUOUS));
