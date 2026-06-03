@@ -212,7 +212,9 @@ def test_nanstd_issue60():
         # issue #381 (C-contiguous branch)
         np.zeros((1, 500, 2)).transpose(1, 2, 0),
         # issue #393 (F-contiguous branch)
-        np.arange(1 * 192 * 121, dtype=np.float64).reshape(1, 192, 121).transpose(0, 2, 1),
+        np.arange(1 * 192 * 121, dtype=np.float64)
+        .reshape(1, 192, 121)
+        .transpose(0, 2, 1),
     ),
     ids=("C-contiguous", "F-contiguous"),
 )
