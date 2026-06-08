@@ -92,6 +92,7 @@ parentdir_prefix = "bottleneck-"
 [tool.pytest.ini_options]
 addopts = "-l"
 filterwarnings = ["error"]
+testpaths = ["bottleneck/tests"]
 
 [tool.cibuildwheel]
 build-frontend = "uv; args: --no-config"
