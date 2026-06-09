@@ -51,7 +51,6 @@ def test_refcount_leak():
 
 
 @pytest.mark.thread_unsafe
-@pytest.mark.xfail(strict=True, reason="output array leaked on reducer error paths")
 def test_reducer_error_path_leak():
     # The single-axis reducers build their output array before checking for an
     # empty reduction axis or an all-NaN slice, then raised without releasing
