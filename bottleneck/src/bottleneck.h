@@ -7,6 +7,11 @@
 #include <numpy/arrayobject.h>
 #include <bn_config.h>
 
+#ifdef Py_LIMITED_API
+    #define PyTuple_GET_ITEM PyTuple_GetItem
+    #define PyTuple_GET_SIZE PyTuple_Size
+#endif
+
 /* THREADS=1 releases the GIL but increases function call
  * overhead. THREADS=0 does not release the GIL but keeps
  * function call overhead low. Curly brackets are for C89
