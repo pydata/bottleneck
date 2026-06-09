@@ -90,7 +90,7 @@ tag_prefix = "v"
 parentdir_prefix = "bottleneck-"
 
 [tool.pytest.ini_options]
-addopts = "-l"
+addopts = "-l --strict-markers"
 filterwarnings = ["error"]
 testpaths = ["bottleneck/tests"]
 
