@@ -37,6 +37,7 @@ dependencies = [
 concurrency = [
     { name = "pytest" },
     { name = "pytest-run-parallel" },
+    { name = "runtime-introspect" },
 ]
 doc = [
     { name = "gitpython" },
@@ -47,6 +48,7 @@ doc = [
 ]
 test = [
     { name = "pytest" },
+    { name = "runtime-introspect" },
 ]
 
 [package.metadata]
@@ -56,13 +58,17 @@ requires-dist = [{ name = "numpy", specifier = ">=1.21.3" }]
 concurrency = [
     { name = "pytest", specifier = ">=8.0.0" },
     { name = "pytest-run-parallel", specifier = ">=0.9.0" },
+    { name = "runtime-introspect", specifier = ">=0.4.1" },
 ]
 doc = [
     { name = "gitpython" },
     { name = "numpydoc" },
     { name = "sphinx" },
 ]
-test = [{ name = "pytest", specifier = ">=8.0.0" }]
+test = [
+    { name = "pytest", specifier = ">=8.0.0" },
+    { name = "runtime-introspect", specifier = ">=0.4.1" },
+]
 
 [[package]]
 name = "certifi"
@@ -598,6 +604,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/ae/f9/41dc953bbeb056c17d5f7a519f50fdf010bd0553be2d630bc69d1e022703/roman_numerals-4.1.0.tar.gz", hash = "sha256:1af8b147eb1405d5839e78aeb93131690495fe9da5c91856cb33ad55a7f1e5b2", size = 9077, upload-time = "2025-12-17T18:25:34.381Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/04/54/6f679c435d28e0a568d8e8a7c0a93a09010818634c3c3907fc98d8983770/roman_numerals-4.1.0-py3-none-any.whl", hash = "sha256:647ba99caddc2cc1e55a51e4360689115551bf4476d90e8162cf8c345fe233c7", size = 7676, upload-time = "2025-12-17T18:25:33.098Z" },
+]
+
+[[package]]
+name = "runtime-introspect"
+version = "0.4.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/77/b9/d4feffda2f30e904b44d00cfc186227923108c7c74b51d7cc74dca746022/runtime_introspect-0.4.1.tar.gz", hash = "sha256:e1c6932c4021d432c81ed577424af20e4cb1e20eed93d45b2950cf8be2da9b45", size = 24458, upload-time = "2026-05-19T07:37:37.018Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e4/8d/eae181160558368a946f185a7d422f448433617d90af74cf899f5d0be2f5/runtime_introspect-0.4.1-py3-none-any.whl", hash = "sha256:22b3703ef9f0f3e5207339b549b2d785505cb6511d7f090eb2fa268589c7f0f0", size = 20762, upload-time = "2026-05-19T07:37:35.605Z" },
 ]
 
 [[package]]
