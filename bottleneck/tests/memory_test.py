@@ -51,7 +51,30 @@ def test_refcount_leak():
 
 
 @pytest.mark.thread_unsafe
-def test_reducer_error_path_leak():
+@pytest.mark.parametrize(
+    "func, arr",
+    [
+        pytest.param(bn.nanmin, np.zeros((4, 0), dtype=np.float64), id="nanmin-empty"),
+        pytest.param(bn.nanmax, np.zeros((4, 0), dtype=np.int64), id="nanmax-empty"),
+        pytest.param(
+            bn.nanargmin, np.zeros((4, 0), dtype=np.float64), id="nanargmin-empty"
+        ),
+        pytest.param(
+            bn.nanargmax, np.zeros((4, 0), dtype=np.int64), id="nanargmax-empty"
+        ),
+        pytest.param(
+            bn.nanargmin,
+            np.full((4, 2), np.nan, dtype=np.float64),
+            id="nanargmin-allnan",
+        ),
+        pytest.param(
+            bn.nanargmax,
+            np.full((4, 2), np.nan, dtype=np.float64),
+            id="nanargmax-allnan",
+        ),
+    ],
+)
+def test_reducer_error_path_leak(func, arr):
     # The single-axis reducers build their output array before checking for an
     # empty reduction axis or an all-NaN slice, then raised without releasing
     # it, leaking one output array per call. A dtype-refcount probe catches this
@@ -61,24 +84,10 @@ def test_reducer_error_path_leak():
     import gc
     import tracemalloc
 
-    empty_f = np.zeros((4, 0), dtype=np.float64)
-    empty_i = np.zeros((4, 0), dtype=np.int64)
-    all_nan = np.full((4, 2), np.nan, dtype=np.float64)
-
-    cases = [
-        (bn.nanmin, empty_f),  # shape[axis] == 0
-        (bn.nanmax, empty_i),  # shape[axis] == 0
-        (bn.nanargmin, empty_f),  # shape[axis] == 0
-        (bn.nanargmax, empty_i),  # shape[axis] == 0
-        (bn.nanargmin, all_nan),  # all-NaN slice
-        (bn.nanargmax, all_nan),  # all-NaN slice
-    ]
-
     def hammer(rounds):
         for _ in range(rounds):
-            for func, arr in cases:
-                with pytest.raises(ValueError):
-                    func(arr, axis=1)
+            with pytest.raises(ValueError):
+                func(arr, axis=1)
 
     hammer(50)  # warm up any one-time caches before sampling
     gc.collect()
@@ -93,6 +102,6 @@ def test_reducer_error_path_leak():
 
     grew = sum(stat.size_diff for stat in after.compare_to(before, "filename"))
     # Each leaked output array is ~140 bytes, so the unfixed code grows by
-    # rounds * len(cases) * ~140 bytes here; the fix keeps this near zero.
-    # 16 bytes/call leaves ample room for unrelated allocator noise.
-    assert grew < rounds * len(cases) * 16
+    # rounds * ~140 bytes here; the fix keeps this near zero. 16 bytes/call
+    # leaves ample room for unrelated allocator noise.
+    assert grew < rounds * 16
