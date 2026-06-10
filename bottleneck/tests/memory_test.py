@@ -94,7 +94,7 @@ def test_reducer_error_path_leak(func, arr):
 
     tracemalloc.start()
     before = tracemalloc.take_snapshot()
-    rounds = 200
+    rounds = 400
     hammer(rounds)
     gc.collect()
     after = tracemalloc.take_snapshot()
@@ -102,6 +102,9 @@ def test_reducer_error_path_leak(func, arr):
 
     grew = sum(stat.size_diff for stat in after.compare_to(before, "filename"))
     # Each leaked output array is ~140 bytes, so the unfixed code grows by
-    # rounds * ~140 bytes here; the fix keeps this near zero. 16 bytes/call
-    # leaves ample room for unrelated allocator noise.
-    assert grew < rounds * 16
+    # rounds * ~140 bytes here; the fix keeps this near zero. The budget is
+    # 16 bytes/call for allocator noise that scales with the loop, plus a
+    # fixed 16 KiB because free-threaded builds retain ~7 KiB of
+    # interpreter-internal allocations per tracemalloc window regardless of
+    # call count (gh-574), which a purely per-call budget cannot absorb.
+    assert grew < rounds * 16 + 16 * 1024
