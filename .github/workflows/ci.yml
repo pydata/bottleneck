@@ -114,9 +114,6 @@ jobs:
           archs: arm64
           select: '*'
         - os: windows-latest
-          archs: x86
-          select: '*'
-        - os: windows-latest
           archs: AMD64
           select: '*'
         - os: windows-11-arm
