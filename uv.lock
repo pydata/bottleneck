@@ -566,14 +566,14 @@ wheels = [
 
 [[package]]
 name = "pytest-run-parallel"
-version = "0.9.0"
+version = "0.9.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pytest" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6e/30/93e117c777ff035affc62f7693a8265cd092ffd4e3179df2a29269e6e924/pytest_run_parallel-0.9.0.tar.gz", hash = "sha256:653b1f946d4c525588c3bde1a9ba56ec3176bf96c5df5649e57bfa3173534247", size = 65939, upload-time = "2026-05-27T15:33:37.136Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e9/c2/e94d5db442c975425ec7da0f66d29e191371a3aad4f4d9872bfeaf506cf7/pytest_run_parallel-0.9.1.tar.gz", hash = "sha256:9972ad8e66340a83819abae9cb3cefd7b3ca7b69b884d19521137767c6a69b58", size = 66001, upload-time = "2026-06-03T20:14:11.678Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4c/a1/b80c7db9830cc02019bcc4e54f72ba52248c0169892d83c5a8dfa782c125/pytest_run_parallel-0.9.0-py3-none-any.whl", hash = "sha256:ada1021b87895be857a8b181601dbfea24e460c7b5a5622ea040ea777f52740f", size = 19476, upload-time = "2026-05-27T15:33:35.834Z" },
+    { url = "https://files.pythonhosted.org/packages/19/88/b09e7e1be1847e61f0602fe691cefb3363dc45bb08564568999a23e484c4/pytest_run_parallel-0.9.1-py3-none-any.whl", hash = "sha256:623d1fc7f7a2bec5487addf791f559e7814de5b135c43434e1740fd63eff3c7f", size = 19506, upload-time = "2026-06-03T20:14:10.328Z" },
 ]
 
 [[package]]
