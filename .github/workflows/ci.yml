@@ -1,9 +1,6 @@
 name: Github Actions
 
-on:
-  push:
-  pull_request:
-  workflow_dispatch:
+on: ["push", "pull_request"]
 
 permissions: {}
 
@@ -173,7 +170,7 @@ jobs:
     needs:
       - build_wheels
       - build_sdist
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
