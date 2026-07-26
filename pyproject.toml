@@ -100,6 +100,7 @@ skip = [
     "*_i686",
     "cp310-win_arm64", # no numpy wheels for this target
 ]
+environment = { "BN_LIMITED_API" = "1" }
 
 [tool.ruff]
 exclude = [
