@@ -68,6 +68,7 @@ doc = [
 ]
 test = [
     "pytest>=8.0.0",
+    "runtime-introspect>=0.4.1",
 ]
 concurrency = [
     { include-group = "test" },
