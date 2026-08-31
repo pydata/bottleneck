@@ -17,4 +17,4 @@ runs:
       shell: bash
       run: |
         cd doc  # avoid picking up bottleneck from the source dir
-        uv run --no-sync pytest --pyargs bottleneck
+        uv run --no-sync pytest --pyargs bottleneck ${{ case( endsWith(matrix.python-version, 't'), '--parallel-threads=auto', '' ) }}
