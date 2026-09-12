@@ -926,7 +926,7 @@ mover(char *name,
     /* convert to array if necessary */
     if (PyArray_Check(a_obj)) {
         a = (PyArrayObject *)a_obj;
-        Py_INCREF(a);
+        Py_INCREF((PyObject*)a);
     } else {
         a = (PyArrayObject *)PyArray_FROM_O(a_obj);
         if (a == NULL) {
@@ -936,7 +936,7 @@ mover(char *name,
 
     /* check for byte swapped input array */
     if (PyArray_ISBYTESWAPPED(a)) {
-        Py_DECREF(a);
+        Py_DECREF((PyObject *)a);
         return slow(name, args, kwds);
     }
 
@@ -1030,12 +1030,12 @@ mover(char *name,
         y = slow(name, args, kwds);
     }
 
-    Py_DECREF(a);
+    Py_DECREF((PyObject *)a);
 
     return y;
 
 error:
-    Py_DECREF(a);
+    Py_DECREF((PyObject *)a);
     return NULL;
 
 }
