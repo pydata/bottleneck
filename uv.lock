@@ -48,7 +48,7 @@ test = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "numpy", specifier = ">=1.23.2" }]
+requires-dist = [{ name = "numpy", specifier = ">=2.0.0" }]
 
 [package.metadata.requires-dev]
 concurrency = [
