@@ -104,6 +104,11 @@ skip = [
     "*_i686",
     "cp310-win_arm64", # no numpy wheels for this target
 ]
+test-groups = ["test", "concurrency"]
+test-sources = ["pyproject.toml"]
+test-command = [
+    "pytest --pyargs bottleneck",
+]
 
 [tool.ruff]
 exclude = [
