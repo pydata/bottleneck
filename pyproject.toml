@@ -108,6 +108,7 @@ test-sources = ["pyproject.toml"]
 test-command = [
     "pytest --pyargs bottleneck",
 ]
+environment = { "BN_LIMITED_API" = "1" }
 
 [tool.ruff]
 exclude = [
