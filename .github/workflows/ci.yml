@@ -154,7 +154,10 @@ jobs:
           select: 'cp3{11,12,13,14,15}-*'
         - os: windows-11-arm
           archs: ARM64
-          select: 'cp3{14,15}t-*'
+          select: 'cp314t-*'
+        - os: windows-11-arm
+          archs: ARM64
+          select: 'cp315t-*'
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
