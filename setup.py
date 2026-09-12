@@ -13,7 +13,7 @@ import versioneer
 
 define_macros = [
     # keep in sync with runtime requirements (pyproject.toml)
-    ("NPY_NO_DEPRECATED_API", "NPY_1_21_API_VERSION"),
+    ("NPY_NO_DEPRECATED_API", "NPY_1_23_API_VERSION"),
 ]
 
 

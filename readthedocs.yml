@@ -6,7 +6,7 @@ sphinx:
 formats: all
 
 python:
-  version: '3.10'
+  version: '3.11'
   install:
     # Since the install step is overridden, pip is no longer updated automatically.
     - pip install --upgrade pip
