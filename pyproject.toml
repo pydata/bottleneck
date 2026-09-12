@@ -102,6 +102,10 @@ parentdir_prefix = "bottleneck-"
 
 [tool.uv]
 no-build-package = ["numpy"]
+constraint-dependencies = [
+    # https://github.com/pydata/bottleneck/pull/556#issuecomment-5646455386
+    "meson!=1.12.0",
+]
 
 [tool.pytest.ini_options]
 addopts = "-l --strict-markers"
