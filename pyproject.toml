@@ -123,7 +123,8 @@ test-command = [
 
 [[tool.cibuildwheel.overrides]]
 # CPython 3.14 predates PEP 803
-select = "cp314t-*"
+# and cp315-abi3t isn't supported yet
+select = "cp3{14,15}t-*"
 config-settings = { setup-args = ["-Dpython.allow_limited_api=false"] }
 
 [[tool.cibuildwheel.overrides]]
