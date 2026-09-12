@@ -62,7 +62,7 @@ NRA(partition, DTYPE0) {
         PyErr_Format(PyExc_ValueError,
                      "`n` (=%d) must be between 0 and %zd, inclusive.",
                      n, LENGTH - 1);
-        Py_DECREF(a);
+        Py_DECREF((PyObject *)a);
         return NULL;
     }
 
@@ -659,7 +659,7 @@ nonreducer_axis(char *name,
     /* convert to array if necessary */
     if (PyArray_Check(a_obj)) {
         a = (PyArrayObject *)a_obj;
-        Py_INCREF(a);
+        Py_INCREF((PyObject*)a);
     } else {
         a = (PyArrayObject *)PyArray_FROM_O(a_obj);
         if (a == NULL) {
@@ -669,7 +669,7 @@ nonreducer_axis(char *name,
 
     /* check for byte swapped input array */
     if (PyArray_ISBYTESWAPPED(a)) {
-        Py_DECREF(a);
+        Py_DECREF((PyObject *)a);
         return slow(name, args, kwds);
     }
 
@@ -685,7 +685,7 @@ nonreducer_axis(char *name,
         } else {
             if (PyArray_NDIM(a) != 1) {
                 PyArrayObject *tmp = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
-                Py_DECREF(a);
+                Py_DECREF((PyObject *)a);
                 if (tmp == NULL) return NULL;
                 a = tmp;
             }
@@ -698,7 +698,7 @@ nonreducer_axis(char *name,
         }
         if (PyArray_NDIM(a) != 1) {
             PyArrayObject *tmp = (PyArrayObject *)PyArray_Ravel(a, NPY_CORDER);
-            Py_DECREF(a);
+            Py_DECREF((PyObject *)a);
             if (tmp == NULL) return NULL;
             a = tmp;
         }
@@ -746,12 +746,12 @@ nonreducer_axis(char *name,
     else if (dtype == NPY_int32)   y = nra_int32(a, axis, n);
     else                           y = slow(name, args, kwds);
 
-    Py_DECREF(a);
+    Py_DECREF((PyObject *)a);
 
     return y;
 
 error:
-    Py_DECREF(a);
+    Py_DECREF((PyObject *)a);
     return NULL;
 
 }

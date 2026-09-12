@@ -47,7 +47,7 @@ replace_DTYPE0(PyArrayObject *a, double old, double new) {
         }
     }
     BN_END_ALLOW_THREADS
-    Py_INCREF(a);
+    Py_INCREF((PyObject*)a);
     return (PyObject *)a;
 }
 /* dtype end */
@@ -82,7 +82,7 @@ replace_DTYPE0(PyArrayObject *a, double old, double new) {
         }
         BN_END_ALLOW_THREADS
     }
-    Py_INCREF(a);
+    Py_INCREF((PyObject*)a);
     return (PyObject *)a;
 }
 /* dtype end */
@@ -210,7 +210,7 @@ nonreducer(char *name,
     /* convert to array if necessary */
     if (PyArray_Check(a_obj)) {
         a = (PyArrayObject *)a_obj;
-        Py_INCREF(a);
+        Py_INCREF((PyObject*)a);
     } else {
         if (inplace) {
             TYPE_ERR("works in place so input must be an array, "
@@ -225,7 +225,7 @@ nonreducer(char *name,
 
     /* check for byte swapped input array */
     if (PyArray_ISBYTESWAPPED(a)) {
-        Py_DECREF(a);
+        Py_DECREF((PyObject *)a);
         return slow(name, args, kwds);
     }
 
@@ -261,12 +261,12 @@ nonreducer(char *name,
     else if (dtype == NPY_int32)   y = nr_int32(a, old, new);
     else                           y = slow(name, args, kwds);
 
-    Py_DECREF(a);
+    Py_DECREF((PyObject *)a);
 
     return y;
 
 error:
-    Py_DECREF(a);
+    Py_DECREF((PyObject *)a);
     return NULL;
 
 }
