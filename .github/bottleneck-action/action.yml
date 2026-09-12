@@ -3,7 +3,14 @@ description: "checkout repo, build, and test bottleneck"
 runs:
   using: composite
   steps:
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up uv + Python ${{ matrix.python-version }}
+      if: ${{ !startsWith( matrix.os , 'windows' ) }}
+      uses: astral-sh/setup-uv@803947b9bd8e9f986429fa0c5a41c367cd732b41 # v7.2.1
+      with:
+        python-version: ${{ matrix.python-version }}
+        prune-cache: false
+    - name: Set up uv + Python ${{ matrix.python-version }}
+      if: ${{ startsWith( matrix.os , 'windows' ) }}
       uses: astral-sh/setup-uv@803947b9bd8e9f986429fa0c5a41c367cd732b41 # v7.2.1
       with:
         python-version: ${{ matrix.python-version }}

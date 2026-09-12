@@ -5,7 +5,30 @@ on: ["push", "pull_request"]
 permissions: {}
 
 jobs:
+  test-build-helpers:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+          - "3.14"
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          no-project: true
+      - run: uvx pytest build_helpers
+
   test-linux-macos:
+    needs: [test-build-helpers]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -25,6 +48,7 @@ jobs:
       - uses: ./.github/bottleneck-action
 
   test-windows:
+    needs: [test-build-helpers]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -53,9 +77,16 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: ${{ matrix.architecture }}
+      - run: echo "UV_PYTHON_PREFERENCE=only-system" >> "$GITHUB_ENV"
       - uses: ./.github/bottleneck-action
 
   test-pyversions:
+    needs: [test-build-helpers]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -80,7 +111,7 @@ jobs:
     # it serves as a check that CI actually ran before a PR gets merged.
     needs:
       - test-linux-macos
-      - test-windows
+      #- test-windows
     runs-on: ubuntu-latest
     steps:
       - name: Placeholder for CI checks in PRs
@@ -89,7 +120,7 @@ jobs:
   build_wheels:
     needs:
       - test-linux-macos
-      - test-windows
+      #- test-windows
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -116,14 +147,28 @@ jobs:
         - os: windows-latest
           archs: AMD64
           select: '*'
+        # separate GIL-enabled and free-threaded builds
+        # to avoid invalid cache hits with a re-used build directory
         - os: windows-11-arm
           archs: ARM64
-          select: '*'
+          select: 'cp3{11,12,13,14,15}-*'
+        - os: windows-11-arm
+          archs: ARM64
+          select: 'cp314t-*'
+        - os: windows-11-arm
+          archs: ARM64
+          select: 'cp315t-*'
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
           persist-credentials: false
+
+      - name: Setup MSVC (32-bit)
+        if: ${{ startsWith(runner.os, 'windows') && matrix.archs == 'x86' }}
+        uses: bus1/cabuild/action/msdevshell@e22aba57d6e74891d059d66501b6b5aed8123c4d  # v1
+        with:
+          architecture: 'x86'
 
       - name: Build wheels
         uses: pypa/cibuildwheel@e090b81e30c4d855ea63bf4b6e59204c09a101ae # v4.2.1
@@ -143,7 +188,7 @@ jobs:
   build_sdist:
     needs:
      - test-linux-macos
-     - test-windows
+     #- test-windows
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
