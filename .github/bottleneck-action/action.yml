@@ -18,10 +18,11 @@ runs:
     - name: Install
       shell: bash
       run: |
-        uv sync --no-editable --group test \
+        uv venv
+        uv pip install pkgconf==2.5.1.post1
+        uv sync --inexact --no-editable --group test \
           ${{ case( endsWith(matrix.python-version, 't'), '--group concurrency', '' ) }} \
           ${{ case( startsWith(matrix.os, 'windows'), '-Csetup-args=--vsenv', '' ) }}
-
 
     - name: Test with pytest
       shell: bash
