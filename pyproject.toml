@@ -1,6 +1,8 @@
 [build-system]
 # keep in sync with dependency-groups
 requires = [
+    # https://github.com/pydata/bottleneck/pull/556#issuecomment-5646455386
+    "meson!=1.12.0",
     "meson-python>=0.18.0",
     # The upper bound should be 3 minor releases ahead of the current runtime version
     "numpy>=2,<2.8"
@@ -102,6 +104,10 @@ parentdir_prefix = "bottleneck-"
 
 [tool.uv]
 no-build-package = ["numpy"]
+constraint-dependencies = [
+    # https://github.com/pydata/bottleneck/pull/556#issuecomment-5646455386
+    "meson!=1.12.0",
+]
 
 [tool.pytest.ini_options]
 addopts = "-l --strict-markers"
