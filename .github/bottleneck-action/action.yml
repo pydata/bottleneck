@@ -4,10 +4,9 @@ runs:
   using: composite
   steps:
     - name: Set up Python ${{ matrix.python-version }}
-      uses: astral-sh/setup-uv@803947b9bd8e9f986429fa0c5a41c367cd732b41 # v7.2.1
+      uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
       with:
         python-version: ${{ matrix.python-version }}
-        prune-cache: false
     - name: Install
       shell: bash
       run: |
