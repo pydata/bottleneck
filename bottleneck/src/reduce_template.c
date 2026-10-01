@@ -1214,7 +1214,6 @@ reducer(char *name,
     } else {
         axis = PyArray_PyIntAsInt(axis_obj);
         if (error_converting(axis)) {
-            TYPE_ERR("`axis` must be an integer or None");
             goto error;
         }
         ndim = PyArray_NDIM(a);
@@ -1240,7 +1239,6 @@ reducer(char *name,
     } else {
         ddof = PyArray_PyIntAsInt(ddof_obj);
         if (error_converting(ddof)) {
-            TYPE_ERR("`ddof` must be an integer");
             goto error;
         }
     }

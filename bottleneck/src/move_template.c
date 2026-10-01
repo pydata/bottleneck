@@ -943,7 +943,6 @@ mover(char *name,
     /* window */
     window = PyArray_PyIntAsInt(window_obj);
     if (error_converting(window)) {
-        TYPE_ERR("`window` must be an integer");
         goto error;
     }
 
@@ -953,7 +952,6 @@ mover(char *name,
     } else {
         mc = PyArray_PyIntAsInt(min_count_obj);
         if (error_converting(mc)) {
-            TYPE_ERR("`min_count` must be an integer or None");
             goto error;
         }
         if (mc > window) {
@@ -981,7 +979,6 @@ mover(char *name,
     } else {
         axis = PyArray_PyIntAsInt(axis_obj);
         if (error_converting(axis)) {
-            TYPE_ERR("`axis` must be an integer");
             goto error;
         }
         if (axis < 0) {
@@ -1003,7 +1000,6 @@ mover(char *name,
     } else {
         ddof = PyArray_PyIntAsInt(ddof_obj);
         if (error_converting(ddof)) {
-            TYPE_ERR("`ddof` must be an integer");
             goto error;
         }
     }

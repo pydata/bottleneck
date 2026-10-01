@@ -706,7 +706,6 @@ nonreducer_axis(char *name,
     } else {
         axis = PyArray_PyIntAsInt(axis_obj);
         if (error_converting(axis)) {
-            TYPE_ERR("`axis` must be an integer");
             goto error;
         }
         if (axis < 0) {
@@ -730,7 +729,6 @@ nonreducer_axis(char *name,
     } else {
         n = PyArray_PyIntAsInt(n_obj);
         if (error_converting(n)) {
-            TYPE_ERR("`n` must be an integer");
             goto error;
         }
         if (n < 0 && parse == PARSE_PUSH) {
