@@ -7,7 +7,6 @@ import pytest
 
 import bottleneck as bn
 
-
 _original_nansum = bn.nansum
 _retained = []
 
