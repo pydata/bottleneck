@@ -1,4 +1,6 @@
+import gc
 import sys
+import tracemalloc
 
 import numpy as np
 import pytest
@@ -32,9 +34,6 @@ def _leaking_nansum(arr, axis=None):
     ],
 )
 def test_memory_leak(monkeypatch, nansum):
-    import gc
-    import tracemalloc
-
     _retained.clear()
     monkeypatch.setattr(bn, "nansum", nansum)
 
@@ -117,9 +116,6 @@ def test_reducer_error_path_leak(func, arr):
     # on 3.10-3.12 but not on 3.13+, where the builtin dtype singletons are
     # immortal and their refcount no longer moves, so measure the net allocation
     # directly with tracemalloc instead.
-    import gc
-    import tracemalloc
-
     def hammer(rounds):
         for _ in range(rounds):
             with pytest.raises(ValueError):
