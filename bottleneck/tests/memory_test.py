@@ -7,35 +7,42 @@ import bottleneck as bn
 
 
 @pytest.mark.thread_unsafe
-@pytest.mark.skipif(
-    sys.platform.startswith("win"), reason="resource module not available on windows"
-)
 def test_memory_leak():
-    import resource
+    import gc
+    import tracemalloc
 
     arr = np.arange(1).reshape((1, 1))
 
-    starting = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    def hammer(rounds):
+        for _ in range(rounds):
+            for axis in [None, 0, 1]:
+                bn.nansum(arr, axis=axis)
+                bn.nanargmax(arr, axis=axis)
+                bn.nanargmin(arr, axis=axis)
+                bn.nanmedian(arr, axis=axis)
+                bn.nansum(arr, axis=axis)
+                bn.nanmean(arr, axis=axis)
+                bn.nanmin(arr, axis=axis)
+                bn.nanmax(arr, axis=axis)
+                bn.nanvar(arr, axis=axis)
 
-    for _ in range(1000):
-        for axis in [None, 0, 1]:
-            bn.nansum(arr, axis=axis)
-            bn.nanargmax(arr, axis=axis)
-            bn.nanargmin(arr, axis=axis)
-            bn.nanmedian(arr, axis=axis)
-            bn.nansum(arr, axis=axis)
-            bn.nanmean(arr, axis=axis)
-            bn.nanmin(arr, axis=axis)
-            bn.nanmax(arr, axis=axis)
-            bn.nanvar(arr, axis=axis)
+    hammer(50)
+    gc.collect()
+    tracemalloc.start()
+    try:
+        before = tracemalloc.take_snapshot()
+        rounds = 1000
+        hammer(rounds)
+        gc.collect()
+        after = tracemalloc.take_snapshot()
+    finally:
+        tracemalloc.stop()
 
-    ending = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-
-    diff = ending - starting
-    diff_bytes = diff * resource.getpagesize()
-    print(diff_bytes)
-    # For 1.3.0 release, this had value of ~100kB
-    assert diff_bytes == 0
+    grew = sum(stat.size_diff for stat in after.compare_to(before, "filename"))
+    # Measure retained allocations, not process-wide peak RSS (gh-597).
+    # Allow the same per-round noise and free-threaded fixed overhead as the
+    # error-path probe below, well below one leaked ndarray per round.
+    assert grew < rounds * 16 + 16 * 1024
 
 
 def test_refcount_leak():
