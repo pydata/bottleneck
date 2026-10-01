@@ -26,6 +26,8 @@ def test_memory_leak():
                 bn.nanmax(arr, axis=axis)
                 bn.nanvar(arr, axis=axis)
 
+    # Warm up so one-time allocations (caches, lazy imports) settle before
+    # tracemalloc starts measuring.
     hammer(50)
     gc.collect()
     tracemalloc.start()
