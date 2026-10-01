@@ -118,11 +118,6 @@ def test_reducer_error_path_leak(func, arr):
 
 
 @pytest.mark.thread_unsafe
-def test_memory_probe_completes_without_leak():
-    test_memory_leak()
-
-
-@pytest.mark.thread_unsafe
 def test_memory_probe_detects_retained_arrays(monkeypatch):
     original = bn.nansum
     retained = []
