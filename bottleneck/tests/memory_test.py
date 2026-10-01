@@ -115,3 +115,22 @@ def test_reducer_error_path_leak(func, arr):
     # interpreter-internal allocations per tracemalloc window regardless of
     # call count (gh-574), which a purely per-call budget cannot absorb.
     assert grew < rounds * 16 + 16 * 1024
+
+
+@pytest.mark.thread_unsafe
+def test_memory_probe_completes_without_leak():
+    test_memory_leak()
+
+
+@pytest.mark.thread_unsafe
+def test_memory_probe_detects_retained_arrays(monkeypatch):
+    original = bn.nansum
+    retained = []
+
+    def leaking_nansum(arr, axis=None):
+        retained.append(np.empty(1024))
+        return original(arr, axis=axis)
+
+    monkeypatch.setattr(bn, "nansum", leaking_nansum)
+    with pytest.raises(AssertionError):
+        test_memory_leak()
