@@ -6,10 +6,39 @@ import pytest
 import bottleneck as bn
 
 
+def _leaking_nansum_factory():
+    original = bn.nansum
+    retained = []
+
+    def leaking_nansum(arr, axis=None):
+        retained.append(np.empty(1024))
+        return original(arr, axis=axis)
+
+    return leaking_nansum
+
+
 @pytest.mark.thread_unsafe
-def test_memory_leak():
+@pytest.mark.parametrize(
+    "leaky",
+    [
+        pytest.param(False, id="no-mock"),
+        pytest.param(
+            True,
+            id="retained-arrays",
+            marks=pytest.mark.xfail(
+                reason="the probe must detect arrays retained by a reducer",
+                raises=AssertionError,
+                strict=True,
+            ),
+        ),
+    ],
+)
+def test_memory_leak(monkeypatch, leaky):
     import gc
     import tracemalloc
+
+    if leaky:
+        monkeypatch.setattr(bn, "nansum", _leaking_nansum_factory())
 
     arr = np.arange(1).reshape((1, 1))
 
@@ -117,17 +146,3 @@ def test_reducer_error_path_leak(func, arr):
     # interpreter-internal allocations per tracemalloc window regardless of
     # call count (gh-574), which a purely per-call budget cannot absorb.
     assert grew < rounds * 16 + 16 * 1024
-
-
-@pytest.mark.thread_unsafe
-def test_memory_probe_detects_retained_arrays(monkeypatch):
-    original = bn.nansum
-    retained = []
-
-    def leaking_nansum(arr, axis=None):
-        retained.append(np.empty(1024))
-        return original(arr, axis=axis)
-
-    monkeypatch.setattr(bn, "nansum", leaking_nansum)
-    with pytest.raises(AssertionError):
-        test_memory_leak()
