@@ -6,24 +6,22 @@ import pytest
 import bottleneck as bn
 
 
-def _leaking_nansum_factory():
-    original = bn.nansum
-    retained = []
+_original_nansum = bn.nansum
+_retained = []
 
-    def leaking_nansum(arr, axis=None):
-        retained.append(np.empty(1024))
-        return original(arr, axis=axis)
 
-    return leaking_nansum
+def _leaking_nansum(arr, axis=None):
+    _retained.append(np.empty(1024))
+    return _original_nansum(arr, axis=axis)
 
 
 @pytest.mark.thread_unsafe
 @pytest.mark.parametrize(
-    "leaky",
+    "nansum",
     [
-        pytest.param(False, id="no-mock"),
+        pytest.param(_original_nansum, id="no-mock"),
         pytest.param(
-            True,
+            _leaking_nansum,
             id="retained-arrays",
             marks=pytest.mark.xfail(
                 reason="the probe must detect arrays retained by a reducer",
@@ -33,12 +31,12 @@ def _leaking_nansum_factory():
         ),
     ],
 )
-def test_memory_leak(monkeypatch, leaky):
+def test_memory_leak(monkeypatch, nansum):
     import gc
     import tracemalloc
 
-    if leaky:
-        monkeypatch.setattr(bn, "nansum", _leaking_nansum_factory())
+    _retained.clear()
+    monkeypatch.setattr(bn, "nansum", nansum)
 
     arr = np.arange(1).reshape((1, 1))
 
