@@ -4,13 +4,24 @@ runs:
   using: composite
   steps:
     - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up uv + Python ${{ matrix.python-version }}
+      if: ${{ !startsWith( matrix.os , 'windows' ) }}
+      uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Set up uv + Python ${{ matrix.python-version }}
+      if: ${{ startsWith( matrix.os , 'windows' ) }}
       uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install
       shell: bash
       run: |
-        uv sync --no-editable --group test ${{ case( endsWith(matrix.python-version, 't'), '--group concurrency', '' ) }}
+        uv venv
+        uv pip install pkgconf==2.5.1.post1
+        uv sync --inexact --no-editable --group test \
+          ${{ case( endsWith(matrix.python-version, 't'), '--group concurrency', '' ) }} \
+          ${{ case( startsWith(matrix.os, 'windows'), '-Csetup-args=--vsenv', '' ) }}
 
     - name: Test with pytest
       shell: bash
