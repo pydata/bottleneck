@@ -33,21 +33,15 @@ jobs:
           - "3.11"
           - "3.15"
           - "3.15t"
-        architecture:
-          - x86
-          - x64
         os:
           - windows-latest
           - windows-2022
         include:
           - os: windows-11-arm
-            architecture: arm64
             python-version: "3.11"
           - os: windows-11-arm
-            architecture: arm64
             python-version: "3.15"
           - os: windows-11-arm
-            architecture: arm64
             python-version: "3.15t"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
