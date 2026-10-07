@@ -748,7 +748,7 @@ REDUCE_MAIN(ss, 0)
             ai = B(dtype, i); \
             if (ai > amax) amax = ai; \
         } \
-        med = 0.5 * (B(dtype, k) + amax); \
+        med = 0.5 * ((npy_float64)B(dtype, k) + amax); \
     } else { \
         med =  B(dtype, k); \
     } \
