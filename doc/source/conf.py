@@ -226,7 +226,7 @@ latex_documents = [
 # If false, no module index is generated.
 # latex_use_modindex = True
 
-extlinks = {"issue": ("https://github.com/pydata/bottleneck/issues/%s", "#")}
+extlinks = {"issue": ("https://github.com/pydata/bottleneck/issues/%s", "#%s")}
 intersphinx_mapping = {
     "numpy": ("https://docs.scipy.org/doc/numpy/", None),
     "numpydoc": ("https://numpydoc.readthedocs.io/en/latest/", None),
