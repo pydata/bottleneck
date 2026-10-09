@@ -1,33 +1,30 @@
+#!/usr/bin/env python3
 import ast
-import os
-import posixpath as path
 import re
+from pathlib import Path
 from re import Pattern
 
 
-def make_c_files(dirpath: str | None = None, modules: list[str] | None = None) -> None:
-    if modules is None:
-        modules = ["reduce", "move", "nonreduce", "nonreduce_axis"]
-    if dirpath is None:
-        dirpath = os.path.dirname(__file__)
-    for module in modules:
-        template_file = os.path.join(dirpath, module + "_template.c")
-        posix_template = path.relpath(path.join(dirpath, module + "_template.c"))
-        target_file = os.path.join(dirpath, module + ".c")
+def make_c_file(
+    template_file: Path,
+    output_file: Path,
+) -> None:
+    assert template_file.suffixes == [".c", ".template"]
+    target_name = template_file.stem  # trim the last suffix ('.template')
+    assert target_name.endswith(".c"), template_file
+    assert target_name == output_file.name, output_file
 
-        if (
-            os.path.exists(target_file)
-            and os.stat(template_file).st_mtime < os.stat(target_file).st_mtime
-        ):
-            continue
+    # if (
+    #     target_file.exists()
+    #     and template_file.stat().st_mtime < target_file.stat().st_mtime
+    # ):
+    #     continue
 
-        with open(template_file) as f:
-            src_str = f.read()
-        src_str = f'#line 1 "{posix_template}"\n' + template(src_str)
-        if len(src_str) and src_str[-1] != "\n":
-            src_str += "\n"
-        with open(target_file, "w") as f:
-            f.write(src_str)
+    src_str = f'#line 1 "{template_file.name}"\n' + template(template_file.read_text())
+    if len(src_str) and src_str[-1] != "\n":
+        src_str += "\n"
+    output_file.write_text(src_str)
+    print(f"wrote {output_file}")
 
 
 def template(src_str: str) -> str:
@@ -209,3 +206,30 @@ def next_block(
                 raise ValueError("found end of function before beginning")
             return idx, i
     return None, None
+
+
+def main(argv: list[str] | None = None) -> int:
+    from argparse import ArgumentParser
+
+    parser = ArgumentParser()
+    parser.add_argument(
+        "template_file",
+        type=Path,
+        help="path to template file",
+    )
+    parser.add_argument(
+        "-o",
+        dest="output_file",
+        type=Path,
+        help="path to output file",
+    )
+    args = parser.parse_args(argv)
+    make_c_file(
+        template_file=args.template_file,
+        output_file=args.output_file,
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
