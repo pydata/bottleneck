@@ -152,6 +152,21 @@ def test_nonreduce_axis(func):
     return reduce_unit_maker(func)
 
 
+@pytest.mark.parametrize(
+    "func", (bn.rankdata, bn.nanrankdata), ids=lambda x: x.__name__
+)
+@pytest.mark.parametrize("offset", [2**53, -(2**53) - 2, -(2**63), 2**63 - 3])
+@pytest.mark.parametrize("axis", [None, 0, 1, -1])
+def test_rankdata_large_int64(func, offset, axis):
+    a = np.array(
+        [[offset + 1, offset, offset + 1], [offset + 2, offset + 1, offset]],
+        dtype=np.int64,
+    )
+    actual = func(a, axis=axis)
+    desired = getattr(bn.slow, func.__name__)(a, axis=axis)
+    assert_array_equal(actual, desired)
+
+
 def test_push():
     """Test push"""
     ns = (0, 1, 2, 3, 4, 5, None)
