@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/bottleneck-action
+      - uses: $/.github/bottleneck-action
 
   test-windows:
     runs-on: ${{ matrix.os }}
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/bottleneck-action
+      - uses: $/.github/bottleneck-action
 
   test-pyversions:
     runs-on: ubuntu-latest
@@ -66,7 +66,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/bottleneck-action
+      - uses: $/.github/bottleneck-action
 
   check:
     # This job is here is the "Required" one for merging PRs, and
