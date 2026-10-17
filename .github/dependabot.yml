@@ -1,7 +1,9 @@
 version: 2
 updates:
 - package-ecosystem: github-actions
-  directory: /.github/workflows
+  directories:
+    - /.github/bottleneck-action
+    - /.github/workflows
   schedule:
     interval: quarterly
   cooldown:
