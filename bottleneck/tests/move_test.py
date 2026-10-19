@@ -1,5 +1,7 @@
 """Test moving window functions."""
 
+from itertools import product
+
 import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal, assert_equal, assert_raises
@@ -217,13 +219,13 @@ def test_move_std_sqrt():
 @pytest.mark.filterwarnings("ignore:Degrees of freedom <= 0:RuntimeWarning")
 @pytest.mark.parametrize("func", (bn.move_std, bn.move_var), ids=lambda x: x.__name__)
 @pytest.mark.parametrize("dtype", ("float64", "float32", "int64", "int32"))
-def test_move_std_var_ddof_ge_count(func, dtype):
+def test_move_ddof_ge_count(func, dtype, subtests):
     """Test move_std and move_var give NaN when ddof >= number of values."""
     a = np.array([1, 2, 4, 7, 3, 5], dtype=dtype)
     func0 = getattr(bn.slow, func.__name__)
     for window in (1, 2, 3):
-        for min_count in (1, window):
-            for ddof in range(window + 2):
+        for min_count, ddof in product([1, window], range(window + 2)):
+            with subtests.test(window=window, min_count=min_count, ddof=ddof):
                 actual = func(a, window, min_count, ddof=ddof)
                 # np.var gives inf instead of NaN for integer input, so
                 # compare against the float result like bn.nanvar does
