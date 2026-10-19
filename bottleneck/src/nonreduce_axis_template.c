@@ -202,7 +202,8 @@ NRA_MAIN(argpartition, PARSE_PARTITION)
             ['int64',   'float64', 'intp'], ['int32',   'float64', 'intp']] */
 NRA(rankdata, DTYPE0) {
     Py_ssize_t j=0, k, idx, dupcount=0, i;
-    npy_DTYPE1 old, new, averank, sumranks = 0;
+    npy_DTYPE0 old, new;
+    npy_DTYPE1 averank, sumranks = 0;
 
     PyObject *z = PyArray_ArgSort(a, axis, NPY_QUICKSORT);
     if (z == NULL) return NULL;
