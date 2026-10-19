@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version >= '3.12'",
@@ -52,7 +52,7 @@ requires-dist = [{ name = "numpy", specifier = ">=2.0.0" }]
 
 [package.metadata.requires-dev]
 concurrency = [
-    { name = "pytest", specifier = ">=8.0.0" },
+    { name = "pytest", specifier = ">=9.0.0" },
     { name = "pytest-run-parallel", specifier = ">=0.9.0" },
 ]
 doc = [
@@ -60,7 +60,7 @@ doc = [
     { name = "numpydoc" },
     { name = "sphinx" },
 ]
-test = [{ name = "pytest", specifier = ">=8.0.0" }]
+test = [{ name = "pytest", specifier = ">=9.0.0" }]
 
 [[package]]
 name = "certifi"
