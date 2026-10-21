@@ -260,3 +260,13 @@ def test_ddof_nans(func, dtype):
     for axis in [None, 0, 1, -1]:
         result = func(array, axis=axis, ddof=3)
         assert np.isnan(result)
+
+
+@pytest.mark.parametrize("dtype", ("int32", "int64"))
+@pytest.mark.parametrize("func", (bn.median, bn.nanmedian), ids=lambda x: x.__name__)
+def test_median_int_overflow(func, dtype):
+    """Averaging the two middle values must not overflow for large integers"""
+    big = np.iinfo(dtype).max
+    a = np.array([[big, big - 2], [big - 4, big - 6]], dtype=dtype)
+    for axis in [None, 0, 1]:
+        assert_equal(func(a, axis=axis), bn.slow.median(a, axis=axis))
