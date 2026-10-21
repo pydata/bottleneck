@@ -269,14 +269,19 @@ REDUCE_MAIN(nanmean, 0)
 /* dtype = [['float64'], ['float32']] */
 REDUCE_ALL(NAME, DTYPE0) {
     Py_ssize_t count = 0;
-    npy_DTYPE0 ai, amean, out, asum = 0;
+    npy_DTYPE0 out;
+    /* Shift float32 values before summing so constants have zero variance. */
+    npy_float64 ai, amean, anchor = 0, asum = 0;
     INIT_ALL
     BN_BEGIN_ALLOW_THREADS
     WHILE {
         FOR {
             ai = AI(DTYPE0);
             if (ai == ai) {
-                asum += ai;
+                if (sizeof(npy_DTYPE0) == sizeof(npy_float32) && count == 0) {
+                    anchor = ai;
+                }
+                asum += ai - anchor;
                 count++;
             }
         }
@@ -290,7 +295,7 @@ REDUCE_ALL(NAME, DTYPE0) {
             FOR {
                 ai = AI(DTYPE0);
                 if (ai == ai) {
-                    ai -= amean;
+                    ai = (ai - anchor) - amean;
                     asum += ai * ai;
                 }
             }
@@ -306,7 +311,7 @@ REDUCE_ALL(NAME, DTYPE0) {
 
 REDUCE_ONE(NAME, DTYPE0) {
     Py_ssize_t count;
-    npy_DTYPE0 ai, asum, amean;
+    npy_float64 ai, asum, amean, anchor;
     INIT_ONE(DTYPE0, DTYPE0)
     BN_BEGIN_ALLOW_THREADS
     if (LENGTH == 0) {
@@ -315,10 +320,14 @@ REDUCE_ONE(NAME, DTYPE0) {
         WHILE {
             count = 0;
             asum = 0;
+            anchor = 0;
             FOR {
                 ai = AI(DTYPE0);
                 if (ai == ai) {
-                    asum += ai;
+                    if (sizeof(npy_DTYPE0) == sizeof(npy_float32) && count == 0) {
+                        anchor = ai;
+                    }
+                    asum += ai - anchor;
                     count++;
                 }
             }
@@ -328,7 +337,7 @@ REDUCE_ONE(NAME, DTYPE0) {
                 FOR {
                     ai = AI(DTYPE0);
                     if (ai == ai) {
-                        ai -= amean;
+                        ai = (ai - anchor) - amean;
                         asum += ai * ai;
                     }
                 }
@@ -1418,6 +1427,10 @@ nanstd(a, axis=None, ddof=0)
 Standard deviation along the specified axis, ignoring NaNs.
 
 `float64` intermediate and return values are used for integer inputs.
+For native-byte-order `float32` inputs, intermediate calculations use
+`float64` and the result is rounded to `float32`. The calculations are
+shifted by the first non-NaN value to reduce accumulation error for values
+with a large offset.
 
 Instead of a faster one-pass algorithm, a more stable two-pass algorithm
 is used.
@@ -1492,6 +1505,10 @@ nanvar(a, axis=None, ddof=0)
 Variance along the specified axis, ignoring NaNs.
 
 `float64` intermediate and return values are used for integer inputs.
+For native-byte-order `float32` inputs, intermediate calculations use
+`float64` and the result is rounded to `float32`. The calculations are
+shifted by the first non-NaN value to reduce accumulation error for values
+with a large offset.
 
 Instead of a faster one-pass algorithm, a more stable two-pass algorithm
 is used.
