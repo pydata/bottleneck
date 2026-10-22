@@ -58,6 +58,13 @@ struct _pairs {
 };
 typedef struct _pairs pairs;
 
+/* Keep integer comparisons exact, including values outside double precision. */
+struct _pairs_int {
+    npy_int64 value;
+    int death;
+};
+typedef struct _pairs_int pairs_int;
+
 /* function pointer for functions passed to mover */
 typedef PyObject *(*move_t)(PyArrayObject *, int, int, int, int);
 
@@ -511,10 +518,10 @@ MOVE(NAME, DTYPE0) {
 MOVE(NAME, DTYPE0) {
     npy_DTYPE0 ai;
     npy_DTYPE1 yi_tmp;
-    pairs *extreme_pair;
-    pairs *end;
-    pairs *last;
-    pairs *ring = (pairs *)malloc(window * sizeof(pairs));
+    pairs_int *extreme_pair;
+    pairs_int *end;
+    pairs_int *last;
+    pairs_int *ring = (pairs_int *)malloc(window * sizeof(pairs_int));
     INIT(NPY_DTYPE1)
     BN_BEGIN_ALLOW_THREADS
     WHILE {
