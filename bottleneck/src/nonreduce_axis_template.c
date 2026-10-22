@@ -85,9 +85,6 @@ NRA_MAIN(partition, PARSE_PARTITION)
 
 /* argpartition ----------------------------------------------------------- */
 
-#define BUFFER_NEW(dtype) dtype *B = malloc(LENGTH * sizeof(dtype));
-#define BUFFER_DELETE free(B);
-
 #define ARGWIRTH(dtype0, dtype1) \
     x = B[k]; \
     i = l; \
@@ -168,6 +165,7 @@ NRA(argpartition, DTYPE0) {
     PyObject *y = PyArray_EMPTY(PyArray_NDIM(a), PyArray_SHAPE(a),
                                 NPY_DTYPE1, 0);
     iter2 it;
+    if (y == NULL) return NULL;
     init_iter2(&it, a, y, axis);
     if (LENGTH == 0) return y;
     if (n < 0 || n > LENGTH - 1) {
@@ -177,8 +175,12 @@ NRA(argpartition, DTYPE0) {
         Py_DECREF(y);
         return NULL;
     }
+    npy_DTYPE0 *B = PyMem_Malloc(LENGTH * sizeof(npy_DTYPE0));
+    if (B == NULL) {
+        Py_DECREF(y);
+        return PyErr_NoMemory();
+    }
     BN_BEGIN_ALLOW_THREADS
-    BUFFER_NEW(npy_DTYPE0)
     npy_intp j, l, r, k;
     k = n;
     WHILE {
@@ -187,8 +189,8 @@ NRA(argpartition, DTYPE0) {
         ARGPARTSORT(DTYPE0, DTYPE1)
         NEXT2
     }
-    BUFFER_DELETE
     BN_END_ALLOW_THREADS
+    PyMem_Free(B);
     return y;
 }
 /* dtype end */

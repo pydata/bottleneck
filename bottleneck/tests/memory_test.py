@@ -1,4 +1,5 @@
 import gc
+import subprocess
 import sys
 import tracemalloc
 
@@ -9,6 +10,41 @@ import bottleneck as bn
 
 _original_nansum = bn.nansum
 _retained = []
+
+
+@pytest.mark.parametrize("dtype", ["float64", "float32", "int64", "int32"])
+@pytest.mark.parametrize("allocation", [0, 1], ids=["output", "buffer"])
+def test_argpartition_allocation_failure(dtype, allocation):
+    pytest.importorskip("_testcapi")
+    code = f"""
+import _testcapi
+import sys
+import numpy as np
+import bottleneck as bn
+
+a = np.arange(32, dtype=np.{dtype})
+refcount = sys.getrefcount(a)
+dtype_refcount = sys.getrefcount(np.dtype(np.intp))
+for _ in range(20):
+    failed = False
+    _testcapi.set_nomemory({allocation}, {allocation + 1})
+    try:
+        bn.argpartition(a, 16)
+    except MemoryError:
+        failed = True
+    finally:
+        _testcapi.remove_mem_hooks()
+    assert failed, "argpartition did not raise MemoryError"
+assert sys.getrefcount(a) == refcount
+assert sys.getrefcount(np.dtype(np.intp)) == dtype_refcount
+np.testing.assert_array_equal(a, np.arange(32, dtype=np.{dtype}))
+np.testing.assert_array_equal(bn.argpartition(a, 16), np.arange(32))
+"""
+    # Allocation failures must not be able to terminate the pytest process.
+    result = subprocess.run(
+        [sys.executable, "-c", code], capture_output=True, text=True, timeout=30
+    )
+    assert result.returncode == 0, result.stderr
 
 
 def _leaking_nansum(arr, axis=None):
