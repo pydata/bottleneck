@@ -1,5 +1,7 @@
 """Test moving window functions."""
 
+from itertools import product
+
 import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal, assert_equal, assert_raises
@@ -212,6 +214,24 @@ def test_move_std_sqrt():
     a3 = np.array([[a, a], [a, a]])
     b = bn.move_std(a3, window=3, axis=2)
     assert np.isfinite(b[:, :, 2:]).all(), err_msg % 3
+
+
+@pytest.mark.filterwarnings("ignore:Degrees of freedom <= 0:RuntimeWarning")
+@pytest.mark.parametrize("func", (bn.move_std, bn.move_var), ids=lambda x: x.__name__)
+@pytest.mark.parametrize("dtype", ("float64", "float32", "int64", "int32"))
+def test_move_ddof_ge_count(func, dtype, subtests):
+    """Test move_std and move_var give NaN when ddof >= number of values."""
+    a = np.array([1, 2, 4, 7, 3, 5], dtype=dtype)
+    func0 = getattr(bn.slow, func.__name__)
+    for window in (1, 2, 3):
+        for min_count, ddof in product([1, window], range(window + 2)):
+            with subtests.test(window=window, min_count=min_count, ddof=ddof):
+                actual = func(a, window, min_count, ddof=ddof)
+                # np.var gives inf instead of NaN for integer input, so
+                # compare against the float result like bn.nanvar does
+                desired = func0(a.astype(np.float64), window, min_count, ddof=ddof)
+                err_msg = f"window={window}, min_count={min_count}, ddof={ddof}"
+                assert_array_almost_equal(actual, desired, 5, err_msg)
 
 
 # ----------------------------------------------------------------------------
