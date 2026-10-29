@@ -285,7 +285,7 @@ MOVE(NAME, DTYPE0) {
                 amean += delta / count;
                 assqdm += delta * (ai - amean);
             }
-            if (count >= min_count) {
+            if (count >= min_count && count > ddof) {
                 if (assqdm < 0) {
                     assqdm = 0;
                 }
@@ -330,7 +330,7 @@ MOVE(NAME, DTYPE0) {
                     }
                 }
             }
-            if (count >= min_count) {
+            if (count >= min_count && count > ddof) {
                 if (assqdm < 0) {
                     assqdm = 0;
                 }
@@ -368,7 +368,11 @@ MOVE(NAME, DTYPE0) {
             delta = ai - amean;
             amean += delta / (INDEX + 1);
             assqdm += delta * (ai - amean);
-            yi = FUNC(assqdm / (INDEX + 1 - ddof));
+            if (INDEX + 1 > ddof) {
+                yi = FUNC(assqdm / (INDEX + 1 - ddof));
+            } else {
+                yi = BN_NAN;
+            }
             YI(DTYPE1) = yi;
         }
         WHILE2 {
@@ -382,7 +386,11 @@ MOVE(NAME, DTYPE0) {
             if (assqdm < 0) {
                 assqdm = 0;
             }
-            YI(DTYPE1) = FUNC(assqdm * winddof_inv);
+            if (winddof > 0) {
+                YI(DTYPE1) = FUNC(assqdm * winddof_inv);
+            } else {
+                YI(DTYPE1) = BN_NAN;
+            }
         }
         NEXT2
     }
