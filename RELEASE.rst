@@ -6,6 +6,18 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at https://github.com/pydata/bottleneck
 
+Unreleased
+==========
+
+Bug fixes
+~~~~~~~~~
+- Use float64 intermediate calculations in ``nanstd`` and ``nanvar`` for
+  native-byte-order float32 inputs, and shift the calculations by the first
+  non-NaN value.
+  This reduces accumulation error, avoids premature overflow or underflow
+  when squaring deviations, and fixes the spurious variance for constant
+  float32 inputs reported in :issue:`443`. Results retain float32 precision.
+
 Bottleneck 1.6.0
 ================
 *Release date 2025-09-05*
