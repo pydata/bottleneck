@@ -6,6 +6,42 @@ Release Notes
 These are the major changes made in each release. For details of the changes
 see the commit log at https://github.com/pydata/bottleneck
 
+Bottleneck 1.6.1
+================
+
+*Release date: 2026-11-12*
+
+Maintenance
+~~~~~~~~~~~
+- Add Python 3.15 support, including free-threaded Python 3.15
+- Drop Python 3.10 support, Python 3.11 or newer is now required
+- Drop support for numpy 1.x, numpy 2.0 or newer is now required
+- Raise the upper bound on the numpy build requirement to `numpy<2.8`
+- Add Windows arm64 wheels, drop 32-bit Windows wheels
+- Drop free-threaded Python 3.13 wheels
+- Test the wheels built in CI before they are uploaded
+- Allow building against CPython's Limited API (not used for the wheels
+  published in this release)
+- Move project metadata and build configuration to `pyproject.toml`
+- Switch linting and formatting to `ruff`
+- Pin GitHub Actions and audit workflows with `zizmor`
+- Publish to PyPI with trusted publishing
+- Require pytest 9
+
+Bug Fixes
+~~~~~~~~~
+- Fix `replace` on non-contiguous array views
+- Fix `move_mean` returning inexact results with `window=1`
+- Fix out-of-bounds reads in reduce-all functions on transposed views whose
+  length-one axis carries a large stride
+- Fix memory leaks on error paths in `partition`, `argpartition`, `rankdata`
+  and in single-axis `nan*` reducers
+- Fix a memory leak in `move_median` with `window=1`
+- Fix a potential segmentation fault in `nonreducer_axis`
+- Add missing `nullptr` checks after allocations in `rankdata`,
+  `nanrankdata`, `push`, `intern_strings`, and the `INIT`/`INIT_ONE` macros
+
+
 Bottleneck 1.6.0
 ================
 *Release date 2025-09-05*
