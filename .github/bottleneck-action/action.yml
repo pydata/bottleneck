@@ -10,7 +10,9 @@ runs:
     - name: Install
       shell: bash
       run: |
-        uv sync --no-editable --group test ${{ case( endsWith(matrix.python-version, 't'), '--group concurrency', '' ) }}
+        uv sync --no-editable --group test \
+          ${{ case( endsWith( matrix.python-version , 't' ), '--group concurrency', '' ) }} \
+          ${{ case( startsWith( runner.os, 'windows' ) , '-Csetup-args=--vsenv', '' ) }}
 
     - name: Test with pytest
       shell: bash

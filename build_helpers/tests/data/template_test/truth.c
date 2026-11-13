@@ -1,4 +1,4 @@
-#line 1 "{DIRPATH}/test_template.c"
+#line 1 "test.c.template"
 // Copyright 2010-2019 Keith Goodman
 // Copyright 2019 Bottleneck Developers
 #include "bottleneck.h"
