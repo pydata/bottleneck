@@ -239,3 +239,35 @@ def test_move_mean_window_1():
         "unchanged, but got differences. This is issue #437."
     )
     assert_equal(b, a, err_msg)
+
+
+def test_move_sum_after_large_value_leaves():
+    """A running sum can drop the values that remain after a huge value leaves.
+
+    See: https://github.com/pydata/bottleneck/issues/480
+    """
+    a = np.array([1e19, 1e19, 3.0, 4.0, 5.0], dtype=np.float64)
+    actual = bn.move_sum(a, window=3, min_count=1)
+    desired = bn.slow.move_sum(a, window=3, min_count=1)
+    assert actual[-1] == 12.0
+    assert_array_almost_equal(actual, desired, 12)
+
+    b = np.array([1e19, np.nan, 4.0, 5.0, 6.0], dtype=np.float64)
+    actual = bn.move_sum(b, window=3, min_count=1, axis=0)
+    desired = bn.slow.move_sum(b, window=3, min_count=1, axis=0)
+    assert actual[-1] == 15.0
+    assert_array_almost_equal(actual, desired, 12)
+
+    rows = np.array(
+        [[1e19, 1e19, 3.0, 4.0, 5.0], [1.0, 2.0, 3.0, 4.0, 5.0]],
+        dtype=np.float64,
+    )
+    actual = bn.move_sum(rows, window=3, min_count=1, axis=1)
+    desired = bn.slow.move_sum(rows, window=3, min_count=1, axis=1)
+    assert_array_almost_equal(actual, desired, 12)
+
+    c = np.array([1e16, 8.0, 9.0, 10.0], dtype=np.float32)
+    actual = bn.move_sum(c, window=3, min_count=1)
+    desired = bn.slow.move_sum(c, window=3, min_count=1)
+    assert actual[-1] == np.float32(27.0)
+    assert_array_almost_equal(actual, desired, 5)

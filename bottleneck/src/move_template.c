@@ -1,5 +1,6 @@
 // Copyright 2010-2019 Keith Goodman
 // Copyright 2019 Bottleneck Developers
+#include <math.h>
 #include <stdlib.h>
 #include "bottleneck.h"
 #include "iterators.h"
@@ -111,6 +112,28 @@ MOVE(move_sum, DTYPE0) {
                 if (aold == aold) {
                     asum -= aold;
                     count--;
+                }
+            }
+            /* Subtracting a value near the top of the dtype range can erase
+               the numbers that remain in the window. Add those directly. */
+            if (aold == aold) {
+                double aold_abs = fabs((double)aold);
+                double asum_abs = fabs((double)asum);
+                double abs_cut = sizeof(ai) == sizeof(double) ? 1.0e6 : 1.0e3;
+                double rel_cut = sizeof(ai) == sizeof(double) ? 1.0e3 : 50.0;
+                if (aold_abs > abs_cut &&
+                    aold_abs > rel_cut * (asum_abs + 1.0)) {
+                    npy_intp j;
+                    npy_intp start = it.i - window + 1;
+                    asum = 0;
+                    count = 0;
+                    for (j = start; j <= it.i; j++) {
+                        npy_DTYPE0 v = AX(DTYPE0, j);
+                        if (v == v) {
+                            asum += v;
+                            count++;
+                        }
+                    }
                 }
             }
             YI(DTYPE0) = count >= min_count ? asum : BN_NAN;
