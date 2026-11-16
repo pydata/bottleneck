@@ -79,6 +79,15 @@ def test_replace_unsafe_cast():
         assert_raises(ValueError, bn.slow.replace, a.copy(), 0, 0.1)
 
 
+def test_replace_read_only():
+    """Test that replace does not write to a read-only array"""
+    a = np.array([1.0, np.nan, 3.0])
+    a.flags.writeable = False
+    with pytest.raises(ValueError, match="read-only"):
+        bn.replace(a, np.nan, 0)
+    assert_array_equal(a, [1.0, np.nan, 3.0])
+
+
 def test_non_array():
     """Test that non-array input raises"""
     a = [1, 2, 3]
