@@ -1971,15 +1971,18 @@ reduce_def = {
 PyMODINIT_FUNC
 PyInit_reduce(void)
 {
-    PyObject *m = PyModule_Create(&reduce_def);
+    PyObject *m;
+
+    import_array();
+    m = PyModule_Create(&reduce_def);
     if (m == NULL) return NULL;
 
     #ifdef Py_GIL_DISABLED
         PyUnstable_Module_SetGIL(m, Py_MOD_GIL_NOT_USED);
     #endif
 
-    import_array();
     if (!intern_strings()) {
+        Py_DECREF(m);
         return NULL;
     }
     return m;
