@@ -223,6 +223,10 @@ nonreducer(char *name,
         }
     }
 
+    if (inplace && PyArray_FailUnlessWriteable(a, "input array") < 0) {
+        goto error;
+    }
+
     /* check for byte swapped input array */
     if (PyArray_ISBYTESWAPPED(a)) {
         Py_DECREF((PyObject *)a);
